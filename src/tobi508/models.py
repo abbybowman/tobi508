@@ -45,7 +45,7 @@ class Outcome(str, Enum):
     PASS = "PASS"
     FAIL = "FAIL"
     DNA = "DNA"  # Does Not Apply
-    # Only for tests whose TT text names NOT TESTED (p. 6); none in scope do.
+    # Only for tests whose TT text names NOT TESTED (p. 6): 3.A (flashing found).
     NOT_TESTED = "NOT_TESTED"
     NEEDS_REVIEW = "NEEDS_REVIEW"
 

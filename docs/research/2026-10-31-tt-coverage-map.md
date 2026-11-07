@@ -18,7 +18,7 @@ evidence for 20 tests, mostly the visual-versus-code ones.
 
 **Built (2026-11-05): 21 tests.** The keyboard and focus group (4.A–4.F),
 the forms group (5.A–5.D, 5.F–5.H), multi-page (9.A–9.C, 19.A) and motion
-(2.A–2.D). 3.A has a draft spec (0.1.0). Status here is a convenience; the
+(2.A–2.D); 3.A (flashing) on 2026-11-07, 22 tests. Status here is a convenience; the
 source of truth is `checks.REGISTRY` and each spec's `spec_version`.
 
 ## What to build next
@@ -36,7 +36,7 @@ there.
 | Tier 1, #16 | 14.A–14.C Tables | M/H / M | Visual grids, header associations, layout tables. | Core |
 | Tier 1, #17 | 13.C Contrast leftovers (ER 3) | M / L | Text over images and gradients (axe's "needs review"). | Core |
 | Tier 1, #18 | 15.A Order without CSS | M / M | Linearize; compare content order to visual order. | Core |
-| Tier 1, #19 | 3.A Flashing (detection) | L/M / L | Frame capture can confirm DOES NOT APPLY; can reuse pass T's frames. Spec 0.1.0, research done. | none |
+| Tier 1, #19 | 3.A Flashing (detection) | L/M / L | Built (spec 1.0.0, 2026-11-07): stepped capture and decoding confirm DOES NOT APPLY; NOT TESTED with an experimental WCAG note when flashing is found. | none |
 | Tier 2 | 11.B, 12.D (ER 3), 8.A, 17.D–17.G | | Language of parts; iframe name wording; timing adjustable (waiting out timeouts); media player controls. | |
 | Tier 3 | 6.A (ER 3), 7.A (ER 3), 7.B–7.E (7.E: ER 3), 10.A, 12.B, 13.A (ER 3), 13.B (ER 3) | | Judgment-heavy, quick for people. 7.A is excluded for now (alt-text equivalence is high-judgment and models get it wrong). | |
 
@@ -69,7 +69,7 @@ else; *Hint*, optional help.
 | 2.B | Blinking moving scrolling | **built** | 1 (#12) | M / L/M | Partial | blink, marquee | blink element |  |
 | 2.C | Auto updating | **built** | 1 (#12) | M / L/M | None |  |  |  |
 | 2.D | Change notify auto | **built** | 1 (#11) | M / L | None |  |  | Inventory (live regions) |
-| 3.A | Flashing | spec 0.1.0 | 1 (#19) | L/M / L | None |  | notice only |  |
+| 3.A | Flashing | built (1.0.0) | 1 (#19) | L/M / L | None |  | notice only |  |
 | 4.A | Keyboard access | **built** | 1 (#2) | H / L | Partial | scrollable-region-focusable, frame-focusable-content, server-side-image-map | warnings only | Inventory (focusable elements) |
 | 4.B | No keystroke timing | **built** | 2 |  | None |  |  |  |
 | 4.C | No keyboard trap | **built** | 1 (#1) | H / L | None |  | warning only |  |

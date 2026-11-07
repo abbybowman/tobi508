@@ -1,5 +1,4 @@
-"""Test 3.A (2.3.1-flashing), from docs/rules/3a-flashing.md (spec 0.2.0,
-a draft: registered in tests/drafts.py only).
+"""Test 3.A (2.3.1-flashing), from docs/rules/3a-flashing.md (spec 1.0.0).
 
 Triggers come from pass T (motion.py: fast animations and callbacks,
 animated images' frame delays, videos) and a 2 s screencast. Only when one
@@ -772,7 +771,7 @@ def evaluate(st: State3A, evidence_refs: list[str]) -> Finding:
 
 
 class Check3A:
-    """3.A as a check (checks/base.py); a draft until its spec is 1.0.0."""
+    """3.A as a registered check (checks/base.py)."""
 
     test_id = TestId.T3A
     state_type = State3A

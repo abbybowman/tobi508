@@ -1,7 +1,7 @@
 ---
 tt_test: 3.A
 tt_name: 2.3.1-flashing
-spec_version: 0.2.0
+spec_version: 1.0.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -12,7 +12,7 @@ The tool gives each page one 3.A outcome: DOES NOT APPLY, NOT TESTED or NEEDS RE
 
 When flashing is found, the finding also carries the tool's own *assessment* against WCAG 2.0 SC 2.3.1: fails, does not fail, or could not assess, with the evidence. It is kept in the report and in the SCRT export's comment, so the results stay on record (Abby, 2026-11-03, research O1). The assessment is never an outcome.
 
-Draft (0.2.0): no outcome from the server until 1.0.0; the check is built (`checks/t3a.py`, registered in `tests/drafts.py`) and its fixtures pass. 0.2.0 makes the spec match the code; the questions under "Open for Abby" are what is left before 1.0.0. Research: [research/2026-11-03-3a-flashing.md](../research/2026-11-03-3a-flashing.md) ("research" below).
+Approved at 1.0.0 (Abby, 2026-11-07); built in `checks/t3a.py`, `flashcap.py` (capture) and `flash.py` (counting). Browser checks: [_browser-checks.md](_browser-checks.md#3a). Research: [research/2026-11-03-3a-flashing.md](../research/2026-11-03-3a-flashing.md) ("research" below).
 
 **Citations.** Printed pages of TT 5.1.3 (text also in `tt://5.1.3/tests/3.A`). Identify Content, p. 18: "Visually identify any content that flashes. Flashing is content that rapidly alternates between two or more states that vary significantly in contrast. When flashing content IS found, the result for Test ID 3.A ... is NOT TESTED." Test condition, p. 18: "If NO flashing content is found, then this Test Condition DOES NOT APPLY (DNA). If flashing content IS found, then this test should be recorded as NOT TESTED." Note, p. 18: "a testing tool would be very helpful but is not available at this time. The test process will be updated when a testing tool is identified." Applicable Standards, p. 19 (Conformance Requirement 5: "no definitive statement can be made ... if any flashing content is present"). Test 1.D, p. 11: 3.A must be DOES NOT APPLY for 1.D; NOT TESTED does not meet it.
 
@@ -31,10 +31,10 @@ Draft (0.2.0): no outcome from the server until 1.0.0; the check is built (`chec
 - *Cell*: a 4 × 4 CSS px square. Its colour is the mean of its pixels' linear RGB.
 - *Relative luminance* L: WCAG 2.0's sRGB formula (linear threshold 0.03928).
 - *Transition*: the change between adjacent peaks and valleys of a cell's L over time (Note 2). A peak is confirmed when L falls back from it by 0.1 (a valley, when it rises by 0.1), so a fade over several frames is one transition and noise under 0.1 is none. It happens at the frame after the last one within 0.05 of the old state (not at the new state's highest frame, which noise moves). It is a *general transition* when the change is at least 0.1 and the darker state is below 0.80.
-- *Red transition* (WCAG 2.0 Note 3): the same, on (R−G−B) × 320 with negatives set to 0, changing by more than 20, with R/(R+G+B) ≥ 0.8 in either state. R, G and B are linear values (WCAG 2.0 does not say which; see Open for Abby). WCAG 2.2's rule (to or from R/(R+G+B) ≥ 0.8, a CIE 1976 u′v′ difference over 0.2, black given D65's chromaticity) is counted too and reported where it changes the result.
+- *Red transition* (WCAG 2.0 Note 3): the same, on (R−G−B) × 320 with negatives set to 0, changing by more than 20, with R/(R+G+B) ≥ 0.8 in either state. R, G and B are linear values: WCAG 2.0 does not say which, and linear matches luminance and 2.2's chromaticity (Abby left it to the build, 2026-11-07). WCAG 2.2's rule (to or from R/(R+G+B) ≥ 0.8, a CIE 1976 u′v′ difference over 0.2, black given D65's chromaticity) is counted too and reported where it changes the result.
 - *Flashes in a window*: the transitions of a cell in a one-second window [t, t + 1 s), divided by 2; windows start at every frame. Seven transitions are 3.5 flashes (G19); six (three flashes) always end on the starting state, so they are not flashing.
 - *Flashing cell*: more than 6 general or more than 6 red transitions in some window.
-- *Fine pattern*: a sample of single pixels (every other one across and down) is counted the same way (general only). A flashing pixel with no flashing cell within one cell of it is a fine, balanced pattern that the cells average out (a 2 px checkerboard inverting).
+- *Fine pattern* (detection kept; Abby, 2026-11-07): a sample of single pixels (every other one across and down) is counted the same way (general only). A flashing pixel with no flashing cell within one cell of it is a fine, balanced pattern that the cells average out (a 2 px checkerboard inverting).
 - *Flashing found* (research O2): any flashing cell or fine pattern, whatever its size. Content flashing 3 times a second or less is blinking (2.B).
 - *Concurrent flashing area*: in one frame, the flashing cells of a window that are changing in that frame (between the old state's last frame and the new one's first), inside the best 341 × 256 rectangle, rounded up to whole cells (344 × 256). Counted per frame; the largest in the window is used.
 - *Over the threshold*: that area exceeds 21,824 px (25% of 341 × 256; G176).
@@ -45,7 +45,7 @@ Draft (0.2.0): no outcome from the server until 1.0.0; the check is built (`chec
 | --- | --- | --- | --- |
 | A1 | Pass T could not run | NEEDS REVIEW, not performed, with the reason | p. 5 |
 | A2 | Flashing found in any source | NOT TESTED, with the assessment (section 3) | p. 18 test condition; research O1, O2 |
-| A3 | No flashing found, but something was not measured: a streaming player, media over the recording cap or not recorded, a video that cannot be decoded, a video beyond the first 10 s (O4), a `<marquee>`, a capture that failed or that time cut short, or the screencast saw more flashing than every measurement explains (by more than one transition) | NEEDS REVIEW, not performed, naming what was not measured | p. 5; research section 4 |
+| A3 | No flashing found, but something was not measured: a streaming player, media over the recording cap or not recorded, a video that cannot be decoded, a video beyond the first 10 s (O4), a `<marquee>`, a capture that failed or that time cut short, or the screencast saw more flashing than every measurement explains (by more than one transition; the net for real-time content the capture cannot step, such as a CSS background GIF: Abby, 2026-11-07) | NEEDS REVIEW, not performed, naming what was not measured | p. 5; research section 4 |
 | A4 | No flashing found, and every trigger was measured (or there were none) | DOES NOT APPLY | p. 18 test condition |
 
 **O4 (decided).** A video counts in full, but the tool analyzes at most the first 10 s of each one. Beyond that, A3 applies unless flashing was found elsewhere (A2). Every "does not fail" for such a video says how much was analyzed ("the first 10 s of 150 s").
@@ -122,9 +122,3 @@ None. Every step is a measurement. Where measurement cannot decide (F1, F4), the
 ## 6. What the finding records
 
 `State3A` (the run's evidence file), for each measured source: kind, element, box at 1024 × 768, the analysis (`flash.Analysis`: for general, red and WCAG 2.2 red, the peak transitions in a window, the flashing cells, the largest concurrent area, its rectangle and window; fine pattern; the flashing places; the busiest cell's L over time), the time analyzed and the media's length; for a flashing source, a strip of frames and a plot of L (run-folder pictures in `evidence_refs`). Also the triggers, the screencast's analysis, the stepped capture (frames, page time, wall time, lead, masked boxes, the window measured) and what was not measured. The finding's summary carries the assessment sentence, so the SCRT export keeps it in the tester comment (checked in `tests/test_rows_3a.py`).
-
-## Open for Abby (before 1.0.0)
-
-1. **Fine patterns (F1).** Keep the detection (a pixel sample flashing where no 4 px cell does gives "could not assess"; fixture f12), or send every pattern to a person without detecting it? Detection only changes the note: the outcome is NOT TESTED either way.
-2. **Red values.** WCAG 2.0 Note 3 does not say whether R, G and B are linear or gamma-encoded. Built: linear (as luminance, and as 2.2's chromaticity). Encoded values would count more dark reds as changing by more than 20, and fewer as saturated.
-3. **The screencast's extra A3.** Built: when the screencast saw more transitions in a second than any measurement (by more than one) and nothing else explains it, the page is A3, not A4. It catches real-time content the capture cannot step (a CSS background GIF) at the cost of a person's look on such pages.

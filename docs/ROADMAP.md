@@ -4,7 +4,7 @@ What is left to build, newest priorities first. A living list, not a log:
 delete an item once it is built, and put any decision it needed into the
 spec, CLAUDE.md or `docs/solutions/` where it belongs.
 
-## Now: Tests 2, 4 and 5, the multi-page batch and 19.A are built
+## Now: Tests 2, 3, 4 and 5, the multi-page batch and 19.A are built
 
 Built (spec 1.0.0+, check registered, fixtures green): 4.A, 4.B, 4.C, 4.D,
 4.E, 4.F, 5.A (Label provided), 5.B (Label descriptive), 5.C
@@ -50,10 +50,8 @@ Next (Abby, 2026-11-05):
    mechanism probe and the media store
    ([solutions/watching-a-page-over-time.md](solutions/watching-a-page-over-time.md));
    their leftovers are under "Per-test leftovers" below.
-   Not yet in a judging round. 3.A (flashing) is built as a draft (spec
-   0.2.0, `checks/t3a.py` in `tests/drafts.py`, 16 fixtures passing); three
-   questions in the spec's "Open for Abby" are left before 1.0.0
-   ([rules/3a-build-tasks.md](rules/3a-build-tasks.md)).
+   Not yet in a judging round. 3.A (flashing) is built too (spec 1.0.0,
+   2026-11-07; [solutions/flashing-needs-stepped-frames.md](solutions/flashing-needs-stepped-frames.md)).
 2. **The post-round 1 fixes, in the plan's order**
    ([plans/2026-11-04-post-round1-fixes.md](plans/2026-11-04-post-round1-fixes.md)),
    while Abby labels the next judging round blind:
@@ -238,6 +236,13 @@ None blocks an outcome: each is NEEDS REVIEW-safe today.
   the first screen is built (1.1.0). A large media file fetched in
   several byte ranges is not reproduced in a test; real YouTube and Vimeo
   embeds on a normal network are NEEDS REVIEW (2.A A2).
+- **3.A:** real pages with flashing for a held-out set (rare; no answer key
+  exists). CSS background animated images are not decoded (only `<img>`);
+  the screencast's extra NEEDS REVIEW is the net for them. H.264 video
+  cannot be decoded in Chromium (NEEDS REVIEW). Not measured: that Chrome
+  shows a GIF frame of 10 ms or less for 100 ms (assumed from Chromium's
+  decoder). Optional: the IRIS cross-check
+  ([research section 7](research/2026-11-03-3a-flashing.md)).
 
 ## Later
 

@@ -9,11 +9,11 @@ import pytest
 
 from tobi508.checks import REGISTRY
 from tobi508.checks.base import Check
-from tobi508.checks.t3a import Check3A
 from tobi508.models import TestId
 
-# 2.A-2.D moved to the registry at 1.0.0 (2026-11-05). 3.A's spec is 0.2.0.
-DRAFTS: dict[TestId, Check] = {TestId.T3A: Check3A()}
+# None now: 2.A-2.D moved to the registry at 1.0.0 (2026-11-05), 3.A
+# (2026-11-07).
+DRAFTS: dict[TestId, Check] = {}
 
 
 @pytest.fixture

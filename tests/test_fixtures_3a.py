@@ -1,8 +1,7 @@
-"""3.A end to end on custom pages in tests/fixtures/3a/ (draft check,
-tests/drafts.py). No ACT rule, DHS verdict or Baseline Alignment case
-exists for 2.3.1 (spec, Other sources), so every page is custom; expected
-outcomes live here, never in a page. Each page runs once: the stepped
-capture is about 180 screenshots."""
+"""3.A end to end on custom pages in tests/fixtures/3a/. No ACT rule, DHS
+verdict or Baseline Alignment case exists for 2.3.1 (spec, Other sources),
+so every page is custom; expected outcomes live here, never in a page. Each
+page runs once: the stepped capture is about 180 screenshots."""
 
 from __future__ import annotations
 
@@ -10,7 +9,6 @@ import pytest
 
 from tobi508.models import TestId
 
-from .drafts import drafts  # noqa: F401 (a fixture)
 from .harness import instance_rows, run_check
 
 # page: (outcome, rows that must appear, words the summary must hold)
@@ -60,7 +58,7 @@ CASES = {
 
 
 @pytest.mark.parametrize("case", sorted(CASES))
-async def test_page(case, settings, server, drafts):  # noqa: F811
+async def test_page(case, settings, server):
     outcome, rows, words = CASES[case]
     got = await run_check(settings, f"{server.base}/3a/{case}.html", TestId.T3A)
     f = got["finding"]
