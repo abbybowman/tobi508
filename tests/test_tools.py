@@ -89,6 +89,7 @@ async def test_run_tt_tests_on_http_page(settings, server):
         "run_limit_s": settings.run_limit_s,
         "other_page_s": settings.other_page_s,
         "no_time_limit": True,  # the server's default since 2026-11-07
+        "bypass_csp": True,  # the server's default since 2026-11-07 (ANDI)
     }
     # The window the page was tested in, as configured and as a page saw it.
     d = report.versions.display
@@ -176,6 +177,7 @@ async def test_no_test_is_reported_not_tested(settings):
         "2.B": "DNA",
         "2.C": "DNA",
         "2.D": "DNA",
+        "3.A": "DNA",  # nothing flashes
     }
     for t in built:
         assert by_id[t]["outcome"] == expected.get(t, "PASS"), (t, by_id[t]["summary"])
@@ -192,6 +194,7 @@ async def test_no_test_is_reported_not_tested(settings):
         [content] = await client.read_resource(out["report_uri"])
     report = Report.model_validate_json(content.text)
     assert report.certified is False
+    # Only 3.A's TT text names NOT TESTED (flashing found); nothing flashes here.
     assert all(f.outcome is not Outcome.NOT_TESTED for f in report.findings)
 
 

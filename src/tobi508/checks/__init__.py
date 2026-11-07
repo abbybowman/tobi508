@@ -8,6 +8,7 @@ from tobi508.checks.t2a import Check2A
 from tobi508.checks.t2b import Check2B
 from tobi508.checks.t2c import Check2C
 from tobi508.checks.t2d import Check2D
+from tobi508.checks.t3a import Check3A
 from tobi508.checks.t4a import Check4A
 from tobi508.checks.t4b import Check4B
 from tobi508.checks.t4c import Check4C
@@ -34,6 +35,7 @@ REGISTRY: dict[TestId, Check] = {
         Check2B(),
         Check2C(),
         Check2D(),
+        Check3A(),
         Check4A(),
         Check4B(),
         Check4C(),

@@ -45,7 +45,7 @@ class Outcome(str, Enum):
     PASS = "PASS"
     FAIL = "FAIL"
     DNA = "DNA"  # Does Not Apply
-    # Only for tests whose TT text names NOT TESTED (p. 6); none in scope do.
+    # Only for tests whose TT text names NOT TESTED (p. 6): 3.A (flashing found).
     NOT_TESTED = "NOT_TESTED"
     NEEDS_REVIEW = "NEEDS_REVIEW"
 
@@ -443,8 +443,10 @@ class Versions(BaseModel):
     run_settings: dict[str, bool | int] = Field(
         default_factory=dict,
         description=(
-            "Spec run limits from server config (settle, scroll, time), and "
-            "whether the caller turned the time limit off for this run."
+            "Spec run limits from server config (settle, scroll, time), "
+            "whether the caller turned the time limit off for this run, and "
+            "whether pages' Content-Security-Policy was bypassed (bypass_csp, "
+            "so ANDI can run)."
         ),
     )
     display: dict[str, int | float | None] = Field(

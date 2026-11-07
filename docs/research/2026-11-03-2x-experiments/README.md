@@ -4,7 +4,9 @@
 were built at spec 1.0.0: their checks are tests in `tests/` now (see the
 V-checks in [_browser-checks.md](../../rules/_browser-checks.md#2c)). They are in
 git history at commit 9efe907. The 3.A scripts (`flash_*.py`,
-`make_flash_media.py`) and `pages/flash` stay until 3.A is built. The
+`make_flash_media.py`) and `pages/flash` were removed on 2026-11-07, when
+3.A was built at 1.0.0 (in git history at commit 595e027; its checks are
+`tests/test_fixtures_3a.py` and `tests/test_flash.py`). The
 results tables below are kept as the record of what was measured.
 
 These scratch scripts back the "Verified" items in
