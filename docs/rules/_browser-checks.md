@@ -188,3 +188,22 @@ network.
 | V11 | Pass T beside P1 does not slow the walk (item 18), and a second headless browser beside a headed walk takes no focus | Q2 | Linux checked; Windows headed not |
 | V12 | Windows headed Chrome: autoplay with the flag; the walk unaffected by the second browser | Q1, Q2 | Not checkable from Linux |
 | V13 | The element rules: labels on one line merge, stacked labels do not; `aria-hidden` content and alt-less images are skipped; iframe content counts inline | Q6 | Test (`test_elements`) |
+
+<a id="3a"></a>
+
+## 3.A
+
+Spec: [3a-flashing.md](3a-flashing.md). Copied from its build-tasks file at 1.0.0 (2026-11-07; the file is in git history). Fixtures are `tests/fixtures/3a/` (`tests/test_fixtures_3a.py`); the counting is unit-tested in `tests/test_flash.py`.
+
+| ID | Verify | Status |
+| --- | --- | --- |
+| V1 | Stepping measures CSS, timers and `requestAnimationFrame` exactly; real-time screenshots alias a strobe | Checked: research section 4; fixtures f03-f07, f05 (canvas every frame) |
+| V2 | The counting: G19's boundary (6 versus 7 transitions; ending state), peak-to-valley with fades, noise | Checked: `tests/test_flash.py` (six, seven, fades, small changes, light pairs, wiggles, the half-open window); fixture f07 in a browser |
+| V3 | The area in any 341 × 256 rectangle, with flashers of known sizes | Checked: `tests/test_flash.py` (40 × 40, 400 × 300, two in step, two out of step, two far apart, scale); fixtures f03, f04 |
+| V4 | Red transitions (2.0 Note 3 and 2.2) on known colours | Checked: `tests/test_flash.py` (red-black both versions, equal-luminance grey, dull red); fixture f06 |
+| V5 | Video decoded at 0.5× gets every frame, scaled to 1024 × 768 | Checked: research (61 of 61 frames); `tests/test_flash.py::test_scale_counts_css_pixels`; fixture f10 (fails at full screen) |
+| V6 | `ImageDecoder` frames and delays; looping | Checked: fixtures f09, f13; Chrome's 10 ms delay read as 10 ms by `ImageDecoder` (scratch check 2026-11-07), so the 100 ms rule is applied by us. Not checked: that Chrome really shows such frames for 100 ms (assumed from Chromium's image decoder) |
+| V7 | `<marquee>` and SMIL steppable? | Checked 2026-11-07: SMIL steps with `pauseAnimations` and `setCurrentTime` (fixture f15); a marquee moves by the wall clock (57 different positions in 60 steps of 1 s of page time), so it is A3 (fixture 2x/t-marquee) |
+| V8 | A strobe in a cross-site iframe is captured | Checked: the paused clock reaches an out-of-process frame's timers (scratch check; fixture f14 in full Chromium). The headless shell is not used for pass T's browser |
+| V9 | Masking real-time media out of stepped frames, and a page mixing both | Checked: fixture f13 (the GIF masked from the stepped frames and decoded on its own; both sources counted) |
+| V10 | The screencast catches what the other triggers miss | Checked: fixture f08 (a one-off burst, finished before pass T reads animations) and f15 (SMIL, which no hook sees). A `setTimeout(0)` strobe is now caught by the timer hook itself |

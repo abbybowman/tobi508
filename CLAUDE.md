@@ -20,7 +20,9 @@ by TT test ID. Package: `tobi508`.
    report `NOT_TESTED` unless the test's TT text names it (PDF p. 6). A test
    the tool cannot perform, or has no implemented spec for, is `NEEDS_REVIEW`
    with the note "This test could not be performed" and the reason
-   (`Finding.not_performed`). Answers to open
+   (`Finding.not_performed`). 3.A is the one test whose TT text names
+   NOT TESTED (flashing found); its WCAG 2.3.1 assessment is a note in the
+   summary, recorded with NOT TESTED, never an outcome. Answers to open
    questions are recorded, never turned into outcomes outside the spec.
 3. **A false PASS is the worst error.** When a rule cannot decide, the outcome
    is `NEEDS_REVIEW` (the `Finding` default). Never default to PASS, never infer
@@ -70,7 +72,7 @@ by TT test ID. Package: `tobi508`.
   with `DEV_MODE=true`. Do not weaken this to make a test pass.
 - Never load ANDI from ssa.gov. `andi.install_andi_routes` serves it from
   `third_party/` and aborts any other www.ssa.gov request.
-- No Content-Security-Policy bypass (`bypass_csp`) without explicit approval.
+- Content-Security-Policy is bypassed in every browser context (`BYPASS_CSP`, default on; Abby, 2026-11-07) so ANDI's injected script runs; the report records it (`run_settings`). Any other CSP change needs explicit approval.
 - Ask before installing anything system-wide.
 - Read TT text (names, conditions, how to test, requirements, WCAG links)
   from `catalog.py` / `tt.json`, never retype it. Specs still cite the PDF's
@@ -195,6 +197,10 @@ src/tobi508/
   observe.py    what an action changes (Effect): 4.A, 4.B, 4.F and 5.D; open dialogs (4.E, 2.D)
   motion.py     pass T for 2.A-2.D (and the settle rule's ignore list): one load watched with no input; regions,
                 DOM changes and live regions, timers, media, polls, elements (no outcomes)
+  flash.py      3.A's flash counting: pure functions on frame arrays (luminance, transitions,
+                windows, area, fine patterns; no browser, no outcomes)
+  flashcap.py   3.A's flash capture: screencast trigger, stepped capture at 1024 x 768 with the
+                page clock paused, animated images and video decoded (no outcomes)
   mechanism.py  the 2.A-2.C mechanism probe: controls near changing content pressed in
                 pass T's browser, the focus-only probe, J2's key (no outcomes)
   forms.py      form fields shared by 5.D, 5.F, 5.G, 5.H: field stops, arrival, page reads
@@ -209,6 +215,7 @@ src/tobi508/
     t2b.py      2.B moving, blinking: moving regions, colour-only states, J1 essential
     t2c.py      2.C auto-updating: pass T regions, the mechanism probe, J1-J2
     t2d.py      2.D change notification: live regions, focus, dialogs, J1-J2
+    t3a.py      3.A flashing: triggers, rows A1-A4, the WCAG note F1-F5 (NOT TESTED when found)
     t4a.py      4.A keyboard access: pointer and hover scans, clicks, Enter/Space
     t4b.py      4.B keystroke timing: timing words, key-press proof
     t4c.py      4.C no keyboard trap: exit probes, rows, plain summary
@@ -259,7 +266,7 @@ docs/sources/   TT 5.1.3 PDF (the authority), SHA-256 in its README;
 third_party/    ANDI 29.2.2, jQuery 3.7.1, SCRT 5.2.0 (template read by scrt.py;
                 its pages for tests only), PROVENANCE.json
 tests/fixtures/ no_trap.html (general evidence); 4a/ … 4f/, 5a/, 5d/, 5f/, 5h/ fNN-short-name.html;
-                2x/ (t-*.html: pass T pages)
+                2x/ (t-*.html: pass T pages); 3a/ (flash pages; make_media.py writes their media)
                 (custom fixtures per test); 9x/, 19a/ (small multi-page sites for 9.A-9.C, 19.A); act/ (vendored W3C ACT cases,
                 manifest.json, sync_act.py); baseline/ (vendored Section 508
                 Baseline Alignment cases, manifest.json, sync_baseline.py);
