@@ -1,5 +1,5 @@
 """Test 9.C (3.2.4-consistent-identification), from
-docs/rules/9c-consistent-identification.md.
+specs/rules/9c-consistent-identification.md.
 
 Runs ANDI on a fresh load of the tested page and of each other page (HtT 1-2:
 "Launch ANDI: focusable elements"; "Examine the ANDI Output"), pairs the

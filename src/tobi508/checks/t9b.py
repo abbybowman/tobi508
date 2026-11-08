@@ -1,4 +1,4 @@
-"""Test 9.B (3.2.3-consistent-navigation), from docs/rules/9b-consistent-navigation.md.
+"""Test 9.B (3.2.3-consistent-navigation), from specs/rules/9b-consistent-navigation.md.
 
 Reads the site read (`site.py`) and compares the order of the components the
 tested page shares with each other page: source order and visual order. No

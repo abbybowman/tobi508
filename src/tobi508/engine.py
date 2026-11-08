@@ -1,6 +1,6 @@
 """Shared rules machinery: first-match tables and the template's page outcome.
 
-Every rules spec (docs/rules/_template.md) has the same shape: applicability
+Every rules spec (specs/rules/_template.md) has the same shape: applicability
 rows, instance rows (first match wins) and page rows G1-G5. This module runs
 those tables; the rows themselves, with their conditions, live in each test's
 module (e.g. t4c.py) and come from its spec. Nothing here decides an outcome

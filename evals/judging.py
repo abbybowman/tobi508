@@ -62,7 +62,7 @@ CODE = [
     "src/tobi508/compare.py",
     "src/tobi508/scrt.py",
     "src/tobi508/catalog.py",
-    "docs/sources/tt-5.1.3/tt.json",
+    "specs/sources/tt-5.1.3/tt.json",
     "third_party/scrt/Resources/SuccessCriteriaTT5.1.3.json",
     # The agent eval's scoring (agent rounds; plan section 8).
     "evals/agent/score.py",

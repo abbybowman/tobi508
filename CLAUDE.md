@@ -12,11 +12,11 @@ by TT test ID. Package: `tobi508`.
    "compliant" or "Section 508 conformant" about a tested page anywhere.
 2. **The rules spec is the only source of outcome logic.** No PASS/FAIL/DNA
    decision may be coded anywhere else: not in evidence collection, the judge
-   plumbing, the tools or the tests. Specs live in `docs/rules/`, one file per
+   plumbing, the tools or the tests. Specs live in `specs/rules/`, one file per
    TT test (`<id>-<short-name>.md`, e.g. `4c-no-keyboard-trap.md`); each
    spec's `spec_version` front matter is recorded in every report (0.y.z is
    a draft with no outcome; 1.0.0 is approved and built; then MINOR for rule
-   changes, PATCH for wording; see `docs/rules/_template.md`). Never
+   changes, PATCH for wording; see `specs/rules/_template.md`). Never
    report `NOT_TESTED` unless the test's TT text names it (PDF p. 6). A test
    the tool cannot perform, or has no implemented spec for, is `NEEDS_REVIEW`
    with the note "This test could not be performed" and the reason
@@ -241,8 +241,8 @@ src/tobi508/
   runlog.py     runs/<run_id>/ folder, steps.jsonl
   access.py     hosted sign-in (AUTH=oidc): OIDC proxy, group gate, run owners, audit lines
   versions.py   version collection
-  catalog.py    the TT 5.1.3 test catalog (from docs/sources/tt-5.1.3/tt.json)
-  rules.py      loads docs/rules/ specs and their front matter versions
+  catalog.py    the TT 5.1.3 test catalog (from specs/sources/tt-5.1.3/tt.json)
+  rules.py      loads specs/rules/ specs and their front matter versions
   models.py     Pydantic models
   tools/        one MCP tool per file (typed results: RunResult, AnswerResult)
   resources/    run://{run_id}/{path} evidence while a run is kept;
@@ -254,15 +254,18 @@ src/tobi508/
   explain.py    plain-language explanations of tests and results (prompt now,
                 failure reports later)
   prompts/      explain (a command in clients)
-docs/rules/     rules specs (one per TT test), <id>-build-tasks.md checklists
+specs/rules/    rules specs (one per TT test), <id>-build-tasks.md checklists
                 (while a test is built), _browser-checks.md (V-checks of built tests),
-                _template.md (start new specs from it)
+                _template.md (start new specs from it). The only source of outcome
+                logic; CODEOWNERS requires the owner's review (moved from docs/rules/
+                2026-11-08, with sources/; the locked rounds in evals/judging/ keep
+                the old paths and are scored with the code at their lock commit)
+specs/sources/  TT 5.1.3 PDF (the authority), SHA-256 in its README;
+                tt-5.1.3/ its Markdown + tt.json copy (made once; see README)
 docs/plans/     plans, newest first by date
 docs/hackathon/ GSA hackathon evaluation document and deck (drafts)
 docs/research/  research notes (e.g. the TT scanner coverage map); not authorities
 docs/solutions/ lessons that save the next test time
-docs/sources/   TT 5.1.3 PDF (the authority), SHA-256 in its README;
-                tt-5.1.3/ its Markdown + tt.json copy (made once; see README)
 third_party/    ANDI 29.2.2, jQuery 3.7.1, SCRT 5.2.0 (template read by scrt.py;
                 its pages for tests only), PROVENANCE.json
 tests/fixtures/ no_trap.html (general evidence); 4a/ … 4f/, 5a/, 5d/, 5f/, 5h/ fNN-short-name.html;

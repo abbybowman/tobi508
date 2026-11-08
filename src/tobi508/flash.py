@@ -1,4 +1,4 @@
-"""Flash counting for 3.A (docs/rules/3a-flashing.md, Terms and section 3).
+"""Flash counting for 3.A (specs/rules/3a-flashing.md, Terms and section 3).
 
 Pure functions on frame arrays: no browser and no outcome. The capture that
 makes the frames is flashcap.py; which outcome the counts lead to is

@@ -1,4 +1,4 @@
-"""Test 4.C (2.1.2-no-keyboard-trap), from docs/rules/4c-no-keyboard-trap.md.
+"""Test 4.C (2.1.2-no-keyboard-trap), from specs/rules/4c-no-keyboard-trap.md.
 
 collect() gathers evidence (passes P1-P4 and P6) into a State4C; evaluate()
 applies the spec's tables to it. Only evaluate() and the row tables decide

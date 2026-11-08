@@ -185,7 +185,7 @@ class Settings(BaseSettings):
     # ── Rules specs ───────────────────────────────────────────────────────────
     # One spec per TT test. Each spec's version comes from its own front matter
     # (spec_version) and is recorded in every report; it is not configurable.
-    rules_dir: Path = REPO_ROOT / "docs" / "rules"
+    rules_dir: Path = REPO_ROOT / "specs" / "rules"
 
     # ── Versions recorded in every report ─────────────────────────────────────
     # "client": open questions go to the calling agent (tobi_answer_questions).

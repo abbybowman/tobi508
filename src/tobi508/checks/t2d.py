@@ -1,4 +1,4 @@
-"""Test 2.D (4.1.2-change-notify-auto), from docs/rules/2d-change-notify-auto.md
+"""Test 2.D (4.1.2-change-notify-auto), from specs/rules/2d-change-notify-auto.md
 (spec 1.0.0).
 
 Reads 2.C's pass T (motion.collect, shared in ctx.cache) and 2.C's instances;

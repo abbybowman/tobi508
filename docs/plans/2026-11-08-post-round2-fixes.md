@@ -358,7 +358,7 @@ of a page set's unsure answers, the people's queue the pivot plan counts
   2026-11-08).
 - **Built (`.github/workflows/ci.yml`):** a `changes` job diffs against the
   base; docs-only means every changed file is under `docs/` or is `*.md`,
-  except `README.md`, `docs/rules/**` and `docs/sources/**`, which tests
+  except `README.md` and `specs/**`, which tests
   read (the specs are outcome logic). Then `lint` and a four-group `test`
   matrix (keyboard 4.x, forms-and-site 5.x/9.x/19.A, motion-and-cases 2.x/3.A/ACT/baseline,
   rest = everything unnamed, so a new test file is never dropped) run;

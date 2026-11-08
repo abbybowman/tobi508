@@ -1,4 +1,4 @@
-"""Test 5.C (1.3.1-programmatic-label), from docs/rules/5c-programmatic-label.md.
+"""Test 5.C (1.3.1-programmatic-label), from specs/rules/5c-programmatic-label.md.
 
 Evidence is pass L (`labels.labels_pass`, shared with 5.A): every form
 component, ANDI's output for it (the PDF's evidence), the table headers and

@@ -4,13 +4,13 @@
 the build plan; it moved from `docs/plans/` to `docs/research/` once built,
 because the specs cite its research, measurements and numbered "Verified"
 items. The specs hold the rules:
-[2c-auto-updating.md](../rules/2c-auto-updating.md), which defines pass T,
+[2c-auto-updating.md](../../specs/rules/2c-auto-updating.md), which defines pass T,
 elements and the mechanism probe for the batch;
-[2d-change-notify-auto.md](../rules/2d-change-notify-auto.md);
-[2b-blinking-moving-scrolling.md](../rules/2b-blinking-moving-scrolling.md);
-and [2a-audio-control.md](../rules/2a-audio-control.md). What is left is in the
+[2d-change-notify-auto.md](../../specs/rules/2d-change-notify-auto.md);
+[2b-blinking-moving-scrolling.md](../../specs/rules/2b-blinking-moving-scrolling.md);
+and [2a-audio-control.md](../../specs/rules/2a-audio-control.md). What is left is in the
 ROADMAP ("Per-test leftovers") and
-[_browser-checks.md](../rules/_browser-checks.md#2c). The text below is as
+[_browser-checks.md](../../specs/rules/_browser-checks.md#2c). The text below is as
 approved and built; it is not updated.
 
 **Decided (Abby, 2026-11-03):**

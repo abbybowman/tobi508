@@ -1,4 +1,4 @@
-"""Test 5.G (3.3.3-error-suggestion), from docs/rules/5g-error-suggestion.md.
+"""Test 5.G (3.3.3-error-suggestion), from specs/rules/5g-error-suggestion.md.
 
 "Continue from Test 5.F" (p. 29 HtT 1): the same error pass E
 (`t5f.error_pass`, collected once per call when both tests run). Each field

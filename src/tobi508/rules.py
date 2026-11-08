@@ -1,4 +1,4 @@
-"""Load the rules specs in docs/rules/ and their versions.
+"""Load the rules specs in specs/rules/ and their versions.
 
 One spec per TT test, named `<id>-<short-name>.md` (e.g. `4c-no-keyboard-trap.md`
 for 4.C). Each starts with front matter giving `tt_test`, `tt_name` and

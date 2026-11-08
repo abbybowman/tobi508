@@ -1,0 +1,5 @@
+# Outcome logic and the TT text: a change here needs the owner's review.
+# Turn on "Require review from Code Owners" in branch protection for main.
+/specs/              @abbybowman
+/.github/            @abbybowman
+/evals/judging/      @abbybowman

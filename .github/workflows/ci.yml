@@ -6,12 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+# Least privilege: every job only reads the repository.
+permissions:
+  contents: read
+
 jobs:
   # Decides whether the heavy jobs run (post-round 2 fix 29, Abby 2026-11-08).
   # A change is docs-only when every changed file is under docs/ or is a
   # Markdown file, except what the tests read: README.md (test_readme),
-  # docs/rules/ (the specs are the only source of outcome logic) and
-  # docs/sources/ (the TT text). A skipped job counts as passed for a
+  # specs/ (the rules are the only source of outcome logic; sources is the
+  # TT text). A skipped job counts as passed for a
   # required check; "CI" below is the one check to require.
   changes:
     runs-on: ubuntu-latest
@@ -38,7 +42,7 @@ jobs:
           code=false
           while IFS= read -r f; do
             case "$f" in
-              README.md|docs/rules/*|docs/sources/*) code=true ;;
+              README.md|specs/*) code=true ;;
               docs/*|*.md) ;;
               *) code=true ;;
             esac

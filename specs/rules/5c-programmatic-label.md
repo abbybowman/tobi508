@@ -26,7 +26,7 @@ The tool gives each page one 5.C outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 ## 2. Evidence to collect
 
-**Pass L** (5.A and 5.C share it; once per call, `RunContext.cache`): one fresh load of the recording after the walk, so ANDI never touches the walk's evidence ([solutions/scanners-after-the-walk.md](../solutions/scanners-after-the-walk.md)).
+**Pass L** (5.A and 5.C share it; once per call, `RunContext.cache`): one fresh load of the recording after the walk, so ANDI never touches the walk's evidence ([solutions/scanners-after-the-walk.md](../../docs/solutions/scanners-after-the-walk.md)).
 
 1. Inventory every form component in the top document, with its CSS path matched to the walk's stops where it is one (so instances name "Tab N times"). Components inside frames are not read yet: their number is a NEEDS REVIEW note (G3), never an absence.
 2. Per component: the programmatic associations above; the visible-label candidates, placeholder, nearby visible text and, for data-entry fields, the focused image (5.A section 2). For 5.C, the nearby visible text also holds text the page's style draws in the same region, as `::before` or `::after` content (quoted strings only; counters, `attr()` and images are left out), after the text nodes (1.4.0). A red "*" or "(required)" is often drawn that way, and no text node holds it, so without it M5 found nothing missing and passed. Drawn on the label itself, it is part of the label's accessible name and so announced (Chrome computes names with generated content), and M5 still passes; drawn on another element beside it (an empty span), it is not, and J1 is asked. 5.A and 5.B do not read it. Fixture F21 (5a/).

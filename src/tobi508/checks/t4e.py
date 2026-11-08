@@ -1,4 +1,4 @@
-"""Test 4.E (3.2.1-on-focus), from docs/rules/4e-on-focus.md.
+"""Test 4.E (3.2.1-on-focus), from specs/rules/4e-on-focus.md.
 
 Reads the shared walk plus one walk extra (ContextHook: main-frame
 navigations, including reloads, and dialogs that appear). Steps with a context

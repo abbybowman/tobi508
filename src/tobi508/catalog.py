@@ -1,5 +1,5 @@
 """The TT 5.1.3 test catalog, from the machine-readable copy of the PDF
-(docs/sources/tt-5.1.3/tt.json; see docs/sources/README.md).
+(specs/sources/tt-5.1.3/tt.json; see specs/sources/README.md).
 
 Everything about a test that comes from the PDF (name, condition, how to test,
 requirements, WCAG links) is read from here, never retyped in code.
@@ -13,7 +13,7 @@ from typing import Any
 
 from tobi508.config import REPO_ROOT
 
-TT_DIR = REPO_ROOT / "docs" / "sources" / "tt-5.1.3"
+TT_DIR = REPO_ROOT / "specs" / "sources" / "tt-5.1.3"
 TT_VERSION = "5.1.3"
 
 

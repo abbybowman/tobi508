@@ -11,7 +11,7 @@ from tobi508.models import TestId
 from tobi508.rules import RuleSpecError, load_specs, spec_versions
 from tobi508.versions import collect_versions
 
-RULES_DIR = REPO_ROOT / "docs" / "rules"
+RULES_DIR = REPO_ROOT / "specs" / "rules"
 
 SPEC_4C = """---
 tt_test: 4.C
@@ -25,7 +25,7 @@ spec_version: 1.2.3
 
 def test_repo_specs_load_and_4c_version_comes_from_front_matter() -> None:
     specs = load_specs(RULES_DIR)
-    # The versioning standard (docs/rules/_template.md): a spec is 0.y.z (a
+    # The versioning standard (specs/rules/_template.md): a spec is 0.y.z (a
     # draft, no outcome) exactly when no check is registered for it.
     from tobi508.checks import REGISTRY
 

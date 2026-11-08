@@ -10,7 +10,7 @@ smallest, t5d.py for a form test, or t9b.py for a multi-page test):
      techniques, ACT rules and DHS's verdicts, the ICT Testing Baseline
      test and its Baseline Alignment cases; read the vendored pages before
      writing rules (5.D's TC10.C-3-fail-2 changed a rule). Then draft
-     docs/rules/<id>-<name>.md from _template.md at 0.1.0: only what the TT
+     specs/rules/<id>-<name>.md from _template.md at 0.1.0: only what the TT
      PDF asks a tester to do; reuse the walk, walk extras and the existing
      collectors (observe.py, ctx.replay, stop.control) before adding passes;
      one plain sentence per row; cite the sources; mark OPEN only what they
@@ -40,7 +40,7 @@ smallest, t5d.py for a form test, or t9b.py for a multi-page test):
      mismatch in the question or its evidence before trusting the rows.
   6. When fixtures pass, make the spec match the code exactly (every row
      the code has, the spec has), set spec_version 1.0.0, move
-     <id>-build-tasks.md's V-checks to docs/rules/_browser-checks.md and
+     <id>-build-tasks.md's V-checks to specs/rules/_browser-checks.md and
      what is left to docs/ROADMAP.md, delete the file, and add any lesson
      that cost time to docs/solutions/.
   7. The pipeline, tools, report, explain prompt and resume path need no

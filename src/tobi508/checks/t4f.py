@@ -1,4 +1,4 @@
-"""Test 4.F (2.4.3-focus-order-meaning), from docs/rules/4f-focus-order-meaning.md.
+"""Test 4.F (2.4.3-focus-order-meaning), from specs/rules/4f-focus-order-meaning.md.
 
 Evidence: a walk extra (OrderHook: page position, tabindex, document order,
 form group and popup flag per stop), reveal pass R (open the first triggers,

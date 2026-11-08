@@ -1,4 +1,4 @@
-"""Test 5.D (3.2.2-on-input), from docs/rules/5d-on-input.md.
+"""Test 5.D (3.2.2-on-input), from specs/rules/5d-on-input.md.
 
 Fields come from the shared walk's P1 stops (`stop.control`). Fill pass F
 replays to the first field and completes every field in order, observing

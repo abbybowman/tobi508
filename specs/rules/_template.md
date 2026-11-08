@@ -9,9 +9,9 @@ owner: <name>
 <!--
 How to use this template (delete this comment block in the real spec).
 
-File names: docs/rules/<id>-<short-name>.md, where <short-name> is the TT test
+File names: specs/rules/<id>-<short-name>.md, where <short-name> is the TT test
 name without its WCAG number (4c-no-keyboard-trap). Companion file while building:
-docs/rules/<id>-build-tasks.md with the Fixtures and Verify tables. At
+specs/rules/<id>-build-tasks.md with the Fixtures and Verify tables. At
 1.0.0 its Verify table moves to _browser-checks.md, anything left goes to
 docs/ROADMAP.md, and the file is deleted (expected outcomes live in the
 tests; the ACT differences in tests/fixtures/act/sync_act.py).

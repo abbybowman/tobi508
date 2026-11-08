@@ -1,4 +1,4 @@
-"""Test 5.A (3.3.2-label-provided), from docs/rules/5a-label-provided.md.
+"""Test 5.A (3.3.2-label-provided), from specs/rules/5a-label-provided.md.
 
 Evidence is pass L (`labels.labels_pass`, shared with 5.C): each data-entry
 field focused, whether a label connected to it is visible, the visible text

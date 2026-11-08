@@ -1,4 +1,4 @@
-"""Test 2.C (2.2.2-auto-updating), from docs/rules/2c-auto-updating.md
+"""Test 2.C (2.2.2-auto-updating), from specs/rules/2c-auto-updating.md
 (spec 1.0.0).
 
 Reads pass T (motion.py, shared with 2.A, 2.B and 2.D) and the mechanism

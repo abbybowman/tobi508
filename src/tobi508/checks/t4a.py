@@ -1,4 +1,4 @@
-"""Test 4.A (2.1.1-keyboard-access), from docs/rules/4a-keyboard-access.md.
+"""Test 4.A (2.1.1-keyboard-access), from specs/rules/4a-keyboard-access.md.
 
 Reads the shared walk plus one walk extra (StopHook: title, native or custom,
 own click listeners, href). Then, on fresh loads of the recorded page: the

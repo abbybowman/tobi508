@@ -1,4 +1,4 @@
-"""Test 19.A (2.4.5-multiple-ways), from docs/rules/19a-multiple-ways.md.
+"""Test 19.A (2.4.5-multiple-ways), from specs/rules/19a-multiple-ways.md.
 
 Reads the site read (`site.py`): links to the tested page on the caller's
 other pages, by kind of way. Only when they show fewer than two kinds, it

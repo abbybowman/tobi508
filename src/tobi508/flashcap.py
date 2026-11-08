@@ -1,4 +1,4 @@
-"""3.A's flash capture (docs/rules/3a-flashing.md, section 2). Facts only:
+"""3.A's flash capture (specs/rules/3a-flashing.md, section 2). Facts only:
 frames, and what flash.py counts in them; the outcome is checks/t3a.py's.
 
 Three ways to get every frame, because real-time screenshots alias a fast

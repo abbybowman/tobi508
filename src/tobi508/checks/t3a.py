@@ -1,4 +1,4 @@
-"""Test 3.A (2.3.1-flashing), from docs/rules/3a-flashing.md (spec 1.0.0).
+"""Test 3.A (2.3.1-flashing), from specs/rules/3a-flashing.md (spec 1.0.0).
 
 Triggers come from pass T (motion.py: fast animations and callbacks,
 animated images' frame delays, videos) and a 2 s screencast. Only when one

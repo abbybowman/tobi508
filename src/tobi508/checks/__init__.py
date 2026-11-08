@@ -1,5 +1,5 @@
 """TT checks: one module per Trusted Tester test, each with its rules spec in
-docs/rules/. See checks/base.py for the interface and how to add one."""
+specs/rules/. See checks/base.py for the interface and how to add one."""
 
 from __future__ import annotations
 

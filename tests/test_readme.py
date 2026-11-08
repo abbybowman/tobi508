@@ -86,8 +86,8 @@ def test_tests_in_scope_table_shows_each_spec_version_and_links_it():
     rows = re.findall(
         r"^\| (\d+\.[A-Z]) \|[^|]*\|[^|]*\| \[([^\]]+)\]\(([^)]+)\) \|", section, re.M
     )
-    specs = rules.load_specs(REPO_ROOT / "docs/rules")
-    versions = rules.spec_versions(REPO_ROOT / "docs/rules")
+    specs = rules.load_specs(REPO_ROOT / "specs/rules")
+    versions = rules.spec_versions(REPO_ROOT / "specs/rules")
     # Implemented tests only: a draft spec (0.y.z, such as 3.A) has no row.
     from tobi508.checks import REGISTRY
 

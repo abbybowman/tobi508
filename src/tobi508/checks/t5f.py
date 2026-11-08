@@ -1,4 +1,4 @@
-"""Test 5.F (3.3.1-error-identification), from docs/rules/5f-error-identification.md.
+"""Test 5.F (3.3.1-error-identification), from specs/rules/5f-error-identification.md.
 
 Error pass E (spec section 2): per form, attempt 1 presses the submit
 control on a fresh replay with nothing filled in; attempt 2 types
