@@ -145,14 +145,15 @@ context.
 
 ## Found after the decisions (2026-11-08)
 
-- **Home, 5.C: agreed for the wrong reason.** The key fails the filters'
-  X buttons ("Remove filter from selection", one name for every
+- **Home, 5.C: TOBI missed a failing element.** The key fails the
+  filters' X buttons ("Remove filter from selection", one name for every
   category), which appear only after a filter is chosen; TOBI never saw
-  them. TOBI's Fail came from the hidden carousel buttons and from the
-  judge calling the group headings missing. Post-round 2 fix 9b (controls
-  that appear after a click) must land with or before fix 9.
-- **Decision for Abby:** are filter headings such as "Page type" over a set
-  of checkboxes the question the set answers, or a section title? The key
-  did not fail them (fix 9c).
+  them. TOBI's Fail was right on other elements (below). Post-round 2 fix
+  9b: test what interaction reveals, as a person does.
+- **Filter headings (Abby):** a heading over a set of checkboxes is the
+  question the set answers; visual only, it passes 5.A and 5.B and fails
+  5.C when not programmatically connected (as on www.nasa.gov's Missions
+  filters). The judge's "missing" answers for "Page type" and "NASA
+  Science category" were right (fix 9c widens the rule).
 - **Unsure answers:** about 50 of Agent C's 62 trace to our rules or
   questions (post-round 2 plan, "Unsure answers").

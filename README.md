@@ -35,32 +35,32 @@ The table lists each implemented test's rules spec and what our tests on
 real pages showed. Every other active TT 5.1.3 test comes back NEEDS
 REVIEW, "This test could not be performed".
 
-"Real pages" means two rounds scored against a certified Trusted Tester's blind SCRT files. Round 1: 9 www.nasa.gov pages ([results](evals/agent/README.md#results); [answering run](evals/judging/round1-answers/README.md)); no test gave a false PASS. Round 2: 10 svs.gsfc.nasa.gov pages ([results](evals/judging/round2-armc/abc-score.md)); the rules gave 3 false PASSes (4.A, 4.C, 5.D) and 3 Does Not Apply where the key fails or found flashing (9.A, 3.A), every one in content round 1 did not have (embedded apps in frames, video), and none came from an answer to an open question. "Fixed, not yet retested" means the problem a round found is fixed and checked on test pages, not yet on real pages ([round 1 fixes](docs/plans/2026-11-04-post-round1-fixes.md); [round 2 fixes, planned](docs/plans/2026-11-08-post-round2-fixes.md)).
+Status is based on two rounds of agent-eval testing: 19 real pages across 2 sites (www.nasa.gov and svs.gsfc.nasa.gov), scored against a certified Trusted Tester's blind SCRT files. Each row gives the test's status as of its latest round. Details: [evaluation results](evals/agent/README.md#results); [planned fixes](docs/plans/2026-11-08-post-round2-fixes.md).
 
-| ID | TT test name | WCAG 2.0 | Spec | Results from real-page tests |
+| ID | TT test name | WCAG 2.0 | Spec | Status on real pages |
 | --- | --- | --- | --- | --- |
-| 2.A | 1.4.2-audio-control | 1.4.2 | [1.0.0](docs/rules/2a-audio-control.md) | 🟢 Round 2 (first real pages): no wrong outcome |
-| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.1.0](docs/rules/2b-blinking-moving-scrolling.md) | 🟢 Round 2 (first real pages): no wrong outcome; a few needs-review regions with no visible motion |
-| 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](docs/rules/2c-auto-updating.md) | 🟢 Round 2 (first real pages): no wrong outcome |
-| 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](docs/rules/2d-change-notify-auto.md) | 🟢 Round 2 (first real pages): no wrong outcome |
-| 3.A | 2.3.1-flashing | 2.3.1 | [1.0.0](docs/rules/3a-flashing.md) | ⚠️ Round 2 (first real pages): Does Not Apply where the key found flashing (video that never played; fix planned) |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.2.1](docs/rules/4a-keyboard-access.md) | ⚠️ Mostly undecided (embedded frames, time limit); agrees where decided. Round 2: one false PASS (click-to-play video; fix planned) |
-| 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.2.0](docs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate. Round 2: no wrong outcome |
-| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.9.0](docs/rules/4c-no-keyboard-trap.md) | ⚠️ Sure and accurate in round 1. Round 2: one false PASS (a trap in an embedded app's frame; fix planned) |
-| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.3.0](docs/rules/4d-focus-visible.md) | ⚠️ Some false FAILs; fixed, not yet retested. Round 2: one FAIL the key passes (possibly a catch, being retested) |
-| 4.E | 3.2.1-on-focus | 3.2.1 | [1.2.0](docs/rules/4e-on-focus.md) | 🟢 Sure and accurate. Round 2: no wrong outcome |
-| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.3.0](docs/rules/4f-focus-order-meaning.md) | ⚠️ Mostly undecided; two false FAILs fixed, not yet retested. Round 2: no wrong outcome by rule; a server judge's answers gave false FAILs (rubric fix planned) |
-| 5.A | 3.3.2-label-provided | 3.3.2 | [1.2.0](docs/rules/5a-label-provided.md) | ⚠️ Sure and accurate once answered in round 1. Round 2: false FAIL on 7 pages (an icon button labels the search field; fix planned) |
-| 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.2.0](docs/rules/5b-label-descriptive.md) | ⚠️ One wrong PASS; fixed, not yet retested. Round 2: Does Not Apply where the key passes (follows 5.A) |
-| 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.4.0](docs/rules/5c-programmatic-label.md) | ⚠️ About half decided, agrees where decided; one missed FAIL fixed, not yet retested. Round 2: false FAILs on hidden carousel buttons, and filter buttons that appear after a click not checked (fixes planned) |
-| 5.D | 3.2.2-on-input | 3.2.2 | [1.2.0](docs/rules/5d-on-input.md) | ⚠️ Mostly sure and accurate; one missed FAIL fixed, not yet retested. Round 2: one false PASS (focus jumps after editing a field in a frame; fix planned) |
-| 5.F | 3.3.1-error-identification | 3.3.1 | [1.3.1](docs/rules/5f-error-identification.md) | ⚠️ Undecided on every page (site search); fixed, not yet retested. Round 2: fields in frames not checked (fix planned) |
-| 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.2.1](docs/rules/5g-error-suggestion.md) | ⚠️ Undecided on every page (site search); fixed, not yet retested. Round 2: no wrong outcome |
-| 5.H | 3.3.4-error-prevention | 3.3.4 | [1.1.0](docs/rules/5h-error-prevention.md) | 🟢 Sure and accurate once answered. Round 2: no wrong outcome |
-| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.0.0](docs/rules/9a-bypass.md) | ⚠️ Sure and accurate in round 1. Round 2: Does Not Apply on 2 pages where the key fails (other pages from another template; fix planned) |
-| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.0.0](docs/rules/9b-consistent-navigation.md) | ⚠️ Sure and accurate in round 1. Round 2: Does Not Apply on 2 pages where the key passes (as 9.A) |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.1.1](docs/rules/9c-consistent-identification.md) | ⚠️ Sure and accurate once answered in round 1. Round 2: Does Not Apply on 2 pages (as 9.A); a server judge's answers gave false FAILs (pairing fix planned) |
-| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.1.1](docs/rules/19a-multiple-ways.md) | ⚠️ Undecided on every page (needs more pages of the site); fixed, not yet retested. Round 2: false FAIL on 2 pages (the search page; an unquoted search; fixes planned) |
+| 2.A | 1.4.2-audio-control | 1.4.2 | [1.0.0](docs/rules/2a-audio-control.md) | 🟢 Accurate on real pages |
+| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.1.0](docs/rules/2b-blinking-moving-scrolling.md) | 🟢 Accurate; a few regions left for a person to check |
+| 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](docs/rules/2c-auto-updating.md) | 🟢 Accurate on real pages |
+| 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](docs/rules/2d-change-notify-auto.md) | 🟢 Accurate on real pages |
+| 3.A | 2.3.1-flashing | 2.3.1 | [1.0.0](docs/rules/3a-flashing.md) | ⚠️ Misses flashing in video that does not play on load (fix planned) |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.2.1](docs/rules/4a-keyboard-access.md) | ⚠️ Misses video that plays only on a mouse click (fix planned); often undecided inside embedded frames |
+| 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.2.0](docs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
+| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.9.0](docs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |
+| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.3.0](docs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
+| 4.E | 3.2.1-on-focus | 3.2.1 | [1.2.0](docs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
+| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.3.0](docs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question needs a clearer rubric before a server judge answers it (fix planned) |
+| 5.A | 3.3.2-label-provided | 3.3.2 | [1.2.0](docs/rules/5a-label-provided.md) | ⚠️ Fails search fields that an icon button labels (fix planned) |
+| 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.2.0](docs/rules/5b-label-descriptive.md) | ⚠️ Does Not Apply where it should pass, following 5.A (fix planned) |
+| 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.4.0](docs/rules/5c-programmatic-label.md) | ⚠️ Fails hidden carousel buttons; misses controls that appear only after interaction (fixes planned) |
+| 5.D | 3.2.2-on-input | 3.2.2 | [1.2.0](docs/rules/5d-on-input.md) | ⚠️ Misses focus that jumps after editing a field in a frame (fix planned) |
+| 5.F | 3.3.1-error-identification | 3.3.1 | [1.3.1](docs/rules/5f-error-identification.md) | ⚠️ Does not check fields inside frames yet (fix planned) |
+| 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.2.1](docs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; often undecided |
+| 5.H | 3.3.4-error-prevention | 3.3.4 | [1.1.0](docs/rules/5h-error-prevention.md) | 🟢 Sure and accurate once answered |
+| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.0.0](docs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; misses with unrelated pages (fix planned) |
+| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.0.0](docs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.1.1](docs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; also pairs unrelated links (fix planned) |
+| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.1.1](docs/rules/19a-multiple-ways.md) | ⚠️ Can fail a page that site search reaches (fixes planned) |
 
 ## Tools
 

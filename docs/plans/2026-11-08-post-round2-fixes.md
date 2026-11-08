@@ -40,9 +40,9 @@ its start). Agent-assisted results, not certified Trusted Tester results.
 2. **Frames** (fix 7): they feed fixes 2, 3 and 5 and the 1.3.1 and 4.1.2
    cells.
 3. **False FAILs by rule:** fixes 8-11 (5.A alone is 7 cells per run).
-   **Fix 9b before fix 9:** removing 5.C's hidden-button FAILs without
-   checking the controls that appear after a click turns Home's 5.C into a
-   false PASS (fix 9b).
+   **Fix 9b (testing what interaction reveals) is a principle 3 fix:**
+   build it with the frames work (fix 7), and before fix 9 removes any
+   FAIL, check the key's failing element is still found.
 4. **Questions and pictures** for any judge: fixes 12-14 (before
    ApiJudge is switched on for 4.F or 9.C), and fixes 24-28, which turn
    most unsure answers into decisions or remove the question.
@@ -162,24 +162,31 @@ its start). Agent-assisted results, not certified Trusted Tester results.
   the accessibility tree; ACT 6cfa84 concerns sequential focus
   navigation). Still fail aria-hidden controls that Tab reaches.
 
-#### 9b. 5.C: controls that appear after a click (principle 3)
-- **Evidence:** Home. Key: Fail, "inside the card feed filter options,
+#### 9b. Test what interaction reveals, as a person does (principle 3)
+- **Evidence:** Home. Key: 5.C Fail, "inside the card feed filter options,
   all of the X buttons for each category/page type have the same title,
   making it impossible to know which category/page type you are
   excluding". Those X buttons (each named "Remove filter from selection")
-  appear only after a filter is chosen; TOBI inventories components at
-  load and never saw them. TOBI's Fail on Home agreed with the key for
-  other reasons: the hidden carousel buttons (fix 9 removes them) and the
-  judge calling the group headings missing (Abby did not fail those).
-- **TT:** 5.C Notes, changes after interaction are included (p. 27).
-- **Fix:** after 5.D's fill pass sets each option, read the components
-  that appeared (pass L on the new state) and run 5.C on them; until then,
-  a page whose options add controls when set is NEEDS REVIEW for 5.C with
-  that reason, never PASS. Land with or before fix 9.
-- **Fixture:** a filter whose checked options add "remove" buttons with
-  one shared name.
+  appear only after a filter is chosen; TOBI never saw them. (TOBI's Fail
+  on Home was right on other elements: the filter headings, fix 9c.)
+- **Why it matters beyond 5.C (Abby):** a person opens everything on the
+  page (menus, accordions, tabs, filters, dialogs, "show more") and runs
+  every test on what appears, not only on the state at load. TT says so
+  for several tests: changes after interaction are included (4.A ER
+  Note 1; 5.C Notes). Today TOBI opens the first 6 menus or disclosures
+  (4.F's pass R, `REVEAL_MAX`) and reads fields that appear while 5.D
+  fills a form (`labels.read_revealed`); 5.C's summary says "others a
+  person may reveal are not covered", but that note does not stop a PASS.
+- **Fix:** a reveal pass shared by every test: open each disclosure,
+  menu, tab, accordion, filter option and dialog trigger (bounded, each
+  on a fresh replay), record what appeared, and run the tests that read
+  components or focus (4.A, 4.D, 4.F, 5.A-5.D, 2.x where relevant) on it.
+  Where the bound stops it, or a trigger cannot be opened, a test that
+  would PASS is NEEDS REVIEW with that reason, never PASS.
+- **Fixtures:** a filter whose checked options add "remove" buttons with
+  one shared name; an accordion holding an unlabeled field.
 
-#### 9c. 5.C: card text leaks into a checkbox's visible text
+#### 9c. 5.C: card text leaks into a checkbox's visible text; filter headings
 - **Evidence:** Home's 36 filter checkboxes (3 filter forms, two sets
   each: "NASA Science category" and "Page type"). Each form wraps its
   section's result cards, which script adds, so card text such as
@@ -189,13 +196,19 @@ its start). Agent-assisted results, not certified Trusted Tester results.
   it): 36 questions instead of 6. It also confused the judge ("ID: 15116
   belongs to the video, not this"), whose answers then differed within
   one set (20 missing, 7 complete, 9 unsure).
+- **Decision (Abby, 2026-11-08):** a heading over a set of filter
+  checkboxes is the question the set answers. Shown only visually, it
+  passes the visual tests (5.A, 5.B) and fails 5.C when it is not
+  programmatically connected (a fieldset and legend, or a group labelled
+  by it): TT p. 27 Note 4, as on www.nasa.gov's Missions filters (round
+  1, 5.C 1.3.0, M3s). So the judge's "missing" answers on Home were right.
 - **Fix:** nearby text for an option is the text of its own row: within
   the nearest container that holds the option and its label but no other
   option or link (5.A section 2, which pass L shares with 5.A and 5.B;
-  judge eval after).
-- **Decision for Abby:** are filter headings like "Page type" over a set
-  of checkboxes the question the set answers (J1 "missing" when not
-  announced) or a section title (complete)? Her key did not fail them.
+  judge eval after). And widen M3s: a heading directly over a set (no
+  other content between them) whose options do not announce it fails
+  without a question, as several headings over one field name do now;
+  a heading further away stays J1's (Note 5, section titles).
 
 #### 10. 19.A: the site search's own results page
 - **Evidence:** Search. Key: Pass, top-nav search is one way, tag links
@@ -279,7 +292,7 @@ not be asked at all:
 | Test | Unsure | Key | Why unsure | Decided by |
 | --- | --- | --- | --- | --- |
 | 4.A | 21 | Pass 17, Fail 4 | Carousel scroll arrows; category and globe icon links: "does a reached stop do the same thing?" | Fixes 24, 25 |
-| 5.C | 15 | Fail (for another reason, fix 9b) | Home's filter checkboxes, one by one, with card text mixed in | Fix 9c (6 questions, not 36) and Abby's heading decision |
+| 5.C | 15 | Fail | Home's filter checkboxes, one by one, with card text mixed in | Fix 9c: decided by rule (a heading directly over the set), else 6 questions, not 36 |
 | 9.C | 13 | Pass | Generic "Go to this page" card links paired across pages | Fix 14 (not asked) |
 | 4.D | 7 | Pass | 48 x 47 px crops, "a faint ring" | Fix 26 |
 | 2.B | 4 | Does Not Apply | A loader animation (a real judgment); a region whose two pictures do not differ | Fix 27 |
