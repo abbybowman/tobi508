@@ -6,7 +6,7 @@ Run deliberately, then review the diff:
 
 Pages are saved byte for byte under their URL path and never edited; tests
 serve this folder as the web root and never fetch from the network. Expected
-outcomes are ours (docs/rules/4a-*, 4b-*, 5d-*) and live only in manifest.json.
+outcomes are ours (specs/rules/4a-*, 4b-*, 5d-*) and live only in manifest.json.
 Baseline's own expected result is recorded beside ours for scoring.
 """
 
@@ -83,7 +83,7 @@ CASES = {
         "",
     ),
     # 5.F Error identification (3.3.1), Baseline test 10.D; 5.G (3.3.3)
-    # continues from it (docs/rules/5f-*, 5g-*). No 10.F (3.3.3) cases exist.
+    # continues from it (specs/rules/5f-*, 5g-*). No 10.F (3.3.3) cases exist.
     "TC10.D-2-fail-1": (
         "/testfiles/TF10/10.D-2-fail-1.html",
         "FAIL",
@@ -128,7 +128,7 @@ CASES = {
         "",
     ),
     # 5.A (3.3.2, Baseline 10.E) and 5.C (1.3.1/4.1.2, Baseline 10.A),
-    # docs/rules/5a-*, 5c-*. Baseline judges one test per case; the other
+    # specs/rules/5a-*, 5c-*. Baseline judges one test per case; the other
     # test's expectation is ours.
     "TC10.A-1-fail-1": (
         "/testfiles/TF10/10.A-1-fail-1.html",

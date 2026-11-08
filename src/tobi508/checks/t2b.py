@@ -1,5 +1,5 @@
 """Test 2.B (2.2.2-blinking-moving-scrolling), from
-docs/rules/2b-blinking-moving-scrolling.md (spec 1.0.0).
+specs/rules/2b-blinking-moving-scrolling.md (spec 1.0.0).
 
 Reads pass T (motion.py) and the mechanism probe (mechanism.probe_shared,
 one probe per content shared with 2.C). Uses 2.C's instance rows with 2.B's

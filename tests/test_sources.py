@@ -7,7 +7,7 @@ import re
 
 from tobi508.config import REPO_ROOT
 
-SOURCES = REPO_ROOT / "docs" / "sources"
+SOURCES = REPO_ROOT / "specs" / "sources"
 
 
 def test_source_hashes_match_readme() -> None:

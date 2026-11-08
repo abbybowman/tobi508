@@ -1,4 +1,4 @@
-"""Test 4.D (2.4.7-focus-visible), from docs/rules/4d-focus-visible.md.
+"""Test 4.D (2.4.7-focus-visible), from specs/rules/4d-focus-visible.md.
 
 Evidence: a walk extra (FocusHook) takes an "on" image and a style read of
 each stop as it gains focus, and an "off" image and style read of the same

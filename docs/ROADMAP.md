@@ -71,7 +71,7 @@ Next (Abby, 2026-11-05):
 
 Browser checks still to run for the built tests (mostly Windows headed
 Chrome, which a Linux container cannot run) are in
-[rules/_browser-checks.md](rules/_browser-checks.md); the rest of each
+[rules/_browser-checks.md](../specs/rules/_browser-checks.md); the rest of each
 test's leftovers are under "Per-test leftovers" below.
 
 ## Soon

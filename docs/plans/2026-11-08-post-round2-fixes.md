@@ -356,6 +356,17 @@ of a page set's unsure answers, the people's queue the pivot plan counts
   `**/*.md` change (`paths-ignore`, or a paths-filter job the others need);
   split the suite across a job matrix by test-file group (Abby,
   2026-11-08).
+- **Built (`.github/workflows/ci.yml`):** a `changes` job diffs against the
+  base; docs-only means every changed file is under `docs/` or is `*.md`,
+  except `README.md` and `specs/**`, which tests
+  read (the specs are outcome logic). Then `lint` and a four-group `test`
+  matrix (keyboard 4.x, forms-and-site 5.x/9.x/19.A, motion-and-cases 2.x/3.A/ACT/baseline,
+  rest = everything unnamed, so a new test file is never dropped) run;
+  otherwise they are skipped. `CI` is the one check to require (skipped
+  counts as passed). Container image already filters by path. CodeQL is not
+  a workflow file in the repo (GitHub's default setup): its path filter is
+  a repository setting for Abby. Group balance is untimed: check the first
+  runs and move files between groups.
 
 ## Done during round 2 (delivery and harness, not rules)
 

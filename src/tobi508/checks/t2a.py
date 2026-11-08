@@ -1,4 +1,4 @@
-"""Test 2.A (1.4.2-audio-control), from docs/rules/2a-audio-control.md
+"""Test 2.A (1.4.2-audio-control), from specs/rules/2a-audio-control.md
 (spec 1.0.0).
 
 Reads pass T (motion.py: media state at each read, loudness from the

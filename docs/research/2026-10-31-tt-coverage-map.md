@@ -2,9 +2,9 @@
 
 Research prepared 2026-10-31 for choosing which TT tests to build next;
 condensed into one table and the build status updated 2026-11-05. It is
-research, not an authority: the TT PDF (`docs/sources/`) is the authority,
+research, not an authority: the TT PDF (`specs/sources/`) is the authority,
 and each test's names, conditions and WCAG/508 mapping are read from
-`docs/sources/tt-5.1.3/tt.json` (Appendix A), never from this file. Human
+`specs/sources/tt-5.1.3/tt.json` (Appendix A), never from this file. Human
 time and judgment ratings are estimates from the How-to-Test steps and still
 need checking with certified Trusted Testers.
 

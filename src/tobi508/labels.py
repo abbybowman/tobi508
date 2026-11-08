@@ -1,5 +1,5 @@
 """Pass L: form components, their visible labels and ANDI's output, shared by
-5.A and 5.C (docs/rules/5c-programmatic-label.md section 2). One fresh load
+5.A and 5.C (specs/rules/5c-programmatic-label.md section 2). One fresh load
 after the walk: inventory every form component of the top document, read
 its label candidates, table headers and list context, focus each
 data-entry field and take a clipped image of it with what is around it,

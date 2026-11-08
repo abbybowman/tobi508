@@ -1,4 +1,4 @@
-"""Test 4.B (2.1.1-no-keystroke-timing), from docs/rules/4b-no-keystroke-timing.md.
+"""Test 4.B (2.1.1-no-keystroke-timing), from specs/rules/4b-no-keystroke-timing.md.
 
 Reads the shared walk (with 4.A's walk extra for titles) and the page text.
 Sentences with timing words go to J1; a J1 answer of timing_required is proven

@@ -14,6 +14,7 @@ on:
       - pyproject.toml
       - uv.lock
       - src/**
+      - specs/**
       - tests/container_smoke.py
       - .github/workflows/container.yml
   # Pull requests build and smoke-test the image but never publish it.
@@ -24,6 +25,7 @@ on:
       - pyproject.toml
       - uv.lock
       - src/**
+      - specs/**
       - tests/container_smoke.py
       - .github/workflows/container.yml
 

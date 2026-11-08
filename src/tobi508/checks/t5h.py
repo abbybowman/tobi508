@@ -1,4 +1,4 @@
-"""Test 5.H (3.3.4-error-prevention), from docs/rules/5h-error-prevention.md.
+"""Test 5.H (3.3.4-error-prevention), from specs/rules/5h-error-prevention.md.
 
 Reads 5.F's error pass E (cached; it is HtT 1 exactly: submit with errors).
 A consequence hint gates J1 (consequences, and more than one step); a form

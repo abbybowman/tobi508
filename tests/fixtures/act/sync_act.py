@@ -9,7 +9,7 @@ Pages are saved byte for byte and never edited. They load assets by absolute
 path (/WAI/content-assets/...), so they are stored under that same path here
 and this folder is served as the web root.
 
-Expected outcomes are ours (from the docs/rules/ specs) and live only in
+Expected outcomes are ours (from the specs/rules/ specs) and live only in
 manifest.json, never in a page. If a case's testcaseId changes, the script stops
 so the change is reviewed instead of silently accepted.
 """
@@ -91,7 +91,7 @@ EXPECTED = {
         "62fd24e7": "FAIL",
         "b20beca9": "PASS",
     },
-    # docs/rules/4d-focus-visible.md
+    # specs/rules/4d-focus-visible.md
     "4.D": {
         "52be6331": "PASS",
         "95cf4fdf": "PASS",
@@ -101,7 +101,7 @@ EXPECTED = {
         "90789ad8": "DNA",
         "b12f1f45": "DNA",
     },
-    # docs/rules/4a-keyboard-access.md (Chromium; DHS publishes no 4.A results).
+    # specs/rules/4a-keyboard-access.md (Chromium; DHS publishes no 4.A results).
     "4.A": {
         "1e3939d9": "PASS",
         "a16be608": "PASS",
@@ -123,7 +123,7 @@ EXPECTED = {
         "8f9b5bf5": "DNA",
         "fa27b588": "PASS",
     },
-    # docs/rules/9a-bypass.md, with chapter2.html as the other page. DHS
+    # specs/rules/9a-bypass.md, with chapter2.html as the other page. DHS
     # scored none of these rules.
     "9.A": {
         "235a899f": "PASS",
@@ -155,7 +155,7 @@ EXPECTED = {
         "55a6cc3e": "FAIL",
         "ecc29b73": "DNA",
     },
-    # docs/rules/5b-label-descriptive.md (visual labels, as DHS scores them).
+    # specs/rules/5b-label-descriptive.md (visual labels, as DHS scores them).
     "5.B": {
         "6b256544": "PASS",
         "1a9ad651": "PASS",
@@ -174,7 +174,7 @@ EXPECTED = {
         "a83b1482": "PASS",  # ACT inapplicable (label hidden from AT); DHS PASS
         "e3debccd": "DNA",
     },
-    # docs/rules/2c-auto-updating.md (draft). PASS is gated by ER 3 (the
+    # specs/rules/2c-auto-updating.md (draft). PASS is gated by ER 3 (the
     # mechanism's own tests are not all built), so DHS's PASS cases are
     # NEEDS_REVIEW here: "gated", not a disagreement (2c-auto-updating.md section 3c).
     "2.C": {
@@ -190,7 +190,7 @@ EXPECTED = {
         "5345dc33": "DNA",
         "0d1564a1": "DNA",  # the only content (A4)
     },
-    # docs/rules/2a-audio-control.md (draft). A working control is NEEDS
+    # specs/rules/2a-audio-control.md (draft). A working control is NEEDS
     # REVIEW while ER 3's tests are not all built ("gated").
     "2.A": {
         "0d2dcde8": "NEEDS_REVIEW",  # <audio controls>: its play button, K3/E3

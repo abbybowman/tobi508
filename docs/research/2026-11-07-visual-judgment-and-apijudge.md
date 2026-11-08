@@ -207,7 +207,7 @@ Facts come from the PyPI and npm registries on 2026-11-07.
 - `docs/plans/2026-11-06-agent-follow-through.md` (changes 3 and 6);
 - `docs/solutions/agent-follow-through.md`, `judge-eval.md`;
 - `docs/research/2026-10-31-tt-coverage-map.md`, `2026-11-07-visual-cluster-per-test.md`;
-- `docs/rules/*.md` section 4;
+- `specs/rules/*.md` section 4;
 - `src/tobi508/judgment.py`, `inline.py`, `config.py`;
 - `evals/README.md`, `evals/agent/score.py`.
 

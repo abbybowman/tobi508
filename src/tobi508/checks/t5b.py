@@ -1,4 +1,4 @@
-"""Test 5.B (2.4.6-label-descriptive), from docs/rules/5b-label-descriptive.md.
+"""Test 5.B (2.4.6-label-descriptive), from specs/rules/5b-label-descriptive.md.
 
 Evidence is pass L (`labels.labels_pass`, shared with 5.A and 5.C): each
 field's visible label, the text near it and its image; each button's visible

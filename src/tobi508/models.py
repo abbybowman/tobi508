@@ -1,7 +1,7 @@
 """Pydantic data model for evidence, findings, open questions and reports.
 
 Nothing here decides an outcome. Outcomes come only from the rules specs in
-docs/rules/. Answers to open questions (from a model or a human) are recorded
+specs/rules/. Answers to open questions (from a model or a human) are recorded
 with `decided_by`; the spec decides what they mean.
 """
 
@@ -28,7 +28,7 @@ TEST_NOT_PERFORMED_NOTE = "This test could not be performed"
 
 # The NEEDS REVIEW headline every check uses, and the one that replaces it
 # while the finding still has open questions (wording only; outcomes come from
-# the rules specs). See docs/rules/_template.md, "Plain-language sentences".
+# the rules specs). See specs/rules/_template.md, "Plain-language sentences".
 REVIEW_HEAD = "We could not finish this test, so a person needs to check it."
 
 
@@ -52,7 +52,7 @@ class Outcome(str, Enum):
 
 class _TestIdBase(str, Enum):
     """Trusted Tester 5.1.3 test IDs: every active test condition in the
-    machine-readable copy of the PDF (docs/sources/tt-5.1.3/tt.json). Names and
+    machine-readable copy of the PDF (specs/sources/tt-5.1.3/tt.json). Names and
     requirements come from there, never retyped here. Members are named by ID
     without the dot: TestId.T4C is "4.C"."""
 

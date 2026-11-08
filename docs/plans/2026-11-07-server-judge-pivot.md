@@ -3,7 +3,7 @@
 Decision record for moving judgment questions from the calling agent to
 TOBI's own model on VAST, and reshaping TOBI into a hosted NASA service.
 Proposed by Abby, 2026-11-07. Nothing here changes an outcome rule: outcomes
-still come only from `docs/rules/`, and every answer still goes through
+still come only from `specs/rules/`, and every answer still goes through
 `record_answers` and its guards.
 
 ## Why

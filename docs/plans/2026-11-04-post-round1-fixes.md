@@ -361,7 +361,7 @@ Evidence:
 - **Fix (spec, MINOR):** M3 ignores buttons whose text could not label the
   field, by the same test the J1 rubric uses: the search words of G167,
   not "Explore", "Go" or "Submit". Research it first (CLAUDE.md), then
-  `docs/rules/5a-label-provided.md`, a fixture with an unrelated button
+  `specs/rules/5a-label-provided.md`, a fixture with an unrelated button
   near a placeholder-only field, and the judge eval.
 - **Status:** built with fix 14 (5.A spec 1.2.0). Checked on Careers'
   recording: the header search is a `form role=search` with a hidden submit
@@ -500,7 +500,7 @@ Evidence:
     is no visible label to check.
   - Header menu buttons are not form elements. Count only buttons that
     act on the form's data (submit, clear).
-- **Fix (spec, MINOR):** `docs/rules/5b-label-descriptive.md` and pass L
+- **Fix (spec, MINOR):** `specs/rules/5b-label-descriptive.md` and pass L
   (`labels.py`):
   - a field with no visible label (5.A M3, placeholder only) gives 5.B
     nothing to judge, so a form whose fields all lack one is Does Not Apply;

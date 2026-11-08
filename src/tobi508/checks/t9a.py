@@ -1,4 +1,4 @@
-"""Test 9.A (2.4.1-bypass-function), from docs/rules/9a-bypass.md.
+"""Test 9.A (2.4.1-bypass-function), from specs/rules/9a-bypass.md.
 
 Reads the site read (`site.py`: the tested page and the caller's other
 pages), finds the repeated block before the main content, and tries each

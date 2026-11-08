@@ -6,7 +6,7 @@ rendered content in reading order: *units* (text, headings, images with alt
 text, controls) and *regions* (banner, navigation, search, complementary,
 contentinfo, main). The read is cached in `RunContext.cache["site"]` so the
 three checks share it. Facts only: what repeats and what matches; the specs
-(docs/rules/9a-bypass.md Terms) decide what that means.
+(specs/rules/9a-bypass.md Terms) decide what that means.
 
 Page content never chooses a page to read (CLAUDE.md principle 5): the pages
 are the caller's.

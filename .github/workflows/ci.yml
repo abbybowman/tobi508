@@ -6,9 +6,101 @@ on:
   pull_request:
     branches: [main]
 
+# Least privilege: every job only reads the repository.
+permissions:
+  contents: read
+
 jobs:
-  test:
+  # Decides whether the heavy jobs run (post-round 2 fix 29, Abby 2026-11-08).
+  # A change is docs-only when every changed file is under docs/ or is a
+  # Markdown file, except what the tests read: README.md (test_readme),
+  # specs/ (the rules are the only source of outcome logic; sources is the
+  # TT text). A skipped job counts as passed for a
+  # required check; "CI" below is the one check to require.
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Find what changed
+        id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_PR: ${{ github.event.pull_request.base.sha }}
+          BASE_PUSH: ${{ github.event.before }}
+        run: |
+          base="$BASE_PR"
+          [ "$EVENT" = "push" ] && base="$BASE_PUSH"
+          # A new branch or a force push has no usable base: run everything.
+          if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            echo "code=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          code=false
+          while IFS= read -r f; do
+            case "$f" in
+              README.md|specs/*) code=true ;;
+              docs/*|*.md) ;;
+              *) code=true ;;
+            esac
+          done < <(git diff --name-only "$base" HEAD)
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
+  lint:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "0.11.32"
+
+      - name: Install Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+  # The suite split by test file, each group on its own runner. "rest" takes
+  # every file the other groups do not name, so a new test file is never
+  # left out. Keep the groups roughly even (they took ~20 min as one job).
+  test:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: keyboard
+            args: tests/test_fixtures_4*.py
+          - group: forms-and-site
+            args: tests/test_fixtures_5*.py tests/test_fixtures_9*.py tests/test_fixtures_19a.py tests/test_site.py
+          - group: motion-and-cases
+            args: tests/test_fixtures_2*.py tests/test_fixtures_3a.py tests/test_act_*.py tests/test_baseline_cases.py tests/test_motion*.py tests/test_flash.py tests/test_rows_*.py
+          - group: rest
+            args: >-
+              tests/
+              --ignore-glob=tests/test_fixtures_*.py
+              --ignore-glob=tests/test_act_*.py
+              --ignore=tests/test_baseline_cases.py
+              --ignore-glob=tests/test_motion*.py
+              --ignore=tests/test_flash.py
+              --ignore-glob=tests/test_rows_*.py
+              --ignore=tests/test_site.py
+    name: test (${{ matrix.group }})
     steps:
       - uses: actions/checkout@v4
 
@@ -33,11 +125,20 @@ jobs:
       - name: Install Playwright MCP (agent eval baseline)
         run: npm ci --prefix evals/agent/node
 
-      - name: Lint
-        run: uv run ruff check .
+      - name: Run tests (${{ matrix.group }})
+        run: uv run pytest ${{ matrix.args }} -v
 
-      - name: Format check
-        run: uv run ruff format --check .
-
-      - name: Run tests
-        run: uv run pytest tests/ -v
+  # The one check to require: passes when the heavy jobs passed or were
+  # skipped for a docs-only change, fails when any failed or was cancelled.
+  ci:
+    name: CI
+    needs: [changes, lint, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the jobs
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          if echo "$RESULTS" | grep -qE '"(failure|cancelled)"'; then exit 1; fi

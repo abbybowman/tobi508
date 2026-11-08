@@ -1,4 +1,4 @@
-"""The TT 5.1.3 copy (docs/sources/tt-5.1.3/) is complete and consistent."""
+"""The TT 5.1.3 copy (specs/sources/tt-5.1.3/) is complete and consistent."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import re
 
 from tobi508.config import REPO_ROOT
 
-TT = REPO_ROOT / "docs" / "sources" / "tt-5.1.3"
+TT = REPO_ROOT / "specs" / "sources" / "tt-5.1.3"
 DATA = json.loads((TT / "tt.json").read_text("utf-8"))
 
 
