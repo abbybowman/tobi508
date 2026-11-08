@@ -92,3 +92,12 @@ Results: `evals/agent/README.md` ("Results"). The answering runs:
   carousel buttons were aria-hidden and outside the Tab order (not a
   failure); 5340's OVERVIEW tab showed no focus change at all (a likely
   catch, being retested).
+- **A cell that agrees may still miss a failing element.** Home's 5.C
+  agreed with the key (Fail) on the filter headings, but the key also
+  failed X buttons that appear only after a filter is chosen, which TOBI
+  never saw. Before changing a rule that removes a FAIL, read the key's
+  comment for that cell and check that the elements it names are still
+  found (post-round 2 fix 9b).
+- **Most unsure answers had causes in our rules or questions,** not in the
+  pages (post-round 2 plan, "Unsure answers"): read each unsure answer's
+  reasons against the key before calling it an edge case.

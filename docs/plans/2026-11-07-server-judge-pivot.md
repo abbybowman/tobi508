@@ -305,7 +305,9 @@ means for this plan:
   alone). ApiJudge work must not crowd out the principle-3 rule fixes
   (post-round 2 fixes 1-7).
 - **People's load:** about 62 unsure answers per 10 pages go to a person.
-  Answer-once-per-site and the review UI's reviewer view matter for that.
+  About 50 trace to our rules or questions (post-round 2 plan, "Unsure
+  answers"); fixes 9c and 14 alone remove about half. Answer-once-per-site
+  and the review UI's reviewer view matter for the rest.
 - **Cost and speed:** 1.71M input tokens per 10 pages (about 8.8k per
   question; Home alone 794k for 63 questions, from the shared Tab-stop
   list and full-page pictures), 7-8 minutes at 3 calls at a time. A
@@ -327,13 +329,13 @@ the [roadmap](../ROADMAP.md). Bundled by the files they touch, in order:
 | # | Branch | Contents | Why together |
 | --- | --- | --- | --- |
 | 1 | `apijudge` | ApiJudge in `judgment.py` from `judge_c.py` (endpoint, model and token from the environment; `judge_backend: "api"`; per question type switch; `judging_model` record); the judge-eval backend for it, with round 2's real-page packets | The Nov 20 core; Agent C already proved the request, the schema and the guards path |
-| 2 | `rules-principle3` | Post-round 2 fixes 1-6 (3.A unplayed video, 4.C exit and error states, 4.A click-to-play video, 5.D tab-away, 9.A-9.C other templates) | Accuracy before scale; each is one spec and one fixture |
+| 2 | `rules-principle3` | Post-round 2 fixes 1-6 (3.A unplayed video, 4.C exit and error states, 4.A click-to-play video, 5.D tab-away, 9.A-9.C other templates) and 9b (a reveal pass: test what interaction reveals, as a person does) | Accuracy before scale; each is one spec and one fixture |
 | 3 | `frames` | Fix 7: 5.x reads fields in frames (cross-origin frames as their own page with ANDI); the roadmap's per-test frame leftovers (5.A, 5.C, 5.F, 5.G; 4.D and 4.F's f19) | One shared reader for every test that skips frames today |
-| 4 | `questions-for-judges` | Fixes 12-14 (4.F rubric and order picture, 9.C pairing), with the cropping review; then the gate for 4.F and 9.C | They gate ApiJudge on those types |
-| 5 | `rules-false-fail` | Fixes 8-11 (5.A icon label, 5.C hidden controls, 19.A search page and quoted search) | Small; label pass and 19.A only |
+| 4 | `questions-for-judges` | Fixes 12-14 (4.F rubric and order picture, 9.C pairing) and 24-27 (4.A carousel arrows and destinations, 4.D pictures, 2.B still regions), with the cropping review; then the gate for 4.F and 9.C | They gate ApiJudge on those types, and cut the unsure answers people get by about half |
+| 5 | `rules-false-fail` | Fixes 8-11 (5.A icon label, 5.C hidden controls, 19.A search page and quoted search) and 9c (an option's visible text is its own row) | Small; label pass and 19.A only |
 | 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | The person's side of the pivot |
 | 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Needs 1 and 6 |
-| 8 | `scorer-round3` | Fixes 15-17 (keys give Pass reasons; adjudications per criterion; judge-decided cells apart) | Before round 3's lock |
+| 8 | `scorer-round3` | Fixes 15-17 (keys give Pass reasons; adjudications per criterion; judge-decided cells apart) and 29 (CI skips docs-only changes, runs in parallel) | Before round 3's lock; CI first, as it speeds every other branch |
 
 Bundles 1 and 2 can run side by side (different files); 3 before 4's
 5.x parts; 5 any time. If time runs short before Nov 20, keep 1, 2, 6
