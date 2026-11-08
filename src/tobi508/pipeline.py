@@ -491,13 +491,16 @@ def _evidence_uris(run: RunRecorder) -> list[str]:
 # development run 7's agent skipped the pictures of results 25-70k
 # characters long). The rest come with each tobi_answer_questions result.
 QUESTION_PAGE = 10
-# What one result's text may be, in characters (round 2, 2026-11-08): Claude
-# Code saves an MCP result over about 25k tokens to a file instead of
-# passing it on, and its agent then never saw 140 open questions (results of
-# 85-469k characters: one page's text for 4.B, and shared inputs built for
-# every open question, not only those shown). inline.py counts 3 characters
-# a token; pictures get what the text leaves.
-RESULT_CHARS = 54_000
+# What one result's text may be, in characters (round 2, 2026-11-08). Claude
+# Code passes an MCP result on only up to two limits: about 25k tokens
+# (MAX_MCP_OUTPUT_TOKENS), and about 50 KB of text, over which it saves the
+# result to a file and shows the agent a 2 KB preview (CLI 2.1.319: a 51.2 KB
+# result was saved, 37 KB passed). An agent that reads the file gets no
+# pictures. Round 2's first runs lost 140 open questions to results of
+# 85-469k characters (one page's text for 4.B, and shared inputs built for
+# every open question, not only those shown), and a 51 KB result lost 62
+# more. Pictures get what the text leaves (inline.py).
+RESULT_CHARS = 45_000
 # A long text the shown questions need is cut to the passages around what
 # they quote, this many characters each side.
 EXCERPT_SIDE = 600
@@ -546,39 +549,63 @@ def _excerpt(text: str, quotes: list[str], budget: int) -> str:
     return " [...] ".join(out)
 
 
-SHORT_STRING = 160  # characters, for strings in shared inputs when cut
+# Characters kept of a long string in shared inputs when a result is cut:
+# first the longer, then, if a result is still too long, the shorter.
+SHORT_STRINGS = (160, 60)
+# Fewer questions than this are shown uncut only after cutting was tried.
+MIN_UNCUT = 5
 
 
-def _shorten(value: Any) -> Any:
-    """Strings longer than SHORT_STRING cut, ending with " [...]"."""
-    if isinstance(value, str) and len(value) > SHORT_STRING:
-        return value[:SHORT_STRING] + " [...]"
+def _shorten(value: Any, keep: int) -> Any:
+    """Strings longer than `keep` cut, ending with " [...]"."""
+    if isinstance(value, str) and len(value) > keep:
+        return value[:keep] + " [...]"
     if isinstance(value, dict):
-        return {k: _shorten(v) for k, v in value.items()}
+        return {k: _shorten(v, keep) for k, v in value.items()}
     if isinstance(value, list):
-        return [_shorten(v) for v in value]
+        return [_shorten(v, keep) for v in value]
     return value
 
 
 def fit(result: Any, report: Report, states: dict[TestId, Any]) -> Any:
-    """`result` (a RunResult or AnswerResult) cut to RESULT_CHARS: fewer open
-    questions shown (the rest come with the next answer result, as
-    more_questions says), and evidence only for those shown. When one
-    question is still too long, its page text is cut to the passages around
-    what the question quotes, and the item says so, and strings in its
-    shared inputs over SHORT_STRING characters are cut. Decides nothing."""
+    """`result` (a RunResult or AnswerResult) cut to RESULT_CHARS, by steps:
+    up to 10 open questions, and evidence (page text, shared inputs) only for
+    those shown; then fewer questions, down to MIN_UNCUT; then the page text
+    cut to the passages around what the shown questions quote and long
+    strings in shared inputs cut (SHORT_STRINGS), with 10 questions down to
+    one. Each cut says so in the result; the rest of the questions come with
+    the next answer result (more_questions). The report and the questions'
+    own inputs are never cut. Decides nothing."""
     qs = report.open_questions
     calls = report.follow_up_calls
 
-    def build(n: int, cut: bool = False) -> Any:
+    def size(r: Any) -> int:
+        return len(r.model_dump_json(exclude={"report"}))
+
+    def build(n: int, keep: int | None = None) -> Any:
         shown = qs[:n]
         qview = _question_view(shown)
         page = _page_text(report, states, shown)
-        if cut:
-            rest = len(build(n).model_dump_json(exclude={"report"})) - sum(
-                len(json.dumps(p)) for p in page
+        shared = _shared_inputs(report, states, shown)
+        if keep is not None:
+            shared = (
+                {
+                    **_shorten(shared, keep),
+                    "cut": f"Text over {keep} characters in these inputs is cut, "
+                    "ending with [...]: the whole result was too long. The "
+                    "report has it whole.",
+                }
+                if shared
+                else shared
             )
-            room = max(4_000, RESULT_CHARS - rest) // max(1, len(page))
+            rest = (
+                size(build(n))
+                - len(json.dumps(page))
+                - len(json.dumps(_shared_inputs(report, states, shown)))
+                + len(json.dumps(shared))
+            )
+            # 80%: JSON escapes (newlines, non-ASCII) lengthen the text.
+            room = max(1_500, (RESULT_CHARS - rest) * 4 // 5) // max(1, len(page))
             quotes = [t for q in shown for t in _quoted(q.input)]
             page = [
                 p
@@ -592,14 +619,6 @@ def fit(result: Any, report: Report, states: dict[TestId, Any]) -> Any:
                 }
                 for p in page
             ]
-        shared = _shared_inputs(report, states, shown)
-        if cut and len(json.dumps(shared)) > RESULT_CHARS // 3:
-            shared = {
-                **_shorten(shared),
-                "cut": f"Text over {SHORT_STRING} characters in these inputs "
-                "is cut, ending with [...]: the whole result was too long. "
-                "The report has it whole.",
-            }
         return result.model_copy(
             update={
                 "open_questions": qview[0],
@@ -612,13 +631,19 @@ def fit(result: Any, report: Report, states: dict[TestId, Any]) -> Any:
             }
         )
 
-    n = min(QUESTION_PAGE, len(qs))
-    out = build(n)
-    while n > 1 and len(out.model_dump_json(exclude={"report"})) > RESULT_CHARS:
-        n -= 1
+    top = min(QUESTION_PAGE, len(qs))
+    out = build(top)
+    if not qs or size(out) <= RESULT_CHARS:
+        return out
+    for n in range(top - 1, MIN_UNCUT - 1, -1):
         out = build(n)
-    if qs and len(out.model_dump_json(exclude={"report"})) > RESULT_CHARS:
-        out = build(n, cut=True)
+        if size(out) <= RESULT_CHARS:
+            return out
+    for keep in SHORT_STRINGS:
+        for n in range(top, 0, -1):
+            out = build(n, keep)
+            if size(out) <= RESULT_CHARS:
+                return out
     return out
 
 

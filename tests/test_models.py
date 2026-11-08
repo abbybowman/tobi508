@@ -320,18 +320,20 @@ def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
     report = _big_report(12, quote)
     out = P.fit(_result(report), report, {})
     assert len(out.model_dump_json(exclude={"report"})) <= P.RESULT_CHARS
-    assert [q.question_id for q in out.open_questions] == ["q0"]
-    assert out.more_questions == 11
+    shown = len(out.open_questions)
+    assert out.open_questions[0].question_id == "q0" and shown < 10
+    assert out.more_questions == 12 - shown
     assert out.open_questions[0].input == {"matches": [quote]}
     [page] = out.page_text
     assert quote in page["text"] and len(page["text"]) < len(text)
     assert f"{len(text):,} characters" in page["excerpt"]
     assert out.shared_inputs["stops"][0]["name"].endswith(" [...]")
     assert "cut" in out.shared_inputs
-    assert out.todo[0].startswith("[ ] Answer the 1 open question(s)")
-    assert "11 more come" in out.todo[0]
-    # Without the 4.B question, the 4.F questions page by size alone, and
-    # no page text or shared inputs go with them.
+    assert out.todo[0].startswith(f"[ ] Answer the {shown} open question(s)")
+    assert f"{12 - shown} more come" in out.todo[0]
+    # Without the 4.B question, the 4.F questions page by size alone (their
+    # own inputs are never cut), and no page text or shared inputs go with
+    # them.
     report = _big_report(12, quote)
     report.open_questions = report.open_questions[1:]
     out = P.fit(_result(report), report, {})
