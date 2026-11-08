@@ -399,6 +399,13 @@ class Answer(BaseModel):
         description="Set by the server: an answer to a question that names a "
         "picture, given with picture_error instead of `seen`. Do not set it.",
     )
+    answered_by: str = Field(
+        default="client",
+        max_length=120,
+        description="Set by the server: 'client' for an answer the calling "
+        "agent sends, 'server:<model id>' for the server's own judge "
+        "(server judge pivot, 2026-11-07). Do not set it.",
+    )
 
 
 class RecordedAnswer(BaseModel):
