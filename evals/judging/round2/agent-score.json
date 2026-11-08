@@ -1,6 +1,6 @@
 {
  "round": "round2",
- "scored_at": "2026-11-08T14:54:33.916333+00:00",
+ "scored_at": "2026-11-08T15:48:10.633436+00:00",
  "lock_commit": "e14580abc97deb1b5acccc1cb5fc7a122993445c",
  "pages": 10,
  "pages_with_keys": 10,
@@ -646,8 +646,8 @@
     "per_tt": {
      "counts": {
       "agree": 29,
-      "validated_catch": 0,
-      "false_pass": 2,
+      "validated_catch": 1,
+      "false_pass": 1,
       "missed_fail": 0,
       "false_fail": 7,
       "fail_vs_dna": 0,
@@ -657,13 +657,13 @@
       "not_scored": 195,
       "no_answer": 0
      },
-     "weighted": 14,
+     "weighted": 18,
      "rates": {
       "scored": "40",
       "agreement (of decided)": "29/40",
-      "validated catches (the tester confirmed the tool)": "0",
+      "validated catches (the tester confirmed the tool)": "1",
       "needs review (of scored)": "0/40",
-      "false PASS": "2",
+      "false PASS": "1",
       "missed fail (Does Not Apply)": "0",
       "false FAIL": "7",
       "Fail vs Does Not Apply": "0",
@@ -1848,8 +1848,8 @@
     "per_tt": {
      "counts": {
       "agree": 22,
-      "validated_catch": 0,
-      "false_pass": 1,
+      "validated_catch": 1,
+      "false_pass": 0,
       "missed_fail": 0,
       "false_fail": 2,
       "fail_vs_dna": 0,
@@ -1859,13 +1859,13 @@
       "not_scored": 78,
       "no_answer": 0
      },
-     "weighted": 17,
+     "weighted": 21,
      "rates": {
       "scored": "25",
       "agreement (of decided)": "22/25",
-      "validated catches (the tester confirmed the tool)": "0",
+      "validated catches (the tester confirmed the tool)": "1",
       "needs review (of scored)": "0/25",
-      "false PASS": "1",
+      "false PASS": "0",
       "missed fail (Does Not Apply)": "0",
       "false FAIL": "2",
       "Fail vs Does Not Apply": "0",

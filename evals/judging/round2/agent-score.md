@@ -2,7 +2,7 @@
 
 Agent-assisted results scored against a tester's SCRT files. Not a certified Trusted Tester result.
 
-Scored 2026-11-08T14:54:33.916333+00:00; lock commit e14580abc97deb1b5acccc1cb5fc7a122993445c; 10 of 10 pages have keys.
+Scored 2026-11-08T15:48:10.633436+00:00; lock commit e14580abc97deb1b5acccc1cb5fc7a122993445c; 10 of 10 pages have keys.
 
 ## arm-a-g1-1
 
@@ -79,13 +79,13 @@ Per WCAG 2.0 criterion (what the agent reported): weighted 16
 - not performed by the tool: 0
 - no reference answer: 1
 
-Tool's own results, per TT test: weighted 14
+Tool's own results, per TT test: weighted 18
 
 - scored: 40
 - agreement (of decided): 29/40
-- validated catches (the tester confirmed the tool): 0
+- validated catches (the tester confirmed the tool): 1
 - needs review (of scored): 0/40
-- false PASS: 2
+- false PASS: 1
 - missed fail (Does Not Apply): 0
 - false FAIL: 7
 - Fail vs Does Not Apply: 0
@@ -319,13 +319,13 @@ Per WCAG 2.0 criterion (what the agent reported): weighted 14
 - not performed by the tool: 0
 - no reference answer: 0
 
-Tool's own results, per TT test: weighted 17
+Tool's own results, per TT test: weighted 21
 
 - scored: 25
 - agreement (of decided): 22/25
-- validated catches (the tester confirmed the tool): 0
+- validated catches (the tester confirmed the tool): 1
 - needs review (of scored): 0/25
-- false PASS: 1
+- false PASS: 0
 - missed fail (Does Not Apply): 0
 - false FAIL: 2
 - Fail vs Does Not Apply: 0

@@ -58,3 +58,87 @@ answers, in most of its three repeats. They may also hold catches:
 - Agent B reported no FAIL the key lacks.
 - Agent A's FAILs the key lacks are the tool's (items 7-11), relayed.
 - Agent C's are the judge cells in part 4.
+
+## Decisions (Abby, 2026-11-08)
+
+**Part 1, rule gaps that let a failure through:**
+- **1 (CILab 4.A):** agreed. A 4.A rule and fixture for a video or cover
+  that a click plays and the keyboard cannot.
+- **2 (5340 4.C):** agreed on both parts.
+  - M4 must count only an exit that leaves the looping set (here, the
+    frame), not a key press that moves focus within it.
+  - Error states: markup tells where errors are likely, never that there
+    are none (`required`, `pattern`, `min`/`max`, `maxlength`, `type`,
+    `inputmode` and `autocomplete`, `aria-invalid`, `aria-errormessage`
+    and `aria-describedby` pointing at empty or hidden message
+    containers, `role="alert"` or live regions, `novalidate`, validation
+    library attributes). JS-only validation shows nothing in markup (5340
+    is a script-built app), so TOBI should always try standard "likely to
+    error" values by field type and purpose: names with odd characters,
+    invalid emails and phone numbers, numbers and years outside any
+    range (and far past or future when none is declared), dates far past
+    and future (`wrong_date` does dates already; text fields get "abc"
+    today). Then check the keyboard from the error state (a 4.C exit
+    check in any message or dialog that appears). Also: 5.F's error pass
+    skips fields inside frames ("15 form field(s) are inside frames,
+    which this test does not check yet"), so here it never ran.
+- **3 (5340 5.D):** agreed. TT 5.D How to test step 3: "Exit (tab away
+  from) the completed form element and determine whether there are any
+  instances of an unexpected change of context", and step 4 lists a
+  change of focus. So after each input, one Tab, compared with the
+  walk's next stop; focus landing anywhere else is a change of focus.
+- **4 (5144 5.D):** a slip in the key; Pass, as its comment says.
+  Recorded in `adjudications.json` (both round folders). Lesson for
+  answer keys: give the reason for a Pass as well as a Fail, above all
+  for judgment calls. The locked scorer applies an adjudication to the
+  tool's per-TT score only, not to the arms' per-criterion rows (as in
+  round 1); worth fixing in the scorer before round 3.
+- **5-6 (9.A on CILab and 14592):** the pairing, as read. For the
+  service: VAST keeps a site-wide record of the site's templates, with
+  example pages; a page that matches a known template inherits its
+  9.A-9.C context, and a page that matches none says so and does not
+  inherit. For the eval harness: give cross-page tests pages of the
+  same template (or all the round's pages).
+- **New, 3.A on 14592 (part 3 item 14, moved up):** the key is Not
+  Tested ("several videos appear to contain flashing content"); TOBI said
+  DNA ("Triggers: none. No trigger fired, so no capture ran"). Videos that
+  do not play on load never trigger a capture, and no trigger became
+  DNA, a missing-evidence DNA (principle 3). At least: a page with video
+  that was not decoded is NEEDS_REVIEW, never DNA; better, decode the
+  video as flashcap does for media that plays.
+
+**Part 2, possible catches:**
+- **7 (5340 4.D OVERVIEW):** unconfirmed; Abby retests from her laptop.
+- **8 (carousel scroll buttons, 5.C):** not a failure. The buttons are
+  `aria-hidden` and outside the Tab order (the walk never reached them;
+  ANDI warns "focusable but … aria-hidden", meaning `tabindex="-1"`),
+  and Tab alone moves through every card. The current ACT rule (6cfa84)
+  concerns aria-hidden content in sequential focus navigation, which
+  these are not. 5.C should skip elements that are aria-hidden and not
+  in the Tab order.
+
+**Part 2, rule false FAILs:**
+- **9 (5.A, search field):** an icon-only visible label is acceptable
+  for a commonly understood function (search, menu, download). Here the
+  magnifier button submits the field (same `role="search"` form), and
+  the field and its buttons share one border (Bootstrap `input-group`:
+  the field has `border-end-0`, the buttons `border-start-0`). M3 should
+  not fail a placeholder-only field when an icon button sits in the same
+  input group or search form; it should ask J1, the graphic case (5.A J1
+  is settled by looking, principle 8).
+- **10 (19.A, Search):** the key is right: the search box in the top
+  nav is one way, and tag links that open a filtered search view are
+  the second (content links). TOBI should count "this page is the site
+  search's own results page" as the search way.
+- **11 (19.A, 14592):** the site's search returned "No results for:"
+  the unquoted heading `Largest Flare yet from Solar Cycle 25` (recorded
+  reply: an empty list). Abby searched with quotation marks. TOBI should
+  retry with the heading in quotation marks when the plain search finds
+  nothing, and read the whole first page of results.
+
+**Judgment calls:** document the calls the rules make where another
+Trusted Tester might reasonably differ (one list across the specs), with
+the posture behind them: pass conservatively, fail liberally, and "what
+leads to clearly better UX?". Agencies and their Section 508
+coordinators can fork the specs and change those calls for their own
+context.
