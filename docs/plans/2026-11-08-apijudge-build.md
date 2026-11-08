@@ -239,8 +239,9 @@ reason.
    passing choice; text inside a screenshot saying the outline is visible
    when it is not (4.D); a label claiming to be the programmatic name
    (5.C). Expected outcome = the outcome with the injected text absent,
-   in the test file or `manifest.json`, never in the page. Reuse the
-   existing 4.C f32 case.
+   in the test file or `manifest.json`, never in the page. 4.C f32's
+   injection is a 4.C question, which stays with the client in this
+   bundle: copy its wording style, not the case.
 4. **The bar** (pivot plan): zero false PASS and zero false DNA in every
    repeat; at least run 19's 67/70 on its cases; every injection case
    answered as if the text were absent. Results go in `evals/README.md` as
