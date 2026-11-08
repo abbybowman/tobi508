@@ -27,20 +27,19 @@ Agent-assisted results, not certified Trusted Tester results.
 
 | # | Page, test | Key | TOBI | My read | Decision for Abby |
 | --- | --- | --- | --- | --- | --- |
-| 7 | 5340, 4.D | Pass (no comment) | FAIL (M8): "OVERVIEW" (tab) changes 0 px with focus | **Possible catch.** Its off and on pictures are identical (the underline marks the selected tab, in both). Same kind as round 1's validated 4.D catch | Does OVERVIEW show focus? If not, record it in `round2/adjudications.json` |
+| 7 | 5340, 4.D | Pass (no comment) | FAIL (M8): "OVERVIEW" (tab) changes 0 px with focus; "Scroll down" never in view (M4, needs review) | **Possible catch.** Its off and on pictures are identical (the underline marks the selected tab, in both). Same kind as round 1's validated 4.D catch | Does OVERVIEW show focus? If not, record it in `round2/adjudications.json` |
 | 8 | 14592, 14194, Galleries, 5.C | Pass: "the site search box is the only input field" | FAIL (M3): carousel scroll buttons (`…_scroll_right`) have no name | Scope: TOBI counts buttons as form components for 5.C; the key counts input fields. The unnamed buttons are real (4.1.2), whichever test owns them | Do carousel scroll buttons belong to 5.C, or to another TT test (or none of the built ones)? A scope change goes in 5.C's spec |
 | 9 | Home, Help, Search, Galleries, 14194, 14592, 5144, 5340, 4914 (7 in each run), 5.A | Pass: "site search box has visual labels/instructions" | FAIL (M3): the field's only label is its placeholder | The field has a magnifier icon button and a clear button beside the "Search..." placeholder. M3 fails a placeholder-only field without asking; judge eval run 19 found a magnifier icon can label a field. Round 1's key failed nasa.gov's placeholder-only search | Does an adjacent magnifier icon button make a visible label? If yes, M3 should ask J1 (the graphic case) when an icon button sits beside the field, not fail |
 | 10 | Search, 19.A | Pass: reached from the top-nav search box, and a content link on the home page | FAIL (W1, W3): only links found, and the site search for its heading did not find it | The search page is the search form's own target: submitting any search lands there. TOBI only counts search when it finds the page by its heading | Count "this page is the site search's result page" as a way? |
 | 11 | 14592, 19.A | Pass: prev/next links on neighbour pages, and site search finds it | FAIL: no way found, and the search for its heading did not find it | TOBI's live search used the page's heading; check the recorded search reply (is the result list rendered by script after load?) | Look at the recorded search reply with me before any rule change |
-| 12 | 5340, 4.D | (same cell as 7) also "Scroll down" never in view (M4, needs review) | | | |
 
 ## 3. Other differences
 
 | # | Page, test | Key | TOBI | My read |
 | --- | --- | --- | --- | --- |
-| 13 | Help, Galleries, 14194, 14592, 5.B | Pass | DNA | 5.B only covers fields that have a visible label; with item 9's search field set as unlabeled, nothing is left. Follows item 9 |
-| 14 | CILab, 14592, 9.B and 9.C | Pass | DNA | Same pairing as items 5-6 |
-| 15 | 14592, 3.A | Not Tested | DNA | The key's Not Tested (flashing found) against TOBI finding nothing to check; worth a look at what flashes |
+| 12 | Help, Galleries, 14194, 14592, 5.B | Pass | DNA | 5.B only covers fields that have a visible label; with item 9's search field set as unlabeled, nothing is left. Follows item 9 |
+| 13 | CILab, 14592, 9.B and 9.C | Pass | DNA | Same pairing as items 5-6 |
+| 14 | 14592, 3.A | Not Tested | DNA | The key's Not Tested (flashing found) against TOBI finding nothing to check; worth a look at what flashes |
 
 ## 4. Cells a judge's answer decided (Agent C), for the judge eval
 
