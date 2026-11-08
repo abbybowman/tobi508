@@ -775,8 +775,9 @@ class RunResult(BaseModel):
     more_questions: int = Field(
         default=0,
         description="Open questions not in open_questions yet: at most 10 are "
-        "shown at once, and each tobi_answer_questions result brings the next "
-        "ones. Answer until none are left.",
+        "shown at once (fewer when a result would be too long), and each "
+        "tobi_answer_questions result brings the next ones. Answer until none "
+        "are left.",
     )
     todo: list[str] = Field(
         default_factory=list,
@@ -897,8 +898,9 @@ class AnswerResult(BaseModel):
     more_questions: int = Field(
         default=0,
         description="Open questions not in open_questions yet: at most 10 are "
-        "shown at once, and each tobi_answer_questions result brings the next "
-        "ones. Answer until none are left.",
+        "shown at once (fewer when a result would be too long), and each "
+        "tobi_answer_questions result brings the next ones. Answer until none "
+        "are left.",
     )
     todo: list[str] = Field(
         default_factory=list,

@@ -491,6 +491,135 @@ def _evidence_uris(run: RunRecorder) -> list[str]:
 # development run 7's agent skipped the pictures of results 25-70k
 # characters long). The rest come with each tobi_answer_questions result.
 QUESTION_PAGE = 10
+# What one result's text may be, in characters (round 2, 2026-11-08): Claude
+# Code saves an MCP result over about 25k tokens to a file instead of
+# passing it on, and its agent then never saw 140 open questions (results of
+# 85-469k characters: one page's text for 4.B, and shared inputs built for
+# every open question, not only those shown). inline.py counts 3 characters
+# a token; pictures get what the text leaves.
+RESULT_CHARS = 54_000
+# A long text the shown questions need is cut to the passages around what
+# they quote, this many characters each side.
+EXCERPT_SIDE = 600
+
+
+def _quoted(value: Any) -> list[str]:
+    """Strings of 20 characters or more in a question input."""
+    if isinstance(value, str):
+        return [value] if len(value) >= 20 else []
+    if isinstance(value, dict):
+        return [s for v in value.values() for s in _quoted(v)]
+    if isinstance(value, list):
+        return [s for v in value for s in _quoted(v)]
+    return []
+
+
+def _excerpt(text: str, quotes: list[str], budget: int) -> str:
+    """The passages of `text` around each quote, in page order, joined by
+    " [...] ", within `budget` characters; the text's start when none is
+    found. Words are never changed, only left out."""
+    spans: list[list[int]] = []
+    for qt in quotes:
+        i = text.find(qt.strip())
+        while i >= 0 and len(spans) < 200:
+            spans.append([max(0, i - EXCERPT_SIDE), i + len(qt) + EXCERPT_SIDE])
+            i = text.find(qt.strip(), i + 1)
+    if not spans:
+        return text[:budget]
+    spans.sort()
+    merged = [spans[0]]
+    for a, b in spans[1:]:
+        if a <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], b)
+        else:
+            merged.append([a, b])
+    out, used = [], 0
+    for a, b in merged:
+        part = text[a:b]
+        if used + len(part) > budget:
+            part = part[: max(0, budget - used)]
+        if part:
+            out.append(part)
+            used += len(part)
+        if used >= budget:
+            break
+    return " [...] ".join(out)
+
+
+SHORT_STRING = 160  # characters, for strings in shared inputs when cut
+
+
+def _shorten(value: Any) -> Any:
+    """Strings longer than SHORT_STRING cut, ending with " [...]"."""
+    if isinstance(value, str) and len(value) > SHORT_STRING:
+        return value[:SHORT_STRING] + " [...]"
+    if isinstance(value, dict):
+        return {k: _shorten(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_shorten(v) for v in value]
+    return value
+
+
+def fit(result: Any, report: Report, states: dict[TestId, Any]) -> Any:
+    """`result` (a RunResult or AnswerResult) cut to RESULT_CHARS: fewer open
+    questions shown (the rest come with the next answer result, as
+    more_questions says), and evidence only for those shown. When one
+    question is still too long, its page text is cut to the passages around
+    what the question quotes, and the item says so, and strings in its
+    shared inputs over SHORT_STRING characters are cut. Decides nothing."""
+    qs = report.open_questions
+    calls = report.follow_up_calls
+
+    def build(n: int, cut: bool = False) -> Any:
+        shown = qs[:n]
+        qview = _question_view(shown)
+        page = _page_text(report, states, shown)
+        if cut:
+            rest = len(build(n).model_dump_json(exclude={"report"})) - sum(
+                len(json.dumps(p)) for p in page
+            )
+            room = max(4_000, RESULT_CHARS - rest) // max(1, len(page))
+            quotes = [t for q in shown for t in _quoted(q.input)]
+            page = [
+                p
+                if len(p.get("text", "")) <= room
+                else {
+                    **p,
+                    "text": _excerpt(p["text"], quotes, room),
+                    "excerpt": f"The whole text is {len(p['text']):,} characters, "
+                    "too long for one result: these are the passages around "
+                    "what the open questions quote, joined by [...].",
+                }
+                for p in page
+            ]
+        shared = _shared_inputs(report, states, shown)
+        if cut and len(json.dumps(shared)) > RESULT_CHARS // 3:
+            shared = {
+                **_shorten(shared),
+                "cut": f"Text over {SHORT_STRING} characters in these inputs "
+                "is cut, ending with [...]: the whole result was too long. "
+                "The report has it whole.",
+            }
+        return result.model_copy(
+            update={
+                "open_questions": qview[0],
+                "question_texts": qview[1],
+                "page_text": page,
+                "shared_inputs": shared,
+                "next_step": next_step(report, calls, shown=n),
+                "todo": todo(report, calls, shown=n),
+                "more_questions": max(0, len(qs) - n),
+            }
+        )
+
+    n = min(QUESTION_PAGE, len(qs))
+    out = build(n)
+    while n > 1 and len(out.model_dump_json(exclude={"report"})) > RESULT_CHARS:
+        n -= 1
+        out = build(n)
+    if qs and len(out.model_dump_json(exclude={"report"})) > RESULT_CHARS:
+        out = build(n, cut=True)
+    return out
 
 
 def _compact(v: Any) -> Any:
@@ -549,12 +678,16 @@ def _question_view(
     return out, texts
 
 
-def _shared_inputs(report: Report, states: dict[TestId, Any]) -> dict[str, Any]:
+def _shared_inputs(
+    report: Report, states: dict[TestId, Any], qs: list[OpenQuestion] | None = None
+) -> dict[str, Any]:
     """Evidence the open questions share, once per result (a check's optional
-    `shared_inputs(state)`), limited to the keys an open question names."""
-    wanted = {k for q in report.open_questions for k in q.shared}
+    `shared_inputs(state)`), limited to the keys the questions shown (`qs`,
+    default all open questions) name."""
+    qs = report.open_questions if qs is None else qs
+    wanted = {k for q in qs for k in q.shared}
     out: dict[str, Any] = {}
-    for t in {q.test_id for q in report.open_questions}:
+    for t in {q.test_id for q in qs}:
         check = REGISTRY.get(t)
         if check is not None and t in states and hasattr(check, "shared_inputs"):
             out.update(
@@ -563,8 +696,10 @@ def _shared_inputs(report: Report, states: dict[TestId, Any]) -> dict[str, Any]:
     return out
 
 
-def _page_text(report: Report, states: dict[TestId, Any]) -> list[dict[str, str]]:
-    asking = {q.test_id for q in report.open_questions}
+def _page_text(
+    report: Report, states: dict[TestId, Any], qs: list[OpenQuestion] | None = None
+) -> list[dict[str, str]]:
+    asking = {q.test_id for q in (report.open_questions if qs is None else qs)}
     out: list[dict[str, str]] = []
     for t in asking:
         check = REGISTRY.get(t)
@@ -1004,7 +1139,7 @@ async def run_tt_tests(
     run.log("run_end", status="error" if report.errors else "ok")
     qview = _question_view(report.open_questions[:QUESTION_PAGE])
     calls = report.follow_up_calls
-    return RunResult(
+    result = RunResult(
         run_id=run.run_id,
         target=url,
         final_url=report.final_url,
@@ -1028,6 +1163,7 @@ async def run_tt_tests(
         todo=todo(report, calls),
         more_questions=max(0, len(report.open_questions) - QUESTION_PAGE),
     )
+    return fit(result, report, states)
 
 
 def follow_ups(
@@ -1079,7 +1215,9 @@ FINISH = (
 )
 
 
-def next_step(report: Report, calls: list[dict] | None = None) -> str:
+def next_step(
+    report: Report, calls: list[dict] | None = None, shown: int = QUESTION_PAGE
+) -> str:
     """What the calling agent does next, in one place in every result
     (post-round 1 fixes 4, 12 and 19: agents left every question unanswered,
     decided NEEDS_REVIEW findings themselves, and opened few images)."""
@@ -1112,9 +1250,9 @@ def next_step(report: Report, calls: list[dict] | None = None) -> str:
         f"Not finished: {', '.join(tests)} stay NEEDS_REVIEW until you answer "
         f"the {len(qs)} open question(s)"
         + (
-            f" ({QUESTION_PAGE} are in open_questions now; each answer result "
+            f" ({shown} are in open_questions now; each answer result "
             "brings the next ones)"
-            if len(qs) > QUESTION_PAGE
+            if len(qs) > shown
             else " in open_questions"
         )
         + ". Answer them now, "
@@ -1124,15 +1262,17 @@ def next_step(report: Report, calls: list[dict] | None = None) -> str:
     )
 
 
-def todo(report: Report, calls: list[dict] | None = None) -> list[str]:
+def todo(
+    report: Report, calls: list[dict] | None = None, shown: int = QUESTION_PAGE
+) -> list[str]:
     """A short to-do list put last in every result (agent follow-through plan,
     change 2b: development run 7's agent said the instructions were "buried
     in 25-70k-character outputs" and asked for a short list at the end)."""
     out: list[str] = []
     qs = report.open_questions
     if qs:
-        shown = qs[:QUESTION_PAGE]
-        pics = sum(1 for q in shown if has_image(q.input))
+        shown_qs = qs[:shown]
+        pics = sum(1 for q in shown_qs if has_image(q.input))
         pic = (
             f"; {pics} name a picture: look and give `seen`, or "
             "`picture_error` with unsure"
@@ -1140,13 +1280,13 @@ def todo(report: Report, calls: list[dict] | None = None) -> list[str]:
             else ""
         )
         more = (
-            f" {len(qs) - len(shown)} more come with the answer result: "
+            f" {len(qs) - len(shown_qs)} more come with the answer result: "
             "answer those too, the same way, until none are left."
-            if len(qs) > len(shown)
+            if len(qs) > len(shown_qs)
             else ""
         )
         out.append(
-            f"[ ] Answer the {len(shown)} open question(s) in open_questions in "
+            f"[ ] Answer the {len(shown_qs)} open question(s) in open_questions in "
             f"one tobi_answer_questions call (run_id {report.run_id}){pic}.{more}"
         )
     calls = calls or []
@@ -1249,7 +1389,7 @@ async def answer_questions(
         if before.get(f.test_id) != (f.outcome, f.summary, f.note)
         or any(q.test_id == f.test_id for q in report.open_questions)
     ]
-    return AnswerResult(
+    result = AnswerResult(
         run_id=run_id,
         accepted=accepted,
         rejected=rejected,
@@ -1270,6 +1410,7 @@ async def answer_questions(
         todo=todo(report, calls),
         more_questions=max(0, len(report.open_questions) - QUESTION_PAGE),
     )
+    return fit(result, report, states)
 
 
 def server_may_make(call: dict) -> bool:
