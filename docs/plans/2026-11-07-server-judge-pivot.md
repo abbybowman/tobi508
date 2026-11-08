@@ -263,6 +263,11 @@ Add a disk-use check that stops new scans at 85% and says so.
   repeats, at least run 19's agent-with-pictures score (67/70), and every
   injection case answered as if the injected text were absent. Run it for
   Sonnet first, then Opus only for the types Sonnet misses.
+  **Added after round 2:** the gate also runs on real pages, round 2's
+  first-round questions (`evals/judging/round2-armc/first-round/`, 182
+  questions with Abby's keys), scored only on the cells a judge's answer
+  decides; and it caps false FAILs per type, not only false PASSes (Agent
+  C's 4.F J1 was wrong on 5-6 of 10 pages, all toward FAIL).
 - **Judging rounds against TT SCRT files:** unchanged, and stronger,
   since the judge no longer varies. If time allows, score round 2's
   remaining tests both ways (client agent as judge, server judge) on the
@@ -271,13 +276,79 @@ Add a disk-use check that stops new scans at 85% and says so.
   faithfully, never calls a result certified or compliant, and gives fix
   guidance that matches the spec and W3C technique.
 
+## What round 2 changed (2026-11-08)
+
+Round 2 ran Agent C, a stand-in for ApiJudge (`evals/agent/judge_c.py`:
+Sonnet 5.5 on the CLI route, one call per question, the untrusted block,
+pictures at native resolution, choices as an enum), beside Agents A and B
+([abc-score.md](../../evals/judging/round2-armc/abc-score.md)). What it
+means for this plan:
+
+- **The pivot holds.** A server judge finished every question (194 of
+  194, in each of 3 repeats, 0 failed calls) where the calling agent left
+  whole pages unanswered, and it gave the same result on 194 of 200
+  criterion cells across repeats. Agent B made 15-19 false PASSes per run;
+  no false PASS came from any judge's answer.
+- **Its errors are all toward FAIL, and they come from our questions,
+  not the model:** 4.F J1's rubric lets "differs from the visual order"
+  read as "does not preserve meaning", and its order picture draws boxes
+  for stops nobody can see; 9.C pairs unrelated content links. So ApiJudge
+  is switched on per question type, and 4.F and 9.C stay with a person
+  until post-round 2 fixes 12-14 pass the gate.
+- **Picture questions only, or all:** round 2 gives no reason to limit it
+  to pictures. Its errors were one picture type (4.F) and one text type
+  (9.C), both question problems; unsure was 35% on picture questions and
+  25-30% on text ones. Plan on all question types (Abby), each behind
+  the gate.
+- **The rules' own errors are bigger than any judge's** (3 false PASS and
+  2 missed fail cells, 13-15 false FAILs per run, all rules deciding
+  alone). ApiJudge work must not crowd out the principle-3 rule fixes
+  (post-round 2 fixes 1-7).
+- **People's load:** about 62 unsure answers per 10 pages go to a person.
+  Answer-once-per-site and the review UI's reviewer view matter for that.
+- **Cost and speed:** 1.71M input tokens per 10 pages (about 8.8k per
+  question; Home alone 794k for 63 questions, from the shared Tab-stop
+  list and full-page pictures), 7-8 minutes at 3 calls at a time. A
+  repeat with the cache warm cost a fifth as much: ApiJudge should put a
+  page's shared inputs first in the prompt and send a page's questions
+  together, so the cache serves them. Sonnet looks sufficient on this
+  evidence; Opus only per type, after the gate says so.
+- **Built already:** `Answer.answered_by` (set by the server), the request
+  and prompt draft (`judge_c.py`, `judge_c_prompt.md`), a failed call
+  retried once and then left open, unsure never retried, gate questions
+  (J0) answered before the rest of a page.
+
+## Sequencing to Nov 20 (2026-11-08)
+
+Three plans meet here: this one, the post-round 2 fixes
+([2026-11-08-post-round2-fixes.md](2026-11-08-post-round2-fixes.md)) and
+the [roadmap](../ROADMAP.md). Bundled by the files they touch, in order:
+
+| # | Branch | Contents | Why together |
+| --- | --- | --- | --- |
+| 1 | `apijudge` | ApiJudge in `judgment.py` from `judge_c.py` (endpoint, model and token from the environment; `judge_backend: "api"`; per question type switch; `judging_model` record); the judge-eval backend for it, with round 2's real-page packets | The Nov 20 core; Agent C already proved the request, the schema and the guards path |
+| 2 | `rules-principle3` | Post-round 2 fixes 1-6 (3.A unplayed video, 4.C exit and error states, 4.A click-to-play video, 5.D tab-away, 9.A-9.C other templates) | Accuracy before scale; each is one spec and one fixture |
+| 3 | `frames` | Fix 7: 5.x reads fields in frames (cross-origin frames as their own page with ANDI); the roadmap's per-test frame leftovers (5.A, 5.C, 5.F, 5.G; 4.D and 4.F's f19) | One shared reader for every test that skips frames today |
+| 4 | `questions-for-judges` | Fixes 12-14 (4.F rubric and order picture, 9.C pairing), with the cropping review; then the gate for 4.F and 9.C | They gate ApiJudge on those types |
+| 5 | `rules-false-fail` | Fixes 8-11 (5.A icon label, 5.C hidden controls, 19.A search page and quoted search) | Small; label pass and 19.A only |
+| 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | The person's side of the pivot |
+| 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Needs 1 and 6 |
+| 8 | `scorer-round3` | Fixes 15-17 (keys give Pass reasons; adjudications per criterion; judge-decided cells apart) | Before round 3's lock |
+
+Bundles 1 and 2 can run side by side (different files); 3 before 4's
+5.x parts; 5 any time. If time runs short before Nov 20, keep 1, 2, 6
+(the MCP closure only) and 7, and switch ApiJudge on only for the types
+that pass the gate.
+
 ## Nov 20 cut
 
-1. ApiJudge on Sonnet, picture questions first, behind the judge-eval gate.
+1. ApiJudge on Sonnet, every question type that passes the judge-eval
+   gate (real pages included); 4.F and 9.C after fixes 12-14.
 2. The judge-eval backend and its scores.
 3. Deploy on VAST: sign in from Claude Code, one page end to end.
 4. Store: run index and answers by content hash; retention and disk check.
-5. Round 2 scored with the server judge (and the client judge, if time).
+5. Round 2 scored with the server judge and the client judge: done
+   2026-11-08 (Agent C, `abc-score.md`); principle-3 rule fixes 1-6 built.
 6. Human answers only from TOBI's UI: the MCP path closed, roles, WebAuthn
    on submit; the evidence page (option A) for plain-language questions.
 7. Pitch: the agency controls the judge, a verified person has the last

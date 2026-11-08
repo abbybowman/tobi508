@@ -284,7 +284,8 @@ evals/          judge eval: fresh agents answer the open questions from isolated
                 judging.py (real pages against a tester's blind SCRT files,
                 commit and reveal; rounds in evals/judging/<round>/)
   agent/        agent eval: freeze.py, prompt.py, arms.py, run.py, providers.py,
-                score.py; node/ (Playwright MCP, pinned; frozen-init.cjs);
+                score.py; judge_c.py (Agent C: the server judge stand-in) and
+                judge_c_prompt.md (ApiJudge's draft prompt); node/ (Playwright MCP, pinned; frozen-init.cjs);
                 README.md (how to run a round)
 runs/           output (git-ignored)
 ```

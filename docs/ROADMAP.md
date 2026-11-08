@@ -76,6 +76,14 @@ test's leftovers are under "Per-test leftovers" below.
 
 ## Soon
 
+- **Toward Nov 20 (2026-11-08):** the bundled order of the server judge
+  (ApiJudge), the post-round 2 fixes and this list is in the pivot plan's
+  "Sequencing to Nov 20"
+  ([plans/2026-11-07-server-judge-pivot.md](plans/2026-11-07-server-judge-pivot.md));
+  the fixes, with evidence and decisions, in
+  [plans/2026-11-08-post-round2-fixes.md](plans/2026-11-08-post-round2-fixes.md).
+  Round 2 is scored ([evals/judging/round2-armc/abc-score.md](../evals/judging/round2-armc/abc-score.md)).
+
 - **2.B: content whose changes are random can be DOES NOT APPLY (found 2026-11-07; needs a rules decision).** A region that changed at a steady pace until 4 s but whose changes after 5 s all repeated what was shown (random colours, about 1 load in 16 for four colours) is "not still moving", so 2.B is DOES NOT APPLY. Option: a region with at least `MIN_CHANGES` changes at a steady pace whose last change is within about one period of the 5 s mark is NEEDS REVIEW, not DOES NOT APPLY (it moves outcomes only toward NEEDS REVIEW). [solutions/parallel-tests.md](solutions/parallel-tests.md).
 - **The settle rule can call a page settled before it reacts (found 2026-11-07).** It waits two animation frames (about 35 ms), then for 150 ms with no DOM change. A page whose first change comes later (a submit handler that starts a 50 ms timer, a reply to a request) is read as settled and quiet. 5.F then reads its attempt about 150 ms after the press: an error shown later is missed, and a page with no other indicator would be DOES NOT APPLY (A3). Fixture F20 starts its "checking" bar at once so that it tests M1; a variant whose bar starts on the first timer tick reproduces the gap. Options: a minimum wait after a submit press, or reading again after a second window when an attempt shows nothing. It needs a 4.C settle-rule decision, since every test uses the rule.
 - **Fixes found in agent eval round 1:** 20 fixes, all built, in

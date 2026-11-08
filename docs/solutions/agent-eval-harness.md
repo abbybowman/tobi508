@@ -125,3 +125,34 @@ frozen round. Plan: `docs/plans/2026-10-31-agent-eval.md`. Runbook:
     `pkill -f` whose pattern appears in the shell's own command line kills
     that shell too.
   - Record a stopped run under `attempts/` with a README.
+
+## Round 2 (2026-11-08)
+
+- **Pause a round blind, not scored, when it is broken.** Round 2's first
+  runs lost most cells to delivery problems (results over the client's
+  limits, slow replays; `large-pages-results-and-replays.md`). Both were
+  visible without the keys, so the round was paused unscored, fixed,
+  rerun into the same round, and the first runs kept and scored beside
+  the later ones. Scoring first would have unblinded the fix.
+- **Read the debrief and the transcript before blaming the agent.**
+  "The agent skipped 140 questions" was three results the CLI had saved
+  to a file. Count `exceeds maximum allowed tokens` and `Output too
+  large` in `transcript.json` for every Agent A run.
+- **Smaller conversations, same prompt.** Pairs (`--group-size 2`)
+  instead of groups of 5. Give cross-page tests pages of the same
+  template: pairing CILab with 14592 (different templates) turned 9.A's
+  Fail into Does Not Apply.
+- **A first-round state exists only while no one has answered.**
+  Answering rewrites each check's evidence file (`resume` writes state),
+  so a run's questions as first asked can be reused only from a run with
+  no `answers_recorded` in its `steps.jsonl`. Keep one unanswered run per
+  page if a later arm (Agent C) may need it, or plan a fresh run.
+- **Archive sets that reference each other.** A repeat that copies an
+  earlier folder repeats its evidence; the archive leaves out any file
+  over 100 kB identical to one in a reference folder and names its twin
+  (`same_as`), so sets are restored in order (`results/ARCHIVE.md`).
+  Info-ZIP's split mode (`zip -s`) produced a bad CRC on rejoin; one zip
+  cut with `split` and checked after rejoining did not.
+- **Debriefs for both arms** (`--debrief`, a neutral question): Agent B
+  said it marked criteria PASS it never tested, "because of cost and
+  time"; Agent A said it stopped "after the first batch" of a large page.
