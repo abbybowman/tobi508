@@ -1,0 +1,603 @@
+{
+  "disclaimer": "Agent-assisted findings only. This is NOT a certified DHS Trusted Tester result and must not be reported as one.",
+  "certified": false,
+  "run_id": "20261108T014518Z-a8bfe3",
+  "target": "https://svs.gsfc.nasa.gov/cilab/",
+  "tests": [
+    "2.A",
+    "2.B",
+    "2.C",
+    "2.D",
+    "3.A",
+    "4.A",
+    "4.B",
+    "4.C",
+    "4.D",
+    "4.E",
+    "4.F",
+    "5.A",
+    "5.B",
+    "5.C",
+    "5.D",
+    "5.F",
+    "5.G",
+    "5.H",
+    "9.A",
+    "9.B",
+    "9.C",
+    "19.A"
+  ],
+  "final_url": "https://svs.gsfc.nasa.gov/cilab/",
+  "other_pages": [
+    {
+      "n": 1,
+      "url": "https://svs.gsfc.nasa.gov/",
+      "final_url": "https://svs.gsfc.nasa.gov/",
+      "har": "evidence/pages/p1.har.zip",
+      "reused_from": "2026-11-08T01:38:33+00:00",
+      "cross_site_frames": [],
+      "replay_browser": "headless shell",
+      "frozen": true
+    },
+    {
+      "n": 2,
+      "url": "https://svs.gsfc.nasa.gov/help/",
+      "final_url": "https://svs.gsfc.nasa.gov/help/",
+      "har": "evidence/pages/p2.har.zip",
+      "reused_from": "2026-11-08T01:37:47+00:00",
+      "cross_site_frames": [],
+      "replay_browser": "headless shell",
+      "frozen": true
+    },
+    {
+      "n": 3,
+      "url": "https://svs.gsfc.nasa.gov/search/",
+      "final_url": "https://svs.gsfc.nasa.gov/search/",
+      "har": "evidence/pages/p3.har.zip",
+      "reused_from": "2026-11-08T01:37:47+00:00",
+      "cross_site_frames": [],
+      "replay_browser": "headless shell",
+      "frozen": true
+    },
+    {
+      "n": 4,
+      "url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+      "final_url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+      "har": "evidence/pages/p4.har.zip",
+      "reused_from": "2026-11-08T01:37:47+00:00",
+      "cross_site_frames": [],
+      "replay_browser": "headless shell",
+      "frozen": true
+    }
+  ],
+  "follow_ups_made": [],
+  "follow_up_calls": [],
+  "live_pages": [
+    {
+      "n": 1,
+      "url": "https://svs.gsfc.nasa.gov/search?search=Conceptual+Image+Laboratory+-+Home",
+      "final_url": "https://svs.gsfc.nasa.gov/search/?search=Conceptual+Image+Laboratory+-+Home",
+      "har": "evidence/pages/live1.har.zip",
+      "reused_from": null,
+      "cross_site_frames": [],
+      "replay_browser": "headless shell",
+      "frozen": false
+    }
+  ],
+  "cross_site_frames": [],
+  "replay_browser": "headless shell",
+  "frozen_pages": "tested_frozen",
+  "started_at": "2026-11-08T01:45:18.589430Z",
+  "finished_at": "2026-11-08T01:45:36.985074Z",
+  "versions": {
+    "tobi508": "0.1.0",
+    "andi": "29.2.2 (e491d9553bf0)",
+    "jquery": "3.7.1",
+    "scrt": "5.2.0 (63fe6878d72d)",
+    "playwright": "1.63.0",
+    "browser_channel": "chromium",
+    "browser": "153.0.8010.12",
+    "os": "Linux-6.18.44-fc-v310-x86_64-with-glibc2.39",
+    "python": "3.11.18",
+    "rules_spec": {
+      "19.A": "1.1.1 (sha256:d3bafae60b60)",
+      "2.A": "1.0.0 (sha256:3f015277684d)",
+      "2.B": "1.1.0 (sha256:4a5aedf95046)",
+      "2.C": "1.0.0 (sha256:7679a1bfc36e)",
+      "2.D": "1.1.0 (sha256:549cfbf939a0)",
+      "3.A": "1.0.0 (sha256:91a9fb82af20)",
+      "4.A": "1.2.1 (sha256:c53274be5379)",
+      "4.B": "1.2.0 (sha256:6efdf3962743)",
+      "4.C": "1.9.0 (sha256:10c3df193a25)",
+      "4.D": "1.3.0 (sha256:c89356373a47)",
+      "4.E": "1.2.0 (sha256:c7b525be27a9)",
+      "4.F": "1.3.0 (sha256:f1b49fa85a3a)",
+      "5.A": "1.2.0 (sha256:e1d41d45e7a7)",
+      "5.B": "1.2.0 (sha256:598414ee9b75)",
+      "5.C": "1.4.0 (sha256:4398005bf782)",
+      "5.D": "1.2.0 (sha256:69d1ec7b0ba1)",
+      "5.F": "1.3.1 (sha256:a28584599d74)",
+      "5.G": "1.2.1 (sha256:659b888a5006)",
+      "5.H": "1.1.0 (sha256:3e11ad6ea5a5)",
+      "9.A": "1.0.0 (sha256:ee0e3b6d0306)",
+      "9.B": "1.0.0 (sha256:cefd5147c188)",
+      "9.C": "1.1.1 (sha256:a2e1270ea0a0)"
+    },
+    "judging_model": "claude-sonnet-5-5",
+    "run_settings": {
+      "settle_quiet_ms": 150,
+      "record_scroll_passes": 1,
+      "run_limit_s": 600,
+      "other_page_s": 20,
+      "no_time_limit": true,
+      "bypass_csp": true
+    },
+    "display": {
+      "viewport_width": 1280,
+      "viewport_height": 900,
+      "inner_width": 1280,
+      "inner_height": 900,
+      "device_pixel_ratio": 1.0
+    }
+  },
+  "findings": [
+    {
+      "test_id": "2.A",
+      "test_name": "1.4.2-audio-control",
+      "outcome": "NEEDS_REVIEW",
+      "summary": "This test could not be performed: this page has audio we could not play or measure from our recording (its file is larger than we record). A person should load the page and listen.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/2a.json"
+      ],
+      "rationale": "this page has audio we could not play or measure from our recording (its file is larger than we record). A person should load the page and listen.",
+      "note": "This test could not be performed",
+      "decided_by": "rule",
+      "rows": [
+        "A2",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "2.B",
+      "test_name": "2.2.2-blinking-moving-scrolling",
+      "outcome": "DNA",
+      "summary": "We watched this page for 6.5 seconds. Nothing on it moved, blinked or scrolled for more than 5 seconds, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/2b.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A2",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "2.C",
+      "test_name": "2.2.2-auto-updating",
+      "outcome": "NEEDS_REVIEW",
+      "summary": "This test could not be performed: We watched this page for 6.5 seconds without touching it, looking for content that is still changing by itself after 5 seconds, like a carousel, ticker or counter. Nothing was, but we saw signs that the page may update by itself: it sets a timer of 86400 s, longer than we watched. A person should watch the page for a minute to see whether anything keeps changing.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/2c.json"
+      ],
+      "rationale": "We watched this page for 6.5 seconds without touching it, looking for content that is still changing by itself after 5 seconds, like a carousel, ticker or counter. Nothing was, but we saw signs that the page may update by itself: it sets a timer of 86400 s, longer than we watched. A person should watch the page for a minute to see whether anything keeps changing.",
+      "note": "This test could not be performed",
+      "decided_by": "rule",
+      "rows": [
+        "A2",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "2.D",
+      "test_name": "4.1.2-change-notify-auto",
+      "outcome": "NEEDS_REVIEW",
+      "summary": "This test could not be performed: We watched this page for 6.5 seconds without touching it, looking for content that is still changing by itself after 5 seconds, like a carousel, ticker or counter. Nothing was, but we saw signs that the page may update by itself: it sets a timer of 86400 s, longer than we watched. A person should watch the page for a minute to see whether anything keeps changing.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/2d.json"
+      ],
+      "rationale": "We watched this page for 6.5 seconds without touching it, looking for content that is still changing by itself after 5 seconds, like a carousel, ticker or counter. Nothing was, but we saw signs that the page may update by itself: it sets a timer of 86400 s, longer than we watched. A person should watch the page for a minute to see whether anything keeps changing.",
+      "note": "This test could not be performed",
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "2.C-A2",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "3.A",
+      "test_name": "2.3.1-flashing",
+      "outcome": "DNA",
+      "summary": "Nothing on this page flashes more than three times a second, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/3a.json"
+      ],
+      "rationale": "Spec A4. Triggers: none. No trigger fired, so no capture ran.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A4"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "4.A",
+      "test_name": "2.1.1-keyboard-access",
+      "outcome": "PASS",
+      "summary": "We tabbed to every element, pressed Enter or Space on each custom control, and looked for anything a mouse can use that the keyboard cannot; we found nothing a keyboard user would miss. We looked for: things a mouse can click that the keyboard never reaches, including inside frames; menus that open when the mouse rests on them; custom controls that ignore Enter and Space; and tooltips with information found nowhere else. Results are for the browser used (version 153.0.8010.12).",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/4a.json"
+      ],
+      "rationale": "Spec G4. no instances",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A3",
+        "G4"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "4.B",
+      "test_name": "2.1.1-no-keystroke-timing",
+      "outcome": "PASS",
+      "summary": "Nothing on this page asks you to press keys at a certain speed, hold a key down, or press a key several times quickly.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/4b.json"
+      ],
+      "rationale": "Spec G4. p:M1",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A3",
+        "p:M1",
+        "G4"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "4.C",
+      "test_name": "2.1.2-no-keyboard-trap",
+      "outcome": "PASS",
+      "summary": "We moved through the whole page with Tab and with Shift+Tab, and keyboard focus never got trapped.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/4c.json"
+      ],
+      "rationale": "Spec G4. Every trap found can be left by keyboard, and both passes reached the whole page.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A3",
+        "G4"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "4.D",
+      "test_name": "2.4.7-focus-visible",
+      "outcome": "PASS",
+      "summary": "We moved keyboard focus to each of the 4 elements we could reach, and every one showed where focus was.",
+      "instances": [
+        {
+          "selector": "html > body > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(1)",
+          "frame_path": [],
+          "description": "d1 [M6 PASS] \"Info Icon\" (link) changed 312 px, strongly 275 px",
+          "evidence_refs": [
+            "evidence/shots/4d/P1-0001-on.png",
+            "evidence/shots/4d/P1-0001-off.png",
+            "evidence/shots/4d/P1-0001-diff.png"
+          ]
+        },
+        {
+          "selector": "html > body > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(2)",
+          "frame_path": [],
+          "description": "d2 [M6 PASS] \"Portfolio Icon\" (link) changed 307 px, strongly 259 px",
+          "evidence_refs": [
+            "evidence/shots/4d/P1-0002-on.png",
+            "evidence/shots/4d/P1-0002-off.png",
+            "evidence/shots/4d/P1-0002-diff.png"
+          ]
+        },
+        {
+          "selector": "html > body > div:nth-of-type(1) > div:nth-of-type(2) > a:nth-of-type(3)",
+          "frame_path": [],
+          "description": "d3 [M6 PASS] \"Facebook Icon\" (link) changed 295 px, strongly 252 px",
+          "evidence_refs": [
+            "evidence/shots/4d/P1-0003-on.png",
+            "evidence/shots/4d/P1-0003-off.png",
+            "evidence/shots/4d/P1-0003-diff.png"
+          ]
+        },
+        {
+          "selector": "#contactUsLink",
+          "frame_path": [],
+          "description": "d4 [M6 PASS] \"Mail Icon\" (link) changed 382 px, strongly 256 px",
+          "evidence_refs": [
+            "evidence/shots/4d/P1-0004-on.png",
+            "evidence/shots/4d/P1-0004-off.png",
+            "evidence/shots/4d/P1-0004-diff.png"
+          ]
+        }
+      ],
+      "evidence_refs": [
+        "evidence/4d.json"
+      ],
+      "rationale": "Spec G4. d1:M6; d2:M6; d3:M6; d4:M6",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A3",
+        "d1:M6",
+        "d2:M6",
+        "d3:M6",
+        "d4:M6",
+        "G4"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "4.E",
+      "test_name": "3.2.1-on-focus",
+      "outcome": "PASS",
+      "summary": "We moved keyboard focus to each element we could reach, and none of them opened a new page or window or moved focus somewhere else on its own.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/4e.json"
+      ],
+      "rationale": "Spec G4. no instances",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A3",
+        "G4"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "4.F",
+      "test_name": "2.4.3-focus-order-meaning",
+      "outcome": "PASS",
+      "summary": "Keyboard focus moves through the page in an order that follows how it reads, forward and backward.",
+      "instances": [
+        {
+          "selector": null,
+          "frame_path": [],
+          "description": "o1 [M4 PASS] O the page",
+          "evidence_refs": []
+        }
+      ],
+      "evidence_refs": [
+        "evidence/4f.json"
+      ],
+      "rationale": "Spec G5. o1:M4",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A4",
+        "o1:M4",
+        "G5"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.A",
+      "test_name": "3.3.2-label-provided",
+      "outcome": "DNA",
+      "summary": "This page has no form fields, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5a.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.B",
+      "test_name": "2.4.6-label-descriptive",
+      "outcome": "DNA",
+      "summary": "This page has no form fields, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5b.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.C",
+      "test_name": "1.3.1-programmatic-label",
+      "outcome": "DNA",
+      "summary": "This page has no form fields or buttons, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5c.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.D",
+      "test_name": "3.2.2-on-input",
+      "outcome": "DNA",
+      "summary": "This page has no form fields, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5d.json"
+      ],
+      "rationale": "Spec A1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.F",
+      "test_name": "3.3.1-error-identification",
+      "outcome": "DNA",
+      "summary": "This page has no form fields, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5f.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.G",
+      "test_name": "3.3.3-error-suggestion",
+      "outcome": "DNA",
+      "summary": "This page has no form fields, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5g.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "5.H",
+      "test_name": "3.3.4-error-prevention",
+      "outcome": "DNA",
+      "summary": "This page has no form to submit, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/5h.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A1",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "9.A",
+      "test_name": "2.4.1-bypass-function",
+      "outcome": "NEEDS_REVIEW",
+      "summary": "We could not finish this test, so a person needs to check it. Only the first 600 pieces of content of other page 1 were read. Only the first 600 pieces of content of other page 4 were read.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/9a.json"
+      ],
+      "rationale": "Spec G3.",
+      "note": "This test could not be performed",
+      "decided_by": "rule",
+      "rows": [
+        "A5",
+        "G3"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "9.B",
+      "test_name": "3.2.3-consistent-navigation",
+      "outcome": "DNA",
+      "summary": "No navigation on this page appears on the other pages you gave, so this test does not apply.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/9b.json"
+      ],
+      "rationale": "Spec G1.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A3",
+        "G1"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "9.C",
+      "test_name": "3.2.4-consistent-identification",
+      "outcome": "NEEDS_REVIEW",
+      "summary": "We could not finish this test, so a person needs to check it. Only the first 600 pieces of content of other page 1 were read. Only the first 600 pieces of content of other page 4 were read.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/9c.json"
+      ],
+      "rationale": "Spec G3. Incomplete: Only the first 600 pieces of content of other page 1 were read.; Only the first 600 pieces of content of other page 4 were read.",
+      "note": "This test could not be performed",
+      "decided_by": "rule",
+      "rows": [
+        "A4",
+        "G3"
+      ],
+      "confidence": null
+    },
+    {
+      "test_id": "19.A",
+      "test_name": "2.4.5-multiple-ways",
+      "outcome": "FAIL",
+      "summary": "We found only no way to reach this page, and nothing else to check. The site search did not find this page when searching for its heading. Add a second way, such as a link in the site navigation, a site map or a site search that finds it.",
+      "instances": [],
+      "evidence_refs": [
+        "evidence/19a.json"
+      ],
+      "rationale": "Kinds: []; links: 0; search not_found; pages: other page 1, other page 2, other page 3, other page 4.",
+      "note": null,
+      "decided_by": "rule",
+      "rows": [
+        "A5",
+        "W1",
+        "W3",
+        "G4"
+      ],
+      "confidence": null
+    }
+  ],
+  "questions": [],
+  "open_questions": [],
+  "answers": [],
+  "judge_backend": "client",
+  "errors": [],
+  "evidence_dir": "evidence"
+}
