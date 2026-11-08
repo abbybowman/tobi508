@@ -3,6 +3,7 @@
 
     uv run python -m evals.agent.run --arm a evals/judging/<round>
     uv run python -m evals.agent.run --arm b evals/judging/<round>
+    uv run python -m evals.agent.run --arm a --group 1 --label g1-1 <round>
 
 One conversation covers every page of the round. The arm sees only the task
 prompt (prompt.py) and its tools: its MCP servers (arms.py), a tool to read
@@ -354,6 +355,26 @@ async def leak_check(provider, log: StepLog, servers: list[Server]) -> dict:
     return out
 
 
+def page_groups(text: str) -> list[list[str]]:
+    """pages.txt split at "# Group ..." comment lines, in order (group 1 is
+    the first). Pages before the first such line form their own group. A
+    round too large for one conversation runs a group per arm run (Abby,
+    2026-11-08, round 2); each run is scored on the pages it was given."""
+    from evals.judging import parse_pages
+
+    parse_pages(text)  # the whole file must be valid
+    groups: list[list[str]] = [[]]
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("#"):
+            if line.lstrip("#").strip().lower().startswith("group") and groups[-1]:
+                groups.append([])
+            continue
+        if line:
+            groups[-1].append(next(p for p in line.split() if "://" in p))
+    return [g for g in groups if g]
+
+
 def _describe(exc: BaseException) -> str:
     """The real cause, not "unhandled errors in a TaskGroup"."""
     while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
@@ -386,6 +407,7 @@ async def run_arm(
     egress_settings=None,
     label: str | None = None,
     prompt_version: str | None = None,
+    group: int | None = None,
 ) -> dict:
     """Run arm "a" or "b" on round folder `rd`; returns the summary.
 
@@ -395,7 +417,7 @@ async def run_arm(
     name = f"arm-{arm}" + (f"-{label}" if label else "")
     if servers is not None or arm == "a":
         return await _run_arm(
-            rd, arm, provider, servers, check_leaks, name, prompt_version
+            rd, arm, provider, servers, check_leaks, name, prompt_version, group
         )
     from tobi508.config import Settings
     from tobi508.egress import EgressProxy
@@ -410,7 +432,7 @@ async def run_arm(
             live_log=out / "live.jsonl",
         )
         s = await _run_arm(
-            rd, arm, provider, servers, check_leaks, name, prompt_version
+            rd, arm, provider, servers, check_leaks, name, prompt_version, group
         )
     s["egress_refused"] = proxy.refused[:100]
     (out / "summary.json").write_text(json.dumps(s, indent=1, default=str) + "\n")
@@ -418,7 +440,7 @@ async def run_arm(
 
 
 async def _run_arm(
-    rd, arm, provider, servers, check_leaks, name, prompt_version=None
+    rd, arm, provider, servers, check_leaks, name, prompt_version=None, group=None
 ) -> dict:
     from evals.agent import prompt_dev
     from evals.judging import _pages
@@ -436,6 +458,11 @@ async def _run_arm(
     if out.exists() and any(out.iterdir()):
         raise RuntimeError(f"{out} is not empty: this arm already ran")
     urls = [u for u, _ in _pages(rd)]
+    if group is not None:
+        groups = page_groups((rd / "pages.txt").read_text("utf-8"))
+        if not 1 <= group <= len(groups):
+            raise RuntimeError(f"pages.txt has {len(groups)} group(s), not {group}")
+        urls = groups[group - 1]
     task = prompt_dev.task(urls, version)
     if servers is None:
         servers = tool_arm(frozen, provider.model, out / "runs")
@@ -449,6 +476,7 @@ async def _run_arm(
         "task_sha256": hashlib.sha256(task.encode()).hexdigest(),
         "code_commit": _commit(),
         "pages": urls,
+        "group": group,
         "servers": [
             {"name": s.name, "command": s.command, "args": s.args} for s in servers
         ],
@@ -547,6 +575,12 @@ def main(argv: list[str]) -> None:
         "(tools off) why it left questions or follow-up calls undone; saved "
         "to debrief.md, never scored",
     )
+    ap.add_argument(
+        "--group",
+        type=int,
+        help='test only group N of pages.txt (its "# Group" comment lines, '
+        "first is 1); scored on those pages",
+    )
     ap.add_argument("round", type=Path)
     a = ap.parse_args(argv)
     provider = (
@@ -559,7 +593,14 @@ def main(argv: list[str]) -> None:
         else AnthropicMessages.from_env()
     )
     s = asyncio.run(
-        run_arm(a.round, a.arm, provider, label=a.label, prompt_version=a.prompt)
+        run_arm(
+            a.round,
+            a.arm,
+            provider,
+            label=a.label,
+            prompt_version=a.prompt,
+            group=a.group,
+        )
     )
     print(json.dumps({k: s[k] for k in ("ended", "wall_s", "tokens", "tool_calls")}))
     if s.get("error"):

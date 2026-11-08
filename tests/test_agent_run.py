@@ -260,3 +260,18 @@ def test_the_leak_check_ignores_the_arms_own_server_instructions():
     assert "trusted tester" not in str(_without_server_instructions(got)).lower()
     leaked = {**got, "project": "a Trusted Tester repository"}
     assert "trusted tester" in str(_without_server_instructions(leaked)).lower()
+
+
+def test_page_groups_split_at_group_comments():
+    h = "a" * 64
+    text = (
+        "# Group one\n"
+        f"https://x.gov/1 {h}\nhttps://x.gov/2 {h}\n\n"
+        "# Group two\n# a note\n"
+        f"https://x.gov/3 {h}\n"
+    )
+    assert agent_run.page_groups(text) == [
+        ["https://x.gov/1", "https://x.gov/2"],
+        ["https://x.gov/3"],
+    ]
+    assert agent_run.page_groups(f"https://x.gov/1 {h}\n") == [["https://x.gov/1"]]
