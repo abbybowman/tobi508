@@ -1,0 +1,15 @@
+{"ts":"2026-11-08T14:32:25.739268Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/5144/","tests":["19.A"]}}
+{"ts":"2026-11-08T14:32:26.237005Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T14:32:26.250862Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/5144/","har":"pages/009.har.zip"}}
+{"ts":"2026-11-08T14:32:26.263098Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/4914/","har":"pages/010.har.zip"}}
+{"ts":"2026-11-08T14:32:26.323282Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/4914/","seconds":0.07}}
+{"ts":"2026-11-08T14:32:26.334187Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.01}}
+{"ts":"2026-11-08T14:32:26.334305Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/5144/","redirects":[],"seconds":0.1}}
+{"ts":"2026-11-08T14:32:26.611512Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-08T14:32:30.302163Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T14:32:32.676402Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search","live":true}}
+{"ts":"2026-11-08T14:32:33.149087Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://svs.gsfc.nasa.gov/search/"}}
+{"ts":"2026-11-08T14:32:35.691826Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-08T14:32:35.842176Z","step":"captured_live","status":"ok","detail":{"n":1,"seconds":3.17}}
+{"ts":"2026-11-08T14:32:36.675586Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":10.27}}}
+{"ts":"2026-11-08T14:32:36.787487Z","step":"run_end","status":"ok","detail":{}}
