@@ -1,0 +1,277 @@
+{
+ "arm": "b",
+ "route": "claude-code-cli",
+ "model_requested": "claude-sonnet-5-5",
+ "prompt_version": "round1-v1",
+ "task_sha256": "710e4c8ddfbb6b76bf983b77a8361fdcef02b28e298fd7271e2c58f8e7edb005",
+ "code_commit": "c039701e6bb79694317265bfef45f4ec4c5623ae",
+ "pages": [
+  "https://svs.gsfc.nasa.gov/14592/",
+  "https://svs.gsfc.nasa.gov/14194/",
+  "https://svs.gsfc.nasa.gov/5340/",
+  "https://svs.gsfc.nasa.gov/5144/",
+  "https://svs.gsfc.nasa.gov/4914/"
+ ],
+ "group": 2,
+ "servers": [
+  {
+   "name": "browser",
+   "command": "/home/user/tobi508/evals/agent/node/node_modules/.bin/playwright-mcp",
+   "args": [
+    "--headless",
+    "--isolated",
+    "--no-sandbox",
+    "--no-webmcp",
+    "--executable-path",
+    "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome",
+    "--init-page",
+    "/home/user/tobi508/evals/agent/node/frozen-init.cjs",
+    "--output-dir",
+    "/home/user/tobi508/evals/judging/round2/results/arm-b-g2-1/browser-files",
+    "--proxy-server",
+    "http://127.0.0.1:37945"
+   ]
+  }
+ ],
+ "started_at": "2026-11-08T02:29:23.384925+00:00",
+ "leak_check": {
+  "answer": {
+   "user": null,
+   "project": null,
+   "instructions": []
+  },
+  "leaked": [],
+  "usage": {
+   "claude-sonnet-5-5": {
+    "inputTokens": 2,
+    "outputTokens": 20,
+    "cacheReadInputTokens": 6945,
+    "cacheCreationInputTokens": 561,
+    "webSearchRequests": 0,
+    "costUSD": 0.0031425,
+    "contextWindow": 1000000,
+    "maxOutputTokens": 128000,
+    "thinkingTokens": 0,
+    "cacheCreationEphemeral5mInputTokens": 0,
+    "cacheCreationEphemeral1hInputTokens": 561,
+    "canonicalModel": "claude-sonnet-5-5",
+    "provider": "firstParty",
+    "costBasis": "list"
+   }
+  },
+  "model": "claude-sonnet-5-5",
+  "init": {
+   "tools": [
+    "mcp__browser__browser_click",
+    "mcp__browser__browser_close",
+    "mcp__browser__browser_console_messages",
+    "mcp__browser__browser_drag",
+    "mcp__browser__browser_drop",
+    "mcp__browser__browser_emulate_media",
+    "mcp__browser__browser_evaluate",
+    "mcp__browser__browser_file_upload",
+    "mcp__browser__browser_fill_form",
+    "mcp__browser__browser_find",
+    "mcp__browser__browser_handle_dialog",
+    "mcp__browser__browser_hover",
+    "mcp__browser__browser_navigate",
+    "mcp__browser__browser_navigate_back",
+    "mcp__browser__browser_network_request",
+    "mcp__browser__browser_network_requests",
+    "mcp__browser__browser_press_key",
+    "mcp__browser__browser_resize",
+    "mcp__browser__browser_select_option",
+    "mcp__browser__browser_snapshot",
+    "mcp__browser__browser_tabs",
+    "mcp__browser__browser_take_screenshot",
+    "mcp__browser__browser_type",
+    "mcp__browser__browser_wait_for"
+   ],
+   "mcp_servers": [
+    {
+     "name": "browser",
+     "status": "connected",
+     "source": "dynamic"
+    }
+   ],
+   "skills": []
+  }
+ },
+ "init": {
+  "tools": [
+   "Task",
+   "Read",
+   "WebFetch",
+   "WebSearch",
+   "mcp__browser__browser_click",
+   "mcp__browser__browser_close",
+   "mcp__browser__browser_console_messages",
+   "mcp__browser__browser_drag",
+   "mcp__browser__browser_drop",
+   "mcp__browser__browser_emulate_media",
+   "mcp__browser__browser_evaluate",
+   "mcp__browser__browser_file_upload",
+   "mcp__browser__browser_fill_form",
+   "mcp__browser__browser_find",
+   "mcp__browser__browser_handle_dialog",
+   "mcp__browser__browser_hover",
+   "mcp__browser__browser_navigate",
+   "mcp__browser__browser_navigate_back",
+   "mcp__browser__browser_network_request",
+   "mcp__browser__browser_network_requests",
+   "mcp__browser__browser_press_key",
+   "mcp__browser__browser_resize",
+   "mcp__browser__browser_select_option",
+   "mcp__browser__browser_snapshot",
+   "mcp__browser__browser_tabs",
+   "mcp__browser__browser_take_screenshot",
+   "mcp__browser__browser_type",
+   "mcp__browser__browser_wait_for"
+  ],
+  "mcp_servers": [
+   {
+    "name": "browser",
+    "status": "connected",
+    "source": "dynamic"
+   }
+  ],
+  "model": "claude-sonnet-5-5",
+  "agents": [
+   "claude",
+   "claude-code-guide",
+   "Explore",
+   "general-purpose",
+   "Plan",
+   "statusline-setup"
+  ],
+  "skills": []
+ },
+ "model_usage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 12,
+   "outputTokens": 6594,
+   "cacheReadInputTokens": 97464,
+   "cacheCreationInputTokens": 13573,
+   "webSearchRequests": 0,
+   "costUSD": 0.1300024,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1323,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 13573,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "cli_usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 13573,
+  "cache_read_input_tokens": 97464,
+  "output_tokens": 6594,
+  "output_tokens_details": {
+   "thinking_tokens": 1323
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13573,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 4530,
+    "cache_read_input_tokens": 22609,
+    "cache_creation_input_tokens": 1143,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1143
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "cli_duration_ms": 50474,
+ "num_turns": 7,
+ "cost_usd_list_price": 0.1300024,
+ "exit_code": 0,
+ "is_error": false,
+ "usage_windows": {
+  "first": [
+   {
+    "status": "allowed",
+    "resetsAt": 1794119400,
+    "rateLimitType": "five_hour",
+    "overageStatus": "rejected",
+    "overageDisabledReason": "org_level_disabled",
+    "isUsingOverage": false,
+    "unifiedWindows": {
+     "five_hour": {
+      "utilization": 0.1,
+      "resetsAt": 1794119400,
+      "status": "allowed"
+     },
+     "seven_day": {
+      "utilization": 0.36,
+      "resetsAt": 1794549600,
+      "status": "allowed"
+     }
+    }
+   }
+  ],
+  "last": [
+   {
+    "status": "allowed",
+    "resetsAt": 1794119400,
+    "rateLimitType": "five_hour",
+    "overageStatus": "rejected",
+    "overageDisabledReason": "org_level_disabled",
+    "isUsingOverage": false,
+    "unifiedWindows": {
+     "five_hour": {
+      "utilization": 0.11,
+      "resetsAt": 1794119400,
+      "status": "allowed"
+     },
+     "seven_day": {
+      "utilization": 0.36,
+      "resetsAt": 1794549600,
+      "status": "allowed"
+     }
+    }
+   }
+  ]
+ },
+ "ended": "completed",
+ "finished_at": "2026-11-08T02:30:18.943585+00:00",
+ "wall_s": 55.6,
+ "tokens": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 13573,
+  "cache_read_input_tokens": 97464,
+  "output_tokens": 6594
+ },
+ "models_reported": [
+  "claude-sonnet-5-5"
+ ],
+ "tool_calls": {
+  "mcp__browser__browser_navigate": 2,
+  "mcp__browser__browser_evaluate": 4
+ },
+ "model_calls": 6,
+ "egress_refused": [
+  {
+   "host": "mtalk.google.com",
+   "port": 5228,
+   "reason": "port 5228 is not allowed",
+   "policy": true
+  }
+ ]
+}
