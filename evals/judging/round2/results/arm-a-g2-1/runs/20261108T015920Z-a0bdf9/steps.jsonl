@@ -1,0 +1,37 @@
+{"ts":"2026-11-08T01:59:20.689497Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/5340/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-08T01:59:22.143664Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T01:59:22.145520Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/5340/","har":"pages/008.har.zip"}}
+{"ts":"2026-11-08T01:59:22.211773Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/14592/","seconds":0.07}}
+{"ts":"2026-11-08T01:59:22.247694Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/14194/","seconds":0.04}}
+{"ts":"2026-11-08T01:59:22.247823Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/5340/","redirects":[],"seconds":0.1}}
+{"ts":"2026-11-08T01:59:23.059649Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-08T01:59:36.506669Z","step":"settle_ignore","status":"ok","detail":{"regions":1}}
+{"ts":"2026-11-08T02:01:11.260602Z","step":"walk","status":"ok","detail":{"P1":{"end":"loop","presses":54,"cap":311},"P2":{"end":"stuck","presses":5,"cap":311},"cost":{"loads":4,"presses":118,"quick":0,"slow_redos":0,"seconds":108.87}}}
+{"ts":"2026-11-08T02:01:41.940052Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":30.68}}}
+{"ts":"2026-11-08T02:01:41.940395Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:02:23.490542Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T02:02:54.696661Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":72.76}}}
+{"ts":"2026-11-08T02:02:54.701405Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:04:32.039335Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":2,"presses":57,"quick":46,"slow_redos":0,"seconds":97.33}}}
+{"ts":"2026-11-08T02:04:38.352878Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":6.31}}}
+{"ts":"2026-11-08T02:04:38.353962Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:04:38.355469Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:04:38.356359Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:04:38.357038Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:04:43.070532Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":4.71}}}
+{"ts":"2026-11-08T02:04:56.135439Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":13.06}}}
+{"ts":"2026-11-08T02:05:00.803716Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":4.67}}}
+{"ts":"2026-11-08T02:07:53.937126Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T02:08:39.441815Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":16,"presses":709,"quick":500,"slow_redos":0,"seconds":218.64}}}
+{"ts":"2026-11-08T02:08:39.443555Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:09:00.791011Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":6,"quick":1,"slow_redos":0,"seconds":21.35}}}
+{"ts":"2026-11-08T02:09:03.066894Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":1,"presses":2,"quick":1,"slow_redos":0,"seconds":2.28}}}
+{"ts":"2026-11-08T02:09:03.067423Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:09:03.067984Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:09:06.728442Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":3.66}}}
+{"ts":"2026-11-08T02:09:06.729055Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:09:06.729554Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T02:09:07.081503Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-08T02:09:16.297734Z","step":"answers_recorded","status":"ok","detail":{"accepted":["2.B-m1-J1","4.A-k1-J1","4.A-k2-J1","4.A-k3-J1","4.A-k4-J1","4.A-k5-J1","4.A-k6-J1","4.A-k7-J1","4.A-k8-J1","4.A-k9-J1"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-08T02:09:23.372073Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-k10-J1","4.A-k11-J1","4.A-k12-J1","4.A-k13-J1","4.A-k14-J1","4.A-k15-J1","4.A-k16-J1","4.C-i1-J2","4.F-o1-J1"],"rejected":["4.C-i1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure"],"errors":[]}}
+{"ts":"2026-11-08T02:10:11.460041Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.C-i1-J1"],"rejected":[],"errors":[]}}

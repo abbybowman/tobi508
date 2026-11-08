@@ -1,0 +1,17 @@
+{"ts":"2026-11-08T01:55:57.459770Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/14194/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-08T01:55:58.035030Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T01:55:58.071463Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/14194/","har":"pages/007.har.zip"}}
+{"ts":"2026-11-08T01:55:58.112666Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/14592/","har":"pages/006.har.zip"}}
+{"ts":"2026-11-08T01:55:58.208442Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/14592/","seconds":0.13}}
+{"ts":"2026-11-08T01:55:58.212623Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/5340/","seconds":0.0}}
+{"ts":"2026-11-08T01:55:58.212727Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/14194/","redirects":[],"seconds":0.18}}
+{"ts":"2026-11-08T01:55:58.504752Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-08T01:56:04.210268Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T01:56:28.663845Z","step":"walk","status":"error","detail":{"error":"TimeoutError: Page.goto: Timeout 30000ms exceeded.","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":30.38}}}
+{"ts":"2026-11-08T01:57:06.395326Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":37.73}}}
+{"ts":"2026-11-08T01:57:51.755217Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":45.36}}}
+{"ts":"2026-11-08T01:57:51.756344Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:57:58.976170Z","step":"settle_ignore","status":"ok","detail":{"regions":1}}
+{"ts":"2026-11-08T01:57:58.977499Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":7.22}}}
+{"ts":"2026-11-08T01:59:10.889949Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":71.91}}}
+{"ts":"2026-11-08T01:59:20.687517Z","step":"run_end","status":"error","detail":{}}
