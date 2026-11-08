@@ -33,22 +33,24 @@ test from the scorer's `_server` function, which the scorer runs only for
 
 ### The tool per TT test
 
+
 | Run | Scored | False PASS | Missed fail (DNA) | Agree (of decided) | False FAIL | Other | Needs review | Weighted |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| A run 1 (2 x 5 pages) tool | 220 | 3 | 0 | 80/102 | 14 | 5 | 118 | 52 |
-| A run 2 (5 x 2 pages) tool | 220 | 4 | 2 | 97/129 | 17 | 9 | 91 | 53 |
-| C repeat 1 tool | 220 | 4 | 2 | 93/134 | 26 | 9 | 86 | 40 |
-| C repeat 2 tool | 220 | 4 | 2 | 93/133 | 25 | 9 | 87 | 41 |
-| C repeat 3 tool | 220 | 4 | 2 | 93/132 | 24 | 9 | 88 | 42 |
+| A run 1 (2 x 5 pages) tool | 220 | 2 | 0 | 80/102 | 14 | 5 | 118 | 56 |
+| A run 2 (5 x 2 pages) tool | 220 | 3 | 2 | 97/129 | 17 | 9 | 91 | 57 |
+| C repeat 1 tool | 220 | 3 | 2 | 93/134 | 26 | 9 | 86 | 44 |
+| C repeat 2 tool | 220 | 3 | 2 | 93/133 | 25 | 9 | 87 | 45 |
+| C repeat 3 tool | 220 | 3 | 2 | 93/132 | 24 | 9 | 88 | 46 |
 
+Each tool row also has 1 validated catch (5144 5.D: the key's Fail was a slip, adjudicated Pass on 2026-11-08), counted in the weighted score but not in the columns; the per-criterion rows above do not apply adjudications (the locked scorer, as in round 1).
 
 ### What the scores say
 
 1. **No false PASS or false DNA came from a judge's answer, in A or C.**
    Every false PASS and missed fail in the tool's results was decided by a
    rule alone, and the same cells in every A and C run:
-   - 4.A on CILab (2.1.1), 4.C on 5340 (2.1.2), 5.D on 5144 and 5340
-     (3.2.2): false PASS;
+   - 4.A on CILab (2.1.1), 4.C on 5340 (2.1.2), 5.D on 5340 (3.2.2):
+     false PASS (5.D on 5144 was a slip in the key, adjudicated Pass);
    - 9.A on CILab and 14592 (2.4.1): Does Not Apply where the key fails.
 
    Agent A's criterion-level false PASSes are these, relayed; A added none
@@ -65,7 +67,7 @@ test from the scorer's `_server` function, which the scorer runs only for
 3. **The weighted scores reward leaving cells open.** A scores higher
    (50-56) because its unanswered questions stay needs review (weight 0);
    C's extra answers cost -1 each when wrong. Per TT test, the tool with
-   A's answers scores 52-53, with C's 40-42.
+   A's answers scores 56-57, with C's 44-46.
 4. **The rules' own errors are larger than any judge's:** 13-15 false
    FAILs by rule alone in every run (13 in each C repeat), mostly 5.A on 7 pages (the key passes the
    search field's label), 5.C (3), 19.A (2) and 4.D (1); and the 6 false
@@ -90,10 +92,10 @@ pictures), Search 382k (53), 5340 179k (21), Galleries 117k (26), 14592
 none. About 8.8k input tokens per question overall, 7-8 minutes per
 repeat at 3 calls at a time.
 
-### What to fix next (post-round 2)
+### What to fix next (post-round 2; decisions in `round2/review-with-tester.md`)
 
-- **Rules:** the 4 false PASS cells (4.A CILab, 4.C 5340, 5.D 5144 and
-  5340) and 9.A's missed fails come first (principle 3), then 5.A's
+- **Rules:** the 3 false PASS cells (4.A CILab, 4.C 5340, 5.D 5340),
+  3.A's DNA for unplayed video on 14592 and 9.A's missed fails come first (principle 3), then 5.A's
   false FAIL on the search field (7 pages), 5.C, 19.A and 4.D.
 - **Judge:** 4.F J1 before ApiJudge is switched on for it: run it through
   the judge eval with these pages' order pictures; the research note's

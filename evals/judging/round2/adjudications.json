@@ -1,0 +1,13 @@
+{
+ "about": "Results the tester confirmed after the reveal where the tool and the answer key differed. Written by the tester, never by the tool; the key files themselves never change. A tool result that matches is scored as a validated catch (evals/scoring.py).",
+ "pages": {
+  "https://svs.gsfc.nasa.gov/5144/": {
+   "5.D": {
+    "result": "Pass",
+    "by": "Abby Bowman",
+    "date": "2026-11-08",
+    "note": "A slip in the key: the row says Fail, but its comment gives the reason for a pass (checking a box updates the visual, does not reload the page or move focus, and the instructions say 'Click to select', so the change is expected). The SCRT template carried an earlier test's outcome down when child rows were deleted."
+   }
+  }
+ }
+}

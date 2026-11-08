@@ -69,3 +69,26 @@ Results: `evals/agent/README.md` ("Results"). The answering runs:
   `role="dialog"`. The Missions "jumps back up" signals were a card grid
   and checkbox boxes out of line with their labels. Both took minutes, and
   neither needed the tester's time.
+
+## Round 2 (2026-11-08)
+
+- **Ask who decided each wrong cell.** For every cell the tool got wrong,
+  check whether any answer fed its finding (the report's `answers` for
+  that test) or a rule decided alone. In round 2 every false PASS and
+  missed fail was a rule alone, the same in every run; the judges' errors
+  were all false FAILs. Without that split, the judge is blamed for the
+  rules (fix 17 builds it into the scorer).
+- **Weighted scores reward leaving questions open.** Open is 0, a wrong
+  answer -1: Agent C answered everything and scored lowest. Report the
+  judge-decided cells' accuracy beside the weighted score.
+- **The locked scorer applies an adjudication to the tool's per-TT score
+  only,** not to the arms' per-criterion rows (round 1 and 2).
+- **Keys can slip.** 5144's 5.D row said Fail with a pass comment (the
+  SCRT template carried an earlier outcome down when child rows were
+  deleted). A comment that contradicts its result is worth checking before
+  any rule change; keys should give a reason for a Pass too.
+- **A tool Fail the key lacks may be a catch, a scope difference or an
+  error.** Look at the evidence before deciding: round 2's unnamed
+  carousel buttons were aria-hidden and outside the Tab order (not a
+  failure); 5340's OVERVIEW tab showed no focus change at all (a likely
+  catch, being retested).
