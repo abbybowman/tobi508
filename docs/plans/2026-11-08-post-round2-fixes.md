@@ -40,10 +40,14 @@ its start). Agent-assisted results, not certified Trusted Tester results.
 2. **Frames** (fix 7): they feed fixes 2, 3 and 5 and the 1.3.1 and 4.1.2
    cells.
 3. **False FAILs by rule:** fixes 8-11 (5.A alone is 7 cells per run).
+   **Fix 9b before fix 9:** removing 5.C's hidden-button FAILs without
+   checking the controls that appear after a click turns Home's 5.C into a
+   false PASS (fix 9b).
 4. **Questions and pictures** for any judge: fixes 12-14 (before
-   ApiJudge is switched on for 4.F or 9.C).
+   ApiJudge is switched on for 4.F or 9.C), and fixes 24-28, which turn
+   most unsure answers into decisions or remove the question.
 5. **Cross-page and harness:** fixes 15-19.
-6. **Process:** fixes 20-23.
+6. **Process:** fixes 20-23, and CI (fix 29).
 
 ## Fixes
 
@@ -158,6 +162,41 @@ its start). Agent-assisted results, not certified Trusted Tester results.
   the accessibility tree; ACT 6cfa84 concerns sequential focus
   navigation). Still fail aria-hidden controls that Tab reaches.
 
+#### 9b. 5.C: controls that appear after a click (principle 3)
+- **Evidence:** Home. Key: Fail, "inside the card feed filter options,
+  all of the X buttons for each category/page type have the same title,
+  making it impossible to know which category/page type you are
+  excluding". Those X buttons (each named "Remove filter from selection")
+  appear only after a filter is chosen; TOBI inventories components at
+  load and never saw them. TOBI's Fail on Home agreed with the key for
+  other reasons: the hidden carousel buttons (fix 9 removes them) and the
+  judge calling the group headings missing (Abby did not fail those).
+- **TT:** 5.C Notes, changes after interaction are included (p. 27).
+- **Fix:** after 5.D's fill pass sets each option, read the components
+  that appeared (pass L on the new state) and run 5.C on them; until then,
+  a page whose options add controls when set is NEEDS REVIEW for 5.C with
+  that reason, never PASS. Land with or before fix 9.
+- **Fixture:** a filter whose checked options add "remove" buttons with
+  one shared name.
+
+#### 9c. 5.C: card text leaks into a checkbox's visible text
+- **Evidence:** Home's 36 filter checkboxes (3 filter forms, two sets
+  each: "NASA Science category" and "Page type"). Each form wraps its
+  section's result cards, which script adds, so card text such as
+  "ID: 15116" sits inside the form and lands in each checkbox's nearby
+  text. That breaks the set merge (5.C 1.2.0 asks one question per set
+  only when the option's announced text holds every word shown beside
+  it): 36 questions instead of 6. It also confused the judge ("ID: 15116
+  belongs to the video, not this"), whose answers then differed within
+  one set (20 missing, 7 complete, 9 unsure).
+- **Fix:** nearby text for an option is the text of its own row: within
+  the nearest container that holds the option and its label but no other
+  option or link (5.A section 2, which pass L shares with 5.A and 5.B;
+  judge eval after).
+- **Decision for Abby:** are filter headings like "Page type" over a set
+  of checkboxes the question the set answers (J1 "missing" when not
+  announced) or a section title (complete)? Her key did not fail them.
+
 #### 10. 19.A: the site search's own results page
 - **Evidence:** Search. Key: Pass, top-nav search is one way, tag links
   that open a filtered search are a second (content links). TOBI: FAIL,
@@ -231,6 +270,50 @@ its start). Agent-assisted results, not certified Trusted Tester results.
   failed in a full run beside other work and passed alone. Watch main's
   CI; make them load-tolerant if they fail there.
 
+### Unsure answers: what would decide them
+
+Agent C answered "unsure" on 62 of 194 questions (repeat 1). Against the
+key, about 50 have a cause in our rules or questions, and about 30 would
+not be asked at all:
+
+| Test | Unsure | Key | Why unsure | Decided by |
+| --- | --- | --- | --- | --- |
+| 4.A | 21 | Pass 17, Fail 4 | Carousel scroll arrows; category and globe icon links: "does a reached stop do the same thing?" | Fixes 24, 25 |
+| 5.C | 15 | Fail (for another reason, fix 9b) | Home's filter checkboxes, one by one, with card text mixed in | Fix 9c (6 questions, not 36) and Abby's heading decision |
+| 9.C | 13 | Pass | Generic "Go to this page" card links paired across pages | Fix 14 (not asked) |
+| 4.D | 7 | Pass | 48 x 47 px crops, "a faint ring" | Fix 26 |
+| 2.B | 4 | Does Not Apply | A loader animation (a real judgment); a region whose two pictures do not differ | Fix 27 |
+| 4.F | 2 | Pass | Order picture with empty boxes | Fixes 12, 13 |
+
+Left as real judgments: the Search page's loader animation, and perhaps
+the globe icon category links. Fixing 9c and 14 alone removes about half
+of a page set's unsure answers, the people's queue the pivot plan counts
+(about 62 per 10 pages).
+
+#### 24. 4.A: a scroll arrow whose items Tab reaches
+- A pointer-only arrow (often aria-hidden, `tabindex="-1"`) that scrolls a
+  container whose items the Tab walk reaches already has a keyboard way
+  (Abby's carousel reading, fix 9). Decide it mechanically from the walk:
+  every item the arrow reveals is a stop.
+
+#### 25. 4.A J1: give the candidate's destination
+- For a pointer-only link or control that navigates, put its destination
+  and any reached stop with the same destination in J1's input; a
+  same-destination stop is a mechanical match (no question).
+
+#### 26. 4.D: pictures big enough to judge, and the ring as a fact
+- Crop with context around small elements and scale up for the judge;
+  give "the changed pixels form a ring around the element" as a measured
+  fact in the input. Part of the cropping review.
+
+#### 27. 2.B: a region with no visible motion
+- A pass T region whose before and after pictures show no difference is
+  not presented as moving (5340's 41 px box at the top).
+
+#### 28. Judge requests: the page's shared inputs once
+- See the pivot plan: put a page's shared inputs first and send its
+  questions together, for the prompt cache.
+
 ### Process
 
 #### 20. A list of the rules' judgment calls
@@ -253,6 +336,13 @@ its start). Agent-assisted results, not certified Trusted Tester results.
 - Archive sets leave out files identical to an earlier set's
   (`same_as` in the manifest), and are restored in order;
   `ARCHIVE.md` in each round folder.
+
+#### 29. CI: skip docs-only changes, run in parallel
+- A docs-only push runs the whole suite (about 20 minutes on #26-#28).
+  Skip the test, container and CodeQL jobs when only `docs/**` and
+  `**/*.md` change (`paths-ignore`, or a paths-filter job the others need);
+  split the suite across a job matrix by test-file group (Abby,
+  2026-11-08).
 
 ## Done during round 2 (delivery and harness, not rules)
 
