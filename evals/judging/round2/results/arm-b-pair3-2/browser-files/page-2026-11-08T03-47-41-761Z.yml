@@ -1,0 +1,675 @@
+- generic [active] [ref=e1]:
+  - banner:
+    - navigation [ref=e2]:
+      - generic [ref=e3]:
+        - link [ref=e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=e5]
+        - link "Scientific Visualization Studio" [ref=e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "Galleries" [ref=e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=e13]: 
+              - text: Galleries
+          - listitem [ref=e14]:
+            - link "Help" [ref=e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=e16]: 
+              - text: Help
+          - search [ref=e17]:
+            - generic [ref=e18]:
+              - textbox "Search..." [ref=e19]
+              - generic [ref=e20]: Search
+              - button "Clear search text" [ref=e21] [cursor=pointer]: 
+              - button "Search!" [ref=e22] [cursor=pointer]: 
+  - main [ref=e23]:
+    - article [ref=e26]:
+      - generic [ref=e27]:
+        - navigation [ref=e28]:
+          - generic [ref=e29]:
+            - generic [aria-hidden] [ref=e30]: 
+            - link "Previous page" [ref=e31] [cursor=pointer]:
+              - /url: /14580
+              - text: "14580: Exploring Planet Uranus"
+            - link "Next page" [ref=e32] [cursor=pointer]:
+              - /url: /14590
+              - text: "14590: Webb Captures New Views Of The Horsehead Ne..."
+            - generic [aria-hidden] [ref=e33]: 
+            - link "Newest page" [ref=e34] [cursor=pointer]:
+              - /url: /15116
+              - generic [aria-hidden] [ref=e35]: 
+        - heading "Largest Flare yet from Solar Cycle 25" [level=1] [ref=e37]
+        - generic [ref=e39]:
+          - list [ref=e40]:
+            - listitem [ref=e41]: Released Tuesday, May 14, 2024
+          - list [ref=e43]:
+            - listitem [ref=e44]:
+              - generic: "ID: 14592"
+            - listitem [ref=e45]
+            - listitem [ref=e46]:
+              - link "View this page in our API" [ref=e47] [cursor=pointer]:
+                - /url: /api/14592
+                - generic [aria-hidden] [ref=e48]: 
+            - listitem [ref=e49]
+            - listitem [ref=e50]:
+              - button "Copy a link to this page" [ref=e51] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e52]: 
+            - listitem [ref=e53]:
+              - link "Share this page on Twitter" [ref=e54] [cursor=pointer]:
+                - /url: https://twitter.com/intent/tweet
+                - generic [aria-hidden] [ref=e55]: 
+            - listitem [ref=e56]:
+              - link "Share this page on Facebook" [ref=e57] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=http%3A//svs.gsfc.nasa.gov/14592/%3F
+                - generic [aria-hidden] [ref=e58]: 
+        - link "View full credits" [ref=e61] [cursor=pointer]:
+          - /url: "#section_credits"
+          - generic [aria-hidden] [ref=e62]: 
+          - text: View full credits
+        - separator [ref=e63]
+      - generic [ref=e64]:
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - list [ref=e72]:
+              - listitem [ref=e73]:
+                - button "Copy a link to this media item" [ref=e74] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=e75]: 
+            - button "Download" [ref=e78] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e79]: 
+              - text: Download
+          - paragraph [ref=e80]: On May 14, 2024, the Sun emitted a strong solar flare. This solar flare is the largest of Solar Cycle 25 and is classified as an X8.7 flare. X-class denotes the most intense flares, while the number provides more information about its strength.
+          - paragraph
+          - paragraph [ref=e81]: A solar flare is an intense burst of radiation, or light, on the Sun. Flares are our solar system’s most powerful explosive events. Light only takes about 8 minutes to travel from the Sun to Earth, so that’s how long it would take the energy from a flare to reach our planet. Stronger solar flares — those rated class M5 or above — can have impacts on technology that depends on Earth’s ionosphere (our electrically charged upper atmosphere), like high-frequency radio used for navigation and GPS.
+          - paragraph
+          - paragraph [ref=e82]: NASA’s Solar Dynamics Observatory (SDO) captured these images of the flare, which peaked at 12:51 p.m. ET on May 14. The X8.7 flare appears on the lower right edge of the Sun. (A small eruption appears afterward in the upper left.) SDO sees the Sun in more than 10 distinct wavelengths of light, showing solar material at different temperatures. Different wavelengths are shown in this video to highlight different features of the flare.
+          - paragraph
+          - paragraph [ref=e83]:
+            - text: "Music credit: “Ethereal Mirrorscape” from the album Reflections written and produced by"
+            - link "Lars Leonhard" [ref=e84] [cursor=pointer]:
+              - /url: https://www.lars-leonhard.de/
+          - paragraph
+          - paragraph
+          - paragraph
+          - paragraph [ref=e85]:
+            - generic [ref=e86]:
+              - text: Watch this video on the
+              - link "NASA Goddard YouTube channel" [ref=e87] [cursor=pointer]:
+                - /url: https://youtu.be/OuBa3TUND9E
+              - text: .
+          - paragraph
+          - paragraph [ref=e88]:
+            - link "Complete transcript" [ref=e89] [cursor=pointer]:
+              - /url: /vis/a010000/a014500/a014592/14592_X8pt7Flare_HTML_Transcript.html
+            - text: available.
+          - paragraph
+        - generic [ref=e92]:
+          - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO" [ref=e95]'
+          - generic [ref=e96]:
+            - generic [ref=e97]:
+              - list [ref=e98]:
+                - listitem [ref=e99]:
+                  - button "Copy a link to this media item" [ref=e100] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e101]: 
+              - button "Download" [ref=e104] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e105]: 
+                - text: Download
+            - paragraph [ref=e106]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO"
+        - generic [ref=e109]:
+          - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO" [ref=e112]'
+          - generic [ref=e113]:
+            - generic [ref=e114]:
+              - list [ref=e115]:
+                - listitem [ref=e116]:
+                  - button "Copy a link to this media item" [ref=e117] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e118]: 
+              - button "Download" [ref=e121] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e122]: 
+                - text: Download
+            - paragraph [ref=e123]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO"
+        - generic [ref=e126]:
+          - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO" [ref=e129]'
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - list [ref=e132]:
+                - listitem [ref=e133]:
+                  - button "Copy a link to this media item" [ref=e134] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e135]: 
+              - button "Download" [ref=e138] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e139]: 
+                - text: Download
+            - paragraph [ref=e140]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO"
+        - generic [ref=e143]:
+          - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO" [ref=e146]'
+          - generic [ref=e147]:
+            - generic [ref=e148]:
+              - list [ref=e149]:
+                - listitem [ref=e150]:
+                  - button "Copy a link to this media item" [ref=e151] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e152]: 
+              - button "Download" [ref=e155] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e156]: 
+                - text: Download
+            - paragraph [ref=e157]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in red and yellow. Credit: NASA/SDO"
+        - generic [ref=e160]:
+          - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 304 angstrom light. Credit: NASA/SDO" [ref=e163]'
+          - generic [ref=e164]:
+            - generic [ref=e165]:
+              - list [ref=e166]:
+                - listitem [ref=e167]:
+                  - button "Copy a link to this media item" [ref=e168] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e169]: 
+              - button "Download" [ref=e172] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e173]: 
+                - text: Download
+            - paragraph [ref=e174]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 304 angstrom light. Credit: NASA/SDO"
+        - generic [ref=e177]:
+          - generic [ref=e178]:
+            - generic:
+              - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 171 angstrom light. Credit: NASA/SDO"'
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - list [ref=e181]:
+                - listitem [ref=e182]:
+                  - button "Copy a link to this media item" [ref=e183] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e184]: 
+              - button "Download" [ref=e187] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e188]: 
+                - text: Download
+            - paragraph [ref=e189]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 171 angstrom light. Credit: NASA/SDO"
+        - generic [ref=e192]:
+          - generic [ref=e193]:
+            - generic:
+              - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 193 angstrom light. Credit: NASA/SDO"'
+          - generic [ref=e194]:
+            - generic [ref=e195]:
+              - list [ref=e196]:
+                - listitem [ref=e197]:
+                  - button "Copy a link to this media item" [ref=e198] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e199]: 
+              - button "Download" [ref=e202] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e203]: 
+                - text: Download
+            - paragraph [ref=e204]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 193 angstrom light. Credit: NASA/SDO"
+        - generic [ref=e207]:
+          - generic [ref=e208]:
+            - generic:
+              - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 131 angstrom light. Credit: NASA/SDO"'
+          - generic [ref=e209]:
+            - generic [ref=e210]:
+              - list [ref=e211]:
+                - listitem [ref=e212]:
+                  - button "Copy a link to this media item" [ref=e213] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e214]: 
+              - button "Download" [ref=e217] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e218]: 
+                - text: Download
+            - paragraph [ref=e219]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 131 angstrom light. Credit: NASA/SDO"
+        - generic [ref=e222]:
+          - generic [ref=e223]:
+            - generic:
+              - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 131 angstrom light. Credit: NASA/SDO"'
+          - generic [ref=e224]:
+            - generic [ref=e225]:
+              - list [ref=e226]:
+                - listitem [ref=e227]:
+                  - button "Copy a link to this media item" [ref=e228] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e229]: 
+              - button "Download" [ref=e232] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e233]: 
+                - text: Download
+            - paragraph [ref=e234]: "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 14, 2024. The image shows 131 angstrom light. Credit: NASA/SDO"
+        - generic [ref=e240]:
+          - generic [ref=e241]:
+            - list [ref=e242]:
+              - listitem [ref=e243]:
+                - button "Copy a link to this media item" [ref=e244] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=e245]: 
+            - button "Download" [ref=e248] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e249]: 
+              - text: Download
+          - paragraph [ref=e250]: "NASA’s Solar Dynamics Observatory captured this imagery of a solar flare – as seen in the bright flash on the right – on May 14, 2024. This group contains 4k frames and video covering three hours from 15:00 to 18:00 UTC. Credit: NASA/SDO"
+        - generic [ref=e256]:
+          - generic [ref=e257]:
+            - list [ref=e258]:
+              - listitem [ref=e259]:
+                - button "Copy a link to this media item" [ref=e260] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=e261]: 
+            - button "Download" [ref=e264] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e265]: 
+              - text: Download
+          - paragraph [ref=e266]: "NASA’s Solar Dynamics Observatory captured this imagery of a solar flare – as seen in the bright flash on the right – on May 14, 2024. This group contains 4k frames and video covering three hours from 15:00 to 18:00 UTC. Credit: NASA/SDO"
+        - generic [ref=e272]:
+          - generic [ref=e273]:
+            - list [ref=e274]:
+              - listitem [ref=e275]:
+                - button "Copy a link to this media item" [ref=e276] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=e277]: 
+            - button "Download" [ref=e280] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e281]: 
+              - text: Download
+          - paragraph [ref=e282]: "NASA’s Solar Dynamics Observatory captured this imagery of a solar flare – as seen in the bright flash on the right – on May 14, 2024. This group contains 4k frames and video covering three hours from 15:00 to 18:00 UTC. Credit: NASA/SDO"
+        - generic [ref=e288]:
+          - generic [ref=e289]:
+            - list [ref=e290]:
+              - listitem [ref=e291]:
+                - button "Copy a link to this media item" [ref=e292] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=e293]: 
+            - button "Download" [ref=e296] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e297]: 
+              - text: Download
+          - paragraph [ref=e298]: "NASA’s Solar Dynamics Observatory captured this imagery of a solar flare – as seen in the bright flash on the right – on May 14, 2024. This group contains 4k frames and video covering three hours from 15:00 to 18:00 UTC. Credit: NASA/SDO"
+        - generic [ref=e304]:
+          - generic [ref=e305]:
+            - list [ref=e306]:
+              - listitem [ref=e307]:
+                - button "Copy a link to this media item" [ref=e308] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=e309]: 
+            - button "Download" [ref=e312] [cursor=pointer]:
+              - generic [aria-hidden] [ref=e313]: 
+              - text: Download
+          - paragraph [ref=e314]: "NASA’s Solar Dynamics Observatory captured this imagery of a solar flare – as seen in the bright flash on the right – on May 14, 2024. This group contains 4k frames and video covering three hours from 15:00 to 18:00 UTC. Credit: NASA/SDO"
+        - generic [ref=e315]:
+          - heading "For More Information" [level=2] [ref=e316]
+          - paragraph [ref=e318]:
+            - text: See
+            - link "https://blogs.nasa.gov/solarcycle25/2024/05/14/strong-solar-flare-erupts-from-sun-14/" [ref=e319] [cursor=pointer]:
+              - /url: https://blogs.nasa.gov/solarcycle25/2024/05/14/strong-solar-flare-erupts-from-sun-14/
+      - separator [ref=e320]
+      - generic [ref=e321]:
+        - list [ref=e322]:
+          - listitem [ref=e323]:
+            - link "Sun" [ref=e324] [cursor=pointer]:
+              - /url: /search?nasa_science_categories=Sun
+              - generic [aria-hidden] [ref=e325]: 
+              - text: Sun
+        - list [ref=e326]:
+          - listitem [ref=e327]:
+            - link "Corona" [ref=e328] [cursor=pointer]:
+              - /url: /search?keywords=Corona
+          - listitem [ref=e329]:
+            - link "Heliophysics" [ref=e330] [cursor=pointer]:
+              - /url: /search?keywords=Heliophysics
+          - listitem [ref=e331]:
+            - link "Hyperwall" [ref=e332] [cursor=pointer]:
+              - /url: /search?keywords=Hyperwall
+          - listitem [ref=e333]:
+            - link "SDO" [ref=e334] [cursor=pointer]:
+              - /url: /search?keywords=SDO
+          - listitem [ref=e335]:
+            - link "Solar Dynamics Observatory" [ref=e336] [cursor=pointer]:
+              - /url: /search?keywords=Solar Dynamics Observatory
+          - listitem [ref=e337]:
+            - link "Solar Flares" [ref=e338] [cursor=pointer]:
+              - /url: /search?keywords=Solar Flares
+          - listitem [ref=e339]:
+            - link "Space Weather" [ref=e340] [cursor=pointer]:
+              - /url: /search?keywords=Space Weather
+      - separator [ref=e341]
+      - generic [ref=e342]:
+        - heading "Credits" [level=2] [ref=e343]
+        - paragraph [ref=e345]: "Please give credit for this item to: NASA's Goddard Space Flight Center. However, individual items should be credited as indicated above."
+        - list [ref=e346]:
+          - listitem [ref=e347]:
+            - heading "Producer" [level=3] [ref=e349]
+            - list [ref=e351]:
+              - listitem [ref=e352]:
+                - link "Scott Wiessinger" [ref=e353] [cursor=pointer]:
+                  - /url: /search/?people=Scott%20Wiessinger
+                - text: (eMITS)
+          - listitem [ref=e354]:
+            - heading "Writer" [level=3] [ref=e356]
+            - list [ref=e358]:
+              - listitem [ref=e359]:
+                - link "Abbey A. Interrante" [ref=e360] [cursor=pointer]:
+                  - /url: /search/?people=Abbey%20A.%20Interrante
+                - text: (ADNET Systems, Inc.)
+          - listitem [ref=e361]:
+            - heading "Visualizer" [level=3] [ref=e363]
+            - list [ref=e365]:
+              - listitem [ref=e366]:
+                - link "Tom Bridgman" [ref=e367] [cursor=pointer]:
+                  - /url: /search/?people=Tom%20Bridgman
+                - text: (Global Science and Technology, Inc.)
+      - separator [ref=e368]
+      - generic [ref=e369]:
+        - generic [ref=e370]:
+          - heading "Missions" [level=2] [ref=e371]
+          - text: "This page is related to the following missions:"
+          - list [ref=e372]:
+            - listitem [ref=e373]:
+              - link "SDO" [ref=e374] [cursor=pointer]:
+                - /url: /search/?missions=SDO
+        - generic [ref=e375]:
+          - heading "Series" [level=2] [ref=e376]
+          - text: "This page can be found in the following series:"
+          - list [ref=e377]:
+            - listitem [ref=e378]:
+              - link "Heliophysics Breaking News" [ref=e379] [cursor=pointer]:
+                - /url: /search/?series=Heliophysics%20Breaking%20News
+            - listitem [ref=e380]:
+              - link "Narrated Movies" [ref=e381] [cursor=pointer]:
+                - /url: /search/?series=Narrated%20Movies
+      - separator [ref=e382]
+      - generic [ref=e383]:
+        - generic [ref=e385]:
+          - heading "Related" [level=2] [ref=e386]
+          - list [ref=e388]:
+            - listitem [ref=e389]:
+              - generic [ref=e390]:
+                - link [ref=e391] [cursor=pointer]:
+                  - /url: /14685/
+                  - 'img "16:9 Landscape Version with HBY Logo and NASA MeatballMusic Credit: “Society News Bed Instrumental” by Jean-Francois Berger [SACEM] via Universal Production Music" [ref=e393]'
+                - generic [ref=e394]: "ID: 14685"
+              - generic [ref=e395]:
+                - generic [ref=e396]:
+                  - generic [aria-hidden] [ref=e397]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=e400]:
+                  - link "What is Solar Maximum?" [ref=e401] [cursor=pointer]:
+                    - /url: /14685/
+            - listitem [ref=e402]:
+              - generic [ref=e403]:
+                - link [ref=e404] [cursor=pointer]:
+                  - /url: /14593/
+                  - 'img "NASA’s Solar Dynamics Observatory captured this image of a solar flare – as seen in the bright flash on the right – on May 15, 2024. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares and which is colorized in teal.Credit: NASA/SDO" [ref=e406]'
+                - generic [ref=e407]: "ID: 14593"
+              - generic [ref=e408]:
+                - generic [ref=e409]:
+                  - generic [aria-hidden] [ref=e410]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=e413]:
+                  - 'link "Continuing Strong Solar Flares: May 15-16, 2024" [ref=e414] [cursor=pointer]':
+                    - /url: /14593/
+            - listitem [ref=e415]:
+              - generic [ref=e416]:
+                - link [ref=e417] [cursor=pointer]:
+                  - /url: /14589/
+                  - 'img "NASA’s Solar Dynamics Observatory captured images of the two solar flares on May 10 and May 11, 2024. The flares are classified as X5.8 and X1.5-class flares, respectively. The image shows a subset of extreme ultraviolet light that highlights the extremely hot material in flares created from a mixture of SDO’s AIA 193, 171 and 131 channels. Available with EDT and UTC time labels as well as unlabeled.Credit: NASA/SDO" [ref=e419]'
+                - generic [ref=e420]: "ID: 14589"
+              - generic [ref=e421]:
+                - generic [ref=e422]:
+                  - generic [aria-hidden] [ref=e423]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=e426]:
+                  - 'link "Continued Strong Solar Flare Activity: May 10-14, 2024" [ref=e427] [cursor=pointer]':
+                    - /url: /14589/
+            - listitem [ref=e428]:
+              - generic [ref=e429]:
+                - link [ref=e430] [cursor=pointer]:
+                  - /url: /14588/
+                  - 'img "NASA’s Solar Dynamics Observatory captured this image of a strong solar flare on May 8, 2024. The image shows a blend of 171 and 131 Angstrom light, subsets of extreme ultraviolet light. Credit: NASA/SDO" [ref=e432]'
+                - generic [ref=e433]: "ID: 14588"
+              - generic [ref=e434]:
+                - generic [ref=e435]:
+                  - generic [aria-hidden] [ref=e436]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=e439]:
+                  - 'link "May 2-10, 2024 : A Busy Week of Flares" [ref=e440] [cursor=pointer]':
+                    - /url: /14588/
+        - separator [ref=e441]
+      - generic [ref=e442]:
+        - heading "Release date" [level=2] [ref=e443]
+        - paragraph [ref=e444]: This page was originally published on Tuesday, May 14, 2024. This page was last updated on Sunday, March 9, 2025 at 11:18 PM EDT.
+      - separator [ref=e445]
+      - generic [ref=e447]:
+        - heading "You may also like..." [level=2] [ref=e448]
+        - list [ref=e452]:
+          - text: 
+          - button [aria-hidden] [ref=e453] [cursor=pointer]:
+            - generic [ref=e454]: 
+          - listitem [ref=e455]:
+            - generic [ref=e456]:
+              - link [ref=e457] [cursor=pointer]:
+                - /url: /10899/
+                - 'img "Solar Dynamics Observatory captured the flare, shown here in teal as that is the color typically used to show light in the 131 angstrom wavelength, a wavelength in which it is easy to view solar flares. The flare began at 10:38 PM ET on Jan. 22, peaked at 10:59 PM and ended at 11:34 PM. Credit: NASA/SDO/AIA" [ref=e459]'
+              - generic [ref=e460]: "ID: 10899"
+              - generic [ref=e461]:
+                - generic [aria-hidden] [ref=e462]: 
+                - text: Produced Video
+            - generic [ref=e463]:
+              - heading [level=3] [ref=e464]:
+                - link "Biggest Solar Storm Since 2005" [ref=e465] [cursor=pointer]:
+                  - /url: /10899/
+              - generic [ref=e466]:
+                - generic [ref=e467]: January 24, 2012
+                - 'link "NASA Science Category: Sun" [ref=e469] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e470]: 
+              - paragraph [ref=e472]: The sun erupted late on January 22, 2012 with an M8.7 class flare, an earth-directed coronal mass ejection (CME), and a burst of fast moving, highly energetic protons known as a "solar energetic particle" event. The latter has caused the strongest solar radiation storm since September 2005 according to NOAA's Space Weather Prediction Center. ||
+              - link "Go to this page" [ref=e473] [cursor=pointer]:
+                - /url: /10899/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e474]: 
+          - listitem [ref=e475]:
+            - generic [ref=e476]:
+              - link [ref=e477] [cursor=pointer]:
+                - /url: /10925/
+                - 'img "Massive Flare Gets HD Closeup.Credit: NASA/GSFC/SDOFor complete transcript, click here." [ref=e479]'
+              - generic [ref=e480]: "ID: 10925"
+              - generic [ref=e481]:
+                - generic [aria-hidden] [ref=e482]: 
+                - text: Produced Video
+            - generic [ref=e483]:
+              - heading [level=3] [ref=e484]:
+                - link "HD Close up of March 6th X5.4 Flare" [ref=e485] [cursor=pointer]:
+                  - /url: /10925/
+              - generic [ref=e486]:
+                - generic [ref=e487]: March 7, 2012
+                - 'link "NASA Science Category: Sun" [ref=e489] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e490]: 
+              - paragraph [ref=e492]: The sun erupted with one of the largest solar flares of this solar cycle on March 6, 2012 at 7PM ET. ?This flare was categorized as an X5.4, making it the second largest flare — after an X6.9 on August 9, 2011 — since the sun's activity segued into a period of relatively low activity called solar minimum in early 2007. The current increase in the number of X-class flares is part of the sun's normal 11-year solar cycle, during which activity on the sun ramps up to solar maximum, which is expected to peak in late 2013. About an hour later, at 8:14 PM ET, March 6, the same region let loose an X1.3 class flare. ?An X1 is 5 times smaller than an X5 flare. These X-class flares erupted from an active region named AR 1429 that rotated into view on March 2. ?Prior to this, the region had already produced numerous M-class and one X-class flare. ?The region continues to rotate across the front of the sun, so the March 6 flare was more Earthward facing than the previous ones. ?It triggered a temporary radio blackout on the sunlit side of Earth that interfered with radio navigation and short wave radio.In association with these flares, the sun also expelled two significant coronal mass ejections (CMEs), which are traveling faster than 600 miles a second and may arrive at Earth in the next few days. ?In the meantime, the CME associated with the X-class flare from March 4 has dumped solar particles and magnetic fields into Earth's atmosphere and distorted Earth's magnetic fields, causing a moderate geomagnetic storm, rated a G2 on a scale from G1 to G5. ?Such storms happen when the magnetic fields around Earth rapidly change strength and shape. ?A moderate storm usually causes aurora and may interfere with high frequency radio transmission near the poles. ?This storm is already dwindling, but the Earth may experience another enhancement if the most recent CMEs are directed toward and impact Earth. In addition, last night's flares have sent solar particles into Earth's atmosphere, producing a moderate solar energetic particle event, also called a solar radiation storm. These particles have been detected by NASA's SOHO and STEREO spacecraft, and NOAA's GOES spacecraft. ?At the time of writing, this storm is rated an S3 on a scale that goes up to S5. ?Such storms can interfere with high frequency radio communication. Besides the August 2011 X-class flare, the last time the sun sent out flares of this magnitude was in 2006. ?There was an X6.5 on December 6, 2006 and an X9.0 on December 5, 2006. Like the most recent events, those two flares erupted from the same region on the sun, which is a common occurrence. ||
+              - link "Go to this page" [ref=e493] [cursor=pointer]:
+                - /url: /10925/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e494]: 
+          - listitem [ref=e495]:
+            - generic [ref=e496]:
+              - link [ref=e497] [cursor=pointer]:
+                - /url: /11285/
+                - 'img "The sun erupted with an X1.7-class solar flare on May 12, 2013. This is a blend of two images of the flare from NASA''s Solar Dynamics Observatory (SDO) — one image shows light in the 171 angstrom wavelength, the other in 131 angstroms.Credit: NASA/SDO/AIA" [ref=e499]'
+              - generic [ref=e500]: "ID: 11285"
+              - generic [ref=e501]:
+                - generic [aria-hidden] [ref=e502]: 
+                - text: Produced Video
+            - generic [ref=e503]:
+              - heading [level=3] [ref=e504]:
+                - link "First X-Class Solar Flares of 2013" [ref=e505] [cursor=pointer]:
+                  - /url: /11285/
+              - generic [ref=e506]:
+                - generic [ref=e507]: May 13, 2013
+                - 'link "NASA Science Category: Sun" [ref=e509] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e510]: 
+              - paragraph [ref=e512]: On May 13, 2013, the sun emitted an X2.8-class flare, peaking at 12:05 p.m. EDT. This is the the strongest X-class flare of 2013 so far, surpassing in strength the X1.7-class flare that occurred 14 hours earlier. It is the 16th X-class flare of the current solar cycle and the third-largest flare of that cycle. The second-strongest was an X5.4 event on March 7, 2012. The strongest was an X6.9 on Aug. 9, 2011.On May 12, 2013, the sun emitted a significant solar flare, peaking at 10 p.m. EDT. This flare is classified as an X1.7, making it the first X-class flare of 2013. The flare was also associated with another solar phenomenon, called a coronal mass ejection (CME) that can send solar material out into space. This CME was not Earth-directed. The May 12 flare was also associated with a coronal mass ejection, another solar phenomenon that can send billions of tons of solar particles into space, which can affect electronic systems in satellites and on the ground. Experimental NASA research models show that the CME left the sun at 745 miles per second and is not Earth-directed, however its flank may pass by the STEREO-B and Spitzer spacecraft, and their mission operators have been notified. If warranted, operators can put spacecraft into safe mode to protect the instruments from solar material. There is some particle radiation associated with this event, which is what can concern operators of interplanetary spacecraft since the particles can trip computer electronics on board. ||
+              - link "Go to this page" [ref=e513] [cursor=pointer]:
+                - /url: /11285/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e514]: 
+          - listitem [ref=e515]:
+            - generic [ref=e516]:
+              - link [ref=e517] [cursor=pointer]:
+                - /url: /12563/
+                - 'img "Image of M5.3 solar flare on April 2, 2017 as seen by NASA''s Solar Dynamics Observatory in a blend of 131 and 171 angstroms. Credit: NASA/SDO" [ref=e519]'
+              - generic [ref=e520]: "ID: 12563"
+              - generic [ref=e521]:
+                - generic [aria-hidden] [ref=e522]: 
+                - text: Produced Video
+            - generic [ref=e523]:
+              - heading [level=3] [ref=e524]:
+                - link "April 2017 Solar Flare Trio" [ref=e525] [cursor=pointer]:
+                  - /url: /12563/
+              - generic [ref=e526]:
+                - generic [ref=e527]: April 3, 2017
+                - 'link "NASA Science Category: Sun" [ref=e529] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e530]: 
+              - paragraph [ref=e532]: "Video depicting the trio of solar flares witnessed by SDO in early April 2017. Music credit: A Waltz into Darkness by Joseph BennieComplete transcript available.Watch this video on the NASA Goddard YouTube channel. || 12563_April2017_AR12644_Mflares_V3_VX-685285_youtube_hq.01880_print.jpg (1024x576) [194.4 KB] || 12563_April2017_AR12644_Mflares_V3.mov (1920x1080) [1.4 GB] || 12563_April2017_AR12644_Mflares_V3_VX-685285.mpeg (1280x720) [332.4 MB] || 12563_April2017_AR12644_Mflares_V3_VX-685285_appletv.m4v (1280x720) [49.1 MB] || PRORES_B-ROLL_12563_April2017_AR12644_Mflares_V3_VX-685285_prores.mov (1280x720) [715.1 MB] || 12563_April2017_AR12644_Mflares_V3_VX-685285_youtube_hq.mov (1920x1080) [603.9 MB] || 12563_April2017_AR12644_Mflares_V3_VX-685285_youtube_hq.webm (1920x1080) [11.0 MB] || 12563_April2017_AR12644_Mflares_V3_VX-685285_appletv_subtitles.m4v (1280x720) [49.1 MB] || 12563_April2017_AR12644_Mflares.en_US.srt [880 bytes] || 12563_April2017_AR12644_Mflares.en_US.vtt [892 bytes] || 12563_April2017_AR12644_Mflares_V3_VX-685285_ipod_sm.mp4 (320x240) [17.2 MB] ||"
+              - link "Go to this page" [ref=e533] [cursor=pointer]:
+                - /url: /12563/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e534]: 
+          - listitem [ref=e535]:
+            - generic [ref=e536]:
+              - link [ref=e537] [cursor=pointer]:
+                - /url: /12706/
+                - 'img "An X9.3 class solar flare flashes in the middle of the Sun on Sept. 6, 2017. This image was captured by NASA''s Solar Dynamics Observatory and shows a blend of light from the 171 and 131 angstrom wavelengths.Credit: NASA/GSFC/SDO" [ref=e539]'
+              - generic [ref=e540]: "ID: 12706"
+              - generic [ref=e541]:
+                - generic [aria-hidden] [ref=e542]: 
+                - text: Produced Video
+            - generic [ref=e543]:
+              - heading [level=3] [ref=e544]:
+                - link "A Powerful Sequence of Flares Start September 2017" [ref=e545] [cursor=pointer]:
+                  - /url: /12706/
+              - generic [ref=e546]:
+                - generic [ref=e547]: September 6, 2017
+                - 'link "NASA Science Category: Sun" [ref=e549] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e550]: 
+              - paragraph [ref=e552]: "Short video showing the sequence of M and X flares starting on September 4, 2017 and culminating with an X9.3 flare — the largest of the solar cycle.Music: \"Networked\" from Killer TracksWatch this video on the NASA Goddard YouTube channel.Complete transcript available. || SDO_Flare_Still_3.jpg (1920x1080) [326.8 KB] || 12706_SDO_September_2017_Flares_ProRes_1920x1080_2997.mov (1920x1080) [2.9 GB] || 12706_SDO_September_2017_Flares_H264_Best_1080.mov (1920x1080) [1.1 GB] || 12706_SDO_September_2017_Flares_H264_Good_1080.m4v (1920x1080) [223.8 MB] || 12706_SDO_September_2017_Flares_Compatible.m4v (960x540) [90.1 MB] || 12706_SDO_September_2017_Flares_Compatible.webm (960x540) [23.8 MB] || 12706_SDO_September_2017_Flares_SRT_Captions.en_US.srt [2.4 KB] || 12706_SDO_September_2017_Flares_SRT_Captions.en_US.vtt [2.3 KB] ||"
+              - link "Go to this page" [ref=e553] [cursor=pointer]:
+                - /url: /12706/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e554]: 
+          - listitem [ref=e555]:
+            - generic [ref=e556]:
+              - link [ref=e557] [cursor=pointer]:
+                - /url: /13982/
+                - 'img "An X1.0 class solar flare flashes in center of the Sun on Oct. 28, 2021. This image was captured by NASA''s Solar Dynamics Observatory and shows a blend of light from the 171 and 304 angstrom wavelengths.Credit: NASA/GSFC/SDO" [ref=e559]'
+              - generic [ref=e560]: "ID: 13982"
+              - generic [ref=e561]:
+                - generic [aria-hidden] [ref=e562]: 
+                - text: Produced Video
+            - generic [ref=e563]:
+              - heading [level=3] [ref=e564]:
+                - link "Active October Sun Emits X-class Flare" [ref=e565] [cursor=pointer]:
+                  - /url: /13982/
+              - generic [ref=e566]:
+                - generic [ref=e567]: October 28, 2021
+                - 'link "NASA Science Category: Sun" [ref=e569] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e570]: 
+              - paragraph [ref=e572]: "Brighter than a shimmering ghost, faster than the flick of a black cat’s tail, the Sun cast a spell in our direction, just in time for Halloween. This imagery captured by NASA’s Solar Dynamics Observatory covers a busy few days of activity between Oct. 25-28 that ended with a significant solar flare. From late afternoon Oct. 25 through mid-morning Oct. 26, an active region on the left limb of the Sun flickered with a series of small flares and petal-like eruptions of solar material. Meanwhile, the Sun was sporting more active regions at its lower center, directly facing Earth. On Oct. 28, the biggest of these released a significant flare, which peaked at 11:35 a.m. EDT. Credit: NASA/GSFC/SDOMusic: \"Immersion\" from Above and Below. Written and produced by Lars LeonhardWatch this video on the NASA Goddard YouTube channel.Complete transcript available. || ActiveOctober_Still.jpg (1920x1080) [956.2 KB] || 13982_ActiveOctober_ProRes_1920x1080_2997.mov (1920x1080) [2.4 GB] || 13982_ActiveOctober_1080_Best.mp4 (1920x1080) [436.2 MB] || 13982_ActiveOctober_1080.mp4 (1920x1080) [188.1 MB] || 13982_ActiveOctober_1080_Best.webm (1920x1080) [19.7 MB] || 13982_ActiveOctober_SRT_Captions.en_US.srt [574 bytes] || 13982_ActiveOctober_SRT_Captions.en_US.vtt [587 bytes] ||"
+              - link "Go to this page" [ref=e573] [cursor=pointer]:
+                - /url: /13982/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e574]: 
+          - listitem [ref=e575]:
+            - generic [ref=e576]:
+              - link [ref=e577] [cursor=pointer]:
+                - /url: /14160/
+                - 'img "Short video of the X1.5 flare emitted by the Sun on May 10, 2022 and captured by the Solar Dynamics Observatory in three wavelengths of extreme ultraviolet light that highlight different temperatures and features of the Sun''s atmosphere, the corona.Credit: NASA/GSFC/SDOMusic: \"Examples\" from Universal Production MusicComplete transcript available." [ref=e579]'
+              - generic [ref=e580]: "ID: 14160"
+              - generic [ref=e581]:
+                - generic [aria-hidden] [ref=e582]: 
+                - text: Produced Video
+            - generic [ref=e583]:
+              - heading [level=3] [ref=e584]:
+                - link "Sun Emits X1.5 Flare on May 10, 2022" [ref=e585] [cursor=pointer]:
+                  - /url: /14160/
+              - generic [ref=e586]:
+                - generic [ref=e587]: May 21, 2022
+                - 'link "NASA Science Category: Sun" [ref=e589] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e590]: 
+              - paragraph [ref=e592]: "Short video of the X1.5 flare emitted by the Sun on May 10, 2022 and captured by the Solar Dynamics Observatory in three wavelengths of extreme ultraviolet light that highlight different temperatures and features of the Sun's atmosphere, the corona.Credit: NASA/GSFC/SDOMusic: \"Examples\" from Universal Production MusicComplete transcript available. || May102022_X1pt5Flare_171-131-304.jpg (1920x1080) [979.2 KB] || May102022_X1pt5Flare_171-131-304_searchweb.png (320x180) [55.6 KB] || May102022_X1pt5Flare_171-131-304_thm.png (80x40) [4.4 KB] || 14160_May102022_X1pt5_Flare_ProRes_1920x1080_2997.mov (1920x1080) [829.3 MB] || 14160_May102022_X1pt5_Flare_Best_1080.mp4 (1920x1080) [138.6 MB] || 14160_May102022_X1pt5_Flare_1080.mp4 (1920x1080) [57.0 MB] || 14160_May102022_X1pt5_Flare_ProRes_1920x1080_2997.webm (1920x1080) [5.6 MB] || 14160_May102022_X1pt5_Flare_SRT_Captions.en_US.srt [547 bytes] || 14160_May102022_X1pt5_Flare_SRT_Captions.en_US.vtt [560 bytes] ||"
+              - link "Go to this page" [ref=e593] [cursor=pointer]:
+                - /url: /14160/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e594]: 
+          - listitem [ref=e595]:
+            - generic [ref=e596]:
+              - link [ref=e597] [cursor=pointer]:
+                - /url: /14536/
+                - 'img "The Solar Dynamics Observatory (SDO) spotted three X-class flares on the Sun between February 21 and 22, 2024. Watch this video to see what those events looked like in several wavelengths of extreme ultraviolet light that SDO captures. The video opens with quick shots of the three flares in different wavelength blends. The first is a blend of 131 and 171-angstrom-light imagery, the second is 171 and 304, and the last is 171 and 1600. Each wavelength highlights different temperature plasma and reveals different layers and features of the Sun. 131 angstrom light shows both the extremely hot plasma of flares (6-10 million Kelvin) and cooler plasma (400,000 Kelvin). Credit: NASA''s Goddard Space Flight Center/SDOMusic: \"Serene Reverie\" from the album Reflections. Written and produced by Lars Leonhard.Watch this video on the NASA Goddard YouTube channel.Complete transcript available." [ref=e599]'
+              - generic [ref=e600]: "ID: 14536"
+              - generic [ref=e601]:
+                - generic [aria-hidden] [ref=e602]: 
+                - text: Produced Video
+            - generic [ref=e603]:
+              - heading [level=3] [ref=e604]:
+                - link "NASA's SDO Captures a February Solar Flare Triple Play" [ref=e605] [cursor=pointer]:
+                  - /url: /14536/
+              - generic [ref=e606]:
+                - generic [ref=e607]: February 26, 2024
+                - 'link "NASA Science Category: Sun" [ref=e609] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e610]: 
+              - paragraph [ref=e612]: "The Solar Dynamics Observatory (SDO) spotted three X-class flares on the Sun between February 21 and 22, 2024. Watch this video to see what those events looked like in several wavelengths of extreme ultraviolet light that SDO captures. The video opens with quick shots of the three flares in different wavelength blends. The first is a blend of 131 and 171-angstrom-light imagery, the second is 171 and 304, and the last is 171 and 1600. Each wavelength highlights different temperature plasma and reveals different layers and features of the Sun. 131 angstrom light shows both the extremely hot plasma of flares (6-10 million Kelvin) and cooler plasma (400,000 Kelvin). Credit: NASA's Goddard Space Flight Center/SDOMusic: \"Serene Reverie\" from the album Reflections. Written and produced by Lars Leonhard.Watch this video on the NASA Goddard YouTube channel.Complete transcript available. || February_Triple_Play_Still_print.jpg (1024x576) [166.0 KB] || February_Triple_Play_Still.jpg (3840x2160) [2.1 MB] || February_Triple_Play_Still_searchweb.png (320x180) [100.7 KB] || February_Triple_Play_Still_thm.png (80x40) [8.0 KB] || 14536_FebruaryXFlareTriplePlay_1080.webm (1920x1080) [26.0 MB] || Flare_Triple_Play_Captions.en_US.srt [811 bytes] || Flare_Triple_Play_Captions.en_US.vtt [772 bytes] || 14536_FebruaryXFlareTriplePlay_1080.mp4 (1920x1080) [405.7 MB] || 14536_FebruaryXFlareTriplePlay_1080_small.mp4 (1920x1080) [166.7 MB] || 14536_FebruaryXFlareTriplePlay_ProRes_3840x2160.mov (3840x2160) [14.2 GB] || 14536_FebruaryXFlareTriplePlay_4k_25mbps.mp4 (3840x2160) [670.9 MB] || 14536_FebruaryXFlareTriplePlay_4k_50mbps.mp4 (3840x2160) [1.3 GB] ||"
+              - link "Go to this page" [ref=e613] [cursor=pointer]:
+                - /url: /14536/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e614]: 
+          - listitem [ref=e615]:
+            - generic [ref=e616]:
+              - link [ref=e617] [cursor=pointer]:
+                - /url: /11095/
+                - img "An overlay blended version of the 304 and 171 angstrom wavelengths. Cropped." [ref=e619]
+              - generic [ref=e620]: "ID: 11095"
+              - generic [ref=e621]:
+                - generic [aria-hidden] [ref=e622]: 
+                - text: Produced Video
+            - generic [ref=e623]:
+              - heading [level=3] [ref=e624]:
+                - link "August 31, 2012 Magnificent CME" [ref=e625] [cursor=pointer]:
+                  - /url: /11095/
+              - generic [ref=e626]:
+                - generic [ref=e627]: September 4, 2012
+                - 'link "NASA Science Category: Sun" [ref=e629] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e630]: 
+              - paragraph [ref=e632]: On August 31, 2012 a long filament of solar material that had been hovering in the sun's atmosphere, the corona, erupted out into space at 4:36 p.m. EDT. The coronal mass ejection, or CME, traveled at over 900 miles per second. The CME did not travel directly toward Earth, but did connect with Earth's magnetic environment, or magnetosphere, with a glancing blow. causing aurora to appear on the night of Monday, September 3. ||
+              - link "Go to this page" [ref=e633] [cursor=pointer]:
+                - /url: /11095/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e634]: 
+          - listitem [ref=e635]:
+            - generic [ref=e636]:
+              - link [ref=e637] [cursor=pointer]:
+                - /url: /11387/
+                - 'img "Credit: NASA/ESA/Goddard Space Flight CenterMusic: \"Stella Nova\" by Lars Leonhard, courtesy of the artist and Ultimae Records.Watch this video on the NASAexplorer YouTube channel.For complete transcript, click here." [ref=e639]'
+              - generic [ref=e640]: "ID: 11387"
+              - generic [ref=e641]:
+                - generic [aria-hidden] [ref=e642]: 
+                - text: Produced Video
+            - generic [ref=e643]:
+              - heading [level=3] [ref=e644]:
+                - link "Five Days of Flares and CMEs" [ref=e645] [cursor=pointer]:
+                  - /url: /11387/
+              - generic [ref=e646]:
+                - generic [ref=e647]: October 29, 2013
+                - 'link "NASA Science Category: Sun" [ref=e649] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=e650]: 
+              - paragraph [ref=e652]: This movie shows 23 of the 26 M- and X-class flares on the sun between 18:00 UT Oct. 23 and 15:00 UT Oct. 28, 2013, as captured by NASA's Solar Dynamics Observatory. It also shows the coronal mass ejections — great clouds of solar material bursting off the sun into space — during that time as captured by the ESA/NASA Solar and Heliospheric Observatory. ||
+              - link "Go to this page" [ref=e653] [cursor=pointer]:
+                - /url: /11387/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e654]: 
+  - contentinfo [ref=e655]:
+    - navigation [ref=e656]:
+      - generic [ref=e658]:
+        - generic [ref=e659]:
+          - link [ref=e660] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=e661]
+          - link [ref=e662] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=e663]
+        - generic [ref=e666]:
+          - link "Privacy Policy and Important Notices" [ref=e667] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=e668] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=e673]:
+          - generic [ref=e674]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=e676] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=e677]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=e679] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website
