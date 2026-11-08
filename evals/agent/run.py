@@ -494,6 +494,12 @@ async def _run_arm(
             from urllib.parse import urlsplit
 
             hosts = sorted({urlsplit(u).hostname or "" for u in urls} - {""})
+            from evals.agent import cli
+
+            summary["cli_limits"] = {
+                "MAX_MCP_OUTPUT_TOKENS": cli.MAX_MCP_OUTPUT_TOKENS,
+                "MCP_TOOL_TIMEOUT": cli.MCP_TOOL_TIMEOUT_MS,
+            }
             res = await provider.run(task, servers, arm, log, hosts)
             final, ended = res["final"], res["ended"]
             agent.totals, agent.models = res["tokens"], set(res["models"])

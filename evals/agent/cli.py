@@ -47,6 +47,14 @@ DROP = (
     "CLAUDE_CODE_REMOTE_SESSION_ID",
     "CLAUDECODE",
 )
+# The largest MCP result the CLI passes to the agent, in tokens; a larger one
+# is saved to a file the agent (no shell) cannot read. Pinned at the CLI's
+# default, the limit an MCP client gives a hosted server, so a CLI update
+# or a stray environment variable cannot change it between runs (round 2,
+# 2026-11-08: results of 85-469k characters lost 140 open questions;
+# in past transcripts the largest result passed was 71,815
+# characters and the smallest refused 71,813: the limit counts tokens).
+MAX_MCP_OUTPUT_TOKENS = 25_000
 # Tools every arm gets besides its MCP servers: a helper (one level deep)
 # and an MCP resource reader. Agent B also gets web search and WebFetch, as a
 # capable agent would look up guidance, but WebFetch is refused on the
@@ -120,6 +128,7 @@ class ClaudeCodeCLI:
         # or more, answered. (CLAUDE_CODE_DISABLE_MCP_TASK_BACKGROUND=1 did
         # not stop it.)
         env["CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS"] = str(MCP_TOOL_TIMEOUT_MS)
+        env["MAX_MCP_OUTPUT_TOKENS"] = str(MAX_MCP_OUTPUT_TOKENS)
 
         return env
 
