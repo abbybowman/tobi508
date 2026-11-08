@@ -19,3 +19,13 @@ leave most cells unanswered, unrelated to how questions are answered:
 The round is paused, unscored and unlocked, while these are fixed; only
 changes that affect whether a cell gets answered, not how it is answered.
 Files: `steps.jsonl`, `runs/` (no final message or summary).
+
+## arm-a-pair1-2-result-too-large (2026-11-08, 03:08-03:14 UTC)
+
+Agent A, pair 1 (Home, Help), with the first result-size fix (54k
+characters). Completed, but Home's finished result was 51.2 KB, and Claude
+Code 2.1.319 saves any MCP result over about 50 KB to a file with a 2 KB
+preview. The agent read the file (no pictures) and answered none of Home's
+62 open questions; its debrief says so. Results now aim at 45k characters
+(`docs/solutions/large-pages-results-and-replays.md`), and pair 1's Agent A
+was run again. Files: the full run, including `debrief.md`.

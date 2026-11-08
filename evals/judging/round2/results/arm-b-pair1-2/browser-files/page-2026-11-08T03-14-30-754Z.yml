@@ -1,0 +1,966 @@
+- generic [active] [ref=f1e1]:
+  - banner:
+    - navigation [ref=f1e2]:
+      - generic [ref=f1e3]:
+        - link [ref=f1e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=f1e5]
+        - link "Scientific Visualization Studio" [ref=f1e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=f1e10]:
+          - listitem [ref=f1e11]:
+            - link "Galleries" [ref=f1e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=f1e13]: 
+              - text: Galleries
+          - listitem [ref=f1e14]:
+            - link "Help" [ref=f1e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=f1e16]: 
+              - text: Help
+          - search [ref=f1e17]:
+            - generic [ref=f1e18]:
+              - textbox "Search..." [ref=f1e19]
+              - generic [ref=f1e20]: Search
+              - button "Clear search text" [ref=f1e21] [cursor=pointer]: 
+              - button "Search!" [ref=f1e22] [cursor=pointer]: 
+  - main [ref=f1e23]:
+    - generic [ref=f1e25]:
+      - heading "Tutorials, Links, and Other Helpful Information" [level=1] [ref=f1e26]
+      - generic [ref=f1e27]: Last updated March 27th, 2024
+      - separator [ref=f1e28]
+      - generic [ref=f1e29]:
+        - generic [ref=f1e31]:
+          - heading "Contents" [level=2] [ref=f1e32]
+          - navigation [ref=f1e33]:
+            - link "Frequently Asked Questions" [ref=f1e34] [cursor=pointer]:
+              - /url: "#faq"
+            - link "Multimedia Content" [ref=f1e35] [cursor=pointer]:
+              - /url: "#multimedia-content"
+            - navigation [ref=f1e36]:
+              - link "Videos" [ref=f1e37] [cursor=pointer]:
+                - /url: "#multimedia-videos"
+              - link "Images" [ref=f1e38] [cursor=pointer]:
+                - /url: "#multimedia-images"
+              - link "Frames" [ref=f1e39] [cursor=pointer]:
+                - /url: "#multimedia-frames"
+            - link "Using our APIs" [ref=f1e40] [cursor=pointer]:
+              - /url: "#apis"
+            - navigation [ref=f1e41]:
+              - link "Search API" [ref=f1e42] [cursor=pointer]:
+                - /url: "#apis-search"
+              - link "Page API" [ref=f1e43] [cursor=pointer]:
+                - /url: "#apis-page"
+              - navigation [ref=f1e44]:
+                - link "Visualization Pages" [ref=f1e45] [cursor=pointer]:
+                  - /url: "#apis-page-visualization-pages"
+                - link "Gallery Pages" [ref=f1e46] [cursor=pointer]:
+                  - /url: "#apis-page-gallery-pages"
+              - link "Dial-A-Moon API" [ref=f1e47] [cursor=pointer]:
+                - /url: "#apis-dialamoon"
+              - link "Media Group Items" [ref=f1e48] [cursor=pointer]:
+                - /url: "#apis-media-group-items"
+              - link "Media Items" [ref=f1e49] [cursor=pointer]:
+                - /url: "#apis-media-items"
+            - link "Further Assistance" [ref=f1e50] [cursor=pointer]:
+              - /url: "#further-assistance"
+        - article [ref=f1e51]:
+          - generic [ref=f1e52]:
+            - heading [level=2] [ref=f1e53]:
+              - text: Frequently Asked Questions
+              - button "Copy a link to this section" [ref=f1e54] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f1e55]: 
+            - generic [ref=f1e56]:
+              - heading [level=3] [ref=f1e58]:
+                - button "Can I use your visualizations?" [ref=f1e59] [cursor=pointer]
+              - heading [level=3] [ref=f1e62]:
+                - button "What formats do you release visualizations in?" [ref=f1e63] [cursor=pointer]
+              - heading [level=3] [ref=f1e66]:
+                - button "What software do you use to make your visualizations?" [ref=f1e67] [cursor=pointer]
+          - generic [ref=f1e69]:
+            - heading [level=2] [ref=f1e70]:
+              - text: Multimedia Content
+              - button "Copy a link to this section" [ref=f1e71] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f1e72]: 
+            - generic [ref=f1e73]:
+              - heading [level=3] [ref=f1e74]:
+                - text: Videos
+                - button "Copy a link to this section" [ref=f1e75] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e76]: 
+              - heading "File Formats" [level=4] [ref=f1e77]
+              - paragraph [ref=f1e78]:
+                - text: Our videos are primarily released in
+                - code [ref=f1e79]: .mp4
+                - text: and
+                - code [ref=f1e80]: .webm
+                - text: . Both of these file formats are supported in all modern web browsers. If you're having issues viewing either of these, we'd recommend either downloading the videos and attempting to preview them with your media viewer of choice, or trying to view the page in a different browser.
+              - paragraph [ref=f1e81]:
+                - text: Some of our older content is also available in
+                - code [ref=f1e82]: .mpg
+                - text: and
+                - code [ref=f1e83]: .dv
+                - text: . While these formats are not supported for web display, we have retroactively generated
+                - code [ref=f1e84]: .webm
+                - text: copies of these visualizations, which should display without any issues.
+                - code [ref=f1e85]: .mpg
+                - text: and
+                - code [ref=f1e86]: .dv
+                - text: are generally still supported in desktop media viewer applications, and you may have luck downloading them.
+              - heading "Resolutions" [level=4] [ref=f1e87]
+              - paragraph [ref=f1e88]: In most cases, our newer visualizations are created in 4K (3840 x 2160) at either 30 or 60 frames per second. All of our newer visualizations, and most of our older visualizations, are also published in HD (1920 x 1080 or 1280 x 720; 30fps / 60fps). Some of our oldest work is also published in NTSC (720 x 480; 29.97fps).
+            - generic [ref=f1e89]:
+              - heading [level=3] [ref=f1e90]:
+                - text: Images
+                - button "Copy a link to this section" [ref=f1e91] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e92]: 
+              - heading "File Formats" [level=4] [ref=f1e93]
+              - paragraph [ref=f1e94]:
+                - text: Out images are primarily released in
+                - code [ref=f1e95]: .jpg
+                - text: ","
+                - code [ref=f1e96]: .jpeg
+                - text: ", or"
+                - code [ref=f1e97]: .png
+                - text: . These are pretty universally supported, so you should (hopefully) have no issue viewing any of these.
+              - paragraph [ref=f1e98]:
+                - text: We also occasionally release some of our higher-resolution content in
+                - code [ref=f1e99]: .tif
+                - text: ","
+                - code [ref=f1e100]: .tiff
+                - text: ", or"
+                - code [ref=f1e101]: .exr
+                - text: . These files on the site are generally accompanied by more-compatible (albeit, lower-resolution) versions in more common formats. These are likely what your web browser displays on pages containing images with these file extensions.
+              - paragraph [ref=f1e102]:
+                - code [ref=f1e103]: .tif
+                - text: and
+                - code [ref=f1e104]: .tiff
+                - text: files are commonly supported by desktop image viewers, but not web browsers (save for Safari on Apple devices). As a result, we'd recommend downloading them and previewing them in a desktop image viewer.
+              - paragraph [ref=f1e105]:
+                - text: Likewise,
+                - code [ref=f1e106]: .exr
+                - text: files are commonly supported by desktop image viewers, but not web browsers.
+              - heading "Resolutions" [level=4] [ref=f1e107]
+              - paragraph [ref=f1e108]: Much like our videos, the vast majority of our newer visualizations are published in 4K, with smaller resolutions being available through the "downloads" dropdown menu. All of our newer content, and most of our older content, is also published in HD.
+            - generic [ref=f1e109]:
+              - heading [level=3] [ref=f1e110]:
+                - text: Frames
+                - button "Copy a link to this section" [ref=f1e111] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e112]: 
+              - paragraph [ref=f1e113]: In addition to making compiled versions of our videos available, we commonly include links to directories containing all of the individual frames that make up those visualizations. These directories can be found linked in the "downloads" menu, under the "frames" heading.
+              - paragraph
+              - heading "File Formats" [level=4] [ref=f1e114]
+              - paragraph [ref=f1e115]:
+                - text: Our frames are generally released in
+                - code [ref=f1e116]: .exr
+                - text: ","
+                - code [ref=f1e117]: .tif
+                - text: ", and"
+                - code [ref=f1e118]: .tiff
+                - text: . For more information about handling these file types, see the
+                - link "images" [ref=f1e119] [cursor=pointer]:
+                  - /url: "#multimedia-images"
+                - text: section.
+              - heading "Downloading" [level=4] [ref=f1e120]
+              - paragraph [ref=f1e121]: "Understandably, it is desirable to fetch more than one frame at a time. There are currently two recommended tools for downloading multiple frames from our site:"
+              - heading "1. DownThemAll" [level=5] [ref=f1e122]
+              - paragraph [ref=f1e123]:
+                - text: (available for
+                - link "Firefox" [ref=f1e124] [cursor=pointer]:
+                  - /url: https://addons.mozilla.org/en-US/firefox/addon/downthemall/
+                - text: and
+                - link "Chromium-based" [ref=f1e125] [cursor=pointer]:
+                  - /url: https://chrome.google.com/webstore/detail/downthemall/nljkibfhlpcnanjgbnlnbjecgicbjkge
+                - text: (e.g. Google Chrome or Microsoft Edge) browsers.
+              - paragraph [ref=f1e126]:
+                - text: For instructions on using this extension, see its
+                - link "website" [ref=f1e127] [cursor=pointer]:
+                  - /url: https://about.downthemall.org/4.0/
+                - text: .
+              - heading "2. Using curl on the command line" [level=5] [ref=f1e128]
+              - paragraph [ref=f1e129]:
+                - text: If you do not already have curl installed on your system, download it
+                - link "here" [ref=f1e130] [cursor=pointer]:
+                  - /url: https://curl.haxx.se/download.html
+                - text: ". Basic command usage:"
+              - generic [ref=f1e131]: prompt> curl [options] url
+              - list [ref=f1e132]:
+                - listitem [ref=f1e133]: url - the url you want to download. You can specify a numeric sequence using a range of numbers between brackets (see the example below).
+                - listitem [ref=f1e134]: "[options] - a variety of option flags. We suggest using the options '-LO' which will follow links and will store your downloaded frames in the current directory as their original file names."
+              - paragraph [ref=f1e135]: "For example, suppose we wish to download a frame sequence from animation ID 3032 which is located at:"
+              - link "https://svs.gsfc.nasa.gov/vis/a000000/a003000/a003032/frames/1024x512/" [ref=f1e137] [cursor=pointer]:
+                - /url: https://svs.gsfc.nasa.gov/vis/a000000/a003000/a003032/frames/1024x512/
+              - paragraph [ref=f1e138]:
+                - text: The frame files have the form
+                - code [ref=f1e139]: cld_f.nnnn.png
+                - text: ", where"
+                - code [ref=f1e140]: nnnn
+                - text: are the frame numbers ranging from
+                - code [ref=f1e141]: "0060"
+                - text: to
+                - code [ref=f1e142]: "0119"
+                - text: ". In the directory where you wish to place the frames, execute the following command:"
+              - generic [ref=f1e143]: prompt> curl -LO "https://sfc.nasa.gov/vis/a000000/a003000/a003032/frames/1024x512/cld_f.[0060-0119].png"
+              - paragraph [ref=f1e144]: This command will download each specified file in the given sequence if it exists.
+              - alert [ref=f1e145]:
+                - strong [ref=f1e146]: Warning!
+                - text: Please exercise caution when specifying a range with non-significant leading zeroes. For example, if specifying cld_f.[0060-0119].png does not work, try specifying cld_f.0[060-119].png instead.
+          - generic [ref=f1e147]:
+            - heading [level=2] [ref=f1e148]:
+              - text: Using our APIs
+              - button "Copy a link to this section" [ref=f1e149] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f1e150]: 
+            - paragraph [ref=f1e151]:
+              - text: In order to make our content more publicly accessible, and allow for automatic querying of our multimedia collection, the SVS has a number of free, publicly-available web APIs. All of our APIs can be accessed by sending
+              - code [ref=f1e152]: GET
+              - text: requests to specific URLs on this site. These requests can be further customized through the usage of URL parameters. Their responses are sent back as
+              - code [ref=f1e153]: JSON
+              - text: dictionaries.
+            - paragraph [ref=f1e154]:
+              - text: If you have additional questions as to how to use any of the following APIs, contact
+              - link "Ella Kaplan" [ref=f1e156] [cursor=pointer]:
+                - /url: mailto:ella.kaplan@nasa.gov?subject=SVS API Inquiry (from help page)
+              - text: directly.
+            - generic [ref=f1e157]:
+              - heading [level=3] [ref=f1e158]:
+                - text: Search API
+                - button "Copy a link to this section" [ref=f1e159] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e160]: 
+              - paragraph [ref=f1e161]:
+                - text: The search API allows for automatic querying of our
+                - link "search page" [ref=f1e162] [cursor=pointer]:
+                  - /url: /search
+                - text: .
+              - paragraph [ref=f1e163]:
+                - text: "The basic format for a search API call is:"
+                - code [ref=f1e164]: "https://svs.gsfc.nasa.gov/api/search/?{url parameters}"
+              - heading "Filtering Results" [level=4] [ref=f1e165]
+              - paragraph [ref=f1e166]:
+                - text: Any
+                - code [ref=f1e167]: GET
+                - text: request that is performed by the SVS search can be executed in our API by prepending
+                - code [ref=f1e168]: /api
+                - text: to the beginning of the URL. Generally, we recommend performing a search through the search page, and then trying to perform it through the API. On the search page, there is a shortcut to the API with the current search parameters that can be found by clicking on the small file-with-brackets icon (
+                - generic [aria-hidden] [ref=f1e169]: 
+                - text: ) to the right of the result count.
+              - generic [ref=f1e170]:
+                - paragraph [ref=f1e171]: "Example: let's say we wanted to search for all of the visualizations containing the word Apollo."
+                - paragraph [ref=f1e172]:
+                  - text: "Searching that phrase on the search page results in the following URL:"
+                  - code [ref=f1e173]: https://svs.gsfc.nasa.gov/search?search=Apollo
+                  - text: (
+                  - link "" [ref=f1e174] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/search?search=Apollo
+                    - generic "Open this url in a new tab" [ref=f1e175]: 
+                  - text: )
+                - paragraph [ref=f1e176]:
+                  - text: "We would be able to perform the exact same search through the API by sending a request to the following URL:"
+                  - code [ref=f1e177]: https://svs.gsfc.nasa.gov/api/search/?search=Apollo
+                  - text: (
+                  - link "" [ref=f1e178] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/api/search/?search=Apollo
+                    - generic "Open this url in a new tab" [ref=f1e179]: 
+                  - text: )
+              - heading "Limiting results" [level=4] [ref=f1e180]
+              - paragraph [ref=f1e181]:
+                - text: By default, the API will return 100 results at a time. You can reduce the number of stories returned by providing the
+                - code [ref=f1e182]: limit
+                - text: parameter.
+              - paragraph [ref=f1e183]:
+                - text: The maximum limit that can be specified is 2000. Specify
+                - code [ref=f1e184]: limit=none
+                - text: or
+                - code [ref=f1e185]: limit=all
+                - text: to view all of the results, though the maximum limit still applies.
+              - generic [ref=f1e186]:
+                - paragraph [ref=f1e187]: "Example: let's say we wanted to obtain the 15 most recently published visualizations related to the James Webb Space Telescope."
+                - paragraph [ref=f1e188]:
+                  - text: "We would be able to do so by sending a request to the following URL:"
+                  - code [ref=f1e189]: https://svs.gsfc.nasa.gov/api/search/?missions=James+Webb+Space+Telescope&limit=15
+                  - text: (
+                  - link "" [ref=f1e190] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/api/search/?missions=James+Webb+Space+Telescope&limit=15
+                    - generic "Open this url in a new tab" [ref=f1e191]: 
+                  - text: )
+              - heading "Pagination" [level=4] [ref=f1e192]
+              - paragraph [ref=f1e193]:
+                - text: The API will return at most the number of stories specified in the
+                - code [ref=f1e194]: limit
+                - text: parameter, which again defaults to 100. The total number of results will be given in the
+                - code [ref=f1e195]: count
+                - text: field. To obtain subsequent "pages" of stories, provide the
+                - code [ref=f1e196]: offset
+                - text: and
+                - code [ref=f1e197]: limit
+                - text: parameters.
+              - paragraph [ref=f1e198]:
+                - text: For convenience, this "next" URL will be given in the
+                - code [ref=f1e199]: next
+                - text: field.
+                - code [ref=f1e200]: next
+                - text: will be
+                - code [ref=f1e201]: "null"
+                - text: if you are already viewing all of the results, or the last page of the results.
+              - paragraph [ref=f1e202]:
+                - text: Similarly, there is a
+                - code [ref=f1e203]: previous
+                - text: field which gives the URL for the previous page of results, if applicable.
+              - generic [ref=f1e204]:
+                - paragraph [ref=f1e205]: "Example: let's say we wanted to obtain the next 15 visualizations from the previous example."
+                - paragraph [ref=f1e206]:
+                  - text: "We would be able to do so by sending a request to the following URL:"
+                  - code [ref=f1e207]: https://svs.gsfc.nasa.gov/api/search/?limit=15&missions=James+Webb+Space+Telescope&offset=15
+                  - text: (
+                  - link "" [ref=f1e208] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/api/search/?limit=15&missions=James+Webb+Space+Telescope&offset=15
+                    - generic "Open this url in a new tab" [ref=f1e209]: 
+                  - text: )
+              - heading "Data Specification" [level=4] [ref=f1e210]
+              - paragraph [ref=f1e211]:
+                - text: "As an example, consider the following request:"
+                - code [ref=f1e212]: https://svs.gsfc.nasa.gov/search/?studio=SVS&made_for=EIC
+                - text: (
+                - link "" [ref=f1e213] [cursor=pointer]:
+                  - /url: https://svs.gsfc.nasa.gov/api/search/?studio=SVS&made_for=EIC
+                  - generic "Open this url in a new tab" [ref=f1e214]: 
+                - text: )
+              - paragraph [ref=f1e215]:
+                - text: At the time this documentation was written, this request would return the following
+                - code [ref=f1e216]: JSON
+                - text: "data:"
+              - generic [ref=f1e217]: "{ \"count\": 19, \"next\": null, \"previous\": null, \"results\": [ { \"id\": 5126, \"url\": \"https://svs.gsfc.nasa.gov/5126/\", \"result_type\": \"Visualization\", \"release_date\": \"2023-07-07T00:00:00-04:00\", \"title\": \"NOAA Annual Greenhouse Gas Index\", \"description\": \"This visualization of the NOAA Annual Greenhouse Gas Index shows the relative warming contribution from various greenhouse gasses (1979-2022). The donut chart shows 2022 AGGI data. || The NOAA Annual Greenhouse Gas Index (AGGI) tracks the increasing amount of heat being added to the atmosphere by human-related greenhouse gas (GHG) emissions. It is based on the highest quality measurements of GHGs in the atmosphere from sites around the world. This visualization contains data from 1979-2022. The quantity plotted is the global radiative forcing, which is a measure of how much each component is warming the Earth. The 'other' category includes hydrofluorocarbons (HFCs), Chlorofluorocarbons (CFCs), and hydrochlorofluorocarbons (HCFCs). The donut chart shows the 2022 data. This visualization, aimed at showing the relative contributions of each gas, leaves off the scale and units. In 2022 the total radiative forcing was 3.4 Watts per meter squared. || \", \"hits\": 63 }, { \"id\": 5121, \"url\": \"https://svs.gsfc.nasa.gov/5121/\", \"result_type\": \"Visualization\", \"release_date\": \"2023-06-30T00:00:00-04:00\", \"title\": \"ODIAC: a map of human made carbon dioxide emissions\", \"description\": \"ODIAC (Open-source Data Inventory for Anthropogenic CO2) map for December 2021. || The Open-source Data Inventory for Anthropogenic CO2 (A.K.A. ODIAC) is a global high-resolution (1x1km) emission data product for fossil fuel carbon dioxide (CO2) emission. ODIAC was originally designed and developed under the Greenhouse gas Observing SATellite (GOSAT) project at Japan’s National Institute for Environmental Studies (NIES). Since then, ODIAC has been maintained at the Universities Space Research Association (USRA) in collaboration with NASA, NIES and the Appalachian State University. ODIAC pioneered the combined use of space-based nighttime light data and individual power plant emission/location profiles to estimate the global spatial extent of fossil fuel CO2 emissions. ODIAC has been a key input data for NASA’s carbon modeling. ODIAC has been also widely used in the international science research community for a variety of applications across key policy relevant scales (global to local). || \", \"hits\": 146 }, . . . ] },"
+              - generic [ref=f1e218]: "Note: only the first two results are included for brevity."
+              - paragraph [ref=f1e219]: "The response will always contain the following fields:"
+              - list [ref=f1e220]:
+                - listitem [ref=f1e221]:
+                  - code [ref=f1e222]: count
+                  - text: "- The total number of results for the given query, regardless of which page or how many results are currently being shown."
+                - listitem [ref=f1e223]:
+                  - code [ref=f1e224]: next
+                  - text: "- The URL that will display the next page of results, using the same"
+                  - code [ref=f1e225]: limit
+                  - text: as the current request. This field will be null if all of the results are being shown, or if the final page of results is being shown.
+                - listitem [ref=f1e226]:
+                  - code [ref=f1e227]: previous
+                  - text: "- The URL that will display the previous page of results, using the same"
+                  - code [ref=f1e228]: limit
+                  - text: as the current request. This field will be null if all of the results are being shown, or if the first page of results is being shown.
+                - listitem [ref=f1e229]:
+                  - code [ref=f1e230]: results
+                  - text: "- An array of results objects (see below)."
+              - paragraph [ref=f1e231]: "Each individual result object contains the following fields:"
+              - list [ref=f1e232]:
+                - listitem [ref=f1e233]:
+                  - code [ref=f1e234]: id
+                  - text: "- The ID of the page that this result represents."
+                - listitem [ref=f1e235]:
+                  - code [ref=f1e236]: url
+                  - text: "- The URL that this result links to."
+                - listitem [ref=f1e237]:
+                  - code [ref=f1e238]: result_type
+                  - text: "- The type of result that this is."
+                - listitem [ref=f1e239]:
+                  - code [ref=f1e240]: release_date
+                  - text: "- The date and time that this result was released."
+                - listitem [ref=f1e241]:
+                  - code [ref=f1e242]: title
+                  - text: "- The title of this result."
+                - listitem [ref=f1e243]:
+                  - code [ref=f1e244]: description
+                  - text: "- A (brief) description of this result."
+                - listitem [ref=f1e245]:
+                  - code [ref=f1e246]: hits
+                  - text: "- The total number of views that the page this result represents has gotten over the past 10 days. Note: this number is updated daily between 2:00am ~ 4:00am ET"
+            - generic [ref=f1e247]:
+              - heading [level=3] [ref=f1e248]:
+                - text: Page API
+                - button "Copy a link to this section" [ref=f1e249] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e250]: 
+              - paragraph [ref=f1e251]: The page API provides more detailed information on specific site pages. Whereas the search API's results provide a broad overview of a page, the page API provides the full breadth of information that the SVS has available for any given page. This allows for automatic querying of datasets, keywords, credit information, and many many more pieces of metadata about our visualizations.
+              - paragraph [ref=f1e252]: "Currently, the page API supports:"
+              - list [ref=f1e253]:
+                - listitem [ref=f1e254]:
+                  - text: Visualization pages (e.g
+                  - link "https://svs.gsfc.nasa.gov/5101/ " [ref=f1e255] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/5101/
+                    - text: https://svs.gsfc.nasa.gov/5101/
+                    - generic "Open this url in a new tab" [ref=f1e256]: 
+                  - text: )
+                - listitem [ref=f1e257]:
+                  - text: Gallery pages (e.g
+                  - link "https://svs.gsfc.nasa.gov/new/gallery/ " [ref=f1e258] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/gallery/the-galleries/
+                    - text: https://svs.gsfc.nasa.gov/new/gallery/
+                    - generic "Open this url in a new tab" [ref=f1e259]: 
+                  - text: )
+              - paragraph [ref=f1e260]:
+                - text: "The basic format for a page API call is:"
+                - code [ref=f1e261]: "https://svs.gsfc.nasa.gov/api/{page ID}/"
+              - paragraph [ref=f1e262]:
+                - text: "The page ID for any given page can be found by looking for the \"ID: XXXXX\" box, located just underneath the page's title. For visualization pages, this can also be found in the URL. Additionally, there is a link to the API on relevant pages, available by clicking on the small file-with-brackets icon ("
+                - generic [aria-hidden] [ref=f1e263]: 
+                - text: ") located next to the \"ID: XXXXX\" box."
+              - generic [ref=f1e264]:
+                - paragraph [ref=f1e265]: "Example: let's say we wanted to get information on the visualization 5101: Sea Surface Temperature (SST) - Near Real Time."
+                - paragraph [ref=f1e266]:
+                  - text: "Visiting the page for that visualization results in the following URL:"
+                  - code [ref=f1e267]: https://svs.gsfc.nasa.gov/5101/
+                  - text: (
+                  - link "" [ref=f1e268] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/5101
+                    - generic "Open this url in a new tab" [ref=f1e269]: 
+                  - text: )
+                - paragraph [ref=f1e270]:
+                  - text: "We would be able access that page in the API by visiting the following URL:"
+                  - code [ref=f1e271]: https://svs.gsfc.nasa.gov/api/5101/
+                  - text: (
+                  - link "" [ref=f1e272] [cursor=pointer]:
+                    - /url: https://svs.gsfc.nasa.gov/api/5101/
+                    - generic "Open this url in a new tab" [ref=f1e273]: 
+                  - text: )
+              - heading "Data Specification" [level=4] [ref=f1e274]
+              - paragraph [ref=f1e275]:
+                - text: "As an example, consider the following request:"
+                - code [ref=f1e276]: https://svs.gsfc.nasa.gov/api/5101/
+                - text: (
+                - link "" [ref=f1e277] [cursor=pointer]:
+                  - /url: https://svs.gsfc.nasa.gov/api/5101/
+                  - generic "Open this url in a new tab" [ref=f1e278]: 
+                - text: )
+              - paragraph [ref=f1e279]:
+                - text: At the time this documentation was written, this request would return the following
+                - code [ref=f1e280]: JSON
+                - text: "data:"
+              - generic [ref=f1e281]: "{ \"id\": 5101, \"url\": \"https://svs.gsfc.nasa.gov/5101/\", \"page_type\": \"Visualization\", \"title\": \"Sea Surface Temperature (SST) - Near Real Time\", \"description\": \"An equirectangular view of sea surface temperature (SST) data for the past two and half years, updated daily to include the latest available data. || This visualization shows Sea Surface Temperature (SST) data from the Jet Propulsion Laboratory (JPL) Multi-scale Ultra-high Resolution (MUR) Sea Surface Temperature Analysis. This visualization is updated once a day to include the latest available data. || \", \"release_date\": \"2023-05-08T00:00:00-04:00\", \"update_date\": \"2023-09-06T09:01:42.770455-04:00\", \"main_image\": { \"id\": 855019, \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005101/sst_mur_colobar_print.jpg\", \"filename\": \"sst_mur_colobar_print.jpg\", \"media_type\": \"Image\", \"alt_text\": \"Sea Surface Temperature color bar. Color range is light blue - white - orange - red. -10 to 40 degrees Celsius\", \"width\": 1024, \"height\": 576, \"pixels\": 589824 }, \"main_video\": { \"id\": 855700, \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005101/sst_30_sec_robinson_4096x2048_2x1_30p.mp4\", \"filename\": \"sst_30_sec_robinson_4096x2048_2x1_30p.mp4\", \"media_type\": \"Movie\", \"alt_text\": \"A view of sea surface temperature (SST) data for the past two and half years, updated daily to include the latest available data. This version is a robinson projection. \", \"width\": 4096, \"height\": 2048, \"pixels\": 8388608, \"audio_track\": null, \"captions\": null }, \"progress\": \"Complete\", \"media_groups\": [ { \"id\": 312499, \"url\": \"https://svs.gsfc.nasa.gov/5101#media_group_312499\", \"widget\": \"Video player\", \"title\": \"\", \"caption\": \"\", \"description\": \"An equirectangular view of sea surface temperature (SST) data for the past two and half years, updated daily to include the latest available data. \", \"items\": [ { \"id\": 206430, \"item_type\": \"media\", \"extra_data\": null, \"title\": null, \"caption\": null, \"media\": { \"id\": 855015, \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005101/sst_mur_print.jpg\", \"filename\": \"sst_mur_print.jpg\", \"media_type\": \"Image\", \"alt_text\": \"An equirectangular view of sea surface temperature (SST) data for the past two and half years, updated daily to include the latest available data. \", \"width\": 1024, \"height\": 512, \"pixels\": 524288 } }, { \"id\": 206431, \"item_type\": \"media\", \"extra_data\": null, \"title\": null, \"caption\": null, \"media\": { \"id\": 855014, \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005101/sst_mur_searchweb.png\", \"filename\": \"sst_mur_searchweb.png\", \"media_type\": \"Image\", \"alt_text\": \"An equirectangular view of sea surface temperature (SST) data for the past two and half years, updated daily to include the latest available data. \", \"width\": 320, \"height\": 180, \"pixels\": 57600 } }, . . . ], \"extra_data\": {} }, { \"id\": 312498, \"url\": \"https://svs.gsfc.nasa.gov/5101#media_group_312498\", \"widget\": \"Basic text with HTML\", \"title\": \"\", \"caption\": \"\", \"description\": \"This visualization shows Sea Surface Temperature (SST) data from the Jet Propulsion Laboratory (JPL) Multi-scale Ultra-high Resolution (MUR) Sea Surface Temperature Analysis. This visualization is updated once a day to include the latest available data.\", \"media\": [], \"extra_data\": {} }, { \"id\": 312500, \"url\": \"https://svs.gsfc.nasa.gov/5101#media_group_312500\", \"widget\": \"Single image\", \"title\": \"\", \"caption\": \"\", \"description\": \"An equirectangular view of the most recent sea surface temperature (SST) data available (still image). \", \"items\": [ { \"id\": 206435, \"item_type\": \"media\", \"extra_data\": null, \"title\": null, \"caption\": null, \"instance\": { \"id\": 856705, \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005101/sst_mur_most_recent_print.jpg\", \"filename\": \"sst_mur_most_recent_print.jpg\", \"media_type\": \"Image\", \"alt_text\": \"An equirectangular view of the most recent sea surface temperature (SST) data available (still image). \", \"width\": 1024, \"height\": 512, \"pixels\": 524288 } }, { \"id\": 206434, \"item_type\": \"media\", \"extra_data\": null, \"title\": null, \"caption\": null, \"instance\": { \"id\": 856704, \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005100/a005101/sst_mur_most_recent.exr\", \"filename\": \"sst_mur_most_recent.exr\", \"media_type\": \"Image\", \"alt_text\": \"An equirectangular view of the most recent sea surface temperature (SST) data available (still image). \", \"width\": 4096, \"height\": 2048, \"pixels\": 8388608 } } ], \"extra_data\": {} }, . . . ], \"studio\": \"SVS\", \"funding_sources\": [ \"ESE\" ], \"credits\": [ { \"role\": \"Visualizer\", \"people\": [ { \"name\": \"Kel Elkins\", \"employer\": \"USRA\" }, { \"name\": \"Greg Shirah\", \"employer\": \"NASA/GSFC\" } ] }, { \"role\": \"Technical support\", \"people\": [ { \"name\": \"Laurence Schuler\", \"employer\": \"ADNET Systems, Inc.\" }, { \"name\": \"Ian Jones\", \"employer\": \"ADNET Systems, Inc.\" } ] } ], \"missions\": [], \"series\": [], \"tapes\": [], \"papers\": [], \"datasets\": [ { \"name\": \"Multi-scale Ultra-high Resolution (MUR) Sea Surface Temperature (SST) Analysis\", \"common_name\": \"MUR SST\", \"platform\": null, \"sensor\": null, \"type\": \"Analysis\", \"organization\": \"JPL PO DAAC\", \"description\": null, \"credit\": null, \"url\": null, \"date_range\": null, } ], \"nasa_science_categories\": [ \"Earth\" ], \"keywords\": [ \"Earth Information Center\", \"Earth Science\", \"Ocean\", \"Ocean Temperature\", \"Oceans\", \"Physical oceanography\", \"sea surface temperature\" ], \"recommended_pages\": [], \"related\": [ { \"id\": 4809, \"url\": \"https://svs.gsfc.nasa.gov/4809/\", \"page_type\": \"Visualization\", \"title\": \"Earth Day 2020: Sea Surface Temperature (SST) from January 2016 through March 2020\", \"description\": \"Sea Surface Temperature - composited version with all layers includedThis video is also available on our YouTube channel. || \", \"release_date\": \"2020-04-21T00:00:00-04:00\", \"update_date\": \"2023-09-07T00:18:08.898152-04:00\", \"main_image\": { \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a004800/a004809/sst_comp_layer.1300_print.jpg\", \"filename\": \"sst_comp_layer.1300_print.jpg\", \"media_type\": \"Image\", \"alt_text\": \"Sea Surface Temperature - composited version with all layers includedThis video is also available on our YouTube channel.\", \"width\": 1024, \"height\": 576, \"pixels\": 589824 } } ], \"sources\": [], \"products\": [], \"newer_versions\": [], \"older_versions\": [], \"alternate_versions\": [] }"
+              - generic [ref=f1e282]: "Note: this is a fairly large block of text. You may need to scroll to see the whole thing."
+              - paragraph [ref=f1e283]: "The response will always contain the following fields:"
+              - list [ref=f1e284]:
+                - listitem [ref=f1e285]:
+                  - code [ref=f1e286]: id
+                  - text: "- The page ID of the requested item."
+                - listitem [ref=f1e287]:
+                  - code [ref=f1e288]: url
+                  - text: "- The url that this page can be found at."
+                - listitem [ref=f1e289]:
+                  - code [ref=f1e290]: page_type
+                  - text: "- What type of page this is."
+              - paragraph [ref=f1e291]: This response will also contain extra fields that vary depending on the type of page requested.
+              - generic [ref=f1e292]:
+                - heading [level=5] [ref=f1e293]:
+                  - text: Visualization pages
+                  - button "Copy a link to this section" [ref=f1e294] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=f1e295]: 
+                - list [ref=f1e296]:
+                  - listitem [ref=f1e297]:
+                    - code [ref=f1e298]: title
+                    - text: "- The title of the visualization."
+                  - listitem [ref=f1e299]:
+                    - code [ref=f1e300]: description
+                    - text: "- A brief description of the visualization."
+                  - listitem [ref=f1e301]:
+                    - code [ref=f1e302]: release_date
+                    - text: "- The date and time this visualization was released. This timestamp is in ISO 8601."
+                  - listitem [ref=f1e303]:
+                    - code [ref=f1e304]: update_date
+                    - text: "- The date and time this visualization was last updated. This timestamp is in ISO 8601."
+                  - listitem [ref=f1e305]:
+                    - code [ref=f1e306]: main_image
+                    - text: "- The media item that's been selected to be the \"main\" image for this visualization. This is also used as the thumbnail for this item in a variety of places across the site. For more information on media items, see the section on"
+                    - link "media items" [ref=f1e307] [cursor=pointer]:
+                      - /url: "#apis-media-items"
+                    - text: .
+                  - listitem [ref=f1e308]:
+                    - code [ref=f1e309]: main_video
+                    - text: "- The media item that's been selected to be the \"main\" video for this visualization. This is mostly used on other sites, if they link to SVS visualizations. For more information on media items, see the section on"
+                    - link "media items" [ref=f1e310] [cursor=pointer]:
+                      - /url: "#apis-media-items"
+                    - text: .
+                  - listitem [ref=f1e311]:
+                    - code [ref=f1e312]: progress
+                    - text: "- What stage this visualization is at in the development process. This will always be"
+                    - code [ref=f1e313]: Complete
+                    - text: for visualizations publicly released on this site.
+                  - listitem [ref=f1e314]:
+                    - code [ref=f1e315]: media_groups
+                    - text: "- Media items and blocks of text on the SVS website are organized into groups for display purposes. These are essentially the \"blocks\" that compose a visualization page."
+                    - list [ref=f1e316]:
+                      - listitem [ref=f1e317]:
+                        - code [ref=f1e318]: id
+                        - text: "- The ID of this media group."
+                      - listitem [ref=f1e319]:
+                        - code [ref=f1e320]: url
+                        - text: "- A link to this particular media group."
+                      - listitem [ref=f1e321]:
+                        - code [ref=f1e322]: widget
+                        - text: "- The widget used for this media item."
+                      - listitem [ref=f1e323]:
+                        - code [ref=f1e324]: title
+                        - text: "- The title of this media group."
+                      - listitem [ref=f1e325]:
+                        - code [ref=f1e326]: caption
+                        - text: "- The caption of this media group. In a standard media group, this is rendered just below the media display, and to the right of the \"downloads\" button."
+                      - listitem [ref=f1e327]:
+                        - code [ref=f1e328]: description
+                        - text: "- The description of this media group. This is where the vast majority of the text in a media group is stored."
+                      - listitem [ref=f1e329]:
+                        - code [ref=f1e330]: items
+                        - text: "- A list of items contained in this media group. For more information on media group items, see the section on"
+                        - link "media group items" [ref=f1e331] [cursor=pointer]:
+                          - /url: "#apis-media-group-items"
+                        - text: .
+                      - listitem [ref=f1e332]:
+                        - code [ref=f1e333]: extra_data
+                        - text: "- Additional data used the generate the media group. The most common piece of information contained in this block is"
+                        - code [ref=f1e334]: page_list
+                        - text: ", which is a full list of pages linked to this media group."
+                  - listitem [ref=f1e335]:
+                    - code [ref=f1e336]: studio
+                    - text: "- A string which indicates which studio created the material, or what product the material was created for."
+                    - code [ref=f1e337]: studio
+                    - text: "will always be one of the following:"
+                    - list [ref=f1e338]:
+                      - listitem [ref=f1e339]:
+                        - code [ref=f1e340]: SVS
+                        - text: "- The material was created directly by NASA Scientific Visualization Studio."
+                      - listitem [ref=f1e341]:
+                        - code [ref=f1e342]: GMS
+                        - text: "- The material was created by NASA's Goddard Media Studios."
+                      - listitem [ref=f1e343]:
+                        - code [ref=f1e344]: CILab
+                        - text: "- The material was created by NASA's Conceptual Image Lab."
+                      - listitem [ref=f1e345]:
+                        - code [ref=f1e346]: HW
+                        - text: "- The material was created or formatted explicity for the NASA Hyperwall."
+                  - listitem [ref=f1e347]:
+                    - code [ref=f1e348]: funding_sources
+                    - text: "- A list of sources that funded the creation of this visualization."
+                  - listitem [ref=f1e349]:
+                    - code [ref=f1e350]: credits
+                    - text: "- A list of credits for this visualization."
+                    - list [ref=f1e351]:
+                      - listitem [ref=f1e352]:
+                        - code [ref=f1e353]: role
+                        - text: "- The name of the role that this chunk of credits is for."
+                      - listitem [ref=f1e354]:
+                        - code [ref=f1e355]: people
+                        - text: "- A list of people who are credited with this role."
+                        - list [ref=f1e356]:
+                          - listitem [ref=f1e357]:
+                            - code [ref=f1e358]: name
+                            - text: "- This person's name."
+                          - listitem [ref=f1e359]:
+                            - code [ref=f1e360]: employer
+                            - text: "- This person's employer, when this page was published."
+                  - listitem [ref=f1e361]:
+                    - code [ref=f1e362]: missions
+                    - text: "- A list of missions that this visualization is associated with."
+                  - listitem [ref=f1e363]:
+                    - code [ref=f1e364]: series
+                    - text: "- A list of series (sets of visualizations) that this visualization is associated with."
+                  - listitem [ref=f1e365]:
+                    - code [ref=f1e366]: tapes
+                    - text: "- A list of tapes that this visualization appeared on."
+                  - listitem [ref=f1e367]:
+                    - code [ref=f1e368]: papers
+                    - text: "- A list of research papers associated with this visualization."
+                  - listitem [ref=f1e369]:
+                    - code [ref=f1e370]: datasets
+                    - text: "- A list of datasets used in the creation of this visualization."
+                    - list [ref=f1e371]:
+                      - listitem [ref=f1e372]:
+                        - code [ref=f1e373]: name
+                        - text: "- The full name of this dataset."
+                      - listitem [ref=f1e374]:
+                        - code [ref=f1e375]: common_name
+                        - text: "- A more common name for this dataset (if applicable)."
+                      - listitem [ref=f1e376]:
+                        - code [ref=f1e377]: platform
+                        - text: "- The location where this dataset was collected from. It's easiest to think of \"where this dataset was collected from physically\". Often, this is the name of a particular mission (e.g. TERRA, SDO, OSIRIS-REx, etc.)"
+                      - listitem [ref=f1e378]:
+                        - code [ref=f1e379]: sensor
+                        - text: "- The sensor this dataset was collected with (if applicable)."
+                      - listitem [ref=f1e380]:
+                        - code [ref=f1e381]: type
+                        - text: "- What type of dataset this is."
+                      - listitem [ref=f1e382]:
+                        - code [ref=f1e383]: organization
+                        - text: "- The organization responsible for maintaining this dataset (if applicable)."
+                      - listitem [ref=f1e384]:
+                        - code [ref=f1e385]: description
+                        - text: "- A description of this dataset."
+                      - listitem [ref=f1e386]:
+                        - code [ref=f1e387]: credit
+                        - text: "- Who should be credited for this dataset."
+                      - listitem [ref=f1e388]:
+                        - code [ref=f1e389]: url
+                        - text: "- A URL that this dataset can be found at (if applicable)."
+                      - listitem [ref=f1e390]:
+                        - code [ref=f1e391]: date_range
+                        - text: "- The range of dates used from this dataset. Note: this value is specific to this visualization. Different visualizations can use different ranges of data from the same dataset."
+                  - listitem [ref=f1e392]:
+                    - code [ref=f1e393]: nasa_science_categories
+                    - text: "- The NASA Science Categories that this visualization belongs to."
+                  - listitem [ref=f1e394]:
+                    - code [ref=f1e395]: keywords
+                    - text: "- A list of keywords associated with this visualization."
+                  - listitem [ref=f1e396]:
+                    - code [ref=f1e397]: recommended_pages
+                    - text: "- A list of pages (on our site) recommended by this page's author"
+                  - listitem [ref=f1e398]:
+                    - code [ref=f1e399]: related
+                    - text: "- A list of pages (on our site) considered to be \"related\" to this page."
+                  - listitem [ref=f1e400]:
+                    - code [ref=f1e401]: sources
+                    - text: "- A list of pages (on our site) used as sources for this page."
+                  - listitem [ref=f1e402]:
+                    - code [ref=f1e403]: products
+                    - text: "- A list of pages (on our site) that use this page as a source."
+                  - listitem [ref=f1e404]:
+                    - code [ref=f1e405]: newer_versions
+                    - text: "- A list of pages (on our site) that are newer versions of this page."
+                  - listitem [ref=f1e406]:
+                    - code [ref=f1e407]: older_versions
+                    - text: "- A list of pages (on our site) that are older versions of this page."
+                  - listitem [ref=f1e408]:
+                    - code [ref=f1e409]: alternate_versions
+                    - text: "- A list of pages (on our site) that are considered to be alternate versions of this page. These are usually versions of the page in a different language, a different part of the world, or a different viewpoint."
+              - generic [ref=f1e410]:
+                - heading [level=5] [ref=f1e411]:
+                  - text: Gallery pages
+                  - button "Copy a link to this section" [ref=f1e412] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=f1e413]: 
+                - list [ref=f1e414]:
+                  - listitem [ref=f1e415]:
+                    - code [ref=f1e416]: title
+                    - text: "- The title of this gallery."
+                  - listitem [ref=f1e417]:
+                    - code [ref=f1e418]: description
+                    - text: "- A brief description of this gallery."
+                  - listitem [ref=f1e419]:
+                    - code [ref=f1e420]: release_date
+                    - text: "- The date and time this gallery was released. This timestamp is in ISO 8601."
+                  - listitem [ref=f1e421]:
+                    - code [ref=f1e422]: update_date
+                    - text: "- The date and time this gallery was last updated. This timestamp is in ISO 8601."
+                  - listitem [ref=f1e423]:
+                    - code [ref=f1e424]: main_image
+                    - text: "- The media item that's been selected to be the \"main\" image for this page. This is also used as the thumbnail for this item in a variety of places across the site. For more information on media items, see the section on"
+                    - link "media items" [ref=f1e425] [cursor=pointer]:
+                      - /url: "#apis-media-items"
+                    - text: .
+                  - listitem [ref=f1e426]:
+                    - code [ref=f1e427]: media_groups
+                    - text: "- Media items and blocks of text on the SVS website are organized into groups for display purposes. These are essentially the \"blocks\" that compose a visualization page."
+                    - list [ref=f1e428]:
+                      - listitem [ref=f1e429]:
+                        - code [ref=f1e430]: id
+                        - text: "- The ID of this media group."
+                      - listitem [ref=f1e431]:
+                        - code [ref=f1e432]: url
+                        - text: "- A link to this particular media group."
+                      - listitem [ref=f1e433]:
+                        - code [ref=f1e434]: widget
+                        - text: "- The widget used for this media item."
+                      - listitem [ref=f1e435]:
+                        - code [ref=f1e436]: title
+                        - text: "- The title of this media group."
+                      - listitem [ref=f1e437]:
+                        - code [ref=f1e438]: caption
+                        - text: "- The caption of this media group. In a standard media group, this is rendered just below the media display, and to the right of the \"downloads\" button."
+                      - listitem [ref=f1e439]:
+                        - code [ref=f1e440]: description
+                        - text: "- The description of this media group. This is where the vast majority of the text in a media group is stored."
+                      - listitem [ref=f1e441]:
+                        - code [ref=f1e442]: items
+                        - text: "- A list of items contained in this media group. For more information on media group items, see the section on"
+                        - link "media group items" [ref=f1e443] [cursor=pointer]:
+                          - /url: "#apis-media-group-items"
+                        - text: .
+                      - listitem [ref=f1e444]:
+                        - code [ref=f1e445]: extra_data
+                        - text: "- Additional data used the generate the media group. The most common piece of information contained in this block is"
+                        - code [ref=f1e446]: page_list
+                        - text: ", which is a full list of pages linked to this media group."
+            - generic [ref=f1e447]:
+              - heading [level=3] [ref=f1e448]:
+                - text: Dial-A-Moon API
+                - button "Copy a link to this section" [ref=f1e449] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e450]: 
+              - paragraph [ref=f1e451]:
+                - text: The Dial-A-Moon API is used to power the Dial-A-Moons (e.g. on
+                - link "#5048" [ref=f1e452] [cursor=pointer]:
+                  - /url: https://svs.gsfc.nasa.gov/5048
+                - text: ) across the SVS site. It also serves as a useful resource for getting astronomical information about the Moon for a given date.
+              - paragraph [ref=f1e453]:
+                - text: If you have any questions specifically about the data returned by this API, please contact
+                - link "Ernie Wright" [ref=f1e455] [cursor=pointer]:
+                  - /url: mailto:ernest.t.wright@nasa.gov?subject=Dial-A-Moon Inquiry (from help page)
+                - text: . For general API inquiries, please contact
+                - link "Ella Kaplan" [ref=f1e457] [cursor=pointer]:
+                  - /url: mailto:ella.kaplan@nasa.gov?subject=SVS API Inquiry (from help page)
+                - text: .
+              - paragraph [ref=f1e458]: "Note: the Dial-A-Moon API has a couple of specific restrictions:"
+              - list [ref=f1e459]:
+                - listitem [ref=f1e460]: Data is only available in 1-hour increments, except during eclipses, where it switches to 1-minute increments.
+                - listitem [ref=f1e461]: The earliest data available is January 1st, 2011, 00:00 UTC.
+                - listitem [ref=f1e462]: The latest data available is December 31st, 23:00 UTC for the current year. We add in the next year of data when the yearly Moon Phase and Libration visualization comes out, which has historically happened in November.
+              - paragraph [ref=f1e463]:
+                - text: "The basic format for a Dial-A-Moon API call is:"
+                - code [ref=f1e464]: "https://svs.gsfc.nasa.gov/api/dialamoon/{UTC timestamp in YYYY-MM-DDTHH:MM}"
+                - generic [ref=f1e465]:
+                  - text: "Note: there is always a letter"
+                  - code [ref=f1e466]: T
+                  - text: in between the date and time, and it is not something that should be converted.
+              - paragraph [ref=f1e468]:
+                - text: "Example: the Dial-A-Moon API call for January 2nd, 2023 at 03:00 UTC is:"
+                - code [ref=f1e469]: https://svs.gsfc.nasa.gov/api/dialamoon/2023-01-02T03:00
+                - text: (
+                - link "" [ref=f1e470] [cursor=pointer]:
+                  - /url: https://svs.gsfc.nasa.gov/api/dialamoon/2023-01-02T03:00
+                  - generic "Open this url in a new tab" [ref=f1e471]: 
+                - text: )
+              - heading "Data Specification" [level=4] [ref=f1e472]
+              - paragraph [ref=f1e473]:
+                - text: "As an example, consider the following request:"
+                - code [ref=f1e474]: https://svs.gsfc.nasa.gov/api/dialamoon/2023-07-12T15:37
+                - text: (
+                - link "" [ref=f1e475] [cursor=pointer]:
+                  - /url: https://svs.gsfc.nasa.gov/api/dialamoon/2023-07-12T15:37
+                  - generic "Open this url in a new tab" [ref=f1e476]: 
+                - text: )
+                - generic [ref=f1e477]: "Note: even though the time requested is 15:37 UTC, the API will always round that to the closest point it has data for. In this case, 15:37 becomes 16:00. This is also true during eclipses, where the increments switch to 1 minute instead of 1 hour."
+              - generic [ref=f1e478]: "{ \"image\": { \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005048/frames/730x730_1x1_30p/moon.4625.jpg\", \"filename\": \"frames/730x730_1x1_30p/moon.4625.jpg\", \"media_type\": \"Image\", \"alt_text\": \"An image of the moon, as it would appear on 2023-07-12 16:00:00+00:00. (Frame: 4625)\", \"width\": 730, \"height\": 730, \"pixels\": 532900 }, \"image_highres\": { \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005048/frames/5760x3240_16x9_30p/fancy/comp.4625.tif\", \"filename\": \"frames/5760x3240_16x9_30p/fancy/comp.4625.tif\", \"media_type\": \"Image\", \"alt_text\": \"An image of the moon, as it would appear on 2023-07-12 16:00:00+00:00. (Frame: 4625)\", \"width\": 5760, \"height\": 3240, \"pixels\": 18662400 }, \"su_image\": { \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005049/frames/730x730_1x1_30p/moon.4625.jpg\", \"filename\": \"frames/730x730_1x1_30p/moon.4625.jpg\", \"media_type\": \"Image\", \"alt_text\": \"An image of the moon, as it would appear on 2023-07-12 16:00:00+00:00. (Frame: 4625)\", \"width\": 730, \"height\": 730, \"pixels\": 532900 }, \"su_image_highres\": { \"url\": \"https://svs.gsfc.nasa.gov/vis/a000000/a005000/a005049/frames/5760x3240_16x9_30p/fancy/comp.4625.tif\", \"filename\": \"frames/5760x3240_16x9_30p/fancy/comp.4625.tif\", \"media_type\": \"Image\", \"alt_text\": \"An image of the moon, as it would appear on 2023-07-12 16:00:00+00:00. (Frame: 4625)\", \"width\": 5760, \"height\": 3240, \"pixels\": 18662400 }, \"time\": \"2023-07-12T16:00\", \"phase\": 23.81, \"obscuration\": 0.0, \"age\": 24.474, \"diameter\": 1845.5, \"distance\": 388369.0, \"j2000_ra\": 3.2364, \"j2000_dec\": 19.875, \"subsolar_lon\": -115.103, \"subsolar_lat\": 1.525, \"subearth_lon\": 6.457, \"subearth_lat\": -2.417, \"posangle\": 346.15 }"
+              - paragraph [ref=f1e479]: "The response will always contain the following fields:"
+              - list [ref=f1e480]:
+                - listitem [ref=f1e481]:
+                  - code [ref=f1e482]: image
+                  - text: "- An image of the Moon at the requested timestamp. This follows the same format as the"
+                  - link "media items" [ref=f1e483] [cursor=pointer]:
+                    - /url: "#apis-media-items"
+                  - text: from the visualization page API.
+                - listitem [ref=f1e484]:
+                  - code [ref=f1e485]: image_highres
+                  - text: "- A higher resolution image of the Moon (often annotated with some additional information) at the requested timestamp. This follows the same format as the"
+                  - link "media items" [ref=f1e486] [cursor=pointer]:
+                    - /url: "#apis-media-items"
+                  - text: from the visualization page API.
+                - listitem [ref=f1e487]:
+                  - code [ref=f1e488]: su_image
+                  - text: "- The south-up version of"
+                  - code [ref=f1e489]: image
+                  - text: .
+                - listitem [ref=f1e490]:
+                  - code [ref=f1e491]: su_image_highres
+                  - text: "- The south-up version of"
+                  - code [ref=f1e492]: image_highres
+                  - text: .
+                - listitem [ref=f1e493]:
+                  - code [ref=f1e494]: time
+                  - text: "- The timestamp corresponding to the data fetched."
+                - listitem [ref=f1e495]:
+                  - code [ref=f1e496]: phase
+                  - text: "- The illuminated percentage of the Moon, as seen from Earth."
+                  - code [ref=f1e497]: "0.00"
+                  - text: represents a new moon and
+                  - code [ref=f1e498]: "100.00"
+                  - text: represents a full moon.
+                - listitem [ref=f1e499]:
+                  - code [ref=f1e500]: obscuration
+                  - text: "- The percentage of the Moon inside the Earth's umbra shadow. Note: this is only used during Eclipses, and is"
+                  - code [ref=f1e501]: "0.0"
+                  - text: during all other times.
+                - listitem [ref=f1e502]:
+                  - code [ref=f1e503]: age
+                  - text: "- The age (in days) since the start of the current lunar cycle."
+                - listitem [ref=f1e504]:
+                  - code [ref=f1e505]: diameter
+                  - text: "- The current diameter (in arcseconds) of the Moon, as it appears from Earth."
+                - listitem [ref=f1e506]:
+                  - code [ref=f1e507]: distance
+                  - text: "- The distance of the Moon (in kilometers) from Earth."
+                - listitem [ref=f1e508]:
+                  - code [ref=f1e509]: j2000_ra
+                  - text: "- The"
+                  - link "J2000 right ascension" [ref=f1e510] [cursor=pointer]:
+                    - /url: https://en.wikipedia.org/wiki/Right_ascension
+                  - text: (in degrees) of the Moon at the requested timestamp.
+                - listitem [ref=f1e511]:
+                  - code [ref=f1e512]: j2000_dec
+                  - text: "- The"
+                  - link "J2000 declination" [ref=f1e513] [cursor=pointer]:
+                    - /url: https://en.wikipedia.org/wiki/Declination
+                  - text: (in degrees) of the Moon at the requested timestamp.
+                - listitem [ref=f1e514]:
+                  - code [ref=f1e515]: subsolar_lon
+                  - text: ","
+                  - code [ref=f1e516]: subsolar_lat
+                  - text: "- The longitude and latitude (in degrees) of the"
+                  - link "subsolar point" [ref=f1e517] [cursor=pointer]:
+                    - /url: https://en.wikipedia.org/wiki/Subsolar_point
+                  - text: on the Moon at the requested timestamp. This can be thought of as the point on the Moon where the Sun is directly overhead.
+                - listitem [ref=f1e518]:
+                  - code [ref=f1e519]: subearth_lon
+                  - text: ","
+                  - code [ref=f1e520]: subearth_lat
+                  - text: "- Like the subsolar point, but for the Earth instead of the Sun. These angles define the"
+                  - link "libration" [ref=f1e521] [cursor=pointer]:
+                    - /url: https://en.wikipedia.org/wiki/Libration
+                  - text: in longitude and latitude (in degrees).
+                - listitem [ref=f1e522]:
+                  - code [ref=f1e523]: posangle
+                  - text: "- The"
+                  - link "position angle" [ref=f1e524] [cursor=pointer]:
+                    - /url: https://en.wikipedia.org/wiki/Phase_angle_(astronomy)
+                  - text: of the north polar axis. This is the tilt of the Moon relative to its line of right ascension, or the north celestial pole, measured counterclockwise.
+            - generic [ref=f1e525]:
+              - heading [level=3] [ref=f1e526]:
+                - text: Media Group Items
+                - button "Copy a link to this section" [ref=f1e527] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e528]: 
+              - paragraph [ref=f1e529]: Media group items do not have their own API, but are formatted the same across other APIs that use them. This section is intended to serve as a data specification for that common format.
+              - paragraph [ref=f1e530]: "All media group items contain the following parameters:"
+              - list [ref=f1e531]:
+                - listitem [ref=f1e532]:
+                  - code [ref=f1e533]: id
+                  - text: "- The id number of this media group item."
+                - listitem [ref=f1e534]:
+                  - code [ref=f1e535]: item_type
+                  - text: "- A string indicating the type of this media group item."
+                  - code [ref=f1e536]: item_type
+                  - text: "will always be one of the following:"
+                  - list [ref=f1e537]:
+                    - listitem [ref=f1e538]:
+                      - code [ref=f1e539]: media
+                      - text: "- A media item. For more information on media items, see the section on"
+                      - link "media items" [ref=f1e540] [cursor=pointer]:
+                        - /url: "#apis-media-items"
+                      - text: .
+                    - listitem [ref=f1e541]:
+                      - code [ref=f1e542]: media_group
+                      - text: "- Another media group."
+                    - listitem [ref=f1e543]:
+                      - code [ref=f1e544]: link
+                      - text: "- A link to another page."
+                    - listitem [ref=f1e545]:
+                      - code [ref=f1e546]: details_page
+                      - text: "- A visualization page."
+                    - listitem [ref=f1e547]:
+                      - code [ref=f1e548]: gallery_page
+                      - text: "- A gallery page."
+                - listitem [ref=f1e549]:
+                  - code [ref=f1e550]: instance
+                  - text: "- A summary of the actual object this media group item points to."
+              - paragraph [ref=f1e551]:
+                - code [ref=f1e552]: media
+                - text: and
+                - code [ref=f1e553]: link
+                - text: "items contain the following extra fields:"
+              - list [ref=f1e554]:
+                - listitem [ref=f1e555]:
+                  - code [ref=f1e556]: title
+                  - text: "- An optional title used when displaying this item."
+                - listitem [ref=f1e557]:
+                  - code [ref=f1e558]: caption
+                  - text: "- An optional caption used when displaying this item."
+              - paragraph [ref=f1e559]:
+                - code [ref=f1e560]: link
+                - text: "items also contain an additional extra field:"
+              - list [ref=f1e561]:
+                - listitem [ref=f1e562]:
+                  - code [ref=f1e563]: target
+                  - text: "- The URL that this item points to."
+            - generic [ref=f1e564]:
+              - heading [level=3] [ref=f1e565]:
+                - text: Media Items
+                - button "Copy a link to this section" [ref=f1e566] [cursor=pointer]:
+                  - generic [aria-hidden] [ref=f1e567]: 
+              - paragraph [ref=f1e568]: Media items do not have their own API, but are formatted the same across other APIs that use them. This section is intended to serve as a data specification for that common format.
+              - list [ref=f1e569]:
+                - listitem [ref=f1e570]:
+                  - code [ref=f1e571]: id
+                  - text: "- The id number of this media item."
+                - listitem [ref=f1e572]:
+                  - code [ref=f1e573]: url
+                  - text: "- The url that this media item can be found at."
+                - listitem [ref=f1e574]:
+                  - code [ref=f1e575]: filename
+                  - text: "- The filename of this media item."
+                - listitem [ref=f1e576]:
+                  - code [ref=f1e577]: media_type
+                  - text: "- A string indicating the type of this media item."
+                  - code [ref=f1e578]: media_type
+                  - text: "will always be one of the following:"
+                  - list [ref=f1e579]:
+                    - listitem [ref=f1e580]:
+                      - code [ref=f1e581]: Image
+                      - text: "- An image file."
+                    - listitem [ref=f1e582]:
+                      - code [ref=f1e583]: Movie
+                      - text: "- A video file."
+                    - listitem [ref=f1e584]:
+                      - code [ref=f1e585]: Frames
+                      - text: "- A set of images that are individual frames from a particular video. Note: despite being treated as individual media items,"
+                      - code [ref=f1e586]: Frames
+                      - text: are actually groups of individual images.
+                    - listitem [ref=f1e587]:
+                      - code [ref=f1e588]: Captions
+                      - text: "- A set of captions for a particular video."
+                    - listitem [ref=f1e589]:
+                      - code [ref=f1e590]: Audio
+                      - text: "- An audio file."
+                    - listitem [ref=f1e591]:
+                      - code [ref=f1e592]: Presentation
+                      - text: "- A presentation file (usually PowerPoint or"
+                      - code [ref=f1e593]: .pdf
+                      - text: ).
+                    - listitem [ref=f1e594]:
+                      - code [ref=f1e595]: File
+                      - text: "- A file that can't be categorized into one of the other media types."
+                - listitem [ref=f1e596]:
+                  - code [ref=f1e597]: alt_text
+                  - text: "- Alt text for this media item."
+              - paragraph [ref=f1e598]: "Some items (e.g. images, movies, and frames) also contain the following extra information:"
+              - list [ref=f1e599]:
+                - listitem [ref=f1e600]:
+                  - code [ref=f1e601]: width
+                  - text: "- The width of this item (in pixels)."
+                - listitem [ref=f1e602]:
+                  - code [ref=f1e603]: height
+                  - text: "- The height of this item (in pixels)."
+                - listitem [ref=f1e604]:
+                  - code [ref=f1e605]: pixels
+                  - text: "- The total number of pixels in this image ("
+                  - code [ref=f1e606]: = width x height
+                  - text: ).
+          - generic [ref=f1e607]:
+            - heading [level=2] [ref=f1e608]:
+              - text: Further Assistance
+              - button "Copy a link to this section" [ref=f1e609] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f1e610]: 
+            - paragraph [ref=f1e611]:
+              - text: Still have a question regarding svs.gsfc.nasa.gov?
+              - link "Contact us!" [ref=f1e613] [cursor=pointer]:
+                - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website
+  - contentinfo [ref=f1e614]:
+    - navigation [ref=f1e615]:
+      - generic [ref=f1e617]:
+        - generic [ref=f1e618]:
+          - link [ref=f1e619] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=f1e620]
+          - link [ref=f1e621] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=f1e622]
+        - generic [ref=f1e625]:
+          - link "Privacy Policy and Important Notices" [ref=f1e626] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=f1e627] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=f1e632]:
+          - generic [ref=f1e633]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=f1e635] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=f1e636]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=f1e638] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website
