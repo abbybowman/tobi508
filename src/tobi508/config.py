@@ -108,6 +108,13 @@ class Settings(BaseSettings):
     # (Versions.run_settings). Set false to test pages under their policy.
     bypass_csp: bool = True
     navigation_timeout_ms: int = 30_000
+    # A replay loads from its recording, with no network, but serving a page
+    # of large images or video from it is slow when loads overlap: round 2's
+    # SVS pages (71-95 MB recordings) took 37 s with 4 loads at once and 79 s
+    # with 8, so 30 s left two pages and their other-page reads untested
+    # (2026-11-08). Replays wait longer; a page that never loads still fails.
+    # Every report records it (Versions.run_settings).
+    replay_navigation_timeout_ms: int = 120_000
 
     # ── Evidence ──────────────────────────────────────────────────────────────
     # The Tab press cap is not a setting: it comes from the 4.C spec

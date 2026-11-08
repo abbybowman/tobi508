@@ -90,3 +90,35 @@ async def test_har_replay_is_identical_with_server_down(
         await ctx.close()
     assert seen[0] == seen[1]
     assert all(seen[0])
+
+
+async def test_replay_loads_wait_by_their_own_setting(
+    browser, settings, server, tmp_path
+):
+    """Round 2 (2026-11-08): replays of 71-95 MB recordings took 37-79 s
+    when loads overlapped and failed at the 30 s navigation default. A
+    replay waits replay_navigation_timeout_ms; a load slower than that
+    still fails."""
+    import asyncio
+
+    har = tmp_path / "page.har.zip"
+    cap = await record(browser, settings, f"{server.base}/redir-ok", har, noop_log)
+    server.stop()
+
+    async def slow(route):
+        await asyncio.sleep(1.0)
+        await route.fallback()
+
+    for timeout_ms, loads in ((300, False), (5_000, True)):
+        settings.replay_navigation_timeout_ms = timeout_ms
+        replay = await replay_context(browser, settings, har, noop_log)
+        await replay.context.route(cap.final_url, slow)  # registered last: first
+        page = await replay.context.new_page()
+        try:
+            await replay.guard.goto(page, cap.final_url)
+            ok = True
+        except Exception as exc:
+            assert "Timeout" in type(exc).__name__ + str(exc)
+            ok = False
+        await replay.context.close()
+        assert ok is loads

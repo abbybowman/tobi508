@@ -90,6 +90,7 @@ async def test_run_tt_tests_on_http_page(settings, server):
         "other_page_s": settings.other_page_s,
         "no_time_limit": True,  # the server's default since 2026-11-07
         "bypass_csp": True,  # the server's default since 2026-11-07 (ANDI)
+        "replay_navigation_timeout_ms": 120_000,  # round 2, 2026-11-08
     }
     # The window the page was tested in, as configured and as a page saw it.
     d = report.versions.display

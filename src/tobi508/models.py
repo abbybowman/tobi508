@@ -446,7 +446,8 @@ class Versions(BaseModel):
             "Spec run limits from server config (settle, scroll, time), "
             "whether the caller turned the time limit off for this run, and "
             "whether pages' Content-Security-Policy was bypassed (bypass_csp, "
-            "so ANDI can run)."
+            "so ANDI can run), and how long a load from the recording may "
+            "take (replay_navigation_timeout_ms)."
         ),
     )
     display: dict[str, int | float | None] = Field(
