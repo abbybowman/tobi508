@@ -275,3 +275,17 @@ def test_page_groups_split_at_group_comments():
         ["https://x.gov/3"],
     ]
     assert agent_run.page_groups(f"https://x.gov/1 {h}\n") == [["https://x.gov/1"]]
+
+
+def test_pick_group_by_size_or_by_section():
+    h = "a" * 64
+    text = "".join(
+        f"# Group {g}\n" + "".join(f"https://x.gov/{g}{i} {h}\n" for i in range(3))
+        for g in (1, 2)
+    )
+    urls = [u for g in agent_run.page_groups(text) for u in g]
+    assert agent_run.pick_group(urls, text, 2) == urls[3:]
+    assert agent_run.pick_group(urls, text, 2, size=2) == urls[2:4]
+    assert agent_run.pick_group(urls, text, 3, size=2) == urls[4:]
+    with pytest.raises(RuntimeError):
+        agent_run.pick_group(urls, text, 4, size=2)

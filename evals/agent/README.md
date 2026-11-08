@@ -56,12 +56,19 @@ Development runs, never scored as a round (Agent A, CLI route):
   to the round's task. For example, `answers-v1` tells the agent to
   answer every open question and to rerun cut-short calls with
   `no_time_limit`.
-- `--debrief` asks the agent, after its final answer, why it left open
-  questions or follow-up calls undone: one resumed turn in the same
-  session with no tools and no MCP servers, saved to `debrief.md` and
-  never scored.
 - `--no-subagents` removes the CLI's subagent tool. Without it, one run
   started 9 subagents at once and overloaded the container.
+
+Any run, either arm (CLI route):
+- `--debrief` asks the agent, after its final answer is recorded, where it
+  struggled and what it left undone, and why: one resumed turn in the same
+  session with no tools and no MCP servers, saved to `debrief.md` and
+  never scored. Its tokens are not in the run's totals; its seconds are in
+  `wall_s`.
+- `--group N` tests only group N of the round's pages: `pages.txt`'s
+  `# Group` sections, or with `--group-size K` the pages in order cut into
+  groups of K (round 2 ran pairs). Each run is scored on the pages it was
+  given (`summary.json`).
 
 Run them in their own folder, because a locked round refuses new runs
 (`docs/solutions/agent-eval-scoring.md`). On the CLI route, MCP calls stay

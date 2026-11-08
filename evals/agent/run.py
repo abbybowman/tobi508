@@ -68,11 +68,13 @@ HELPER = {
 DEBRIEF = (
     "This is a follow-up for the people building the tools you used, not "
     "part of the task, and it changes no result. Answer briefly and "
-    "honestly: did you leave any of the tools' open questions unanswered, or "
-    "skip any call the results asked you to make (follow_up_calls, "
-    "no_time_limit, other pages)? For each, why: for example time, cost, the "
-    "number of questions, unclear instructions, not believing it would help, "
-    "or not noticing. What would have made you do it?"
+    "honestly. 1. Where did you struggle or feel unsure in this task (which "
+    "pages, criteria or tool results), and why? 2. Did you leave anything "
+    "undone that the task, the tools or their results asked for (open "
+    "questions, follow-up calls, pages or criteria not fully tested)? For "
+    "each, why: for example time, cost, the number of items, unclear "
+    "instructions, a result that was too large or cut off, not believing it "
+    "would help, or not noticing. 3. What would have helped you?"
 )
 
 LEAK_QUESTION = (
@@ -375,6 +377,22 @@ def page_groups(text: str) -> list[list[str]]:
     return [g for g in groups if g]
 
 
+def pick_group(
+    urls: list[str], text: str, group: int, size: int | None = None
+) -> list[str]:
+    """Group `group` (from 1) of a round's pages: pages.txt's "# Group"
+    sections, or with `size` the pages in order cut into groups of that
+    many (round 2's pairs, 2026-11-08, without editing pages.txt)."""
+    groups = (
+        [urls[i : i + size] for i in range(0, len(urls), size)]
+        if size
+        else page_groups(text)
+    )
+    if not 1 <= group <= len(groups):
+        raise RuntimeError(f"The round has {len(groups)} group(s), not {group}")
+    return groups[group - 1]
+
+
 def _describe(exc: BaseException) -> str:
     """The real cause, not "unhandled errors in a TaskGroup"."""
     while isinstance(exc, BaseExceptionGroup) and exc.exceptions:
@@ -408,6 +426,7 @@ async def run_arm(
     label: str | None = None,
     prompt_version: str | None = None,
     group: int | None = None,
+    group_size: int | None = None,
 ) -> dict:
     """Run arm "a" or "b" on round folder `rd`; returns the summary.
 
@@ -417,7 +436,15 @@ async def run_arm(
     name = f"arm-{arm}" + (f"-{label}" if label else "")
     if servers is not None or arm == "a":
         return await _run_arm(
-            rd, arm, provider, servers, check_leaks, name, prompt_version, group
+            rd,
+            arm,
+            provider,
+            servers,
+            check_leaks,
+            name,
+            prompt_version,
+            group,
+            group_size,
         )
     from tobi508.config import Settings
     from tobi508.egress import EgressProxy
@@ -432,7 +459,15 @@ async def run_arm(
             live_log=out / "live.jsonl",
         )
         s = await _run_arm(
-            rd, arm, provider, servers, check_leaks, name, prompt_version, group
+            rd,
+            arm,
+            provider,
+            servers,
+            check_leaks,
+            name,
+            prompt_version,
+            group,
+            group_size,
         )
     s["egress_refused"] = proxy.refused[:100]
     (out / "summary.json").write_text(json.dumps(s, indent=1, default=str) + "\n")
@@ -440,7 +475,15 @@ async def run_arm(
 
 
 async def _run_arm(
-    rd, arm, provider, servers, check_leaks, name, prompt_version=None, group=None
+    rd,
+    arm,
+    provider,
+    servers,
+    check_leaks,
+    name,
+    prompt_version=None,
+    group=None,
+    group_size=None,
 ) -> dict:
     from evals.agent import prompt_dev
     from evals.judging import _pages
@@ -459,10 +502,9 @@ async def _run_arm(
         raise RuntimeError(f"{out} is not empty: this arm already ran")
     urls = [u for u, _ in _pages(rd)]
     if group is not None:
-        groups = page_groups((rd / "pages.txt").read_text("utf-8"))
-        if not 1 <= group <= len(groups):
-            raise RuntimeError(f"pages.txt has {len(groups)} group(s), not {group}")
-        urls = groups[group - 1]
+        urls = pick_group(
+            urls, (rd / "pages.txt").read_text("utf-8"), group, group_size
+        )
     task = prompt_dev.task(urls, version)
     if servers is None:
         servers = tool_arm(frozen, provider.model, out / "runs")
@@ -477,6 +519,8 @@ async def _run_arm(
         "code_commit": _commit(),
         "pages": urls,
         "group": group,
+        "group_size": group_size,
+        "debrief_question": getattr(provider, "debrief", None),
         "servers": [
             {"name": s.name, "command": s.command, "args": s.args} for s in servers
         ],
@@ -577,15 +621,21 @@ def main(argv: list[str]) -> None:
     ap.add_argument(
         "--debrief",
         action="store_true",
-        help="development runs only: after the final answer, ask the agent "
-        "(tools off) why it left questions or follow-up calls undone; saved "
-        "to debrief.md, never scored",
+        help="after the final answer (recorded first), ask the agent, tools "
+        "off, where it struggled and what it left undone; saved to "
+        "debrief.md, never scored",
     )
     ap.add_argument(
         "--group",
         type=int,
         help='test only group N of pages.txt (its "# Group" comment lines, '
         "first is 1); scored on those pages",
+    )
+    ap.add_argument(
+        "--group-size",
+        type=int,
+        help="with --group: cut pages.txt, in order, into groups of this many "
+        'pages instead of its "# Group" lines',
     )
     ap.add_argument("round", type=Path)
     a = ap.parse_args(argv)
@@ -606,6 +656,7 @@ def main(argv: list[str]) -> None:
             label=a.label,
             prompt_version=a.prompt,
             group=a.group,
+            group_size=a.group_size,
         )
     )
     print(json.dumps({k: s[k] for k in ("ended", "wall_s", "tokens", "tool_calls")}))
