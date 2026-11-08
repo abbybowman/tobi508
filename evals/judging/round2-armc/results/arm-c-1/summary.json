@@ -1,0 +1,207 @@
+{
+ "arm": "c",
+ "label": "1",
+ "route": "cli",
+ "model_requested": "claude-sonnet-5-5",
+ "answered_by": "server:claude-sonnet-5-5",
+ "prompt_file": "evals/agent/judge_c_prompt.md",
+ "prompt_sha256": "84f2e98e948219937b2b17e0969c40d5dda22d6e882c2121abcd7664cf049e3d",
+ "temperature": "CLI default (not settable on this route)",
+ "dry": false,
+ "pages": [
+  "https://svs.gsfc.nasa.gov/",
+  "https://svs.gsfc.nasa.gov/help/",
+  "https://svs.gsfc.nasa.gov/search/",
+  "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+  "https://svs.gsfc.nasa.gov/cilab/",
+  "https://svs.gsfc.nasa.gov/14194/",
+  "https://svs.gsfc.nasa.gov/5340/",
+  "https://svs.gsfc.nasa.gov/14592/",
+  "https://svs.gsfc.nasa.gov/5144/",
+  "https://svs.gsfc.nasa.gov/4914/"
+ ],
+ "first_round": [
+  {
+   "page": "https://svs.gsfc.nasa.gov/",
+   "run_id": "20261108T032001Z-27bb8c",
+   "from": "round2/results/arm-a-pair1-2"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/help/",
+   "run_id": "20261108T023126Z-55e4d1",
+   "from": "round2/attempts/arm-a-g1-2-stopped"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/search/",
+   "run_id": "20261108T014024Z-5571ad",
+   "from": "round2/results/arm-a-g1-1"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+   "run_id": "20261108T014257Z-f21c29",
+   "from": "round2/results/arm-a-g1-1"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/cilab/",
+   "run_id": "20261108T034011Z-037d61",
+   "from": "round2/results/arm-a-pair3-2"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/14194/",
+   "run_id": "20261108T034834Z-cb9231",
+   "from": "round2/results/arm-a-pair4-2"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/5340/",
+   "run_id": "20261108T034919Z-ad8f41",
+   "from": "round2/results/arm-a-pair4-2"
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/14592/",
+   "run_id": "20261108T134503Z-3e5d91",
+   "from": "fresh TOBI run on round2/frozen (tested_frozen)",
+   "other_pages": [
+    "https://svs.gsfc.nasa.gov/cilab/"
+   ],
+   "seconds": 339.1,
+   "open_questions": 8
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/5144/",
+   "run_id": "20261108T135042Z-2fc1ce",
+   "from": "fresh TOBI run on round2/frozen (tested_frozen)",
+   "other_pages": [
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "seconds": 476.0,
+   "open_questions": 11
+  },
+  {
+   "page": "https://svs.gsfc.nasa.gov/4914/",
+   "run_id": "20261108T135838Z-43c388",
+   "from": "fresh TOBI run on round2/frozen (tested_frozen)",
+   "other_pages": [
+    "https://svs.gsfc.nasa.gov/5144/"
+   ],
+   "seconds": 618.2,
+   "open_questions": 3
+  }
+ ],
+ "per_page": {
+  "https://svs.gsfc.nasa.gov/": {
+   "runs": [
+    "20261108T032001Z-27bb8c"
+   ],
+   "questions": 63,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/help/": {
+   "runs": [
+    "20261108T023126Z-55e4d1"
+   ],
+   "questions": 4,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/search/": {
+   "runs": [
+    "20261108T014024Z-5571ad"
+   ],
+   "questions": 53,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/gallery/the-galleries/": {
+   "runs": [
+    "20261108T014257Z-f21c29"
+   ],
+   "questions": 26,
+   "rounds": 2,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/cilab/": {
+   "runs": [
+    "20261108T034011Z-037d61"
+   ],
+   "questions": 0,
+   "rounds": 0,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/14194/": {
+   "runs": [
+    "20261108T034834Z-cb9231",
+    "20261108T141436Z-40d304"
+   ],
+   "questions": 5,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/5340/": {
+   "runs": [
+    "20261108T034919Z-ad8f41",
+    "20261108T141541Z-d9c12a"
+   ],
+   "questions": 21,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/14592/": {
+   "runs": [
+    "20261108T134503Z-3e5d91",
+    "20261108T141623Z-2429d8"
+   ],
+   "questions": 8,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/5144/": {
+   "runs": [
+    "20261108T135042Z-2fc1ce",
+    "20261108T141657Z-46198a"
+   ],
+   "questions": 11,
+   "rounds": 1,
+   "left_open": 0
+  },
+  "https://svs.gsfc.nasa.gov/4914/": {
+   "runs": [
+    "20261108T135838Z-43c388",
+    "20261108T141716Z-15461e"
+   ],
+   "questions": 3,
+   "rounds": 1,
+   "left_open": 0
+  }
+ },
+ "concurrency": 3,
+ "slice_px": 1400,
+ "tries_per_call": 2,
+ "wall_s": 458.3,
+ "ended": "completed",
+ "finished_at": "2026-11-08T14:17:27.653338+00:00",
+ "questions": 194,
+ "calls": 194,
+ "retried_calls": 0,
+ "failed_calls": 0,
+ "answered": 194,
+ "unsure": 62,
+ "rejected": 0,
+ "left_open": 0,
+ "picture_questions": 140,
+ "text_questions": 54,
+ "follow_up_runs": 5,
+ "input_tokens": 388,
+ "output_tokens": 72438,
+ "cache_read_input_tokens": 232795,
+ "cache_creation_input_tokens": 1475327,
+ "seconds_in_calls": 1047.7000000000003,
+ "cost_usd": 6.6497435000000005,
+ "tokens": {
+  "input_tokens": 388,
+  "output_tokens": 72438,
+  "cache_read_input_tokens": 232795,
+  "cache_creation_input_tokens": 1475327
+ },
+ "cost_usd_list_price": 6.6497
+}
