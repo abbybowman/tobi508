@@ -1,0 +1,10 @@
+{"ts":"2026-11-08T02:35:51.194666Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-08T02:35:52.319576Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T02:35:52.328450Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","har":"pages/004.har.zip"}}
+{"ts":"2026-11-08T02:35:52.340783Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.01}}
+{"ts":"2026-11-08T02:35:52.341272Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/help/","seconds":0.0}}
+{"ts":"2026-11-08T02:35:52.346443Z","step":"captured_other","status":"ok","detail":{"n":3,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/search/","seconds":0.01}}
+{"ts":"2026-11-08T02:35:52.347081Z","step":"captured_other","status":"ok","detail":{"n":4,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/cilab/","seconds":0.0}}
+{"ts":"2026-11-08T02:35:52.347157Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","redirects":[],"seconds":0.03}}
+{"ts":"2026-11-08T02:35:52.670654Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-08T02:35:57.346273Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}

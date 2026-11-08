@@ -1,0 +1,891 @@
+[
+ {
+  "type": "system",
+  "subtype": "init",
+  "cwd": "/tmp/arm-pf9fy9vh/work",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "tools": [
+   "Task",
+   "Read",
+   "WebFetch",
+   "WebSearch",
+   "mcp__browser__browser_click",
+   "mcp__browser__browser_close",
+   "mcp__browser__browser_console_messages",
+   "mcp__browser__browser_drag",
+   "mcp__browser__browser_drop",
+   "mcp__browser__browser_emulate_media",
+   "mcp__browser__browser_evaluate",
+   "mcp__browser__browser_file_upload",
+   "mcp__browser__browser_fill_form",
+   "mcp__browser__browser_find",
+   "mcp__browser__browser_handle_dialog",
+   "mcp__browser__browser_hover",
+   "mcp__browser__browser_navigate",
+   "mcp__browser__browser_navigate_back",
+   "mcp__browser__browser_network_request",
+   "mcp__browser__browser_network_requests",
+   "mcp__browser__browser_press_key",
+   "mcp__browser__browser_resize",
+   "mcp__browser__browser_select_option",
+   "mcp__browser__browser_snapshot",
+   "mcp__browser__browser_tabs",
+   "mcp__browser__browser_take_screenshot",
+   "mcp__browser__browser_type",
+   "mcp__browser__browser_wait_for"
+  ],
+  "mcp_servers": [
+   {
+    "name": "browser",
+    "status": "connected",
+    "source": "dynamic"
+   }
+  ],
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "default",
+  "slash_commands": [],
+  "apiKeySource": "none",
+  "claude_code_version": "2.1.319",
+  "output_style": "default",
+  "agents": [
+   "claude",
+   "claude-code-guide",
+   "Explore",
+   "general-purpose",
+   "Plan",
+   "statusline-setup"
+  ],
+  "skills": [],
+  "plugins": [
+   {
+    "name": "cc-plugin-agents-md",
+    "path": "builtin",
+    "source": "cc-plugin-agents-md@builtin"
+   },
+   {
+    "name": "cc-plugin-telemetry",
+    "path": "builtin",
+    "source": "cc-plugin-telemetry@builtin"
+   },
+   {
+    "name": "cc-plugin-privacy",
+    "path": "builtin",
+    "source": "cc-plugin-privacy@builtin"
+   },
+   {
+    "name": "cc-plugin-plugin-authoring",
+    "path": "builtin",
+    "source": "cc-plugin-plugin-authoring@builtin"
+   }
+  ],
+  "capabilities": [
+   "interrupt_receipt_v1",
+   "interrupt_cancel_queued_v1",
+   "interrupt_send_now_v1",
+   "interrupt_requeue_taken_v1",
+   "msg_lifecycle_v1",
+   "request_marker_lists_v1",
+   "ask_user_question_unanswered_v1",
+   "lifecycle_wakeup_source_v1",
+   "sdk_mcp_tools_list_changed",
+   "sdk_mcp_manifests",
+   "mcp_read_resource_v1",
+   "mcp_tool_ui_meta_v1",
+   "ui_surface_v1",
+   "mcp_call_result_not_for_model_v1",
+   "mcp_call_check_permissions_v1"
+  ],
+  "analytics_disabled": false,
+  "product_feedback_disabled": false,
+  "uuid": "e966ca14-2c52-45df-91a1-e3ffd0485620",
+  "memory_paths": {
+   "auto": "/tmp/arm-pf9fy9vh/home/.claude/projects/-tmp-arm-pf9fy9vh-work/memory/"
+  },
+  "scratchpad_path": "/tmp/claude-0/-tmp-arm-pf9fy9vh-work/c8d63e92-f170-4182-b31a-ccd05e1070c5/scratchpad",
+  "original_cwd": "/tmp/arm-pf9fy9vh/work",
+  "additional_directories": [],
+  "messaging_socket_path": "/tmp/cc-socks/26255.sock",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "per_turn_effort_active": true,
+  "ultrathink_available": false,
+  "ultrathink_typed_raises": true,
+  "view_mode": "default"
+ },
+ {
+  "type": "system",
+  "subtype": "status",
+  "status": "requesting",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "ebeb13cc-c74b-4805-9ca4-3f06d42057c4"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmMF5nE1ApYrFpnRFUL",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01KZwWW1wNqQmvW3hjYjrjh2",
+     "name": "mcp__browser__browser_navigate",
+     "input": {
+      "url": "https://svs.gsfc.nasa.gov/search/"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 2382,
+    "cache_read_input_tokens": 10179,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2382
+    },
+    "output_tokens": 25,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "a6bf86f9-18be-40bf-91e3-9e7cd600f687",
+  "timestamp": "2026-11-08T03:39:25.358Z",
+  "request_id": "req_011CgpmMEtsaWLxHgcPSsVhd",
+  "wire_tool_inputs": {
+   "toolu_01KZwWW1wNqQmvW3hjYjrjh2": {
+    "url": "https://svs.gsfc.nasa.gov/search/"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01KZwWW1wNqQmvW3hjYjrjh2",
+    "display_name": "Navigate to a URL",
+    "server_display_name": "Playwright",
+    "tool_name": "browser_navigate"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01KZwWW1wNqQmvW3hjYjrjh2",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "### Ran Playwright code\n```js\nawait page.goto('https://svs.gsfc.nasa.gov/search/');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/search/\n- Page Title: NASA SVS | Search\n- Console: 7 errors, 0 warnings\n### Snapshot\n- [Snapshot](../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/page-2026-11-08T03-39-27-410Z.yml)\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-26-782Z.log#L1-L6"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "c6a9258d-a6e2-448d-9408-675e5a9ef23a",
+  "timestamp": "2026-11-08T03:39:27.421Z",
+  "tool_use_result": [
+   {
+    "type": "text",
+    "text": "### Ran Playwright code\n```js\nawait page.goto('https://svs.gsfc.nasa.gov/search/');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/search/\n- Page Title: NASA SVS | Search\n- Console: 7 errors, 0 warnings\n### Snapshot\n- [Snapshot](../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/page-2026-11-08T03-39-27-410Z.yml)\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-26-782Z.log#L1-L6"
+   }
+  ],
+  "tool_result_meta": [
+   {
+    "id": "toolu_01KZwWW1wNqQmvW3hjYjrjh2",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmMF5nE1ApYrFpnRFUL",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01DXwt6aibzDeCgNVgMXwLVA",
+     "name": "mcp__browser__browser_evaluate",
+     "input": {
+      "function": "() => ({forms:[...document.querySelectorAll('input,select,textarea,button')].map(e=>({t:e.tagName,type:e.type,id:e.id,name:e.name,aria:e.getAttribute('aria-label'),lab:[...(e.labels||[])].map(l=>l.textContent.trim()),ph:e.placeholder,title:e.title,txt:e.textContent.trim().slice(0,30),vis:e.offsetParent!==null})),skip:[...document.querySelectorAll('a')].slice(0,5).map(a=>a.textContent.trim()+a.getAttribute('href')),main:!!document.querySelector('main,[role=main]'),nav:document.querySelectorAll('nav').length,h:[...document.querySelectorAll('h1,h2,h3')].map(h=>h.tagName+h.textContent.trim().slice(0,30)),media:document.querySelectorAll('video,audio,marquee').length,onchange:[...document.querySelectorAll('[onchange]')].length})"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 2382,
+    "cache_read_input_tokens": 10179,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2382
+    },
+    "output_tokens": 25,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "740e46fd-3a89-4934-a708-7f8d86306ce9",
+  "timestamp": "2026-11-08T03:39:27.925Z",
+  "request_id": "req_011CgpmMEtsaWLxHgcPSsVhd",
+  "wire_tool_inputs": {
+   "toolu_01DXwt6aibzDeCgNVgMXwLVA": {
+    "function": "() => ({forms:[...document.querySelectorAll('input,select,textarea,button')].map(e=>({t:e.tagName,type:e.type,id:e.id,name:e.name,aria:e.getAttribute('aria-label'),lab:[...(e.labels||[])].map(l=>l.textContent.trim()),ph:e.placeholder,title:e.title,txt:e.textContent.trim().slice(0,30),vis:e.offsetParent!==null})),skip:[...document.querySelectorAll('a')].slice(0,5).map(a=>a.textContent.trim()+a.getAttribute('href')),main:!!document.querySelector('main,[role=main]'),nav:document.querySelectorAll('nav').length,h:[...document.querySelectorAll('h1,h2,h3')].map(h=>h.tagName+h.textContent.trim().slice(0,30)),media:document.querySelectorAll('video,audio,marquee').length,onchange:[...document.querySelectorAll('[onchange]')].length})"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01DXwt6aibzDeCgNVgMXwLVA",
+    "display_name": "Evaluate JavaScript",
+    "server_display_name": "Playwright",
+    "tool_name": "browser_evaluate"
+   }
+  ]
+ },
+ {
+  "type": "rate_limit_event",
+  "rate_limit_info": {
+   "status": "allowed",
+   "resetsAt": 1794119400,
+   "rateLimitType": "five_hour",
+   "overageStatus": "rejected",
+   "overageDisabledReason": "org_level_disabled",
+   "isUsingOverage": false,
+   "unifiedWindows": {
+    "five_hour": {
+     "utilization": 0.37,
+     "resetsAt": 1794119400,
+     "status": "allowed"
+    },
+    "seven_day": {
+     "utilization": 0.4,
+     "resetsAt": 1794549600,
+     "status": "allowed"
+    }
+   }
+  },
+  "uuid": "0e43a299-b352-447e-85ea-cf531a621421",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5"
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01DXwt6aibzDeCgNVgMXwLVA",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "### Result\n{\n  \"forms\": [\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Toggle navigation\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"navbar_search_box\",\n      \"name\": \"search\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\"\n      ],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"navbar_search_box_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"navbar_search_box_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"\",\n      \"name\": \"csrfmiddlewaretoken\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"id_search_help\",\n      \"name\": \"\",\n      \"aria\": \"Help\",\n      \"lab\": [],\n      \"title\": \"Help\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_search\",\n      \"name\": \"search\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\"\n      ],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_sort_by_0\",\n      \"name\": \"sort_by_0\",\n      \"aria\": \"Order input\",\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"Toggle sort direction\",\n      \"txt\": \"Sort by:\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_sort_by_1\",\n      \"name\": \"sort_by_1\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"Release date\\n\\n\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\n\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Copy a link to this page\",\n      \"lab\": [],\n      \"title\": \"Copy a link to this page\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"Filters\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Earth\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Earth\\n\\t\\t\\t\u00a0(5997)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Universe\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Universe\\n\\t\\t\\t\u00a0(1917)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Sun\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Sun\\n\\t\\t\\t\u00a0(1698)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Planets & Moons\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Planets & Moons\\n\\t\\t\\t\u00a0(1540)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Earth Science\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Earth Science\\n\\t\\t\\t\u00a0(3997)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_HDTV\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"HDTV\\n\\t\\t\\t\u00a0(3512)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Hyperwall\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall\\n\\t\\t\\t\u00a0(2175)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Atmosphere\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Atmosphere\\n\\t\\t\\t\u00a0(1494)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Location\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Location\\n\\t\\t\\t\u00a0(1452)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Atmospheric science\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Atmospheric science\\n\\t\\t\\t\u00a0(1273)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Astrophysics\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics\\n\\t\\t\\t\u00a0(1018)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Natural hazards\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Natural hazards\\n\\t\\t\\t\u00a0(892)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Sun-earth Interactions\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Sun-earth Interactions\\n\\t\\t\\t\u00a0(829)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Physical geography\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Physical geography\\n\\t\\t\\t\u00a0(767)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-keywords-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 2797 Keywords\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\",\n        \"Search\",\n        \"Search\",\n        \"Search\",\n        \"Search\"\n      ],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_all_time\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"All time\\n\\t\\t\\t\u00a0(10606)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_week\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past week\\n\\t\\t\\t\u00a0(2)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_month\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past month\\n\\t\\t\\t\u00a0(14)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_3_months\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past 3 months\\n\\t\\t\\t\u00a0(59)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_year\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past year\\n\\t\\t\\t\u00a0(331)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_fiscal_year\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"This fiscal year\\n\\t\\t\\t\u00a0(331)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"date\",\n      \"id\": \"id_release_date_gte\",\n      \"name\": \"release_date_gte\",\n      \"aria\": null,\n      \"lab\": [\n        \"From\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"date\",\n      \"id\": \"id_release_date_lte\",\n      \"name\": \"release_date_lte\",\n      \"aria\": null,\n      \"lab\": [\n        \"To\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Landsat\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Landsat\\n\\t\\t\\t\u00a0(762)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Terra\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Terra\\n\\t\\t\\t\u00a0(743)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_SDO\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"SDO\\n\\t\\t\\t\u00a0(517)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Hubble\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hubble\\n\\t\\t\\t\u00a0(369)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_James Webb Space Telescope\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"James Webb Space Telescope (JWST)\\n\\t\\t\\t\u00a0(302)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Tropical Rainfall Measuring Mission\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Tropical Rainfall Measuring Mission (TRMM)\\n\\t\\t\\t\u00a0(274)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Global Precipitation Measurement (GPM)\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Global Precipitation Measurement (GPM)\\n\\t\\t\\t\u00a0(240)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_LRO (Lunar Reconnaissance Orbiter)\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"LRO (Lunar Reconnaissance Orbiter)\\n\\t\\t\\t\u00a0(228)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Nancy Grace Roman Space Telescope\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Nancy Grace Roman Space Telescope\\n\\t\\t\\t\u00a0(157)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Fermi Gamma-ray Space Telescope\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Fermi Gamma-ray Space Telescope\\n\\t\\t\\t\u00a0(145)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-missions-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 179 Missions\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_116\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[Terra: MODIS]\\n\\t\\t\\t\u00a0(330)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_508\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"BMNG (Blue Marble: Next Generation) [Terra and Aqua: MODIS]\\n\\t\\t\\t\u00a0(296)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_55\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[Landsat-7: ETM+]\\n\\t\\t\\t\u00a0(289)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_680\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"AIA 171 (171 Filter) [SDO: AIA]\\n\\t\\t\\t\u00a0(239)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_677\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"AIA 304 (304 Filter) [SDO: AIA]\\n\\t\\t\\t\u00a0(233)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_53\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[Landsat-5: TM]\\n\\t\\t\\t\u00a0(195)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_100\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[SeaStar: SeaWiFS]\\n\\t\\t\\t\u00a0(187)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_730\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"AIA 131 (131 Filter) [SDO: AIA]\\n\\t\\t\\t\u00a0(177)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_653\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"DEM (Digital Elevation Map) [LRO: LOLA]\\n\\t\\t\\t\u00a0(152)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_752\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"DE421 (JPL DE421)\\n\\t\\t\\t\u00a0(152)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-datasets-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 1151 Datasets\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Narrated Movies\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Narrated Movies\\n\\t\\t\\t\u00a0(1478)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics Stills\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics Stills\\n\\t\\t\\t\u00a0(270)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics Animations\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics Animations\\n\\t\\t\\t\u00a0(254)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics Features\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics Features\\n\\t\\t\\t\u00a0(214)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_El Ni\u00f1o and La Ni\u00f1a\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"El Ni\u00f1o and La Ni\u00f1a\\n\\t\\t\\t\u00a0(153)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_SDO - Footage\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"SDO - Footage\\n\\t\\t\\t\u00a0(152)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_WMS\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"WMS\\n\\t\\t\\t\u00a0(150)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_The Moon\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"The Moon\\n\\t\\t\\t\u00a0(139)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Hurricanes\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hurricanes\\n\\t\\t\\t\u00a0(136)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics B-Roll\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics B-Roll\\n\\t\\t\\t\u00a0(119)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-series-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 376 Series\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_movies\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Movies\\n\\t\\t\\t\u00a0(9763)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_frames\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Frames\\n\\t\\t\\t\u00a0(3181)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_audio\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Audio tracks\\n\\t\\t\\t\u00a0(36)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_captions\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Closed captions\\n\\t\\t\\t\u00a0(2130)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_images\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Images\\n\\t\\t\\t\u00a0(10300)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_hyperwall_shows\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall shows\\n\\t\\t\\t\u00a0(1402)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_presentations\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Presentations\\n\\t\\t\\t\u00a0(397)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_files\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Other media files\\n\\t\\t\\t\u00a0(581)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_animation\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Animation\\n\\t\\t\\t\u00a0(404)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_broll\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"B-Roll\\n\\t\\t\\t\u00a0(195)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_gallery\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Gallery\\n\\t\\t\\t\u00a0(308)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_hyperwall_visual\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall Visual\\n\\t\\t\\t\u00a0(763)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_infographic\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Infographic\\n\\t\\t\\t\u00a0(49)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_interactive\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Interactive\\n\\t\\t\\t\u00a0(7)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_produced_video\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Produced Video\\n\\t\\t\\t\u00a0(4081)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_visualization\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Visualization\\n\\t\\t\\t\u00a0(4799)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_studio_SVS\",\n      \"name\": \"studio\",\n      \"aria\": null,\n      \"lab\": [\n        \"Scientific Visualization Studio\\n\\t\\t\\t\u00a0(4787)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_studio_GMS\",\n      \"name\": \"studio\",\n      \"aria\": null,\n      \"lab\": [\n        \"Goddard Media Studios\\n\\t\\t\\t\u00a0(4372)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_studio_CIL\",\n      \"name\": \"studio\",\n      \"aria\": null,\n      \"lab\": [\n        \"Conceptual Image Lab\\n\\t\\t\\t\u00a0(352)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_made_for_HW\",\n      \"name\": \"made_for\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall\\n\\t\\t\\t\u00a0(2175)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_made_for_EIC\",\n      \"name\": \"made_for\",\n      \"aria\": null,\n      \"lab\": [\n        \"Earth Information Center\\n\\t\\t\\t\u00a0(97)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Greg Shirah\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Greg Shirah\\n\\t\\t\\t\u00a0(1618)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Tom Bridgman\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Tom Bridgman\\n\\t\\t\\t\u00a0(1041)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Ian Jones\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Ian Jones\\n\\t\\t\\t\u00a0(897)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Laurence Schuler\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Laurence Schuler\\n\\t\\t\\t\u00a0(896)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Horace Mitchell\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Horace Mitchell\\n\\t\\t\\t\u00a0(670)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Lori Perkins\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Lori Perkins\\n\\t\\t\\t\u00a0(601)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Cindy Starr\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Cindy Starr\\n\\t\\t\\t\u00a0(555)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Gene Feldman\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Gene Feldman\\n\\t\\t\\t\u00a0(461)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Ernie Wright\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Ernie Wright\\n\\t\\t\\t\u00a0(407)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Marit Jentoft-Nilsen\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Marit Jentoft-Nilsen\\n\\t\\t\\t\u00a0(381)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-people-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 3398 People\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_can_load\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_is_loading\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_chunk\",\n      \"name\": \"chunk\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_url\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_params\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    }\n  ],\n  \"skip\": [\n    \"https://www.nasa.gov/\",\n    \"Scientific Visualization Studio/\",\n    \"Galleries/gallery/the-galleries/\",\n    \"Help/help/\",\n    \"/api/search/?\"\n  ],\n  \"main\": true,\n  \"nav\": 2,\n  \"h\": [\n    \"H1Search\",\n    \"H2Search Box\",\n    \"H2Filters\",\n    \"H3NASA Science categories\",\n    \"H3Keywords\",\n    \"H3Release date\",\n    \"H3\",\n    \"H3Missions\",\n    \"H3Datasets\",\n    \"H3Series\",\n    \"H3Media\",\n    \"H3Result type\",\n    \"H3Created by\",\n    \"H3Developed for\",\n    \"H3People\",\n    \"H2Results\",\n    \"H3Results\",\n    \"H32026 Ozone Hole Update\",\n    \"H3Star Charts for ESCAPADE\u2019s Ear\",\n    \"H3Giant Cosmic Cat Spotted!\",\n    \"H3El Ni\u00f1o 2026: Ocean Apparent V\",\n    \"H3El Ni\u00f1o 2026: Sea Surface Temp\",\n    \"H3Lucy Mission Trajectory with J\",\n    \"H3Why The Universe Doesn\u2019t Add U\",\n    \"H3Currrent IMERG Accumulated Ano\"\n  ],\n  \"media\": 0,\n  \"onchange\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({forms:[...document.querySelectorAll(\\'input,select,textarea,button\\')].map(e=>({t:e.tagName,type:e.type,id:e.id,name:e.name,aria:e.getAttribute(\\'aria-label\\'),lab:[...(e.labels||[])].map(l=>l.textContent.trim()),ph:e.placeholder,title:e.title,txt:e.textContent.trim().slice(0,30),vis:e.offsetParent!==null})),skip:[...document.querySelectorAll(\\'a\\')].slice(0,5).map(a=>a.textContent.trim()+a.getAttribute(\\'href\\')),main:!!document.querySelector(\\'main,[role=main]\\'),nav:document.querySelectorAll(\\'nav\\').length,h:[...document.querySelectorAll(\\'h1,h2,h3\\')].map(h=>h.tagName+h.textContent.trim().slice(0,30)),media:document.querySelectorAll(\\'video,audio,marquee\\').length,onchange:[...document.querySelectorAll(\\'[onchange]\\')].length})');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/search/\n- Page Title: NASA SVS | Search\n- Console: 14 errors, 0 warnings\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-26-782Z.log#L7-L14"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "4afb5c7b-26ea-4af8-a2d4-a56ed99ea9f8",
+  "timestamp": "2026-11-08T03:39:28.483Z",
+  "tool_use_result": [
+   {
+    "type": "text",
+    "text": "### Result\n{\n  \"forms\": [\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Toggle navigation\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"navbar_search_box\",\n      \"name\": \"search\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\"\n      ],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"navbar_search_box_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"navbar_search_box_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"\",\n      \"name\": \"csrfmiddlewaretoken\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"id_search_help\",\n      \"name\": \"\",\n      \"aria\": \"Help\",\n      \"lab\": [],\n      \"title\": \"Help\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_search\",\n      \"name\": \"search\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\"\n      ],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_sort_by_0\",\n      \"name\": \"sort_by_0\",\n      \"aria\": \"Order input\",\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"Toggle sort direction\",\n      \"txt\": \"Sort by:\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_sort_by_1\",\n      \"name\": \"sort_by_1\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"Release date\\n\\n\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\n\\t\\t\\t\\t\\n\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Copy a link to this page\",\n      \"lab\": [],\n      \"title\": \"Copy a link to this page\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"Filters\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Earth\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Earth\\n\\t\\t\\t\u00a0(5997)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Universe\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Universe\\n\\t\\t\\t\u00a0(1917)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Sun\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Sun\\n\\t\\t\\t\u00a0(1698)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_nasa_science_categories_Planets & Moons\",\n      \"name\": \"nasa_science_categories\",\n      \"aria\": null,\n      \"lab\": [\n        \"Planets & Moons\\n\\t\\t\\t\u00a0(1540)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Earth Science\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Earth Science\\n\\t\\t\\t\u00a0(3997)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_HDTV\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"HDTV\\n\\t\\t\\t\u00a0(3512)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Hyperwall\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall\\n\\t\\t\\t\u00a0(2175)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Atmosphere\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Atmosphere\\n\\t\\t\\t\u00a0(1494)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Location\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Location\\n\\t\\t\\t\u00a0(1452)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Atmospheric science\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Atmospheric science\\n\\t\\t\\t\u00a0(1273)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Astrophysics\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics\\n\\t\\t\\t\u00a0(1018)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Natural hazards\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Natural hazards\\n\\t\\t\\t\u00a0(892)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Sun-earth Interactions\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Sun-earth Interactions\\n\\t\\t\\t\u00a0(829)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_keywords_Physical geography\",\n      \"name\": \"keywords\",\n      \"aria\": null,\n      \"lab\": [\n        \"Physical geography\\n\\t\\t\\t\u00a0(767)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-keywords-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 2797 Keywords\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\",\n        \"Search\",\n        \"Search\",\n        \"Search\",\n        \"Search\"\n      ],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_all_time\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"All time\\n\\t\\t\\t\u00a0(10606)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_week\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past week\\n\\t\\t\\t\u00a0(2)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_month\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past month\\n\\t\\t\\t\u00a0(14)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_3_months\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past 3 months\\n\\t\\t\\t\u00a0(59)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_year\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"Past year\\n\\t\\t\\t\u00a0(331)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"radio\",\n      \"id\": \"id_release_date_within_fiscal_year\",\n      \"name\": \"release_date_within\",\n      \"aria\": null,\n      \"lab\": [\n        \"This fiscal year\\n\\t\\t\\t\u00a0(331)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"date\",\n      \"id\": \"id_release_date_gte\",\n      \"name\": \"release_date_gte\",\n      \"aria\": null,\n      \"lab\": [\n        \"From\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"date\",\n      \"id\": \"id_release_date_lte\",\n      \"name\": \"release_date_lte\",\n      \"aria\": null,\n      \"lab\": [\n        \"To\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Landsat\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Landsat\\n\\t\\t\\t\u00a0(762)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Terra\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Terra\\n\\t\\t\\t\u00a0(743)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_SDO\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"SDO\\n\\t\\t\\t\u00a0(517)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Hubble\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hubble\\n\\t\\t\\t\u00a0(369)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_James Webb Space Telescope\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"James Webb Space Telescope (JWST)\\n\\t\\t\\t\u00a0(302)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Tropical Rainfall Measuring Mission\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Tropical Rainfall Measuring Mission (TRMM)\\n\\t\\t\\t\u00a0(274)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Global Precipitation Measurement (GPM)\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Global Precipitation Measurement (GPM)\\n\\t\\t\\t\u00a0(240)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_LRO (Lunar Reconnaissance Orbiter)\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"LRO (Lunar Reconnaissance Orbiter)\\n\\t\\t\\t\u00a0(228)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Nancy Grace Roman Space Telescope\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Nancy Grace Roman Space Telescope\\n\\t\\t\\t\u00a0(157)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_missions_Fermi Gamma-ray Space Telescope\",\n      \"name\": \"missions\",\n      \"aria\": null,\n      \"lab\": [\n        \"Fermi Gamma-ray Space Telescope\\n\\t\\t\\t\u00a0(145)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-missions-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 179 Missions\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_116\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[Terra: MODIS]\\n\\t\\t\\t\u00a0(330)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_508\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"BMNG (Blue Marble: Next Generation) [Terra and Aqua: MODIS]\\n\\t\\t\\t\u00a0(296)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_55\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[Landsat-7: ETM+]\\n\\t\\t\\t\u00a0(289)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_680\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"AIA 171 (171 Filter) [SDO: AIA]\\n\\t\\t\\t\u00a0(239)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_677\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"AIA 304 (304 Filter) [SDO: AIA]\\n\\t\\t\\t\u00a0(233)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_53\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[Landsat-5: TM]\\n\\t\\t\\t\u00a0(195)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_100\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"[SeaStar: SeaWiFS]\\n\\t\\t\\t\u00a0(187)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_730\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"AIA 131 (131 Filter) [SDO: AIA]\\n\\t\\t\\t\u00a0(177)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_653\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"DEM (Digital Elevation Map) [LRO: LOLA]\\n\\t\\t\\t\u00a0(152)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_datasets_752\",\n      \"name\": \"datasets\",\n      \"aria\": null,\n      \"lab\": [\n        \"DE421 (JPL DE421)\\n\\t\\t\\t\u00a0(152)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-datasets-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 1151 Datasets\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Narrated Movies\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Narrated Movies\\n\\t\\t\\t\u00a0(1478)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics Stills\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics Stills\\n\\t\\t\\t\u00a0(270)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics Animations\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics Animations\\n\\t\\t\\t\u00a0(254)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics Features\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics Features\\n\\t\\t\\t\u00a0(214)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_El Ni\u00f1o and La Ni\u00f1a\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"El Ni\u00f1o and La Ni\u00f1a\\n\\t\\t\\t\u00a0(153)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_SDO - Footage\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"SDO - Footage\\n\\t\\t\\t\u00a0(152)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_WMS\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"WMS\\n\\t\\t\\t\u00a0(150)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_The Moon\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"The Moon\\n\\t\\t\\t\u00a0(139)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Hurricanes\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hurricanes\\n\\t\\t\\t\u00a0(136)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_series_Astrophysics B-Roll\",\n      \"name\": \"series\",\n      \"aria\": null,\n      \"lab\": [\n        \"Astrophysics B-Roll\\n\\t\\t\\t\u00a0(119)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-series-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 376 Series\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_movies\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Movies\\n\\t\\t\\t\u00a0(9763)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_frames\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Frames\\n\\t\\t\\t\u00a0(3181)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_audio\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Audio tracks\\n\\t\\t\\t\u00a0(36)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_captions\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Closed captions\\n\\t\\t\\t\u00a0(2130)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_images\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Images\\n\\t\\t\\t\u00a0(10300)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_hyperwall_shows\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall shows\\n\\t\\t\\t\u00a0(1402)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_presentations\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Presentations\\n\\t\\t\\t\u00a0(397)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_media_files\",\n      \"name\": \"media\",\n      \"aria\": null,\n      \"lab\": [\n        \"Other media files\\n\\t\\t\\t\u00a0(581)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_animation\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Animation\\n\\t\\t\\t\u00a0(404)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_broll\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"B-Roll\\n\\t\\t\\t\u00a0(195)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_gallery\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Gallery\\n\\t\\t\\t\u00a0(308)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_hyperwall_visual\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall Visual\\n\\t\\t\\t\u00a0(763)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_infographic\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Infographic\\n\\t\\t\\t\u00a0(49)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_interactive\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Interactive\\n\\t\\t\\t\u00a0(7)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_produced_video\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Produced Video\\n\\t\\t\\t\u00a0(4081)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_result_type_visualization\",\n      \"name\": \"result_type\",\n      \"aria\": null,\n      \"lab\": [\n        \"Visualization\\n\\t\\t\\t\u00a0(4799)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_studio_SVS\",\n      \"name\": \"studio\",\n      \"aria\": null,\n      \"lab\": [\n        \"Scientific Visualization Studio\\n\\t\\t\\t\u00a0(4787)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_studio_GMS\",\n      \"name\": \"studio\",\n      \"aria\": null,\n      \"lab\": [\n        \"Goddard Media Studios\\n\\t\\t\\t\u00a0(4372)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_studio_CIL\",\n      \"name\": \"studio\",\n      \"aria\": null,\n      \"lab\": [\n        \"Conceptual Image Lab\\n\\t\\t\\t\u00a0(352)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_made_for_HW\",\n      \"name\": \"made_for\",\n      \"aria\": null,\n      \"lab\": [\n        \"Hyperwall\\n\\t\\t\\t\u00a0(2175)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_made_for_EIC\",\n      \"name\": \"made_for\",\n      \"aria\": null,\n      \"lab\": [\n        \"Earth Information Center\\n\\t\\t\\t\u00a0(97)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Greg Shirah\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Greg Shirah\\n\\t\\t\\t\u00a0(1618)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Tom Bridgman\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Tom Bridgman\\n\\t\\t\\t\u00a0(1041)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Ian Jones\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Ian Jones\\n\\t\\t\\t\u00a0(897)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Laurence Schuler\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Laurence Schuler\\n\\t\\t\\t\u00a0(896)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Horace Mitchell\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Horace Mitchell\\n\\t\\t\\t\u00a0(670)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Lori Perkins\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Lori Perkins\\n\\t\\t\\t\u00a0(601)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Cindy Starr\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Cindy Starr\\n\\t\\t\\t\u00a0(555)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Gene Feldman\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Gene Feldman\\n\\t\\t\\t\u00a0(461)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Ernie Wright\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Ernie Wright\\n\\t\\t\\t\u00a0(407)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"checkbox\",\n      \"id\": \"id_people_Marit Jentoft-Nilsen\",\n      \"name\": \"people\",\n      \"aria\": null,\n      \"lab\": [\n        \"Marit Jentoft-Nilsen\\n\\t\\t\\t\u00a0(381)\"\n      ],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"see-all-people-link\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"See all 3398 People\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"button\",\n      \"id\": \"\",\n      \"name\": \"\",\n      \"aria\": \"Close\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"text\",\n      \"id\": \"id_filter_search\",\n      \"name\": \"\",\n      \"aria\": \"Search...\",\n      \"lab\": [],\n      \"ph\": \"Search...\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"reset\",\n      \"id\": \"id_filter_search_clear\",\n      \"name\": \"\",\n      \"aria\": \"Clear search text\",\n      \"lab\": [],\n      \"title\": \"Clear search text\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"BUTTON\",\n      \"type\": \"submit\",\n      \"id\": \"id_filter_search_submit\",\n      \"name\": \"\",\n      \"aria\": \"Search!\",\n      \"lab\": [],\n      \"title\": \"Search!\",\n      \"txt\": \"\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"SELECT\",\n      \"type\": \"select-one\",\n      \"id\": \"id_filter_sort_by_1\",\n      \"name\": \"\",\n      \"aria\": \"Sort category\",\n      \"lab\": [],\n      \"title\": \"\",\n      \"txt\": \"CountName\",\n      \"vis\": true\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_can_load\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_is_loading\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_chunk\",\n      \"name\": \"chunk\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_url\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    },\n    {\n      \"t\": \"INPUT\",\n      \"type\": \"hidden\",\n      \"id\": \"search_form_results_var_params\",\n      \"name\": \"\",\n      \"aria\": null,\n      \"lab\": [],\n      \"ph\": \"\",\n      \"title\": \"\",\n      \"txt\": \"\",\n      \"vis\": false\n    }\n  ],\n  \"skip\": [\n    \"https://www.nasa.gov/\",\n    \"Scientific Visualization Studio/\",\n    \"Galleries/gallery/the-galleries/\",\n    \"Help/help/\",\n    \"/api/search/?\"\n  ],\n  \"main\": true,\n  \"nav\": 2,\n  \"h\": [\n    \"H1Search\",\n    \"H2Search Box\",\n    \"H2Filters\",\n    \"H3NASA Science categories\",\n    \"H3Keywords\",\n    \"H3Release date\",\n    \"H3\",\n    \"H3Missions\",\n    \"H3Datasets\",\n    \"H3Series\",\n    \"H3Media\",\n    \"H3Result type\",\n    \"H3Created by\",\n    \"H3Developed for\",\n    \"H3People\",\n    \"H2Results\",\n    \"H3Results\",\n    \"H32026 Ozone Hole Update\",\n    \"H3Star Charts for ESCAPADE\u2019s Ear\",\n    \"H3Giant Cosmic Cat Spotted!\",\n    \"H3El Ni\u00f1o 2026: Ocean Apparent V\",\n    \"H3El Ni\u00f1o 2026: Sea Surface Temp\",\n    \"H3Lucy Mission Trajectory with J\",\n    \"H3Why The Universe Doesn\u2019t Add U\",\n    \"H3Currrent IMERG Accumulated Ano\"\n  ],\n  \"media\": 0,\n  \"onchange\": 0\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({forms:[...document.querySelectorAll(\\'input,select,textarea,button\\')].map(e=>({t:e.tagName,type:e.type,id:e.id,name:e.name,aria:e.getAttribute(\\'aria-label\\'),lab:[...(e.labels||[])].map(l=>l.textContent.trim()),ph:e.placeholder,title:e.title,txt:e.textContent.trim().slice(0,30),vis:e.offsetParent!==null})),skip:[...document.querySelectorAll(\\'a\\')].slice(0,5).map(a=>a.textContent.trim()+a.getAttribute(\\'href\\')),main:!!document.querySelector(\\'main,[role=main]\\'),nav:document.querySelectorAll(\\'nav\\').length,h:[...document.querySelectorAll(\\'h1,h2,h3\\')].map(h=>h.tagName+h.textContent.trim().slice(0,30)),media:document.querySelectorAll(\\'video,audio,marquee\\').length,onchange:[...document.querySelectorAll(\\'[onchange]\\')].length})');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/search/\n- Page Title: NASA SVS | Search\n- Console: 14 errors, 0 warnings\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-26-782Z.log#L7-L14"
+   }
+  ],
+  "tool_result_meta": [
+   {
+    "id": "toolu_01DXwt6aibzDeCgNVgMXwLVA",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "system",
+  "subtype": "status",
+  "status": "requesting",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "8b56a8c7-4874-422d-b48f-fa5bccfbd794"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 50,
+  "estimated_tokens_delta": 50,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "508b5a52-db9b-4698-8b88-3dbb7c98d274"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 150,
+  "estimated_tokens_delta": 100,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "da410bf2-2681-4676-b8f8-3c30ce76a82d"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 357,
+  "estimated_tokens_delta": 207,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "5b3d1e00-68ef-4d36-a634-238cd29a38c7"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmMdn39kyGE1UXqfc13",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQSigsKEAgTGAI4AUIIdGhpbmtpbmcSDEsx0Bx4JMS7PbiM2BoMkQxH2xjgXWZy6KnNIjBMihFF1ib3/buo+RgJ3i7wFm5bltNOEytmGRXUhBO0y8ixAJAPhiQFJ+Plq84OJ8IqpwpqEl/XEVNHfewAuvpFbKNrWa1sM89YX152ecMhh3HW9dF7DibU9Bs+pXQtLrvwA9LM3nyb+lc+1ZCDdQeRuuapz2fjc2aO99bwNDIFgUrfq/xYEkyT0RyeAG4a3YDcwRVtOYJVPMSaInzW8BmoNBpNaxhg+TIWQWyLpDg7ST5QwZBYtXh8wU+STpvV/9AmVnzBiuaeDNPl5zcdcZFVUfaAe89G0BOZzwtcQxrNvtghHdqJi3VRtmrNEQnNQw5jnKsbB586Qk9HjOGiuyFGxiKLf3WQMv9SgwgwPRpefmJPFKrFOQbnssvm28UNX+LC2v2j2x45QSnh8uNj7JSDs499sheaph/mw511/2dtRP560xDbRrB7QShe1iMdsGtI41Jd/jq0tFYB8vjoQepOogP8YokW6D9RYfYGhLmhuP+aTARElm6mrKB82GFjy2Oc4tHLaVxtRv8F9NDuAlcuI2IEkel3l+7CAAXG/yOOkd9MlORc8lBCLjoSmjd3BIb2foiAcYScv120ahUydzzmr2AuyJPyJ43ayKtw0UIYw5kry3qIq6H/eveBAOw/VAUSOQrZP+GYS69s3ljOTCRRwrSz1eThsE+PNSfjRAXw9k9orZuHqt1aftbnuGf7I+c7jotgacEUF4q2biIVqheGfwO4LQvciZPWGFdBBFPgW25LkkDrR4l8C0NhTUd+73JVqe4UBoiiGlikx+2Nm9q5urwcYHAxOc+csDaJDgZkv1qrZInXmNzsURsPtYCLxv6v5eli2aSG1lW5vkujaAVzN4JUaI8x4rkNHycnxau2eRMvU537tDOi/1nqyEf5mihGUCK+PbUdJfaGPWL0hCauO4h1oddayIzlqpW8XDYs+SvMZc0ziZrjsEDi4LlJOTJ7A5t9vUvDEH5GsDEGyXw0cUcr/iqARnEglFYRE/k7ZBlE7Xp/eCddlbW+1L9o4X5Yq0wDpqVU2N2Fe+HSM2unTGRUilakReQb2atUXeohmfARwa1WqHAb6681A5tAxhdHfIF6raNThFxtyNQIKnbgdn42kLpIbSkxr9k6ZB1H+c/BncANCeXDd89TGEvYQR/+ylDBggIujhqV/c6+8GgffG6ZLZ6miVjhIvhZqZIQFXO+pDulrnNwryJ5SmwqfT+YSZx0uIHM9DvkwAMb73Mf54hMkJ83D4Y8+/2IyDKsZOVNnriwAQbFXDMPFRLJ3z3hyIzbX/AuCbZ8yfaSahW32QZ6J4r3Jw8f5cSI1ULtok0G+0v2zjl9nmXIA3zsyBQGnvuK/XoQ+hg3n8y72UuuZRIgmc+1Bm4rgMR9YWrPKztnGhcH1g5aW0qEcinhe7ETmk1VlqrYbmc8RcL80kClIJPcLsQbfuhnxRbvXDftfTPfVBa+/LJrJz0QBhd85Imgx51zY7XzckapvweazX6QQ7zT3gC+DSYmipyHMp9AZEHRoL/u1HIKyKKZmlqUfYPOQ1hV+AIfzuQsPPBMXp8xRmQvabWfYwTNESvoEcyBf9DgYiTC8RKOcwvdJy7Nh/ZlRrotkkr0ZfxLGm+nSN5wLxN9oqyix1g0dzdPbkXam6G84g3EAOnIiwoSeuxL/ZF1QOvYd/0Mw5BIzWKDYF8BnzP45Jgyt3/K9SeH3IOBnJUKH6tjE8OWb2Mq0QQ4gx0vSxp+ZorMVSYs4HkdgB/HGeBphh1ecKlSJG3lcJZ0HqhvHjePkRXeKOTIIZw0aZHbSTJqosROTGyNHljead8QL7MwDSq8kzQoVhgB"
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 17147,
+    "cache_read_input_tokens": 12561,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 17147
+    },
+    "output_tokens": 3,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "101ac657-1fb8-4194-a4f0-709b1aec93bf",
+  "timestamp": "2026-11-08T03:39:33.202Z",
+  "request_id": "req_011CgpmMdX9gPVexdDfSN5n6",
+  "thinking_duration_ms": 3431,
+  "thinking_display": "updates"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmMdn39kyGE1UXqfc13",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_01B7afAZ97n4SLhiGhRsDCzR",
+     "name": "mcp__browser__browser_navigate",
+     "input": {
+      "url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 17147,
+    "cache_read_input_tokens": 12561,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 17147
+    },
+    "output_tokens": 3,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "f8435fe5-1911-42a1-a6ce-2d57c9e13c03",
+  "timestamp": "2026-11-08T03:39:33.607Z",
+  "request_id": "req_011CgpmMdX9gPVexdDfSN5n6",
+  "wire_tool_inputs": {
+   "toolu_01B7afAZ97n4SLhiGhRsDCzR": {
+    "url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_01B7afAZ97n4SLhiGhRsDCzR",
+    "display_name": "Navigate to a URL",
+    "server_display_name": "Playwright",
+    "tool_name": "browser_navigate"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_01B7afAZ97n4SLhiGhRsDCzR",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "### Ran Playwright code\n```js\nawait page.goto('https://svs.gsfc.nasa.gov/gallery/the-galleries/');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/gallery/the-galleries/\n- Page Title: NASA SVS | The Galleries\n- Console: 4 errors, 0 warnings\n### Snapshot\n- [Snapshot](../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/page-2026-11-08T03-39-34-113Z.yml)\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-33-617Z.log#L1-L3"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "cc4a2f2b-fe39-49d7-af85-d7ea3a2d7352",
+  "timestamp": "2026-11-08T03:39:34.119Z",
+  "tool_use_result": [
+   {
+    "type": "text",
+    "text": "### Ran Playwright code\n```js\nawait page.goto('https://svs.gsfc.nasa.gov/gallery/the-galleries/');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/gallery/the-galleries/\n- Page Title: NASA SVS | The Galleries\n- Console: 4 errors, 0 warnings\n### Snapshot\n- [Snapshot](../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/page-2026-11-08T03-39-34-113Z.yml)\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-33-617Z.log#L1-L3"
+   }
+  ],
+  "tool_result_meta": [
+   {
+    "id": "toolu_01B7afAZ97n4SLhiGhRsDCzR",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmMdn39kyGE1UXqfc13",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "tool_use",
+     "id": "toolu_016LfZJniuG3JKzVk8QL8ZPs",
+     "name": "mcp__browser__browser_evaluate",
+     "input": {
+      "function": "() => ({forms:[...document.querySelectorAll('input:not([type=hidden]),select,textarea')].map(e=>({type:e.type,id:e.id,aria:e.getAttribute('aria-label'),lab:[...(e.labels||[])].map(l=>l.textContent.trim().slice(0,30)),vis:e.offsetParent!==null})),media:document.querySelectorAll('video,audio,marquee,[autoplay]').length,main:!!document.querySelector('main'),carousel:document.querySelectorAll('[class*=carousel],[class*=slick]').length,links:[...document.querySelectorAll('nav a,header a')].map(a=>a.textContent.trim()).slice(0,20)})"
+     },
+     "caller": {
+      "type": "direct"
+     }
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 17147,
+    "cache_read_input_tokens": 12561,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 17147
+    },
+    "output_tokens": 3,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "e26249eb-5be9-4892-bb18-f2e931376484",
+  "timestamp": "2026-11-08T03:39:34.452Z",
+  "request_id": "req_011CgpmMdX9gPVexdDfSN5n6",
+  "wire_tool_inputs": {
+   "toolu_016LfZJniuG3JKzVk8QL8ZPs": {
+    "function": "() => ({forms:[...document.querySelectorAll('input:not([type=hidden]),select,textarea')].map(e=>({type:e.type,id:e.id,aria:e.getAttribute('aria-label'),lab:[...(e.labels||[])].map(l=>l.textContent.trim().slice(0,30)),vis:e.offsetParent!==null})),media:document.querySelectorAll('video,audio,marquee,[autoplay]').length,main:!!document.querySelector('main'),carousel:document.querySelectorAll('[class*=carousel],[class*=slick]').length,links:[...document.querySelectorAll('nav a,header a')].map(a=>a.textContent.trim()).slice(0,20)})"
+   }
+  },
+  "tool_use_meta": [
+   {
+    "id": "toolu_016LfZJniuG3JKzVk8QL8ZPs",
+    "display_name": "Evaluate JavaScript",
+    "server_display_name": "Playwright",
+    "tool_name": "browser_evaluate"
+   }
+  ]
+ },
+ {
+  "type": "user",
+  "message": {
+   "role": "user",
+   "content": [
+    {
+     "tool_use_id": "toolu_016LfZJniuG3JKzVk8QL8ZPs",
+     "type": "tool_result",
+     "content": [
+      {
+       "type": "text",
+       "text": "### Result\n{\n  \"forms\": [\n    {\n      \"type\": \"text\",\n      \"id\": \"navbar_search_box\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\"\n      ],\n      \"vis\": true\n    }\n  ],\n  \"media\": 0,\n  \"main\": true,\n  \"carousel\": 0,\n  \"links\": [\n    \"\",\n    \"Scientific Visualization Studio\",\n    \"Galleries\",\n    \"Help\",\n    \"Earth Science Galleries\",\n    \"Heliophysics Galleries\",\n    \"Planetary Science Galleries\",\n    \"Astrophysics Galleries\",\n    \"Missions and Instrument Galleries\",\n    \"Special Productions\",\n    \"Special Events\",\n    \"Hyperwall\",\n    \"Educational Content\",\n    \"\",\n    \"\",\n    \"Privacy Policy and Important Notices\",\n    \"Reproduction Guidelines\",\n    \"Mark SubbaRao\",\n    \"Ella Kaplan\"\n  ]\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({forms:[...document.querySelectorAll(\\'input:not([type=hidden]),select,textarea\\')].map(e=>({type:e.type,id:e.id,aria:e.getAttribute(\\'aria-label\\'),lab:[...(e.labels||[])].map(l=>l.textContent.trim().slice(0,30)),vis:e.offsetParent!==null})),media:document.querySelectorAll(\\'video,audio,marquee,[autoplay]\\').length,main:!!document.querySelector(\\'main\\'),carousel:document.querySelectorAll(\\'[class*=carousel],[class*=slick]\\').length,links:[...document.querySelectorAll(\\'nav a,header a\\')].map(a=>a.textContent.trim()).slice(0,20)})');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/gallery/the-galleries/\n- Page Title: NASA SVS | The Galleries\n- Console: 11 errors, 0 warnings\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-33-617Z.log#L4-L11"
+      }
+     ]
+    }
+   ]
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "f127e755-38b2-4b79-a103-085d5d19685b",
+  "timestamp": "2026-11-08T03:39:34.975Z",
+  "tool_use_result": [
+   {
+    "type": "text",
+    "text": "### Result\n{\n  \"forms\": [\n    {\n      \"type\": \"text\",\n      \"id\": \"navbar_search_box\",\n      \"aria\": \"Search...\",\n      \"lab\": [\n        \"Search\"\n      ],\n      \"vis\": true\n    }\n  ],\n  \"media\": 0,\n  \"main\": true,\n  \"carousel\": 0,\n  \"links\": [\n    \"\",\n    \"Scientific Visualization Studio\",\n    \"Galleries\",\n    \"Help\",\n    \"Earth Science Galleries\",\n    \"Heliophysics Galleries\",\n    \"Planetary Science Galleries\",\n    \"Astrophysics Galleries\",\n    \"Missions and Instrument Galleries\",\n    \"Special Productions\",\n    \"Special Events\",\n    \"Hyperwall\",\n    \"Educational Content\",\n    \"\",\n    \"\",\n    \"Privacy Policy and Important Notices\",\n    \"Reproduction Guidelines\",\n    \"Mark SubbaRao\",\n    \"Ella Kaplan\"\n  ]\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({forms:[...document.querySelectorAll(\\'input:not([type=hidden]),select,textarea\\')].map(e=>({type:e.type,id:e.id,aria:e.getAttribute(\\'aria-label\\'),lab:[...(e.labels||[])].map(l=>l.textContent.trim().slice(0,30)),vis:e.offsetParent!==null})),media:document.querySelectorAll(\\'video,audio,marquee,[autoplay]\\').length,main:!!document.querySelector(\\'main\\'),carousel:document.querySelectorAll(\\'[class*=carousel],[class*=slick]\\').length,links:[...document.querySelectorAll(\\'nav a,header a\\')].map(a=>a.textContent.trim()).slice(0,20)})');\n```\n### Page\n- Page URL: https://svs.gsfc.nasa.gov/gallery/the-galleries/\n- Page Title: NASA SVS | The Galleries\n- Console: 11 errors, 0 warnings\n### Events\n- New console entries: ../../../home/user/tobi508/evals/judging/round2/results/arm-b-pair2-2/browser-files/console-2026-11-08T03-39-33-617Z.log#L4-L11"
+   }
+  ],
+  "tool_result_meta": [
+   {
+    "id": "toolu_016LfZJniuG3JKzVk8QL8ZPs",
+    "permission_decision": {
+     "decision": "accept",
+     "source": "config",
+     "reason_type": "rule"
+    }
+   }
+  ]
+ },
+ {
+  "type": "system",
+  "subtype": "status",
+  "status": "requesting",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "7c83ac75-ca0b-4230-8189-11086f47061d"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 50,
+  "estimated_tokens_delta": 50,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "b4b2093e-1f5b-478e-8bf5-dbf62aaa82d2"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 150,
+  "estimated_tokens_delta": 100,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "8bee1cc8-7675-4ae4-bc00-8e2e55d21a8e"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 300,
+  "estimated_tokens_delta": 150,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "dfc09d62-a328-4c3b-812c-6bd83e5a5d45"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 450,
+  "estimated_tokens_delta": 150,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "63e58453-3557-4425-8c63-797f8ce152db"
+ },
+ {
+  "type": "system",
+  "subtype": "thinking_tokens",
+  "estimated_tokens": 600,
+  "estimated_tokens_delta": 150,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "6e2c0464-d6be-4eda-8526-abffa9b22096"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmN7QT7CY8RYxAD6RcA",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "thinking",
+     "thinking": "",
+     "signature": "CAQS3A8KEAgTGAI4AUIIdGhpbmtpbmcSDE5PJTJBWAr06aIgixoMrrWUhl5oyqcgMk23IjAsqbkoyPFDAlnHpHODb7z010IbCHizB2f6KfHoBRhbuQcVyYfeMYZTqT23YxxAkBQq+Q6NKxxdMOWguh3tUnPpCbL6qlhA+LrnqvarRScfEbgBcbYV0Ua7GLRcRoWG0EtE2bK/Ms9I/y+qIYuf1ex47omNmpZEwOQPG9og7H7NVxXfUdxsTDm6zasQqAzov6FW4li2KidMoDBX/AHdlE12RBKw9TOMVAgGpOBS2cL/W0klvUlPTHtnH/BidCKc9BwXm1CqYFRIgKJPkG6hLS1UjjFrZ1rHhwZzhXWBklehJkmS+fIG5OYrpZv19WPp1hztSKLWt72M6S4/71hVd8G4UkE4v94C6asIfnBEfcETxMmh1P2x1JyJZCu0vLdao7SQGROq+WIrUcbwN8lZdhmzQbYJDjIyVlhlhqzGmpkzz7WksxZbgLRdK1if/eVB1rGuTgD9hO9qDoLOcW91qByuq1O2/lvwRxXompZZWh0OPjuLlBtYLLnOSmuKgOIcGVYZj5W2AN8WjsV8Gzaqz8M/aafTCfjTvlc+FUTiyU1J5aN8xTnCCyTOYW6PH3XbDTRbHpoXv2CrJ88LFBP+2vWKyJKSWkycfq07QfqPn32vCP30iYJLF7fERnxPVw13F0QBkCvuBU64bCCthUO7MpmHYlWsnjlWMeaLsCNnhoj+7xM+uJd4fZHLLelsYOcFNr8Op3k2z1vhWA4QmltkED/K3xmBhCyLj1z3Xwvz2yFI5MTkXe3yNFvDUlxaaV+WGWJPAO+oPGN2T2b/SKQ1zbSlP/kHy0v/TWGwRbBYEs/1Bhq59A2NY/MS65D3kPmOMLPltDEYAaDcxiaRHi9xtI2CCnoXUoj1BPrzzBg8B+uC6D/ts/UtuKQl97TJzNvEjf+2uEhcEsbbiDS+KIa2EHdIRgdycYv9nwI1X3VZmmoav7BjiT8UVjvYNpuO85R2QAwslLiaktxCTcw2yS7yURFBCSVQGrb6dM7ItLfG9MxxYgl1Av3xMbX7BN2j53cK+V7BPruFQt8cH6PTm/zd5LWkdlYlsOFHbe4NJ7Qd6wZuY7tBqmeWcZSEb3SyRMZPZ8RHRhV5+lwe7QXfFu1mBa5wN5jWYtOb8VPOLjfnLlQKMgAK+QRVEfaNueqja8vIEnryuNOOjmA0Zja6tewrrp/cyr2wPxIFVVKAGVcwIEgr2frw1c8t6Gx3A/GfyE+Br41L21iMSa88dp/0V/tg6/BHGwtrtdS34/VBdRR88f0ZXidZ+jiE7WbDsLwdbkxZQZ6Ossuk8Fi+232l7Rq7fyibiedYKjbxuT9+LdWD/MNtO0Evx0z4r0xMvSj4Xn7Av7/GyKRVDGE2EiUqlqJdo7W9nO89GIdFg05ka7eWTDGrE48rtYG/ISMslPrVTN1lPGroDuHtqAtw/K6AcgCAqJDhXwAGa3dl+9kQKLFV6UbYPwyIVm4LzgppUk0moutP6yTAZdbbvfXe67LkuCJI+t7y38MReF+QOZu7gbW944x8LW50azDWXkw4uUiLLL7GANHljTqYH8lJ0NEkzNbdzAGJ+sVF3hr1BWigVBXYi9tpMqI1jLgeXtPMbEOoyHFE0X6JUdeDyA9s8Y3NdIwiTlkAwCsdILKQ8UrFMZbvsvM6p6jb7yGanh6W1FO7MqabcIKB94mCk8dF4MEYrLAkaeKY7oyyNDJXFuOkCfczmdIIr5Mu38IbFIfWV6/O9xBpGljsSJWmjfd6QL8a+qTalM243l7YNyk/rX1Dszi0RX1qKQhN9NrhZt8JvvxZ9zfvOlyUCZ5Dxx2ETlqMgKfvQEdBXX0R0B5pRMITVzZhSRjfd7Vwyffe0oL8pbPo8zIpBCRl24gbbhw1NHO3LbwxF13V0w4wj/PHSepVqJOwL5qPJidNgAn39Gix7fLGA5pdX3HBfspwc2+/6GynWl8bqArQ6UQaFHilrSwmSQJazmI0h4TYijgpADDOy7+8HS29drGHlBnducibgI3Qyh5JA/M1K5OxTf4ttlsXnPKP+Sz2TadDDtGN1BlsOHg7pImzXuc9t7MoSSHdvX0/W4o9amZAqS2p8WjVlEJ4bI7R4A7SRz+IPQRf5YcazcnqQlUvu3BPWMQ3FM5nfHquSbMnUztWigRppOVBhYmAqaqKi1YneQapQ/FG2hLlromOKuJMW9NaXMxs5t84E/QDeEhNZ3Oscpb+ImwaAAWFy3RhDbxEGLnCOO1KAuWkKtDBK/2GLXzQ3t3yaYoi1WEHoYzoeCY1zBiSwHES6MnQEEW4C4OG60ieDmWMs2VeQNyxKBj8RD6gaKovhVwY8h7BV0sOu5egBwUL3d2mX3yQICGKLO2aw+oJy5yTixr0bB5FQ1AD52q8xEvhD7OFdGfbc9x4YZm7FEt439/1meLtmfyn2z/WJntSW3JA6rVrB+ExOFA+uyY/LsZ1sPvsa4ggNdOxmEwuQj1aDwRCygbyO7c93k8sP4WflidHxP6Q1IevIFHYdMYA7seaT8fuF4lDtDqJ1tWZy4b+ryV9Nqcj1jbeaxa/YAQcTwH30Qds+YvvvJsUUjJ2aryNxVmF5zzUJSepYP1I6pGwMvg5VYeQGhDWpwAO6Rv93YMct86xXMrwshgB"
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 1839,
+    "cache_read_input_tokens": 29708,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1839
+    },
+    "output_tokens": 6,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "9abca67b-fc20-4882-864f-3fa2561189bf",
+  "timestamp": "2026-11-08T03:39:47.336Z",
+  "request_id": "req_011CgpmN7GkzKiZGFAM8Bxv8",
+  "thinking_duration_ms": 11205,
+  "thinking_display": "updates"
+ },
+ {
+  "type": "assistant",
+  "message": {
+   "model": "claude-sonnet-5-5",
+   "id": "msg_011CgpmN7QT7CY8RYxAD6RcA",
+   "type": "message",
+   "role": "assistant",
+   "content": [
+    {
+     "type": "text",
+     "text": "I did not test these pages by hand with a keyboard, so most interactive criteria are NEEDS_REVIEW. My checks were a scripted look at each page's form fields, landmarks, headings and media elements. I did not look at the pages' visual appearance or flashing content.\n\n**Search page (https://svs.gsfc.nasa.gov/search/)**\n- **1.3.1 and 4.1.2:** These are NEEDS_REVIEW. Most fields have a label tied to them with `for`, and the date fields are labeled \"From\" and \"To\". But the \"See all\" dialogs (keywords, missions, datasets, series, people) reuse `id=\"id_filter_search\"` and `id=\"id_filter_sort_by_1\"`. Only the first duplicate gets its label, and the others rely on `aria-label` (the sort selects have the name \"Sort category\" with no visible label). A person should check this.\n- **2.4.6 and 3.3.2:** PASS. The visible labels describe their fields: Search, From, To, the checkbox and radio labels, and \"Sort by\".\n- **2.4.1:** PASS. There is no skip link, but the page has `main` and `nav` landmarks and a heading structure, which is an accepted technique in WCAG 2.0. A person should confirm the landmarks work in a screen reader.\n- **2.4.5:** PASS. The site has a search box and navigation to the Galleries.\n- **1.4.2, 2.2.2 and 2.3.1:** DNA. I found no video, audio, marquee, autoplay or carousel elements. I did not look at the visuals for flashing. The one oddity is a hidden text input named `id_sort_by_0` (\"Order input\"), which isn't visible or relevant here.\n- **3.3.1, 3.3.3 and 3.3.4:** DNA. The page only searches and filters. It has no required input validation and no legal or financial data submission.\n- **2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.2.1, 3.2.2:** NEEDS_REVIEW. I did not tab through the page, the filter dialogs or the sort controls. Whether changing the sort or filter controls submits automatically also needs checking.\n- **3.2.3 and 3.2.4:** PASS. The navbar and the search box (`navbar_search_box`) are the same on both pages.\n\n**Galleries page (https://svs.gsfc.nasa.gov/gallery/the-galleries/)**\n- **1.3.1, 2.4.6, 3.3.2 and 4.1.2:** PASS. The only form field is the navbar search box. It has a label \"Search\" and the accessible name \"Search...\".\n- **2.4.1:** PASS, for the same reason as the Search page: landmarks and headings, no skip link.\n- **2.4.5:** PASS. The page has the site search and the gallery navigation.\n- **1.4.2, 2.2.2 and 2.3.1:** DNA. No media, autoplay or carousel elements. I did not look at the visuals for flashing.\n- **3.3.1, 3.3.3 and 3.3.4:** DNA. The page has no data entry beyond the search box.\n- **2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.2.1, 3.2.2:** NEEDS_REVIEW. I did not test these with a keyboard.\n- **3.2.3 and 3.2.4:** PASS. The navigation is consistent with the Search page.\n\nRESULT: {\"https://svs.gsfc.nasa.gov/search/\": {\"1.3.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"duplicate id id_filter_search in See-all modals\", \"duplicate id id_filter_sort_by_1 selects (aria-label only)\"]}, \"1.4.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.1.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.1.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"See-all filter modals\"]}, \"2.2.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"2.4.1\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.3\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.4.5\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.6\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.7\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"select#id_sort_by_1\"]}, \"3.2.3\": {\"result\": \"PASS\", \"elements\": []}, \"3.2.4\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.2\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.3\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.4\": {\"result\": \"DNA\", \"elements\": []}, \"4.1.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"duplicate-id filter search inputs and selects in modals\"]}}, \"https://svs.gsfc.nasa.gov/gallery/the-galleries/\": {\"1.3.1\": {\"result\": \"PASS\", \"elements\": []}, \"1.4.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.1.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.1.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.2.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"2.4.1\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.3\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.4.5\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.6\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.7\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.3\": {\"result\": \"PASS\", \"elements\": []}, \"3.2.4\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.2\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.3\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.4\": {\"result\": \"DNA\", \"elements\": []}, \"4.1.2\": {\"result\": \"PASS\", \"elements\": []}}}"
+    }
+   ],
+   "container": null,
+   "stop_reason": null,
+   "stop_sequence": null,
+   "stop_details": null,
+   "usage": {
+    "input_tokens": 2,
+    "cache_creation_input_tokens": 1839,
+    "cache_read_input_tokens": 29708,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1839
+    },
+    "output_tokens": 6,
+    "service_tier": "standard",
+    "inference_geo": "global",
+    "speed": "standard"
+   },
+   "input_transformations": [],
+   "diagnostics": null,
+   "context_management": null
+  },
+  "parent_tool_use_id": null,
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "uuid": "3e36ec8c-c40a-4f4e-ade8-631d094ce27c",
+  "timestamp": "2026-11-08T03:39:54.076Z",
+  "request_id": "req_011CgpmN7GkzKiZGFAM8Bxv8"
+ },
+ {
+  "type": "rate_limit_event",
+  "rate_limit_info": {
+   "status": "allowed",
+   "resetsAt": 1794119400,
+   "rateLimitType": "five_hour",
+   "overageStatus": "rejected",
+   "overageDisabledReason": "org_level_disabled",
+   "isUsingOverage": false,
+   "unifiedWindows": {
+    "five_hour": {
+     "utilization": 0.38,
+     "resetsAt": 1794119400,
+     "status": "allowed"
+    },
+    "seven_day": {
+     "utilization": 0.4,
+     "resetsAt": 1794549600,
+     "status": "allowed"
+    }
+   }
+  },
+  "uuid": "11ec0160-435f-4bbc-9da1-7d7ec2a07668",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5"
+ },
+ {
+  "duration_api_ms": 29803,
+  "stop_reason": "end_turn",
+  "session_id": "c8d63e92-f170-4182-b31a-ccd05e1070c5",
+  "total_cost_usd": 0.1327688,
+  "usage": {
+   "input_tokens": 6,
+   "cache_creation_input_tokens": 21368,
+   "cache_read_input_tokens": 52448,
+   "output_tokens": 4204,
+   "output_tokens_details": {
+    "thinking_tokens": 1008
+   },
+   "server_tool_use": {
+    "web_search_requests": 0,
+    "web_fetch_requests": 0
+   },
+   "service_tier": "standard",
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 21368,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "inference_geo": "global",
+   "iterations": [
+    {
+     "input_tokens": 2,
+     "output_tokens": 3001,
+     "cache_read_input_tokens": 29708,
+     "cache_creation_input_tokens": 1839,
+     "cache_creation": {
+      "ephemeral_5m_input_tokens": 0,
+      "ephemeral_1h_input_tokens": 1839
+     },
+     "type": "message"
+    }
+   ],
+   "speed": "standard",
+   "fallback_credit": null
+  },
+  "modelUsage": {
+   "claude-sonnet-5-5": {
+    "inputTokens": 6,
+    "outputTokens": 4204,
+    "cacheReadInputTokens": 52448,
+    "cacheCreationInputTokens": 21368,
+    "webSearchRequests": 0,
+    "costUSD": 0.1327688,
+    "contextWindow": 1000000,
+    "maxOutputTokens": 128000,
+    "thinkingTokens": 1008,
+    "cacheCreationEphemeral5mInputTokens": 0,
+    "cacheCreationEphemeral1hInputTokens": 21368,
+    "canonicalModel": "claude-sonnet-5-5",
+    "provider": "firstParty",
+    "costBasis": "list"
+   }
+  },
+  "permission_denials": [],
+  "terminal_reason": "completed",
+  "fast_mode_state": "off",
+  "fast_mode_disabled_reason": "sdk_opt_in_required",
+  "subagent_stats": {
+   "spawned": 0,
+   "requested": {
+    "background": 0,
+    "foreground": 0,
+    "unset": 0
+   },
+   "started_in_background": 0,
+   "max_depth": 0,
+   "spawned_by_subagents": 0,
+   "completed": 0,
+   "failed": 0,
+   "killed": {
+    "parent": 0,
+    "user": 0,
+    "system": 0
+   },
+   "refused": {
+    "depth_limit": 0,
+    "concurrency_limit": 0,
+    "budget": 0
+   },
+   "by_type": {}
+  },
+  "safety_stops": 0,
+  "is_error": false,
+  "num_turns": 5,
+  "subtype": "success",
+  "api_error_status": null,
+  "result": "I did not test these pages by hand with a keyboard, so most interactive criteria are NEEDS_REVIEW. My checks were a scripted look at each page's form fields, landmarks, headings and media elements. I did not look at the pages' visual appearance or flashing content.\n\n**Search page (https://svs.gsfc.nasa.gov/search/)**\n- **1.3.1 and 4.1.2:** These are NEEDS_REVIEW. Most fields have a label tied to them with `for`, and the date fields are labeled \"From\" and \"To\". But the \"See all\" dialogs (keywords, missions, datasets, series, people) reuse `id=\"id_filter_search\"` and `id=\"id_filter_sort_by_1\"`. Only the first duplicate gets its label, and the others rely on `aria-label` (the sort selects have the name \"Sort category\" with no visible label). A person should check this.\n- **2.4.6 and 3.3.2:** PASS. The visible labels describe their fields: Search, From, To, the checkbox and radio labels, and \"Sort by\".\n- **2.4.1:** PASS. There is no skip link, but the page has `main` and `nav` landmarks and a heading structure, which is an accepted technique in WCAG 2.0. A person should confirm the landmarks work in a screen reader.\n- **2.4.5:** PASS. The site has a search box and navigation to the Galleries.\n- **1.4.2, 2.2.2 and 2.3.1:** DNA. I found no video, audio, marquee, autoplay or carousel elements. I did not look at the visuals for flashing. The one oddity is a hidden text input named `id_sort_by_0` (\"Order input\"), which isn't visible or relevant here.\n- **3.3.1, 3.3.3 and 3.3.4:** DNA. The page only searches and filters. It has no required input validation and no legal or financial data submission.\n- **2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.2.1, 3.2.2:** NEEDS_REVIEW. I did not tab through the page, the filter dialogs or the sort controls. Whether changing the sort or filter controls submits automatically also needs checking.\n- **3.2.3 and 3.2.4:** PASS. The navbar and the search box (`navbar_search_box`) are the same on both pages.\n\n**Galleries page (https://svs.gsfc.nasa.gov/gallery/the-galleries/)**\n- **1.3.1, 2.4.6, 3.3.2 and 4.1.2:** PASS. The only form field is the navbar search box. It has a label \"Search\" and the accessible name \"Search...\".\n- **2.4.1:** PASS, for the same reason as the Search page: landmarks and headings, no skip link.\n- **2.4.5:** PASS. The page has the site search and the gallery navigation.\n- **1.4.2, 2.2.2 and 2.3.1:** DNA. No media, autoplay or carousel elements. I did not look at the visuals for flashing.\n- **3.3.1, 3.3.3 and 3.3.4:** DNA. The page has no data entry beyond the search box.\n- **2.1.1, 2.1.2, 2.4.3, 2.4.7, 3.2.1, 3.2.2:** NEEDS_REVIEW. I did not test these with a keyboard.\n- **3.2.3 and 3.2.4:** PASS. The navigation is consistent with the Search page.\n\nRESULT: {\"https://svs.gsfc.nasa.gov/search/\": {\"1.3.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"duplicate id id_filter_search in See-all modals\", \"duplicate id id_filter_sort_by_1 selects (aria-label only)\"]}, \"1.4.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.1.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.1.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"See-all filter modals\"]}, \"2.2.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"2.4.1\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.3\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.4.5\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.6\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.7\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"select#id_sort_by_1\"]}, \"3.2.3\": {\"result\": \"PASS\", \"elements\": []}, \"3.2.4\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.2\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.3\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.4\": {\"result\": \"DNA\", \"elements\": []}, \"4.1.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": [\"duplicate-id filter search inputs and selects in modals\"]}}, \"https://svs.gsfc.nasa.gov/gallery/the-galleries/\": {\"1.3.1\": {\"result\": \"PASS\", \"elements\": []}, \"1.4.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.1.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.1.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.2.2\": {\"result\": \"DNA\", \"elements\": []}, \"2.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"2.4.1\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.3\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"2.4.5\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.6\": {\"result\": \"PASS\", \"elements\": []}, \"2.4.7\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.1\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.2\": {\"result\": \"NEEDS_REVIEW\", \"elements\": []}, \"3.2.3\": {\"result\": \"PASS\", \"elements\": []}, \"3.2.4\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.1\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.2\": {\"result\": \"PASS\", \"elements\": []}, \"3.3.3\": {\"result\": \"DNA\", \"elements\": []}, \"3.3.4\": {\"result\": \"DNA\", \"elements\": []}, \"4.1.2\": {\"result\": \"PASS\", \"elements\": []}}}",
+  "ttft_ms": 2197,
+  "type": "result",
+  "duration_ms": 30933,
+  "uuid": "3b6a5fe9-1b3a-4959-81b5-963b60813a44",
+  "ttft_stream_ms": 1830,
+  "time_to_request_ms": 50,
+  "first_content_frame_ms": 1830,
+  "time_to_request_from_spawn_ms": 7537272,
+  "warm_spare_claimed": false,
+  "flag_fetch_kick": "settings_pending_empty",
+  "time_origin_ms": 1794109162282.6917,
+  "queued_turn_count": 0,
+  "result_index": 0,
+  "model_usage_since_last_result": {
+   "claude-sonnet-5-5": {
+    "inputTokens": 6,
+    "outputTokens": 4204,
+    "cacheReadInputTokens": 52448,
+    "cacheCreationInputTokens": 21368,
+    "webSearchRequests": 0,
+    "costUSD": 0.1327688,
+    "contextWindow": 1000000,
+    "maxOutputTokens": 128000,
+    "thinkingTokens": 1008,
+    "cacheCreationEphemeral5mInputTokens": 0,
+    "cacheCreationEphemeral1hInputTokens": 21368,
+    "canonicalModel": "claude-sonnet-5-5",
+    "provider": "firstParty",
+    "costBasis": "list"
+   }
+  }
+ }
+]

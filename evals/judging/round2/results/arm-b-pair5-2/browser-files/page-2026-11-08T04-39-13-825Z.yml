@@ -1,0 +1,586 @@
+- generic [active] [ref=e1]:
+  - banner:
+    - navigation [ref=e2]:
+      - generic [ref=e3]:
+        - link [ref=e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=e5]
+        - link "Scientific Visualization Studio" [ref=e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "Galleries" [ref=e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=e13]: 
+              - text: Galleries
+          - listitem [ref=e14]:
+            - link "Help" [ref=e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=e16]: 
+              - text: Help
+          - search [ref=e17]:
+            - generic [ref=e18]:
+              - textbox "Search..." [ref=e19]
+              - generic [ref=e20]: Search
+              - button "Clear search text" [ref=e21] [cursor=pointer]: 
+              - button "Search!" [ref=e22] [cursor=pointer]: 
+  - main [ref=e23]:
+    - article [ref=e26]:
+      - generic [ref=e27]:
+        - navigation [ref=e28]:
+          - generic [ref=e29]:
+            - generic [aria-hidden] [ref=e30]: 
+            - link "Previous page" [ref=e31] [cursor=pointer]:
+              - /url: /31267
+              - text: "31267: Landsat and Sentinel NDVI, 2022"
+            - link "Next page" [ref=e32] [cursor=pointer]:
+              - /url: /5157
+              - text: "5157: Fermi Catalog of Gamma-ray Pulsars"
+            - generic [aria-hidden] [ref=e33]: 
+            - link "Newest page" [ref=e34] [cursor=pointer]:
+              - /url: /15116
+              - generic [aria-hidden] [ref=e35]: 
+        - heading "Fermi Gamma-ray Pulsar Catalog WorldWide Telescope Interactive" [level=1] [ref=e37]
+        - generic [ref=e39]:
+          - list [ref=e40]:
+            - listitem [ref=e41]: Released Tuesday, November 28, 2023
+          - list [ref=e43]:
+            - listitem [ref=e44]:
+              - generic: "ID: 5144"
+            - listitem [ref=e45]
+            - listitem [ref=e46]:
+              - link "View this page in our API" [ref=e47] [cursor=pointer]:
+                - /url: /api/5144
+                - generic [aria-hidden] [ref=e48]: 
+            - listitem [ref=e49]
+            - listitem [ref=e50]:
+              - button "Copy a link to this page" [ref=e51] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e52]: 
+            - listitem [ref=e53]:
+              - link "Share this page on Twitter" [ref=e54] [cursor=pointer]:
+                - /url: https://twitter.com/intent/tweet
+                - generic [aria-hidden] [ref=e55]: 
+            - listitem [ref=e56]:
+              - link "Share this page on Facebook" [ref=e57] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=http%3A//svs.gsfc.nasa.gov/5144/%3F
+                - generic [aria-hidden] [ref=e58]: 
+        - generic [ref=e60]:
+          - list [ref=e61]:
+            - listitem [ref=e62]:
+              - list [ref=e63]:
+                - listitem [ref=e64]: "Produced by:"
+                - listitem [ref=e65]:
+                  - link "Mark SubbaRao" [ref=e66] [cursor=pointer]:
+                    - /url: /search?people=Mark%20SubbaRao
+            - listitem [aria-hidden] [ref=e67]
+            - listitem [ref=e68]:
+              - list [ref=e69]:
+                - listitem [ref=e70]: "Visualizations by:"
+                - listitem [ref=e71]:
+                  - link "A. David Weigel" [ref=e72] [cursor=pointer]:
+                    - /url: /search?people=A.%20David%20Weigel
+            - listitem [aria-hidden] [ref=e73]
+            - listitem [ref=e74]:
+              - list [ref=e75]:
+                - listitem [ref=e76]: "Scientific consulting by:"
+                - listitem [ref=e77]:
+                  - link "David A. Smith" [ref=e78] [cursor=pointer]:
+                    - /url: /search?people=David%20A.%20Smith
+          - link "View full credits" [ref=e79] [cursor=pointer]:
+            - /url: "#section_credits"
+            - generic [aria-hidden] [ref=e80]: 
+            - text: View full credits
+        - separator [ref=e81]
+      - generic [ref=e82]:
+        - paragraph [ref=e85]:
+          - text: Before NASA’s Fermi Gamma-ray Space Telescope launched in 2008, only a handful of pulsars, including the Crab, Vela, and Geminga, were known to emit gamma-rays, the highest-energy form of light. Shown here are 294 gamma-ray pulsars detected by Fermi. Young pulsars, formed when massive stars explode, are the slowest rotators, typically spinning about 10 times a second. Paradoxically, their older siblings, called millisecond pulsars (MSPs), spin much faster, up to hundreds of times a second, thanks to the effects of a stream of matter pulled from a companion star. In spider systems, the companion is all but consumed. The most energetic spiders may fully evaporate their companions, leaving behind only an isolated MSP. Studying pulsars provides insights into the interplay of gravity, radiation, and magnetic fields with matter in the most extreme state we can observe directly.The
+          - link "WorldWide Telescope" [ref=e86] [cursor=pointer]:
+            - /url: https://worldwidetelescope.org/home/
+          - text: is a tool for showcasing astronomical data and knowledge. It’s not a physical telescope — it’s a suite of free and open source software and data sets that combine to create stunning scientific visualizations and stories.
+        - generic [ref=e89]:
+          - iframe [ref=e92]:
+            - generic [ref=f1e5]:
+              - generic [ref=f1e8]:
+                - button "" [ref=f1e9] [cursor=pointer]
+                - button "" [ref=f1e11] [cursor=pointer]
+                - text:    
+              - generic [ref=f1e13]:
+                - generic [ref=f1e14] [cursor=pointer]: 
+                - heading "Explore the Fermi Gamma-Ray Pulsar Catalog!" [level=1] [ref=f1e16]
+                - paragraph [ref=f1e17]:
+                  - text: Before NASA's
+                  - link "Fermi Gamma-ray Space Telescope" [ref=f1e18] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=lin75TTmQHA
+                  - text: launched in 2008, only a handful of
+                  - link "pulsars" [ref=f1e19] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=gjLk_72V9Bw
+                  - text: ", including the"
+                  - link "Crab" [ref=f1e20] [cursor=pointer]:
+                    - /url: https://chandra.harvard.edu/deadstar/crab.html
+                  - text: ","
+                  - link "Vela" [ref=f1e21] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/mission_pages/chandra/multimedia/vela2012.html
+                  - text: ", and"
+                  - link "Geminga" [ref=f1e22] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/feature/goddard/2019/nasa-s-fermi-mission-links-nearby-pulsar-s-gamma-ray-halo-to-antimatter-puzzle
+                  - text: ", were known to emit"
+                  - link "gamma rays, the highest-energy form of light" [ref=f1e23] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=PPlrtgilgK8
+                  - text: . Shown here are 294 gamma-ray pulsars detected by Fermi. Young pulsars, formed when massive stars explode, are the slowest rotators, typically spinning about 10 times a second. Paradoxically, their older siblings, called millisecond pulsars (MSPs), spin much faster, up to hundreds of times a second, thanks to the effects of a stream of matter pulled from a companion star. In spider systems,
+                  - link "the companion is all but consumed" [ref=f1e24] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/content/goddard/with-a-deadly-embrace-spidery-pulsars-consume-their-mates
+                  - text: . The most energetic spiders may fully evaporate their companions, leaving behind only an isolated MSP. Studying pulsars provides insights into the interplay of gravity, radiation, and magnetic fields with matter in the most extreme state we can observe directly.
+                - paragraph
+                - paragraph [ref=f1e25]:
+                  - text: Adapted from
+                  - link "“The Third Fermi Large Area Telescope Catalog of Gamma-ray Pulsars,” D. A. Smith et al., 2023." [ref=f1e26] [cursor=pointer]:
+                    - /url: https://arxiv.org/abs/2307.11132
+                - paragraph [ref=f1e27]:
+                  - text: Interactive created by
+                  - link "A. David Weigel" [ref=f1e28] [cursor=pointer]:
+                    - /url: https://twitter.com/ADavidWeigel
+                  - link "Érika Silva" [ref=f1e29] [cursor=pointer]:
+                    - /url: https://www.linkedin.com/in/erika-s-a37431153/
+                  - link "Peter K. G. Williams" [ref=f1e30] [cursor=pointer]:
+                    - /url: https://newton.cx/~peter/
+                  - link "Jon Carifio" [ref=f1e31] [cursor=pointer]:
+                    - /url: https://www.jcarifio.com/projects
+                - paragraph [ref=f1e32]:
+                  - link [ref=f1e33] [cursor=pointer]:
+                    - /url: https://worldwidetelescope.org/home/
+                    - text: Powered by WorldWide Telescope
+                    - img "WWT Logo" [ref=f1e35]
+              - paragraph [ref=f1e39]: Loading …
+              - button "Click to Select" [ref=f1e40] [cursor=pointer]
+              - generic [ref=f1e42]:
+                - generic [ref=f1e45]:
+                  - generic [ref=f1e47]:
+                    - generic [aria-hidden] [ref=f1e48]: 󰄱
+                    - checkbox "Constellations" [ref=f1e49] [cursor=pointer]
+                  - generic [ref=f1e50] [cursor=pointer]: Constellations
+                - paragraph [ref=f1e52]: Young Pulsars
+                - generic [ref=f1e55]:
+                  - generic [ref=f1e57]:
+                    - generic [aria-hidden] [ref=f1e58]: 󰄲
+                    - checkbox "Radio Quiet" [checked] [ref=f1e59] [cursor=pointer]
+                  - generic [ref=f1e60] [cursor=pointer]: Radio Quiet
+                - generic [ref=f1e63]:
+                  - generic [ref=f1e65]:
+                    - generic [aria-hidden] [ref=f1e66]: 󰄲
+                    - checkbox "Radio Loud" [checked] [ref=f1e67] [cursor=pointer]
+                  - generic [ref=f1e68] [cursor=pointer]: Radio Loud
+                - paragraph [ref=f1e70]: Millisecond Pulsars
+                - generic [ref=f1e73]:
+                  - generic [ref=f1e75]:
+                    - generic [aria-hidden] [ref=f1e76]: 󰄲
+                    - checkbox "Isolated" [checked] [ref=f1e77] [cursor=pointer]
+                  - generic [ref=f1e78] [cursor=pointer]: Isolated
+                - generic [ref=f1e81]:
+                  - generic [ref=f1e83]:
+                    - generic [aria-hidden] [ref=f1e84]: 󰄲
+                    - checkbox "Binary" [checked] [ref=f1e85] [cursor=pointer]
+                  - generic [ref=f1e86] [cursor=pointer]: Binary
+                - paragraph [ref=f1e88]: Spider Systems
+                - generic [ref=f1e91]:
+                  - generic [ref=f1e93]:
+                    - generic [aria-hidden] [ref=f1e94]: 󰄲
+                    - checkbox "Redback" [checked] [ref=f1e95] [cursor=pointer]
+                  - generic [ref=f1e96] [cursor=pointer]: Redback
+                - generic [ref=f1e99]:
+                  - generic [ref=f1e101]:
+                    - generic [aria-hidden] [ref=f1e102]: 󰄲
+                    - checkbox "Black Widow" [checked] [ref=f1e103] [cursor=pointer]
+                  - generic [ref=f1e104] [cursor=pointer]: Black Widow
+              - generic [ref=f1e105]:
+                - generic [ref=f1e106]: Visible light
+                - slider [ref=f1e107]: "0"
+                - generic [ref=f1e108]: Gamma rays
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - list [ref=e95]:
+                - listitem [ref=e96]:
+                  - button "Copy a link to this media item" [ref=e97] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=e98]: 
+              - button "Download" [ref=e101] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e102]: 
+                - text: Download
+            - paragraph [ref=e103]:
+              - link "Direct link to Worldwide Telescope Gamma Ray Pulsar interactive." [ref=e104] [cursor=pointer]:
+                - /url: https://web.wwtassets.org/specials/2023/gamma-ray-pulsar/
+      - separator [ref=e105]
+      - generic [ref=e106]:
+        - list [ref=e107]:
+          - listitem [ref=e108]:
+            - link "Universe" [ref=e109] [cursor=pointer]:
+              - /url: /search?nasa_science_categories=Universe
+              - generic [aria-hidden] [ref=e110]: 
+              - text: Universe
+        - list [ref=e111]:
+          - listitem [ref=e112]:
+            - link "Fermi" [ref=e113] [cursor=pointer]:
+              - /url: /search?keywords=Fermi
+          - listitem [ref=e114]:
+            - link "Interactive" [ref=e115] [cursor=pointer]:
+              - /url: /search?keywords=Interactive
+          - listitem [ref=e116]:
+            - link "Pulsar" [ref=e117] [cursor=pointer]:
+              - /url: /search?keywords=Pulsar
+      - separator [ref=e118]
+      - generic [ref=e119]:
+        - heading "Credits" [level=2] [ref=e120]
+        - paragraph [ref=e122]: "Please give credit for this item to: NASA's Scientific Visualization Studio"
+        - list [ref=e123]:
+          - listitem [ref=e124]:
+            - heading "Producers" [level=3] [ref=e126]
+            - list [ref=e128]:
+              - listitem [ref=e129]:
+                - link "Mark SubbaRao" [ref=e130] [cursor=pointer]:
+                  - /url: /search/?people=Mark%20SubbaRao
+                - text: (NASA/GSFC)
+                - link [ref=e131] [cursor=pointer]:
+                  - /url: https://orcid.org/0000-0002-5668-9674
+                  - img "ORCID logo. It consists of the text 'id' in lowercase inside of a green circle." [ref=e132]
+              - listitem [ref=e133]:
+                - link "Scott Wiessinger" [ref=e134] [cursor=pointer]:
+                  - /url: /search/?people=Scott%20Wiessinger
+                - text: (KBR Wyle Services, LLC)
+          - listitem [ref=e135]:
+            - heading "Technical support" [level=3] [ref=e137]
+            - list [ref=e139]:
+              - listitem [ref=e140]:
+                - link "Laurence Schuler" [ref=e141] [cursor=pointer]:
+                  - /url: /search/?people=Laurence%20Schuler
+                - text: (ADNET Systems, Inc.)
+              - listitem [ref=e142]:
+                - link "Ian Jones" [ref=e143] [cursor=pointer]:
+                  - /url: /search/?people=Ian%20Jones
+                - text: (ADNET Systems, Inc.)
+          - listitem [ref=e144]:
+            - heading "Writer" [level=3] [ref=e146]
+            - list [ref=e148]:
+              - listitem [ref=e149]:
+                - link "Francis Reddy" [ref=e150] [cursor=pointer]:
+                  - /url: /search/?people=Francis%20Reddy
+                - text: (University of Maryland College Park)
+          - listitem [ref=e151]:
+            - heading "Visualizers" [level=3] [ref=e153]
+            - list [ref=e155]:
+              - listitem [ref=e156]:
+                - link "Érika Silva" [ref=e157] [cursor=pointer]:
+                  - /url: /search/?people=%C3%89rika%20Silva
+                - text: (U.S. Space and Rocket Center)
+              - listitem [ref=e158]:
+                - link "Peter K. G. Williams" [ref=e159] [cursor=pointer]:
+                  - /url: /search/?people=Peter%20K.%20G.%20Williams
+                - text: (Center for Astrophysics | Harvard & Smithsonian)
+              - listitem [ref=e160]:
+                - link "Jon Carifio" [ref=e161] [cursor=pointer]:
+                  - /url: /search/?people=Jon%20Carifio
+                - text: (Center for Astrophysics | Harvard & Smithsonian)
+              - listitem [ref=e162]:
+                - link "A. David Weigel" [ref=e163] [cursor=pointer]:
+                  - /url: /search/?people=A.%20David%20Weigel
+                - text: (U.S. Space & Rocket Center - INTUITIVE® Planetarium)
+          - listitem [ref=e164]:
+            - heading "Scientist" [level=3] [ref=e166]
+            - list [ref=e168]:
+              - listitem [ref=e169]:
+                - link "David A. Smith" [ref=e170] [cursor=pointer]:
+                  - /url: /search/?people=David%20A.%20Smith
+                - text: (Laboratoire d'Astrophysique de Bordeaux)
+      - separator [ref=e171]
+      - generic [ref=e172]:
+        - generic [ref=e174]:
+          - heading "Related" [level=2] [ref=e175]
+          - list [ref=e177]:
+            - listitem [ref=e178]:
+              - generic [ref=e179]:
+                - link [ref=e180] [cursor=pointer]:
+                  - /url: /5157/
+                  - img "A visualization of the 294 pulsars in the Fermi gamma-ray pulsar catalog. The visualization starts with a full-sky Hammer projection view of the catalog. Different types of pulsars are indicated by different markers. The pulsar markers oscillate in size according to the object's pulsation frequency at actual speed. Millisecond pulsars are just shown as solid markers. The map then morphs into the full 3D view of the pulsar distribution, and we then fly out to give a top down view showing the distribution of gamma-ray pulsars in our galaxy." [ref=e182]
+                - generic [ref=e183]: "ID: 5157"
+              - generic [ref=e184]:
+                - generic [ref=e185]:
+                  - generic [aria-hidden] [ref=e186]: 
+                  - text: Visualization
+                - heading [level=3] [ref=e189]:
+                  - link "Fermi Catalog of Gamma-ray Pulsars" [ref=e190] [cursor=pointer]:
+                    - /url: /5157/
+            - listitem [ref=e191]:
+              - generic [ref=e192]:
+                - link [ref=e193] [cursor=pointer]:
+                  - /url: /14434/
+                  - 'img "This visualization shows 294 gamma-ray pulsars, first plotted on an image of the entire starry sky as seen from Earth and then transitioning to a view from above our galaxy. The symbols show different types of pulsars. Young pulsars blink in real time except for the Crab, which pulses slower because its rate is only slightly lower than the video frame rate. Millisecond pulsars remain steady, pulsing too quickly to see. The Crab, Vela, and Geminga were among the 11 gamma-ray pulsars known before Fermi launched. Other notable objects are also highlighted. Distances are shown in light-years (abbreviated ly).Credit: NASA’s Goddard Space Flight CenterMusic: \"Fascination\" from Universal Production MusicWatch this video on the NASA.gov Video YouTube channel.Complete transcript available." [ref=e195]'
+                - generic [ref=e196]: "ID: 14434"
+              - generic [ref=e197]:
+                - generic [ref=e198]:
+                  - generic [aria-hidden] [ref=e199]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=e202]:
+                  - link "NASA’s Fermi Mission Finds 300 Gamma-Ray Pulsars" [ref=e203] [cursor=pointer]:
+                    - /url: /14434/
+        - separator [ref=e204]
+      - generic [ref=e205]:
+        - heading "Release date" [level=2] [ref=e206]
+        - paragraph [ref=e207]: This page was originally published on Tuesday, November 28, 2023. This page was last updated on Monday, November 27, 2023 at 1:38 PM EST.
+      - separator [ref=e208]
+      - generic [ref=e210]:
+        - heading "You may also like..." [level=2] [ref=e211]
+        - list [ref=e215]:
+          - text: 
+          - button [aria-hidden] [ref=e216] [cursor=pointer]:
+            - generic [ref=e217]: 
+          - listitem [ref=e218]:
+            - generic [ref=e219]:
+              - link [ref=e220] [cursor=pointer]:
+                - /url: /4644/
+                - img "This movie presents a basic tour around the simulation magnetic field including motion of the bulk particles, held fixed by co-rotating with the pulsar. This version is generated with no background objects and an alpha channel for custom compositing." [ref=e222]
+              - generic [ref=e223]: "ID: 4644"
+              - generic [ref=e224]:
+                - generic [aria-hidden] [ref=e225]: 
+                - text: Visualization
+            - generic [ref=e226]:
+              - heading [level=3] [ref=e227]:
+                - link "Pulsar Current Sheets - Bulk Particle Trajectories" [ref=e228] [cursor=pointer]:
+                  - /url: /4644/
+              - generic [ref=e229]:
+                - generic [ref=e230]: October 10, 2018
+                - 'link "NASA Science Category: Universe" [ref=e232] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e233]: 
+              - paragraph [ref=e235]: This movie presents a basic tour around the simulation magnetic field including motion of the bulk particles. This version is generated with some simple reference objects for more general use. || PulsarParticles_grid_bulk_tour_inertial.HD1080i.01001_print.jpg (1024x576) [112.0 KB] || tour-glyph (1920x1080) [0 Item(s)] || PulsarParticles_grid_bulk_tour.HD1080i_p30.mp4 (1920x1080) [67.7 MB] || PulsarParticles_grid_bulk_tour.HD1080i_p30.webm (1920x1080) [5.3 MB] || tour-glyph (3840x2160) [0 Item(s)] || PulsarParticles_grid_bulk_tour_2160p30.mp4 (3840x2160) [129.1 MB] || PulsarParticles_grid_bulk_tour.HD1080i_p30.mp4.hwshow [208 bytes] ||
+              - link "Go to this page" [ref=e236] [cursor=pointer]:
+                - /url: /4644/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e237]: 
+          - listitem [ref=e238]:
+            - generic [ref=e239]:
+              - link [ref=e240] [cursor=pointer]:
+                - /url: /10251/
+                - img "GLAST PreludeCelebrating the launch and science of NASA's Gamma-Ray Large Area Space Telescope. [GLAST has since been renamed to the Fermi Gamma-ray Space Telescope.]" [ref=e242]
+              - generic [ref=e243]: "ID: 10251"
+              - generic [ref=e244]:
+                - generic [aria-hidden] [ref=e245]: 
+                - text: Produced Video
+            - generic [ref=e246]:
+              - heading [level=3] [ref=e247]:
+                - link "GLAST Prelude, for Brass Quintet, Op.12" [ref=e248] [cursor=pointer]:
+                  - /url: /10251/
+              - generic [ref=e249]:
+                - generic [ref=e250]: May 31, 2008
+                - 'link "NASA Science Category: Universe" [ref=e252] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e253]: 
+              - paragraph [ref=e255]: NASA's GLAST mission is an astrophysics and particle physics partnership, developed in collaboration with the U.S. Department of Energy, along with important contributions from academic institiutions and partners in France, Germany, Italy, Japan, Sweden, and the U.S. Music composed by Nolan Gasser, © 2008 Music performed by the American Brass Quintet ||
+              - link "Go to this page" [ref=e256] [cursor=pointer]:
+                - /url: /10251/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e257]: 
+          - listitem [ref=e258]:
+            - generic [ref=e259]:
+              - link [ref=e260] [cursor=pointer]:
+                - /url: /10347/
+                - img "Orthographic MapAstronomers wrapped the Fermi Gamma-ray Space Telescope's first all-sky map over a sphere to produce this view of the gamma-ray universe. The globe in this animation rotates showing the galactic plane and the north galactic pole, then tilts up to show the south galactic pole region." [ref=e262]
+              - generic [ref=e263]: "ID: 10347"
+              - generic [ref=e264]:
+                - generic [aria-hidden] [ref=e265]: 
+                - text: Produced Video
+            - generic [ref=e266]:
+              - heading [level=3] [ref=e267]:
+                - link "GLAST First Light All Sky Map" [ref=e268] [cursor=pointer]:
+                  - /url: /10347/
+              - generic [ref=e269]:
+                - generic [ref=e270]: August 26, 2008
+                - 'link "NASA Science Category: Universe" [ref=e272] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e273]: 
+              - paragraph [ref=e275]: NASA's newest observatory, the Gamma-Ray Large Area Space Telescope (GLAST), has begun its mission of exploring the universe in high-energy gamma rays. The spacecraft and its revolutionary instruments passed their orbital checkout with flying colors. NASA announced today that GLAST has been renamed the Fermi Gamma-ray Space Telescope. The new name honors Prof. Enrico Fermi (1901 - 1954), a pioneer in high-energy physics. Scientists expect Fermi will discover many new pulsars in our own galaxy, reveal powerful processes near supermassive black holes at the cores of thousands of active galaxies across, and enable a search for signs of new physical laws. ||
+              - link "Go to this page" [ref=e276] [cursor=pointer]:
+                - /url: /10347/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e277]: 
+          - listitem [ref=e278]:
+            - generic [ref=e279]:
+              - link [ref=e280] [cursor=pointer]:
+                - /url: /10357/
+                - img "End of the year 2008 mission update on the GLAST/Fermi spacecraft.For complete transcript, click here." [ref=e282]
+              - generic [ref=e283]: "ID: 10357"
+              - generic [ref=e284]:
+                - generic [aria-hidden] [ref=e285]: 
+                - text: Produced Video
+            - generic [ref=e286]:
+              - heading [level=3] [ref=e287]:
+                - 'link "GLASTcast Episode 6: 2008 Mission Update" [ref=e288] [cursor=pointer]':
+                  - /url: /10357/
+              - generic [ref=e289]:
+                - generic [ref=e290]: December 21, 2008
+                - 'link "NASA Science Category: Universe" [ref=e292] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e293]: 
+              - paragraph [ref=e295]: The GLAST mission launched on June 11, 2008 and has been returning remarkable and revolutionary discoveries ever since. Recently renamed to the Fermi Space Telescope, after Nobel Prize winner Enrico Fermi, the mission is expected to discover dozens of new pulsars within its first year alone. The telescope is also giving us new insights into gamma-ray bursts and the massive jets that erupt from distant galaxies. Stay tuned — the mission of NASA's Fermi telescope is just getting started. ||
+              - link "Go to this page" [ref=e296] [cursor=pointer]:
+                - /url: /10357/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e297]: 
+          - listitem [ref=e298]:
+            - generic [ref=e299]:
+              - link [ref=e300] [cursor=pointer]:
+                - /url: /10361/
+                - img "The pulsar's radio beams (green) never intersect Earth, but its pulsed gamma rays (magenta) do." [ref=e302]
+              - generic [ref=e303]: "ID: 10361"
+              - generic [ref=e304]:
+                - generic [aria-hidden] [ref=e305]: 
+                - text: Produced Video
+            - generic [ref=e306]:
+              - heading [level=3] [ref=e307]:
+                - link "Pulsars Emit Gamma-rays from Equator" [ref=e308] [cursor=pointer]:
+                  - /url: /10361/
+              - generic [ref=e309]:
+                - generic [ref=e310]: January 9, 2009
+                - 'link "NASA Science Category: Universe" [ref=e312] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e313]: 
+              - paragraph [ref=e315]: A pulsar is a rapidly spinning and highly magnetized neutron star, the crushed core left behind when a massive sun explodes. Most were found through their pulses at radio wavelengths, which are thought to be caused by narrow, lighthouse-like beams emanating from the star's magnetic poles. When it comes to gamma-rays, pulsars are no longer lighthouses. A new class of gamma-ray-only pulsars shows that the gamma rays must form in a broader region than the lighthouse-like radio beam. Astronomers now believe the pulsed gamma rays arise far above the neutron star. ||
+              - link "Go to this page" [ref=e316] [cursor=pointer]:
+                - /url: /10361/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e317]: 
+          - listitem [ref=e318]:
+            - generic [ref=e319]:
+              - link [ref=e320] [cursor=pointer]:
+                - /url: /10407/
+                - img "This all-sky movie shows Fermi LAT counts of gamma rays with energies greater than 300 million electron volts from August 4 to October 30, 2008. Brighter colors indicate brighter gamma-ray sources. The circles show the northern (left) and southern galactic sky. Their edges lie along the plane of our galaxy, the Milky Way." [ref=e322]
+              - generic [ref=e323]: "ID: 10407"
+              - generic [ref=e324]:
+                - generic [aria-hidden] [ref=e325]: 
+                - text: Produced Video
+            - generic [ref=e326]:
+              - heading [level=3] [ref=e327]:
+                - link "Fermi All-sky Movie Shows Flaring, Fading Blazars" [ref=e328] [cursor=pointer]:
+                  - /url: /10407/
+              - generic [ref=e329]:
+                - generic [ref=e330]: April 3, 2009
+                - 'link "NASA Science Category: Universe" [ref=e332] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e333]: 
+              - paragraph [ref=e335]: "This all-sky movie shows counts of gamma rays with energies greater than 300 million electron volts from August 4 to October 30, 2008, detected by Fermi's Large Area Telescope. Brighter colors indicate brighter gamma-ray sources. The circles show the northern (left) and southern galactic sky. Their edges lie along the plane of our galaxy, the Milky Way. Because this is an unusual view of the sky, the movies first overlay the stars and establish the locations of well- known constellations: Ursa Major (which includes the Big Dipper), Boötes, and Virgo in the northern galactic map; Cetus, Aries, and Pegasus in the southern galactic map. Notable gamma-ray sources include the sun (moving through the northern sky), the gamma-ray-only pulsar PSR J1836+5925 — a member of a new pulsar class discovered by Fermi — and numerous blazars (active galaxies). The blazars 3C 273, AO 0235+164, and PKS 1502+106 are highlighted. ||"
+              - link "Go to this page" [ref=e336] [cursor=pointer]:
+                - /url: /10407/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e337]: 
+          - listitem [ref=e338]:
+            - generic [ref=e339]:
+              - link [ref=e340] [cursor=pointer]:
+                - /url: /10426/
+                - img "This movie shows pulsed gamma rays from the Vela pulsar as constructed from photons detected by Fermi's Large Area Telescope. A single pulsar cycle is repeated four times." [ref=e342]
+              - generic [ref=e343]: "ID: 10426"
+              - generic [ref=e344]:
+                - generic [aria-hidden] [ref=e345]: 
+                - text: Produced Video
+            - generic [ref=e346]:
+              - heading [level=3] [ref=e347]:
+                - link "Vela Pulsar in Gamma Rays" [ref=e348] [cursor=pointer]:
+                  - /url: /10426/
+              - generic [ref=e349]:
+                - generic [ref=e350]: July 2, 2009
+                - 'link "NASA Science Category: Universe" [ref=e352] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e353]: 
+              - paragraph [ref=e355]: This movie shows pulsed gamma rays from the Vela pulsar as constructed from photons detected by Fermi's Large Area Telescope. The Vela pulsar, which spins 11 times a second, is the brightest persistent source of gamma rays in the sky. The movie includes data from August 4 to Sept. 15, 2008. The bluer color in the latter part of the pulse indicates the presence of gamma rays with energies exceeding a billion electron volts (1 GeV). For comparison, visible light has energies between two and three electron volts. Red indicates gamma rays with energies less than 300 million electron volts (MeV); green, gamma rays between 300 MeV and 1 GeV; and blue shows gamma rays greater than 1 GeV. The movie frame is 30 degrees across. The background, which shows diffuse gamma-ray emission from the Milky Way, is about 15 times brighter here than it actually is. ||
+              - link "Go to this page" [ref=e356] [cursor=pointer]:
+                - /url: /10426/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e357]: 
+          - listitem [ref=e358]:
+            - generic [ref=e359]:
+              - link [ref=e360] [cursor=pointer]:
+                - /url: /10520/
+                - img "This image shows the location of the millisecond sources and the groups responsible for finding them." [ref=e362]
+              - generic [ref=e363]: "ID: 10520"
+              - generic [ref=e364]:
+                - generic [aria-hidden] [ref=e365]: 
+                - text: Produced Video
+            - generic [ref=e366]:
+              - heading [level=3] [ref=e367]:
+                - link "New Millisecond Radio Pulsars Found in Fermi LAT Unidentified Sources" [ref=e368] [cursor=pointer]:
+                  - /url: /10520/
+              - generic [ref=e369]:
+                - generic [ref=e370]: January 5, 2010
+                - 'link "NASA Science Category: Universe" [ref=e372] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e373]: 
+              - paragraph [ref=e375]: Radio searches netted 17 new millisecond pulsars by examining the Fermi Gamma-ray Space Telescope's list of unidentified sources. Colored circles indicate the positions of the new pulsars on the Fermi one-year all-sky map. ||
+              - link "Go to this page" [ref=e376] [cursor=pointer]:
+                - /url: /10520/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e377]: 
+          - listitem [ref=e378]:
+            - generic [ref=e379]:
+              - link [ref=e380] [cursor=pointer]:
+                - /url: /10708/
+                - 'img "A short narrated video about the Crab Nebula''s variability.Credit: NASA/Goddard Space Flight CenterWatch this video on the NASAexplorer YouTube channel.For complete transcript, click here." [ref=e382]'
+              - generic [ref=e383]: "ID: 10708"
+              - generic [ref=e384]:
+                - generic [aria-hidden] [ref=e385]: 
+                - text: Produced Video
+            - generic [ref=e386]:
+              - heading [level=3] [ref=e387]:
+                - link "A Flickering X-ray Candle" [ref=e388] [cursor=pointer]:
+                  - /url: /10708/
+              - generic [ref=e389]:
+                - generic [ref=e390]: January 12, 2011
+                - 'link "NASA Science Category: Universe" [ref=e392] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e393]: 
+              - paragraph [ref=e395]: The Crab Nebula, created by a supernova seen nearly a thousand years ago, is one of the sky's most famous "star wrecks." For decades, most astronomers have regarded it as the steadiest beacon at X-ray energies, but data from orbiting observatories show unexpected variations, showing astronomers their hard X-ray "standard candle" isn't as steady as they once thought. From 1999 to 2008, the Crab brightened and faded by as much as 3.5 percent a year, and since 2008, it has faded by 7 percent. The Gamma-ray Burst Monitor on NASA's Fermi satellite first detected the decline, and Fermi's Large Area Telescope also spotted two gamma-ray flares at even higher energies. Scientists think the X-rays reveal processes deep within the nebula, in a region powered by a rapidly spinning neutron star — the core of the star that blew up. But figuring out exactly where the Crab's X-rays are changing over the long term will require a new generation of X-ray telescopes. ||
+              - link "Go to this page" [ref=e396] [cursor=pointer]:
+                - /url: /10708/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e397]: 
+          - listitem [ref=e398]:
+            - generic [ref=e399]:
+              - link [ref=e400] [cursor=pointer]:
+                - /url: /10767/
+                - img "There are strange goings-on in the Crab Nebula. On April 12, 2011, NASA's Fermi Gamma-ray Space Telescope detected the most powerful in a series of gamma-ray flares occurring somewhere within the supernova remnant.Watch this video on the NASAexplorer YouTube channel.For complete transcript, click here." [ref=e402]
+              - generic [ref=e403]: "ID: 10767"
+              - generic [ref=e404]:
+                - generic [aria-hidden] [ref=e405]: 
+                - text: Produced Video
+            - generic [ref=e406]:
+              - heading [level=3] [ref=e407]:
+                - link "NASA's Fermi Spots 'Superflares' in the Crab Nebula" [ref=e408] [cursor=pointer]:
+                  - /url: /10767/
+              - generic [ref=e409]:
+                - generic [ref=e410]: May 11, 2011
+                - 'link "NASA Science Category: Universe" [ref=e412] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Universe
+                  - generic [aria-hidden] [ref=e413]: 
+              - paragraph [ref=e415]: "The famous Crab Nebula supernova remnant has erupted in an enormous flare five times more powerful than any previously seen from the object. The outburst was first detected by NASA's Fermi Gamma-ray Space Telescope on April 12 and lasted six days.The nebula, which is the wreckage of an exploded star whose light reached Earth in 1054, is one of the most studied objects in the sky. At the heart of an expanding gas cloud lies what's left of the original star's core, a superdense neutron star that spins 30 times a second. With each rotation, the star swings intense beams of radiation toward Earth, creating the pulsed emission characteristic of spinning neutron stars (also known as pulsars). Apart from these pulses, astrophysicists regarded the Crab Nebula to be a virtually constant source of high-energy radiation. But in January, scientists associated with several orbiting observatories — including NASA's Fermi, Swift and Rossi X-ray Timing Explorer — reported long-term brightness changes at X-ray energies.Scientists think that the flares occur as the intense magnetic field near the pulsar undergoes sudden restructuring. Such changes can accelerate particles like electrons to velocities near the speed of light. As these high-speed electrons interact with the magnetic field, they emit gamma rays in a process known as synchrotron emission.To account for the observed emission, scientists say that the electrons must have energies 100 times greater than can be achieved in any particle accelerator on Earth. This makes them the highest-energy electrons known to be associated with any cosmic source.Based on the rise and fall of gamma rays during the April outbursts, scientists estimate that the size of the emitting region must be comparable in size to the solar system. If circular, the region must be smaller than roughly twice Pluto's average distance from the sun.For more Crab Nebula media go to #10708. ||"
+              - link "Go to this page" [ref=e416] [cursor=pointer]:
+                - /url: /10767/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=e417]: 
+  - contentinfo [ref=e418]:
+    - navigation [ref=e419]:
+      - generic [ref=e421]:
+        - generic [ref=e422]:
+          - link [ref=e423] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=e424]
+          - link [ref=e425] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=e426]
+        - generic [ref=e429]:
+          - link "Privacy Policy and Important Notices" [ref=e430] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=e431] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=e436]:
+          - generic [ref=e437]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=e439] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=e440]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=e442] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website

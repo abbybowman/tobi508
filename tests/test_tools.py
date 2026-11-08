@@ -90,6 +90,7 @@ async def test_run_tt_tests_on_http_page(settings, server):
         "other_page_s": settings.other_page_s,
         "no_time_limit": True,  # the server's default since 2026-11-07
         "bypass_csp": True,  # the server's default since 2026-11-07 (ANDI)
+        "replay_navigation_timeout_ms": 120_000,  # round 2, 2026-11-08
     }
     # The window the page was tested in, as configured and as a page saw it.
     d = report.versions.display
@@ -391,6 +392,29 @@ async def test_answer_questions_records_and_rejects_invalid(settings):
     report = Report.model_validate_json(Path(report_path).read_text())
     assert [a.answer.decided_by.value for a in report.answers] == ["model", "human"]
     assert report.findings == []  # recording an answer never sets an outcome
+
+
+async def test_an_agent_cannot_claim_to_be_the_server_judge(settings):
+    """answered_by is the server's to set (server judge pivot): an answer
+    sent through the tool is recorded as the client's, whatever it says."""
+    run_id, report_path = _seed_run_with_question(settings)
+    out = await _call(
+        "tobi_answer_questions",
+        {
+            "run_id": run_id,
+            "answers": [
+                {
+                    "question_id": "q1",
+                    "rationale": "r",
+                    "j1": {"documented": "no"},
+                    "answered_by": "server:some-model",
+                }
+            ],
+        },
+    )
+    assert out["accepted"] == ["q1"]
+    report = Report.model_validate_json(Path(report_path).read_text())
+    assert [a.answer.answered_by for a in report.answers] == ["client"]
 
 
 _ANSWER = {

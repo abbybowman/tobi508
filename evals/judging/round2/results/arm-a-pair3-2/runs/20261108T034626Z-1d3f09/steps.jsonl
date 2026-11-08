@@ -1,0 +1,13 @@
+{"ts":"2026-11-08T03:46:26.049965Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/14592/","tests":["19.A"]}}
+{"ts":"2026-11-08T03:46:26.480900Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T03:46:26.514890Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/14592/","har":"pages/006.har.zip"}}
+{"ts":"2026-11-08T03:46:26.515609Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/cilab/","seconds":0.0}}
+{"ts":"2026-11-08T03:46:26.529172Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-08T03:46:26.572273Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.06}}
+{"ts":"2026-11-08T03:46:26.572429Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/14592/","redirects":[],"seconds":0.09}}
+{"ts":"2026-11-08T03:46:43.548223Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search","live":true}}
+{"ts":"2026-11-08T03:46:43.906633Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://svs.gsfc.nasa.gov/search/"}}
+{"ts":"2026-11-08T03:46:45.791703Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-08T03:46:45.869833Z","step":"captured_live","status":"ok","detail":{"n":1,"seconds":2.32}}
+{"ts":"2026-11-08T03:46:46.228997Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":19.63}}}
+{"ts":"2026-11-08T03:46:46.280603Z","step":"run_end","status":"ok","detail":{}}

@@ -1,0 +1,28 @@
+I ran the tests on both pages. Most results are final, but some are still NEEDS_REVIEW because the tool had open questions I didn't answer and a follow-up call (2.4.5) I didn't run.
+
+**Both pages**
+- **Search box:** its only label is placeholder text, which disappears when you type. That fails 3.3.2 on both pages.
+- **Unnamed buttons:** the tool found at least one button with no accessible name on each page, so 1.3.1 and 4.1.2 fail on both. For 5340 the keyboard walk also listed unnamed checkboxes and buttons in the timeline rows. The tool gave no precise location for the unnamed button on either page.
+- **Bypass blocks:** neither page has a skip link, so 2.4.1 fails on both. The repeated header starts with "NASA Logo".
+- **Not trapped, no surprises:** keyboard focus was never trapped (2.1.2). Moving focus didn't change context (3.2.1). Navigation order and link names are consistent across the pages (3.2.3, 3.2.4).
+
+**14194**
+- **Audio:** the page has audio the tool couldn't play or measure, so 1.4.2 needs a person to load the page and listen.
+- **Motion:** a looping animated image of the Wide Field Instrument moves on its own. Whether it counts as essential is unanswered, so 2.2.2 needs review.
+- **Focus visible:** one question about the "Copy a link to this media item" button's focus indicator is open. That leaves 2.4.7 as needs review. The images I saw suggest it may be fine.
+- **Keyboard and focus order:** the keyboard check has 2 open questions (the video's native controls and a tooltip-only "more options" title). The focus-order check has 1 open question. Shift+Tab does not reverse Tab order on this page.
+- **On input:** the tool could not finish 3.2.2.
+- **Errors and prevention:** the tool could not read 2 form fields, so 3.3.1, 3.3.3 and 3.3.4 need review.
+- **Field label wording:** the tool said no visible label exists to judge, so I left 2.4.6 as needs review.
+
+**5340**
+- **Focus visible (fail):** 2.4.7 fails. Focus is not visible on the "OVERVIEW" tab and on the button inside its panel (`#radix-\:r3\:-content-0 > div > div > button`). Four other elements need a person to check, including the "Scroll down" button and the "SCIENTIFIC BACKGROUND" and "CREDITS" tabs.
+- **On input:** all 15 fields were filled in and tabbed away from without anything unexpected happening (3.2.2 passes).
+- **Keyboard:** there are 19 open questions about mouse-usable controls that focus never reaches, including the nav links and search buttons. The Tab walk also did not get through the whole page. So 2.1.1 needs review.
+- **Motion:** an element pulses indefinitely, and whether that is essential is unanswered. 2.2.2 needs review.
+- **Errors and prevention:** 15 form fields sit inside frames, which the tool doesn't check. 3.3.1, 3.3.3 and 3.3.4 need review.
+- **Not applicable:** I marked 1.4.2 and 2.3.1 as DNA. The tool saw no audio and no flashing, but for 2.3.1 DNA is a judgment call.
+
+The tool's results are agent-assisted and not a certified Trusted Tester result.
+
+RESULT: {"https://svs.gsfc.nasa.gov/14194/": {"1.3.1": {"result": "FAIL", "elements": ["unnamed button"]}, "1.4.2": {"result": "NEEDS_REVIEW", "elements": []}, "2.1.1": {"result": "NEEDS_REVIEW", "elements": ["video native controls", "show more media controls"]}, "2.1.2": {"result": "PASS", "elements": []}, "2.2.2": {"result": "NEEDS_REVIEW", "elements": ["looping animated image of Wide Field Instrument"]}, "2.3.1": {"result": "DNA", "elements": []}, "2.4.1": {"result": "FAIL", "elements": ["no skip link before the repeated header (NASA Logo)"]}, "2.4.3": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.5": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.6": {"result": "NEEDS_REVIEW", "elements": ["Search"]}, "2.4.7": {"result": "NEEDS_REVIEW", "elements": ["Copy a link to this media item"]}, "3.2.1": {"result": "PASS", "elements": []}, "3.2.2": {"result": "NEEDS_REVIEW", "elements": []}, "3.2.3": {"result": "PASS", "elements": []}, "3.2.4": {"result": "PASS", "elements": []}, "3.3.1": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.2": {"result": "FAIL", "elements": ["Search text field (#navbar_search_box)"]}, "3.3.3": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.4": {"result": "NEEDS_REVIEW", "elements": []}, "4.1.2": {"result": "FAIL", "elements": ["unnamed button"]}}, "https://svs.gsfc.nasa.gov/5340/": {"1.3.1": {"result": "FAIL", "elements": ["unnamed button", "unnamed checkboxes and buttons in timeline rows"]}, "1.4.2": {"result": "DNA", "elements": []}, "2.1.1": {"result": "NEEDS_REVIEW", "elements": ["top navigation links", "search box and buttons", "previous/next page links"]}, "2.1.2": {"result": "PASS", "elements": []}, "2.2.2": {"result": "NEEDS_REVIEW", "elements": ["pulsing element near top of page"]}, "2.3.1": {"result": "DNA", "elements": []}, "2.4.1": {"result": "FAIL", "elements": ["no skip link before the repeated header (NASA Logo)"]}, "2.4.3": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.5": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.6": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.7": {"result": "FAIL", "elements": ["OVERVIEW (tab)", "#radix-\\:r3\\:-content-0 > div > div > button"]}, "3.2.1": {"result": "PASS", "elements": []}, "3.2.2": {"result": "PASS", "elements": []}, "3.2.3": {"result": "PASS", "elements": []}, "3.2.4": {"result": "PASS", "elements": []}, "3.3.1": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.2": {"result": "FAIL", "elements": ["Search text field (#navbar_search_box)"]}, "3.3.3": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.4": {"result": "NEEDS_REVIEW", "elements": []}, "4.1.2": {"result": "FAIL", "elements": ["unnamed button", "unnamed checkboxes and buttons in timeline rows"]}}}

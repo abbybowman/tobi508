@@ -1,0 +1,42 @@
+{"ts":"2026-11-08T01:40:24.222179Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/search/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-08T01:40:24.800181Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T01:40:24.805163Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search/","har":"pages/003.har.zip"}}
+{"ts":"2026-11-08T01:40:24.820490Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.02}}
+{"ts":"2026-11-08T01:40:24.821187Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/help/","seconds":0.0}}
+{"ts":"2026-11-08T01:40:24.833106Z","step":"captured_other","status":"ok","detail":{"n":3,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","seconds":0.01}}
+{"ts":"2026-11-08T01:40:24.833563Z","step":"captured_other","status":"ok","detail":{"n":4,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/cilab/","seconds":0.0}}
+{"ts":"2026-11-08T01:40:24.833617Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/search/","redirects":[],"seconds":0.03}}
+{"ts":"2026-11-08T01:40:25.075678Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-08T01:40:29.960103Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T01:40:37.389237Z","step":"settle_ignore","status":"ok","detail":{"regions":2}}
+{"ts":"2026-11-08T01:42:04.438985Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":128,"cap":425},"P2":{"end":"wrap","presses":129,"cap":425},"cost":{"loads":2,"presses":257,"quick":0,"slow_redos":0,"seconds":99.54}}}
+{"ts":"2026-11-08T01:42:09.420050Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":8,"quick":5,"slow_redos":0,"seconds":4.97}}}
+{"ts":"2026-11-08T01:42:09.422438Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:42:11.769137Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.34}}}
+{"ts":"2026-11-08T01:42:11.772988Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search","live":true}}
+{"ts":"2026-11-08T01:42:12.182525Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://svs.gsfc.nasa.gov/search/"}}
+{"ts":"2026-11-08T01:42:15.358111Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":true}}
+{"ts":"2026-11-08T01:42:15.823020Z","step":"captured_live","status":"ok","detail":{"n":1,"seconds":4.05}}
+{"ts":"2026-11-08T01:42:16.815792Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":5.05}}}
+{"ts":"2026-11-08T01:42:27.205337Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":2,"presses":76,"quick":64,"slow_redos":0,"seconds":10.38}}}
+{"ts":"2026-11-08T01:42:42.392365Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":3,"presses":82,"quick":74,"slow_redos":0,"seconds":15.18}}}
+{"ts":"2026-11-08T01:42:42.394402Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:42:42.396609Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:42:42.398011Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:42:42.399313Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:42:45.840602Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":3.44}}}
+{"ts":"2026-11-08T01:42:56.176115Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":10.33}}}
+{"ts":"2026-11-08T01:42:58.346193Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":2.17}}}
+{"ts":"2026-11-08T01:43:04.793692Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":2,"presses":37,"quick":32,"slow_redos":0,"seconds":6.45}}}
+{"ts":"2026-11-08T01:43:04.797551Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:45:54.483564Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T01:51:23.797562Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T01:52:05.811234Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":77,"presses":4926,"quick":4205,"slow_redos":0,"seconds":541.01}}}
+{"ts":"2026-11-08T01:52:19.397955Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":5,"presses":56,"quick":41,"slow_redos":0,"seconds":13.58}}}
+{"ts":"2026-11-08T01:52:19.409241Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.01}}}
+{"ts":"2026-11-08T01:52:19.419078Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.01}}}
+{"ts":"2026-11-08T01:52:26.323749Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":6.9}}}
+{"ts":"2026-11-08T01:52:26.332131Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.01}}}
+{"ts":"2026-11-08T01:52:26.337899Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:52:26.507928Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-08T14:13:37.694293Z","step":"answers_recorded","status":"ok","detail":{"accepted":["2.B-m1-J1","2.B-m2-J1","4.A-k1-J1","4.A-k2-J1","4.A-k3-J1","4.A-k4-J1","4.A-k5-J1","4.A-k6-J1","4.A-k7-J1","4.A-k9-J1","4.A-k12-J1","4.A-k13-J1","4.A-k16-J1","4.A-t12-J2","4.A-t18-J2","4.A-t19-J2","4.B-p-J1","4.F-o1-J1","5.A-c5-J1","5.A-c9-J1","5.B-f1-J1","5.C-c5-J1","5.C-c8-J1","5.C-c9-J1","5.C-c11-J1","5.C-c15-J1","5.C-c23-J1","5.C-c24-J1","5.C-c26-J1","5.C-c27-J1","5.C-c28-J1","5.C-c29-J1","5.C-c32-J1","5.C-c33-J1","5.C-c34-J1","5.C-c45-J1","5.C-c56-J1","5.D-f3-J1","5.D-f4-J1","5.D-f8-J1","5.D-f18-J1","5.D-f21-J1","5.D-f31-J1","5.D-f41-J1","5.D-f51-J1","5.D-f59-J1","5.D-f67-J1","5.D-f70-J1","5.D-f72-J1","5.H-J1","9.C-p3-11-J1","9.C-p3-12-J1","9.C-p3-17-J1"],"rejected":[],"errors":[]}}

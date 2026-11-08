@@ -1,0 +1,17 @@
+{"ts":"2026-11-08T02:28:22.146210Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/5144/","tests":["19.A"]}}
+{"ts":"2026-11-08T02:28:22.648665Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T02:28:22.657466Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/5144/","har":"pages/009.har.zip"}}
+{"ts":"2026-11-08T02:28:22.693573Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/14592/","har":"pages/006.har.zip"}}
+{"ts":"2026-11-08T02:28:22.769857Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/14592/","seconds":0.11}}
+{"ts":"2026-11-08T02:28:22.797002Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/14194/","har":"pages/007.har.zip"}}
+{"ts":"2026-11-08T02:28:22.846038Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/14194/","seconds":0.08}}
+{"ts":"2026-11-08T02:28:22.858436Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-08T02:28:22.895684Z","step":"captured_other","status":"ok","detail":{"n":3,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.05}}
+{"ts":"2026-11-08T02:28:22.895855Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/5144/","redirects":[],"seconds":0.25}}
+{"ts":"2026-11-08T02:28:23.311983Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-08T02:28:29.670986Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search","live":true}}
+{"ts":"2026-11-08T02:28:30.193005Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://svs.gsfc.nasa.gov/search/"}}
+{"ts":"2026-11-08T02:28:33.314381Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-08T02:28:33.525851Z","step":"captured_live","status":"ok","detail":{"n":1,"seconds":3.86}}
+{"ts":"2026-11-08T02:28:34.488672Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":11.45}}}
+{"ts":"2026-11-08T02:28:34.708459Z","step":"run_end","status":"ok","detail":{}}

@@ -1,0 +1,18 @@
+- generic [ref=f5e2]:
+  - generic [ref=f5e3]:
+    - img "CI Lab Logo" [ref=f5e4]
+    - generic [ref=f5e5]: conceptual image lab
+    - img "NASA Logo" [ref=f5e6]
+  - generic [ref=f5e7]:
+    - link [ref=f5e8] [cursor=pointer]:
+      - /url: information.html
+      - img "Info Icon" [ref=f5e9]
+    - link [ref=f5e10] [cursor=pointer]:
+      - /url: /cgi-bin/portfolio.cgi
+      - img "Portfolio Icon" [ref=f5e11]
+    - link [ref=f5e12] [cursor=pointer]:
+      - /url: https://www.facebook.com/pages/Conceptual-Image-Lab/405175119633684
+      - img "Facebook Icon" [ref=f5e13]
+    - link [ref=f5e14] [cursor=pointer]:
+      - /url: "#"
+      - img "Mail Icon" [ref=f5e15]

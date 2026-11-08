@@ -82,6 +82,9 @@ def register(mcp: FastMCP) -> None:
         for the open questions, and `report_uri` (the full report, to save).
         Results are agent-assisted and NOT a certified Trusted Tester result.
         """
+        # Every answer through this tool is the calling agent's: it cannot
+        # claim to be the server's judge (answered_by is set by the server).
+        answers = [a.model_copy(update={"answered_by": "client"}) for a in answers]
         try:
             return with_pictures(
                 await answer_pipeline(config.settings, run_id, answers), wrap=False

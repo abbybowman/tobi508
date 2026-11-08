@@ -1,0 +1,13 @@
+{"ts":"2026-11-08T03:38:22.922909Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/search/","tests":["19.A"]}}
+{"ts":"2026-11-08T03:38:23.354521Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T03:38:23.359315Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search/","har":"pages/003.har.zip"}}
+{"ts":"2026-11-08T03:38:23.366988Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","seconds":0.01}}
+{"ts":"2026-11-08T03:38:23.378858Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-08T03:38:23.419717Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.05}}
+{"ts":"2026-11-08T03:38:23.419829Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/search/","redirects":[],"seconds":0.07}}
+{"ts":"2026-11-08T03:38:28.162472Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search","live":true}}
+{"ts":"2026-11-08T03:38:28.668874Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://svs.gsfc.nasa.gov/search/"}}
+{"ts":"2026-11-08T03:38:32.213466Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":true}}
+{"ts":"2026-11-08T03:38:32.662479Z","step":"captured_live","status":"ok","detail":{"n":1,"seconds":4.5}}
+{"ts":"2026-11-08T03:38:33.508289Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":10.01}}}
+{"ts":"2026-11-08T03:38:33.578776Z","step":"run_end","status":"ok","detail":{}}

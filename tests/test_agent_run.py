@@ -260,3 +260,32 @@ def test_the_leak_check_ignores_the_arms_own_server_instructions():
     assert "trusted tester" not in str(_without_server_instructions(got)).lower()
     leaked = {**got, "project": "a Trusted Tester repository"}
     assert "trusted tester" in str(_without_server_instructions(leaked)).lower()
+
+
+def test_page_groups_split_at_group_comments():
+    h = "a" * 64
+    text = (
+        "# Group one\n"
+        f"https://x.gov/1 {h}\nhttps://x.gov/2 {h}\n\n"
+        "# Group two\n# a note\n"
+        f"https://x.gov/3 {h}\n"
+    )
+    assert agent_run.page_groups(text) == [
+        ["https://x.gov/1", "https://x.gov/2"],
+        ["https://x.gov/3"],
+    ]
+    assert agent_run.page_groups(f"https://x.gov/1 {h}\n") == [["https://x.gov/1"]]
+
+
+def test_pick_group_by_size_or_by_section():
+    h = "a" * 64
+    text = "".join(
+        f"# Group {g}\n" + "".join(f"https://x.gov/{g}{i} {h}\n" for i in range(3))
+        for g in (1, 2)
+    )
+    urls = [u for g in agent_run.page_groups(text) for u in g]
+    assert agent_run.pick_group(urls, text, 2) == urls[3:]
+    assert agent_run.pick_group(urls, text, 2, size=2) == urls[2:4]
+    assert agent_run.pick_group(urls, text, 3, size=2) == urls[4:]
+    with pytest.raises(RuntimeError):
+        agent_run.pick_group(urls, text, 4, size=2)

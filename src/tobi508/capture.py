@@ -321,6 +321,8 @@ async def replay_context(
     ctx = await new_context(
         browser, settings, **({"viewport": viewport} if viewport else {})
     )
+    # Loads from the recording wait longer than live loads (config).
+    ctx.set_default_navigation_timeout(settings.replay_navigation_timeout_ms)
     await ctx.add_init_script(INIT_JS)  # focus and mutation log (settle rule)
     for script in init_scripts:
         await ctx.add_init_script(script)

@@ -247,6 +247,113 @@ def test_open_questions_come_ten_at_a_time():
     assert "10 are in open_questions now" in next_step(report)
 
 
+def _big_report(n: int, quote: str):
+    from tobi508.models import OpenQuestion
+
+    return Report(
+        run_id="r",
+        target="https://nasa.gov",
+        started_at=datetime.now(timezone.utc),
+        versions=_versions(),
+        evidence_dir="x",
+        open_questions=[
+            OpenQuestion(
+                question_id=f"q{i}",
+                test_id=TestId.T4B if i == 0 else TestId.T4F,
+                kind="choice",
+                instance="p",
+                question="?",
+                rubric="?",
+                input={"matches": [quote]} if i == 0 else {"note": "x" * 9_000},
+                shared=["stops"] if i == 0 else [],
+            )
+            for i in range(n)
+        ],
+    )
+
+
+def _result(report):
+    from tobi508.models import RunResult
+
+    return RunResult(
+        run_id="r",
+        target="https://nasa.gov",
+        tests=["4.B", "4.F"],
+        findings=[],
+        expires_at=datetime.now(timezone.utc),
+        report=report,
+        report_uri="run://r/report.json",
+        pre_scrt_uri="run://r/pre-scrt.json",
+    )
+
+
+def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
+    """Round 2 (2026-11-08): Claude Code saves an MCP result over about 25k
+    tokens to a file, and the agent never saw 140 open questions. A result
+    shows fewer questions when 10 do not fit, builds page text and shared
+    inputs only for those shown, and cuts one question's long page text to
+    the passages around what it quotes; the question's own input is never
+    changed."""
+    from tobi508 import pipeline as P
+
+    quote = "Press and hold the space bar for two seconds to pause the animation."
+    text = ("Filler sentence about the page. " * 20_000) + quote + (" Tail." * 5_000)
+    stops = [{"n": i, "role": "link", "name": "L" * 400} for i in range(150)]
+    monkeypatch.setattr(
+        P,
+        "_page_text",
+        lambda r, s, qs=None: (
+            [{"source": "top", "text": text}]
+            if any(q.test_id is TestId.T4B for q in (qs or r.open_questions))
+            else []
+        ),
+    )
+    monkeypatch.setattr(
+        P,
+        "_shared_inputs",
+        lambda r, s, qs=None: (
+            {"stops": stops}
+            if any("stops" in q.shared for q in (qs or r.open_questions))
+            else {}
+        ),
+    )
+    report = _big_report(12, quote)
+    out = P.fit(_result(report), report, {})
+    assert len(out.model_dump_json(exclude={"report"})) <= P.RESULT_CHARS
+    shown = len(out.open_questions)
+    assert out.open_questions[0].question_id == "q0" and shown < 10
+    assert out.more_questions == 12 - shown
+    assert out.open_questions[0].input == {"matches": [quote]}
+    [page] = out.page_text
+    assert quote in page["text"] and len(page["text"]) < len(text)
+    assert f"{len(text):,} characters" in page["excerpt"]
+    assert out.shared_inputs["stops"][0]["name"].endswith(" [...]")
+    assert "cut" in out.shared_inputs
+    assert out.todo[0].startswith(f"[ ] Answer the {shown} open question(s)")
+    assert f"{12 - shown} more come" in out.todo[0]
+    # Without the 4.B question, the 4.F questions page by size alone (their
+    # own inputs are never cut), and no page text or shared inputs go with
+    # them.
+    report = _big_report(12, quote)
+    report.open_questions = report.open_questions[1:]
+    out = P.fit(_result(report), report, {})
+    assert len(out.model_dump_json(exclude={"report"})) <= P.RESULT_CHARS
+    assert 1 < len(out.open_questions) < 10
+    assert out.page_text == [] and out.shared_inputs == {}
+    assert out.more_questions == 11 - len(out.open_questions)
+    assert f"{len(out.open_questions)} are in open_questions now" in out.next_step
+
+
+def test_a_small_result_is_unchanged_by_fit():
+    from tobi508 import pipeline as P
+
+    report = _big_report(3, "short")
+    for q in report.open_questions:
+        q.input = {}
+    out = P.fit(_result(report), report, {})
+    assert len(out.open_questions) == 3 and out.more_questions == 0
+
+
 def test_picture_error_is_refused_for_a_picture_that_was_attached():
     """Abby, 2026-11-07: development run 10 gave picture_error ("not
     inspected") for pictures it had been sent. For a picture attached to a

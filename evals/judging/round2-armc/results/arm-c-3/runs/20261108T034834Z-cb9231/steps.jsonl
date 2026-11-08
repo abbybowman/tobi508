@@ -1,0 +1,43 @@
+{"ts":"2026-11-08T03:48:34.061454Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/14194/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-08T03:48:34.451670Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T03:48:34.477738Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/14194/","har":"pages/007.har.zip"}}
+{"ts":"2026-11-08T03:48:34.480693Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/5340/","har":"pages/008.har.zip"}}
+{"ts":"2026-11-08T03:48:34.485533Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://svs.gsfc.nasa.gov/5340/","seconds":0.01}}
+{"ts":"2026-11-08T03:48:34.485632Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/14194/","redirects":[],"seconds":0.03}}
+{"ts":"2026-11-08T03:48:35.030669Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-08T03:49:00.255683Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T03:49:09.696695Z","step":"settle_ignore","status":"ok","detail":{"regions":1}}
+{"ts":"2026-11-08T03:49:52.265900Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":73,"cap":245},"P2":{"end":"wrap","presses":73,"cap":245},"cost":{"loads":2,"presses":146,"quick":0,"slow_redos":0,"seconds":77.77}}}
+{"ts":"2026-11-08T03:50:12.685261Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":8,"quick":5,"slow_redos":0,"seconds":20.42}}}
+{"ts":"2026-11-08T03:50:12.687042Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T03:50:25.360156Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":12.67}}}
+{"ts":"2026-11-08T03:50:25.362624Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/search","live":true}}
+{"ts":"2026-11-08T03:50:26.631673Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://svs.gsfc.nasa.gov/search/"}}
+{"ts":"2026-11-08T03:50:30.276997Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-08T03:50:30.455103Z","step":"captured_live","status":"ok","detail":{"n":1,"seconds":5.09}}
+{"ts":"2026-11-08T03:50:31.289218Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":5.93}}}
+{"ts":"2026-11-08T03:50:31.789355Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.5}}}
+{"ts":"2026-11-08T03:53:35.825966Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":13,"presses":268,"quick":96,"slow_redos":6,"seconds":184.03}}}
+{"ts":"2026-11-08T03:53:35.828156Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T03:54:21.313099Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":4,"presses":8,"quick":0,"slow_redos":0,"seconds":45.48}}}
+{"ts":"2026-11-08T03:54:21.314410Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T03:54:21.315952Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T03:54:25.535570Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T03:59:55.440670Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T04:05:29.116801Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T04:10:57.700445Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T04:14:39.303505Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1217.99}}}
+{"ts":"2026-11-08T04:15:02.456221Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":23.15}}}
+{"ts":"2026-11-08T04:15:10.353318Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":7.9}}}
+{"ts":"2026-11-08T04:15:18.736093Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":8.38}}}
+{"ts":"2026-11-08T04:15:18.737351Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T04:15:42.520321Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":2,"presses":87,"quick":66,"slow_redos":0,"seconds":23.78}}}
+{"ts":"2026-11-08T04:16:11.842856Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":19,"quick":12,"slow_redos":0,"seconds":29.32}}}
+{"ts":"2026-11-08T04:16:11.845800Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T04:16:11.849978Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T04:16:20.513234Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":8.66}}}
+{"ts":"2026-11-08T04:16:20.514374Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T04:16:20.515327Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T04:16:20.668374Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-08T14:30:06.213531Z","step":"answers_recorded","status":"ok","detail":{"accepted":["2.B-m1-J1","4.A-k1-J1","4.A-t21-J2","4.D-d23-J1","4.F-o1-J1"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-08T14:30:31.023392Z","step":"follow_up_started","status":"ok","detail":{"job_id":"armc-20261108T143006Z-6eadc7","tests":["19.A"]}}

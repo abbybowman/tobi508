@@ -1,0 +1,641 @@
+- generic [ref=f1e1]:
+  - banner:
+    - navigation [ref=f1e2]:
+      - generic [ref=f1e3]:
+        - link [ref=f1e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=f1e5]
+        - link "Scientific Visualization Studio" [ref=f1e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=f1e10]:
+          - listitem [ref=f1e11]:
+            - link "Galleries" [ref=f1e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=f1e13]: 
+              - text: Galleries
+          - listitem [ref=f1e14]:
+            - link "Help" [ref=f1e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=f1e16]: 
+              - text: Help
+          - search [ref=f1e17]:
+            - generic [ref=f1e18]:
+              - textbox "Search..." [ref=f1e19]
+              - generic [ref=f1e20]: Search
+              - button "Clear search text" [ref=f1e21] [cursor=pointer]: 
+              - button "Search!" [ref=f1e22] [cursor=pointer]: 
+  - main [ref=f1e23]:
+    - article [ref=f1e26]:
+      - generic [ref=f1e27]:
+        - navigation [ref=f1e28]:
+          - generic [ref=f1e29]:
+            - generic [aria-hidden] [ref=f1e30]: 
+            - link "Previous page" [ref=f1e31] [cursor=pointer]:
+              - /url: /14634
+              - text: "14634: Fermi Finds Novel Feature in BOAT Gamma-Ray..."
+            - link "Next page" [ref=f1e32] [cursor=pointer]:
+              - /url: /14639
+              - text: "14639: Helio Big Year: How Sonifications Connect t..."
+            - generic [aria-hidden] [ref=f1e33]: 
+            - link "Newest page" [ref=f1e34] [cursor=pointer]:
+              - /url: /15116
+              - generic [aria-hidden] [ref=f1e35]: 
+        - 'heading "NASA Climate Legacies: An interactive tool to explore generational differences in the experience of a changing climate" [level=1] [ref=f1e37]'
+        - generic [ref=f1e39]:
+          - list [ref=f1e40]:
+            - listitem [ref=f1e41]: Released Friday, July 26, 2024
+          - list [ref=f1e43]:
+            - listitem [ref=f1e44]:
+              - generic: "ID: 5340"
+            - listitem [ref=f1e45]
+            - listitem [ref=f1e46]:
+              - link "View this page in our API" [ref=f1e47] [cursor=pointer]:
+                - /url: /api/5340
+                - generic [aria-hidden] [ref=f1e48]: 
+            - listitem [ref=f1e49]
+            - listitem [ref=f1e50]:
+              - button "Copy a link to this page" [ref=f1e51] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f1e52]: 
+            - listitem [ref=f1e53]:
+              - link "Share this page on Twitter" [ref=f1e54] [cursor=pointer]:
+                - /url: https://twitter.com/intent/tweet
+                - generic [aria-hidden] [ref=f1e55]: 
+            - listitem [ref=f1e56]:
+              - link "Share this page on Facebook" [ref=f1e57] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=http%3A//svs.gsfc.nasa.gov/5340%3F
+                - generic [aria-hidden] [ref=f1e58]: 
+        - generic [ref=f1e60]:
+          - list [ref=f1e61]:
+            - listitem [ref=f1e62]:
+              - list [ref=f1e63]:
+                - listitem [ref=f1e64]: "Visualizations by:"
+                - listitem [ref=f1e65]:
+                  - link "Alex Gurvich" [ref=f1e66] [cursor=pointer]:
+                    - /url: /search?people=Alex%20Gurvich
+          - link "View full credits" [ref=f1e67] [cursor=pointer]:
+            - /url: "#section_credits"
+            - generic [aria-hidden] [ref=f1e68]: 
+            - text: View full credits
+        - separator [ref=f1e69]
+      - generic [ref=f1e70]:
+        - paragraph [ref=f1e73]
+        - generic [ref=f1e76]:
+          - iframe [active] [ref=f1e79]:
+            - generic:
+              - generic [aria-hidden]:
+                - generic:
+                  - generic:
+                    - button
+                    - button
+                    - generic:
+                      - button
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img:
+                              - generic: very high
+                              - generic: high
+                              - generic: intermediate
+                              - generic: low
+                              - generic: very low
+                              - generic:
+                                - generic: "1900"
+                                - generic: "1940"
+                                - generic: "1980"
+                                - generic: "2020"
+                                - generic: "2060"
+                                - generic: "2100"
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img:
+                                - generic:
+                                  - generic:
+                                    - text: Ayisha
+                                    - generic: born in 2024
+                            - generic:
+                              - img:
+                                - generic:
+                                  - generic:
+                                    - text: Aidan
+                                    - generic: born in 2007
+                                - generic:
+                                  - generic:
+                                    - text: 80 years
+                                    - generic: old in 2087
+                            - generic:
+                              - img:
+                                - generic:
+                                  - generic:
+                                    - text: Michael
+                                    - generic: born in 1984
+                                - generic:
+                                  - generic:
+                                    - text: 80 years
+                                    - generic: old in 2064
+                            - generic:
+                              - img:
+                                - generic:
+                                  - generic:
+                                    - text: Carlos
+                                    - generic: born in 1952
+                                - generic:
+                                  - generic:
+                                    - text: 80 years
+                                    - generic: old in 2032
+                            - generic:
+                              - img:
+                                - generic:
+                                  - generic:
+                                    - text: Maria
+                                    - generic: born in 1923
+                                - generic:
+                                  - generic:
+                                    - text: 80 years
+                                    - generic: old in 2003
+                        - generic:
+                          - generic:
+                            - text: Global temperature change above 1850-1900 levels
+                            - generic:
+                              - button: ° C
+                              - button: ° F
+                          - img:
+                            - generic:
+                              - generic: 0°
+                              - generic: 0.5°
+                              - generic: 1°
+                              - generic: 1.5°
+                              - generic: 2°
+                              - generic: 2.5°
+                              - generic: 3°
+                              - generic: 3.5°
+                              - generic: 4°
+                    - generic:
+                      - generic:
+                        - paragraph: rotate to landscape to view timeline
+              - dialog [ref=f2e2]:
+                - img [ref=f2e5]:
+                  - generic [ref=f2e10]: CLIMATE LEGACIES
+                - generic [ref=f2e79]:
+                  - generic [ref=f2e80]:
+                    - generic [ref=f2e82]:
+                      - generic [ref=f2e83]:
+                        - button [disabled]
+                        - tablist [ref=f2e84]:
+                          - tab "Overview" [selected]
+                          - tab "Scientific Background" [ref=f2e85] [cursor=pointer]
+                          - tab "Origins & History" [ref=f2e86] [cursor=pointer]
+                          - tab "Credits" [ref=f2e87] [cursor=pointer]
+                        - button [ref=f2e88] [cursor=pointer]
+                      - tabpanel "Overview" [ref=f2e92]:
+                        - generic [ref=f2e94]:
+                          - heading "Our Climate Legacy" [level=1] [ref=f2e95]
+                          - paragraph [ref=f2e96]:
+                            - strong [ref=f2e97]: Each generation inherits the climate from the last
+                            - text: ; their choices rippling through time to shape the world for us and our descendants. Each of us will experience this inheritance differently over the course of our lives.
+                          - paragraph [ref=f2e98]:
+                            - text: "Yet the future is still unwritten, and with the power to influence it we must ask ourselves:"
+                            - emphasis [ref=f2e99]: what stripes will we leave?
+                          - paragraph [ref=f2e100]:
+                            - strong [ref=f2e101]:
+                              - emphasis [ref=f2e102]: What will be our CLIMATE LEGACY?
+                          - paragraph [ref=f2e103]: Create your own climate stripes timeline by adding yourself, your friends, and/or your family using our tool to see how different generations experience a changing climate differently.
+                          - button [active]
+                          - button "View timeline" [ref=f2e106] [cursor=pointer]
+                    - generic [ref=f2e108]:
+                      - heading "Your Timeline" [level=1] [ref=f2e109]
+                      - generic [ref=f2e110]:
+                        - generic [ref=f2e111]:
+                          - textbox "name" [ref=f2e118]: Ayisha
+                          - generic [ref=f2e120]:
+                            - spinbutton "birth year" [ref=f2e127]: "2024"
+                            - checkbox [ref=f2e128] [cursor=pointer]
+                            - button [ref=f2e133] [cursor=pointer]
+                        - generic [ref=f2e136]:
+                          - textbox "name" [ref=f2e143]: Aidan
+                          - generic [ref=f2e145]:
+                            - spinbutton "birth year" [ref=f2e152]: "2007"
+                            - checkbox [ref=f2e153] [cursor=pointer]
+                            - button [ref=f2e158] [cursor=pointer]
+                        - generic [ref=f2e161]:
+                          - textbox "name" [ref=f2e168]: Michael
+                          - generic [ref=f2e170]:
+                            - spinbutton "birth year" [ref=f2e177]: "1984"
+                            - checkbox [ref=f2e178] [cursor=pointer]
+                            - button [ref=f2e183] [cursor=pointer]
+                        - generic [ref=f2e186]:
+                          - textbox "name" [ref=f2e193]: Carlos
+                          - generic [ref=f2e195]:
+                            - spinbutton "birth year" [ref=f2e202]: "1952"
+                            - checkbox [ref=f2e203] [cursor=pointer]
+                            - button [ref=f2e208] [cursor=pointer]
+                        - generic [ref=f2e211]:
+                          - textbox "name" [ref=f2e218]: Maria
+                          - generic [ref=f2e220]:
+                            - spinbutton "birth year" [ref=f2e227]: "1923"
+                            - checkbox [ref=f2e228] [cursor=pointer]
+                            - button [ref=f2e233] [cursor=pointer]
+                        - generic [ref=f2e237]:
+                          - button [ref=f2e238] [cursor=pointer]
+                          - generic [ref=f2e242]: 5/8
+                      - paragraph [ref=f2e243]: "Note: NASA does not collect or store your personal data."
+                  - button "Scroll down" [ref=f2e245] [cursor=pointer]
+          - generic [ref=f1e80]:
+            - generic [ref=f1e81]:
+              - list [ref=f1e82]:
+                - listitem [ref=f1e83]:
+                  - button "Copy a link to this media item" [ref=f1e84] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=f1e85]: 
+              - button "Download" [ref=f1e88] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f1e89]: 
+                - text: Download
+            - paragraph [ref=f1e90]: An embedded version of the NASA Climate Legacies. The standalone version is available at https://svs.gsfc.nasa.gov/webapps/climate-legacies.
+        - paragraph [ref=f1e93]: The NASA Climate Legacies is an interactive web application designed to visualize the impacts of climate change across generations by allowing users to make personalized timelines. Users can explore how historical and projected climate conditions affect different generations differently by comparing colored silhouettes along the timeline based on their dates of birth. The application offers multiple modes, including a "white background" mode displaying a timeline of climate stripes from 1900 to 2100 and a "black background" mode with generational icons aligned by age for easier cross-generation comparison.The user interface contains background information about the graphics and the science behind them. The application also provides in-depth information on the history of the climate stripes themselves. The "Your Timeline" section allows users to add and view individuals' climate legacies based on their year of birth, providing a clear visualization of how different generations experience climate change.The project is a collaborative effort that credits the work of scientists, graphic designers, and visualization experts who have contributed to its development and incorporate data from the IPCC Sixth Assessment Report.
+      - separator [ref=f1e94]
+      - generic [ref=f1e95]:
+        - list [ref=f1e96]:
+          - listitem [ref=f1e97]:
+            - link "Earth" [ref=f1e98] [cursor=pointer]:
+              - /url: /search?nasa_science_categories=Earth
+              - generic [aria-hidden] [ref=f1e99]: 
+              - text: Earth
+        - list [ref=f1e100]:
+          - listitem [ref=f1e101]:
+            - link "Climate" [ref=f1e102] [cursor=pointer]:
+              - /url: /search?keywords=Climate
+          - listitem [ref=f1e103]:
+            - link "Climate Change" [ref=f1e104] [cursor=pointer]:
+              - /url: /search?keywords=Climate Change
+          - listitem [ref=f1e105]:
+            - link "Interactive" [ref=f1e106] [cursor=pointer]:
+              - /url: /search?keywords=Interactive
+      - separator [ref=f1e107]
+      - generic [ref=f1e108]:
+        - heading "Credits" [level=2] [ref=f1e109]
+        - paragraph [ref=f1e111]: "Please give credit for this item to: NASA's Scientific Visualization Studio"
+        - list [ref=f1e112]:
+          - listitem [ref=f1e113]:
+            - heading "Visualizers" [level=3] [ref=f1e115]
+            - list [ref=f1e117]:
+              - listitem [ref=f1e118]:
+                - link "Alex Gurvich" [ref=f1e119] [cursor=pointer]:
+                  - /url: /search/?people=Alex%20Gurvich
+                - text: (NASA/GSFC)
+                - link [ref=f1e120] [cursor=pointer]:
+                  - /url: https://orcid.org/0000-0002-6145-3674
+                  - img "ORCID logo. It consists of the text 'id' in lowercase inside of a green circle." [ref=f1e121]
+              - listitem [ref=f1e122]:
+                - link "Mark SubbaRao" [ref=f1e123] [cursor=pointer]:
+                  - /url: /search/?people=Mark%20SubbaRao
+                - text: (NASA/GSFC)
+                - link [ref=f1e124] [cursor=pointer]:
+                  - /url: https://orcid.org/0000-0002-5668-9674
+                  - img "ORCID logo. It consists of the text 'id' in lowercase inside of a green circle." [ref=f1e125]
+          - listitem [ref=f1e126]:
+            - heading "Technical support" [level=3] [ref=f1e128]
+            - list [ref=f1e130]:
+              - listitem [ref=f1e131]:
+                - link "Laurence Schuler" [ref=f1e132] [cursor=pointer]:
+                  - /url: /search/?people=Laurence%20Schuler
+                - text: (ADNET Systems, Inc.)
+              - listitem [ref=f1e133]:
+                - link "Ian Jones" [ref=f1e134] [cursor=pointer]:
+                  - /url: /search/?people=Ian%20Jones
+                - text: (ADNET Systems, Inc.)
+          - listitem [ref=f1e135]:
+            - heading "Scientists" [level=3] [ref=f1e137]
+            - list [ref=f1e139]:
+              - listitem [ref=f1e140]:
+                - link "Alex C. Ruane" [ref=f1e141] [cursor=pointer]:
+                  - /url: /search/?people=Alex%20C.%20Ruane
+                - text: (NASA/GISS)
+              - listitem [ref=f1e142]:
+                - link "Ed Hawkins" [ref=f1e143] [cursor=pointer]:
+                  - /url: /search/?people=Ed%20Hawkins
+                - text: (National Centre for Atmospheric Science, University of Reading)
+                - link [ref=f1e144] [cursor=pointer]:
+                  - /url: https://orcid.org/0000-0001-9477-3677
+                  - img "ORCID logo. It consists of the text 'id' in lowercase inside of a green circle." [ref=f1e145]
+          - listitem [ref=f1e146]:
+            - heading "Designer" [level=3] [ref=f1e148]
+            - list [ref=f1e150]:
+              - listitem [ref=f1e151]:
+                - link "Arlene Birt" [ref=f1e152] [cursor=pointer]:
+                  - /url: /search/?people=Arlene%20Birt
+                - text: (Minneapolis College of Art and Design)
+      - separator [ref=f1e153]
+      - generic [ref=f1e154]:
+        - generic [ref=f1e156]:
+          - heading "Related" [level=2] [ref=f1e157]
+          - list [ref=f1e159]:
+            - listitem [ref=f1e160]:
+              - generic [ref=f1e161]:
+                - link [ref=f1e162] [cursor=pointer]:
+                  - /url: /14450/
+                  - 'img "An annular solar eclipse photographed on October 14, 2023. Image Credit: NASA/Jim Spann" [ref=f1e164]'
+                - generic [ref=f1e165]: "ID: 14450"
+              - generic [ref=f1e166]:
+                - generic [ref=f1e167]:
+                  - generic [aria-hidden] [ref=f1e168]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=f1e171]:
+                  - link "NASA Annular Eclipse Imagery" [ref=f1e172] [cursor=pointer]:
+                    - /url: /14450/
+            - listitem [ref=f1e173]:
+              - generic [ref=f1e174]:
+                - link [ref=f1e175] [cursor=pointer]:
+                  - /url: /14424/
+                  - img "Associated cut broll for the live shots will be added by 4:00 p.m. EST on Thursday, Oct 12" [ref=f1e177]
+                - generic [ref=f1e178]: "ID: 14424"
+              - generic [ref=f1e179]:
+                - generic [ref=f1e180]:
+                  - generic [aria-hidden] [ref=f1e181]: 
+                  - text: Produced Video
+                - heading [level=3] [ref=f1e184]:
+                  - 'link "NASA Interview Opportunity: Ring of Fire THIS Weekend With Annular Solar Eclipse" [ref=f1e185] [cursor=pointer]':
+                    - /url: /14424/
+            - listitem [ref=f1e186]:
+              - generic [ref=f1e187]:
+                - link [ref=f1e188] [cursor=pointer]:
+                  - /url: /5073/
+                  - img "A map showing where the Moon’s shadow will cross the U.S. during the 2023 annular solar eclipse and 2024 total solar eclipse. Available at 5400 x 2700, 10,800 x 5400, and 22,500 x 11,250." [ref=f1e190]
+                - generic [ref=f1e191]: "ID: 5073"
+              - generic [ref=f1e192]:
+                - generic [ref=f1e193]:
+                  - generic [aria-hidden] [ref=f1e194]: 
+                  - text: Visualization
+                - heading [level=3] [ref=f1e197]:
+                  - 'link "The 2023 and 2024 Solar Eclipses: Map and Data" [ref=f1e198] [cursor=pointer]':
+                    - /url: /5073/
+        - separator [ref=f1e199]
+      - generic [ref=f1e200]:
+        - heading "Release date" [level=2] [ref=f1e201]
+        - paragraph [ref=f1e202]: This page was originally published on Friday, July 26, 2024. This page was last updated on Thursday, July 25, 2024 at 5:56 PM EDT.
+      - separator [ref=f1e203]
+      - generic [ref=f1e205]:
+        - heading "You may also like..." [level=2] [ref=f1e206]
+        - list [ref=f1e210]:
+          - text: 
+          - button [aria-hidden] [ref=f1e211] [cursor=pointer]:
+            - generic [ref=f1e212]: 
+          - listitem [ref=f1e213]:
+            - generic [ref=f1e214]:
+              - link [ref=f1e215] [cursor=pointer]:
+                - /url: /3490/
+                - img "This data visualization of global temperature differences from 1881 to 2007. Dark blue areas show regions where the temperature was cooler then the average temperature. Red areas show regions where the temperature was warmer then the average." [ref=f1e217]
+              - generic [ref=f1e218]: "ID: 3490"
+              - generic [ref=f1e219]:
+                - generic [aria-hidden] [ref=f1e220]: 
+                - text: Visualization
+            - generic [ref=f1e221]:
+              - heading [level=3] [ref=f1e222]:
+                - link "Five-Year Average Global Temperature Anomalies from 1881 to 2007" [ref=f1e223] [cursor=pointer]:
+                  - /url: /3490/
+              - generic [ref=f1e224]:
+                - generic [ref=f1e225]: January 16, 2008
+                - 'link "NASA Science Category: Earth" [ref=f1e227] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e228]: 
+              - paragraph [ref=f1e230]: Each year, scientists at NASA Goddard Institute for Space Studies analyze global temperature data. A rapid warming trend has occurred over the past 30 years, and the eight hottest years on the GISS record have occurred in the past decade. 2005 is the hottest year on record, and 2007 is tied with 1998 for second place. The Earth is experiencing the warmest level of the current interglacial period, or interval between ice ages, which has lasted nearly 12,000 years. This color-coded map displays a long term progression of changing global surface temperatures, from 1881 to 2007. Dark red indicates the greatest warming and dark blue indicates the greatest cooling. ||
+              - link "Go to this page" [ref=f1e231] [cursor=pointer]:
+                - /url: /3490/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e232]: 
+          - listitem [ref=f1e233]:
+            - generic [ref=f1e234]:
+              - link [ref=f1e235] [cursor=pointer]:
+                - /url: /3970/
+                - img "Dice temperature variations on a flat map" [ref=f1e237]
+              - generic [ref=f1e238]: "ID: 3970"
+              - generic [ref=f1e239]:
+                - generic [aria-hidden] [ref=f1e240]: 
+                - text: Visualization
+            - generic [ref=f1e241]:
+              - heading [level=3] [ref=f1e242]:
+                - link "Summer Temperature Anomalies for the Northern Hemisphere, 1955-2011" [ref=f1e243] [cursor=pointer]:
+                  - /url: /3970/
+              - generic [ref=f1e244]:
+                - generic [ref=f1e245]: August 4, 2012
+                - 'link "NASA Science Category: Earth" [ref=f1e247] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e248]: 
+              - paragraph [ref=f1e250]: This visualization shows a flat map of the Earth with summertime temperature anomalies for the Northern Hemisphere. This analysis compares observed seasonal mean temperatures (June-July-August) to the seasonal mean temperatures during a base period from 1951 to 1980.The colors correspond to statistical standard deviations from the seasonal mean of the base period. The hot anomalies are defined as "hot" (orange); "very hot" (red); and "extremely hot" (bown). The cold anomalies are defined as "cold" (light blue); "very cold" (dark blue); and "extremely cold" (purple). Regions in white fall within the normal category.The visualization shows the increasing occurrence, in particular, of "extremely hot" temperatures since 2000. While these temperatures were experienced by less than 1 percent of land areas during the base period, about 10 percent of land areas have experienced these summer temperatures since 2000. These extreme heat events include the heat waves in Europe in 2003, Russia in 2010, and Texas and Oklahoma in 2011.No data is shown below the equator because this only uses Northern Hemisphere June-July-August temperature data. The visualization shows the data for 1955, 1965, 1975 and then 1985-2011. ||
+              - link "Go to this page" [ref=f1e251] [cursor=pointer]:
+                - /url: /3970/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e252]: 
+          - listitem [ref=f1e253]:
+            - generic [ref=f1e254]:
+              - link [ref=f1e255] [cursor=pointer]:
+                - /url: /3975/
+                - img "Animated bell curveThis video is also available on our YouTube channel." [ref=f1e257]
+              - generic [ref=f1e258]: "ID: 3975"
+              - generic [ref=f1e259]:
+                - generic [aria-hidden] [ref=f1e260]: 
+                - text: Visualization
+            - generic [ref=f1e261]:
+              - heading [level=3] [ref=f1e262]:
+                - link "Shifting Distribution of Northern Hemisphere Summer Temperature Anomalies, 1951-2011" [ref=f1e263] [cursor=pointer]:
+                  - /url: /3975/
+              - generic [ref=f1e264]:
+                - generic [ref=f1e265]: August 4, 2012
+                - 'link "NASA Science Category: Earth" [ref=f1e267] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e268]: 
+              - paragraph [ref=f1e270]: This bell curve graph shows how the distribution of Northern Hemisphere summer temperature anomalies has shifted toward an increase in hot summers. The seasonal mean temperature for the entire base period of 1951-1980 is plotted at the top of the bell curve. Decreasing in frequency to the right are what are defined as "hot" anomalies (between 1 and 2 standard deviations from the norm), "very hot" anomalies (between 2 and 3 standard deviations) and "extremely hot" anomalies (greater than 3 standard deviations). The anomalies fall off to the left in mirror-image categories of "cold, "very cold" and "extremely cold." The range between the .43 and -.43 standard deviation marks represent "normal" temperatures. As the graph moves forward in time, the bell curve shifts to the right, representing an increase in the frequency of the various hot anomalies. It also gets wider and shorter, representing a wider range of temperature extremes. As the graph moves beyond 1980, the temperatures are still compared to the seasonal mean of the 1951-1980 base period, so that as it reaches the 21st century, there is a far greater frequency of temperatures that once fell 3 standard deviations beyond the mean. As the graphic indicates, each bell curve shown through the time series represents the distribution of anomalies over an 11-year period. ||
+              - link "Go to this page" [ref=f1e271] [cursor=pointer]:
+                - /url: /3975/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e272]: 
+          - listitem [ref=f1e273]:
+            - generic [ref=f1e274]:
+              - link [ref=f1e275] [cursor=pointer]:
+                - /url: /4095/
+                - img "Potential Evaporation with Respect to 1980" [ref=f1e277]
+              - generic [ref=f1e278]: "ID: 4095"
+              - generic [ref=f1e279]:
+                - generic [aria-hidden] [ref=f1e280]: 
+                - text: Visualization
+            - generic [ref=f1e281]:
+              - heading [level=3] [ref=f1e282]:
+                - link "Potential Evaporation in North America Through 2100" [ref=f1e283] [cursor=pointer]:
+                  - /url: /4095/
+              - generic [ref=f1e284]:
+                - generic [ref=f1e285]: August 9, 2013
+                - 'link "NASA Science Category: Earth" [ref=f1e287] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e288]: 
+              - paragraph [ref=f1e290]: "This animation shows the projected increase in potential evaporation during the fire season through the year 2100, relative to 1980, based on the combined results of multiple climate models: MERRA data for 1980-2010 and an ensemble of 20 climate models for 2010-2100. The maximum increase across North America is about 1 mm/day by 2100. This concept, potential evaporation, is a measure of drying potential or \"fire weather.\" An average increase of 1 mm/day over the whole year is a big change — 1 mm/day increase in PE is considered to be an \"extreme\" event for fires, similar to the conditions in Colorado in 2012. By these projections, fire years like 2012 would be the new normal in regions like the western US by the end of the 21st century. ||"
+              - link "Go to this page" [ref=f1e291] [cursor=pointer]:
+                - /url: /4095/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e292]: 
+          - listitem [ref=f1e293]:
+            - generic [ref=f1e294]:
+              - link [ref=f1e295] [cursor=pointer]:
+                - /url: /4794/
+                - img "A plotted view of global mean surface temperature anomaly, or deviation from the long-term mean, since 1985." [ref=f1e297]
+              - generic [ref=f1e298]: "ID: 4794"
+              - generic [ref=f1e299]:
+                - generic [aria-hidden] [ref=f1e300]: 
+                - text: Visualization
+            - generic [ref=f1e301]:
+              - heading [level=3] [ref=f1e302]:
+                - link "CERES Radiation Balance" [ref=f1e303] [cursor=pointer]:
+                  - /url: /4794/
+              - generic [ref=f1e304]:
+                - generic [ref=f1e305]: February 21, 2020
+                - 'link "NASA Science Category: Earth" [ref=f1e307] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e308]: 
+                - 'link "NASA Science Category: Sun" [ref=f1e309] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=f1e310]: 
+              - paragraph [ref=f1e312]: The Clouds and the Earth’s Energy Radiant System (CERES) instrument is a key component of NASA’s Earth Observing System, with six active CERES instruments on satellites orbiting Earth and taking data. For Earth’s temperature to be stable over long periods of time, absorbed solar and emitted thermal radiation must be equal. Increases in greenhouse gases, like carbon dioxide and methane, trap emitted thermal radiation from the surface and reduce how much is lost to space, resulting in a net surplus of energy into the Earth system. Most of the extra energy ends up being stored as heat in the ocean and the remainder warms the atmosphere and land, and melts snow and ice. As a consequence, global mean surface temperature increases and sea levels rise. Much like a pulse or heartbeat, CERES monitors reflected solar and emitted thermal infrared radiation, which together with solar irradiance measurements is one of Earth’s ‘vital signs.’ Better understanding Earth’s energy balance enables us to be informed and adapt to a changing world. ||
+              - link "Go to this page" [ref=f1e313] [cursor=pointer]:
+                - /url: /4794/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e314]: 
+          - listitem [ref=f1e315]:
+            - generic [ref=f1e316]:
+              - link [ref=f1e317] [cursor=pointer]:
+                - /url: /4891/
+                - img "The change in the distribution of land temperature anomalies over the years 1951 to 2020" [ref=f1e319]
+              - generic [ref=f1e320]: "ID: 4891"
+              - generic [ref=f1e321]:
+                - generic [aria-hidden] [ref=f1e322]: 
+                - text: Visualization
+            - generic [ref=f1e323]:
+              - heading [level=3] [ref=f1e324]:
+                - link "Shifting Distribution of Land Temperature Anomalies, 1951-2020" [ref=f1e325] [cursor=pointer]:
+                  - /url: /4891/
+              - generic [ref=f1e326]:
+                - generic [ref=f1e327]: April 23, 2021
+                - 'link "NASA Science Category: Earth" [ref=f1e329] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e330]: 
+              - paragraph [ref=f1e332]: The change in the distribution of land temperature anomalies over the years 1951 to 2020 || GISSTempDist_print.jpg (1024x576) [53.1 KB] || GISSTempDist_STILL.jpg (7680x4320) [1.0 MB] || GISTempDist_searchweb.png (320x180) [13.6 KB] || GISTempDist_thm.png (71x40) [2.1 KB] || GISTempDist_1080p30.mp4 (1920x1080) [2.0 MB] || GISTempDist_1080p30.webm (1920x1080) [3.3 MB] || GISSTempDist_2160p59.94.mp4 (3840x2160) [4.9 MB] || 3840x2160_16x9_60p (3840x2160) [0 Item(s)] || GISTempDist_1080p30.mp4.hwshow ||
+              - link "Go to this page" [ref=f1e333] [cursor=pointer]:
+                - /url: /4891/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e334]: 
+          - listitem [ref=f1e335]:
+            - generic [ref=f1e336]:
+              - link [ref=f1e337] [cursor=pointer]:
+                - /url: /4914/
+                - img "Visualization of future wheat yield projections presented in an equatorial cylindrical equidistant projection for use in Science on a Sphere type displays." [ref=f1e339]
+              - generic [ref=f1e340]: "ID: 4914"
+              - generic [ref=f1e341]:
+                - generic [aria-hidden] [ref=f1e342]: 
+                - text: Visualization
+            - generic [ref=f1e343]:
+              - heading [level=3] [ref=f1e344]:
+                - link "Impact of Climate Change on Global Wheat Yields" [ref=f1e345] [cursor=pointer]:
+                  - /url: /4914/
+              - generic [ref=f1e346]:
+                - generic [ref=f1e347]: September 1, 2021
+                - 'link "NASA Science Category: Earth" [ref=f1e349] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e350]: 
+              - paragraph [ref=f1e352]: Data visualization of predicted Wheat yields through the end of this centaury based on an ensemble of crop and climate models. || WheatMapFuture.01000_print.jpg (1024x576) [123.1 KB] || WheatMapFuture.01000_searchweb.png (320x180) [54.6 KB] || WheatMapFuture.01000_web.png (320x180) [54.6 KB] || WheatMapFuture.01000_thm.png (80x40) [5.4 KB] || WheatMapFuture_1080p.mp4 (1920x1080) [21.7 MB] || WheatMapFuture.mp4 (3840x2160) [79.7 MB] || WheatMapFuture.webm (3840x2160) [6.4 MB] ||
+              - link "Go to this page" [ref=f1e353] [cursor=pointer]:
+                - /url: /4914/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e354]: 
+          - listitem [ref=f1e355]:
+            - generic [ref=f1e356]:
+              - link [ref=f1e357] [cursor=pointer]:
+                - /url: /4935/
+                - img "A plotted view of planetary heat uptake since the beginning of the CERES data record showing an oscillating, monthly mean (yellow) and twelve-month running average (red line). These data show how much energy is added (absorbed) by Earth during the CERES period." [ref=f1e359]
+              - generic [ref=f1e360]: "ID: 4935"
+              - generic [ref=f1e361]:
+                - generic [aria-hidden] [ref=f1e362]: 
+                - text: Visualization
+            - generic [ref=f1e363]:
+              - heading [level=3] [ref=f1e364]:
+                - link "CERES Radiation Balance" [ref=f1e365] [cursor=pointer]:
+                  - /url: /4935/
+              - generic [ref=f1e366]:
+                - generic [ref=f1e367]: April 16, 2021
+                - 'link "NASA Science Category: Earth" [ref=f1e369] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e370]: 
+                - 'link "NASA Science Category: Sun" [ref=f1e371] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Sun
+                  - generic [aria-hidden] [ref=f1e372]: 
+              - paragraph [ref=f1e374]: A plotted view of planetary heat uptake since the beginning of the CERES data record showing an oscillating, monthly mean (yellow) and twelve-month running average (red line). These data show how much energy is added (absorbed) by Earth during the CERES period. || CERES_2021_update_final.01650_print.jpg (1024x576) [69.5 KB] || CERES_2021_update_final.01650_searchweb.png (320x180) [23.5 KB] || CERES_2021_update_final.01650_thm.png (80x40) [3.3 KB] || CERES_2021_update_final.mp4 (1920x1080) [9.2 MB] || CERES_2021_update_final.webm (1920x1080) [6.2 MB] || CERES_2021_update_final.mp4.hwshow [194 bytes] ||
+              - link "Go to this page" [ref=f1e375] [cursor=pointer]:
+                - /url: /4935/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e376]: 
+          - listitem [ref=f1e377]:
+            - generic [ref=f1e378]:
+              - link [ref=f1e379] [cursor=pointer]:
+                - /url: /4961/
+                - img "Weather stations currently used in the GISS Surface Temperature Analysis (v4). The size of the station markers is varied to reduce overplotting and is not indicative of any properties of that station." [ref=f1e381]
+              - generic [ref=f1e382]: "ID: 4961"
+              - generic [ref=f1e383]:
+                - generic [aria-hidden] [ref=f1e384]: 
+                - text: Visualization
+            - generic [ref=f1e385]:
+              - heading [level=3] [ref=f1e386]:
+                - link "Temperature Measurement Stations" [ref=f1e387] [cursor=pointer]:
+                  - /url: /4961/
+              - generic [ref=f1e388]:
+                - generic [ref=f1e389]: December 25, 2021
+                - 'link "NASA Science Category: Earth" [ref=f1e391] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e392]: 
+              - paragraph [ref=f1e394]: Weather stations currently used in the GISS Surface Temperature Analysis (v4). The size of the station markers is varied to reduce overplotting and is not indicative of any properties of that station. || GISTEMP_stations_2160p60.00001_print.jpg (1024x576) [92.2 KB] || GISTEMP_stations_2160p60.00001_searchweb.png (320x180) [30.1 KB] || GISTEMP_stations_2160p60.00001_web.png (320x180) [30.1 KB] || GISTEMP_stations_2160p60.00001_thm.png (80x40) [2.8 KB] || GISTEMP_stations_1080p60.mp4 (1920x1080) [27.3 MB] || GISTEMP_stations_1080p60.webm (1920x1080) [4.6 MB] || GISTEMP_stations_2160p60.mp4 (3840x2160) [77.9 MB] || 3840x2160_16x9_60p (3840x2160) [0 Item(s)] || Stations.hwshow [88 bytes] || GISTEMP_stations_2160p60.mp4.hwshow [121 bytes] ||
+              - link "Go to this page" [ref=f1e395] [cursor=pointer]:
+                - /url: /4961/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e396]: 
+          - listitem [ref=f1e397]:
+            - generic [ref=f1e398]:
+              - link [ref=f1e399] [cursor=pointer]:
+                - /url: /4972/
+                - img "A warming climate will create challenges for agricultural workers. This visualization shows the increased number of days per year that are expected to have a NOAA Heat Index greater than 103 degrees Fahrenheit based on two different climate scenarios (SSP2-4.5 and SSP5-8.5). The visualization also plots the number of days exceeding this threshold for five select locations in the United States. The map projection in Robinson and the color map is cividis." [ref=f1e401]
+              - generic [ref=f1e402]: "ID: 4972"
+              - generic [ref=f1e403]:
+                - generic [aria-hidden] [ref=f1e404]: 
+                - text: Visualization
+            - generic [ref=f1e405]:
+              - heading [level=3] [ref=f1e406]:
+                - link "Increasingly Dangerous Climate for Agricultural Workers" [ref=f1e407] [cursor=pointer]:
+                  - /url: /4972/
+              - generic [ref=f1e408]:
+                - generic [ref=f1e409]: March 9, 2022
+                - 'link "NASA Science Category: Earth" [ref=f1e411] [cursor=pointer]':
+                  - /url: /search/?nasa_science_categories=Earth
+                  - generic [aria-hidden] [ref=f1e412]: 
+              - paragraph [ref=f1e414]: A warming climate will create challenges for agricultural workers. This visualization shows the increased number of days per year that are expected to have a NOAA Heat Index greater than 103 degrees Fahrenheit based on two different climate scenarios (SSP2-4.5 and SSP5-8.5). The visualization also plots the number of days exceeding this threshold for five select locations in the United States. The map projection in Robinson and the color map is cividis. || AgWorkerClimateGraph_4k.00899_print.jpg (1024x576) [152.0 KB] || AgWorkerClimateGraph_4k.00899_searchweb.png (180x320) [57.1 KB] || AgWorkerClimateGraph_4k.00899_thm.png (80x40) [5.8 KB] || AgWorkerClimateGraph_HD.mp4 (1920x1080) [13.8 MB] || AgWorkerClimateGraph_HD.webm (1920x1080) [3.4 MB] || AgWorkerClimateGraph_4k.mp4 (3840x2160) [37.3 MB] || AgWorkerClimateGraph_HD.mp4.hwshow [189 bytes] ||
+              - link "Go to this page" [ref=f1e415] [cursor=pointer]:
+                - /url: /4972/
+                - text: Go to this page
+                - generic [aria-hidden] [ref=f1e416]: 
+  - contentinfo [ref=f1e417]:
+    - navigation [ref=f1e418]:
+      - generic [ref=f1e420]:
+        - generic [ref=f1e421]:
+          - link [ref=f1e422] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=f1e423]
+          - link [ref=f1e424] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=f1e425]
+        - generic [ref=f1e428]:
+          - link "Privacy Policy and Important Notices" [ref=f1e429] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=f1e430] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=f1e435]:
+          - generic [ref=f1e436]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=f1e438] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=f1e439]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=f1e441] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website

@@ -43,6 +43,8 @@ def collect_versions(
             "no_time_limit": no_time_limit,
             # Pages' Content-Security-Policy ignored, so ANDI can run (config).
             "bypass_csp": settings.bypass_csp,
+            # How long a load from the recording may take (config).
+            "replay_navigation_timeout_ms": settings.replay_navigation_timeout_ms,
         },
     )
 

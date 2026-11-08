@@ -399,6 +399,13 @@ class Answer(BaseModel):
         description="Set by the server: an answer to a question that names a "
         "picture, given with picture_error instead of `seen`. Do not set it.",
     )
+    answered_by: str = Field(
+        default="client",
+        max_length=120,
+        description="Set by the server: 'client' for an answer the calling "
+        "agent sends, 'server:<model id>' for the server's own judge "
+        "(server judge pivot, 2026-11-07). Do not set it.",
+    )
 
 
 class RecordedAnswer(BaseModel):
@@ -446,7 +453,8 @@ class Versions(BaseModel):
             "Spec run limits from server config (settle, scroll, time), "
             "whether the caller turned the time limit off for this run, and "
             "whether pages' Content-Security-Policy was bypassed (bypass_csp, "
-            "so ANDI can run)."
+            "so ANDI can run), and how long a load from the recording may "
+            "take (replay_navigation_timeout_ms)."
         ),
     )
     display: dict[str, int | float | None] = Field(
@@ -775,8 +783,9 @@ class RunResult(BaseModel):
     more_questions: int = Field(
         default=0,
         description="Open questions not in open_questions yet: at most 10 are "
-        "shown at once, and each tobi_answer_questions result brings the next "
-        "ones. Answer until none are left.",
+        "shown at once (fewer when a result would be too long), and each "
+        "tobi_answer_questions result brings the next ones. Answer until none "
+        "are left.",
     )
     todo: list[str] = Field(
         default_factory=list,
@@ -897,8 +906,9 @@ class AnswerResult(BaseModel):
     more_questions: int = Field(
         default=0,
         description="Open questions not in open_questions yet: at most 10 are "
-        "shown at once, and each tobi_answer_questions result brings the next "
-        "ones. Answer until none are left.",
+        "shown at once (fewer when a result would be too long), and each "
+        "tobi_answer_questions result brings the next ones. Answer until none "
+        "are left.",
     )
     todo: list[str] = Field(
         default_factory=list,

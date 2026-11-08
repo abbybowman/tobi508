@@ -1,0 +1,36 @@
+{"ts":"2026-11-08T01:42:57.234060Z","step":"run_start","status":"ok","detail":{"target":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-08T01:42:58.244764Z","step":"browser_launched","status":"ok","detail":{"version":"153.0.8010.12"}}
+{"ts":"2026-11-08T01:42:58.252562Z","step":"frozen_page","status":"ok","detail":{"url":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","har":"pages/004.har.zip"}}
+{"ts":"2026-11-08T01:42:58.265357Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/","seconds":0.01}}
+{"ts":"2026-11-08T01:42:58.265767Z","step":"captured_other","status":"ok","detail":{"n":2,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/help/","seconds":0.0}}
+{"ts":"2026-11-08T01:42:58.270059Z","step":"captured_other","status":"ok","detail":{"n":3,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/search/","seconds":0.0}}
+{"ts":"2026-11-08T01:42:58.270608Z","step":"captured_other","status":"ok","detail":{"n":4,"reused":true,"final_url":"https://svs.gsfc.nasa.gov/cilab/","seconds":0.0}}
+{"ts":"2026-11-08T01:42:58.270672Z","step":"captured","status":"ok","detail":{"final_url":"https://svs.gsfc.nasa.gov/gallery/the-galleries/","redirects":[],"seconds":0.03}}
+{"ts":"2026-11-08T01:42:58.488271Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-08T01:43:03.445607Z","step":"egress_refused","status":"blocked","detail":{"host":"mtalk.google.com","port":5228,"reason":"port 5228 is not allowed"}}
+{"ts":"2026-11-08T01:44:44.841922Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":155,"cap":509},"P2":{"end":"wrap","presses":155,"cap":509},"cost":{"loads":2,"presses":310,"quick":0,"slow_redos":0,"seconds":106.5}}}
+{"ts":"2026-11-08T01:44:47.677405Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":8,"quick":5,"slow_redos":0,"seconds":2.83}}}
+{"ts":"2026-11-08T01:44:47.679745Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:44:49.256935Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.57}}}
+{"ts":"2026-11-08T01:44:49.261011Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:44:51.085073Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.82}}}
+{"ts":"2026-11-08T01:44:53.549956Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":2.46}}}
+{"ts":"2026-11-08T01:44:53.553037Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:44:53.555616Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:44:53.557823Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:44:53.560277Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:44:56.440616Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.88}}}
+{"ts":"2026-11-08T01:45:07.127186Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":10.68}}}
+{"ts":"2026-11-08T01:45:07.837768Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.71}}}
+{"ts":"2026-11-08T01:45:08.722950Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.88}}}
+{"ts":"2026-11-08T01:45:08.725532Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:45:10.729370Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":5,"quick":4,"slow_redos":0,"seconds":2.0}}}
+{"ts":"2026-11-08T01:45:16.745867Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":19,"quick":12,"slow_redos":0,"seconds":6.02}}}
+{"ts":"2026-11-08T01:45:16.749118Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:45:16.754549Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.01}}}
+{"ts":"2026-11-08T01:45:18.455056Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.7}}}
+{"ts":"2026-11-08T01:45:18.456135Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:45:18.456676Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-08T01:45:18.579631Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-08T14:29:32.255190Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.B-p-J1","4.F-o1-J1","9.C-p1-14-J1","9.C-p1-15-J1","9.C-p1-20-J1","9.C-p1-25-J1","9.C-p1-33-J1","9.C-p1-34-J1","9.C-p1-35-J1","9.C-p1-36-J1","9.C-p1-37-J1","9.C-p1-39-J1","9.C-p1-40-J1","9.C-p1-41-J1"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-08T14:29:53.894654Z","step":"answers_recorded","status":"ok","detail":{"accepted":["9.C-p1-42-J1","9.C-p1-43-J1","9.C-p1-44-J1","9.C-p1-45-J1","9.C-p1-46-J1","9.C-p1-47-J1","9.C-p1-48-J1","9.C-p1-49-J1","9.C-p1-50-J1","9.C-p3-11-J1","9.C-p3-12-J1","9.C-p3-17-J1"],"rejected":[],"errors":[]}}

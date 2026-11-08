@@ -1,0 +1,712 @@
+- generic [active] [ref=e1]:
+  - banner:
+    - navigation [ref=e2]:
+      - generic [ref=e3]:
+        - link [ref=e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=e5]
+        - link "Scientific Visualization Studio" [ref=e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "Galleries" [ref=e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=e13]: 
+              - text: Galleries
+          - listitem [ref=e14]:
+            - link "Help" [ref=e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=e16]: 
+              - text: Help
+          - search [ref=e17]:
+            - generic [ref=e18]:
+              - textbox "Search..." [ref=e19]
+              - generic [ref=e20]: Search
+              - button "Clear search text" [ref=e21] [cursor=pointer]: 
+              - button "Search!" [ref=e22] [cursor=pointer]: 
+  - main [ref=e23]:
+    - generic [ref=e25]:
+      - heading "Search" [level=1] [ref=e26]
+      - generic [ref=e27]:
+        - generic [ref=e29]:
+          - heading "Search Box" [level=2] [ref=e30]
+          - generic [ref=e32]:
+            - button "Help" [ref=e33] [cursor=pointer]: 
+            - textbox "Search..." [ref=e34]
+            - generic [ref=e35]: Search
+            - button "Clear search text" [ref=e36] [cursor=pointer]: 
+            - button "Search!" [ref=e37] [cursor=pointer]: 
+          - generic [ref=e39]:
+            - button "Toggle order; currently descending order" [ref=e40] [cursor=pointer]:
+              - generic "Toggle order; currently descending order" [ref=e41]: 
+              - text: "Sort by:"
+            - combobox "Sort category" [ref=e42]:
+              - option "Release date" [selected]
+              - option "Update date"
+              - option "Popularity (last 10 days)"
+              - option "Page ID"
+          - list [ref=e44]:
+            - listitem [ref=e45]:
+              - link "View the current search in our API" [ref=e46] [cursor=pointer]:
+                - /url: /api/search/?
+                - generic [aria-hidden] [ref=e47]: 
+            - listitem [ref=e48]
+            - listitem [ref=e49]:
+              - button "Copy a link to this page" [ref=e50] [cursor=pointer]:
+                - generic [aria-hidden] [ref=e51]: 
+            - listitem [ref=e52]:
+              - link "Share this page on Twitter" [ref=e53] [cursor=pointer]:
+                - /url: https://twitter.com/intent/tweet
+                - generic [aria-hidden] [ref=e54]: 
+            - listitem [ref=e55]:
+              - link "Share this page on Facebook" [ref=e56] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=http%3A//svs.gsfc.nasa.gov/search/%3F
+                - generic [aria-hidden] [ref=e57]: 
+            - listitem [ref=e58]
+            - listitem [ref=e59]:
+              - generic [ref=e60]:
+                - generic [aria-hidden] [ref=e61]: 
+                - generic [ref=e62]:
+                  - link "(RSS)" [ref=e63] [cursor=pointer]:
+                    - /url: /api/search/rss?
+                  - link "(Atom)" [ref=e64] [cursor=pointer]:
+                    - /url: /api/search/atom?
+          - text:  
+        - generic [ref=e65]:
+          - generic [ref=e66]:
+            - heading "Filters" [level=2] [ref=e67]
+            - list [ref=e70]:
+              - listitem [ref=e71]:
+                - heading "NASA Science categories" [level=3] [ref=e72]
+                - generic [ref=e73]:
+                  - checkbox "Earth (5997)" [ref=e74]
+                  - generic [ref=e75]: Earth (5997)
+                - generic [ref=e76]:
+                  - checkbox "Universe (1917)" [ref=e77]
+                  - generic [ref=e78]: Universe (1917)
+                - generic [ref=e79]:
+                  - checkbox "Sun (1698)" [ref=e80]
+                  - generic [ref=e81]: Sun (1698)
+                - generic [ref=e82]:
+                  - checkbox "Planets & Moons (1540)" [ref=e83]
+                  - generic [ref=e84]: Planets & Moons (1540)
+              - separator [ref=e85]
+              - listitem [ref=e86]:
+                - heading "Keywords" [level=3] [ref=e87]
+                - generic [ref=e88]:
+                  - checkbox "Earth Science (3997)" [ref=e89]
+                  - generic [ref=e90]: Earth Science (3997)
+                - generic [ref=e91]:
+                  - checkbox "HDTV (3512)" [ref=e92]
+                  - generic [ref=e93]: HDTV (3512)
+                - generic [ref=e94]:
+                  - checkbox "Hyperwall (2175)" [ref=e95]
+                  - generic [ref=e96]: Hyperwall (2175)
+                - generic [ref=e97]:
+                  - checkbox "Atmosphere (1494)" [ref=e98]
+                  - generic [ref=e99]: Atmosphere (1494)
+                - generic [ref=e100]:
+                  - checkbox "Location (1452)" [ref=e101]
+                  - generic [ref=e102]: Location (1452)
+                - generic [ref=e103]:
+                  - checkbox "Atmospheric science (1273)" [ref=e104]
+                  - generic [ref=e105]: Atmospheric science (1273)
+                - generic [ref=e106]:
+                  - checkbox "Astrophysics (1018)" [ref=e107]
+                  - generic [ref=e108]: Astrophysics (1018)
+                - generic [ref=e109]:
+                  - checkbox "Natural hazards (892)" [ref=e110]
+                  - generic [ref=e111]: Natural hazards (892)
+                - generic [ref=e112]:
+                  - checkbox "Sun-earth Interactions (829)" [ref=e113]
+                  - generic [ref=e114]: Sun-earth Interactions (829)
+                - generic [ref=e115]:
+                  - checkbox "Physical geography (767)" [ref=e116]
+                  - generic [ref=e117]: Physical geography (767)
+                - button "See all 2797 Keywords" [ref=e118] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=e119]
+              - listitem [ref=e120]:
+                - heading "Release date" [level=3] [ref=e121]
+                - generic [ref=e122]: (Counts shown for all pages)
+              - listitem [ref=e123]:
+                - heading "Released within" [level=4] [ref=e124]
+              - listitem [ref=e125]:
+                - heading [level=3]
+                - generic [ref=e126]:
+                  - radio "All time (10606)" [checked] [ref=e127]
+                  - generic [ref=e128]: All time (10606)
+                - generic [ref=e129]:
+                  - radio "Past week (2)" [ref=e130]
+                  - generic [ref=e131]: Past week (2)
+                - generic [ref=e132]:
+                  - radio "Past month (14)" [ref=e133]
+                  - generic [ref=e134]: Past month (14)
+                - generic [ref=e135]:
+                  - radio "Past 3 months (59)" [ref=e136]
+                  - generic [ref=e137]: Past 3 months (59)
+                - generic [ref=e138]:
+                  - radio "Past year (331)" [ref=e139]
+                  - generic [ref=e140]: Past year (331)
+                - generic [ref=e141]:
+                  - radio "This fiscal year (331)" [ref=e142]
+                  - generic [ref=e143]: This fiscal year (331)
+              - listitem [ref=e144]:
+                - heading "Release range" [level=4] [ref=e145]
+                - generic [ref=e146]:
+                  - generic [ref=e147]: From
+                  - textbox "From" [ref=e148]
+                - generic [ref=e149]:
+                  - generic [ref=e150]: To
+                  - textbox "To" [ref=e151]
+              - separator [ref=e152]
+              - listitem [ref=e153]:
+                - heading "Missions" [level=3] [ref=e154]
+                - generic [ref=e155]:
+                  - checkbox "Landsat (762)" [ref=e156]
+                  - generic [ref=e157]: Landsat (762)
+                - generic [ref=e158]:
+                  - checkbox "Terra (743)" [ref=e159]
+                  - generic [ref=e160]: Terra (743)
+                - generic [ref=e161]:
+                  - checkbox "SDO (517)" [ref=e162]
+                  - generic [ref=e163]: SDO (517)
+                - generic [ref=e164]:
+                  - checkbox "Hubble (369)" [ref=e165]
+                  - generic [ref=e166]: Hubble (369)
+                - generic [ref=e167]:
+                  - checkbox "James Webb Space Telescope (JWST) (302)" [ref=e168]
+                  - generic [ref=e169]: James Webb Space Telescope (JWST) (302)
+                - generic [ref=e170]:
+                  - checkbox "Tropical Rainfall Measuring Mission (TRMM) (274)" [ref=e171]
+                  - generic [ref=e172]: Tropical Rainfall Measuring Mission (TRMM) (274)
+                - generic [ref=e173]:
+                  - checkbox "Global Precipitation Measurement (GPM) (240)" [ref=e174]
+                  - generic [ref=e175]: Global Precipitation Measurement (GPM) (240)
+                - generic [ref=e176]:
+                  - checkbox "LRO (Lunar Reconnaissance Orbiter) (228)" [ref=e177]
+                  - generic [ref=e178]: LRO (Lunar Reconnaissance Orbiter) (228)
+                - generic [ref=e179]:
+                  - checkbox "Nancy Grace Roman Space Telescope (157)" [ref=e180]
+                  - generic [ref=e181]: Nancy Grace Roman Space Telescope (157)
+                - generic [ref=e182]:
+                  - checkbox "Fermi Gamma-ray Space Telescope (145)" [ref=e183]
+                  - generic [ref=e184]: Fermi Gamma-ray Space Telescope (145)
+                - button "See all 179 Missions" [ref=e185] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=e186]
+              - listitem [ref=e187]:
+                - heading "Datasets" [level=3] [ref=e188]
+                - generic [ref=e189]:
+                  - 'checkbox "[Terra: MODIS] (330)" [ref=e190]'
+                  - generic [ref=e191]: "[Terra: MODIS] (330)"
+                - generic [ref=e192]:
+                  - 'checkbox "BMNG (Blue Marble: Next Generation) [Terra and Aqua: MODIS] (296)" [ref=e193]'
+                  - generic [ref=e194]: "BMNG (Blue Marble: Next Generation) [Terra and Aqua: MODIS] (296)"
+                - generic [ref=e195]:
+                  - 'checkbox "[Landsat-7: ETM+] (289)" [ref=e196]'
+                  - generic [ref=e197]: "[Landsat-7: ETM+] (289)"
+                - generic [ref=e198]:
+                  - 'checkbox "AIA 171 (171 Filter) [SDO: AIA] (239)" [ref=e199]'
+                  - generic [ref=e200]: "AIA 171 (171 Filter) [SDO: AIA] (239)"
+                - generic [ref=e201]:
+                  - 'checkbox "AIA 304 (304 Filter) [SDO: AIA] (233)" [ref=e202]'
+                  - generic [ref=e203]: "AIA 304 (304 Filter) [SDO: AIA] (233)"
+                - generic [ref=e204]:
+                  - 'checkbox "[Landsat-5: TM] (195)" [ref=e205]'
+                  - generic [ref=e206]: "[Landsat-5: TM] (195)"
+                - generic [ref=e207]:
+                  - 'checkbox "[SeaStar: SeaWiFS] (187)" [ref=e208]'
+                  - generic [ref=e209]: "[SeaStar: SeaWiFS] (187)"
+                - generic [ref=e210]:
+                  - 'checkbox "AIA 131 (131 Filter) [SDO: AIA] (177)" [ref=e211]'
+                  - generic [ref=e212]: "AIA 131 (131 Filter) [SDO: AIA] (177)"
+                - generic [ref=e213]:
+                  - 'checkbox "DEM (Digital Elevation Map) [LRO: LOLA] (152)" [ref=e214]'
+                  - generic [ref=e215]: "DEM (Digital Elevation Map) [LRO: LOLA] (152)"
+                - generic [ref=e216]:
+                  - checkbox "DE421 (JPL DE421) (152)" [ref=e217]
+                  - generic [ref=e218]: DE421 (JPL DE421) (152)
+                - button "See all 1151 Datasets" [ref=e219] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=e220]
+              - listitem [ref=e221]:
+                - heading "Series" [level=3] [ref=e222]
+                - generic [ref=e223]:
+                  - checkbox "Narrated Movies (1478)" [ref=e224]
+                  - generic [ref=e225]: Narrated Movies (1478)
+                - generic [ref=e226]:
+                  - checkbox "Astrophysics Stills (270)" [ref=e227]
+                  - generic [ref=e228]: Astrophysics Stills (270)
+                - generic [ref=e229]:
+                  - checkbox "Astrophysics Animations (254)" [ref=e230]
+                  - generic [ref=e231]: Astrophysics Animations (254)
+                - generic [ref=e232]:
+                  - checkbox "Astrophysics Features (214)" [ref=e233]
+                  - generic [ref=e234]: Astrophysics Features (214)
+                - generic [ref=e235]:
+                  - checkbox "El Niño and La Niña (153)" [ref=e236]
+                  - generic [ref=e237]: El Niño and La Niña (153)
+                - generic [ref=e238]:
+                  - checkbox "SDO - Footage (152)" [ref=e239]
+                  - generic [ref=e240]: SDO - Footage (152)
+                - generic [ref=e241]:
+                  - checkbox "WMS (150)" [ref=e242]
+                  - generic [ref=e243]: WMS (150)
+                - generic [ref=e244]:
+                  - checkbox "The Moon (139)" [ref=e245]
+                  - generic [ref=e246]: The Moon (139)
+                - generic [ref=e247]:
+                  - checkbox "Hurricanes (136)" [ref=e248]
+                  - generic [ref=e249]: Hurricanes (136)
+                - generic [ref=e250]:
+                  - checkbox "Astrophysics B-Roll (119)" [ref=e251]
+                  - generic [ref=e252]: Astrophysics B-Roll (119)
+                - button "See all 376 Series" [ref=e253] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=e254]
+              - listitem [ref=e255]:
+                - heading "Media" [level=3] [ref=e256]
+                - generic [ref=e257]:
+                  - checkbox "Movies (9763)" [ref=e258]
+                  - generic [ref=e259]: Movies (9763)
+                - generic [ref=e260]:
+                  - checkbox "Frames (3181)" [ref=e261]
+                  - generic [ref=e262]: Frames (3181)
+                - generic [ref=e263]:
+                  - checkbox "Audio tracks (36)" [ref=e264]
+                  - generic [ref=e265]: Audio tracks (36)
+                - generic [ref=e266]:
+                  - checkbox "Closed captions (2130)" [ref=e267]
+                  - generic [ref=e268]: Closed captions (2130)
+                - generic [ref=e269]:
+                  - checkbox "Images (10300)" [ref=e270]
+                  - generic [ref=e271]: Images (10300)
+                - generic [ref=e272]:
+                  - checkbox "Hyperwall shows (1402)" [ref=e273]
+                  - generic [ref=e274]: Hyperwall shows (1402)
+                - generic [ref=e275]:
+                  - checkbox "Presentations (397)" [ref=e276]
+                  - generic [ref=e277]: Presentations (397)
+                - generic [ref=e278]:
+                  - checkbox "Other media files (581)" [ref=e279]
+                  - generic [ref=e280]: Other media files (581)
+              - separator [ref=e281]
+              - listitem [ref=e282]:
+                - heading "Result type" [level=3] [ref=e283]
+                - generic [ref=e284]:
+                  - checkbox "Animation (404)" [ref=e285]
+                  - generic [ref=e286]: Animation (404)
+                - generic [ref=e287]:
+                  - checkbox "B-Roll (195)" [ref=e288]
+                  - generic [ref=e289]: B-Roll (195)
+                - generic [ref=e290]:
+                  - checkbox "Gallery (308)" [ref=e291]
+                  - generic [ref=e292]: Gallery (308)
+                - generic [ref=e293]:
+                  - checkbox "Hyperwall Visual (763)" [ref=e294]
+                  - generic [ref=e295]: Hyperwall Visual (763)
+                - generic [ref=e296]:
+                  - checkbox "Infographic (49)" [ref=e297]
+                  - generic [ref=e298]: Infographic (49)
+                - generic [ref=e299]:
+                  - checkbox "Interactive (7)" [ref=e300]
+                  - generic [ref=e301]: Interactive (7)
+                - generic [ref=e302]:
+                  - checkbox "Produced Video (4081)" [ref=e303]
+                  - generic [ref=e304]: Produced Video (4081)
+                - generic [ref=e305]:
+                  - checkbox "Visualization (4799)" [ref=e306]
+                  - generic [ref=e307]: Visualization (4799)
+              - separator [ref=e308]
+              - listitem [ref=e309]:
+                - heading "Created by" [level=3] [ref=e310]
+                - generic [ref=e311]:
+                  - checkbox "Scientific Visualization Studio (4787)" [ref=e312]
+                  - generic [ref=e313]: Scientific Visualization Studio (4787)
+                - generic [ref=e314]:
+                  - checkbox "Goddard Media Studios (4372)" [ref=e315]
+                  - generic [ref=e316]: Goddard Media Studios (4372)
+                - generic [ref=e317]:
+                  - checkbox "Conceptual Image Lab (352)" [ref=e318]
+                  - generic [ref=e319]: Conceptual Image Lab (352)
+              - separator [ref=e320]
+              - listitem [ref=e321]:
+                - heading "Developed for" [level=3] [ref=e322]
+                - generic [ref=e323]:
+                  - checkbox "Hyperwall (2175)" [ref=e324]
+                  - generic [ref=e325]: Hyperwall (2175)
+                - generic [ref=e326]:
+                  - checkbox "Earth Information Center (97)" [ref=e327]
+                  - generic [ref=e328]: Earth Information Center (97)
+              - separator [ref=e329]
+              - listitem [ref=e330]:
+                - heading "People" [level=3] [ref=e331]
+                - generic [ref=e332]:
+                  - checkbox "Greg Shirah (1618)" [ref=e333]
+                  - generic [ref=e334]: Greg Shirah (1618)
+                - generic [ref=e335]:
+                  - checkbox "Tom Bridgman (1041)" [ref=e336]
+                  - generic [ref=e337]: Tom Bridgman (1041)
+                - generic [ref=e338]:
+                  - checkbox "Ian Jones (897)" [ref=e339]
+                  - generic [ref=e340]: Ian Jones (897)
+                - generic [ref=e341]:
+                  - checkbox "Laurence Schuler (896)" [ref=e342]
+                  - generic [ref=e343]: Laurence Schuler (896)
+                - generic [ref=e344]:
+                  - checkbox "Horace Mitchell (670)" [ref=e345]
+                  - generic [ref=e346]: Horace Mitchell (670)
+                - generic [ref=e347]:
+                  - checkbox "Lori Perkins (601)" [ref=e348]
+                  - generic [ref=e349]: Lori Perkins (601)
+                - generic [ref=e350]:
+                  - checkbox "Cindy Starr (555)" [ref=e351]
+                  - generic [ref=e352]: Cindy Starr (555)
+                - generic [ref=e353]:
+                  - checkbox "Gene Feldman (461)" [ref=e354]
+                  - generic [ref=e355]: Gene Feldman (461)
+                - generic [ref=e356]:
+                  - checkbox "Ernie Wright (407)" [ref=e357]
+                  - generic [ref=e358]: Ernie Wright (407)
+                - generic [ref=e359]:
+                  - checkbox "Marit Jentoft-Nilsen (381)" [ref=e360]
+                  - generic [ref=e361]: Marit Jentoft-Nilsen (381)
+                - button "See all 3398 People" [ref=e362] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+          - generic [ref=e363]:
+            - heading "Results" [level=2] [ref=e364]
+            - heading "10606 results" [level=4] [ref=e367]
+            - generic [ref=e370]:
+              - heading "Results" [level=3] [ref=e371]
+              - list [ref=e372]:
+                - generic [ref=e373]:
+                  - separator [ref=e375]
+                  - heading "Page 1" [level=4] [ref=e377]
+                  - separator [ref=e379]
+                - listitem [ref=e380]:
+                  - generic [ref=e381]:
+                    - generic [ref=e382]:
+                      - link [ref=e383] [cursor=pointer]:
+                        - /url: /15116/
+                        - 'img "Universal Production Music: Drift Underscore by ProdhommeComplete transcript available." [ref=e384]'
+                      - generic [ref=e385]: "ID: 15116"
+                      - generic [ref=e386]:
+                        - generic [aria-hidden] [ref=e387]: 
+                        - text: Produced Video
+                      - text: 
+                    - generic [ref=e389]:
+                      - heading [level=3] [ref=e390]:
+                        - link "2026 Ozone Hole Update" [ref=e391] [cursor=pointer]:
+                          - /url: /15116/
+                      - generic [ref=e392]:
+                        - generic [ref=e393]: November 4, 2026
+                        - 'link "NASA Science Category: Earth" [ref=e395] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=e396]: 
+                      - paragraph [ref=e398]:
+                        - text: "Earth’s protective ozone layer remains on track for long-term recovery, despite atmospheric conditions that contributed to a larger Antarctic ozone hole in 2026, NASA and the National Oceanic and Atmospheric Administration (NOAA) reported. The ozone hole ranked seventh largest by area in 48 years of monitoring, but was not as deep as other large holes on record. || || 15116 || 2026 Ozone Hole Update || Earth’s protective ozone layer remains on track for long-term recovery, despite atmospheric conditions that contributed to a larger Antarctic ozone hole in 2026, NASA and the National Oceanic and Atmospheric Administration (NOAA) reported. The ozone hole ranked seventh largest by area in 48 years of monitoring, but was not as deep as other large holes on record. || Universal Production Music: Drift Underscore by ProdhommeComplete transcript available. || 15116_2026_Ozone_YouTube_Thumbnail.jpg (1920x1080) [282.9 KB] || 15116_2026_Ozone_YouTube_Thumbnail_print.jpg (1024x576) [124.9 KB] || 15116_2026_Ozone_YouTube_Thumbnail_searchweb.png (320x180) [31.6 KB] || 15116_2026_Ozone_YouTube_Thumbnail_web.png (320x180) [31.6 KB] || 15116_2026_Ozone_YouTube_Thumbnail_thm.png (80x40) [3.5 KB] || 15116_2026_Ozone_YouTube.mp4 (1920x1080) [102.8 MB] || Version formatted for vertical social platforms. Universal Production Music: Cyclic Marimba by Eric Chevailer [SACEM]Complete transcript available. || 15116_20206Ozone_Social.00001_print.jpg (1024x1820) [186.8 KB] || 15116_20206Ozone_Social.00001_searchweb.png (320x180) [63.1 KB] || 15116_20206Ozone_Social.00001_web.png (320x569) [107.3 KB] || 15116_20206Ozone_Social.00001_thm.png (80x40) [5.4 KB] || 15116_20206Ozone_Social.mp4 (1080x1920) [131.0 MB] || 15116_2026OzoneSocial.en_US.srt [3.5 KB] || 15116_2026OzoneSocial.en_US.vtt [3.3 KB] || For More Information || See"
+                        - link "https://science.nasa.gov/earth/2026-ozone-hole/" [ref=e399] [cursor=pointer]:
+                          - /url: https://science.nasa.gov/earth/2026-ozone-hole/
+                        - text: "|| Earth || Atmosphere || Atmospheric Chemistry/Oxygen Compounds || Earth Science || NOAA || ozone || Ozone Hole || Katie Jepson (eMITS) as Producer || Sally Younger (NASA/JPL) as Writer || Sofie Bates (eMITS) as Social media support || Paul Newman (NASA/GSFC) as Scientist || Aaron E. Lepsch (ADNET Systems, Inc.) as Technical support ||"
+                      - link "Go to this page" [ref=e400] [cursor=pointer]:
+                        - /url: /15116/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e401]: 
+                - listitem [ref=e402]:
+                  - generic [ref=e403]:
+                    - generic [ref=e404]:
+                      - link "Go to this page" [ref=e405] [cursor=pointer]:
+                        - /url: /15114/
+                      - generic [ref=e406]: "ID: 15114"
+                      - generic [ref=e407]:
+                        - generic [aria-hidden] [ref=e408]: 
+                        - text: B-Roll
+                      - text: 
+                    - generic [ref=e410]:
+                      - heading [level=3] [ref=e411]:
+                        - link "Star Charts for ESCAPADE’s Earth Flyby" [ref=e412] [cursor=pointer]:
+                          - /url: /15114/
+                      - generic [ref=e413]:
+                        - generic [ref=e414]: November 2, 2026
+                        - 'link "NASA Science Category: Earth" [ref=e416] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=e417]: 
+                        - 'link "NASA Science Category: Sun" [ref=e418] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=e419]: 
+                      - paragraph [ref=e421]:
+                        - text: In November 2026, each of NASA’s two
+                        - strong [ref=e422]: ESCAPADE
+                        - text: (Escape and Plasma Acceleration and Dynamics Explorers) spacecraft will perform a “powered” flyby of Earth, combining Earth’s gravity with an approximately 9-minute engine burn, to slingshot itself toward Mars. || 15114 || Star Charts for ESCAPADE’s Earth Flyby || In November 2026, each of NASA’s two
+                        - strong [ref=e423]:
+                          - link "ESCAPADE" [ref=e424] [cursor=pointer]:
+                            - /url: https://science.nasa.gov/mission/escapade
+                        - text: (Escape and Plasma Acceleration and Dynamics Explorers) spacecraft will perform a “powered” flyby of Earth, combining Earth’s gravity with an approximately 9-minute engine burn, to slingshot itself toward Mars. The first ESCAPADE spacecraft will make its closest approach and complete its engine burn around 5 a.m. EST on Nov. 7, and the second will do so two days later, around 6 a.m. EST on Nov. 9. In the hours before, during, and after each spacecraft’s closest approach, observers on the ground might be able to spot the spacecraft in the night sky. However, a telescope will most likely be needed to find it as a dim point moving against the stars. Each spacecraft will appear to move through the sky relatively slowly and take several hours to cross overhead. From the U.S., each spacecraft will be below the horizon during its closest approach to Earth. Therefore, the spacecraft will be best viewed in the western sky an hour or two before closest approach. From some viewing locations, the spacecraft will also reappear in the eastern sky an hour or two after its closest approach.The star charts below show the path the spacecraft will take across the sky for several different locations in the U.S. The colors along the path represent the altitude of the spacecraft, which will decrease during the time shown, with red showing the lowest altitude along the path (when the spacecraft should be brightest). If your viewing location is not represented here, you can use the NASA Jet Propulsion Laboratory’s
+                        - link "Horizons System" [ref=e425] [cursor=pointer]:
+                          - /url: https://ssd.jpl.nasa.gov/horizons/app.html#/
+                        - text: "to get coordinates for the two spacecraft at different times for your location.Locations included below:"
+                        - emphasis [ref=e426]: Berkeley, California
+                        - text: Boulder, Colorado
+                        - emphasis [ref=e427]: Chicago, Illinois
+                        - text: Greenbelt, Maryland (NASA’s Goddard Space Flight Center)
+                        - emphasis [ref=e428]: Goldstone, California
+                        - text: Honolulu, Hawaii
+                        - emphasis [ref=e429]: New York, New York
+                        - text: Portland, Oregon
+                        - emphasis [ref=e430]: Seattle, Washington
+                        - text: Tempe, Arizona
+                        - emphasis [ref=e431]:
+                          - text: Temple, TexasRead more about ESCAPADE's powered Earth flyby on
+                          - link "NASA's ESCAPADE blog" [ref=e432] [cursor=pointer]:
+                            - /url: https://science.nasa.gov/blogs/escapade/2026/11/02/nasas-twin-escapade-spacecraft-to-slingshot-past-earth-on-way-to-mars/
+                          - text: . || Berkeley, California ||
+                        - emphasis [ref=e433]: Animated map, first spacecraft
+                        - emphasis [ref=e434]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Berkeley, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to about 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. (03:00) PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Berkeley-star-chart-Nov7-movie.mp4 (1080x1080) [8.6 MB] ||"
+                        - emphasis [ref=e435]: Animated map, second spacecraft
+                        - emphasis [ref=e436]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Berkeley, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again around 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Berkeley-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Boulder, Colorado ||"
+                        - emphasis [ref=e437]: Still map, first spacecraft
+                        - emphasis [ref=e438]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 6 to 2 a.m. (02:00) MT on Nov. 7. The positions of the constellations, stars, and planets are shown as they will appear at 2 a.m. MT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Boulder-star-chart-Nov7.png (1098x711) [325.7 KB] ||"
+                        - emphasis [ref=e439]: Still map, second spacecraft
+                        - emphasis [ref=e440]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 8 to 2:45 a.m. (02:45) MT on Nov. 9. The positions of the constellations, stars, and planets are shown as they will appear at 2:45 a.m. MT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Boulder-star-chart-Nov9.png (1267x840) [308.0 KB] ||"
+                        - emphasis [ref=e441]: Animated map, first spacecraft
+                        - emphasis [ref=e442]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 6 to 2 a.m. (02:00) MT on Nov. 7. The spacecraft rises again around 4 a.m. (04:00) MT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (starting around 5 a.m. MT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Boulder-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e443]: Animated map, second spacecraft
+                        - emphasis [ref=e444]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 8 to 3 a.m. (03:00) MT on Nov. 9. The spacecraft rises again before 5 a.m. (05:00) MT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. MT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Boulder-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Chicago, Illinois ||"
+                        - emphasis [ref=e445]: Animated map, first spacecraft
+                        - emphasis [ref=e446]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will travel across the sky as seen from Chicago, Illinois, from approximately 7 p.m. (19:00) Central Time (CT) on Nov. 6 to after 2 a.m. (02:00) CT on Nov. 7. The spacecraft rises again before 5 a.m. (05:00) CT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (starting around 5 a.m. CT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Chicago-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e447]: Animated map, second spacecraft
+                        - emphasis [ref=e448]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will travel across the sky as seen from Chicago, Illinois, from approximately 7 p.m. (19:00) Central Time (CT) on Nov. 8 to after 3 a.m. (03:00) CT on Nov. 9. The spacecraft rises again around 5 a.m. CT on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Chicago-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || NASA's Goddard Space Flight Center, Greenbelt, Maryland ||"
+                        - emphasis [ref=e449]: Still map, first spacecraft
+                        - emphasis [ref=e450]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 6 to after 3 a.m. (03:00) ET on Nov. 7. The positions of the constellations, stars, and planets are shown as they will appear at 3:30 a.m. ET, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Greenbelt-star-chart-Nov7.png (1263x840) [312.2 KB] ||"
+                        - emphasis [ref=e451]: Still map, second spacecraft
+                        - emphasis [ref=e452]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 8 to just after 4 a.m. (04:00) ET on Nov. 9. The positions of the constellations, stars, and planets are shown as they will appear at 4:15 a.m. ET, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Greenbelt-star-chart-Nov9.png (1276x840) [319.1 KB] ||"
+                        - emphasis [ref=e453]: Animated map, first spacecraft
+                        - emphasis [ref=e454]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 6 to after 3 a.m. (03:00) ET on Nov. 7. The spacecraft rises again around 5 a.m. ET on Nov. 7, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Greenbelt-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e455]: Animated map, second spacecraft
+                        - emphasis [ref=e456]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 8 to after 4 a.m. (04:00) ET on Nov. 9. The spacecraft rises again around 6 a.m. ET on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Greenbelt-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] ||"
+                        - emphasis [ref=e457]: Horizon view, first spacecraft
+                        - emphasis [ref=e458]: "This view shows the direction and elevation of the first ESCAPADE spacecraft in the sky above NASA’s Goddard Space Flight Center in Greenbelt, Maryland, at different times between 7 p.m. Eastern Time (ET) on Nov. 6 to just after 3 a.m. ET on Nov. 7. The positions of the stars and constellations will change over this time span and are only accurate for 11 p.m. ET.Credit: NASA/Conceptual Image Lab || ESCAPADE_Path_Nov6_1080x1080.jpg (1080x1080) [252.1 KB] || ESCAPADE_Path_Nov6.png (5000x5000) [799.3 KB] ||"
+                        - emphasis [ref=e459]: Horizon view, second spacecraft
+                        - emphasis [ref=e460]: "This view shows the direction and elevation of the second ESCAPADE spacecraft in the sky above NASA’s Goddard Space Flight Center in Greenbelt, Maryland, at different times between 7 p.m. Eastern Time (ET) on Nov. 8 to just after 4 a.m. ET on Nov. 9. The positions of the stars and constellations will change over this time span and are only accurate for 11 p.m. ET.Credit: NASA/Conceptual Image Lab || ESCAPADE_Path_Nov8_1080x1080.jpg (1080x1080) [254.6 KB] || ESCAPADE_Path_Nov8.png (5000x5000) [823.2 KB] || Goldstone, California ||"
+                        - emphasis [ref=e461]: Still map, first spacecraft
+                        - emphasis [ref=e462]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to after 1 a.m. (01:00) PT on Nov. 7. The positions of the constellations, stars, and planets are shown as they will appear at 1:15 a.m. PT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Goldstone-star-chart-Nov7.png (1312x840) [309.7 KB] ||"
+                        - emphasis [ref=e463]: Still map, second spacecraft
+                        - emphasis [ref=e464]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to 2 a.m. (02:00) PT on Nov. 9. The positions of the constellations, stars, and planets are shown as they will appear at 2 a.m. PT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Goldstone-star-chart-Nov9.png (1290x840) [313.5 KB] ||"
+                        - emphasis [ref=e465]: Animated map, first spacecraft
+                        - emphasis [ref=e466]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to after 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (around 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Goldstone-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e467]: Animated map, second spacecraft
+                        - emphasis [ref=e468]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again before 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (around 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Goldstone-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Honolulu, Hawaii ||"
+                        - emphasis [ref=e469]: Still map, first spacecraft
+                        - emphasis [ref=e470]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) to after 11 p.m. (23:00) Hawaii Standard Time (HST) on Nov. 6. Dots appear along the path when the spacecraft is moving the fastest across the sky. The positions of the constellations, stars, and planets are shown as they will appear at 11:30 p.m. HST, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Honolulu-star-chart-Nov7.png (1272x840) [302.7 KB] ||"
+                        - emphasis [ref=e471]: Still map, second spacecraft
+                        - emphasis [ref=e472]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) Hawaii Standard Time (HST) on Nov. 8 to after 12 a.m. (00:00) HST on Nov. 9. Dots appear along the path when the spacecraft is moving the fastest across the sky. The positions of the constellations, stars, and planets are shown as they will appear at 12:30 a.m. (00:30) HST, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Honolulu-star-chart-Nov9.png (1272x840) [301.9 KB] ||"
+                        - emphasis [ref=e473]: Animated map, first spacecraft
+                        - emphasis [ref=e474]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) to after 11 p.m. (23:00) Hawaii Standard Time (HST) on Nov. 6. The spacecraft rises again before 3 a.m. HST on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (around 5 a.m. HST on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Honolulu-star-chart-Nov7-movie.mp4 (1080x1080) [8.4 MB] ||"
+                        - emphasis [ref=e475]: Animated map, second spacecraft
+                        - emphasis [ref=e476]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) Hawaii Standard Time (HST) on Nov. 8 to after 12 a.m. (00:00) HST on Nov. 9. The spacecraft rises again before 3 a.m. (03:00) HST on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. HST on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Honolulu-star-chart-Nov9-movie.mp4 (1080x1080) [8.5 MB] || New York, New York ||"
+                        - emphasis [ref=e477]: Animated map, first spacecraft
+                        - emphasis [ref=e478]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from New York City from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 6 to after 3 a.m. (03:00) ET on Nov. 7. The spacecraft rises again after 5 a.m. ET on Nov. 7, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || NewYork-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e479]: Animated map, second spacecraft
+                        - emphasis [ref=e480]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from New York City from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 8 to after 4 a.m. (04:00) ET on Nov. 9. The spacecraft rises again around 6 a.m. ET on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || NewYork-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] || Portland, Oregon ||"
+                        - emphasis [ref=e481]: Animated map, first spacecraft
+                        - emphasis [ref=e482]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Portland, Oregon, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to about 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. (03:00) PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Portland-star-chart-Nov7-movie.mp4 (1080x1080) [8.8 MB] ||"
+                        - emphasis [ref=e483]: Animated map, second spacecraft
+                        - emphasis [ref=e484]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Portland, Oregon, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again before 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Portland-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] || Seattle, Washington ||"
+                        - emphasis [ref=e485]: Animated map, first spacecraft
+                        - emphasis [ref=e486]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Seattle, Washington, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to about 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. (03:00) PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Seattle-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e487]: Animated map, second spacecraft
+                        - emphasis [ref=e488]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Seattle, Washington, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again before 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Seattle-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Tempe, Arizona ||"
+                        - emphasis [ref=e489]: Animated map, first spacecraft
+                        - emphasis [ref=e490]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Tempe, Arizona, from approximately 8 p.m. (20:00) Mountain Time (MT) on Nov. 6 to after 2 a.m. (02:00) MT on Nov. 7. The spacecraft rises again around 4 a.m. (04:00) MT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. MT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Tempe-star-chart-Nov7-movie.mp4 (1080x1080) [8.8 MB] ||"
+                        - emphasis [ref=e491]: Animated map, second spacecraft
+                        - emphasis [ref=e492]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Tempe, Arizona, from approximately 8 p.m. (20:00) Mountain Time (MT) on Nov. 8 to 3 a.m. (03:00) MT on Nov. 9. The spacecraft rises again before 5 a.m. (05:00) MT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (before 6 a.m. MT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Tempe-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] || Temple, Texas ||"
+                        - emphasis [ref=e493]: Animated map, first spacecraft
+                        - emphasis [ref=e494]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will travel across the sky as seen from Temple, Texas, from approximately 8 p.m. (20:00) Central Time (CT) on Nov. 6 to after 2 a.m. (02:00) CT on Nov. 7. The spacecraft rises again before 5 a.m. (05:00) CT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (before 6 a.m. CT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Temple-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=e495]: Animated map, second spacecraft
+                        - text: "*The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will travel across the sky as seen from Temple, Texas, from approximately 8 p.m. (20:00) Central Time (CT) on Nov. 8 to after 3 a.m. (03:00) CT on Nov. 9. The spacecraft rises again after 5 a.m. CT on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Temple-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Earth || Sun || Atmospheric Escape || Corona || ESCAPADE || Gravity Assist || Heliophysics || magnetic field || Magnetosphere || map || Mars || Mars Arrival || Mars Orbit Insertion || Mars Orbiter Mission || Mars Upper Atmosphere || Martian Atmosphere || Orbiter || Sky Map || Skymap || Solar Wind || Space Weather || Spacecraft || Sun || Escape and Plasma Acceleration and Dynamics Explorers (ESCAPADE) || Vanessa Thomas (eMITS) as Writer ||"
+                      - link "Go to this page" [ref=e496] [cursor=pointer]:
+                        - /url: /15114/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e497]: 
+                - listitem [ref=e498]:
+                  - generic [ref=e499]:
+                    - generic [ref=e500]:
+                      - link [ref=e501] [cursor=pointer]:
+                        - /url: /15115/
+                        - img "Master VersionHorizontal version. This is for use on any YouTube or non-YouTube platform where you want to display the video horizontally." [ref=e502]
+                      - generic [ref=e503]: "ID: 15115"
+                      - generic [ref=e504]:
+                        - generic [aria-hidden] [ref=e505]: 
+                        - text: Produced Video
+                      - text: 
+                    - generic [ref=e507]:
+                      - heading [level=3] [ref=e508]:
+                        - link "Giant Cosmic Cat Spotted!" [ref=e509] [cursor=pointer]:
+                          - /url: /15115/
+                      - generic [ref=e510]:
+                        - generic [ref=e511]: October 29, 2026
+                        - 'link "NASA Science Category: Universe" [ref=e513] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Universe
+                          - generic [aria-hidden] [ref=e514]: 
+                      - paragraph [ref=e516]: "Pspspsp! Just in time for Halloween, NASA’s Hubble and James Webb Space Telescopes recently stared at an eerie star-forming scene within the Carina Nebula, a massive gas and dust cloud located approximately 7,500 light-years away from Earth.The two telescopes offer complementary views of the shadowy form, nicknamed the Cat’s Head Nebula, which reflects the “magical” process of star formation.Hubble’s visible-light view shows the cat as a dark, elongated dust pillar and hints of young forming stars, while Webb’s infrared-light imagery unveils many stars and other hidden details.For more information, visit science.nasa.gov/mission/hubbleCredit: NASA's Goddard Space Flight Center Paul Morris: Lead ProducerMusic Credit:\"Heavy Haunting\" by Jamie Westgarth Shield [PRS] and Tom Prendergast [PRS] via Being Human Music [PRS] and Universal Production Music || || 15115 || Giant Cosmic Cat Spotted! || Pspspsp! Just in time for Halloween, NASA’s Hubble and James Webb Space Telescopes recently stared at an eerie star-forming scene within the Carina Nebula, a massive gas and dust cloud located approximately 7,500 light-years away from Earth.The two telescopes offer complementary views of the shadowy form, nicknamed the Cat’s Head Nebula, which reflects the “magical” process of star formation.Hubble’s visible-light view shows the cat as a dark, elongated dust pillar and hints of young forming stars, while Webb’s infrared-light imagery unveils many stars and other hidden details.For more information, visit science.nasa.gov/mission/hubbleCredit: NASA's Goddard Space Flight Center Paul Morris: Lead ProducerMusic Credit:\"Heavy Haunting\" by Jamie Westgarth Shield [PRS] and Tom Prendergast [PRS] via Being Human Music [PRS] and Universal Production Music || Master VersionHorizontal version. This is for use on any YouTube or non-YouTube platform where you want to display the video horizontally. || 15115_CAT_WIDE_PRINT.jpg (1920x1080) [1.3 MB] || 15115_CAT_WIDE_THUMB.jpg (1920x1080) [1.3 MB] || 15115_CAT_WIDE_SEARCH.jpg (320x180) [44.7 KB] || 15115_CAT_WIDE_MP4.mp4 (1920x1080) [264.5 MB] || 15115_CAT_WIDE_CAP.en_US.srt [1.3 KB] || 15115_CAT_WIDE_CAP.en_US.vtt [1.3 KB] || Vertical VersionThis vertical version of the episode is for IGTV or Snapchat. The IGTV episode can be pulled into Instagram Stories and the regular Instagram feed. || 15115_CAT_VERT_THUMB.jpg (1080x1920) [561.2 KB] || 15115_CAT_VERT_MP4.mp4 (1080x1920) [291.2 MB] || 15115_CAT_VERT_CAP.en_US.srt [1.3 KB] || 15115_CAT_VERT_CAP.en_US.vtt [1.3 KB] || Universe || Hubble Space Telescope || James Webb Space Telescope || Hubble || James Webb Space Telescope (JWST) || Paul Morris (eMITS) as Producer || Aaron E. Lepsch (ADNET Systems, Inc.) as Technical support ||"
+                      - link "Go to this page" [ref=e517] [cursor=pointer]:
+                        - /url: /15115/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e518]: 
+                - listitem [ref=e519]:
+                  - generic [ref=e520]:
+                    - generic [ref=e521]:
+                      - link [ref=e522] [cursor=pointer]:
+                        - /url: /5687/
+                        - img "Still image showing the latest available apparent visible wavelength (AVW) data for 2025 and 2026, displayed side by side on two Pacific Ocean globes. Ocean colors range from blue, indicating lower phytoplankton concentrations, to green and yellow, indicating higher concentrations. The image is automatically updated as new satellite data becomes available, providing an ongoing comparison of ocean conditions between the two years." [ref=e523]
+                      - generic [ref=e524]: "ID: 5687"
+                      - generic [ref=e525]:
+                        - generic [aria-hidden] [ref=e526]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=e528]:
+                      - heading [level=3] [ref=e529]:
+                        - 'link "El Niño 2026: Ocean Apparent Visible Wavelength (2025 vs. 2026) – Updated Daily" [ref=e530] [cursor=pointer]':
+                          - /url: /5687/
+                      - generic [ref=e531]:
+                        - generic [ref=e532]: October 27, 2026
+                        - 'link "NASA Science Category: Earth" [ref=e534] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=e535]: 
+                      - paragraph [ref=e537]: "This visualization compares ocean apparent visible wavelength data from NASA's PACE mission in 2025 and 2026, highlighting changes in ocean color as El Niño develops in the Pacific Ocean. The visualization is automatically updated as new satellite data becomes available. || 5687 || El Niño 2026: Ocean Apparent Visible Wavelength (2025 vs. 2026) – Updated Daily || This visualization compares apparent visible wavelength (AVW) over the same months in 2025 and 2026. Bluer ocean colors generally indicate areas with less phytoplankton, while greener and yellower colors suggest higher concentrations. Reduced phytoplankton in the tropical Pacific can be associated with developing El Niño conditions.The visualization is automatically updated as new satellite data becomes available, providing an ongoing comparison of ocean conditions in 2025 and 2026. || elnino_avw_2025_2026_daily_1900x800.jpg (1800x900) [741.3 KB] || elnino_avw_2025_2026_daily_1900x800.mp4 (1800x900) [8.6 MB] || Still image - This image shows the latest available data from a visualization comparing apparent visible wavelength (AVW) in 2025 and 2026. Bluer ocean colors generally indicate areas with less phytoplankton, while greener and yellower colors suggest higher concentrations. Reduced phytoplankton in the tropical Pacific can be associated with developing El Niño conditions.The visualization is automatically updated as new satellite data becomes available, providing an ongoing comparison of ocean conditions in 2025 and 2026. || elnino_avw_2025_2026_daily_1900x800.jpg (1800x900) [741.3 KB] || Earth || Automated || Earth Information Center || EIC || Eic (earth information center) display || Hyperwall || ocean color || Oceans || Pace || Phytoplankton || Plankton, Aerosol, Cloud, ocean Ecosystem (PACE) || Updates Regularly || Kel Elkins (Science and Technology Corporation) as Data visualizer || Morgaine McKibben (SSAI) as Scientist || Matthew Kehrli (GSFC) as Scientist ||"
+                      - link "Go to this page" [ref=e538] [cursor=pointer]:
+                        - /url: /5687/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e539]: 
+                - listitem [ref=e540]:
+                  - generic [ref=e541]:
+                    - generic [ref=e542]:
+                      - link [ref=e543] [cursor=pointer]:
+                        - /url: /5688/
+                        - img "Two side-by-side globes centered on the tropical Pacific Ocean, comparing sea surface temperature anomalies in 2025 and 2026. Red and blue shading highlights warmer- and cooler-than-average ocean temperatures, with a color bar legend showing the temperature differences in degrees Celsius." [ref=e544]
+                      - generic [ref=e545]: "ID: 5688"
+                      - generic [ref=e546]:
+                        - generic [aria-hidden] [ref=e547]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=e549]:
+                      - heading [level=3] [ref=e550]:
+                        - 'link "El Niño 2026: Sea Surface Temperature Anomaly (2025 vs. 2026) – Updated Daily" [ref=e551] [cursor=pointer]':
+                          - /url: /5688/
+                      - generic [ref=e552]:
+                        - generic [ref=e553]: October 27, 2026
+                        - 'link "NASA Science Category: Earth" [ref=e555] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=e556]: 
+                      - paragraph [ref=e558]: "A side-by-side comparison of sea surface temperature anomalies in the tropical Pacific during 2025 and 2026, highlighting ocean temperature patterns associated with El Niño. This visualization is updated daily to incorporate the latest available data. || 5688 || El Niño 2026: Sea Surface Temperature Anomaly (2025 vs. 2026) – Updated Daily || Side-by-side globes comparing sea surface temperature anomalies in the tropical Pacific during 2025 and 2026. Reds indicate warmer-than-average ocean temperatures, while blues indicate cooler-than-average temperatures. A color bar shows the temperature anomaly scale in degrees Celsius. The visualization uses a 7-day running average and is updated daily with the latest available data. || elnino_eic_ssta_globes_wLegend_1670x835_latest.jpg (1670x835) [477.9 KB] || elnino_eic_ssta_globes_wLegend_3340x1670_latest.jpg (3340x1670) [1.5 MB] || elnino_eic_ssta_globes_wLegend_3340x1670_latest.mp4 (3340x1670) [16.1 MB] || This visualization compares sea surface temperature anomalies (SSTA) in the tropical Pacific during 2025 and 2026, highlighting changes in ocean temperature patterns associated with El Niño. Sea surface temperature anomalies indicate how much warmer or cooler the ocean surface is compared to average conditions, with reds representing warmer-than-average temperatures and blues indicating cooler-than-average temperatures.The visualization uses data from NASA's Jet Propulsion Laboratory (JPL) Multi-scale Ultra-high Resolution (MUR) Sea Surface Temperature Analysis. A 7-day running average is applied to smooth short-term variations and make broader temperature patterns easier to see. The visualization is updated daily to incorporate the latest available data for 2026. || Side-by-side globes comparing sea surface temperature anomalies in the tropical Pacific during 2025 and 2026. Reds indicate warmer-than-average ocean temperatures, while blues indicate cooler-than-average temperatures. The visualization uses a 7-day running average and is updated daily with the latest available data. || elnino_eic_ssta_globes_1670x835_latest.jpg (1670x835) [466.1 KB] || elnino_eic_ssta_globes_3340x1670_latest.jpg (3340x1670) [1.5 MB] || elnino_eic_ssta_globes_3340x1670_latest.mp4 (3340x1670) [16.0 MB] || Earth || Automated || Earth Information Center || Earth Science || EIC || Eic (earth information center) display || Hyperwall || Ocean Temperature || Oceans || Physical oceanography || Sea Surface Temperature Anomaly || Updates Regularly || MUR SST (Multi-scale Ultra-high Resolution (MUR) Sea Surface Temperature (SST) Analysis) || Kel Elkins (Science and Technology Corporation) as Data visualizer ||"
+                      - link "Go to this page" [ref=e559] [cursor=pointer]:
+                        - /url: /5688/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e560]: 
+                - listitem [ref=e561]:
+                  - generic [ref=e562]:
+                    - generic [ref=e563]:
+                      - link [ref=e564] [cursor=pointer]:
+                        - /url: /5686/
+                        - img "A view of the solar system showing a line tracing the path of the Lucy spacecraft as it travels outward toward Jupiter's orbit. A dense ring of white dots circles the Sun, representing the main asteroid belt. Further out, a large cluster of light orange dots leads Jupiter along its orbital path, representing the L4 Trojan asteroids." [ref=e565]
+                      - generic [ref=e566]: "ID: 5686"
+                      - generic [ref=e567]:
+                        - generic [aria-hidden] [ref=e568]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=e570]:
+                      - heading [level=3] [ref=e571]:
+                        - link "Lucy Mission Trajectory with Jupiter Trojans and Main Belt Asteroids" [ref=e572] [cursor=pointer]:
+                          - /url: /5686/
+                      - generic [ref=e573]:
+                        - generic [ref=e574]: October 27, 2026
+                        - 'link "NASA Science Category: Planets & Moons" [ref=e576] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Planets%20%26%20Moons
+                          - generic [aria-hidden] [ref=e577]: 
+                        - 'link "NASA Science Category: Universe" [ref=e578] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Universe
+                          - generic [aria-hidden] [ref=e579]: 
+                      - paragraph [ref=e581]: Visualization showing the updated trajectory of NASA’s Lucy spacecraft as it travels through the solar system to explore Jupiter’s Trojan asteroids. The visualization also includes the locations of thousands of Jupiter Trojan and main belt asteroids, providing context for Lucy’s journey. || 5686 || Lucy Mission Trajectory with Jupiter Trojans and Main Belt Asteroids || This visualization shows the trajectory of NASA’s Lucy spacecraft as it travels to the Jupiter L4 Lagrange point. Trojan asteroids are represented by light orange dots, while main belt asteroids are shown as white dots. || lucy_trajectory_2026_labeled.02510_preview.jpg (1920x1080) [583.2 KB] || lucy_trajectory_2026_labeled.02510.jpg (3840x2160) [2.4 MB] || lucy_trajectory_2026_labeled_1080p60.mp4 (1920x1080) [57.6 MB] || lucy_trajectory_2026_labeled_2160p60.mp4 (3840x2160) [155.2 MB] || lucy_trajectory_2026_labeled_2160p60_prores.mov (3840x2160) [6.7 GB] || This visualization tracks NASA’s Lucy spacecraft from its October 2021 launch to its arrival at the L4 Trojan asteroids. Having traveled over 2.2 billion miles, Lucy is the first spacecraft to reach the L4 Lagrange point, a stable region in space where thousands of primitive asteroids share Jupiter's orbit around the Sun. Scientists expect that studying these ancient bodies up close, starting with the asteroid Eurybates in August 2027, will help refine theories on how our solar system formed 4.5 billion years ago. || This visualization shows the trajectory of NASA’s Lucy spacecraft as it travels to the Jupiter L4 Lagrange point. Trojan asteroids are represented by light orange dots, while main belt asteroids are shown as white dots. This version has no asteroid labels. || lucy_trajectory_2026.02510_preview.jpg (1920x1080) [576.9 KB] || lucy_trajectory_2026.02510.jpg (3840x2160) [2.4 MB] || lucy_trajectory_2026_1080p60.mp4 (1920x1080) [57.2 MB] || lucy_trajectory_2026_2160p60.mp4 (3840x2160) [152.3 MB] || lucy_trajectory_2026_2160p60_prores.mov (3840x2160) [6.7 GB] || This visualization shows the trajectory of NASA’s Lucy spacecraft as it travels to the Jupiter L4 Lagrange point. Trojan asteroids are represented by light orange dots, while main belt asteroids are shown as white dots. This vertical version is optimized for social media. || lucy_trajectory_2026_vertical_3840p60_h265.mp4 (2160x3840) [89.6 MB] || lucy_trajectory_2026_vertical_1920p60_h265.mp4 (1080x1920) [37.5 MB] || lucy_trajectory_2026_vertical_prores.mov (2160x3840) [6.7 GB] || lucy_trajectory_2026_vertical.02510_preview.jpg (1080x1920) [909.1 KB] || lucy_trajectory_2026_vertical.02510.jpg (2160x3840) [2.5 MB] || This visualization shows the trajectory of NASA’s Lucy spacecraft as it travels to the Jupiter L4 Lagrange point. Trojan asteroids are represented by light orange dots, while main belt asteroids are shown as white dots. This version has no dates. This vertical version is optimized for social media. || lucy_trajectory_2026_vertical_no_dates.02510_preview.jpg (1080x1920) [903.2 KB] || lucy_trajectory_2026_vertical_no_dates.02510.jpg (2160x3840) [2.5 MB] || lucy_trajectory_2026_vertical_no_dates_1920p60_h265.mp4 (1080x1920) [37.4 MB] || lucy_trajectory_2026_vertical_no_dates_3840p60_h265.mp4 (2160x3840) [89.5 MB] || lucy_trajectory_2026_vertical_no_dates_prores.mov (2160x3840) [6.7 GB] || Planets & Moons || Universe || Asteroid || Lagrange Points || Lucy || Orbit || Trojan Asteroid || Lucy || Kel Elkins (Science and Technology Corporation) as Data visualizer || Katherine Kretke (SwRI) as Scientist || Simone Marchi (SwRI) as Scientist || John Spencer (Southwest Research Institute) as Scientist || Lonnie Shekhtman (ADNET Systems, Inc.) as Science writer ||
+                      - link "Go to this page" [ref=e582] [cursor=pointer]:
+                        - /url: /5686/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e583]: 
+                - listitem [ref=e584]:
+                  - generic [ref=e585]:
+                    - generic [ref=e586]:
+                      - link [ref=e587] [cursor=pointer]:
+                        - /url: /15112/
+                        - img "Master VersionHorizontal version. This is for use on any YouTube or non-YouTube platform where you want to display the video horizontally." [ref=e588]
+                      - generic [ref=e589]: "ID: 15112"
+                      - generic [ref=e590]:
+                        - generic [aria-hidden] [ref=e591]: 
+                        - text: Produced Video
+                      - text: 
+                    - generic [ref=e593]:
+                      - heading [level=3] [ref=e594]:
+                        - link "Why The Universe Doesn’t Add Up (And How We’re Going To Try To Figure It Out)" [ref=e595] [cursor=pointer]:
+                          - /url: /15112/
+                      - generic [ref=e596]:
+                        - generic [ref=e597]: October 26, 2026
+                        - 'link "NASA Science Category: Universe" [ref=e599] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Universe
+                          - generic [aria-hidden] [ref=e600]: 
+                      - paragraph [ref=e602]: "For decades, NASA’s Hubble Space Telescope has helped astronomers measure how fast the universe is expanding. But as those measurements have become more precise, scientists have uncovered a cosmic mystery: the universe appears to be expanding at different rates depending on how we measure it.Known as the Hubble tension, this discrepancy challenges our understanding of the cosmos and could point toward something missing from our current model of the universe.In this video, NASA scientists Jennifer Wiseman and Julie McEnery explore how Hubble helped transform our understanding of cosmic expansion, the mysterious role of dark energy, and how NASA’s Nancy Grace Roman Space Telescope will help investigate some of the biggest unanswered questions in cosmology.For more information, visit science.nasa.gov/mission/hubbleCredit: NASA's Goddard Space Flight Center Paul Morris: Lead ProducerRob Andreioli: VideographerJohn Philyaw: VideographerJennifer WisemanJulie McEneryMusic Credit:\"Enceladus\" by Jonathan Elias [ASCAP] and David Ashok Ramani [ASCAP] via ZFC Music [SESAC] and Universal Production Music || || 15112 || Why The Universe Doesn’t Add Up (And How We’re Going To Try To Figure It Out) || For decades, NASA’s Hubble Space Telescope has helped astronomers measure how fast the universe is expanding. But as those measurements have become more precise, scientists have uncovered a cosmic mystery: the universe appears to be expanding at different rates depending on how we measure it.Known as the Hubble tension, this discrepancy challenges our understanding of the cosmos and could point toward something missing from our current model of the universe.In this video, NASA scientists Jennifer Wiseman and Julie McEnery explore how Hubble helped transform our understanding of cosmic expansion, the mysterious role of dark energy, and how NASA’s Nancy Grace Roman Space Telescope will help investigate some of the biggest unanswered questions in cosmology.For more information, visit science.nasa.gov/mission/hubbleCredit: NASA's Goddard Space Flight Center Paul Morris: Lead ProducerRob Andreioli: VideographerJohn Philyaw: VideographerJennifer WisemanJulie McEneryMusic Credit:\"Enceladus\" by Jonathan Elias [ASCAP] and David Ashok Ramani [ASCAP] via ZFC Music [SESAC] and Universal Production Music || Master VersionHorizontal version. This is for use on any YouTube or non-YouTube platform where you want to display the video horizontally. || 15112_TENSION_WIDE_PRINT.jpg (1920x1080) [723.7 KB] || 15112_TENSION_WIDE_THUMB.jpg (1920x1080) [723.7 KB] || 15112_TENSION_WIDE_SEARCH.jpg (320x180) [35.9 KB] || 15112_TENSION_1080_MP4.mp4 (1920x1080) [776.8 MB] || 15112_TENSION_WIDE_CAP.en_US.srt [8.5 KB] || 15112_TENSION_WIDE_CAP.en_US.vtt [8.0 KB] || 15112_TENSION_4K_MP4.mp4 (3840x2160) [2.8 GB] || Vertical VersionThis vertical version of the episode is for IGTV or Snapchat. The IGTV episode can be pulled into Instagram Stories and the regular Instagram feed. || 15112_TENSION_VERT_THUMB.jpg (1080x1920) [367.7 KB] || 15112_TENSION_VERT_MP4.mp4 (1080x1920) [740.8 MB] || 15112_TENSION_VERT_CAP.en_US.srt [8.5 KB] || 15112_TENSION_VERT_CAP.en_US.vtt [8.0 KB] || Universe || HST || Hubble Space Telescope || Universe || Hubble || Paul Morris (eMITS) as Producer || John D. Philyaw (eMITS) as Videographer || Rob Andreoli (eMITS) as Videographer || Jennifer Wiseman (NASA/GSFC) as Interviewee || Julie McEnery (NASA/GSFC) as Interviewee || Aaron E. Lepsch (ADNET Systems, Inc.) as Technical support ||"
+                      - link "Go to this page" [ref=e603] [cursor=pointer]:
+                        - /url: /15112/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e604]: 
+                - listitem [ref=e605]:
+                  - generic [ref=e606]:
+                    - generic [ref=e607]:
+                      - link [ref=e608] [cursor=pointer]:
+                        - /url: /5682/
+                        - img "Global IMERG accumulated anomalies in Robinson projection. (Unannotated versions can be downloaded here as well.)" [ref=e609]
+                      - generic [ref=e610]: "ID: 5682"
+                      - generic [ref=e611]:
+                        - generic [aria-hidden] [ref=e612]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=e614]:
+                      - heading [level=3] [ref=e615]:
+                        - link "Currrent IMERG Accumulated Anomaly" [ref=e616] [cursor=pointer]:
+                          - /url: /5682/
+                      - generic [ref=e617]: October 21, 2026
+                      - paragraph [ref=e620]: Global IMERG accumulated anomalies in Robinson projection. (Unannotated versions can be downloaded here as well.) || currIMERGaccum.rob.1800x900.annotated.png (1800x900) [1.8 MB] || currIMERGaccum.rob.4096x2048.annotated.png (4096x2048) [6.4 MB] || currIMERGaccum.rob.png (3600x1800) [2.0 MB] || currIMERGaccum.rob.4096x2048.png (4096x2048) [5.8 MB] || sst-precip-anomaly.hwshow [85 bytes] || sst-precip-combo-01.hwshow [245 bytes] || || 5682 || Currrent IMERG Accumulated Anomaly || Global IMERG accumulated anomalies in Robinson projection. (Unannotated versions can be downloaded here as well.) || currIMERGaccum.rob.1800x900.annotated.png (1800x900) [1.8 MB] || currIMERGaccum.rob.4096x2048.annotated.png (4096x2048) [6.4 MB] || currIMERGaccum.rob.png (3600x1800) [2.0 MB] || currIMERGaccum.rob.4096x2048.png (4096x2048) [5.8 MB] || sst-precip-anomaly.hwshow [85 bytes] || sst-precip-combo-01.hwshow [245 bytes] || The IMERG accumulated precipitation anomalies from June 1, 2026, to the present represent the total deviation of global rainfall from historical averages over this specific period, serving as a distinct visual footprint of El Niño’s disruption of normal weather patterns. Because the IMERG (Integrated Multi-satellitE Retrievals for GPM) network tracks precise precipitation data, calculating the accumulated anomalies reveals exactly where prolonged dry or wet spells have taken hold. In the context of an El Niño event, this visualization typically illustrates a massive shift in atmospheric circulation, characterized by significant precipitation deficits (negative anomalies depicted in browns) over regions like Indonesia, northern Australia, and parts of the Amazon, contrasted with intense, above-average rainfall (positive anomalies depicted in cyan) migrating into the central and eastern equatorial Pacific. Ultimately, tracking these accumulations over this exact multi-month timeframe allows scientists to quantify the magnitude of El Niño-driven climate teleconnections and clearly visualize the regions experiencing resulting drought or flood risks. || Robinson projected IMERG accumulated anamalies only over land highlight the areas of drought and unusual wetness around the globe. (Unannotated versions can be downloaded here.) || currIMERGaccumLand.rob.1800x900.annotated.png (1800x900) [990.3 KB] || currIMERGaccumLand.rob.4096x2048.png (4096x2048) [3.2 MB] || currIMERGaccumLand.rob.png (3600x1800) [1.8 MB] || currIMERGaccumLand.rob.4096x2048.annotated.png (4096x2048) [3.5 MB] || currIMERGaccumLand.png (3600x1800) [1.9 MB] || sst-precip-combo-02.hwshow [259 bytes] || Global IMERG accumulated anomalies in Plate Carree projection. (Unannotated versions can be downloaded here as well.) || currIMERGaccum.1800x900.annotated.png (1800x900) [1.8 MB] || currIMERGaccum.4096x2048.annotated.png (4096x2048) [6.4 MB] || currIMERGaccum.4096x2048.png (4096x2048) [5.9 MB] || currIMERGaccum.png (3600x1800) [2.2 MB] || Plate Carree projected IMERG accumulated anamalies only over land highlight the areas of drought and unusual wetness around the globe. (Unannotated versions can be downloaded here.) || currIMERGaccumLand.1800x900.annotated.png (1800x900) [988.4 KB] || currIMERGaccumLand.4096x2048.png (4096x2048) [3.3 MB] || currIMERGaccumLand.4096x2048.annotated.png (4096x2048) [3.6 MB] || currIMERGaccumLand.4096x2048.annotated.png.hwshow [135 bytes] || IMERG Accumulated Anomaly Colorbar where browns are areas with less than usual precipitation and areas in blue are greater than usual precipitation. || IMERG_Accum_Anomaly_Colorbar.png (1100x150) [9.9 KB] || IMERG || Alex Kekesi (ADNET Systems, Inc.) as Visualizer || George Huffman (NASA/GSFC) as Scientist || Jason West (eMITS) as Scientist || Owen Kelley (George Mason University) as Scientist || Laurence Schuler (ADNET Systems, Inc.) as Technical support || Ian Jones (ADNET Systems, Inc.) as Technical support ||
+                      - link "Go to this page" [ref=e621] [cursor=pointer]:
+                        - /url: /5682/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=e622]: 
+              - generic "Loading..." [ref=e623]
+              - text: 
+        - text: 
+  - contentinfo [ref=e629]:
+    - navigation [ref=e630]:
+      - generic [ref=e632]:
+        - generic [ref=e633]:
+          - link [ref=e634] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=e635]
+          - link [ref=e636] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=e637]
+        - generic [ref=e640]:
+          - link "Privacy Policy and Important Notices" [ref=e641] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=e642] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=e647]:
+          - generic [ref=e648]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=e650] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=e651]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=e653] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website
