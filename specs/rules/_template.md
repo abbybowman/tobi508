@@ -133,7 +133,7 @@ Rules for every spec:
 
 ## 5. Edge cases
 
-Only cases that need a rule of their own; everything else follows sections 2–3. V-numbers are browser checks in [<id>-build-tasks.md](<id>-build-tasks.md) (at 1.0.0: [_browser-checks.md](_browser-checks.md#<id>)).
+Only cases that need a rule of their own; everything else follows sections 2–3. V-numbers are browser checks in `<id>-build-tasks.md` while the test is built (at 1.0.0: [_browser-checks.md](_browser-checks.md#<id>)).
 
 | Case | Rule | Verify |
 | --- | --- | --- |
