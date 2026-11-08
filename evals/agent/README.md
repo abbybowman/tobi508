@@ -153,8 +153,9 @@ findings: [`evals/judging/round2-armc/abc-score.md`](../judging/round2-armc/abc-
 Agent-assisted results, not certified Trusted Tester results.
 
 - **No false PASS or false DNA came from a judge's answer** (A's agent or
-  C's model). The 4 false PASS and 2 missed fail cells in the tool's
-  results were decided by rules alone (4.A, 4.C, 5.D, 9.A), the same in
+  C's model). The 3 false PASS and 2 missed fail cells in the tool's
+  results were decided by rules alone (4.A, 4.C, 5.D, 9.A; a fourth was a
+  slip in the key), the same in
   every A and C run; Agent A relayed them and added none. Agent B: 15-19
   false PASSes per run, its own.
 - **C answered every question** (194 of 194 in each of 3 repeats, 0
@@ -163,7 +164,7 @@ Agent-assisted results, not certified Trusted Tester results.
   wrong, all toward FAIL**, mostly 4.F J1 (focus order) on 5-6 pages.
   Agent A answered fewer (none on 3 pages) and more of those were right.
 - Weighted per criterion: A 50-56, B 40-50, C 29-31; the tool per TT test
-  with A's answers 52-53, with C's 40-42. Leaving a question open scores
+  with A's answers 56-57, with C's 44-46 (after the one adjudication). Leaving a question open scores
   0, a wrong answer -1.
 - Mid-round fixes (delivery only), the stopped attempts and the archive
   are in `evals/judging/round2/` (`attempts/README.md`,
