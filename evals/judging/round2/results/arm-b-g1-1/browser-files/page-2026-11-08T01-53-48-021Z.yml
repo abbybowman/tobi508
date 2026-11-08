@@ -1,0 +1,784 @@
+- generic [active] [ref=f2e1]:
+  - banner:
+    - navigation [ref=f2e2]:
+      - generic [ref=f2e3]:
+        - link [ref=f2e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=f2e5]
+        - link "Scientific Visualization Studio" [ref=f2e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=f2e10]:
+          - listitem [ref=f2e11]:
+            - link "Galleries" [ref=f2e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=f2e13]: 
+              - text: Galleries
+          - listitem [ref=f2e14]:
+            - link "Help" [ref=f2e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=f2e16]: 
+              - text: Help
+          - search [ref=f2e17]:
+            - generic [ref=f2e18]:
+              - textbox "Search..." [ref=f2e19]
+              - generic [ref=f2e20]: Search
+              - button "Clear search text" [ref=f2e21] [cursor=pointer]: 
+              - button "Search!" [ref=f2e22] [cursor=pointer]: 
+  - main [ref=f2e23]:
+    - generic [ref=f2e25]:
+      - heading "Search" [level=1] [ref=f2e26]
+      - generic [ref=f2e27]:
+        - generic [ref=f2e29]:
+          - heading "Search Box" [level=2] [ref=f2e30]
+          - generic [ref=f2e32]:
+            - button "Help" [ref=f2e33] [cursor=pointer]: 
+            - textbox "Search..." [ref=f2e34]
+            - generic [ref=f2e35]: Search
+            - button "Clear search text" [ref=f2e36] [cursor=pointer]: 
+            - button "Search!" [ref=f2e37] [cursor=pointer]: 
+          - generic [ref=f2e39]:
+            - button "Toggle order; currently descending order" [ref=f2e40] [cursor=pointer]:
+              - generic "Toggle order; currently descending order" [ref=f2e41]: 
+              - text: "Sort by:"
+            - combobox "Sort category" [ref=f2e42]:
+              - option "Release date" [selected]
+              - option "Update date"
+              - option "Popularity (last 10 days)"
+              - option "Page ID"
+          - list [ref=f2e44]:
+            - listitem [ref=f2e45]:
+              - link "View the current search in our API" [ref=f2e46] [cursor=pointer]:
+                - /url: /api/search/?nasa_science_categories=Sun
+                - generic [aria-hidden] [ref=f2e47]: 
+            - listitem [ref=f2e48]
+            - listitem [ref=f2e49]:
+              - button "Copy a link to this page" [ref=f2e50] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f2e51]: 
+            - listitem [ref=f2e52]:
+              - link "Share this page on Twitter" [ref=f2e53] [cursor=pointer]:
+                - /url: https://twitter.com/intent/tweet
+                - generic [aria-hidden] [ref=f2e54]: 
+            - listitem [ref=f2e55]:
+              - link "Share this page on Facebook" [ref=f2e56] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=http%3A//svs.gsfc.nasa.gov/search/%3Fnasa_science_categories%3DSun
+                - generic [aria-hidden] [ref=f2e57]: 
+            - listitem [ref=f2e58]
+            - listitem [ref=f2e59]:
+              - generic [ref=f2e60]:
+                - generic [aria-hidden] [ref=f2e61]: 
+                - generic [ref=f2e62]:
+                  - link "(RSS)" [ref=f2e63] [cursor=pointer]:
+                    - /url: /api/search/rss?nasa_science_categories=Sun
+                  - link "(Atom)" [ref=f2e64] [cursor=pointer]:
+                    - /url: /api/search/atom?nasa_science_categories=Sun
+          - text:  
+        - generic [ref=f2e65]:
+          - generic [ref=f2e66]:
+            - heading "Filters" [level=2] [ref=f2e67]
+            - list [ref=f2e70]:
+              - listitem [ref=f2e71]:
+                - heading "NASA Science categories" [level=3] [ref=f2e72]
+                - generic [ref=f2e73]:
+                  - checkbox "Sun (1698)" [checked] [ref=f2e74]
+                  - generic [ref=f2e75]: Sun (1698)
+                - generic [ref=f2e76]:
+                  - checkbox "Earth (393)" [ref=f2e77]
+                  - generic [ref=f2e78]: Earth (393)
+                - generic [ref=f2e79]:
+                  - checkbox "Planets & Moons (283)" [ref=f2e80]
+                  - generic [ref=f2e81]: Planets & Moons (283)
+                - generic [ref=f2e82]:
+                  - checkbox "Universe (115)" [ref=f2e83]
+                  - generic [ref=f2e84]: Universe (115)
+              - separator [ref=f2e85]
+              - listitem [ref=f2e86]:
+                - heading "Keywords" [level=3] [ref=f2e87]
+                - generic [ref=f2e88]:
+                  - checkbox "Earth Science (833)" [ref=f2e89]
+                  - generic [ref=f2e90]: Earth Science (833)
+                - generic [ref=f2e91]:
+                  - checkbox "Sun-earth Interactions (801)" [ref=f2e92]
+                  - generic [ref=f2e93]: Sun-earth Interactions (801)
+                - generic [ref=f2e94]:
+                  - checkbox "Heliophysics (694)" [ref=f2e95]
+                  - generic [ref=f2e96]: Heliophysics (694)
+                - generic [ref=f2e97]:
+                  - checkbox "Solar Activity (656)" [ref=f2e98]
+                  - generic [ref=f2e99]: Solar Activity (656)
+                - generic [ref=f2e100]:
+                  - checkbox "HDTV (613)" [ref=f2e101]
+                  - generic [ref=f2e102]: HDTV (613)
+                - generic [ref=f2e103]:
+                  - checkbox "Space Weather (565)" [ref=f2e104]
+                  - generic [ref=f2e105]: Space Weather (565)
+                - generic [ref=f2e106]:
+                  - checkbox "SDO (524)" [ref=f2e107]
+                  - generic [ref=f2e108]: SDO (524)
+                - generic [ref=f2e109]:
+                  - checkbox "Solar Dynamics Observatory (509)" [ref=f2e110]
+                  - generic [ref=f2e111]: Solar Dynamics Observatory (509)
+                - generic [ref=f2e112]:
+                  - checkbox "Corona (508)" [ref=f2e113]
+                  - generic [ref=f2e114]: Corona (508)
+                - generic [ref=f2e115]:
+                  - checkbox "Solar Flares (442)" [ref=f2e116]
+                  - generic [ref=f2e117]: Solar Flares (442)
+                - button "See all 848 Keywords" [ref=f2e118] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=f2e119]
+              - listitem [ref=f2e120]:
+                - heading "Release date" [level=3] [ref=f2e121]
+                - generic [ref=f2e122]: (Counts shown for all pages)
+              - listitem [ref=f2e123]:
+                - heading "Released within" [level=4] [ref=f2e124]
+              - listitem [ref=f2e125]:
+                - heading [level=3]
+                - generic [ref=f2e126]:
+                  - radio "All time (10606)" [checked] [ref=f2e127]
+                  - generic [ref=f2e128]: All time (10606)
+                - generic [ref=f2e129]:
+                  - radio "Past week (2)" [ref=f2e130]
+                  - generic [ref=f2e131]: Past week (2)
+                - generic [ref=f2e132]:
+                  - radio "Past month (14)" [ref=f2e133]
+                  - generic [ref=f2e134]: Past month (14)
+                - generic [ref=f2e135]:
+                  - radio "Past 3 months (59)" [ref=f2e136]
+                  - generic [ref=f2e137]: Past 3 months (59)
+                - generic [ref=f2e138]:
+                  - radio "Past year (331)" [ref=f2e139]
+                  - generic [ref=f2e140]: Past year (331)
+                - generic [ref=f2e141]:
+                  - radio "This fiscal year (331)" [ref=f2e142]
+                  - generic [ref=f2e143]: This fiscal year (331)
+              - listitem [ref=f2e144]:
+                - heading "Release range" [level=4] [ref=f2e145]
+                - generic [ref=f2e146]:
+                  - generic [ref=f2e147]: From
+                  - textbox "From" [ref=f2e148]
+                - generic [ref=f2e149]:
+                  - generic [ref=f2e150]: To
+                  - textbox "To" [ref=f2e151]
+              - separator [ref=f2e152]
+              - listitem [ref=f2e153]:
+                - heading "Missions" [level=3] [ref=f2e154]
+                - generic [ref=f2e155]:
+                  - checkbox "SDO (516)" [ref=f2e156]
+                  - generic [ref=f2e157]: SDO (516)
+                - generic [ref=f2e158]:
+                  - checkbox "SOHO (119)" [ref=f2e159]
+                  - generic [ref=f2e160]: SOHO (119)
+                - generic [ref=f2e161]:
+                  - checkbox "STEREO (81)" [ref=f2e162]
+                  - generic [ref=f2e163]: STEREO (81)
+                - generic [ref=f2e164]:
+                  - checkbox "Parker Solar Probe (68)" [ref=f2e165]
+                  - generic [ref=f2e166]: Parker Solar Probe (68)
+                - generic [ref=f2e167]:
+                  - checkbox "TRACE (57)" [ref=f2e168]
+                  - generic [ref=f2e169]: TRACE (57)
+                - generic [ref=f2e170]:
+                  - checkbox "Magnetospheric Multiscale (MMS) (40)" [ref=f2e171]
+                  - generic [ref=f2e172]: Magnetospheric Multiscale (MMS) (40)
+                - generic [ref=f2e173]:
+                  - checkbox "THEMIS (40)" [ref=f2e174]
+                  - generic [ref=f2e175]: THEMIS (40)
+                - generic [ref=f2e176]:
+                  - checkbox "IBEX (36)" [ref=f2e177]
+                  - generic [ref=f2e178]: IBEX (36)
+                - generic [ref=f2e179]:
+                  - checkbox "Ionospheric Connection Explorer (ICON) (24)" [ref=f2e180]
+                  - generic [ref=f2e181]: Ionospheric Connection Explorer (ICON) (24)
+                - generic [ref=f2e182]:
+                  - checkbox "LRO (Lunar Reconnaissance Orbiter) (24)" [ref=f2e183]
+                  - generic [ref=f2e184]: LRO (Lunar Reconnaissance Orbiter) (24)
+                - button "See all 83 Missions" [ref=f2e185] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=f2e186]
+              - listitem [ref=f2e187]:
+                - heading "Datasets" [level=3] [ref=f2e188]
+                - generic [ref=f2e189]:
+                  - 'checkbox "AIA 171 (171 Filter) [SDO: AIA] (239)" [ref=f2e190]'
+                  - generic [ref=f2e191]: "AIA 171 (171 Filter) [SDO: AIA] (239)"
+                - generic [ref=f2e192]:
+                  - 'checkbox "AIA 304 (304 Filter) [SDO: AIA] (233)" [ref=f2e193]'
+                  - generic [ref=f2e194]: "AIA 304 (304 Filter) [SDO: AIA] (233)"
+                - generic [ref=f2e195]:
+                  - 'checkbox "AIA 131 (131 Filter) [SDO: AIA] (177)" [ref=f2e196]'
+                  - generic [ref=f2e197]: "AIA 131 (131 Filter) [SDO: AIA] (177)"
+                - generic [ref=f2e198]:
+                  - checkbox "DE421 (JPL DE421) (64)" [ref=f2e199]
+                  - generic [ref=f2e200]: DE421 (JPL DE421) (64)
+                - generic [ref=f2e201]:
+                  - checkbox "[SDO] (45)" [ref=f2e202]
+                  - generic [ref=f2e203]: "[SDO] (45)"
+                - generic [ref=f2e204]:
+                  - checkbox "[TRACE] (39)" [ref=f2e205]
+                  - generic [ref=f2e206]: "[TRACE] (39)"
+                - generic [ref=f2e207]:
+                  - checkbox "SSCweb ephemerides (SSCweb) (37)" [ref=f2e208]
+                  - generic [ref=f2e209]: SSCweb ephemerides (SSCweb) (37)
+                - generic [ref=f2e210]:
+                  - 'checkbox "SDO Continuum (Continuum) [SDO: HMI] (35)" [ref=f2e211]'
+                  - generic [ref=f2e212]: "SDO Continuum (Continuum) [SDO: HMI] (35)"
+                - generic [ref=f2e213]:
+                  - 'checkbox "SOHO/EIT 195 (195 Filter) [SOHO: Extreme-UV Imaging Telescope (EIT)] (32)" [ref=f2e214]'
+                  - generic [ref=f2e215]: "SOHO/EIT 195 (195 Filter) [SOHO: Extreme-UV Imaging Telescope (EIT)] (32)"
+                - generic [ref=f2e216]:
+                  - 'checkbox "DEM (Digital Elevation Map) [LRO: LOLA] (30)" [ref=f2e217]'
+                  - generic [ref=f2e218]: "DEM (Digital Elevation Map) [LRO: LOLA] (30)"
+                - button "See all 233 Datasets" [ref=f2e219] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=f2e220]
+              - listitem [ref=f2e221]:
+                - heading "Series" [level=3] [ref=f2e222]
+                - generic [ref=f2e223]:
+                  - checkbox "Narrated Movies (280)" [ref=f2e224]
+                  - generic [ref=f2e225]: Narrated Movies (280)
+                - generic [ref=f2e226]:
+                  - checkbox "SDO - Footage (152)" [ref=f2e227]
+                  - generic [ref=f2e228]: SDO - Footage (152)
+                - generic [ref=f2e229]:
+                  - checkbox "Heliophysics Breaking News (82)" [ref=f2e230]
+                  - generic [ref=f2e231]: Heliophysics Breaking News (82)
+                - generic [ref=f2e232]:
+                  - checkbox "SDO - Edited Features (27)" [ref=f2e233]
+                  - generic [ref=f2e234]: SDO - Edited Features (27)
+                - generic [ref=f2e235]:
+                  - checkbox "Goddard Shorts (21)" [ref=f2e236]
+                  - generic [ref=f2e237]: Goddard Shorts (21)
+                - generic [ref=f2e238]:
+                  - checkbox "TRACE (21)" [ref=f2e239]
+                  - generic [ref=f2e240]: TRACE (21)
+                - generic [ref=f2e241]:
+                  - checkbox "Five Years of Solar Dynamics Observatory (20)" [ref=f2e242]
+                  - generic [ref=f2e243]: Five Years of Solar Dynamics Observatory (20)
+                - generic [ref=f2e244]:
+                  - checkbox "Interface to Space (20)" [ref=f2e245]
+                  - generic [ref=f2e246]: Interface to Space (20)
+                - generic [ref=f2e247]:
+                  - checkbox "SDO Pre-launch (20)" [ref=f2e248]
+                  - generic [ref=f2e249]: SDO Pre-launch (20)
+                - generic [ref=f2e250]:
+                  - checkbox "SDO First Light (19)" [ref=f2e251]
+                  - generic [ref=f2e252]: SDO First Light (19)
+                - button "See all 131 Series" [ref=f2e253] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+              - separator [ref=f2e254]
+              - listitem [ref=f2e255]:
+                - heading "Media" [level=3] [ref=f2e256]
+                - generic [ref=f2e257]:
+                  - checkbox "Movies (1635)" [ref=f2e258]
+                  - generic [ref=f2e259]: Movies (1635)
+                - generic [ref=f2e260]:
+                  - checkbox "Frames (746)" [ref=f2e261]
+                  - generic [ref=f2e262]: Frames (746)
+                - generic [ref=f2e263]:
+                  - checkbox "Audio tracks (6)" [ref=f2e264]
+                  - generic [ref=f2e265]: Audio tracks (6)
+                - generic [ref=f2e266]:
+                  - checkbox "Closed captions (336)" [ref=f2e267]
+                  - generic [ref=f2e268]: Closed captions (336)
+                - generic [ref=f2e269]:
+                  - checkbox "Images (1698)" [ref=f2e270]
+                  - generic [ref=f2e271]: Images (1698)
+                - generic [ref=f2e272]:
+                  - checkbox "Hyperwall shows (201)" [ref=f2e273]
+                  - generic [ref=f2e274]: Hyperwall shows (201)
+                - generic [ref=f2e275]:
+                  - checkbox "Presentations (32)" [ref=f2e276]
+                  - generic [ref=f2e277]: Presentations (32)
+                - generic [ref=f2e278]:
+                  - checkbox "Other media files (94)" [ref=f2e279]
+                  - generic [ref=f2e280]: Other media files (94)
+              - separator [ref=f2e281]
+              - listitem [ref=f2e282]:
+                - heading "Result type" [level=3] [ref=f2e283]
+                - generic [ref=f2e284]:
+                  - checkbox "Animation (111)" [ref=f2e285]
+                  - generic [ref=f2e286]: Animation (111)
+                - generic [ref=f2e287]:
+                  - checkbox "B-Roll (15)" [ref=f2e288]
+                  - generic [ref=f2e289]: B-Roll (15)
+                - generic [ref=f2e290]:
+                  - checkbox "Hyperwall Visual (24)" [ref=f2e291]
+                  - generic [ref=f2e292]: Hyperwall Visual (24)
+                - generic [ref=f2e293]:
+                  - checkbox "Infographic (22)" [ref=f2e294]
+                  - generic [ref=f2e295]: Infographic (22)
+                - generic [ref=f2e296]:
+                  - checkbox "Interactive (2)" [ref=f2e297]
+                  - generic [ref=f2e298]: Interactive (2)
+                - generic [ref=f2e299]:
+                  - checkbox "Produced Video (771)" [ref=f2e300]
+                  - generic [ref=f2e301]: Produced Video (771)
+                - generic [ref=f2e302]:
+                  - checkbox "Visualization (753)" [ref=f2e303]
+                  - generic [ref=f2e304]: Visualization (753)
+              - separator [ref=f2e305]
+              - listitem [ref=f2e306]:
+                - heading "Created by" [level=3] [ref=f2e307]
+                - generic [ref=f2e308]:
+                  - checkbox "Scientific Visualization Studio (767)" [ref=f2e309]
+                  - generic [ref=f2e310]: Scientific Visualization Studio (767)
+                - generic [ref=f2e311]:
+                  - checkbox "Goddard Media Studios (794)" [ref=f2e312]
+                  - generic [ref=f2e313]: Goddard Media Studios (794)
+                - generic [ref=f2e314]:
+                  - checkbox "Conceptual Image Lab (107)" [ref=f2e315]
+                  - generic [ref=f2e316]: Conceptual Image Lab (107)
+              - separator [ref=f2e317]
+              - listitem [ref=f2e318]:
+                - heading "Developed for" [level=3] [ref=f2e319]
+                - generic [ref=f2e320]:
+                  - checkbox "Hyperwall (321)" [ref=f2e321]
+                  - generic [ref=f2e322]: Hyperwall (321)
+                - generic [ref=f2e323]:
+                  - checkbox "Earth Information Center (1)" [ref=f2e324]
+                  - generic [ref=f2e325]: Earth Information Center (1)
+              - separator [ref=f2e326]
+              - listitem [ref=f2e327]:
+                - heading "People" [level=3] [ref=f2e328]
+                - generic [ref=f2e329]:
+                  - checkbox "Tom Bridgman (755)" [ref=f2e330]
+                  - generic [ref=f2e331]: Tom Bridgman (755)
+                - generic [ref=f2e332]:
+                  - checkbox "Laurence Schuler (316)" [ref=f2e333]
+                  - generic [ref=f2e334]: Laurence Schuler (316)
+                - generic [ref=f2e335]:
+                  - checkbox "Ian Jones (314)" [ref=f2e336]
+                  - generic [ref=f2e337]: Ian Jones (314)
+                - generic [ref=f2e338]:
+                  - checkbox "Karen Fox (216)" [ref=f2e339]
+                  - generic [ref=f2e340]: Karen Fox (216)
+                - generic [ref=f2e341]:
+                  - checkbox "Greg Shirah (95)" [ref=f2e342]
+                  - generic [ref=f2e343]: Greg Shirah (95)
+                - generic [ref=f2e344]:
+                  - checkbox "William D. Pesnell (88)" [ref=f2e345]
+                  - generic [ref=f2e346]: William D. Pesnell (88)
+                - generic [ref=f2e347]:
+                  - checkbox "Ernie Wright (82)" [ref=f2e348]
+                  - generic [ref=f2e349]: Ernie Wright (82)
+                - generic [ref=f2e350]:
+                  - checkbox "Scott Wiessinger (70)" [ref=f2e351]
+                  - generic [ref=f2e352]: Scott Wiessinger (70)
+                - generic [ref=f2e353]:
+                  - checkbox "Joy Ng (51)" [ref=f2e354]
+                  - generic [ref=f2e355]: Joy Ng (51)
+                - generic [ref=f2e356]:
+                  - checkbox "Lacey Young (47)" [ref=f2e357]
+                  - generic [ref=f2e358]: Lacey Young (47)
+                - button "See all 898 People" [ref=f2e359] [cursor=pointer]
+                - option "Count" [selected]
+                - option "Name"
+          - generic [ref=f2e360]:
+            - heading "Results" [level=2] [ref=f2e361]
+            - generic [ref=f2e363]:
+              - heading "1698 results for:" [level=4] [ref=f2e364]
+              - heading "Selected filters" [level=4] [ref=f2e365]
+              - list [ref=f2e366]:
+                - listitem [ref=f2e367]:
+                  - generic: "NASA Science categories: Sun"
+                  - button "Remove filter from selection" [ref=f2e368] [cursor=pointer]:
+                    - generic [aria-hidden] [ref=f2e369]: 
+            - generic [ref=f2e372]:
+              - heading "Results" [level=3] [ref=f2e373]
+              - list [ref=f2e374]:
+                - generic [ref=f2e375]:
+                  - separator [ref=f2e377]
+                  - heading "Page 1" [level=4] [ref=f2e379]
+                  - separator [ref=f2e381]
+                - listitem [ref=f2e382]:
+                  - generic [ref=f2e383]:
+                    - generic [ref=f2e384]:
+                      - link "Go to this page" [ref=f2e385] [cursor=pointer]:
+                        - /url: /15114/
+                      - generic [ref=f2e386]: "ID: 15114"
+                      - generic [ref=f2e387]:
+                        - generic [aria-hidden] [ref=f2e388]: 
+                        - text: B-Roll
+                      - text: 
+                    - generic [ref=f2e390]:
+                      - heading [level=3] [ref=f2e391]:
+                        - link "Star Charts for ESCAPADE’s Earth Flyby" [ref=f2e392] [cursor=pointer]:
+                          - /url: /15114/
+                      - generic [ref=f2e393]:
+                        - generic [ref=f2e394]: November 2, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e396] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e397]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e398] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e399]: 
+                      - paragraph [ref=f2e401]:
+                        - text: In November 2026, each of NASA’s two
+                        - strong [ref=f2e402]: ESCAPADE
+                        - text: (Escape and Plasma Acceleration and Dynamics Explorers) spacecraft will perform a “powered” flyby of Earth, combining Earth’s gravity with an approximately 9-minute engine burn, to slingshot itself toward Mars. || 15114 || Star Charts for ESCAPADE’s Earth Flyby || In November 2026, each of NASA’s two
+                        - strong [ref=f2e403]:
+                          - link "ESCAPADE" [ref=f2e404] [cursor=pointer]:
+                            - /url: https://science.nasa.gov/mission/escapade
+                        - text: (Escape and Plasma Acceleration and Dynamics Explorers) spacecraft will perform a “powered” flyby of Earth, combining Earth’s gravity with an approximately 9-minute engine burn, to slingshot itself toward Mars. The first ESCAPADE spacecraft will make its closest approach and complete its engine burn around 5 a.m. EST on Nov. 7, and the second will do so two days later, around 6 a.m. EST on Nov. 9. In the hours before, during, and after each spacecraft’s closest approach, observers on the ground might be able to spot the spacecraft in the night sky. However, a telescope will most likely be needed to find it as a dim point moving against the stars. Each spacecraft will appear to move through the sky relatively slowly and take several hours to cross overhead. From the U.S., each spacecraft will be below the horizon during its closest approach to Earth. Therefore, the spacecraft will be best viewed in the western sky an hour or two before closest approach. From some viewing locations, the spacecraft will also reappear in the eastern sky an hour or two after its closest approach.The star charts below show the path the spacecraft will take across the sky for several different locations in the U.S. The colors along the path represent the altitude of the spacecraft, which will decrease during the time shown, with red showing the lowest altitude along the path (when the spacecraft should be brightest). If your viewing location is not represented here, you can use the NASA Jet Propulsion Laboratory’s
+                        - link "Horizons System" [ref=f2e405] [cursor=pointer]:
+                          - /url: https://ssd.jpl.nasa.gov/horizons/app.html#/
+                        - text: "to get coordinates for the two spacecraft at different times for your location.Locations included below:"
+                        - emphasis [ref=f2e406]: Berkeley, California
+                        - text: Boulder, Colorado
+                        - emphasis [ref=f2e407]: Chicago, Illinois
+                        - text: Greenbelt, Maryland (NASA’s Goddard Space Flight Center)
+                        - emphasis [ref=f2e408]: Goldstone, California
+                        - text: Honolulu, Hawaii
+                        - emphasis [ref=f2e409]: New York, New York
+                        - text: Portland, Oregon
+                        - emphasis [ref=f2e410]: Seattle, Washington
+                        - text: Tempe, Arizona
+                        - emphasis [ref=f2e411]:
+                          - text: Temple, TexasRead more about ESCAPADE's powered Earth flyby on
+                          - link "NASA's ESCAPADE blog" [ref=f2e412] [cursor=pointer]:
+                            - /url: https://science.nasa.gov/blogs/escapade/2026/11/02/nasas-twin-escapade-spacecraft-to-slingshot-past-earth-on-way-to-mars/
+                          - text: . || Berkeley, California ||
+                        - emphasis [ref=f2e413]: Animated map, first spacecraft
+                        - emphasis [ref=f2e414]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Berkeley, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to about 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. (03:00) PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Berkeley-star-chart-Nov7-movie.mp4 (1080x1080) [8.6 MB] ||"
+                        - emphasis [ref=f2e415]: Animated map, second spacecraft
+                        - emphasis [ref=f2e416]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Berkeley, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again around 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Berkeley-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Boulder, Colorado ||"
+                        - emphasis [ref=f2e417]: Still map, first spacecraft
+                        - emphasis [ref=f2e418]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 6 to 2 a.m. (02:00) MT on Nov. 7. The positions of the constellations, stars, and planets are shown as they will appear at 2 a.m. MT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Boulder-star-chart-Nov7.png (1098x711) [325.7 KB] ||"
+                        - emphasis [ref=f2e419]: Still map, second spacecraft
+                        - emphasis [ref=f2e420]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 8 to 2:45 a.m. (02:45) MT on Nov. 9. The positions of the constellations, stars, and planets are shown as they will appear at 2:45 a.m. MT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Boulder-star-chart-Nov9.png (1267x840) [308.0 KB] ||"
+                        - emphasis [ref=f2e421]: Animated map, first spacecraft
+                        - emphasis [ref=f2e422]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 6 to 2 a.m. (02:00) MT on Nov. 7. The spacecraft rises again around 4 a.m. (04:00) MT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (starting around 5 a.m. MT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Boulder-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e423]: Animated map, second spacecraft
+                        - emphasis [ref=f2e424]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Boulder, Colorado, from approximately 7 p.m. (19:00) Mountain Time (MT) on Nov. 8 to 3 a.m. (03:00) MT on Nov. 9. The spacecraft rises again before 5 a.m. (05:00) MT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. MT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Boulder-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Chicago, Illinois ||"
+                        - emphasis [ref=f2e425]: Animated map, first spacecraft
+                        - emphasis [ref=f2e426]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will travel across the sky as seen from Chicago, Illinois, from approximately 7 p.m. (19:00) Central Time (CT) on Nov. 6 to after 2 a.m. (02:00) CT on Nov. 7. The spacecraft rises again before 5 a.m. (05:00) CT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (starting around 5 a.m. CT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Chicago-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e427]: Animated map, second spacecraft
+                        - emphasis [ref=f2e428]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will travel across the sky as seen from Chicago, Illinois, from approximately 7 p.m. (19:00) Central Time (CT) on Nov. 8 to after 3 a.m. (03:00) CT on Nov. 9. The spacecraft rises again around 5 a.m. CT on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Chicago-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || NASA's Goddard Space Flight Center, Greenbelt, Maryland ||"
+                        - emphasis [ref=f2e429]: Still map, first spacecraft
+                        - emphasis [ref=f2e430]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 6 to after 3 a.m. (03:00) ET on Nov. 7. The positions of the constellations, stars, and planets are shown as they will appear at 3:30 a.m. ET, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Greenbelt-star-chart-Nov7.png (1263x840) [312.2 KB] ||"
+                        - emphasis [ref=f2e431]: Still map, second spacecraft
+                        - emphasis [ref=f2e432]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 8 to just after 4 a.m. (04:00) ET on Nov. 9. The positions of the constellations, stars, and planets are shown as they will appear at 4:15 a.m. ET, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Greenbelt-star-chart-Nov9.png (1276x840) [319.1 KB] ||"
+                        - emphasis [ref=f2e433]: Animated map, first spacecraft
+                        - emphasis [ref=f2e434]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 6 to after 3 a.m. (03:00) ET on Nov. 7. The spacecraft rises again around 5 a.m. ET on Nov. 7, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Greenbelt-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e435]: Animated map, second spacecraft
+                        - emphasis [ref=f2e436]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Goddard Space Flight Center in Greenbelt, Maryland, from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 8 to after 4 a.m. (04:00) ET on Nov. 9. The spacecraft rises again around 6 a.m. ET on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Greenbelt-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] ||"
+                        - emphasis [ref=f2e437]: Horizon view, first spacecraft
+                        - emphasis [ref=f2e438]: "This view shows the direction and elevation of the first ESCAPADE spacecraft in the sky above NASA’s Goddard Space Flight Center in Greenbelt, Maryland, at different times between 7 p.m. Eastern Time (ET) on Nov. 6 to just after 3 a.m. ET on Nov. 7. The positions of the stars and constellations will change over this time span and are only accurate for 11 p.m. ET.Credit: NASA/Conceptual Image Lab || ESCAPADE_Path_Nov6_1080x1080.jpg (1080x1080) [252.1 KB] || ESCAPADE_Path_Nov6.png (5000x5000) [799.3 KB] ||"
+                        - emphasis [ref=f2e439]: Horizon view, second spacecraft
+                        - emphasis [ref=f2e440]: "This view shows the direction and elevation of the second ESCAPADE spacecraft in the sky above NASA’s Goddard Space Flight Center in Greenbelt, Maryland, at different times between 7 p.m. Eastern Time (ET) on Nov. 8 to just after 4 a.m. ET on Nov. 9. The positions of the stars and constellations will change over this time span and are only accurate for 11 p.m. ET.Credit: NASA/Conceptual Image Lab || ESCAPADE_Path_Nov8_1080x1080.jpg (1080x1080) [254.6 KB] || ESCAPADE_Path_Nov8.png (5000x5000) [823.2 KB] || Goldstone, California ||"
+                        - emphasis [ref=f2e441]: Still map, first spacecraft
+                        - emphasis [ref=f2e442]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to after 1 a.m. (01:00) PT on Nov. 7. The positions of the constellations, stars, and planets are shown as they will appear at 1:15 a.m. PT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Goldstone-star-chart-Nov7.png (1312x840) [309.7 KB] ||"
+                        - emphasis [ref=f2e443]: Still map, second spacecraft
+                        - emphasis [ref=f2e444]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to 2 a.m. (02:00) PT on Nov. 9. The positions of the constellations, stars, and planets are shown as they will appear at 2 a.m. PT, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Goldstone-star-chart-Nov9.png (1290x840) [313.5 KB] ||"
+                        - emphasis [ref=f2e445]: Animated map, first spacecraft
+                        - emphasis [ref=f2e446]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to after 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (around 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Goldstone-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e447]: Animated map, second spacecraft
+                        - emphasis [ref=f2e448]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from NASA’s Deep Space Network facility in Goldstone, California, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again before 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (around 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Goldstone-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Honolulu, Hawaii ||"
+                        - emphasis [ref=f2e449]: Still map, first spacecraft
+                        - emphasis [ref=f2e450]: "The color-coded arc in this star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) to after 11 p.m. (23:00) Hawaii Standard Time (HST) on Nov. 6. Dots appear along the path when the spacecraft is moving the fastest across the sky. The positions of the constellations, stars, and planets are shown as they will appear at 11:30 p.m. HST, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Honolulu-star-chart-Nov7.png (1272x840) [302.7 KB] ||"
+                        - emphasis [ref=f2e451]: Still map, second spacecraft
+                        - emphasis [ref=f2e452]: "The color-coded arc in this star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) Hawaii Standard Time (HST) on Nov. 8 to after 12 a.m. (00:00) HST on Nov. 9. Dots appear along the path when the spacecraft is moving the fastest across the sky. The positions of the constellations, stars, and planets are shown as they will appear at 12:30 a.m. (00:30) HST, when the spacecraft is at the lowest altitude along the path (represented by the small white circle at the red end of the path). Refer to the animated map for accurate positions of the constellations, stars, and planets at other times.Credit: Advanced Space || Honolulu-star-chart-Nov9.png (1272x840) [301.9 KB] ||"
+                        - emphasis [ref=f2e453]: Animated map, first spacecraft
+                        - emphasis [ref=f2e454]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) to after 11 p.m. (23:00) Hawaii Standard Time (HST) on Nov. 6. The spacecraft rises again before 3 a.m. HST on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (around 5 a.m. HST on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Honolulu-star-chart-Nov7-movie.mp4 (1080x1080) [8.4 MB] ||"
+                        - emphasis [ref=f2e455]: Animated map, second spacecraft
+                        - emphasis [ref=f2e456]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Honolulu, Hawaii, from approximately 8 p.m. (20:00) Hawaii Standard Time (HST) on Nov. 8 to after 12 a.m. (00:00) HST on Nov. 9. The spacecraft rises again before 3 a.m. (03:00) HST on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. HST on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Honolulu-star-chart-Nov9-movie.mp4 (1080x1080) [8.5 MB] || New York, New York ||"
+                        - emphasis [ref=f2e457]: Animated map, first spacecraft
+                        - emphasis [ref=f2e458]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from New York City from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 6 to after 3 a.m. (03:00) ET on Nov. 7. The spacecraft rises again after 5 a.m. ET on Nov. 7, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || NewYork-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e459]: Animated map, second spacecraft
+                        - emphasis [ref=f2e460]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from New York City from approximately 7 p.m. (19:00) Eastern Time (ET) on Nov. 8 to after 4 a.m. (04:00) ET on Nov. 9. The spacecraft rises again around 6 a.m. ET on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || NewYork-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] || Portland, Oregon ||"
+                        - emphasis [ref=f2e461]: Animated map, first spacecraft
+                        - emphasis [ref=f2e462]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Portland, Oregon, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to about 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. (03:00) PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Portland-star-chart-Nov7-movie.mp4 (1080x1080) [8.8 MB] ||"
+                        - emphasis [ref=f2e463]: Animated map, second spacecraft
+                        - emphasis [ref=f2e464]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Portland, Oregon, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again before 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Portland-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] || Seattle, Washington ||"
+                        - emphasis [ref=f2e465]: Animated map, first spacecraft
+                        - emphasis [ref=f2e466]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Seattle, Washington, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 6 to about 1 a.m. (01:00) PT on Nov. 7. The spacecraft rises again around 3 a.m. (03:00) PT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Seattle-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e467]: Animated map, second spacecraft
+                        - emphasis [ref=f2e468]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Seattle, Washington, from approximately 7 p.m. (19:00) Pacific Time (PT) on Nov. 8 to about 2 a.m. (02:00) PT on Nov. 9. The spacecraft rises again before 4 a.m. (04:00) PT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. PT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Seattle-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Tempe, Arizona ||"
+                        - emphasis [ref=f2e469]: Animated map, first spacecraft
+                        - emphasis [ref=f2e470]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will take across the sky as seen from Tempe, Arizona, from approximately 8 p.m. (20:00) Mountain Time (MT) on Nov. 6 to after 2 a.m. (02:00) MT on Nov. 7. The spacecraft rises again around 4 a.m. (04:00) MT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (after 5 a.m. MT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Tempe-star-chart-Nov7-movie.mp4 (1080x1080) [8.8 MB] ||"
+                        - emphasis [ref=f2e471]: Animated map, second spacecraft
+                        - emphasis [ref=f2e472]: "The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will take across the sky as seen from Tempe, Arizona, from approximately 8 p.m. (20:00) Mountain Time (MT) on Nov. 8 to 3 a.m. (03:00) MT on Nov. 9. The spacecraft rises again before 5 a.m. (05:00) MT on Nov. 9. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (before 6 a.m. MT on Nov. 9). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Tempe-star-chart-Nov9-movie.mp4 (1080x1080) [8.8 MB] || Temple, Texas ||"
+                        - emphasis [ref=f2e473]: Animated map, first spacecraft
+                        - emphasis [ref=f2e474]: "The color-coded arc in this animated star chart shows the path that the first ESCAPADE spacecraft will travel across the sky as seen from Temple, Texas, from approximately 8 p.m. (20:00) Central Time (CT) on Nov. 6 to after 2 a.m. (02:00) CT on Nov. 7. The spacecraft rises again before 5 a.m. (05:00) CT on Nov. 7. Gray at the end of the path indicates when the spacecraft becomes unobservable as the sky brightens with sunlight (before 6 a.m. CT on Nov. 7). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Temple-star-chart-Nov7-movie.mp4 (1080x1080) [8.7 MB] ||"
+                        - emphasis [ref=f2e475]: Animated map, second spacecraft
+                        - text: "*The color-coded arc in this animated star chart shows the path that the second ESCAPADE spacecraft will travel across the sky as seen from Temple, Texas, from approximately 8 p.m. (20:00) Central Time (CT) on Nov. 8 to after 3 a.m. (03:00) CT on Nov. 9. The spacecraft rises again after 5 a.m. CT on Nov. 9, but the sky is too bright with sunlight to see the spacecraft then (indicated by gray along the path). Dots appear along the path when the spacecraft is moving the fastest across the sky. The animation shows how the positions of the constellations change over time as the spacecraft crosses the sky. Credit: Advanced Space || Temple-star-chart-Nov9-movie.mp4 (1080x1080) [8.7 MB] || Earth || Sun || Atmospheric Escape || Corona || ESCAPADE || Gravity Assist || Heliophysics || magnetic field || Magnetosphere || map || Mars || Mars Arrival || Mars Orbit Insertion || Mars Orbiter Mission || Mars Upper Atmosphere || Martian Atmosphere || Orbiter || Sky Map || Skymap || Solar Wind || Space Weather || Spacecraft || Sun || Escape and Plasma Acceleration and Dynamics Explorers (ESCAPADE) || Vanessa Thomas (eMITS) as Writer ||"
+                      - link "Go to this page" [ref=f2e476] [cursor=pointer]:
+                        - /url: /15114/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e477]: 
+                - listitem [ref=f2e478]:
+                  - generic [ref=f2e479]:
+                    - generic [ref=f2e480]:
+                      - link [ref=f2e481] [cursor=pointer]:
+                        - /url: /5672/
+                        - img "A still image of the eclipse diagram. The view is centered on Earth's shadow, with outlines of the umbra and penumbra. The Moon is rendered at five different times as it passes through the shadow from right to left." [ref=f2e482]
+                      - generic [ref=f2e483]: "ID: 5672"
+                      - generic [ref=f2e484]:
+                        - generic [aria-hidden] [ref=f2e485]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=f2e487]:
+                      - heading [level=3] [ref=f2e488]:
+                        - link "August 27-28, 2026 Deep Partial Lunar Eclipse" [ref=f2e489] [cursor=pointer]:
+                          - /url: /5672/
+                      - generic [ref=f2e490]:
+                        - generic [ref=f2e491]: August 21, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e493] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e494]: 
+                        - 'link "NASA Science Category: Planets & Moons" [ref=f2e495] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Planets%20%26%20Moons
+                          - generic [aria-hidden] [ref=f2e496]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e497] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e498]: 
+                      - paragraph [ref=f2e500]:
+                        - text: On August 28, 2026 (the evening of the 27th in some time zones), the Moon passes into the shadow of Earth, creating a deep partial lunar eclipse. At the moment of greatest eclipse, 4:13 a.m. Univeral Time, 96.3% of the Moon's disk will be within Earth's umbra. The Americas are centrally located for observing this eclipse. || 5672 || August 27-28, 2026 Deep Partial Lunar Eclipse || The Moon moves right to left through Earth's penumbra and umbra shadows. At various times, a copy of the Moon is left behind along with its associated UTC time, and this forms a lunar eclipse diagram showing different stages of the eclipse. || eclipse_202608_movie.jpg (1920x1080) [186.0 KB] || eclipse_202608_utc_720p30.mp4 (1280x720) [7.6 MB] || eclipse_202608_utc_2160p30.mp4 (3840x2160) [38.8 MB] || eclipse_202608_utc_1080p30.mp4 (1920x1080) [13.8 MB] || eclipse_202608_utc_360p30.mp4 (640x360) [2.8 MB] || 3840x2160_16x9_30p (3840x2160) [2791 Item(s)] || On August 28, 2026 (the evening of the 27th in some time zones), the Moon passes into the shadow of Earth, creating a deep partial eclipse. At the moment of greatest eclipse, 4:13 a.m. Universal Time, 96.3% of the Moon's disk is within Earth's umbra, the central part of the shadow where the Sun is completely blocked by Earth. This part of the eclipse is visible in the Americas (except Alaska and northwestern Canada), western Europe and western Africa.The penumbra is the part of Earth's shadow where the Sun is only partially covered by Earth. The effect of the penumbra on the Moon's appearance is subtle. But after the partial phase begins, at 2:34 UTC (10:34 p.m. Eastern on the night of the 27th), the umbra's dramatic effect is easily visible as it takes an increasingly large bite out of the disk of the full Moon. Less than an hour later, the part of the Moon still in sunlight will be small enough for observers' eyes to adapt to darkness and perceive the coppery color of the part of the Moon within the umbra. The visualizations here mimic this dark adaptation by increasing the apparent photographic exposure around the time of greatest eclipse.This eclipse is a member of
+                        - link "Saros 138" [ref=f2e501] [cursor=pointer]:
+                          - /url: https://eclipse.gsfc.nasa.gov/LEsaros/LEsaros138.html
+                        - text: . The eclipses in a given
+                        - link "saros series" [ref=f2e502] [cursor=pointer]:
+                          - /url: https://en.wikipedia.org/wiki/Saros_(astronomy)
+                        - text: are separated by 18 years, 11 days, 8 hours. The previous eclipse in this saros series occurred on August 16, 2008, and the next takes place on September 7, 2044. || Obscuration Versus Magnitude || Two measures are used to describe how much of the Moon is within the umbra shadow at the height of a lunar eclipse. Umbra magnitude, the value found for example on
+                        - link "Fred Espenak's NASA eclipse site" [ref=f2e503] [cursor=pointer]:
+                          - /url: https://eclipse.gsfc.nasa.gov/LEdecade/LEdecade2021.html
+                        - text: ", is the fraction of the"
+                        - strong [ref=f2e504]: diameter
+                        - text: of the Moon covered by the umbra, while obscuration (the 96.3% number here) is the
+                        - strong [ref=f2e505]: area
+                        - text: covered by the umbra.Magnitude is easier to calculate and can tell you something extra about the nature of an eclipse. Eclipse magnitude can be greater than 1.0 or less than 0.0. Values greater than 1.0 indicate the depth and duration of totality by measuring how close the Moon gets to the center of the umbra. Negative magnitudes denote penumbral eclipses, when the Moon misses the umbra entirely. In natural language, the magnitude of a partial lunar eclipse should be qualified by saying something like "93% of
+                        - strong [ref=f2e506]: the width of
+                        - text: "the Moon\" will be within the umbra. For total and penumbral eclipses, such as the June 2029 total lunar eclipse at magnitude 1.84, this phrasing can't express what the number means.Obscuration is more intuitive — it's always between 0 and 1 — and it more closely matches the visual experience. You can say without qualification that \"96.3% of the Moon's disk\" will be within the umbra. || A still image of the eclipse diagram. || eclipse_202608_utc_preview.jpg (1920x1080) [190.4 KB] || eclipse_202608_utc.tif (3840x2160) [2.8 MB] || A world map showing where the eclipse is visible at different phases. Contours mark the boundary around the part of Earth where each phase is visible. The start of the partial phase, for example, is visible everywhere within the orange contour. The map is centered on 63°8'W, the sublunar point at greatest eclipse (the longitude where the Moon is highest in the sky). The eclipse can't be seen in the gray areas outside the contours. || eclipse_202608_vismap_preview.jpg (1920x1080) [352.8 KB] || eclipse_202608_vismap.tif (3840x2160) [6.2 MB] || Earth || Planets & Moons || Sun || Blood Moon || LRO || Lunar Eclipse || Lunar Reconnaissance Orbiter || Moon || Sun-Earth-Moon Interactions || LRO (Lunar Reconnaissance Orbiter) || DE421 (JPL DE421) || LROC WAC Color Mosaic (Natural Color Hapke Normalized WAC Mosaic) [Lunar Reconnaissance Orbiter: LRO Camera] || DEM (Digital Elevation Map) [LRO: LOLA] || 5MCLE (Five Millennium Canon of Lunar Eclipses) || Ernie Wright (Science and Technology Corporation) as Visualizer ||"
+                      - link "Go to this page" [ref=f2e507] [cursor=pointer]:
+                        - /url: /5672/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e508]: 
+                - listitem [ref=f2e509]:
+                  - generic [ref=f2e510]:
+                    - generic [ref=f2e511]:
+                      - link "Go to this page" [ref=f2e512] [cursor=pointer]:
+                        - /url: /15077/
+                      - generic [ref=f2e513]: "ID: 15077"
+                      - generic [ref=f2e514]:
+                        - generic [aria-hidden] [ref=f2e515]: 
+                        - text: B-Roll
+                      - text: 
+                    - generic [ref=f2e517]:
+                      - heading [level=3] [ref=f2e518]:
+                        - link "Alaskan Aurora Time Lapse" [ref=f2e519] [cursor=pointer]:
+                          - /url: /15077/
+                      - generic [ref=f2e520]:
+                        - generic [ref=f2e521]: August 18, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e523] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e524]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e525] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e526]: 
+                      - paragraph [ref=f2e528]:
+                        - text: This time lapse of the aurora borealis, or the northern lights, was captured in Great Kobuk Valley National Park in Alaska on September 16, 2025. || 15077 || Alaskan Aurora Time Lapse || This time lapse of the aurora borealis, or the northern lights, was captured in Great Kobuk Valley National Park in Alaska on September 16, 2025. Aurora is caused when the outflow of charged particles from the Sun interact with Earth’s magnetic shield, often depositing and accumulating energy there. When this energy is finally released, much of it rains down on our atmosphere, resulting in the colorful lights of the aurora. The color of an aurora depends on the type of gas that is hit and where that gas is located in the atmosphere. Green aurora occurs when oxygen in Earth’s atmosphere at roughly between 60 to 120 miles (100-200 km) altitude is excited to different energy levels. This video was captured for an episode of NASA’s
+                        - link "Our Alien Earth" [ref=f2e529] [cursor=pointer]:
+                          - /url: https://science.nasa.gov/astrobiology/multimedia/our-alien-earth/
+                        - text: ". || Credit: NASA/Mike Toillion || 15077_AuroraTimelapse_4K_YouTube.mp4 (3840x2160) [107.4 MB] || 15077_AuroraTimelapse_4K_ProRes.mov (4240x2832) [1.8 GB] || 15077_Thumbnail.jpg (1920x1080) [975.7 KB] || Earth || Sun || Alaska || aurora || Aurora Borealis || Auroral Substorm || Earth || Great Kobuk Valley National Park || Heliophysics || Magnetosphere || National Parks || Northern Lights || Solar Wind || Sun || Sun and Earth || Sun-earth Interactions || Time Lapse || Mike Toillion (Amentum Services, Inc.) as Videographer ||"
+                      - link "Go to this page" [ref=f2e530] [cursor=pointer]:
+                        - /url: /15077/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e531]: 
+                - listitem [ref=f2e532]:
+                  - generic [ref=f2e533]:
+                    - generic [ref=f2e534]:
+                      - link [ref=f2e535] [cursor=pointer]:
+                        - /url: /15075/
+                        - 'img "NASA''s WB-57 aircraft prepares for the Aug. 12, 2026, total solar eclipse at Keflavik airport in Iceland. During totality, the aircraft captures science observations of the corona, the Sun''s outer atmosphere from the skies.Credit: NASA/Abbey Interrante" [ref=f2e536]'
+                      - generic [ref=f2e537]: "ID: 15075"
+                      - generic [ref=f2e538]:
+                        - generic [aria-hidden] [ref=f2e539]: 
+                        - text: Produced Video
+                      - text: 
+                    - generic [ref=f2e541]:
+                      - heading [level=3] [ref=f2e542]:
+                        - link "2026 Total Solar Eclipse Imagery - Science Experiments" [ref=f2e543] [cursor=pointer]:
+                          - /url: /15075/
+                      - generic [ref=f2e544]:
+                        - generic [ref=f2e545]: August 12, 2026
+                        - 'link "NASA Science Category: Sun" [ref=f2e547] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e548]: 
+                      - paragraph [ref=f2e550]: "On Aug. 12, 2026, a total solar eclipse will swept across Greenland, Iceland, northern Russia, the Atlantic Ocean, Spain, and a small corner of Portugal.Below is a collection of imagery from the 2026 total solar eclipse. || || 15075 || 2026 Total Solar Eclipse Imagery - Science Experiments || On Aug. 12, 2026, a total solar eclipse will swept across Greenland, Iceland, northern Russia, the Atlantic Ocean, Spain, and a small corner of Portugal.Below is a collection of imagery from the 2026 total solar eclipse. || NASA's WB-57 aircraft witnessed the Aug. 12, 2026, total solar eclipse from the skies of Iceland. Credit: NASA || 2026Eclipse_WB57GoPro_Totality_H264_1080.00980_print.jpg (1024x576) [105.5 KB] || 2026Eclipse_WB57GoPro_Totality_H264_1080.00980_searchweb.png (320x180) [71.3 KB] || 2026Eclipse_WB57GoPro_Totality_H264_1080.00980_web.png (320x180) [71.3 KB] || 2026Eclipse_WB57GoPro_Totality_H264_1080.00980_thm.png (80x40) [6.3 KB] || 2026Eclipse_WB57GoPro_Totality_H264_1080.mp4 (1920x1080) [1.3 GB] || 2026Eclipse_WB57GoPro_Totality_H264-4K.mp4 (3840x2160) [1.3 GB] || 2026Eclipse_WB57GoPro_Totality_ProRes422_1080.mov (1920x1080) [14.7 GB] || 2026Eclipse_WB57GoPro_Totality_ProRes422-4K.mov (3840x2160) [56.0 GB] || NASA's WB-57 aircraft departed from Keflavik Airport in Iceland to observe the Aug. 12, 2026, total solar eclipse from the skies. Credit: NASA || 2026Eclipse_WB57GoPro_Flight_H264-1080.00001_print.jpg (1024x576) [162.7 KB] || 2026Eclipse_WB57GoPro_Flight_H264-1080.00001_searchweb.png (320x180) [85.2 KB] || 2026Eclipse_WB57GoPro_Flight_H264-1080.00001_web.png (320x180) [85.2 KB] || 2026Eclipse_WB57GoPro_Flight_H264-1080.00001_thm.png (80x40) [6.7 KB] || 2026Eclipse_WB57GoPro_Flight_H264-1080.mp4 (1920x1080) [800.9 MB] || 2026Eclipse_WB57GoPro_Flight_H264-4K.mp4 (3840x2160) [803.0 MB] || 2026Eclipse_WB57GoPro_Flight_ProRes422-1080.mov (1920x1080) [9.2 GB] || 2026Eclipse_WB57GoPro_Flight_ProRes422-4K.mov (3840x2160) [37.3 GB] || NASA's WB-57 aircraft captured the Aug. 12, 2026, total solar eclipse from the skies of Iceland. The views were captured by SAMI, a camera on the nose of the plane used to study the Sun's corona.Credit: NASA || 2026_08_12_Eclipse_WB52_1920.00342_print.jpg (1024x576) [90.2 KB] || 2026_08_12_Eclipse_WB52_1920.00342_searchweb.png (320x180) [40.9 KB] || 2026_08_12_Eclipse_WB52_1920.00342_web.png (320x180) [40.9 KB] || 2026_08_12_Eclipse_WB52_1920.00342_thm.png (80x40) [4.1 KB] || 2026_08_12_Eclipse_WB52_720_Original.webm (1280x720) [22.9 MB] || 2026_08_12_Eclipse_WB52_720_Original.mp4 (1280x720) [253.9 MB] || 2026_08_12_Eclipse_WB52_1920.mp4 (1920x1080) [461.4 MB] || 2026_08_12_Eclipse_WB52_UHD.mp4 (3840x2160) [446.9 MB] || NASA's WB-57 aircraft takes off from Keflavik airport in Iceland to take science observations of the Aug. 12, 2026, total solar eclipse. Credit: NASA/Abbey Interrante || 8_12_2026_WB57Plane_Liftoff_H264.00100_print.jpg (1024x580) [136.9 KB] || 8_12_2026_WB57Plane_Liftoff_H264.00100_searchweb.png (320x180) [77.1 KB] || 8_12_2026_WB57Plane_Liftoff_H264.00100_web.png (320x181) [77.7 KB] || 8_12_2026_WB57Plane_Liftoff_H264.00100_thm.png (80x40) [4.5 KB] || 8_12_2026_WB57Plane_Liftoff_H264.mp4 (1920x1088) [18.5 MB] || 8_12_2026_WB57Plane_Liftoff_H264.webm (1920x1088) [2.6 MB] || 8_12_2026_WB57Plane_Liftoff_ProRes422.mov (1920x1088) [302.5 MB] || NASA's WB-57 aircraft takes off from Keflavik airport in Iceland to take science observations of the Aug. 12, 2026, total solar eclipse. Credit: NASA/Abbey Interrante || 8_12_2026_WB57Plane_H264.00100_print.jpg (1024x576) [90.8 KB] || 8_12_2026_WB57Plane_H264.00100_searchweb.png (320x180) [61.9 KB] || 8_12_2026_WB57Plane_H264.00100_web.png (320x180) [61.9 KB] || 8_12_2026_WB57Plane_H264.00100_thm.png (80x40) [4.4 KB] || 8_12_2026_WB57Plane_H264.mp4 (1920x1080) [94.7 MB] || 8_12_2026_WB57Plane_H264.webm (1920x1080) [10.0 MB] || 8_12_2026_WB57Plane_ProRes422.mov (1920x1080) [1.3 GB] || NASA's WB-57 aircraft prepares for the Aug. 12, 2026, total solar eclipse at Keflavik airport in Iceland. During totality, the aircraft captures science observations of the corona, the Sun's outer atmosphere from the skies.Credit: NASA/Abbey Interrante || WB57Team1_CreditNASAAbbeyInterrante_print.jpg (1024x682) [333.1 KB] || WB57Team1_CreditNASAAbbeyInterrante_searchweb.png (320x180) [100.0 KB] || WB57Team1_CreditNASAAbbeyInterrante_web.png (320x213) [112.0 KB] || WB57Team1_CreditNASAAbbeyInterrante_thm.png (80x40) [22.8 KB] || WB57Team1_CreditNASAAbbeyInterrante.JPG (6000x4000) [6.4 MB] || NASA's WB-57 aircraft prepares for the Aug. 12, 2026, total solar eclipse at Keflavik airport in Iceland. During totality, the aircraft captures science observations of the corona, the Sun's outer atmosphere from the skies.Credit: NASA/Abbey Interrante || WB57Team2_CreditNASAAbbeyInterrante.JPG_print.jpg (1024x682) [369.3 KB] || WB57Team2_CreditNASAAbbeyInterrante.JPG_searchweb.png (320x180) [107.6 KB] || WB57Team2_CreditNASAAbbeyInterrante.JPG_web.png (320x213) [120.2 KB] || WB57Team2_CreditNASAAbbeyInterrante.JPG_thm.png (80x40) [22.8 KB] || WB57Team2_CreditNASAAbbeyInterrante.JPG.JPG (6000x4000) [8.0 MB] || NASA's WB-57 aircraft prepares for the Aug. 12, 2026, total solar eclipse at Keflavik airport in Iceland. During totality, the aircraft captures science observations of the corona, the Sun's outer atmosphere from the skies.Credit: NASA/Abbey Interrante || WB57Team3_CreditNASAAbbeyInterrante.JPG_print.jpg (1024x682) [390.6 KB] || WB57Team3_CreditNASAAbbeyInterrante.JPG_searchweb.png (320x180) [113.5 KB] || WB57Team3_CreditNASAAbbeyInterrante.JPG_web.png (320x213) [126.5 KB] || WB57Team3_CreditNASAAbbeyInterrante.JPG_thm.png (80x40) [23.5 KB] || WB57Team3_CreditNASAAbbeyInterrante.JPG.JPG (6000x4000) [8.0 MB] || NASA's WB-57 aircraft prepares for the Aug. 12, 2026, total solar eclipse at Keflavik airport in Iceland. During totality, the aircraft captures science observations of the corona, the Sun's outer atmosphere from the skies.Credit: NASA/Abbey Interrante || WB57Team4_CreditNASAAbbeyInterrante.JPG_print.jpg (1024x682) [372.2 KB] || WB57Team4_CreditNASAAbbeyInterrante.JPG_searchweb.png (320x180) [109.1 KB] || WB57Team4_CreditNASAAbbeyInterrante.JPG_web.png (320x213) [121.0 KB] || WB57Team4_CreditNASAAbbeyInterrante.JPG_thm.png (80x40) [22.9 KB] || WB57Team4_CreditNASAAbbeyInterrante.JPG.JPG (6000x4000) [7.4 MB] || The NASA-funded Nationwide Eclipse Ballooning Project prepares to launch balloons in Mosfellsbær, Iceland, during the Aug. 12, 2026, total solar eclipse. Credit: NASA/Abbey Interrante || NEBPTeam1_CreditNASAAbbeyInterrante_print.jpg (1024x682) [447.9 KB] || NEBPTeam1_CreditNASAAbbeyInterrante_searchweb.png (320x180) [118.6 KB] || NEBPTeam1_CreditNASAAbbeyInterrante_web.png (320x213) [130.7 KB] || NEBPTeam1_CreditNASAAbbeyInterrante_thm.png (80x40) [23.0 KB] || NEBPTeam1_CreditNASAAbbeyInterrante.JPG (6000x4000) [9.3 MB] || The NASA-funded Nationwide Eclipse Ballooning Project prepares to launch balloons in Mosfellsbær, Iceland, during the Aug. 12, 2026, total solar eclipse. Credit: NASA/Abbey Interrante || NEBPTeam2_CreditNASAAbbeyInterrante.JPG_print.jpg (1024x682) [564.4 KB] || NEBPTeam2_CreditNASAAbbeyInterrante.JPG_searchweb.png (320x180) [131.0 KB] || NEBPTeam2_CreditNASAAbbeyInterrante.JPG_web.png (320x213) [149.3 KB] || NEBPTeam2_CreditNASAAbbeyInterrante.JPG_thm.png (80x40) [24.8 KB] || NEBPTeam2_CreditNASAAbbeyInterrante.JPG.JPG (6000x4000) [11.2 MB] || The NASA-funded Nationwide Eclipse Ballooning Project prepares to launch balloons in Mosfellsbær, Iceland, during the Aug. 12, 2026, total solar eclipse. Credit: NASA/Abbey Interrante || NEBPTeam3_CreditNASAAbbeyInterrante.JPG_print.jpg (1024x682) [347.7 KB] || NEBPTeam3_CreditNASAAbbeyInterrante.JPG_searchweb.png (320x180) [101.5 KB] || NEBPTeam3_CreditNASAAbbeyInterrante.JPG_web.png (320x213) [111.3 KB] || NEBPTeam3_CreditNASAAbbeyInterrante.JPG_thm.png (80x40) [21.9 KB] || NEBPTeam3_CreditNASAAbbeyInterrante.JPG.JPG (6000x4000) [6.7 MB] || Sun || Eclipse || Sun || total solar eclipse || Elizabeth C. Wilk (eMITS) as Editor || Abbey A. Interrante (ADNET Systems, Inc.) as Photographer ||"
+                      - link "Go to this page" [ref=f2e551] [cursor=pointer]:
+                        - /url: /15075/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e552]: 
+                - listitem [ref=f2e553]:
+                  - generic [ref=f2e554]:
+                    - generic [ref=f2e555]:
+                      - link "Go to this page" [ref=f2e556] [cursor=pointer]:
+                        - /url: /5670/
+                      - generic [ref=f2e557]: "ID: 5670"
+                      - generic [ref=f2e558]:
+                        - generic [aria-hidden] [ref=f2e559]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=f2e561]:
+                      - heading [level=3] [ref=f2e562]:
+                        - link "High-Resolution True Color Earth Imagery Simulated by GEOS During the 2026 Total Solar Eclipse" [ref=f2e563] [cursor=pointer]:
+                          - /url: /5670/
+                      - generic [ref=f2e564]:
+                        - generic [ref=f2e565]: August 11, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e567] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e568]: 
+                        - 'link "NASA Science Category: Planets & Moons" [ref=f2e569] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Planets%20%26%20Moons
+                          - generic [aria-hidden] [ref=f2e570]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e571] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e572]: 
+                      - paragraph [ref=f2e574]:
+                        - text: "On August 12, 2026, a total solar eclipse will cross the Northern Hemisphere. This visualization presents a high-resolution, simulated view of Earth from space between August 9–13, 2026, using the GEOS-CAM model. By applying the GOES true color algorithm to simulated radiation data, it generates realistic imagery incorporating aerosols like dust and smoke. This helps infer localized visibility along the path of totality. || 5670 || High-Resolution True Color Earth Imagery Simulated by GEOS During the 2026 Total Solar Eclipse || On August 12, 2026, a total solar eclipse will cross the Northern Hemisphere. This visualization presents a high-resolution, simulated view of Earth from space between August 9–13, 2026, using the GEOS-CAM model. By applying the GOES true color algorithm to simulated radiation data, it generates realistic imagery incorporating aerosols like dust and smoke. This helps infer localized visibility along the path of totality. || GEOSTrueColor_SolarEclipse_1920x1080.mp4 (1920x1080) [53.9 MB] || GEOSTrueColor_SolarEclipse_5760x3240.mp4 (5760x3240) [107.7 MB] || GEOSTrueColor_SolarEclipse_1920x1080.png (1920x1080) [1.9 MB] || GEOSTrueColor_SolarEclipse_3840x2160.png (3840x2160) [6.1 MB] || GEOSTrueColor_SolarEclipse_5760x3240.png (5760x3240) [11.9 MB] || On Wednesday, August 12, 2026, the Moon passes in front of the Sun, casting its shadow across a wide swath of Earth's Northern Hemisphere. The path of totality begins in far northern Siberia near the North Pole, and travels south through the Arctic and North Atlantic oceans, passing over Iceland and Spain. Meanwhile, the rest of Europe and parts of North America and Africa experience a partial eclipse.To anticipate viewing conditions for this event, this visualization presents a high-resolution, model-simulated view of Earth spanning the period of August 9–13, 2026, using the GEOS-CAM model. GEOS-CAM simulates multiple bands of incoming and outgoing shortwave radiation, analogous to the observational data collected by GOES satellites. By applying the GOES true color (GeoColor) algorithm to these model-generated fields, this visualization derives a realistic representation of how the Earth will appear from space. Crucially, the simulation incorporates the atmospheric impacts of aerosols such as dust and smoke, making the resulting imagery a valuable tool for inferring localized visibility conditions along the path of totality.For more detailed information about the eclipse, visit:"
+                        - link "Map of the August 12, 2026, Total Solar Eclipse" [ref=f2e575] [cursor=pointer]:
+                          - /url: https://svs.gsfc.nasa.gov/5647
+                        - text: "|| Simulated view of Earth on August 12, 2026, at 18:30 UTC, showing true-color GEOS-CAM model imagery with the solar eclipse path. || GEOSTrueColor_SolarEclipse_2026_08_12_18_30UTC_SolarEclipsePath_1920x1080.png (1920x1080) [1.8 MB] || GEOSTrueColor_SolarEclipse_2026_08_12_18_30UTC_SolarEclipsePath_5760x3240.png (5760x3240) [11.8 MB] || Simulated view of Earth on August 12, 2026, at 18:30 UTC, showing true color GEOS-CAM model imagery. || GEOSTrueColor_SolarEclipse_2026_08_12_18_30UTC_Plain_1920x1080.png (1920x1080) [1.7 MB] || GEOSTrueColor_SolarEclipse_2026_08_12_18_30UTC_Plain_5760x3240.png (5760x3240) [11.4 MB] || A high-resolution, simulated view of Earth on August 12, 2026, at 18:30 UTC, showing true-color GEOS-CAM model imagery of Earth on August 12, 2026, at 18:30 UTC. || GEOSTrueColor_Global_2026_08_12_18_30UTC_1920x1080.png (1920x1080) [3.4 MB] || GEOSTrueColor_Global_2026_08_12_18_30UTC_7680x4320.png (7680x4320) [41.7 MB] || Earth || Planets & Moons || Sun || Eclipse || GEOS || Models || Moon || Solar Eclipse || Sun and Earth || Sun-earth Interactions || Sun-Earth-Moon Interactions || GEOS-CAM (Goddard Earth Observing System Convection-Allowing Model framework) || William Putman (NASA/GSFC) as Data visualizer || Ernie Wright (USRA) as Data visualizer || Joseph V. Ardizzone (NASA/GSFC) as Data visualizer || Helen-Nicole Kostis (Science and Technology Corporation) as Data visualizer || Allison Collow (University of Maryland Baltimore County) as Scientific Support ||"
+                      - link "Go to this page" [ref=f2e576] [cursor=pointer]:
+                        - /url: /5670/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e577]: 
+                - listitem [ref=f2e578]:
+                  - generic [ref=f2e579]:
+                    - generic [ref=f2e580]:
+                      - link [ref=f2e581] [cursor=pointer]:
+                        - /url: /15065/
+                        - 'img "Complete transcript available.Watch this video on the NASA Goddard YouTube channel.Music Credit: “Uncovered Discovered” by Emanuel Kallins [BMI] and Chieli Minucci [ASCAP] from Universal Production Music" [ref=f2e582]'
+                      - generic [ref=f2e583]: "ID: 15065"
+                      - generic [ref=f2e584]:
+                        - generic [aria-hidden] [ref=f2e585]: 
+                        - text: Produced Video
+                      - text: 
+                    - generic [ref=f2e587]:
+                      - heading [level=3] [ref=f2e588]:
+                        - link "Chasing Eclipses with NASA Pilots" [ref=f2e589] [cursor=pointer]:
+                          - /url: /15065/
+                      - generic [ref=f2e590]:
+                        - generic [ref=f2e591]: July 27, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e593] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e594]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e595] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e596]: 
+                      - paragraph [ref=f2e598]:
+                        - text: "On August 12, 2026, a total solar eclipse will cross Russia, Greenland, Iceland, Spain, and Portugal. But some of the best views will come from 50,000 feet up, aboard NASA's WB-57 jet.Flying through the stratosphere, the jet’s instruments study the eclipse from above most of Earth’s atmosphere, avoiding the clouds, dust, and water vapor that can blur the view.As the Moon's shadow races across the ground, the crew pushes the high-speed jet to stay inside totality for as long as possible, giving scientists and their instruments extra time to study the Sun.Learn more: https://science.nasa.gov/science-research/heliophysics/nasa-science-soars-during-august-total-solar-eclipse/ || || 15065 || Chasing Eclipses with NASA Pilots || On August 12, 2026, a total solar eclipse will cross Russia, Greenland, Iceland, Spain, and Portugal. But some of the best views will come from 50,000 feet up, aboard NASA's WB-57 jet.Flying through the stratosphere, the jet’s instruments study the eclipse from above most of Earth’s atmosphere, avoiding the clouds, dust, and water vapor that can blur the view.As the Moon's shadow races across the ground, the crew pushes the high-speed jet to stay inside totality for as long as possible, giving scientists and their instruments extra time to study the Sun.Learn more: https://science.nasa.gov/science-research/heliophysics/nasa-science-soars-during-august-total-solar-eclipse/ || Complete transcript available.Watch this video on the NASA Goddard YouTube channel.Music Credit: “Uncovered Discovered” by Emanuel Kallins [BMI] and Chieli Minucci [ASCAP] from Universal Production Music || 15065_Thumbnail.jpg (1280x720) [647.4 KB] || 15065_Thumbnail_print.jpg (1024x576) [535.4 KB] || 15065_Thumbnail_searchweb.png (320x180) [102.3 KB] || 15065_Thumbnail_web.png (320x180) [102.3 KB] || 15065_Thumbnail_thm.png (80x40) [7.8 KB] || 15065_ChasingEclipsesWithNASAPilots_H264_3.mp4 (1920x1080) [203.2 MB] || 15065_ChasingEclipsesWithNASAPilots.en_US.srt [2.9 KB] || 15065_ChasingEclipsesWithNASAPilots.en_US.vtt [2.9 KB] || 15065_ChasingEclipsesWithNASAPilots_ProRes422.mov (3840x2160) [5.8 GB] || For More Information || See the following sources:"
+                        - emphasis [ref=f2e599]:
+                          - link "NASA's 2026 Eclipse Experiments" [ref=f2e600] [cursor=pointer]:
+                            - /url: https://science.nasa.gov/science-research/heliophysics/nasa-science-soars-during-august-total-solar-eclipse/
+                        - link "Solar Eclipses" [ref=f2e601] [cursor=pointer]:
+                          - /url: science.nasa.gov/eclipses
+                        - text: "*"
+                        - link "Eclipse Safety" [ref=f2e602] [cursor=pointer]:
+                          - /url: go.nasa.gov/EclipseSafety
+                        - text: "|| Earth || Sun || total solar eclipse || WB-57 || Joy Ng (eMITS) as Producer || Josh Valcarcel (NASA/JSC) as Videographer || Charles Clendaniel (NASA/JSC) as Videographer ||"
+                      - link "Go to this page" [ref=f2e603] [cursor=pointer]:
+                        - /url: /15065/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e604]: 
+                - listitem [ref=f2e605]:
+                  - generic [ref=f2e606]:
+                    - generic [ref=f2e607]:
+                      - link [ref=f2e608] [cursor=pointer]:
+                        - /url: /15063/
+                        - 'img "Produced VideoWatch this video on the NASA Goddard YouTube channel.Complete transcript available.Music Credit: \"Good To Go” by Doug Petty [ASCAP] from Universal Production MusicAdditional Video: Nationwide Eclipse Ballooning Project" [ref=f2e609]'
+                      - generic [ref=f2e610]: "ID: 15063"
+                      - generic [ref=f2e611]:
+                        - generic [aria-hidden] [ref=f2e612]: 
+                        - text: Produced Video
+                      - text: 
+                    - generic [ref=f2e614]:
+                      - heading [level=3] [ref=f2e615]:
+                        - link "Nationwide Eclipse Ballooning Project" [ref=f2e616] [cursor=pointer]:
+                          - /url: /15063/
+                      - generic [ref=f2e617]:
+                        - generic [ref=f2e618]: July 27, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e620] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e621]: 
+                        - 'link "NASA Science Category: Planets & Moons" [ref=f2e622] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Planets%20%26%20Moons
+                          - generic [aria-hidden] [ref=f2e623]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e624] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e625]: 
+                      - paragraph [ref=f2e627]: "The NASA-funded Nationwide Eclipse Ballooning Project allows teams of students from across the U.S. to get a unique view of total solar eclipses with scientific balloons. Before, during, and after a total solar eclipse, teams of college and high-school students use balloons to fly cameras and scientific instruments — either off-the-shelf weather sensors or instruments they built themselves — into the stratosphere to investigate the Sun, the eclipse’s effects on our atmosphere, and other phenomena that are best studied at high altitudes. Started in 2014, the project has not only produced new discoveries but provided hundreds of students with hands-on science and engineering experience along the way.Learn more about the project: https://science.nasa.gov/science-research/heliophysics/nasa-science-soars-during-august-total-solar-eclipse/ || || 15063 || Nationwide Eclipse Ballooning Project || The NASA-funded Nationwide Eclipse Ballooning Project allows teams of students from across the U.S. to get a unique view of total solar eclipses with scientific balloons. Before, during, and after a total solar eclipse, teams of college and high-school students use balloons to fly cameras and scientific instruments — either off-the-shelf weather sensors or instruments they built themselves — into the stratosphere to investigate the Sun, the eclipse’s effects on our atmosphere, and other phenomena that are best studied at high altitudes. Started in 2014, the project has not only produced new discoveries but provided hundreds of students with hands-on science and engineering experience along the way.Learn more about the project: https://science.nasa.gov/science-research/heliophysics/nasa-science-soars-during-august-total-solar-eclipse/ || Produced VideoWatch this video on the NASA Goddard YouTube channel.Complete transcript available.Music Credit: \"Good To Go” by Doug Petty [ASCAP] from Universal Production MusicAdditional Video: Nationwide Eclipse Ballooning Project || 15063_Thumbnail.jpg (1280x720) [490.4 KB] || 15063_Thumbnail_print.jpg (1024x576) [411.4 KB] || 15063_Thumbnail_searchweb.png (320x180) [97.1 KB] || 15063_Thumbnail_web.png (320x180) [97.1 KB] || 15063_Thumbnail_thm.png (80x40) [16.8 KB] || 15063_NEBPoverview_1080_X.mp4 (1920x1080) [84.2 MB] || 15063_NEBPoverview.en_US.srt [2.6 KB] || 15063_NEBPoverview.en_US.vtt [2.5 KB] || 15063_NEBPoverview_4K_ProRes.webm (3840x2160) [38.5 MB] || 15063_NEBPoverview_4K_Facebook.mp4 (3840x2160) [326.3 MB] || 15063_NEBPoverview_4K_YouTube.mp4 (3840x2160) [538.9 MB] || 15063_NEBPoverview_4K_ProRes.mov (3840x2160) [6.0 GB] || Earth || Planets & Moons || Sun || Atmosphere || Atmospheric Chemistry/Oxygen Compounds || Atmospheric Gravity Waves || Balloon || Camera || Earth Science || Eclipse || Eclipse experiments || Launch || ozone || Solar Eclipse || Stratosphere || Students || total solar eclipse || Narrated Movies || Lacey Young (eMITS) as Producer || Lacey Young (eMITS) as Videographer || Joy Ng (eMITS) as Videographer || Beth Anthony (eMITS) as Videographer || Angela des Jardins (Montana State University) as Talent || Angela Vazzana (CyPrESS) as Narrator ||"
+                      - link "Go to this page" [ref=f2e628] [cursor=pointer]:
+                        - /url: /15063/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e629]: 
+                - listitem [ref=f2e630]:
+                  - generic [ref=f2e631]:
+                    - generic [ref=f2e632]:
+                      - link [ref=f2e633] [cursor=pointer]:
+                        - /url: /5656/
+                        - img "An animated visualization of the path of the August 12, 2026, total solar eclipse. The virtual camera follows the shadow, and the view encompasses the full globe." [ref=f2e634]
+                      - generic [ref=f2e635]: "ID: 5656"
+                      - generic [ref=f2e636]:
+                        - generic [aria-hidden] [ref=f2e637]: 
+                        - text: Visualization
+                      - text: 
+                    - generic [ref=f2e639]:
+                      - heading [level=3] [ref=f2e640]:
+                        - link "Animations of the August 12, 2026, Total Solar Eclipse" [ref=f2e641] [cursor=pointer]:
+                          - /url: /5656/
+                      - generic [ref=f2e642]:
+                        - generic [ref=f2e643]: July 13, 2026
+                        - 'link "NASA Science Category: Earth" [ref=f2e645] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Earth
+                          - generic [aria-hidden] [ref=f2e646]: 
+                        - 'link "NASA Science Category: Planets & Moons" [ref=f2e647] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Planets%20%26%20Moons
+                          - generic [aria-hidden] [ref=f2e648]: 
+                        - 'link "NASA Science Category: Sun" [ref=f2e649] [cursor=pointer]':
+                          - /url: /search/?nasa_science_categories=Sun
+                          - generic [aria-hidden] [ref=f2e650]: 
+                      - paragraph [ref=f2e652]:
+                        - text: On Wednesday, August 12, 2026, the Moon passes in front of the Sun, casting its shadow across a broad swath of Earth's northern hemisphere. Totality is visible in Spain and Iceland, while the rest of Europe and parts of North America and Africa experience a partial eclipse. || 5656 || Animations of the August 12, 2026, Total Solar Eclipse ||
+                        - strong [ref=f2e653]: Following the shadow
+                        - text: ": An animated visualization of the path of the August 12, 2026, total solar eclipse. The virtual camera follows the shadow. Country borders revised on August 19, 2026. || eclipse_202608_global_720p30.mp4 (1280x720) [10.2 MB] || eclipse_202608_global_2160p30.mp4 (3840x2160) [52.7 MB] || eclipse_202608_global_1080p30.mp4 (1920x1080) [19.1 MB] || eclipse_202608_global_360p30.mp4 (640x360) [3.3 MB] || global (3840x2160) [1583 Item(s)] || global_preview.jpg (1920x1080) [301.1 KB] || On Wednesday, August 12, 2026, the Moon passes in front of the Sun, casting its shadow across a wide swath of Earth's Northern Hemisphere. The path of totality begins in far northern Siberia, near the North Pole, and travels south through the oceans of the Arctic and North Atlantic, passing over western Iceland (including Reykjavik) and northern Spain. The rest of Europe and parts of North America and Africa experience a partial eclipse.The Moon's shadow can be divided into two parts: the very narrow"
+                        - strong [ref=f2e654]: umbra
+                        - text: ", where the Sun is completely blocked, and the much broader"
+                        - strong [ref=f2e655]: penumbra
+                        - text: ", where the Sun is only partially blocked. The red swath marks the path of totality, where a total solar eclipse is visible. The black oval traveling along this path is the umbra. The penumbra is rendered in discrete shades in 20% intervals of obscuration (area of the Sun blocked by the Moon). Loops at either end of the path indicate where the eclipse is in progress during sunrise or sunset.In the first animation, captioned \"Following the shadow,\" the virtual camera flies on a path that keeps the shadow near the center of the view but makes Earth's rotation difficult to discern. In the second animation, captioned \"Fixed in space,\" the camera doesn't move. Strictly speaking, the camera is stationary in the J2000 coordinate system centered on Earth — nothing is truly motionless except in relation to a particular reference. Other views are stationary over Iceland and Spain and over the United States. ||"
+                        - strong [ref=f2e656]: Fixed in space
+                        - text: ": An animated visualization of the August 12, 2026, total solar eclipse. The virtual camera is located at a fixed point in space, making Earth's rotation easier to see. Country borders revised on August 19, 2026. || eclipse_202608_gei_720p30.mp4 (1280x720) [11.0 MB] || eclipse_202608_gei_2160p30.mp4 (3840x2160) [57.2 MB] || eclipse_202608_gei_1080p30.mp4 (1920x1080) [20.8 MB] || eclipse_202608_gei_360p30.mp4 (640x360) [4.3 MB] || gei_preview.jpg (1920x1080) [292.5 KB] || gei (3840x2160) [1583 Item(s)] || An animated visualization of the August 12, 2026, total solar eclipse, in a vertical aspect ratio suitable for mobile devices. The virtual camera follows the shadow. Country borders revised on August 19, 2026. || eclipse_202608_global_v_1920p30.mp4 (1080x1920) [21.1 MB] || global_v_preview.jpg (1080x1920) [288.1 KB] || global (1080x1920) [1583 Item(s)] || An animated visualization of the August 12, 2026, total solar eclipse. This closer view is stationary over Iceland and Spain. The movie with the filename ending in \"p0.1.mp4\" plays in real time and can be synchronized with the event. Country borders revised on August 19, 2026. || eclipse_202608_is_es_720p30.mp4 (1280x720) [7.4 MB] || eclipse_202608_is_es_2160p30.mp4 (3840x2160) [41.7 MB] || eclipse_202608_is_es_2160p0.1.mp4 (3840x2160) [305.0 MB] || eclipse_202608_is_es_1080p30.mp4 (1920x1080) [14.4 MB] || eclipse_202608_is_es_360p30.mp4 (640x360) [2.4 MB] || is_es (3840x2160) [1063 Item(s)] || is_es_preview.jpg (1920x1080) [301.5 KB] || An animated visualization of the August 12, 2026, total solar eclipse, in a vertical aspect suitable for mobile devices. The view is stationary over Iceland and Spain. || eclipse_202608_is_es_v_1920p30.mp4 (1080x1920) [11.4 MB] || is_es_v_preview.jpg (1080x1920) [211.3 KB] || is_es (1080x1920) [1063 Item(s)] || An animated visualization of the August 12, 2026, total solar eclipse. This view is stationary over the United States, where the eclipse is partial in the Northeast and parts of the Mid-Atlantic and Upper Midwest and is not visible elsewhere in the country. The movie with the filename ending in \"p0.1.mp4\" plays in real time and can be synchronized with the event. || eclipse_202608_us_720p30.mp4 (1280x720) [10.1 MB] || eclipse_202608_us_2160p30.mp4 (3840x2160) [50.6 MB] || eclipse_202608_us_2160p0.1.mp4 (3840x2160) [291.6 MB] || eclipse_202608_us_1080p30.mp4 (1920x1080) [19.1 MB] || eclipse_202608_us_360p30.mp4 (640x360) [3.1 MB] || us_preview.jpg (1920x1080) [492.0 KB] || us (3840x2160) [1080 Item(s)] || Earth || Planets & Moons || Sun || Eclipse || Moon || solar irradiance || Sun || Sun-Earth-Moon Interactions || total solar eclipse || DE421 (JPL DE421) || BMNG (Blue Marble: Next Generation) [Terra and Aqua: MODIS] || Five Millennium Canon of Solar Eclipses (Five Millennium Canon of Solar Eclipses) || LSIB (Large Scale International Boundaries) || Ernie Wright (USRA) as Visualizer || Joy Ng (eMITS) as Producer ||"
+                      - link "Go to this page" [ref=f2e657] [cursor=pointer]:
+                        - /url: /5656/
+                        - text: Go to this page
+                        - generic [aria-hidden] [ref=f2e658]: 
+              - generic "Loading..." [ref=f2e659]
+              - text: 
+        - text: 
+  - contentinfo [ref=f2e665]:
+    - navigation [ref=f2e666]:
+      - generic [ref=f2e668]:
+        - generic [ref=f2e669]:
+          - link [ref=f2e670] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=f2e671]
+          - link [ref=f2e672] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=f2e673]
+        - generic [ref=f2e676]:
+          - link "Privacy Policy and Important Notices" [ref=f2e677] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=f2e678] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=f2e683]:
+          - generic [ref=f2e684]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=f2e686] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=f2e687]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=f2e689] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website

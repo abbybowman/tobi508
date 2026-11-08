@@ -1,0 +1,1920 @@
+- generic [active] [ref=f4e1]:
+  - banner:
+    - navigation [ref=f4e2]:
+      - generic [ref=f4e3]:
+        - link [ref=f4e4] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=f4e5]
+        - link "Scientific Visualization Studio" [ref=f4e7] [cursor=pointer]:
+          - /url: /
+        - list [ref=f4e10]:
+          - listitem [ref=f4e11]:
+            - link "Galleries" [ref=f4e12] [cursor=pointer]:
+              - /url: /gallery/the-galleries/
+              - generic [aria-hidden] [ref=f4e13]: 
+              - text: Galleries
+          - listitem [ref=f4e14]:
+            - link "Help" [ref=f4e15] [cursor=pointer]:
+              - /url: /help/
+              - generic [aria-hidden] [ref=f4e16]: 
+              - text: Help
+          - search [ref=f4e17]:
+            - generic [ref=f4e18]:
+              - textbox "Search..." [ref=f4e19]
+              - generic [ref=f4e20]: Search
+              - button "Clear search text" [ref=f4e21] [cursor=pointer]: 
+              - button "Search!" [ref=f4e22] [cursor=pointer]: 
+  - main [ref=f4e23]:
+    - article [ref=f4e26]:
+      - generic [ref=f4e27]:
+        - heading "The Galleries" [level=1] [ref=f4e29]
+        - generic [ref=f4e31]:
+          - list [ref=f4e32]:
+            - listitem [ref=f4e33]: Released Saturday, January 1st, 2000
+            - listitem [ref=f4e34]: Updated Friday, July 17th, 2026 at 12:00AM
+          - list [ref=f4e36]:
+            - listitem [ref=f4e37]:
+              - generic: "ID: 40001"
+            - listitem [ref=f4e38]
+            - listitem [ref=f4e39]:
+              - link "View this page in our API" [ref=f4e40] [cursor=pointer]:
+                - /url: /api/40001
+                - generic [aria-hidden] [ref=f4e41]: 
+            - listitem [ref=f4e42]
+            - listitem [ref=f4e43]:
+              - button "Copy a link to this page" [ref=f4e44] [cursor=pointer]:
+                - generic [aria-hidden] [ref=f4e45]: 
+            - listitem [ref=f4e46]:
+              - link "Share this page on Twitter" [ref=f4e47] [cursor=pointer]:
+                - /url: https://twitter.com/intent/tweet
+                - generic [aria-hidden] [ref=f4e48]: 
+            - listitem [ref=f4e49]:
+              - link "Share this page on Facebook" [ref=f4e50] [cursor=pointer]:
+                - /url: https://www.facebook.com/share.php?u=http%3A//svs.gsfc.nasa.gov/gallery/the-galleries/%3F
+                - generic [aria-hidden] [ref=f4e51]: 
+        - separator [ref=f4e52]
+      - generic [ref=f4e53]:
+        - navigation [ref=f4e55]:
+          - heading "Contents" [level=2] [ref=f4e56]
+          - navigation [ref=f4e57]:
+            - link "Earth Science Galleries" [ref=f4e58] [cursor=pointer]:
+              - /url: "#media_group_370412"
+            - link "Heliophysics Galleries" [ref=f4e59] [cursor=pointer]:
+              - /url: "#media_group_370413"
+            - link "Planetary Science Galleries" [ref=f4e60] [cursor=pointer]:
+              - /url: "#media_group_370414"
+            - link "Astrophysics Galleries" [ref=f4e61] [cursor=pointer]:
+              - /url: "#media_group_370415"
+            - link "Missions and Instrument Galleries" [ref=f4e62] [cursor=pointer]:
+              - /url: "#media_group_370416"
+            - link "Special Productions" [ref=f4e63] [cursor=pointer]:
+              - /url: "#media_group_370417"
+            - link "Special Events" [ref=f4e64] [cursor=pointer]:
+              - /url: "#media_group_370418"
+            - link "Hyperwall" [ref=f4e65] [cursor=pointer]:
+              - /url: "#media_group_370419"
+            - link "Educational Content" [ref=f4e66] [cursor=pointer]:
+              - /url: "#media_group_375779"
+        - generic [ref=f4e67]:
+          - generic [ref=f4e68]:
+            - generic [ref=f4e69]:
+              - heading "Earth Science Galleries" [level=2] [ref=f4e70]
+              - list [ref=f4e72]:
+                - listitem [ref=f4e73]:
+                  - generic [ref=f4e74]:
+                    - link [ref=f4e75] [cursor=pointer]:
+                      - /url: /gallery/earth-information-center/
+                      - img "NASA satellites provide data on Earth's land, ecosystems, water, air temperature, and climate - and have done so for more than 50 years. Earth information from space supports decision makers, partners, and people in developing the tools they need to mitigate, adapth, and respond to our changing planet. The visualizations featured on this dashboard show the latest imagery available." [ref=f4e77]
+                    - generic [ref=f4e78]: "ID: 40467"
+                  - generic [ref=f4e79]:
+                    - generic [ref=f4e80]:
+                      - generic [aria-hidden] [ref=f4e81]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e84]:
+                      - link "Earth Information Center (EIC)" [ref=f4e85] [cursor=pointer]:
+                        - /url: /gallery/earth-information-center/
+                - listitem [ref=f4e86]:
+                  - generic [ref=f4e87]:
+                    - link [ref=f4e88] [cursor=pointer]:
+                      - /url: /gallery/whats-newwith-earth-today/
+                      - img "Arctic sea ice minimum 1979-2021, with graph" [ref=f4e90]
+                    - generic [ref=f4e91]: "ID: 40415"
+                  - generic [ref=f4e92]:
+                    - generic [ref=f4e93]:
+                      - generic [aria-hidden] [ref=f4e94]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e97]:
+                      - link "What's New with Earth Today" [ref=f4e98] [cursor=pointer]:
+                        - /url: /gallery/whats-newwith-earth-today/
+                - listitem [ref=f4e99]:
+                  - generic [ref=f4e100]:
+                    - link [ref=f4e101] [cursor=pointer]:
+                      - /url: /gallery/climate-essentials/
+                      - img "Annual Arctic Sea Ice Minimum from 1979 to 2008." [ref=f4e103]
+                    - generic [ref=f4e104]: "ID: 40016"
+                  - generic [ref=f4e105]:
+                    - generic [ref=f4e106]:
+                      - generic [aria-hidden] [ref=f4e107]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e110]:
+                      - link "Climate Essentials" [ref=f4e111] [cursor=pointer]:
+                        - /url: /gallery/climate-essentials/
+                - listitem [ref=f4e112]:
+                  - generic [ref=f4e113]:
+                    - link [ref=f4e114] [cursor=pointer]:
+                      - /url: /gallery/nasaearth-science/
+                      - img "Monthly frames (720x480 resolution) of global carbon dioxide (CO₂) for the period September 2002-November 2023, showcasing data products from NASA's Aqua mission. Each frame represents a montly timestep for the period September 2002-November 2023.The CO2_frames_dates_values.csv can be used to sync frame number, date and CO₂ values.." [ref=f4e116]
+                    - generic [ref=f4e117]: "ID: 40388"
+                  - generic [ref=f4e118]:
+                    - generic [ref=f4e119]:
+                      - generic [aria-hidden] [ref=f4e120]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e123]:
+                      - link "NASA Earth Science" [ref=f4e124] [cursor=pointer]:
+                        - /url: /gallery/nasaearth-science/
+                - listitem [ref=f4e125]:
+                  - generic [ref=f4e126]:
+                    - link [ref=f4e127] [cursor=pointer]:
+                      - /url: /gallery/nasaand-agriculture/
+                      - 'img "Complete transcript available. Music credit: “The Grand Journey” from Universal Production Music This video can be freely shared and downloaded. While the video in its entirety can be shared without permission, some individual imagery provided by Pond5.com is obtained through permission and may not be excised or remixed in other products. For more information on NASA’s media guidelines, visit https://www.nasa.gov/multimedia/guidelines/index.html" [ref=f4e129]'
+                    - generic [ref=f4e130]: "ID: 40484"
+                  - generic [ref=f4e131]:
+                    - generic [ref=f4e132]:
+                      - generic [aria-hidden] [ref=f4e133]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e136]:
+                      - link "NASA and Agriculture Video" [ref=f4e137] [cursor=pointer]:
+                        - /url: /gallery/nasaand-agriculture/
+                - listitem [ref=f4e138]:
+                  - generic [ref=f4e139]:
+                    - link [ref=f4e140] [cursor=pointer]:
+                      - /url: /gallery/amazon-deforestation-trends/
+                      - img "This animation begins by showing the similar sizes between the country of Brazil and the United States. It then cycles through over three decades of classification data for the entire Northern half of Brazil. We then zoom down to the town of Novo Progresso and compare its relative size to the San Francisco Bay region. Next we cycle through over three decades of transformation in the region showing how the north/south corridor of this region changed over time. Lastly, we fade in 2019 fire data to indicate how the data will continue to change into the upcoming year." [ref=f4e142]
+                    - generic [ref=f4e143]: "ID: 40420"
+                  - generic [ref=f4e144]:
+                    - generic [ref=f4e145]:
+                      - generic [aria-hidden] [ref=f4e146]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e149]:
+                      - link "Amazon Deforestation Trends" [ref=f4e150] [cursor=pointer]:
+                        - /url: /gallery/amazon-deforestation-trends/
+                - listitem [ref=f4e151]:
+                  - generic [ref=f4e152]:
+                    - link "Go to this page" [ref=f4e153] [cursor=pointer]:
+                      - /url: /gallery/landslides/
+                    - generic [ref=f4e155]: "ID: 40272"
+                  - generic [ref=f4e156]:
+                    - generic [ref=f4e157]:
+                      - generic [aria-hidden] [ref=f4e158]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e161]:
+                      - link "Landslides" [ref=f4e162] [cursor=pointer]:
+                        - /url: /gallery/landslides/
+                - listitem [ref=f4e163]:
+                  - generic [ref=f4e164]:
+                    - link [ref=f4e165] [cursor=pointer]:
+                      - /url: /gallery/imerg/
+                      - img "Example composite showing the daily climatology along with the appropriate month and colorbar." [ref=f4e167]
+                    - generic [ref=f4e168]: "ID: 40391"
+                  - generic [ref=f4e169]:
+                    - generic [ref=f4e170]:
+                      - generic [aria-hidden] [ref=f4e171]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e174]:
+                      - link "Two Decades of Precipitation" [ref=f4e175] [cursor=pointer]:
+                        - /url: /gallery/imerg/
+                - listitem [ref=f4e176]:
+                  - generic [ref=f4e177]:
+                    - link [ref=f4e178] [cursor=pointer]:
+                      - /url: /gallery/rising-seas/
+                      - img "With an array of approaches including boots on the ground, aerial surveys, ship-board missions, model outputs, and the satellite view from space, NASA science makes major contributions to the study of sea level rise. This gallery contains both data visualizations and new 4K footage shot in Greenland in July, 2015." [ref=f4e180]
+                    - generic [ref=f4e181]: "ID: 40249"
+                  - generic [ref=f4e182]:
+                    - generic [ref=f4e183]:
+                      - generic [aria-hidden] [ref=f4e184]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e187]:
+                      - link "Sea Level Rise" [ref=f4e188] [cursor=pointer]:
+                        - /url: /gallery/rising-seas/
+                - listitem [ref=f4e189]:
+                  - generic [ref=f4e190]:
+                    - link [ref=f4e191] [cursor=pointer]:
+                      - /url: /gallery/ozone-hole/
+                      - img "Minimum concentration of ozone in the southern hemisphere for each year from 1979-2013 (there is no data from 1995). Each image is the day of the year with the lowest concentration of ozone. A graph of the lowest ozone amount for each year is shown. Data is taken from http://ozonewatch.gsfc.nasa.gov/." [ref=f4e193]
+                    - generic [ref=f4e194]: "ID: 40176"
+                  - generic [ref=f4e195]:
+                    - generic [ref=f4e196]:
+                      - generic [aria-hidden] [ref=f4e197]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e200]:
+                      - link "Ozone Hole" [ref=f4e201] [cursor=pointer]:
+                        - /url: /gallery/ozone-hole/
+                - listitem [ref=f4e202]:
+                  - generic [ref=f4e203]:
+                    - link [ref=f4e204] [cursor=pointer]:
+                      - /url: /gallery/air-quality/
+                      - img "NASA, ESA (European Space Agency) and JAXA (Japan Aerospace Exploration Agency) have created a dashboard of satellite data showing impacts on the environment and socioeconomic activity caused by the global response to the coronavirus (COVID-19) pandemic." [ref=f4e206]
+                    - generic [ref=f4e207]: "ID: 40170"
+                  - generic [ref=f4e208]:
+                    - generic [ref=f4e209]:
+                      - generic [aria-hidden] [ref=f4e210]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e213]:
+                      - link "Air Quality" [ref=f4e214] [cursor=pointer]:
+                        - /url: /gallery/air-quality/
+                - listitem [ref=f4e215]:
+                  - generic [ref=f4e216]:
+                    - link [ref=f4e217] [cursor=pointer]:
+                      - /url: /gallery/hurricanesand-typhoons/
+                      - img "Our best visual content on hurricanes and typhoons, including visualizations of data on how hurricanes form." [ref=f4e219]
+                    - generic [ref=f4e220]: "ID: 40028"
+                  - generic [ref=f4e221]:
+                    - generic [ref=f4e222]:
+                      - generic [aria-hidden] [ref=f4e223]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e226]:
+                      - link "Hurricanes and Typhoons" [ref=f4e227] [cursor=pointer]:
+                        - /url: /gallery/hurricanesand-typhoons/
+                - listitem [ref=f4e228]:
+                  - generic [ref=f4e229]:
+                    - link [ref=f4e230] [cursor=pointer]:
+                      - /url: /gallery/zoomsand-flybys/
+                      - img "A seamless zoom from space to the ground, using data from Terra-MODIS, Landsat-ETM+, and IKONOS, and ending at the U.S. Capitol in Washington, D.C." [ref=f4e232]
+                    - generic [ref=f4e233]: "ID: 40044"
+                  - generic [ref=f4e234]:
+                    - generic [ref=f4e235]:
+                      - generic [aria-hidden] [ref=f4e236]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e239]:
+                      - link "Zooms and Flybys" [ref=f4e240] [cursor=pointer]:
+                        - /url: /gallery/zoomsand-flybys/
+                - listitem [ref=f4e241]:
+                  - generic [ref=f4e242]:
+                    - link [ref=f4e243] [cursor=pointer]:
+                      - /url: /gallery/esddatafor-societal-benefits/
+                      - img "HD resolution movies of NASA's Earth Observing fleet." [ref=f4e245]
+                    - generic [ref=f4e246]: "ID: 40348"
+                  - generic [ref=f4e247]:
+                    - generic [ref=f4e248]:
+                      - generic [aria-hidden] [ref=f4e249]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e252]:
+                      - link "ESD data for Societal Benefit" [ref=f4e253] [cursor=pointer]:
+                        - /url: /gallery/esddatafor-societal-benefits/
+                - listitem [ref=f4e254]:
+                  - generic [ref=f4e255]:
+                    - link [ref=f4e256] [cursor=pointer]:
+                      - /url: /gallery/visualizationsfor-educators/
+                      - img "Phenomena are observable events that occur in nature. Data visualizations can offer new ways for students to experience and explore Earth and space phenomena that happen over large scales of time and at great distances. This gallery includes visualizations of phenomena that support topics that are taught in middle and high school and are aligned with select Next Generation Science Standards. This gallery was curated by Anne Arundle County Science Teachers Margaret Graham and Jeremy Milligan with support from Dr. Rachel Connolly during the summer of 2022. A video showing how Jeremy Milligan uses SVS resources to develop a phenomena-based lesson is also available." [ref=f4e258]
+                    - generic [ref=f4e259]: "ID: 40447"
+                  - generic [ref=f4e260]:
+                    - generic [ref=f4e261]:
+                      - generic [aria-hidden] [ref=f4e262]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e265]:
+                      - link "Visualizations for Educators" [ref=f4e266] [cursor=pointer]:
+                        - /url: /gallery/visualizationsfor-educators/
+                - listitem [ref=f4e267]:
+                  - generic [ref=f4e268]:
+                    - link [ref=f4e269] [cursor=pointer]:
+                      - /url: /gallery/arctic-sea-ice-resources/
+                      - img "Visualization showing the changes in snow cover and sea ice with the seasons, for the years 2019-2021." [ref=f4e271]
+                    - generic [ref=f4e272]: "ID: 40124"
+                  - generic [ref=f4e273]:
+                    - generic [ref=f4e274]:
+                      - generic [aria-hidden] [ref=f4e275]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e278]:
+                      - link "Arctic and Antarctic Sea Ice" [ref=f4e279] [cursor=pointer]:
+                        - /url: /gallery/arctic-sea-ice-resources/
+            - generic [ref=f4e280]:
+              - heading "Heliophysics Galleries" [level=2] [ref=f4e281]
+              - list [ref=f4e283]:
+                - text: 
+                - button [aria-hidden] [ref=f4e284] [cursor=pointer]:
+                  - generic [ref=f4e285]: 
+                - listitem [ref=f4e286]:
+                  - generic [ref=f4e287]:
+                    - link [ref=f4e288] [cursor=pointer]:
+                      - /url: /gallery/nasas-heliophysics-gallery/
+                      - img "A full view of the sun at the start of the fly-in." [ref=f4e290]
+                    - generic [ref=f4e291]: "ID: 40046"
+                    - generic [ref=f4e292]:
+                      - generic [aria-hidden] [ref=f4e293]: 
+                      - text: Gallery
+                  - generic [ref=f4e294]:
+                    - heading [level=3] [ref=f4e295]:
+                      - link "NASA's Heliophysics Gallery" [ref=f4e296] [cursor=pointer]:
+                        - /url: /gallery/nasas-heliophysics-gallery/
+                    - generic [ref=f4e297]: March 4, 2010
+                    - paragraph [ref=f4e300]: Heliophysics studies the nature of the Sun and how it influences the very nature of space and the planets and the technology that exists there. Learn more at nasa.gov/sun.
+                    - link "Go to this page" [ref=f4e301] [cursor=pointer]:
+                      - /url: /gallery/nasas-heliophysics-gallery/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e302]: 
+                - listitem [ref=f4e303]:
+                  - generic [ref=f4e304]:
+                    - link [ref=f4e305] [cursor=pointer]:
+                      - /url: /gallery/sun-news/
+                      - 'img "Same as above, cropped to focus on flaring region.Credit: NASA/SDO" [ref=f4e307]'
+                    - generic [ref=f4e308]: "ID: 40117"
+                    - generic [ref=f4e309]:
+                      - generic [aria-hidden] [ref=f4e310]: 
+                      - text: Gallery
+                  - generic [ref=f4e311]:
+                    - heading [level=3] [ref=f4e312]:
+                      - link "Heliophysics Breaking News" [ref=f4e313] [cursor=pointer]:
+                        - /url: /gallery/sun-news/
+                    - generic [ref=f4e314]: April 4, 2012
+                    - paragraph [ref=f4e317]: This gallery contains an archive of breaking news solar events such as flares, CMEs, solar storms, and comet passes. The most recent material is at the top left, and it progresses back in time left-to-right and top-down. Each page contains video and/or stills of a distinct event or series of linked events.The videos are available at multiple resolutions and compressions, including Apple ProRes 422. Where applicable, there are links to 4k x 4k tif frames.For sun-related background, animations, visualizations and informational content, go here.For pre-recorded, frequently-asked-question interviews with NASA scientists, go here.
+                    - link "Go to this page" [ref=f4e318] [cursor=pointer]:
+                      - /url: /gallery/sun-news/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e319]: 
+                - listitem [ref=f4e320]:
+                  - generic [ref=f4e321]:
+                    - link [ref=f4e322] [cursor=pointer]:
+                      - /url: /gallery/solar-cycle25/
+                      - img [ref=f4e324]
+                    - generic [ref=f4e325]: "ID: 40520"
+                    - generic [ref=f4e326]:
+                      - generic [aria-hidden] [ref=f4e327]: 
+                      - text: Gallery
+                  - generic [ref=f4e328]:
+                    - heading [level=3] [ref=f4e329]:
+                      - link "Solar Cycle 25" [ref=f4e330] [cursor=pointer]:
+                        - /url: /gallery/solar-cycle25/
+                    - generic [ref=f4e331]: June 28, 2024
+                    - paragraph [ref=f4e334]: The Solar Cycle 25 Prediction Panel, an international group of experts co-sponsored by NASA and the National Oceanic and Atmospheric Administration (NOAA), announced that solar minimum occurred in December 2019, marking the start of Solar Cycle 25. Since then, the Sun’s activity has been steadily increasing as it approaches solar maximum — the peak of Solar Cycle 25.A new solar cycle comes roughly every 11 years. Over the course of each cycle, the Sun transitions from relatively calm to active and stormy, and then quiet again. At its peak, the Sun’s magnetic poles flip.Understanding the Sun’s behavior is an important part of life in our solar system. The Sun’s outbursts, including eruptions known as solar flares and coronal mass ejections, can disturb satellites and communication signals traveling around Earth. Scientists study the solar cycle so we can better understand and predict solar activity.
+                    - link "Go to this page" [ref=f4e335] [cursor=pointer]:
+                      - /url: /gallery/solar-cycle25/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e336]: 
+                - listitem [ref=f4e337]:
+                  - generic [ref=f4e338]:
+                    - link [ref=f4e339] [cursor=pointer]:
+                      - /url: /gallery/2024total-solar-eclipse-gallery/
+                      - img "This visualization closely follows the Moon's umbra shadow as it crosses North America during the April 8, 2024 total solar eclipse. It covers the one hour and 50 minutes between 10:57 a.m. Pacific Standard Time and 4:47 p.m. Atlantic Daylight Time. Annotations include a running clock and the location of the center of the shadow. Everyone within the dark oval sees totality." [ref=f4e341]
+                    - generic [ref=f4e342]: "ID: 40502"
+                    - generic [ref=f4e343]:
+                      - generic [aria-hidden] [ref=f4e344]: 
+                      - text: Gallery
+                  - generic [ref=f4e345]:
+                    - heading [level=3] [ref=f4e346]:
+                      - link "2024 Total Solar Eclipse" [ref=f4e347] [cursor=pointer]:
+                        - /url: /gallery/2024total-solar-eclipse-gallery/
+                    - generic [ref=f4e348]: October 31, 2023
+                    - paragraph [ref=f4e351]: "On April 8, 2024, a total solar eclipse will cross North America, passing over Mexico, the United States, and Canada. A total solar eclipse happens when the Moon passes between the Sun and Earth, completely blocking the face of the Sun. The sky will darken as if it were dawn or dusk.A total solar eclipse happens when the Moon passes between the Sun and Earth, completely blocking the face of the Sun. People viewing the eclipse from locations where the Moon’s shadow completely covers the Sun – known as the path of totality – will experience a total solar eclipse. The sky will darken, as if it were dawn or dusk. Weather permitting, people along the path of totality will see the Sun’s corona, or outer atmosphere, which is usually obscured by the bright face of the Sun.Learn more about this total solar eclipse: solarsystem.nasa.gov/eclipses/2024"
+                    - link "Go to this page" [ref=f4e352] [cursor=pointer]:
+                      - /url: /gallery/2024total-solar-eclipse-gallery/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e353]: 
+                - listitem [ref=f4e354]:
+                  - generic [ref=f4e355]:
+                    - link [ref=f4e356] [cursor=pointer]:
+                      - /url: /gallery/annular-solar-eclipse2023/
+                      - 'img "An annular solar eclipse photographed on October 14, 2023. Image Credit: NASA/Jim Spann" [ref=f4e358]'
+                    - generic [ref=f4e359]: "ID: 40500"
+                    - generic [ref=f4e360]:
+                      - generic [aria-hidden] [ref=f4e361]: 
+                      - text: Gallery
+                  - generic [ref=f4e362]:
+                    - heading [level=3] [ref=f4e363]:
+                      - link "2023 Annular Solar Eclipse" [ref=f4e364] [cursor=pointer]:
+                        - /url: /gallery/annular-solar-eclipse2023/
+                    - generic [ref=f4e365]: September 19, 2023
+                    - paragraph [ref=f4e368]: "On Oct. 14, 2023, an annular solar eclipse will cross North, Central, and South America. Visible in parts of the United States, Mexico, and many countries in South and Central America, millions of people in the Western Hemisphere can experience this eclipse. An annular solar eclipse happens when the Moon passes between the Sun and Earth while it is at or near its farthest point from Earth. Because the Moon is farther away from Earth than usual, it appears smaller than the Sun and does not completely cover the star. Because of this, the Sun will appear like a “ring of fire” in the sky for those in the path of annularity. During an annular eclipse, it is never safe to look directly at the Sun without specialized eye protection designed for solar viewing. Learn more about this annular solar eclipse: solarsystem.nasa.gov/eclipses/2023"
+                    - link "Go to this page" [ref=f4e369] [cursor=pointer]:
+                      - /url: /gallery/annular-solar-eclipse2023/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e370]: 
+                - listitem [ref=f4e371]:
+                  - generic [ref=f4e372]:
+                    - link "Go to this page" [ref=f4e373] [cursor=pointer]:
+                      - /url: /gallery/space-weather/
+                    - generic [ref=f4e375]: "ID: 40115"
+                    - generic [ref=f4e376]:
+                      - generic [aria-hidden] [ref=f4e377]: 
+                      - text: Gallery
+                  - generic [ref=f4e378]:
+                    - heading [level=3] [ref=f4e379]:
+                      - link "Space Weather" [ref=f4e380] [cursor=pointer]:
+                        - /url: /gallery/space-weather/
+                    - generic [ref=f4e381]: December 1, 2011
+                    - paragraph [ref=f4e384]: The term "space weather" was coined not long ago to describe the dynamic conditions in the Earth's outer space environment, in the same way that "weather" and "climate" refer to conditions in Earth's lower atmosphere. Space weather includes any and all conditions and events on the sun, in the solar wind, in near-Earth space and in our upper atmosphere that can affect space-borne and ground-based technological systems and through these, human life and endeavor. Heliophysics is the science of space weather. This gallery organizes satellite footage, animations, visualizations, and edited videos produced at the Goddard Space Flight Center. Visualizations are different from pure animations because they are data-driven. They present a way of "seeing" the data. In the case of orbit visualizations, they are based on actual orbit information. Most of the animations and visualizations are available as frames and all the recent ones are HD quality. All videos are available in several formats and qualities including Apple ProRes for broadcast quality. Unless specifically marked otherwise, all these materials are public domain and free to use. For more infomation about NASA's media use guidelines see this page. The content is organized in two ways. Under "Facets of Space Weather" you will find our visuals grouped by the subject they address. Under "NASA Spacecraft" you will find our visuals grouped by the satellite they were collected by, or that they refer to. This group also contains animations of the spacecraft themselves. For breaking news solar events, go to this gallery.For frequently-asked-question interviews with NASA scientists, go here.
+                    - link "Go to this page" [ref=f4e385] [cursor=pointer]:
+                      - /url: /gallery/space-weather/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e386]: 
+            - generic [ref=f4e387]:
+              - heading "Planetary Science Galleries" [level=2] [ref=f4e388]
+              - list [ref=f4e390]:
+                - text: 
+                - button [aria-hidden] [ref=f4e391] [cursor=pointer]:
+                  - generic [ref=f4e392]: 
+                - listitem [ref=f4e393]:
+                  - generic [ref=f4e394]:
+                    - link [ref=f4e395] [cursor=pointer]:
+                      - /url: /gallery/artemis-iiscience/
+                      - img [ref=f4e397]
+                    - generic [ref=f4e398]: "ID: 40539"
+                    - generic [ref=f4e399]:
+                      - generic [aria-hidden] [ref=f4e400]: 
+                      - text: Gallery
+                  - generic [ref=f4e401]:
+                    - heading [level=3] [ref=f4e402]:
+                      - link "Moon Visualizations, Animations, Videos - Artemis II Lunar Science" [ref=f4e403] [cursor=pointer]:
+                        - /url: /gallery/artemis-iiscience/
+                    - generic [ref=f4e404]: August 15, 2025
+                    - paragraph [ref=f4e407]:
+                      - text: While the Artemis II crew will be the first humans to test NASA’s Orion spacecraft in space, they will also conduct science investigations that will inform future deep space missions. During the 10-day past the Moon and back, the Orion capsule will fly by the far side of the Moon — the side that always faces away from Earth. During this three-hour period, astronauts will analyze and photograph geologic features, such as impact craters and ancient lava flows. They will rely on the extensive geology training they received in the classroom and in Moon-like places on Earth to describe nuances in shapes, textures, and colors — the type of information that reveals the geologic history of an area. These skills will be critical to exploring the Moon’s South Pole region through future missions. Learn more about Artemis II lunar science. Learn more about all Artemis II science experiments Learn more about the Moon at science.nasa.gov/moon.
+                      - strong [ref=f4e408]: "Note: This page will be continually updated through the Artemis II mission."
+                      - text: "Media Contact: Lonnie Shekhtman NASA’s Goddard Space Flight Center in Greenbelt, Md."
+                    - link "Go to this page" [ref=f4e409] [cursor=pointer]:
+                      - /url: /gallery/artemis-iiscience/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e410]: 
+                - listitem [ref=f4e411]:
+                  - generic [ref=f4e412]:
+                    - link [ref=f4e413] [cursor=pointer]:
+                      - /url: /gallery/moonphase/
+                      - img "The phase and libration of the Moon for 2023, at hourly intervals. Includes supplemental graphics that display the Moon's orbit, subsolar and sub-Earth points, and the Moon's distance from Earth at true scale. Craters near the terminator are labeled, as are Apollo landing sites and maria and other albedo features in sunlight." [ref=f4e415]
+                    - generic [ref=f4e416]: "ID: 40343"
+                    - generic [ref=f4e417]:
+                      - generic [aria-hidden] [ref=f4e418]: 
+                      - text: Gallery
+                  - generic [ref=f4e419]:
+                    - heading [level=3] [ref=f4e420]:
+                      - link "Moon Phase and Libration" [ref=f4e421] [cursor=pointer]:
+                        - /url: /gallery/moonphase/
+                    - generic [ref=f4e422]: December 12, 2017
+                    - paragraph [ref=f4e425]: Current Moonshow_moon_image(); show_moon_info(); Every year since 2011, the SVS produces its annual visualization of the Moon's phase and libration comprising 8760 hourly renderings of the precise size, orientation, and illumination of our nearest neighbor in space. The above displays the current state of the Moon. Click on the image to download a much larger version with labeled craters and additional graphics. Follow the links below to see the Moon at any hour of the year, play the animations, access the frames at multiple resolutions, and read detailed explanations.
+                    - link "Go to this page" [ref=f4e426] [cursor=pointer]:
+                      - /url: /gallery/moonphase/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e427]: 
+                - listitem [ref=f4e428]:
+                  - generic [ref=f4e429]:
+                    - link [ref=f4e430] [cursor=pointer]:
+                      - /url: /gallery/apollo/
+                      - img "On December 24, 1968, Apollo 8 astronauts Frank Borman, Jim Lovell, and Bill Anders became the first humans to witness the Earth rising above the moon's barren surface. Now we can relive the astronauts' experience, thanks to data from NASA's Lunar Reconnaissance Orbiter. Complete transcript available.Watch this video on the NASA Goddard YouTube channel." [ref=f4e432]
+                    - generic [ref=f4e433]: "ID: 40371"
+                    - generic [ref=f4e434]:
+                      - generic [aria-hidden] [ref=f4e435]: 
+                      - text: Gallery
+                  - generic [ref=f4e436]:
+                    - heading [level=3] [ref=f4e437]:
+                      - link "Project Apollo" [ref=f4e438] [cursor=pointer]:
+                        - /url: /gallery/apollo/
+                    - generic [ref=f4e439]: May 10, 2019
+                    - paragraph [ref=f4e442]: This is a collection of the media resources available on the Scientific Visualization Studio website relating to NASA's Apollo missions to the Moon. More information and media can be found at NASA.gov Apollo Lunar Surface Journal Apollo Flight Journal Apollo Landing Sites photographed by Lunar Reconnaissance Orbiter Apollo in Real TimeProject Apollo Archive on Flickr
+                    - link "Go to this page" [ref=f4e444] [cursor=pointer]:
+                      - /url: /gallery/apollo/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e445]: 
+                - listitem [ref=f4e446]:
+                  - generic [ref=f4e447]:
+                    - link [ref=f4e448] [cursor=pointer]:
+                      - /url: /gallery/lunar-eclipse/
+                      - img "The appearance of the Moon during the May 2022 total lunar eclipse. Includes annotations of the contact times and various eclipse statistics." [ref=f4e450]
+                    - generic [ref=f4e451]: "ID: 40439"
+                    - generic [ref=f4e452]:
+                      - generic [aria-hidden] [ref=f4e453]: 
+                      - text: Gallery
+                  - generic [ref=f4e454]:
+                    - heading [level=3] [ref=f4e455]:
+                      - link "Lunar Eclipse" [ref=f4e456] [cursor=pointer]:
+                        - /url: /gallery/lunar-eclipse/
+                    - generic [ref=f4e457]: April 14, 2022
+                    - paragraph [ref=f4e460]: This gallery contains videos and visualizations related to Lunar Eclipses
+                    - link "Go to this page" [ref=f4e461] [cursor=pointer]:
+                      - /url: /gallery/lunar-eclipse/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e462]: 
+                - listitem [ref=f4e463]:
+                  - generic [ref=f4e464]:
+                    - link "Go to this page" [ref=f4e465] [cursor=pointer]:
+                      - /url: /gallery/mars/
+                    - generic [ref=f4e467]: "ID: 40122"
+                    - generic [ref=f4e468]:
+                      - generic [aria-hidden] [ref=f4e469]: 
+                      - text: Gallery
+                  - generic [ref=f4e470]:
+                    - heading [level=3] [ref=f4e471]:
+                      - link "Mars Missions and Science" [ref=f4e472] [cursor=pointer]:
+                        - /url: /gallery/mars/
+                    - generic [ref=f4e473]: June 28, 2012
+                    - paragraph [ref=f4e476]: This multimedia gallery assembles and organizes Mars content on the Scientific Visualization Studio website. Highlights of NASA Goddard Space Flight Center’s animations, visualizations, videos, images and graphics relating to Mars science and missions can be found here.
+                    - link "Go to this page" [ref=f4e477] [cursor=pointer]:
+                      - /url: /gallery/mars/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e478]: 
+            - generic [ref=f4e479]:
+              - heading "Astrophysics Galleries" [level=2] [ref=f4e480]
+              - list [ref=f4e482]:
+                - text: 
+                - button [aria-hidden] [ref=f4e483] [cursor=pointer]:
+                  - generic [ref=f4e484]: 
+                - listitem [ref=f4e485]:
+                  - generic [ref=f4e486]:
+                    - link [ref=f4e487] [cursor=pointer]:
+                      - /url: /gallery/dark-energy/
+                      - img "Animation illustrating the accelerating expansion of the universe." [ref=f4e489]
+                    - generic [ref=f4e490]: "ID: 40542"
+                    - generic [ref=f4e491]:
+                      - generic [aria-hidden] [ref=f4e492]: 
+                      - text: Gallery
+                  - generic [ref=f4e493]:
+                    - heading [level=3] [ref=f4e494]:
+                      - link "Dark Energy" [ref=f4e495] [cursor=pointer]:
+                        - /url: /gallery/dark-energy/
+                    - generic [ref=f4e496]: January 28, 2026
+                    - paragraph [ref=f4e499]: "Some 13.8 billion years ago, the universe began with a rapid expansion we call the big bang. After this initial expansion, which lasted a fraction of a second, gravity started to slow the universe down. But the cosmos wouldn’t stay this way. Nine billion years after the universe began, its expansion started to speed up, driven by an unknown force that scientists have named dark energy. But what exactly is dark energy? The short answer is: We don't know. But we do know that it exists, it’s making the universe expand at an accelerating rate, and approximately 68.3 to 70% of the universe is dark energy."
+                    - link "Go to this page" [ref=f4e500] [cursor=pointer]:
+                      - /url: /gallery/dark-energy/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e501]: 
+                - listitem [ref=f4e502]:
+                  - generic [ref=f4e503]:
+                    - link "Go to this page" [ref=f4e504] [cursor=pointer]:
+                      - /url: /gallery/astro/
+                    - generic [ref=f4e506]: "ID: 40073"
+                    - generic [ref=f4e507]:
+                      - generic [aria-hidden] [ref=f4e508]: 
+                      - text: Gallery
+                  - generic [ref=f4e509]:
+                    - heading [level=3] [ref=f4e510]:
+                      - link "Goddard's Astrophysics Gallery" [ref=f4e511] [cursor=pointer]:
+                        - /url: /gallery/astro/
+                    - generic [ref=f4e512]: July 12, 2010
+                    - paragraph [ref=f4e515]: This multimedia gallery assembles and organizes the astrophysics content on the Scientific Visualization Studio website. All of NASA's Goddard Space Flight Center's animations, visualizations, videos and still images relating to the universe beyond our Solar System are here. Browse through the basic categories or find Goddard's most recent releases under each specific astronomical feature. Find all the content relating to a particular satellite under "Missions." Most entries have multiple downloadable formats and several resolutions.
+                    - link "Go to this page" [ref=f4e516] [cursor=pointer]:
+                      - /url: /gallery/astro/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e517]: 
+                - listitem [ref=f4e518]:
+                  - generic [ref=f4e519]:
+                    - link [ref=f4e520] [cursor=pointer]:
+                      - /url: /gallery/black-hole-week/
+                      - img "This gallery brings together resources related to NASA’s Black Hole Week — videos, social media products, news stories, still images, and assets. This week is a celebration of celestial objects with gravity so intense that even light cannot escape them. Our goal is that no matter where people turn that week they will run into a black hole. (Figuratively, of course — we don’t want anyone falling in!)" [ref=f4e522]
+                    - generic [ref=f4e523]: "ID: 40436"
+                    - generic [ref=f4e524]:
+                      - generic [aria-hidden] [ref=f4e525]: 
+                      - text: Gallery
+                  - generic [ref=f4e526]:
+                    - heading [level=3] [ref=f4e527]:
+                      - link "Black Hole Week" [ref=f4e528] [cursor=pointer]:
+                        - /url: /gallery/black-hole-week/
+                    - generic [ref=f4e529]: February 12, 2022
+                    - paragraph [ref=f4e532]: This gallery brings together resources related to NASA’s Black Hole Week — videos, social media products, news stories, still images, and assets. This week is a celebration of celestial objects with gravity so intense that even light cannot escape them. Our goal is that no matter where people turn that week they will run into a black hole. (Figuratively, of course — we don’t want anyone falling in!)
+                    - link "Go to this page" [ref=f4e533] [cursor=pointer]:
+                      - /url: /gallery/black-hole-week/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e534]: 
+                - listitem [ref=f4e535]:
+                  - generic [ref=f4e536]:
+                    - link [ref=f4e537] [cursor=pointer]:
+                      - /url: /gallery/black-holes/
+                      - img "This gallery gathers together visualizations and narrated videos about black holes. A black hole is a celestial object whose gravity is so intense that even light cannot escape it. Astronomers observe two main types of black holes. Stellar-mass black holes contain three to dozens of times the mass of our Sun. They form when the cores of very massive stars run out of fuel and collapse under their own weight, compressing large amounts of matter into a tiny space. Supermassive black holes, with masses up to billions of times the Sun’s, can be found at the centers of most big galaxies. Although a black hole does not emit light, matter falling toward it collects in a hot, glowing accretion disk that astronomers can detect." [ref=f4e539]
+                    - generic [ref=f4e540]: "ID: 40368"
+                    - generic [ref=f4e541]:
+                      - generic [aria-hidden] [ref=f4e542]: 
+                      - text: Gallery
+                  - generic [ref=f4e543]:
+                    - heading [level=3] [ref=f4e544]:
+                      - link "Black Holes" [ref=f4e545] [cursor=pointer]:
+                        - /url: /gallery/black-holes/
+                    - generic [ref=f4e546]: April 10, 2019
+                    - paragraph [ref=f4e549]: This gallery gathers together visualizations and narrated videos about black holes. A black hole is a celestial object whose gravity is so intense that even light cannot escape it. Astronomers observe two main types of black holes. Stellar-mass black holes contain three to dozens of times the mass of our Sun. They form when the cores of very massive stars run out of fuel and collapse under their own weight, compressing large amounts of matter into a tiny space. Supermassive black holes, with masses up to billions of times the Sun’s, can be found at the centers of most big galaxies. Although a black hole does not emit light, matter falling toward it collects in a hot, glowing accretion disk that astronomers can detect.
+                    - link "Go to this page" [ref=f4e550] [cursor=pointer]:
+                      - /url: /gallery/black-holes/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e551]: 
+                - listitem [ref=f4e552]:
+                  - generic [ref=f4e553]:
+                    - link [ref=f4e554] [cursor=pointer]:
+                      - /url: /gallery/the-traveler/
+                      - img "Our Traveler can’t wait to explore the universe! It’s hard not to be caught up in their boundless enthusiasm for all the wondrous sights the cosmos has to offer. This gallery brings together resources related to the intrepid blue Traveler and their adventures. This includes videos, videos, social media products, still images, and assets." [ref=f4e556]
+                    - generic [ref=f4e557]: "ID: 40466"
+                    - generic [ref=f4e558]:
+                      - generic [aria-hidden] [ref=f4e559]: 
+                      - text: Gallery
+                  - generic [ref=f4e560]:
+                    - heading [level=3] [ref=f4e561]:
+                      - link "The Traveler" [ref=f4e562] [cursor=pointer]:
+                        - /url: /gallery/the-traveler/
+                    - generic [ref=f4e563]: May 17, 2023
+                    - paragraph [ref=f4e566]: Our Traveler can’t wait to explore the universe! It’s hard not to be caught up in their boundless enthusiasm for all the wondrous sights the cosmos has to offer. This gallery brings together resources related to the intrepid blue Traveler and their adventures. This includes videos, videos, social media products, still images, and assets.
+                    - link "Go to this page" [ref=f4e567] [cursor=pointer]:
+                      - /url: /gallery/the-traveler/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e568]: 
+            - generic [ref=f4e569]:
+              - heading "Missions and Instrument Galleries" [level=2] [ref=f4e570]
+              - list [ref=f4e572]:
+                - listitem [ref=f4e573]:
+                  - generic [ref=f4e574]:
+                    - link [ref=f4e575] [cursor=pointer]:
+                      - /url: /gallery/carruthers-geocorona-observatory/
+                      - img [ref=f4e577]
+                    - generic [ref=f4e578]: "ID: 40538"
+                  - generic [ref=f4e579]:
+                    - generic [ref=f4e580]:
+                      - generic [aria-hidden] [ref=f4e581]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e584]:
+                      - link "Carruthers Geocorona Observatory" [ref=f4e585] [cursor=pointer]:
+                        - /url: /gallery/carruthers-geocorona-observatory/
+                - listitem [ref=f4e586]:
+                  - generic [ref=f4e587]:
+                    - link [ref=f4e588] [cursor=pointer]:
+                      - /url: /gallery/roman/
+                      - img "Formerly known as WFIRST, the Wide Field Infrared Survey Telescope, the Roman Space Telescope is a NASA observatory designed to perform wide field imaging and surveys of the near infrared (NIR) sky. The current design of the mission makes use of an existing 2.4m telescope, which is the same size as the Hubble Space Telescope. The Roman Space Telescope is the top-ranked large space mission in the New Worlds, New Horizon Decadal Survey of Astronomy and Astrophysics. The Wide Field Instrument will provide a field of view of the sky that is 100 times larger than images provided by HST. The coronagraph will enable astronomers to detect and measure properties of planets in other solar systems. More information about the Roman Space Telescope" [ref=f4e590]
+                    - generic [ref=f4e591]: "ID: 40305"
+                  - generic [ref=f4e592]:
+                    - generic [ref=f4e593]:
+                      - generic [aria-hidden] [ref=f4e594]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e597]:
+                      - link "Nancy Grace Roman Space Telescope" [ref=f4e598] [cursor=pointer]:
+                        - /url: /gallery/roman/
+                - listitem [ref=f4e599]:
+                  - generic [ref=f4e600]:
+                    - link [ref=f4e601] [cursor=pointer]:
+                      - /url: /gallery/jwst/
+                      - img [ref=f4e603]
+                    - generic [ref=f4e604]: "ID: 40116"
+                  - generic [ref=f4e605]:
+                    - generic [ref=f4e606]:
+                      - generic [aria-hidden] [ref=f4e607]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e610]:
+                      - link "James Webb Space Telescope" [ref=f4e611] [cursor=pointer]:
+                        - /url: /gallery/jwst/
+                - listitem [ref=f4e612]:
+                  - generic [ref=f4e613]:
+                    - link [ref=f4e614] [cursor=pointer]:
+                      - /url: /gallery/hubble-space-telescope/
+                      - img "Since its launch in 1990, the Hubble Space Telescope has changed our fundamental understanding of the universe. Hubble’s unique design, allowing it to be repaired and upgraded with advanced technology by astronauts, has made it one of NASA’s longest-living and most valuable observatories. Today, Hubble continues to provide views of cosmic wonders never before seen and is still at the forefront of astronomy. The Hubble Space Telescope is an international collaboration between NASA and the European Space Agency (ESA).For more information visit us at https://nasa.gov/hubble or follow us on social media @NASAHubble." [ref=f4e616]
+                    - generic [ref=f4e617]: "ID: 40262"
+                  - generic [ref=f4e618]:
+                    - generic [ref=f4e619]:
+                      - generic [aria-hidden] [ref=f4e620]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e623]:
+                      - link "Hubble Space Telescope" [ref=f4e624] [cursor=pointer]:
+                        - /url: /gallery/hubble-space-telescope/
+                - listitem [ref=f4e625]:
+                  - generic [ref=f4e626]:
+                    - link [ref=f4e627] [cursor=pointer]:
+                      - /url: /gallery/abo-ve/
+                      - img "The Arctic Boreal Vulnerability Experiment, or ABoVE, is a NASA-led, 10-year field experiment designed to better understand the ecological and social consequences of environmental change in one of the most rapidly changing regions on Earth. Satellite, airborne, and ground observations across Alaska and Canada will help us better understand the local and regional effects of changing forests, permafrost, and ecosystems – and how these changes could ultimately affect people and places beyond the Arctic." [ref=f4e629]
+                    - generic [ref=f4e630]: "ID: 40333"
+                  - generic [ref=f4e631]:
+                    - generic [ref=f4e632]:
+                      - generic [aria-hidden] [ref=f4e633]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e636]:
+                      - link "ABoVE" [ref=f4e637] [cursor=pointer]:
+                        - /url: /gallery/abo-ve/
+                - listitem [ref=f4e638]:
+                  - generic [ref=f4e639]:
+                    - link [ref=f4e640] [cursor=pointer]:
+                      - /url: /gallery/awe/
+                      - img "From its unique vantage point on the International Space Station, NASA’s Atmospheric Waves Experiment (AWE) will look directly down into Earth’s atmosphere to study how gravity waves travel through the upper atmosphere. Data collected by AWE will enable scientists to determine the physics and characteristics of atmospheric gravity waves and how terrestrial weather influences the ionosphere, which can affect communication with satellites. AWE is led by Michael Taylor at Utah State University in Logan, and it is managed by the Explorers Program Office at NASA’s Goddard Space Flight Center in Greenbelt, Maryland. Utah State University’s Space Dynamics Laboratory built the AWE instrument and will provide the mission operations center." [ref=f4e642]
+                    - generic [ref=f4e643]: "ID: 40513"
+                  - generic [ref=f4e644]:
+                    - generic [ref=f4e645]:
+                      - generic [aria-hidden] [ref=f4e646]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e649]:
+                      - link "AWE – Atmospheric Waves Experiment" [ref=f4e650] [cursor=pointer]:
+                        - /url: /gallery/awe/
+                - listitem [ref=f4e651]:
+                  - generic [ref=f4e652]:
+                    - link [ref=f4e653] [cursor=pointer]:
+                      - /url: /gallery/aquarius/
+                      - img "Aquarius 2006 Beauty Shot 1" [ref=f4e655]
+                    - generic [ref=f4e656]: "ID: 40083"
+                  - generic [ref=f4e657]:
+                    - generic [ref=f4e658]:
+                      - generic [aria-hidden] [ref=f4e659]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e662]:
+                      - link "Aquarius Mission" [ref=f4e663] [cursor=pointer]:
+                        - /url: /gallery/aquarius/
+                - listitem [ref=f4e664]:
+                  - generic [ref=f4e665]:
+                    - link [ref=f4e666] [cursor=pointer]:
+                      - /url: /gallery/davinci/
+                      - img "Launching in 2029, NASA’s Deep Atmosphere Venus Investigation of Noble gases, Chemistry and Imaging (DAVINCI) mission will bring a rich suite of instruments to Venus to address long standing questions about Earth’s sister planet. Some scientists think Venus may once have been more Earth-like in the past, with oceans and pleasant surface temperatures -- DAVINCI data will help us determine if this intriguing possibility is true. Clues to Venus’ mysterious past may be hidden in atmospheric gases or in surface rocks formed in association with ancient water in the planet’s mountainous highlands." [ref=f4e668]
+                    - generic [ref=f4e669]: "ID: 40435"
+                  - generic [ref=f4e670]:
+                    - generic [ref=f4e671]:
+                      - generic [aria-hidden] [ref=f4e672]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e675]:
+                      - link "DAVINCI" [ref=f4e676] [cursor=pointer]:
+                        - /url: /gallery/davinci/
+                - listitem [ref=f4e677]:
+                  - generic [ref=f4e678]:
+                    - link [ref=f4e679] [cursor=pointer]:
+                      - /url: /gallery/escapade/
+                      - img [ref=f4e681]
+                    - generic [ref=f4e682]: "ID: 40523"
+                  - generic [ref=f4e683]:
+                    - generic [ref=f4e684]:
+                      - generic [aria-hidden] [ref=f4e685]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e688]:
+                      - link "ESCAPADE – Escape and Plasma Acceleration and Dynamics Explorer" [ref=f4e689] [cursor=pointer]:
+                        - /url: /gallery/escapade/
+                - listitem [ref=f4e690]:
+                  - generic [ref=f4e691]:
+                    - link [ref=f4e692] [cursor=pointer]:
+                      - /url: /gallery/fermi5/
+                      - img "NASA's Fermi Gamma-ray Space Telescope has completed its primary mission, and it will continue to explore the high-energy cosmos in unprecedented detail. These pages gather together media products associated with Fermi news releases starting before its 2008 launch, when it was known as GLAST. Fermi detects gamma rays, the most powerful form of light, with energies thousands to billions of times greater than the visible spectrum. The mission has discovered pulsars, proved that supernova remnants can accelerate particles to near the speed of light, monitored eruptions of black holes in distant galaxies, and found giant bubbles linked to the central black hole in our own galaxy. For more information about the Fermi mission, visit its NASA webpage." [ref=f4e694]
+                    - generic [ref=f4e695]: "ID: 40134"
+                  - generic [ref=f4e696]:
+                    - generic [ref=f4e697]:
+                      - generic [aria-hidden] [ref=f4e698]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e701]:
+                      - link "Fermi Gamma-ray Space Telescope" [ref=f4e702] [cursor=pointer]:
+                        - /url: /gallery/fermi5/
+                - listitem [ref=f4e703]:
+                  - generic [ref=f4e704]:
+                    - link [ref=f4e705] [cursor=pointer]:
+                      - /url: /gallery/firefly/
+                      - img "This short teaser video introduces us to the mission of Firefly, a CubeSat built by undergraduate students with the partnership of Goddard Space Flight Center and the National Science Foundation.For complete transcript, click here." [ref=f4e707]
+                    - generic [ref=f4e708]: "ID: 40077"
+                  - generic [ref=f4e709]:
+                    - generic [ref=f4e710]:
+                      - generic [aria-hidden] [ref=f4e711]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e714]:
+                      - link "Firefly" [ref=f4e715] [cursor=pointer]:
+                        - /url: /gallery/firefly/
+                - listitem [ref=f4e716]:
+                  - generic [ref=f4e717]:
+                    - link [ref=f4e718] [cursor=pointer]:
+                      - /url: /gallery/goes/
+                      - img "Clouds over Florida on August 4, 2000, as measured by GOES-11" [ref=f4e720]
+                    - generic [ref=f4e721]: "ID: 40247"
+                  - generic [ref=f4e722]:
+                    - generic [ref=f4e723]:
+                      - generic [aria-hidden] [ref=f4e724]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e727]:
+                      - link "GOES" [ref=f4e728] [cursor=pointer]:
+                        - /url: /gallery/goes/
+                - listitem [ref=f4e729]:
+                  - generic [ref=f4e730]:
+                    - link [ref=f4e731] [cursor=pointer]:
+                      - /url: /gallery/gold/
+                      - img [ref=f4e733]
+                    - generic [ref=f4e734]: "ID: 40345"
+                  - generic [ref=f4e735]:
+                    - generic [ref=f4e736]:
+                      - generic [aria-hidden] [ref=f4e737]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e740]:
+                      - link "GOLD – Global-scale Observations of the Limb and Disk" [ref=f4e741] [cursor=pointer]:
+                        - /url: /gallery/gold/
+                - listitem [ref=f4e742]:
+                  - generic [ref=f4e743]:
+                    - link [ref=f4e744] [cursor=pointer]:
+                      - /url: /gallery/gpm/
+                      - img "Animations showing the GMI then DPR instruments on board the GPM Core Observatory." [ref=f4e746]
+                    - generic [ref=f4e747]: "ID: 40118"
+                  - generic [ref=f4e748]:
+                    - generic [ref=f4e749]:
+                      - generic [aria-hidden] [ref=f4e750]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e753]:
+                      - link "Global Precipitation Measurement" [ref=f4e754] [cursor=pointer]:
+                        - /url: /gallery/gpm/
+                - listitem [ref=f4e755]:
+                  - generic [ref=f4e756]:
+                    - link "Go to this page" [ref=f4e757] [cursor=pointer]:
+                      - /url: /gallery/habitable-worlds-observatory/
+                    - generic [ref=f4e759]: "ID: 40525"
+                  - generic [ref=f4e760]:
+                    - generic [ref=f4e761]:
+                      - generic [aria-hidden] [ref=f4e762]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e765]:
+                      - link "Habitable Worlds Observatory" [ref=f4e766] [cursor=pointer]:
+                        - /url: /gallery/habitable-worlds-observatory/
+                - listitem [ref=f4e767]:
+                  - generic [ref=f4e768]:
+                    - link [ref=f4e769] [cursor=pointer]:
+                      - /url: /gallery/icesat2/
+                      - img "The Ice, Cloud and land Elevation Satellite-2 will measure the height of Earth from space, creating a record of the planet’s elevation in unprecedented detail and precision. With high-resolution data from ICESat-2’s laser altimeter, scientists will track changes to Earth’s polar ice caps – regions that are a harbinger of warming temperatures worldwide. The mission will also take stock of forests, map ocean surfaces, track the rise of cities and measure everything in between. ICESat-2 continues key elevation observations begun by ICESat-1 (2003 to 2009) and Operation IceBridge (2009 through present), to provide a portrait of change in the beginning of the 21st century. For more information, please visit the ICESat-2 website." [ref=f4e771]
+                    - generic [ref=f4e772]: "ID: 40179"
+                  - generic [ref=f4e773]:
+                    - generic [ref=f4e774]:
+                      - generic [aria-hidden] [ref=f4e775]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e778]:
+                      - link "ICESat-2" [ref=f4e779] [cursor=pointer]:
+                        - /url: /gallery/icesat2/
+                - listitem [ref=f4e780]:
+                  - generic [ref=f4e781]:
+                    - link [ref=f4e782] [cursor=pointer]:
+                      - /url: /gallery/icon/
+                      - 'img "Beauty pass showing ICON observing the ionosphere. Credit: NASA/GSFC/CIL" [ref=f4e784]'
+                    - generic [ref=f4e785]: "ID: 40346"
+                  - generic [ref=f4e786]:
+                    - generic [ref=f4e787]:
+                      - generic [aria-hidden] [ref=f4e788]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e791]:
+                      - link "ICON" [ref=f4e792] [cursor=pointer]:
+                        - /url: /gallery/icon/
+                - listitem [ref=f4e793]:
+                  - generic [ref=f4e794]:
+                    - link [ref=f4e795] [cursor=pointer]:
+                      - /url: /gallery/imap/
+                      - img [ref=f4e797]
+                    - generic [ref=f4e798]: "ID: 40543"
+                  - generic [ref=f4e799]:
+                    - generic [ref=f4e800]:
+                      - generic [aria-hidden] [ref=f4e801]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e804]:
+                      - link "IMAP – Interstellar Mapping and Acceleration Probe" [ref=f4e805] [cursor=pointer]:
+                        - /url: /gallery/imap/
+                - listitem [ref=f4e806]:
+                  - generic [ref=f4e807]:
+                    - link [ref=f4e808] [cursor=pointer]:
+                      - /url: /gallery/landsat/
+                      - img "At Land's Edge - Tracking Coastal Ecosystems with Landsat" [ref=f4e810]
+                    - generic [ref=f4e811]: "ID: 40098"
+                  - generic [ref=f4e812]:
+                    - generic [ref=f4e813]:
+                      - generic [aria-hidden] [ref=f4e814]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e817]:
+                      - link "Landsat" [ref=f4e818] [cursor=pointer]:
+                        - /url: /gallery/landsat/
+                - listitem [ref=f4e819]:
+                  - generic [ref=f4e820]:
+                    - link [ref=f4e821] [cursor=pointer]:
+                      - /url: /gallery/lucy/
+                      - img "Launching in 2021, NASA's Lucy spacecraft will be the first space mission to study the outer Solar System asteroids known as the Trojans, which are orbiting the same distance from the Sun as Jupiter. These fly-by encounters are planned to take place over a 12-year period. The instruments on board will collect data on surface geology, surface color and composition, the asteroids' interior and bulk properties, as well as any satellites and rings. Lucy is named for the famous Australopithecus afarensis hominid fossil that shed light on our early human ancestors. By making the first exploration of the Trojan asteroids, the Lucy mission will improve our understanding of the early solar system, and be the first to uncover these fossils of planet formation." [ref=f4e823]
+                    - generic [ref=f4e824]: "ID: 40423"
+                  - generic [ref=f4e825]:
+                    - generic [ref=f4e826]:
+                      - generic [aria-hidden] [ref=f4e827]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e830]:
+                      - link "Lucy" [ref=f4e831] [cursor=pointer]:
+                        - /url: /gallery/lucy/
+                - listitem [ref=f4e832]:
+                  - generic [ref=f4e833]:
+                    - link "Go to this page" [ref=f4e834] [cursor=pointer]:
+                      - /url: /gallery/lunar-reconnaissance-orbiter/
+                    - generic [ref=f4e836]: "ID: 40063"
+                  - generic [ref=f4e837]:
+                    - generic [ref=f4e838]:
+                      - generic [aria-hidden] [ref=f4e839]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e842]:
+                      - link "Lunar Reconnaissance Orbiter" [ref=f4e843] [cursor=pointer]:
+                        - /url: /gallery/lunar-reconnaissance-orbiter/
+                - listitem [ref=f4e844]:
+                  - generic [ref=f4e845]:
+                    - link [ref=f4e846] [cursor=pointer]:
+                      - /url: /gallery/maven/
+                      - img "NASA's Mars Atmosphere and Volatile Evolution (MAVEN) is the first mission devoted to understanding the Martian upper atmosphere. Today Mars is cold and dry, but ancient Mars was warm, wet, and possibly hospitable to life. Scientists think that the loss of Mars' early atmosphere caused the planet to dry up, and MAVEN is testing this hypothesis by observing present-day interactions of the Martian atmosphere with the solar wind. Learn more about MAVEN from NASA and the University of Colorado Boulder." [ref=f4e848]
+                    - generic [ref=f4e849]: "ID: 40152"
+                  - generic [ref=f4e850]:
+                    - generic [ref=f4e851]:
+                      - generic [aria-hidden] [ref=f4e852]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e855]:
+                      - link "MAVEN" [ref=f4e856] [cursor=pointer]:
+                        - /url: /gallery/maven/
+                - listitem [ref=f4e857]:
+                  - generic [ref=f4e858]:
+                    - link [ref=f4e859] [cursor=pointer]:
+                      - /url: /gallery/swift/
+                      - img "NASA's Neil Gehrels Swift Observatory provides astronomers with a unique tool for exploring many different classes of astronomical phenomena, from gamma-ray bursts and supernovae to spinning neutron stars, outbursts from black holes, and even exoplanets, comets and asteroids. These pages gather together media products associated with Swift news releases.For more information about the Swift mission, visit its NASA webpage." [ref=f4e861]
+                    - generic [ref=f4e862]: "ID: 40217"
+                  - generic [ref=f4e863]:
+                    - generic [ref=f4e864]:
+                      - generic [aria-hidden] [ref=f4e865]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e868]:
+                      - link "Neil Gehrels Swift Observatory" [ref=f4e869] [cursor=pointer]:
+                        - /url: /gallery/swift/
+                - listitem [ref=f4e870]:
+                  - generic [ref=f4e871]:
+                    - link [ref=f4e872] [cursor=pointer]:
+                      - /url: /gallery/nicer/
+                      - img "The Neutron star Interior Composition Explorer Installed aboard the International Space Station in June 2017, NASA’s Neutron star Interior Composition Explorer provides high-precision measurements of neutron stars, objects containing ultra-dense matter at the threshold of collapse into black holes. NICER will also test, for the first time in space, technology that uses pulsars as navigation beacons. For more information visit the NICER website." [ref=f4e874]
+                    - generic [ref=f4e875]: "ID: 40320"
+                  - generic [ref=f4e876]:
+                    - generic [ref=f4e877]:
+                      - generic [aria-hidden] [ref=f4e878]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e881]:
+                      - link "NICER" [ref=f4e882] [cursor=pointer]:
+                        - /url: /gallery/nicer/
+                - listitem [ref=f4e883]:
+                  - generic [ref=f4e884]:
+                    - link "Go to this page" [ref=f4e885] [cursor=pointer]:
+                      - /url: /gallery/oib/
+                    - generic [ref=f4e887]: "ID: 40378"
+                  - generic [ref=f4e888]:
+                    - generic [ref=f4e889]:
+                      - generic [aria-hidden] [ref=f4e890]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e893]:
+                      - link "Operation IceBridge" [ref=f4e894] [cursor=pointer]:
+                        - /url: /gallery/oib/
+                - listitem [ref=f4e895]:
+                  - generic [ref=f4e896]:
+                    - link [ref=f4e897] [cursor=pointer]:
+                      - /url: /gallery/osirisrex/
+                      - img "Data-driven animation showing how the OSIRIS-REx spacecraft impacted asteroid Bennu's surface when it touched down and collected a sample." [ref=f4e899]
+                    - generic [ref=f4e900]: "ID: 40161"
+                  - generic [ref=f4e901]:
+                    - generic [ref=f4e902]:
+                      - generic [aria-hidden] [ref=f4e903]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e906]:
+                      - link "OSIRIS-REx" [ref=f4e907] [cursor=pointer]:
+                        - /url: /gallery/osirisrex/
+                - listitem [ref=f4e908]:
+                  - generic [ref=f4e909]:
+                    - link [ref=f4e910] [cursor=pointer]:
+                      - /url: /gallery/pace/
+                      - img "PACE is NASA's Plankton, Aerosol, Cloud, ocean Ecosystem mission, currently in the design phase of mission development. It is scheduled to launch in 2024, extending and improving NASA's over 20-year record of satellite observations of global ocean biology, aerosols (tiny particles suspended in the atmosphere), and clouds. PACE will advance the assessment of ocean health by measuring the distribution of phytoplankton, tiny plants and algae that sustain the marine food web. It will also continue systematic records of key atmospheric variables associated with air quality and Earth's climate." [ref=f4e912]
+                    - generic [ref=f4e913]: "ID: 40446"
+                  - generic [ref=f4e914]:
+                    - generic [ref=f4e915]:
+                      - generic [aria-hidden] [ref=f4e916]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e919]:
+                      - link "PACE" [ref=f4e920] [cursor=pointer]:
+                        - /url: /gallery/pace/
+                - listitem [ref=f4e921]:
+                  - generic [ref=f4e922]:
+                    - link [ref=f4e923] [cursor=pointer]:
+                      - /url: /gallery/parker-solar-probe/
+                      - img "Parker Solar Probe will swoop to within four million miles of the Sun's surface, facing heat and radiation like no spacecraft before it. Launching in 2018, Parker Solar Probe will provide new data on solar activity and make critical contributions to our ability to forecast major space-weather events that impact life on Earth." [ref=f4e925]
+                    - generic [ref=f4e926]: "ID: 40338"
+                  - generic [ref=f4e927]:
+                    - generic [ref=f4e928]:
+                      - generic [aria-hidden] [ref=f4e929]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e932]:
+                      - link "Parker Solar Probe" [ref=f4e933] [cursor=pointer]:
+                        - /url: /gallery/parker-solar-probe/
+                - listitem [ref=f4e934]:
+                  - generic [ref=f4e935]:
+                    - link [ref=f4e936] [cursor=pointer]:
+                      - /url: /gallery/punch/
+                      - img "NASA’s Polarimeter to Unify the Corona and Heliosphere, or PUNCH mission, is a constellation of four small satellites in low Earth orbit that will make global, 3D observations of the Sun's corona to better understand how the mass and energy there becomes the solar wind that fills the solar system.By imaging the Sun’s corona and the solar wind together, scientists hope to better understand the entire inner heliosphere – Sun, solar wind, and Earth – as a single connected system.The PUNCH mission is led by Southwest Research Institute’s office in Boulder, Colorado. The mission is managed by the Explorers Program Office at NASA’s Goddard Space Flight Center in Greenbelt, Maryland, for NASA’s Science Mission Directorate.For more information visit science.nasa.gov/mission/punch" [ref=f4e938]
+                    - generic [ref=f4e939]: "ID: 40532"
+                  - generic [ref=f4e940]:
+                    - generic [ref=f4e941]:
+                      - generic [aria-hidden] [ref=f4e942]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e945]:
+                      - link "PUNCH – Polarimeter to Unify the Corona and Heliosphere" [ref=f4e946] [cursor=pointer]:
+                        - /url: /gallery/punch/
+                - listitem [ref=f4e947]:
+                  - generic [ref=f4e948]:
+                    - link [ref=f4e949] [cursor=pointer]:
+                      - /url: /gallery/rxte/
+                      - 'img "Watch this video on the NASA Goddard YouTube channel.For complete transcript, click here.Explore M82 X-1 and learn more about how astronomers used X-ray fluctuations to determine its status as an intermediate-mass black hole. Credit: NASA''s Goddard Space Flight Center" [ref=f4e951]'
+                    - generic [ref=f4e952]: "ID: 40349"
+                  - generic [ref=f4e953]:
+                    - generic [ref=f4e954]:
+                      - generic [aria-hidden] [ref=f4e955]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e958]:
+                      - link "RXTE" [ref=f4e959] [cursor=pointer]:
+                        - /url: /gallery/rxte/
+                - listitem [ref=f4e960]:
+                  - generic [ref=f4e961]:
+                    - link [ref=f4e962] [cursor=pointer]:
+                      - /url: /gallery/spacecraft-animations/
+                      - img "A collection of spacecraft beauty pass animations for current missions." [ref=f4e964]
+                    - generic [ref=f4e965]: "ID: 40455"
+                  - generic [ref=f4e966]:
+                    - generic [ref=f4e967]:
+                      - generic [aria-hidden] [ref=f4e968]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e971]:
+                      - link "Satellite Animations" [ref=f4e972] [cursor=pointer]:
+                        - /url: /gallery/spacecraft-animations/
+                - listitem [ref=f4e973]:
+                  - generic [ref=f4e974]:
+                    - link [ref=f4e975] [cursor=pointer]:
+                      - /url: /gallery/sdo/
+                      - img [ref=f4e977]
+                    - generic [ref=f4e978]: "ID: 40355"
+                  - generic [ref=f4e979]:
+                    - generic [ref=f4e980]:
+                      - generic [aria-hidden] [ref=f4e981]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e984]:
+                      - link "SDO – Solar Dynamics Observatory" [ref=f4e985] [cursor=pointer]:
+                        - /url: /gallery/sdo/
+                - listitem [ref=f4e986]:
+                  - generic [ref=f4e987]:
+                    - link "Go to this page" [ref=f4e988] [cursor=pointer]:
+                      - /url: /gallery/small-missions/
+                    - generic [ref=f4e990]: "ID: 40495"
+                  - generic [ref=f4e991]:
+                    - generic [ref=f4e992]:
+                      - generic [aria-hidden] [ref=f4e993]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e996]:
+                      - link "Small Missions" [ref=f4e997] [cursor=pointer]:
+                        - /url: /gallery/small-missions/
+                - listitem [ref=f4e998]:
+                  - generic [ref=f4e999]:
+                    - link [ref=f4e1000] [cursor=pointer]:
+                      - /url: /gallery/solar-dynamics-observatory/
+                      - img "The movie with six synchronized datasets." [ref=f4e1002]
+                    - generic [ref=f4e1003]: "ID: 40064"
+                  - generic [ref=f4e1004]:
+                    - generic [ref=f4e1005]:
+                      - generic [aria-hidden] [ref=f4e1006]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1009]:
+                      - link "Solar Dynamics Observatory" [ref=f4e1010] [cursor=pointer]:
+                        - /url: /gallery/solar-dynamics-observatory/
+                - listitem [ref=f4e1011]:
+                  - generic [ref=f4e1012]:
+                    - link [ref=f4e1013] [cursor=pointer]:
+                      - /url: /gallery/solar-orbiter/
+                      - img "As the main driver of space weather, it is essential to understand the behavior of the Sun to learn how to better safeguard our planet, space technology and astronauts. Solar Orbiter will study the Sun, its outer atmosphere and what drives the constant outflow of solar wind which affects Earth. The spacecraft will observe the Sun's atmosphere up close with high spatial resolution telescopes and compare these observations to measurements taken in the environment directly surrounding the spacecraft – together creating a one-of-a-kind picture of how the Sun can affect the space environment throughout the solar system." [ref=f4e1015]
+                    - generic [ref=f4e1016]: "ID: 40400"
+                  - generic [ref=f4e1017]:
+                    - generic [ref=f4e1018]:
+                      - generic [aria-hidden] [ref=f4e1019]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1022]:
+                      - link "Solar Orbiter" [ref=f4e1023] [cursor=pointer]:
+                        - /url: /gallery/solar-orbiter/
+                - listitem [ref=f4e1024]:
+                  - generic [ref=f4e1025]:
+                    - link [ref=f4e1026] [cursor=pointer]:
+                      - /url: /gallery/stereomission/
+                      - 'img "Launched on Oct. 25, 2006, the Solar Terrestrial Relations Observatory (STEREO) mission traces the flow of energy and matter from the Sun to our planet with perspectives not possible from Earth. The mission initially used two nearly identical spacecraft, with one (STEREO-A) orbiting the Sun ahead of Earth and the other (STEREO-B) trailing behind Earth. Mission controllers lost contact with STEREO-B on September 23, 2016, but STEREO-A continues to bring its unique viewpoint to studies of the Sun and the giant bubble surrounding our solar system called the heliosphere. Learn more: https://science.nasa.gov/mission/stereo/" [ref=f4e1028]'
+                    - generic [ref=f4e1029]: "ID: 40354"
+                  - generic [ref=f4e1030]:
+                    - generic [ref=f4e1031]:
+                      - generic [aria-hidden] [ref=f4e1032]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1035]:
+                      - link "STEREO – Solar Terrestrial Relations Observatory" [ref=f4e1036] [cursor=pointer]:
+                        - /url: /gallery/stereomission/
+                - listitem [ref=f4e1037]:
+                  - generic [ref=f4e1038]:
+                    - link [ref=f4e1039] [cursor=pointer]:
+                      - /url: /gallery/tess/
+                      - img "The Transiting Exoplanet Survey Satellite (TESS) is a NASA Explorer mission launching in 2018 to study exoplanets, or planets orbiting stars outside our solar system. TESS will discover thousands of exoplanets in orbit around the brightest stars in the sky. It will monitor more than 200,000 stars, looking for temporary dips in brightness caused by planets transiting across these stars. This first-ever spaceborne all-sky transit survey will identify a wide range of planets, from Earth-sized to gas giants. The mission will find exoplanet candidates for follow-up observation from missions like the James Webb Space Telescope, which will determine whether these candidates could support life. For more information, please visit the TESS website." [ref=f4e1041]
+                    - generic [ref=f4e1042]: "ID: 40325"
+                  - generic [ref=f4e1043]:
+                    - generic [ref=f4e1044]:
+                      - generic [aria-hidden] [ref=f4e1045]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1048]:
+                      - link "TESS" [ref=f4e1049] [cursor=pointer]:
+                        - /url: /gallery/tess/
+                - listitem [ref=f4e1050]:
+                  - generic [ref=f4e1051]:
+                    - link [ref=f4e1052] [cursor=pointer]:
+                      - /url: /gallery/tracers/
+                      - 'img "NASA’s Tandem Reconnection and Cusp Electrodynamics Reconnaissance Satellites, or TRACERS mission, consists of two satellites that will help understand magnetic reconnection and its effects in Earth’s atmosphere. Magnetic reconnection occurs when activity from the Sun interacts with Earth’s magnetic field. By understanding this process, scientists will be able to better understand and prepare for impacts of solar activity on Earth. The TRACERS mission is led by David Miles at the University of Iowa and managed by the Southwest Research Institute in San Antonio. NASA’s Heliophysics Explorers Program Office at the agency’s Goddard Space Flight Center in Greenbelt, Maryland, provides mission oversight to the project for the agency’s Heliophysics Division at NASA Headquarters in Washington. Learn more about the mission: https://science.nasa.gov/mission/tracers/" [ref=f4e1054]'
+                    - generic [ref=f4e1055]: "ID: 40535"
+                  - generic [ref=f4e1056]:
+                    - generic [ref=f4e1057]:
+                      - generic [aria-hidden] [ref=f4e1058]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1061]:
+                      - link "TRACERS – Tandem Reconnection and Cusp Electrodynamics Reconnaissance Satellites" [ref=f4e1062] [cursor=pointer]:
+                        - /url: /gallery/tracers/
+                - listitem [ref=f4e1063]:
+                  - generic [ref=f4e1064]:
+                    - link [ref=f4e1065] [cursor=pointer]:
+                      - /url: /gallery/xrism/
+                      - 'img "XRISM turntable animations, available both as 4K/30 and 60 fps movies and as frames. The exposed tank behind the truss structure on the side opposite the solar panels houses the Resolve instrument.Credit: NASA''s Goddard Space Flight Center Conceptual Image Lab" [ref=f4e1067]'
+                    - generic [ref=f4e1068]: "ID: 40456"
+                  - generic [ref=f4e1069]:
+                    - generic [ref=f4e1070]:
+                      - generic [aria-hidden] [ref=f4e1071]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1074]:
+                      - link "XRISM" [ref=f4e1075] [cursor=pointer]:
+                        - /url: /gallery/xrism/
+            - generic [ref=f4e1076]:
+              - heading "Special Productions" [level=2] [ref=f4e1077]
+              - list [ref=f4e1079]:
+                - listitem [ref=f4e1080]:
+                  - generic [ref=f4e1081]:
+                    - link "Go to this page" [ref=f4e1082] [cursor=pointer]:
+                      - /url: /gallery/vertical-video/
+                    - generic [ref=f4e1084]: "ID: 40534"
+                  - generic [ref=f4e1085]:
+                    - generic [ref=f4e1086]:
+                      - generic [aria-hidden] [ref=f4e1087]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1090]:
+                      - link "Vertical Video" [ref=f4e1091] [cursor=pointer]:
+                        - /url: /gallery/vertical-video/
+                - listitem [ref=f4e1092]:
+                  - generic [ref=f4e1093]:
+                    - link [ref=f4e1094] [cursor=pointer]:
+                      - /url: /gallery/goddard-broll/
+                      - 'img "An afternoon view above the rocket garden at NASA Goddard''s Visitor Center. The prominent Delta B launch vehicle stands 90-feet tall and was a type used to orbit satellites in the early 1960s. In the foreground, a kinetic sculpture called Orbits Interweave incorporates three polished stainless steel spheres — representing the Sun, Earth, and GOES weather satellites — that move gently in the wind. The exhibit area around it is shaped like a hurricane symbol. Imaged June 13, 2023, looking east-southeast.Credit: NASA/Francis Reddy" [ref=f4e1096]'
+                    - generic [ref=f4e1097]: "ID: 40533"
+                  - generic [ref=f4e1098]:
+                    - generic [ref=f4e1099]:
+                      - generic [aria-hidden] [ref=f4e1100]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1103]:
+                      - link "Goddard B-roll Kit" [ref=f4e1104] [cursor=pointer]:
+                        - /url: /gallery/goddard-broll/
+                - listitem [ref=f4e1105]:
+                  - generic [ref=f4e1106]:
+                    - link [ref=f4e1107] [cursor=pointer]:
+                      - /url: /gallery/aerial-goddard/
+                      - 'img "An afternoon view above the rocket garden at NASA Goddard''s Visitor Center. The prominent Delta B launch vehicle stands 90-feet tall and was a type used to orbit satellites in the early 1960s. In the foreground, a kinetic sculpture called Orbits Interweave incorporates three polished stainless steel spheres — representing the Sun, Earth, and GOES weather satellites — that move gently in the wind. The exhibit area around it is shaped like a hurricane symbol. Imaged June 13, 2023, looking east-southeast.Credit: NASA/Francis Reddy" [ref=f4e1109]'
+                    - generic [ref=f4e1110]: "ID: 40516"
+                  - generic [ref=f4e1111]:
+                    - generic [ref=f4e1112]:
+                      - generic [aria-hidden] [ref=f4e1113]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1116]:
+                      - link "Goddard From Above" [ref=f4e1117] [cursor=pointer]:
+                        - /url: /gallery/aerial-goddard/
+                - listitem [ref=f4e1118]:
+                  - generic [ref=f4e1119]:
+                    - link [ref=f4e1120] [cursor=pointer]:
+                      - /url: /gallery/fulldome-gallery/
+                      - img "Visualizations in fulldome format for display in digital planetariums." [ref=f4e1122]
+                    - generic [ref=f4e1123]: "ID: 40431"
+                  - generic [ref=f4e1124]:
+                    - generic [ref=f4e1125]:
+                      - generic [aria-hidden] [ref=f4e1126]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1129]:
+                      - link "Fulldome Gallery" [ref=f4e1130] [cursor=pointer]:
+                        - /url: /gallery/fulldome-gallery/
+                - listitem [ref=f4e1131]:
+                  - generic [ref=f4e1132]:
+                    - link [ref=f4e1133] [cursor=pointer]:
+                      - /url: /gallery/conference-videos/
+                      - img "The full, 6.5-minute Images video with music" [ref=f4e1135]
+                    - generic [ref=f4e1136]: "ID: 40065"
+                  - generic [ref=f4e1137]:
+                    - generic [ref=f4e1138]:
+                      - generic [aria-hidden] [ref=f4e1139]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1142]:
+                      - link "Conference Videos" [ref=f4e1143] [cursor=pointer]:
+                        - /url: /gallery/conference-videos/
+                - listitem [ref=f4e1144]:
+                  - generic [ref=f4e1145]:
+                    - link [ref=f4e1146] [cursor=pointer]:
+                      - /url: /gallery/educational-videos/
+                      - img "The title screen from the video includes footage of the 2004 hurricane season in Florida." [ref=f4e1148]
+                    - generic [ref=f4e1149]: "ID: 40066"
+                  - generic [ref=f4e1150]:
+                    - generic [ref=f4e1151]:
+                      - generic [aria-hidden] [ref=f4e1152]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1155]:
+                      - link "Educational Videos" [ref=f4e1156] [cursor=pointer]:
+                        - /url: /gallery/educational-videos/
+                - listitem [ref=f4e1157]:
+                  - generic [ref=f4e1158]:
+                    - link [ref=f4e1159] [cursor=pointer]:
+                      - /url: /gallery/museum-videos/
+                      - img "Earth Today Logo" [ref=f4e1161]
+                    - generic [ref=f4e1162]: "ID: 40067"
+                  - generic [ref=f4e1163]:
+                    - generic [ref=f4e1164]:
+                      - generic [aria-hidden] [ref=f4e1165]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1168]:
+                      - link "Museum Videos" [ref=f4e1169] [cursor=pointer]:
+                        - /url: /gallery/museum-videos/
+                - listitem [ref=f4e1170]:
+                  - generic [ref=f4e1171]:
+                    - link [ref=f4e1172] [cursor=pointer]:
+                      - /url: /gallery/project-videos/
+                      - img "Opening with a view of the aurora borealis, we zoom out to reveal the proposed orbital configuration of the five THEMIS satellites and fade in a GGCM magnetosphere model." [ref=f4e1174]
+                    - generic [ref=f4e1175]: "ID: 40068"
+                  - generic [ref=f4e1176]:
+                    - generic [ref=f4e1177]:
+                      - generic [aria-hidden] [ref=f4e1178]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1181]:
+                      - link "Project Videos" [ref=f4e1182] [cursor=pointer]:
+                        - /url: /gallery/project-videos/
+                - listitem [ref=f4e1183]:
+                  - generic [ref=f4e1184]:
+                    - link [ref=f4e1185] [cursor=pointer]:
+                      - /url: /gallery/nasaon-air/
+                      - 'img "LEAD: Bonnie, the second tropical storm of the 2016 season, drenched parts of the Atlantic coast from Georgia to Rhode Island with up to 8 inches this past Memorial Day weekend. What’s ahead for the hurricane season of 2016?1. Over the past 10 years there have been 69 Atlantic hurricanes but during that time no hurricanes of Category 3 or higher have hit the U.S. coastline. Such a string of lucky years is likely to happen only once in 270 years, according to a NASA study.2. Storms less than Category 3, such as Sandy in 2012, can still be dangerous.3. But what about this upcoming hurricane season? Statistical analysis indicates that for any given year there is a 40% chance of a Category 3 or higher hurricane landing across the U.S. coastline.TAG: But remember it only takes one storm in your area. Be prepared this summer." [ref=f4e1187]'
+                    - generic [ref=f4e1188]: "ID: 40162"
+                  - generic [ref=f4e1189]:
+                    - generic [ref=f4e1190]:
+                      - generic [aria-hidden] [ref=f4e1191]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1194]:
+                      - link "NASA On Air" [ref=f4e1195] [cursor=pointer]:
+                        - /url: /gallery/nasaon-air/
+                - listitem [ref=f4e1196]:
+                  - generic [ref=f4e1197]:
+                    - link [ref=f4e1198] [cursor=pointer]:
+                      - /url: /gallery/visualizationsfor-educators/
+                      - img "Phenomena are observable events that occur in nature. Data visualizations can offer new ways for students to experience and explore Earth and space phenomena that happen over large scales of time and at great distances. This gallery includes visualizations of phenomena that support topics that are taught in middle and high school and are aligned with select Next Generation Science Standards. This gallery was curated by Anne Arundle County Science Teachers Margaret Graham and Jeremy Milligan with support from Dr. Rachel Connolly during the summer of 2022. A video showing how Jeremy Milligan uses SVS resources to develop a phenomena-based lesson is also available." [ref=f4e1200]
+                    - generic [ref=f4e1201]: "ID: 40447"
+                  - generic [ref=f4e1202]:
+                    - generic [ref=f4e1203]:
+                      - generic [aria-hidden] [ref=f4e1204]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1207]:
+                      - link "Visualizations for Educators" [ref=f4e1208] [cursor=pointer]:
+                        - /url: /gallery/visualizationsfor-educators/
+                - listitem [ref=f4e1209]:
+                  - generic [ref=f4e1210]:
+                    - link [ref=f4e1211] [cursor=pointer]:
+                      - /url: /gallery/science-ona-sphere-gallery/
+                      - img "Content for NOAA's Science on a Sphere and related spherical display platforms." [ref=f4e1213]
+                    - generic [ref=f4e1214]: "ID: 40433"
+                  - generic [ref=f4e1215]:
+                    - generic [ref=f4e1216]:
+                      - generic [aria-hidden] [ref=f4e1217]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1220]:
+                      - link "Science On a Sphere Gallery" [ref=f4e1221] [cursor=pointer]:
+                        - /url: /gallery/science-ona-sphere-gallery/
+                - listitem [ref=f4e1222]:
+                  - generic [ref=f4e1223]:
+                    - link [ref=f4e1224] [cursor=pointer]:
+                      - /url: /gallery/live-shots-gallery/
+                      - img "Collection of live shot pages of b-roll and interviews!" [ref=f4e1226]
+                    - generic [ref=f4e1227]: "ID: 40271"
+                  - generic [ref=f4e1228]:
+                    - generic [ref=f4e1229]:
+                      - generic [aria-hidden] [ref=f4e1230]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1233]:
+                      - link "Live Shots Gallery Collection" [ref=f4e1234] [cursor=pointer]:
+                        - /url: /gallery/live-shots-gallery/
+            - generic [ref=f4e1235]:
+              - heading "Special Events" [level=2] [ref=f4e1236]
+              - list [ref=f4e1238]:
+                - listitem [ref=f4e1239]:
+                  - generic [ref=f4e1240]:
+                    - link "Go to this page" [ref=f4e1241] [cursor=pointer]:
+                      - /url: /gallery/2026goddard-summer-film-fest/
+                    - generic [ref=f4e1243]: "ID: 40557"
+                  - generic [ref=f4e1244]:
+                    - generic [ref=f4e1245]:
+                      - generic [aria-hidden] [ref=f4e1246]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1249]:
+                      - link "2026 Goddard Summer Film Fest" [ref=f4e1250] [cursor=pointer]:
+                        - /url: /gallery/2026goddard-summer-film-fest/
+                - listitem [ref=f4e1251]:
+                  - generic [ref=f4e1252]:
+                    - link "Go to this page" [ref=f4e1253] [cursor=pointer]:
+                      - /url: /gallery/svsdbgallery2025goddardsummerfilmfest/
+                    - generic [ref=f4e1255]: "ID: 40537"
+                  - generic [ref=f4e1256]:
+                    - generic [ref=f4e1257]:
+                      - generic [aria-hidden] [ref=f4e1258]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1261]:
+                      - link "2025 Goddard Summer Film Fest" [ref=f4e1262] [cursor=pointer]:
+                        - /url: /gallery/svsdbgallery2025goddardsummerfilmfest/
+                - listitem [ref=f4e1263]:
+                  - generic [ref=f4e1264]:
+                    - link "Go to this page" [ref=f4e1265] [cursor=pointer]:
+                      - /url: /gallery/svsdbgallery2024goddardsummerfilmfest/
+                    - generic [ref=f4e1267]: "ID: 40521"
+                  - generic [ref=f4e1268]:
+                    - generic [ref=f4e1269]:
+                      - generic [aria-hidden] [ref=f4e1270]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1273]:
+                      - link "2024 Goddard Summer Film Fest" [ref=f4e1274] [cursor=pointer]:
+                        - /url: /gallery/svsdbgallery2024goddardsummerfilmfest/
+                - listitem [ref=f4e1275]:
+                  - generic [ref=f4e1276]:
+                    - link "Go to this page" [ref=f4e1277] [cursor=pointer]:
+                      - /url: /gallery/2023goddard-summer-film-fest/
+                    - generic [ref=f4e1279]: "ID: 40490"
+                  - generic [ref=f4e1280]:
+                    - generic [ref=f4e1281]:
+                      - generic [aria-hidden] [ref=f4e1282]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1285]:
+                      - link "2023 Goddard Summer Film Fest" [ref=f4e1286] [cursor=pointer]:
+                        - /url: /gallery/2023goddard-summer-film-fest/
+                - listitem [ref=f4e1287]:
+                  - generic [ref=f4e1288]:
+                    - link "Go to this page" [ref=f4e1289] [cursor=pointer]:
+                      - /url: /gallery/2022goddard-summer-film-fest/
+                    - generic [ref=f4e1291]: "ID: 40440"
+                  - generic [ref=f4e1292]:
+                    - generic [ref=f4e1293]:
+                      - generic [aria-hidden] [ref=f4e1294]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1297]:
+                      - link "2022 Goddard Summer Film Fest" [ref=f4e1298] [cursor=pointer]:
+                        - /url: /gallery/2022goddard-summer-film-fest/
+                - listitem [ref=f4e1299]:
+                  - generic [ref=f4e1300]:
+                    - link "Go to this page" [ref=f4e1301] [cursor=pointer]:
+                      - /url: /gallery/2021film-fest/
+                    - generic [ref=f4e1303]: "ID: 40429"
+                  - generic [ref=f4e1304]:
+                    - generic [ref=f4e1305]:
+                      - generic [aria-hidden] [ref=f4e1306]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1309]:
+                      - link "2021 Goddard Summer Film Fest" [ref=f4e1310] [cursor=pointer]:
+                        - /url: /gallery/2021film-fest/
+                - listitem [ref=f4e1311]:
+                  - generic [ref=f4e1312]:
+                    - link "Go to this page" [ref=f4e1313] [cursor=pointer]:
+                      - /url: /gallery/2020film-fest/
+                    - generic [ref=f4e1315]: "ID: 40419"
+                  - generic [ref=f4e1316]:
+                    - generic [ref=f4e1317]:
+                      - generic [aria-hidden] [ref=f4e1318]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1321]:
+                      - link "2020 Goddard Summer Film Fest" [ref=f4e1322] [cursor=pointer]:
+                        - /url: /gallery/2020film-fest/
+                - listitem [ref=f4e1323]:
+                  - generic [ref=f4e1324]:
+                    - link [ref=f4e1325] [cursor=pointer]:
+                      - /url: /gallery/cosmiccycles/
+                      - 'img "Same as top video but with National Philharmonic listed in opening titles.Credit: NASA''s Goddard Space Flight CenterMusic credit: “Earth, Our Home\" from Cosmic Cycles: A Space Symphony by Henry Dehlinger. Courtesy of the composer.Complete transcript available." [ref=f4e1327]'
+                    - generic [ref=f4e1328]: "ID: 40458"
+                  - generic [ref=f4e1329]:
+                    - generic [ref=f4e1330]:
+                      - generic [aria-hidden] [ref=f4e1331]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1334]:
+                      - link "COSMIC CYCLES:A Space Symphony" [ref=f4e1335] [cursor=pointer]:
+                        - /url: /gallery/cosmiccycles/
+                - listitem [ref=f4e1336]:
+                  - generic [ref=f4e1337]:
+                    - link [ref=f4e1338] [cursor=pointer]:
+                      - /url: /gallery/lunar-eclipse/
+                      - img "The appearance of the Moon during the May 2022 total lunar eclipse. Includes annotations of the contact times and various eclipse statistics." [ref=f4e1340]
+                    - generic [ref=f4e1341]: "ID: 40439"
+                  - generic [ref=f4e1342]:
+                    - generic [ref=f4e1343]:
+                      - generic [aria-hidden] [ref=f4e1344]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1347]:
+                      - link "Lunar Eclipse" [ref=f4e1348] [cursor=pointer]:
+                        - /url: /gallery/lunar-eclipse/
+                - listitem [ref=f4e1349]:
+                  - generic [ref=f4e1350]:
+                    - link [ref=f4e1351] [cursor=pointer]:
+                      - /url: /gallery/black-hole-week/
+                      - img "This gallery brings together resources related to NASA’s Black Hole Week — videos, social media products, news stories, still images, and assets. This week is a celebration of celestial objects with gravity so intense that even light cannot escape them. Our goal is that no matter where people turn that week they will run into a black hole. (Figuratively, of course — we don’t want anyone falling in!)" [ref=f4e1353]
+                    - generic [ref=f4e1354]: "ID: 40436"
+                  - generic [ref=f4e1355]:
+                    - generic [ref=f4e1356]:
+                      - generic [aria-hidden] [ref=f4e1357]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1360]:
+                      - link "Black Hole Week" [ref=f4e1361] [cursor=pointer]:
+                        - /url: /gallery/black-hole-week/
+                - listitem [ref=f4e1362]:
+                  - generic [ref=f4e1363]:
+                    - link "Go to this page" [ref=f4e1364] [cursor=pointer]:
+                      - /url: /gallery/sandy/
+                    - generic [ref=f4e1366]: "ID: 40204"
+                  - generic [ref=f4e1367]:
+                    - generic [ref=f4e1368]:
+                      - generic [aria-hidden] [ref=f4e1369]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1372]:
+                      - link "Superstorm Sandy" [ref=f4e1373] [cursor=pointer]:
+                        - /url: /gallery/sandy/
+                - listitem [ref=f4e1374]:
+                  - generic [ref=f4e1375]:
+                    - link [ref=f4e1376] [cursor=pointer]:
+                      - /url: /gallery/comet-ison/
+                      - img "This paper model illustrates the comet's path during its six-month trek in the vicinity of Earth, Venus and Mercury. Track how the relationship between Earth and the comet constantly changes by referring to the dates along both orbits.Download the pdf with instructions here." [ref=f4e1378]
+                    - generic [ref=f4e1379]: "ID: 40158"
+                  - generic [ref=f4e1380]:
+                    - generic [ref=f4e1381]:
+                      - generic [aria-hidden] [ref=f4e1382]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1385]:
+                      - link "Comet ISON" [ref=f4e1386] [cursor=pointer]:
+                        - /url: /gallery/comet-ison/
+                - listitem [ref=f4e1387]:
+                  - generic [ref=f4e1388]:
+                    - link [ref=f4e1389] [cursor=pointer]:
+                      - /url: /gallery/solar-eclipse2019/
+                      - img "A view of the Moon's shadow during the July 2, 2019 total solar eclipse showing the umbra (black oval), penumbra (concentric shaded ovals), and path of totality (red). Images of the Sun show its appearance in a number of locations, each oriented to the local horizon." [ref=f4e1391]
+                    - generic [ref=f4e1392]: "ID: 40374"
+                  - generic [ref=f4e1393]:
+                    - generic [ref=f4e1394]:
+                      - generic [aria-hidden] [ref=f4e1395]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1398]:
+                      - link "Solar Eclipse 2019" [ref=f4e1399] [cursor=pointer]:
+                        - /url: /gallery/solar-eclipse2019/
+                - listitem [ref=f4e1400]:
+                  - generic [ref=f4e1401]:
+                    - link [ref=f4e1402] [cursor=pointer]:
+                      - /url: /gallery/hurricane-maria-one-year-later/
+                      - img "This visualization starts with a global view of hurricane Maria hitting Puerto Rico. We then zoom in to Puerto Rico to compare the standard night lights dataset to a new, high definition version of nights lights. After the hurricane passes over the island, we see a massive drop in night light intensity due to loss of power. After showing night light levels over several stages of hurricane recovery, we transition to a 'Days Without Power' dataset. The camera then zooms in to several locations around the island to examine each stage of recovery in more detail." [ref=f4e1404]
+                    - generic [ref=f4e1405]: "ID: 40367"
+                  - generic [ref=f4e1406]:
+                    - generic [ref=f4e1407]:
+                      - generic [aria-hidden] [ref=f4e1408]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1411]:
+                      - link "Hurricane Maria One Year Later" [ref=f4e1412] [cursor=pointer]:
+                        - /url: /gallery/hurricane-maria-one-year-later/
+                - listitem [ref=f4e1413]:
+                  - generic [ref=f4e1414]:
+                    - link [ref=f4e1415] [cursor=pointer]:
+                      - /url: /gallery/earth-science-oct2018-briefing/
+                      - img "NASA's Earth observing starting at L1 and moving in towards Earth" [ref=f4e1417]
+                    - generic [ref=f4e1418]: "ID: 40365"
+                  - generic [ref=f4e1419]:
+                    - generic [ref=f4e1420]:
+                      - generic [aria-hidden] [ref=f4e1421]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1424]:
+                      - link "Earth Science Overview Oct 2018 Briefing" [ref=f4e1425] [cursor=pointer]:
+                        - /url: /gallery/earth-science-oct2018-briefing/
+                - listitem [ref=f4e1426]:
+                  - generic [ref=f4e1427]:
+                    - link [ref=f4e1428] [cursor=pointer]:
+                      - /url: /gallery/lrosolar-eclipse/
+                      - 'img "This video explains how our moon creates a solar eclipse, why it''s such a rare event to see, and how data from NASA''s Lunar Reconnaissance Orbiter has enhanced our ability to map an eclipse''s path of totality.Music Provided by Universal Production Music: “Bring Me Up” – Anders Gunnar Kampe & Henrik Lars Wikstrom.Watch this video on the NASA.gov Video YouTube channel." [ref=f4e1430]'
+                    - generic [ref=f4e1431]: "ID: 40337"
+                  - generic [ref=f4e1432]:
+                    - generic [ref=f4e1433]:
+                      - generic [aria-hidden] [ref=f4e1434]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1437]:
+                      - link "LRO and Solar Eclipse Events" [ref=f4e1438] [cursor=pointer]:
+                        - /url: /gallery/lrosolar-eclipse/
+                - listitem [ref=f4e1439]:
+                  - generic [ref=f4e1440]:
+                    - link "Go to this page" [ref=f4e1441] [cursor=pointer]:
+                      - /url: /gallery/suneclipse2017/
+                    - generic [ref=f4e1443]: "ID: 40227"
+                  - generic [ref=f4e1444]:
+                    - generic [ref=f4e1445]:
+                      - generic [aria-hidden] [ref=f4e1446]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1449]:
+                      - link "Solar Eclipse 2017" [ref=f4e1450] [cursor=pointer]:
+                        - /url: /gallery/suneclipse2017/
+                - listitem [ref=f4e1451]:
+                  - generic [ref=f4e1452]:
+                    - link "Go to this page" [ref=f4e1453] [cursor=pointer]:
+                      - /url: /gallery/snow-ex/
+                    - generic [ref=f4e1455]: "ID: 40316"
+                  - generic [ref=f4e1456]:
+                    - generic [ref=f4e1457]:
+                      - generic [aria-hidden] [ref=f4e1458]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1461]:
+                      - link "SnowEx Field Campaigns" [ref=f4e1462] [cursor=pointer]:
+                        - /url: /gallery/snow-ex/
+                - listitem [ref=f4e1463]:
+                  - generic [ref=f4e1464]:
+                    - link [ref=f4e1465] [cursor=pointer]:
+                      - /url: /gallery/gpmoutreach/
+                      - img [ref=f4e1467]
+                    - generic [ref=f4e1468]: "ID: 40301"
+                  - generic [ref=f4e1469]:
+                    - generic [ref=f4e1470]:
+                      - generic [aria-hidden] [ref=f4e1471]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1474]:
+                      - link "GPM Outreach Event 2016" [ref=f4e1475] [cursor=pointer]:
+                        - /url: /gallery/gpmoutreach/
+                - listitem [ref=f4e1476]:
+                  - generic [ref=f4e1477]:
+                    - link [ref=f4e1478] [cursor=pointer]:
+                      - /url: /gallery/siggraph-2015/
+                      - img "The SIGGRAPH conference is widely recognized as the most prestigious forum for the publication of computer graphics research. The conference provides an interdisciplinary educational experience highlighting outstanding achievements in time-based art, scientific visualization, visual effects, real-time graphics, and narrative shorts. Below are contributions to the conference made by members of NASA Goddard's Scientific Visualization Studio." [ref=f4e1480]
+                    - generic [ref=f4e1481]: "ID: 40239"
+                  - generic [ref=f4e1482]:
+                    - generic [ref=f4e1483]:
+                      - generic [aria-hidden] [ref=f4e1484]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1487]:
+                      - link "Visualizations Presented at SIGGRAPH 2015" [ref=f4e1488] [cursor=pointer]:
+                        - /url: /gallery/siggraph-2015/
+                - listitem [ref=f4e1489]:
+                  - generic [ref=f4e1490]:
+                    - link [ref=f4e1491] [cursor=pointer]:
+                      - /url: /gallery/2015global-temperature-data/
+                      - img "Graph of annual global temperatures, with respect to a baseline from the 19th century (the average of global annual temperatures from 1880-1899). In Fahrenheit." [ref=f4e1493]
+                    - generic [ref=f4e1494]: "ID: 40281"
+                  - generic [ref=f4e1495]:
+                    - generic [ref=f4e1496]:
+                      - generic [aria-hidden] [ref=f4e1497]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1500]:
+                      - link "2015 Global Temperature Data" [ref=f4e1501] [cursor=pointer]:
+                        - /url: /gallery/2015global-temperature-data/
+                - listitem [ref=f4e1502]:
+                  - generic [ref=f4e1503]:
+                    - link "Go to this page" [ref=f4e1504] [cursor=pointer]:
+                      - /url: /gallery/icesheets/
+                    - generic [ref=f4e1506]: "ID: 40273"
+                  - generic [ref=f4e1507]:
+                    - generic [ref=f4e1508]:
+                      - generic [aria-hidden] [ref=f4e1509]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1512]:
+                      - link "NASA Measures the Ice Sheets" [ref=f4e1513] [cursor=pointer]:
+                        - /url: /gallery/icesheets/
+                - listitem [ref=f4e1514]:
+                  - generic [ref=f4e1515]:
+                    - link [ref=f4e1516] [cursor=pointer]:
+                      - /url: /gallery/skorea-visit/
+                      - img [ref=f4e1518]
+                    - generic [ref=f4e1519]: "ID: 40260"
+                  - generic [ref=f4e1520]:
+                    - generic [ref=f4e1521]:
+                      - generic [aria-hidden] [ref=f4e1522]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1525]:
+                      - link "South Korean President Park Park Geun-hye Visits NASA Goddard" [ref=f4e1526] [cursor=pointer]:
+                        - /url: /gallery/skorea-visit/
+                - listitem [ref=f4e1527]:
+                  - generic [ref=f4e1528]:
+                    - link [ref=f4e1529] [cursor=pointer]:
+                      - /url: /gallery/supermoon-lunar-eclipse-september2015/
+                      - img "Starting on the night of September 27th, 2015, a supermoon lunar eclipse will occur. This gallery page contains visualizations about this specific event as well as other multimedia items about supermoons, eclipses, and NASA's Lunar Reconnaissance Oribter (LRO). This page will update weekly - so continue to check here for new items" [ref=f4e1531]
+                    - generic [ref=f4e1532]: "ID: 40228"
+                  - generic [ref=f4e1533]:
+                    - generic [ref=f4e1534]:
+                      - generic [aria-hidden] [ref=f4e1535]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1538]:
+                      - link "Supermoon Lunar Eclipse September 27-28, 2015" [ref=f4e1539] [cursor=pointer]:
+                        - /url: /gallery/supermoon-lunar-eclipse-september2015/
+                - listitem [ref=f4e1540]:
+                  - generic [ref=f4e1541]:
+                    - link [ref=f4e1542] [cursor=pointer]:
+                      - /url: /gallery/katrina2015/
+                      - 'img "In the last week of August 2005, what had originated as a disturbance off the western coast of Africa transformed into a devastating storm, ravaging the southern United States. Water consumed the coast of the Gulf of Mexico, submerging chunks of Florida, Louisiana and Mississippi. NASA’s satellites watched the devastation from overhead, sending down a deluge of data that scientists would study for years to come. For more information about Hurricane Katrina: http://www.nasa.gov/mission_pages/hurricanes/archives/2005/h2005_katrina.html" [ref=f4e1544]'
+                    - generic [ref=f4e1545]: "ID: 40248"
+                  - generic [ref=f4e1546]:
+                    - generic [ref=f4e1547]:
+                      - generic [aria-hidden] [ref=f4e1548]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1551]:
+                      - 'link "The View from Space: Data Visualizations of Hurricane Katrina" [ref=f4e1552] [cursor=pointer]':
+                        - /url: /gallery/katrina2015/
+                - listitem [ref=f4e1553]:
+                  - generic [ref=f4e1554]:
+                    - link [ref=f4e1555] [cursor=pointer]:
+                      - /url: /gallery/2014gisstemperature-announcement/
+                      - img "2014 Global Temperature Announcement" [ref=f4e1557]
+                    - generic [ref=f4e1558]: "ID: 40222"
+                  - generic [ref=f4e1559]:
+                    - generic [ref=f4e1560]:
+                      - generic [aria-hidden] [ref=f4e1561]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1564]:
+                      - link "2014 GISS Temperature Announcement" [ref=f4e1565] [cursor=pointer]:
+                        - /url: /gallery/2014gisstemperature-announcement/
+                - listitem [ref=f4e1566]:
+                  - generic [ref=f4e1567]:
+                    - link "Go to this page" [ref=f4e1568] [cursor=pointer]:
+                      - /url: /gallery/comet-siding-spring/
+                    - generic [ref=f4e1570]: "ID: 40180"
+                  - generic [ref=f4e1571]:
+                    - generic [ref=f4e1572]:
+                      - generic [aria-hidden] [ref=f4e1573]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1576]:
+                      - link "Comet Siding Spring" [ref=f4e1577] [cursor=pointer]:
+                        - /url: /gallery/comet-siding-spring/
+                - listitem [ref=f4e1578]:
+                  - generic [ref=f4e1579]:
+                    - link [ref=f4e1580] [cursor=pointer]:
+                      - /url: /gallery/new-meteor-shower2014/
+                      - img "This visualization opens with an overview of the comet orbit, which lies between the orbit of Jupiter and Earth. The camera then zooms-in to a close-up of the comet orbit intesecting the orbit of the Earth on May 23-24, 2014. Note that the comet itself, which is very small and faint, passes behind the Earth and poses no risk of collision." [ref=f4e1582]
+                    - generic [ref=f4e1583]: "ID: 40168"
+                  - generic [ref=f4e1584]:
+                    - generic [ref=f4e1585]:
+                      - generic [aria-hidden] [ref=f4e1586]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1589]:
+                      - link "2014 New Meteor Shower" [ref=f4e1590] [cursor=pointer]:
+                        - /url: /gallery/new-meteor-shower2014/
+                - listitem [ref=f4e1591]:
+                  - generic [ref=f4e1592]:
+                    - link [ref=f4e1593] [cursor=pointer]:
+                      - /url: /gallery/2014total-lunar-eclipse/
+                      - img "NASA scientist Noah Petro sheds some light on the April 15th lunar eclipse which will leave the Lunar Reconnaissance Orbiter (LRO) in darkness for several hours. He explains what a lunar eclipse is, and what this one will look like from Earth. Noah also provides details on the LRO mission, and how the spacecraft will function during this event. For complete transcript, click here.Watch this video on the NASAexplorer YouTube channel." [ref=f4e1595]
+                    - generic [ref=f4e1596]: "ID: 40163"
+                  - generic [ref=f4e1597]:
+                    - generic [ref=f4e1598]:
+                      - generic [aria-hidden] [ref=f4e1599]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1602]:
+                      - link "2014 Total Lunar Eclipse" [ref=f4e1603] [cursor=pointer]:
+                        - /url: /gallery/2014total-lunar-eclipse/
+                - listitem [ref=f4e1604]:
+                  - generic [ref=f4e1605]:
+                    - link [ref=f4e1606] [cursor=pointer]:
+                      - /url: /gallery/atrain/
+                      - img "The A-Train observes Tropical Storm DebbyThis video is also available on our YouTube channel." [ref=f4e1608]
+                    - generic [ref=f4e1609]: "ID: 40079"
+                  - generic [ref=f4e1610]:
+                    - generic [ref=f4e1611]:
+                      - generic [aria-hidden] [ref=f4e1612]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1615]:
+                      - link "A-Train visualizations" [ref=f4e1616] [cursor=pointer]:
+                        - /url: /gallery/atrain/
+                - listitem [ref=f4e1617]:
+                  - generic [ref=f4e1618]:
+                    - link [ref=f4e1619] [cursor=pointer]:
+                      - /url: /gallery/nccs/
+                      - img "Drought, Summer 1988" [ref=f4e1621]
+                    - generic [ref=f4e1622]: "ID: 40072"
+                  - generic [ref=f4e1623]:
+                    - generic [ref=f4e1624]:
+                      - generic [aria-hidden] [ref=f4e1625]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1628]:
+                      - link "NASA Center for Climate Simulation (NCCS)" [ref=f4e1629] [cursor=pointer]:
+                        - /url: /gallery/nccs/
+                - listitem [ref=f4e1630]:
+                  - generic [ref=f4e1631]:
+                    - link [ref=f4e1632] [cursor=pointer]:
+                      - /url: /gallery/warmingworld-snapsfromspace/
+                      - 'img "Less than a year after a devastating 2003 heat wave killed over 37,000 people across Europe, another heat wave struck the region. On July 1, 2004, this image from NASA''s Moderate Resolution Imaging Spectroradiometer (MODIS) recorded land surface temperatures of 138°F (59°C) in Spain. In this false-color image, red represents the warmest temperatures, yellow is intermediate, and light and dark blue are progressively cooler. Air temperatures in both countries soared over 104°F (40°C). Three days after this image was taken, Spain set a new air temperature record for the nation: 117°F (47°C). Climate models predict more extreme weather events, including heat waves, in the coming decades due to man-made climate change. Image taken by NASA''s Moderate Resolution Imaging Spectroradiometer (MODIS) on July 1, 2004. Credit: Jacques Descloitres and Ana Pinheiro, MODIS Rapid Response Team, NASA/GSFC." [ref=f4e1634]'
+                    - generic [ref=f4e1635]: "ID: 40005"
+                  - generic [ref=f4e1636]:
+                    - generic [ref=f4e1637]:
+                      - generic [aria-hidden] [ref=f4e1638]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1641]:
+                      - 'link "Warming world: Snaps from space" [ref=f4e1642] [cursor=pointer]':
+                        - /url: /gallery/warmingworld-snapsfromspace/
+                - listitem [ref=f4e1643]:
+                  - generic [ref=f4e1644]:
+                    - link [ref=f4e1645] [cursor=pointer]:
+                      - /url: /gallery/hanppagu2010/
+                      - img "For complete transcript, click here." [ref=f4e1647]
+                    - generic [ref=f4e1648]: "ID: 40087"
+                  - generic [ref=f4e1649]:
+                    - generic [ref=f4e1650]:
+                      - generic [aria-hidden] [ref=f4e1651]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1654]:
+                      - link "Carbon Consumption and the Earth's Carrying Capacity" [ref=f4e1655] [cursor=pointer]:
+                        - /url: /gallery/hanppagu2010/
+                - listitem [ref=f4e1656]:
+                  - generic [ref=f4e1657]:
+                    - link [ref=f4e1658] [cursor=pointer]:
+                      - /url: /gallery/holiday-lights/
+                      - img "For complete transcript, click here." [ref=f4e1660]
+                    - generic [ref=f4e1661]: "ID: 40219"
+                  - generic [ref=f4e1662]:
+                    - generic [ref=f4e1663]:
+                      - generic [aria-hidden] [ref=f4e1664]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1667]:
+                      - link "NASA Measures Holiday Lights from Space" [ref=f4e1668] [cursor=pointer]:
+                        - /url: /gallery/holiday-lights/
+                - listitem [ref=f4e1669]:
+                  - generic [ref=f4e1670]:
+                    - link [ref=f4e1671] [cursor=pointer]:
+                      - /url: /gallery/carbon-gallery/
+                      - img "Visualization showing forest change in various locations from 1986 to 2010This video is also available on our YouTube channel." [ref=f4e1673]
+                    - generic [ref=f4e1674]: "ID: 40269"
+                  - generic [ref=f4e1675]:
+                    - generic [ref=f4e1676]:
+                      - generic [aria-hidden] [ref=f4e1677]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1680]:
+                      - link "Carbon and Climate" [ref=f4e1681] [cursor=pointer]:
+                        - /url: /gallery/carbon-gallery/
+                - listitem [ref=f4e1682]:
+                  - generic [ref=f4e1683]:
+                    - link "Go to this page" [ref=f4e1684] [cursor=pointer]:
+                      - /url: /gallery/home-frontier/
+                    - generic [ref=f4e1686]: "ID: 40099"
+                  - generic [ref=f4e1687]:
+                    - generic [ref=f4e1688]:
+                      - generic [aria-hidden] [ref=f4e1689]: 
+                      - text: Gallery
+                    - heading [level=3] [ref=f4e1692]:
+                      - link "The Home Frontier" [ref=f4e1693] [cursor=pointer]:
+                        - /url: /gallery/home-frontier/
+            - generic [ref=f4e1694]:
+              - heading "Hyperwall" [level=2] [ref=f4e1695]
+              - list [ref=f4e1697]:
+                - text: 
+                - button [aria-hidden] [ref=f4e1698] [cursor=pointer]:
+                  - generic [ref=f4e1699]: 
+                - listitem [ref=f4e1700]:
+                  - generic [ref=f4e1701]:
+                    - link [ref=f4e1702] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-astrophysics-focus/
+                      - img "Animation \"beauty pass\" of the James Webb Space Telescope in 4k resolution." [ref=f4e1704]
+                    - generic [ref=f4e1705]: "ID: 40518"
+                    - generic [ref=f4e1706]:
+                      - generic [aria-hidden] [ref=f4e1707]: 
+                      - text: Gallery
+                  - generic [ref=f4e1708]:
+                    - heading [level=3] [ref=f4e1709]:
+                      - link "Hyperwall Power Playlist - Astrophysics Focus" [ref=f4e1710] [cursor=pointer]:
+                        - /url: /gallery/hyperwall-power-playlist-astrophysics-focus/
+                    - generic [ref=f4e1711]: August 28, 2023
+                    - paragraph [ref=f4e1714]: This is a collection of our most powerful, newsworthy, and frequently used Hyperwall-ready visualizations, along with several that haven't gotten the attention they deserve. They're especially great for more general or top-level science talks, or to "set the scene" before a deep dive into a more focused subject or dataset. We've tried to cover the subject areas our speakers focus on most. If you're not seeing what you're looking for, there is a huge library of visualizations more localized or specialized in subject - please use the Search function above, and filter "Result type" for "Hyperwall Visual." If you'd like to use one of these visualizations in your Hyperwall presentation, we'll need to know which element on which page. On the visualization's web page, below the visual you'd like to use, you'll see a Link icon next to the Download button. All we need is for you to click on that icon and include that link in your presentation Powerpoint/Keynote or visualization list. Additionally, please check our Hyperwall How-To Guide for tips on designing your Hyperwall presentation, file specifications, and Powerpoint/Keynote templates.
+                    - link "Go to this page" [ref=f4e1715] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-astrophysics-focus/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1716]: 
+                - listitem [ref=f4e1717]:
+                  - generic [ref=f4e1718]:
+                    - link [ref=f4e1719] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-planetary-science-focus/
+                      - img "The full NASA Science Fleet" [ref=f4e1721]
+                    - generic [ref=f4e1722]: "ID: 40505"
+                    - generic [ref=f4e1723]:
+                      - generic [aria-hidden] [ref=f4e1724]: 
+                      - text: Gallery
+                  - generic [ref=f4e1725]:
+                    - heading [level=3] [ref=f4e1726]:
+                      - link "Hyperwall Power Playlist - Planetary Science Focus" [ref=f4e1727] [cursor=pointer]:
+                        - /url: /gallery/hyperwall-power-playlist-planetary-science-focus/
+                    - generic [ref=f4e1728]: August 28, 2023
+                    - paragraph [ref=f4e1731]: This is a collection of our most powerful, newsworthy, and frequently used Hyperwall-ready visualizations, along with several that haven't gotten the attention they deserve. They're especially great for more general or top-level science talks, or to "set the scene" before a deep dive into a more focused subject or dataset. We've tried to cover the subject areas our speakers focus on most. If you're not seeing what you're looking for, there is a huge library of visualizations more localized or specialized in subject - please use the Search function above, and filter "Result type" for "Hyperwall Visual." If you'd like to use one of these visualizations in your Hyperwall presentation, we'll need to know which element on which page. On the visualization's web page, below the visual you'd like to use, you'll see a Link icon next to the Download button. All we need is for you to click on that icon and include that link in your presentation Powerpoint/Keynote or visualization list. Additionally, please check our Hyperwall How-To Guide for tips on designing your Hyperwall presentation, file specifications, and Powerpoint/Keynote templates.
+                    - link "Go to this page" [ref=f4e1732] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-planetary-science-focus/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1733]: 
+                - listitem [ref=f4e1734]:
+                  - generic [ref=f4e1735]:
+                    - link [ref=f4e1736] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-heliophysics-focus/
+                      - img "The full NASA Science Fleet" [ref=f4e1738]
+                    - generic [ref=f4e1739]: "ID: 40507"
+                    - generic [ref=f4e1740]:
+                      - generic [aria-hidden] [ref=f4e1741]: 
+                      - text: Gallery
+                  - generic [ref=f4e1742]:
+                    - heading [level=3] [ref=f4e1743]:
+                      - link "Hyperwall Power Playlist - Heliophysics Focus" [ref=f4e1744] [cursor=pointer]:
+                        - /url: /gallery/hyperwall-power-playlist-heliophysics-focus/
+                    - generic [ref=f4e1745]: August 28, 2023
+                    - paragraph [ref=f4e1748]: This is a collection of our most powerful, newsworthy, and frequently used Hyperwall-ready visualizations, along with several that haven't gotten the attention they deserve. They're especially great for more general or top-level science talks, or to "set the scene" before a deep dive into a more focused subject or dataset. We've tried to cover the subject areas our speakers focus on most. If you're not seeing what you're looking for, there is a huge library of visualizations more localized or specialized in subject - please use the Search function above, and filter "Result type" for "Hyperwall Visual." If you'd like to use one of these visualizations in your Hyperwall presentation, we'll need to know which element on which page. On the visualization's web page, below the visual you'd like to use, you'll see a Link icon next to the Download button. All we need is for you to click on that icon and include that link in your presentation Powerpoint/Keynote or visualization list. Additionally, please check our Hyperwall How-To Guide for tips on designing your Hyperwall presentation, file specifications, and Powerpoint/Keynote templates.
+                    - link "Go to this page" [ref=f4e1749] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-heliophysics-focus/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1750]: 
+                - listitem [ref=f4e1751]:
+                  - generic [ref=f4e1752]:
+                    - link [ref=f4e1753] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-earth-science/
+                      - img "The full NASA Science Fleet" [ref=f4e1755]
+                    - generic [ref=f4e1756]: "ID: 40503"
+                    - generic [ref=f4e1757]:
+                      - generic [aria-hidden] [ref=f4e1758]: 
+                      - text: Gallery
+                  - generic [ref=f4e1759]:
+                    - heading [level=3] [ref=f4e1760]:
+                      - link "Hyperwall Power Playlist - Earth Science Focus" [ref=f4e1761] [cursor=pointer]:
+                        - /url: /gallery/hyperwall-power-playlist-earth-science/
+                    - generic [ref=f4e1762]: August 28, 2023
+                    - paragraph [ref=f4e1765]: This is a collection of our most powerful, newsworthy, and frequently used Hyperwall-ready visualizations, along with several that haven't gotten the attention they deserve. They're especially great for more general or top-level science talks, or to "set the scene" before a deep dive into a more focused subject or dataset. We've tried to cover the subject areas our speakers focus on most. If you're not seeing what you're looking for, there is a huge library of visualizations more localized or specialized in subject - please use the Search function above, and filter "Result type" for "Hyperwall Visual." If you'd like to use one of these visualizations in your Hyperwall presentation, we'll need to know which element on which page. On the visualization's web page, below the visual you'd like to use, you'll see a Link icon next to the Download button. All we need is for you to click on that icon and include that link in your presentation Powerpoint/Keynote or visualization list. Additionally, please check our Hyperwall How-To Guide for tips on designing your Hyperwall presentation, file specifications, and Powerpoint/Keynote templates.
+                    - link "Go to this page" [ref=f4e1766] [cursor=pointer]:
+                      - /url: /gallery/hyperwall-power-playlist-earth-science/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1767]: 
+                - listitem [ref=f4e1768]:
+                  - generic [ref=f4e1769]:
+                    - link [ref=f4e1770] [cursor=pointer]:
+                      - /url: /gallery/webb-arapp-media/
+                      - img "The James Webb Space Telescope is the largest, most powerful and most technologically challenging space telescope ever built. The Webb Telescope is so large; it must be folded like origami to fit inside its rocket fairing for the ride into space. Once in space, unfolding and readying Webb for science is a complex process that will take about six months. Webb is designed to see the most distant galaxies in the Universe and study how galaxies evolved over cosmic time. Webb will study planets orbiting other stars looking for the chemical signatures of the building blocks of life. Webb will also study planets within our own solar system. The Webb Telescope Mission is an international space telescope program led by NASA with its partners, the European Space Agency and the Canadian Space Agency." [ref=f4e1772]
+                    - generic [ref=f4e1773]: "ID: 40414"
+                    - generic [ref=f4e1774]:
+                      - generic [aria-hidden] [ref=f4e1775]: 
+                      - text: Gallery
+                  - generic [ref=f4e1776]:
+                    - heading [level=3] [ref=f4e1777]:
+                      - link "Webb AR App Media" [ref=f4e1778] [cursor=pointer]:
+                        - /url: /gallery/webb-arapp-media/
+                    - generic [ref=f4e1779]: April 2, 2020
+                    - paragraph [ref=f4e1782]: Backend video content to support the Webb AR app!
+                    - link "Go to this page" [ref=f4e1783] [cursor=pointer]:
+                      - /url: /gallery/webb-arapp-media/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1784]: 
+                - listitem [ref=f4e1785]:
+                  - generic [ref=f4e1786]:
+                    - link [ref=f4e1787] [cursor=pointer]:
+                      - /url: /gallery/earthat-night-imagery/
+                      - img "Vintage Photos of Earth at Night—NASA’s Mercury-Atlas Mission" [ref=f4e1789]
+                    - generic [ref=f4e1790]: "ID: 40410"
+                    - generic [ref=f4e1791]:
+                      - generic [aria-hidden] [ref=f4e1792]: 
+                      - text: Gallery
+                  - generic [ref=f4e1793]:
+                    - heading [level=3] [ref=f4e1794]:
+                      - link "Earth at Night Imagery" [ref=f4e1795] [cursor=pointer]:
+                        - /url: /gallery/earthat-night-imagery/
+                    - generic [ref=f4e1796]: February 14, 2020
+                    - paragraph [ref=f4e1799]: "Dazzling photographs and images from space of our planet’s nightlights have captivated public attention for decades. In such images, patterns are immediately seen based on the presence or absence of light: a distinct coastline, bodies of water recognizable by their dark silhouettes, and the faint tendrils of roads and highways emanating from the brilliant blobs of light that are our modern, well-lit cities. For nearly 25 years, satellite images of Earth at night have served as a fundamental research tool, while also stoking public curiosity. These images paint an expansive and revealing picture, showing how natural phenomena light up the darkness and how humans have illuminated and shaped the planet in profound ways since the invention of the light bulb 140 years ago."
+                    - link "Go to this page" [ref=f4e1800] [cursor=pointer]:
+                      - /url: /gallery/earthat-night-imagery/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1801]: 
+                - listitem [ref=f4e1802]:
+                  - generic [ref=f4e1803]:
+                    - link [ref=f4e1804] [cursor=pointer]:
+                      - /url: /gallery/nasas-heliophysics-gallery/
+                      - img "A full view of the sun at the start of the fly-in." [ref=f4e1806]
+                    - generic [ref=f4e1807]: "ID: 40046"
+                    - generic [ref=f4e1808]:
+                      - generic [aria-hidden] [ref=f4e1809]: 
+                      - text: Gallery
+                  - generic [ref=f4e1810]:
+                    - heading [level=3] [ref=f4e1811]:
+                      - link "NASA's Heliophysics Gallery" [ref=f4e1812] [cursor=pointer]:
+                        - /url: /gallery/nasas-heliophysics-gallery/
+                    - generic [ref=f4e1813]: March 4, 2010
+                    - paragraph [ref=f4e1816]: Heliophysics studies the nature of the Sun and how it influences the very nature of space and the planets and the technology that exists there. Learn more at nasa.gov/sun.
+                    - link "Go to this page" [ref=f4e1817] [cursor=pointer]:
+                      - /url: /gallery/nasas-heliophysics-gallery/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1818]: 
+            - generic [ref=f4e1819]:
+              - heading "Educational Content" [level=2] [ref=f4e1820]
+              - list [ref=f4e1822]:
+                - text:  
+                - listitem [ref=f4e1823]:
+                  - generic [ref=f4e1824]:
+                    - link [ref=f4e1825] [cursor=pointer]:
+                      - /url: /gallery/visualizationsfor-educators/
+                      - img "Phenomena are observable events that occur in nature. Data visualizations can offer new ways for students to experience and explore Earth and space phenomena that happen over large scales of time and at great distances. This gallery includes visualizations of phenomena that support topics that are taught in middle and high school and are aligned with select Next Generation Science Standards. This gallery was curated by Anne Arundle County Science Teachers Margaret Graham and Jeremy Milligan with support from Dr. Rachel Connolly during the summer of 2022. A video showing how Jeremy Milligan uses SVS resources to develop a phenomena-based lesson is also available." [ref=f4e1827]
+                    - generic [ref=f4e1828]: "ID: 40447"
+                    - generic [ref=f4e1829]:
+                      - generic [aria-hidden] [ref=f4e1830]: 
+                      - text: Gallery
+                  - generic [ref=f4e1831]:
+                    - heading [level=3] [ref=f4e1832]:
+                      - link "Visualizations for Educators" [ref=f4e1833] [cursor=pointer]:
+                        - /url: /gallery/visualizationsfor-educators/
+                    - generic [ref=f4e1834]: August 17, 2022
+                    - paragraph [ref=f4e1837]: Phenomena are observable events that occur in nature. Data visualizations can offer new ways for students to experience and explore Earth and space phenomena that happen over large scales of time and at great distances. This gallery includes visualizations of phenomena that support topics that are taught in middle and high school and are aligned with select Next Generation Science Standards. This gallery was curated by Anne Arundle County Science Teachers Margaret Graham and Jeremy Milligan with support from Dr. Rachel Connolly during the summer of 2022. A video showing how Jeremy Milligan uses SVS resources to develop a phenomena-based lesson is also available.
+                    - link "Go to this page" [ref=f4e1838] [cursor=pointer]:
+                      - /url: /gallery/visualizationsfor-educators/
+                      - text: Go to this page
+                      - generic [aria-hidden] [ref=f4e1839]: 
+          - separator [ref=f4e1840]
+  - contentinfo [ref=f4e1841]:
+    - navigation [ref=f4e1842]:
+      - generic [ref=f4e1844]:
+        - generic [ref=f4e1845]:
+          - link [ref=f4e1846] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Home Page" [ref=f4e1847]
+          - link [ref=f4e1848] [cursor=pointer]:
+            - /url: https://www.usa.gov/
+            - img "USA.gov Home Page" [ref=f4e1849]
+        - generic [ref=f4e1852]:
+          - link "Privacy Policy and Important Notices" [ref=f4e1853] [cursor=pointer]:
+            - /url: https://www.nasa.gov/about/highlights/HP_Privacy.html
+          - link "Reproduction Guidelines" [ref=f4e1854] [cursor=pointer]:
+            - /url: https://www.nasa.gov/multimedia/guidelines/index.html
+        - generic [ref=f4e1859]:
+          - generic [ref=f4e1860]:
+            - text: "NASA Official:"
+            - link "Mark SubbaRao" [ref=f4e1862] [cursor=pointer]:
+              - /url: mailto:mark.u.subbarao@nasa.gov?subject=Mail from SVS Website
+          - generic [ref=f4e1863]:
+            - text: "Site Curator:"
+            - link "Ella Kaplan" [ref=f4e1865] [cursor=pointer]:
+              - /url: mailto:ella.kaplan@nasa.gov?subject=Mail from SVS Website
