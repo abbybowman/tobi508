@@ -1,0 +1,2908 @@
+{
+ "round": "round2",
+ "scored_at": "2026-11-08T14:54:33.916333+00:00",
+ "lock_commit": "e14580abc97deb1b5acccc1cb5fc7a122993445c",
+ "pages": 10,
+ "pages_with_keys": 10,
+ "criteria": [
+  "1.3.1",
+  "1.4.2",
+  "2.1.1",
+  "2.1.2",
+  "2.2.2",
+  "2.3.1",
+  "2.4.1",
+  "2.4.3",
+  "2.4.5",
+  "2.4.6",
+  "2.4.7",
+  "3.2.1",
+  "3.2.2",
+  "3.2.3",
+  "3.2.4",
+  "3.3.1",
+  "3.3.2",
+  "3.3.3",
+  "3.3.4",
+  "4.1.2"
+ ],
+ "arms": {
+  "arm-a-g1-1": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 47,
+     "validated_catch": 0,
+     "false_pass": 1,
+     "missed_fail": 0,
+     "false_fail": 7,
+     "fail_vs_dna": 0,
+     "other_mismatch": 3,
+     "needs_review": 42,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 34,
+    "rates": {
+     "scored": "100",
+     "agreement (of decided)": "47/58",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "42/100",
+     "false PASS": "1",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "7",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "3",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.1.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "1.3.1",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed buttons (4 instances)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "4.1.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed buttons (4 instances)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.4.5",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "no way found to reach the page; site search does not find it"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.6",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "2.4.6",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "3.2.3",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed buttons (41 instances)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed buttons (41 instances)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.5",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "page reachable only via site navigation; site search does not find it"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "1.3.1",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed buttons (4 instances)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "4.1.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed buttons (4 instances)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.4.5",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "no way found to reach the page; site search does not find it"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 925.5,
+    "tokens": {
+     "input_tokens": 42,
+     "cache_creation_input_tokens": 75912,
+     "cache_read_input_tokens": 1095116,
+     "output_tokens": 10308
+    },
+    "model_calls": 21,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 5,
+     "mcp__a11y__tobi_run_status": 21,
+     "mcp__a11y__tobi_answer_questions": 1,
+     "mcp__a11y__tobi_read_report": 3
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.5163236,
+    "usage_window_change": {
+     "five_hour": 0.03,
+     "seven_day": 0.01
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 5,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 227,
+     "open question": 16
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 51,
+      "validated_catch": 0,
+      "false_pass": 1,
+      "missed_fail": 0,
+      "false_fail": 7,
+      "fail_vs_dna": 0,
+      "other_mismatch": 3,
+      "needs_review": 0,
+      "not_performed": 48,
+      "not_scored": 195,
+      "no_answer": 0
+     },
+     "weighted": 38,
+     "rates": {
+      "scored": "62",
+      "agreement (of decided)": "51/62",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/62",
+      "false PASS": "1",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "7",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "3",
+      "no answer given": "0",
+      "not performed by the tool": "48",
+      "no reference answer": "195"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 45,
+      "validated_catch": 0,
+      "false_pass": 1,
+      "missed_fail": 0,
+      "false_fail": 8,
+      "fail_vs_dna": 0,
+      "other_mismatch": 3,
+      "needs_review": 43,
+      "not_performed": 0,
+      "not_scored": 0,
+      "no_answer": 0
+     },
+     "weighted": 31,
+     "rates": {
+      "scored": "100",
+      "agreement (of decided)": "45/57",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "43/100",
+      "false PASS": "1",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "8",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "3",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "0"
+     }
+    }
+   }
+  },
+  "arm-a-g2-1": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 27,
+     "validated_catch": 0,
+     "false_pass": 2,
+     "missed_fail": 0,
+     "false_fail": 5,
+     "fail_vs_dna": 0,
+     "other_mismatch": 0,
+     "needs_review": 65,
+     "not_performed": 0,
+     "not_scored": 1,
+     "no_answer": 0
+    },
+    "weighted": 16,
+    "rates": {
+     "scored": "99",
+     "agreement (of decided)": "27/34",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "65/99",
+     "false PASS": "2",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "5",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "0",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "1"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.7",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "OVERVIEW (tab) in embedded app",
+      "button inside OVERVIEW tabpanel (#radix-:r3:-content-0 > div > div > button)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "checkbox (name empty) in Climate Legacies iframe timeline rows"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.7",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "OVERVIEW (tab) in embedded app",
+      "button inside OVERVIEW tabpanel (#radix-:r3:-content-0 > div > div > button)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "checkbox (name empty) in Climate Legacies iframe timeline rows"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "slider (no name) in WorldWide Telescope embed, between Visible light and Gamma rays"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "page start: repeated header (NASA Logo, site links, search) with no skip link"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "slider (no name) in WorldWide Telescope embed, between Visible light and Gamma rays"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "combobox with no name in Science on a Sphere section"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "page start: repeated header (NASA Logo, site links, search) with no skip link"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "#navbar_search_box (Search text field, placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "combobox with no name in Science on a Sphere section"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 2054.2,
+    "tokens": {
+     "input_tokens": 92,
+     "cache_creation_input_tokens": 156853,
+     "cache_read_input_tokens": 3798088,
+     "output_tokens": 15149
+    },
+    "model_calls": 46,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 5,
+     "mcp__a11y__tobi_run_status": 42,
+     "mcp__a11y__tobi_answer_questions": 8
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 1.1588947999999997,
+    "usage_window_change": {
+     "five_hour": 0.03,
+     "seven_day": 0.01
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 5,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 265
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 29,
+      "validated_catch": 0,
+      "false_pass": 2,
+      "missed_fail": 0,
+      "false_fail": 7,
+      "fail_vs_dna": 0,
+      "other_mismatch": 2,
+      "needs_review": 0,
+      "not_performed": 70,
+      "not_scored": 195,
+      "no_answer": 0
+     },
+     "weighted": 14,
+     "rates": {
+      "scored": "40",
+      "agreement (of decided)": "29/40",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/40",
+      "false PASS": "2",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "7",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "2",
+      "no answer given": "0",
+      "not performed by the tool": "70",
+      "no reference answer": "195"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 28,
+      "validated_catch": 0,
+      "false_pass": 2,
+      "missed_fail": 0,
+      "false_fail": 8,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 60,
+      "not_performed": 0,
+      "not_scored": 1,
+      "no_answer": 0
+     },
+     "weighted": 13,
+     "rates": {
+      "scored": "99",
+      "agreement (of decided)": "28/39",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "60/99",
+      "false PASS": "2",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "8",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "1"
+     }
+    }
+   }
+  },
+  "arm-a-pair1-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 22,
+     "validated_catch": 0,
+     "false_pass": 0,
+     "missed_fail": 0,
+     "false_fail": 2,
+     "fail_vs_dna": 0,
+     "other_mismatch": 1,
+     "needs_review": 15,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 19,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "22/25",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "15/40",
+     "false PASS": "0",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "2",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "1",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.6",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed buttons (including two in the Filters panels)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed buttons (including two in the Filters panels)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.5",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "page reachable only via site navigation; site search does not find it"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (placeholder-only label)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 343.3,
+    "tokens": {
+     "input_tokens": 14,
+     "cache_creation_input_tokens": 56318,
+     "cache_read_input_tokens": 171524,
+     "output_tokens": 4994
+    },
+    "model_calls": 7,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 2,
+     "mcp__a11y__tobi_run_status": 7,
+     "mcp__a11y__tobi_answer_questions": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.2923924,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 2,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 91,
+     "open question": 6
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 22,
+      "validated_catch": 0,
+      "false_pass": 0,
+      "missed_fail": 0,
+      "false_fail": 2,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 0,
+      "not_performed": 19,
+      "not_scored": 78,
+      "no_answer": 0
+     },
+     "weighted": 19,
+     "rates": {
+      "scored": "25",
+      "agreement (of decided)": "22/25",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/25",
+      "false PASS": "0",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "2",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "19",
+      "no reference answer": "78"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 20,
+      "validated_catch": 0,
+      "false_pass": 0,
+      "missed_fail": 0,
+      "false_fail": 2,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 17,
+      "not_performed": 0,
+      "not_scored": 0,
+      "no_answer": 0
+     },
+     "weighted": 17,
+     "rates": {
+      "scored": "40",
+      "agreement (of decided)": "20/23",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "17/40",
+      "false PASS": "0",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "2",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "0"
+     }
+    }
+   }
+  },
+  "arm-a-pair2-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 16,
+     "validated_catch": 0,
+     "false_pass": 0,
+     "missed_fail": 0,
+     "false_fail": 4,
+     "fail_vs_dna": 0,
+     "other_mismatch": 1,
+     "needs_review": 19,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 11,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "16/21",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "19/40",
+     "false PASS": "0",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "4",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "1",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "header Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "1.3.1",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "four unnamed buttons (not identified by the tool)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "header Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "4.1.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "four unnamed buttons (not identified by the tool)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "2.4.6",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "Sort category drop-down",
+      "NASA Science categories checkboxes (Earth, Universe, Sun, Planets & Moons)",
+      "Keywords checkboxes",
+      "Release date radios",
+      "Missions checkboxes",
+      "Datasets checkboxes",
+      "Series checkboxes",
+      "Media checkboxes",
+      "Result type checkboxes",
+      "Created by checkboxes",
+      "Developed for checkboxes",
+      "People checkboxes"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "header Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "1.3.1",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "four unnamed buttons (not identified by the tool)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "header Search text field (placeholder-only label)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "4.1.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "four unnamed buttons (not identified by the tool)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 821.3,
+    "tokens": {
+     "input_tokens": 48,
+     "cache_creation_input_tokens": 162503,
+     "cache_read_input_tokens": 1662842,
+     "output_tokens": 12175
+    },
+    "model_calls": 24,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 2,
+     "mcp__a11y__tobi_run_status": 19,
+     "mcp__a11y__tobi_answer_questions": 9
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.9381421999999999,
+    "usage_window_change": {
+     "five_hour": 0.03,
+     "seven_day": 0.01
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 2,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 98
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 19,
+      "validated_catch": 0,
+      "false_pass": 0,
+      "missed_fail": 0,
+      "false_fail": 4,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 0,
+      "not_performed": 20,
+      "not_scored": 78,
+      "no_answer": 0
+     },
+     "weighted": 14,
+     "rates": {
+      "scored": "24",
+      "agreement (of decided)": "19/24",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/24",
+      "false PASS": "0",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "4",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "20",
+      "no reference answer": "78"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 16,
+      "validated_catch": 0,
+      "false_pass": 0,
+      "missed_fail": 0,
+      "false_fail": 5,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 18,
+      "not_performed": 0,
+      "not_scored": 0,
+      "no_answer": 0
+     },
+     "weighted": 10,
+     "rates": {
+      "scored": "40",
+      "agreement (of decided)": "16/22",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "18/40",
+      "false PASS": "0",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "5",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "0"
+     }
+    }
+   }
+  },
+  "arm-a-pair3-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 16,
+     "validated_catch": 0,
+     "false_pass": 1,
+     "missed_fail": 1,
+     "false_fail": 1,
+     "fail_vs_dna": 0,
+     "other_mismatch": 0,
+     "needs_review": 20,
+     "not_performed": 0,
+     "not_scored": 1,
+     "no_answer": 0
+    },
+    "weighted": 9,
+    "rates": {
+     "scored": "39",
+     "agreement (of decided)": "16/19",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "20/39",
+     "false PASS": "1",
+     "missed fail (Does Not Apply)": "1",
+     "false FAIL": "1",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "0",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "1"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.1.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Does Not Apply",
+     "verdict": "missed_fail",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search... text field (placeholder-only label)"
+     ]
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search... text field (placeholder-only label)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 447.7,
+    "tokens": {
+     "input_tokens": 24,
+     "cache_creation_input_tokens": 46820,
+     "cache_read_input_tokens": 308197,
+     "output_tokens": 6008
+    },
+    "model_calls": 12,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 2,
+     "mcp__a11y__tobi_run_status": 10,
+     "mcp__a11y__tobi_answer_questions": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.27822769999999997,
+    "usage_window_change": {
+     "five_hour": 0.0,
+     "seven_day": 0.01
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 2,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 88
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 20,
+      "validated_catch": 0,
+      "false_pass": 1,
+      "missed_fail": 2,
+      "false_fail": 5,
+      "fail_vs_dna": 0,
+      "other_mismatch": 6,
+      "needs_review": 0,
+      "not_performed": 10,
+      "not_scored": 78,
+      "no_answer": 0
+     },
+     "weighted": 0,
+     "rates": {
+      "scored": "34",
+      "agreement (of decided)": "20/34",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/34",
+      "false PASS": "1",
+      "missed fail (Does Not Apply)": "2",
+      "false FAIL": "5",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "6",
+      "no answer given": "0",
+      "not performed by the tool": "10",
+      "no reference answer": "78"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 16,
+      "validated_catch": 0,
+      "false_pass": 1,
+      "missed_fail": 2,
+      "false_fail": 6,
+      "fail_vs_dna": 0,
+      "other_mismatch": 5,
+      "needs_review": 9,
+      "not_performed": 0,
+      "not_scored": 1,
+      "no_answer": 0
+     },
+     "weighted": -4,
+     "rates": {
+      "scored": "39",
+      "agreement (of decided)": "16/30",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "9/39",
+      "false PASS": "1",
+      "missed fail (Does Not Apply)": "2",
+      "false FAIL": "6",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "5",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "1"
+     }
+    }
+   }
+  },
+  "arm-a-pair4-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 14,
+     "validated_catch": 0,
+     "false_pass": 2,
+     "missed_fail": 0,
+     "false_fail": 5,
+     "fail_vs_dna": 0,
+     "other_mismatch": 0,
+     "needs_review": 19,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 3,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "14/21",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "19/40",
+     "false PASS": "2",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "5",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "0",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "1.3.1",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed button"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (#navbar_search_box)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "4.1.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed button"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.7",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "OVERVIEW (tab)",
+      "#radix-\\:r3\\:-content-0 > div > div > button"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (#navbar_search_box)"
+     ]
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "1.3.1",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed button"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "no skip link before the repeated header (NASA Logo)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (#navbar_search_box)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "4.1.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "unnamed button"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed button",
+      "unnamed checkboxes and buttons in timeline rows"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "no skip link before the repeated header (NASA Logo)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.7",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "OVERVIEW (tab)",
+      "#radix-\\:r3\\:-content-0 > div > div > button"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search text field (#navbar_search_box)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed button",
+      "unnamed checkboxes and buttons in timeline rows"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 1709.6,
+    "tokens": {
+     "input_tokens": 70,
+     "cache_creation_input_tokens": 51963,
+     "cache_read_input_tokens": 1120852,
+     "output_tokens": 6774
+    },
+    "model_calls": 35,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 2,
+     "mcp__a11y__tobi_run_status": 38
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.3878172000000001,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 2,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 96,
+     "open question": 5
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 14,
+      "validated_catch": 0,
+      "false_pass": 2,
+      "missed_fail": 0,
+      "false_fail": 4,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 0,
+      "not_performed": 23,
+      "not_scored": 78,
+      "no_answer": 0
+     },
+     "weighted": 3,
+     "rates": {
+      "scored": "21",
+      "agreement (of decided)": "14/21",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/21",
+      "false PASS": "2",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "4",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "23",
+      "no reference answer": "78"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 14,
+      "validated_catch": 0,
+      "false_pass": 2,
+      "missed_fail": 0,
+      "false_fail": 5,
+      "fail_vs_dna": 0,
+      "other_mismatch": 1,
+      "needs_review": 18,
+      "not_performed": 0,
+      "not_scored": 0,
+      "no_answer": 0
+     },
+     "weighted": 2,
+     "rates": {
+      "scored": "40",
+      "agreement (of decided)": "14/22",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "18/40",
+      "false PASS": "2",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "5",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "1",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "0"
+     }
+    }
+   }
+  },
+  "arm-a-pair5-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 19,
+     "validated_catch": 0,
+     "false_pass": 1,
+     "missed_fail": 0,
+     "false_fail": 2,
+     "fail_vs_dna": 0,
+     "other_mismatch": 0,
+     "needs_review": 18,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 14,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "19/22",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "18/40",
+     "false PASS": "1",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "2",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "0",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search... text field (placeholder only)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search... text field (placeholder only)"
+     ]
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed button (stop 20)",
+      "unnamed button (stop 21)",
+      "unnamed slider (stop 44)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "page start: no skip link before repeated header (NASA Logo, Scientific Visualization Studio, Galleries, Help, Search)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search... text field (placeholder only)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed button (stop 20)",
+      "unnamed button (stop 21)",
+      "unnamed slider (stop 44)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed combobox (stop 33, #root > div > div > div:nth-of-type(2) > select)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "page start: no skip link before repeated header (NASA Logo, Scientific Visualization Studio, Galleries, Help, Search)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "3.3.2",
+     "key": "Pass",
+     "arm": "Fail",
+     "verdict": "false_fail",
+     "elements": [
+      "Search... text field (placeholder only)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "unnamed combobox (stop 33, #root > div > div > div:nth-of-type(2) > select)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 1287.2,
+    "tokens": {
+     "input_tokens": 58,
+     "cache_creation_input_tokens": 108845,
+     "cache_read_input_tokens": 1217366,
+     "output_tokens": 10299
+    },
+    "model_calls": 29,
+    "tool_calls": {
+     "mcp__a11y__tobi_run_tt_tests": 2,
+     "mcp__a11y__tobi_run_status": 37,
+     "mcp__a11y__tobi_answer_questions": 4,
+     "mcp__a11y__tobi_explain": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.6602226000000001,
+    "usage_window_change": {
+     "five_hour": 0.03,
+     "seven_day": 0.0
+    }
+   },
+   "server": {
+    "pages_tested_by_the_tool": 2,
+    "pages_not_tested": [],
+    "needs_review_reasons": {
+     "could not be performed": 97
+    },
+    "per_tt": {
+     "counts": {
+      "agree": 22,
+      "validated_catch": 0,
+      "false_pass": 1,
+      "missed_fail": 0,
+      "false_fail": 2,
+      "fail_vs_dna": 0,
+      "other_mismatch": 0,
+      "needs_review": 0,
+      "not_performed": 19,
+      "not_scored": 78,
+      "no_answer": 0
+     },
+     "weighted": 17,
+     "rates": {
+      "scored": "25",
+      "agreement (of decided)": "22/25",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "0/25",
+      "false PASS": "1",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "2",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "0",
+      "no answer given": "0",
+      "not performed by the tool": "19",
+      "no reference answer": "78"
+     }
+    },
+    "per_criterion": {
+     "counts": {
+      "agree": 21,
+      "validated_catch": 0,
+      "false_pass": 1,
+      "missed_fail": 0,
+      "false_fail": 2,
+      "fail_vs_dna": 0,
+      "other_mismatch": 0,
+      "needs_review": 16,
+      "not_performed": 0,
+      "not_scored": 0,
+      "no_answer": 0
+     },
+     "weighted": 16,
+     "rates": {
+      "scored": "40",
+      "agreement (of decided)": "21/24",
+      "validated catches (the tester confirmed the tool)": "0",
+      "needs review (of scored)": "16/40",
+      "false PASS": "1",
+      "missed fail (Does Not Apply)": "0",
+      "false FAIL": "2",
+      "Fail vs Does Not Apply": "0",
+      "other mismatch": "0",
+      "no answer given": "0",
+      "not performed by the tool": "0",
+      "no reference answer": "0"
+     }
+    }
+   }
+  },
+  "arm-b-g1-1": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 68,
+     "validated_catch": 0,
+     "false_pass": 8,
+     "missed_fail": 0,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 5,
+     "needs_review": 19,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 39,
+    "rates": {
+     "scored": "100",
+     "agreement (of decided)": "68/81",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "19/100",
+     "false PASS": "8",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "5",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.4.5",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.5",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.3.1",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.3.1",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "2.3.1",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "2.3.1",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "1.4.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "duplicate id id_filter_search: 2nd-4th filter search inputs (keywords/missions/datasets/series facets) not associated with their labels",
+      "select#id_filter_sort_by_1 (duplicate ids; visible 'Sort by' not a label)",
+      "select#id_sort_by_1 (visible 'Sort by:' is an aria-hidden span in a button, not associated)"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "facet checkboxes (e.g. #id_nasa_science_categories_Sun), release date radios, date inputs and sort select reload results/URL on change with no submit button or warning"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.1.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "video#demo-reel (no controls; play only via poster/mouse, not keyboard focusable)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 102.8,
+    "tokens": {
+     "input_tokens": 20,
+     "cache_creation_input_tokens": 47258,
+     "cache_read_input_tokens": 287702,
+     "output_tokens": 12075
+    },
+    "model_calls": 10,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 6,
+     "mcp__browser__browser_evaluate": 10,
+     "mcp__browser__browser_take_screenshot": 2,
+     "mcp__browser__browser_click": 1
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.3385922,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   }
+  },
+  "arm-b-g2-1": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 49,
+     "validated_catch": 0,
+     "false_pass": 11,
+     "missed_fail": 1,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 2,
+     "needs_review": 36,
+     "not_performed": 0,
+     "not_scored": 1,
+     "no_answer": 0
+    },
+    "weighted": 11,
+    "rates": {
+     "scored": "99",
+     "agreement (of decided)": "49/63",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "36/99",
+     "false PASS": "11",
+     "missed fail (Does Not Apply)": "1",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "2",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "1"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "2.2.2",
+     "key": "Fail",
+     "arm": "Does Not Apply",
+     "verdict": "missed_fail",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.3.1",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "3.3.3",
+     "key": "Pass",
+     "arm": "Does Not Apply",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 55.6,
+    "tokens": {
+     "input_tokens": 12,
+     "cache_creation_input_tokens": 13573,
+     "cache_read_input_tokens": 97464,
+     "output_tokens": 6594
+    },
+    "model_calls": 6,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 2,
+     "mcp__browser__browser_evaluate": 4
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.1300024,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   }
+  },
+  "arm-b-pair1-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 24,
+     "validated_catch": 0,
+     "false_pass": 6,
+     "missed_fail": 0,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 3,
+     "needs_review": 7,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 3,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "24/33",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "7/40",
+     "false PASS": "6",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "3",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.4.5",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.4.5",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.3.1",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.2.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/help/",
+     "criterion": "2.3.1",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/",
+     "criterion": "2.2.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "#home_page_carousel (auto-advancing every 7.5s, no pause/stop control)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 52.6,
+    "tokens": {
+     "input_tokens": 10,
+     "cache_creation_input_tokens": 20893,
+     "cache_read_input_tokens": 104536,
+     "output_tokens": 4246
+    },
+    "model_calls": 5,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 2,
+     "mcp__browser__browser_evaluate": 4,
+     "mcp__browser__browser_press_key": 1
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.1365056,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   }
+  },
+  "arm-b-pair2-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 24,
+     "validated_catch": 0,
+     "false_pass": 2,
+     "missed_fail": 0,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 0,
+     "needs_review": 14,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 18,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "24/26",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "14/40",
+     "false PASS": "2",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "0",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/search/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    }
+   ],
+   "fails": [],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 43.6,
+    "tokens": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 21368,
+     "cache_read_input_tokens": 52448,
+     "output_tokens": 4204
+    },
+    "model_calls": 3,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 2,
+     "mcp__browser__browser_evaluate": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.1327688,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   }
+  },
+  "arm-b-pair3-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 16,
+     "validated_catch": 0,
+     "false_pass": 0,
+     "missed_fail": 1,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 4,
+     "needs_review": 18,
+     "not_performed": 0,
+     "not_scored": 1,
+     "no_answer": 0
+    },
+    "weighted": 9,
+    "rates": {
+     "scored": "39",
+     "agreement (of decided)": "16/21",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "18/39",
+     "false PASS": "0",
+     "missed fail (Does Not Apply)": "1",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "4",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "1"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Does Not Apply",
+     "verdict": "missed_fail",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "1.4.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.2.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "1.4.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14592/",
+     "criterion": "2.2.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/cilab/",
+     "criterion": "2.1.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "#demo-reel-row (click-only div that starts the video #demo-reel; video has no controls and no keyboard access until clicked)"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 53.0,
+    "tokens": {
+     "input_tokens": 12,
+     "cache_creation_input_tokens": 24892,
+     "cache_read_input_tokens": 91288,
+     "output_tokens": 4269
+    },
+    "model_calls": 6,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 1,
+     "mcp__browser__browser_tabs": 3,
+     "mcp__browser__browser_snapshot": 2,
+     "mcp__browser__browser_evaluate": 3,
+     "mcp__browser__browser_take_screenshot": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.1514108,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   }
+  },
+  "arm-b-pair4-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/5144/",
+    "https://svs.gsfc.nasa.gov/4914/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 16,
+     "validated_catch": 0,
+     "false_pass": 2,
+     "missed_fail": 1,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 0,
+     "needs_review": 21,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 7,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "16/19",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "21/40",
+     "false PASS": "2",
+     "missed fail (Does Not Apply)": "1",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "0",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5340/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/14194/",
+     "criterion": "2.2.2",
+     "key": "Fail",
+     "arm": "Does Not Apply",
+     "verdict": "missed_fail",
+     "elements": []
+    }
+   ],
+   "fails": [],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 39.7,
+    "tokens": {
+     "input_tokens": 6,
+     "cache_creation_input_tokens": 9311,
+     "cache_read_input_tokens": 40398,
+     "output_tokens": 3557
+    },
+    "model_calls": 3,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 2,
+     "mcp__browser__browser_evaluate": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.0768658,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.01
+    }
+   }
+  },
+  "arm-b-pair5-2": {
+   "result_line": "found",
+   "pages_not_given": [
+    "https://svs.gsfc.nasa.gov/",
+    "https://svs.gsfc.nasa.gov/help/",
+    "https://svs.gsfc.nasa.gov/search/",
+    "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+    "https://svs.gsfc.nasa.gov/cilab/",
+    "https://svs.gsfc.nasa.gov/14592/",
+    "https://svs.gsfc.nasa.gov/14194/",
+    "https://svs.gsfc.nasa.gov/5340/"
+   ],
+   "not_scored_reason": null,
+   "per_criterion": {
+    "counts": {
+     "agree": 19,
+     "validated_catch": 0,
+     "false_pass": 5,
+     "missed_fail": 0,
+     "false_fail": 0,
+     "fail_vs_dna": 0,
+     "other_mismatch": 1,
+     "needs_review": 15,
+     "not_performed": 0,
+     "not_scored": 0,
+     "no_answer": 0
+    },
+    "weighted": 3,
+    "rates": {
+     "scored": "40",
+     "agreement (of decided)": "19/25",
+     "validated catches (the tester confirmed the tool)": "0",
+     "needs review (of scored)": "15/40",
+     "false PASS": "5",
+     "missed fail (Does Not Apply)": "0",
+     "false FAIL": "0",
+     "Fail vs Does Not Apply": "0",
+     "other mismatch": "1",
+     "no answer given": "0",
+     "not performed by the tool": "0",
+     "no reference answer": "0"
+    }
+   },
+   "disagreements": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "3.2.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "2.4.1",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Pass",
+     "verdict": "false_pass",
+     "elements": []
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/4914/",
+     "criterion": "1.4.2",
+     "key": "Does Not Apply",
+     "arm": "Pass",
+     "verdict": "other_mismatch",
+     "elements": []
+    }
+   ],
+   "fails": [
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "1.3.1",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "slider (Visible light \u2013 Gamma rays) in WWT iframe has no accessible name/programmatic label"
+     ]
+    },
+    {
+     "page": "https://svs.gsfc.nasa.gov/5144/",
+     "criterion": "4.1.2",
+     "key": "Fail",
+     "arm": "Fail",
+     "verdict": "agree",
+     "elements": [
+      "slider (Visible light \u2013 Gamma rays) in WWT iframe has no accessible name"
+     ]
+    }
+   ],
+   "efficiency": {
+    "ended": "completed",
+    "wall_s": 54.1,
+    "tokens": {
+     "input_tokens": 10,
+     "cache_creation_input_tokens": 23362,
+     "cache_read_input_tokens": 98888,
+     "output_tokens": 3839
+    },
+    "model_calls": 5,
+    "tool_calls": {
+     "mcp__browser__browser_navigate": 2,
+     "mcp__browser__browser_snapshot": 1,
+     "mcp__browser__browser_evaluate": 2
+    },
+    "models_reported": [
+     "claude-sonnet-5-5"
+    ],
+    "route": "claude-code-cli",
+    "model_requested": "claude-sonnet-5-5",
+    "cost_usd_list_price": 0.1417468,
+    "usage_window_change": {
+     "five_hour": 0.01,
+     "seven_day": 0.0
+    }
+   }
+  }
+ }
+}
