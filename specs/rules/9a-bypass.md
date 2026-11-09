@@ -1,7 +1,7 @@
 ---
 tt_test: 9.A
 tt_name: 2.4.1-bypass-function
-spec_version: 1.0.0
+spec_version: 1.1.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -20,6 +20,7 @@ The tool gives each page one 9.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 - *Region*: a banner, navigation, search, complementary or contentinfo landmark (elements or roles; `header` and `footer` only outside `article`, `aside`, `main`, `nav` and `section`), identified by role and its label or id, else by role and order among its role.
 - *Repeated unit*: a unit whose text key appears on any other page, or that sits in a region that some other page also has (same role and label or id, else same role and order). Blocks "do not have to be exactly the same" (p. 42): a region match covers a navigation whose items differ.
 - *Main start* M: the first unit of the `main` landmark; if it has none, or it does not come after a repeated unit, the first `h1` that is not repeated and comes after a repeated unit; else the first unit that is not repeated and comes after a repeated unit (ACT ye5d6e: "non-repeated content after repeated content"). Recorded as `main`, `h1` or `first_unique`.
+- *Kinship* (counts only, `site.py`): another page *shares almost nothing* with the tested page when no region of the two has the same role and the same label or id (a region known only by its place among its role, `banner|@1`, does not match), and the units of the tested page whose text key is on that page are one unit or fewer than 4 words in all. The tested page has *navigation of its own* when it has a banner, navigation, search or contentinfo region, or at least 4 links outside `main`. Round 2: pages of different templates shared 0, pages of one template 10 or more. Each page's template fingerprint (a hash of its labelled regions) is recorded as `kinship` in the evidence file for a later site-wide store (1.1.0).
 - *Block* B: the repeated units before M. *Block stops*: those that are walk stops.
 - *Candidate*: a P1 stop before M that may be a bypass: a link to a place on the same page (`#...`, including `#`), an element with role link and no address, a button that is not a form's submit button, or a `summary`. At most 8, in walk order.
 
@@ -29,6 +30,7 @@ The tool gives each page one 9.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to know which content repeats" | Abby, 2026-11-02 (Q1: other pages required); p. 42 Identify Content |
 | A2 | A page could not be read (load, units) | NEEDS REVIEW, not performed, naming the page | Spec rule |
+| A3o | Every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template, so what repeats cannot be told (1.1.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No unit of the tested page is repeated | DOES NOT APPLY | p. 42 Applicability |
 | A4 | Repeated units exist but B is empty (they all come after the main content, such as a footer), or B is small: one control, or fewer than 4 words in all | DOES NOT APPLY, naming what repeats and where: there is nothing before the main content to bypass, as forms tests do not apply to a page with no form | p. 42 Identify Content (EXCLUDE: small sections "are not considered repetitive blocks"; Note: a bypass for navigation "at the bottom of a web page may be unnecessary"); Baseline 4.A (the same limitations); ACT ye5d6e and 3e12e1 look only at repeated content before non-repeated content; Abby, 2026-11-02 (DNA: users who reach the footer have had the page's content and can stop) |
 | A5 | Otherwise | Applies; go to section 3 | |
@@ -96,6 +98,7 @@ Each candidate is an *instance*. A candidate's *jump* is the set of units strict
 | Page PASS | "This page repeats content from the other pages you gave (for example <first repeated text>), and <method> lets keyboard users skip it." |
 | Page FAIL | "This page starts with content repeated on the other pages you gave (for example <first repeated text>), and we found no keyboard way to skip past it. Add a "Skip to main content" link as the first thing on the page." |
 | A1 | "This test could not be performed: it needs other pages of the same site, to see which content repeats. Run it again with other_pages." |
+| A3o | "The other pages you gave share almost nothing with this page, so they look like they come from a different template, and we could not tell which content repeats. Give pages that use the same header, menu and footer as this one." |
 | A3 | "Nothing on this page appears on the other pages you gave, so this test does not apply." |
 | A4 | "The only content repeated on the other pages you gave comes after the main content (or is a single link or a few words), so there is nothing to skip and this test does not apply." |
 | M8, M10 | "<method> skips past the start of the main content." |
@@ -137,6 +140,7 @@ Asked only when the block is not bypassed by any candidate, every candidate is d
 | Toggle that only moves the block off screen, or only sets `aria-hidden` | Still rendered and focusable: M5 or not covered | ACT 3e12e1 failed 2, 3 |
 | Landmarks or headings only | Not a keyboard method: G5 FAIL (ACT passes these; noted as a difference) | ACT cf77f2 passed 2, 3 |
 | Block in an iframe, or frames as the method | Units are read in the top document only: NEEDS REVIEW when a frame sits in B | Spec rule |
+| The only other pages are a microsite or another agency's site | A3o when the tested page has navigation of its own; A3 when it has none (nothing to look for) | V-check fixtures e1, e3 |
 | More than 8 candidates | The first 8 in walk order; G3 if the block is not bypassed | Spec rule |
 
 ## 6. What a FAIL records

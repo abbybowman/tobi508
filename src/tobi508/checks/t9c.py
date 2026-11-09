@@ -28,7 +28,15 @@ from tobi508.models import (
     Outcome,
     TestId,
 )
-from tobi508.site import UNIT_CAP, UNITS_FN, norm_href
+from tobi508.site import (
+    UNIT_CAP,
+    UNITS_FN,
+    UNRELATED_REASON,
+    Kinship,
+    kinship,
+    norm_href,
+    site_read,
+)
 from tobi508.walk import KeyboardWalk
 
 J1_MAX = 12  # J1 questions per run (spec 3b G3)
@@ -86,6 +94,7 @@ class State9C(BaseModel):
     no_pages: bool = False
     pages: list[AndiPage] = Field(default_factory=list)  # [0] is the tested page
     pairs: list[Pair] = Field(default_factory=list)
+    kinship: Kinship | None = None
 
 
 async def _cached_andi(p, third_party) -> AndiPage:
@@ -154,9 +163,13 @@ def _norm(s: str | None) -> str:
     return " ".join((s or "").split()).lower()
 
 
-def make_pairs(main: AndiPage, other: AndiPage) -> list[Pair]:
+def make_pairs(
+    main: AndiPage, other: AndiPage, by_name_and_place: bool = True
+) -> list[Pair]:
     """Spec Terms, in order: destination, id, name, place. Each component is
-    used once; equal names pair first within a destination."""
+    used once; equal names pair first within a destination. With a page of
+    another template (`by_name_and_place` False, spec 1.2.0) only destination
+    and id pair: names and places on unrelated pages pair unlike things."""
     a = [c for c in main.comps if c.andi_name is not None]
     b = [c for c in other.comps if c.andi_name is not None]
     used_a: set[int] = set()
@@ -212,6 +225,8 @@ def make_pairs(main: AndiPage, other: AndiPage) -> list[Pair]:
     for key, xs in ga.items():
         for x, y in zip(xs, gb.get(key, []), strict=False):
             add(x, y, "id")
+    if not by_name_and_place:
+        return out
     # 3. Same name within the same region role.
     ga, gb = group(
         lambda c: (
@@ -251,8 +266,11 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
     st = State9C(pages=list(pages))
     if any(p.error for p in st.pages):
         return st
+    st.kinship = kinship(await site_read(ctx))
     for other in st.pages[1:]:
-        st.pairs += make_pairs(st.pages[0], other)
+        st.pairs += make_pairs(
+            st.pages[0], other, not st.kinship.almost_nothing(other.n)
+        )
     return st
 
 
@@ -440,6 +458,14 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
             ["A4", "G3"],
             evidence_refs,
             rationale="Spec G3. Incomplete: " + "; ".join(unread),
+            note=True,
+        )
+    if not st.pairs and st.kinship is not None and st.kinship.unrelated_review:
+        return _finding(
+            Outcome.NEEDS_REVIEW,
+            " ".join([REVIEW_HEAD, UNRELATED_REASON]),
+            ["A3o", "G1"],
+            evidence_refs,
             note=True,
         )
     if not st.pairs:
