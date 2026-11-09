@@ -4,8 +4,66 @@ Bundle 2 of the server judge pivot's "Sequencing to Nov 20"
 ([2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md));
 post-round 2 fixes 1-6 and 9b
 ([2026-11-08-post-round2-fixes.md](2026-11-08-post-round2-fixes.md)).
-Status: **proposed, nothing built.** Agent-assisted results, not certified
-Trusted Tester results.
+Status: **step 1 done, no rule changed yet.** Agent-assisted results, not
+certified Trusted Tester results.
+
+## Status
+
+- Step 1 (2026-11-09, branch `frozen-page-checks`): frozen pages restored
+  (12 files, all match the manifest). Verified by running TOBI in `replay`
+  mode on the frozen copy and by Playwright probes on the recordings
+  (scripts not kept). Findings are in "Step 1 findings" below; three differ
+  from what this plan assumed, so fixes 2 and 5 wait for Abby (questions
+  there). Not built: fixes 1-6, 9b, 3. No model calls were made.
+
+## Step 1 findings (2026-11-09)
+
+1. **CILab 4.A (fix 4).** TOBI says PASS ("no instances"), reproduced on
+   the frozen page. The guess (`hit()` fails on a covered centre) is
+   **wrong**: `#demo-reel-row` is visible and its centre hits itself. The
+   row has no pointer cursor and no `onclick` attribute; its click handler
+   is attached by script (jQuery 3.5.1 `.click()`, i.e. `addEventListener`).
+   Cause: `traverse.listeners()` and `t4a._own_listener_types()` ask CDP
+   (`DOMDebugger.getEventListeners`) from TOBI's **isolated world**, which
+   returns **0** listeners there; from the page's main world the same call
+   returns 21 on this page, including the row's click. So 4.A has never
+   seen listeners that page scripts add, on any page, with any library.
+   Fix 4 gains a first step: read listeners from the main world (any
+   library, no script parsing). A handler on an ancestor (delegation) is
+   still not tied to the child it serves; decide that when building.
+2. **5340 4.C and 5.D reproduce as false PASS** on the frozen copy: 4.C
+   PASS (M4, "View timeline"), 5.D PASS ("no changes").
+3. **5340 4.C: the plan's picture of "View timeline" is wrong.** In the
+   first view, Tab never leaves the frame in 120 presses (about 25 stops
+   repeat), so the trap is real. Enter on "View timeline" swaps the view
+   (43 focusable items down to 5) and Tab then leaves the frame after 5
+   stops. So the new view does **not** loop. Fix 2 as written ("an exit
+   counts only when focus leaves the section, with no new trap forming")
+   would still count this as an exit and PASS, against Abby's Fail. See
+   question A.
+4. **5340 5.D: the Tab-away jump did not reproduce.** Typing a name or a
+   year (1800, 1985, 12345; blank or already filled; arrived by Tab or
+   by focus) and pressing Tab moved focus to the next field, and it stayed
+   there for 5 s. What did jump to the app's start: Enter on a "submit"
+   button after filling the form (focus went to the app's root `div`, and
+   the next Tab reached OVERVIEW). No error popup text appeared. See
+   question B.
+5. **Year popup (decision 2):** not confirmed. With 1800 and a keyboard
+   submit there was no popup in the recording. Item 8 waits on question B.
+
+Questions for Abby:
+
+- **A.** Is an exit that needs Enter on a control *inside* the loop an
+  exit? It starts a different view and no standard key (Tab, arrows, Esc)
+  leaves the first one. Recommendation: no. Count only exits reached by
+  Tab, Shift+Tab, Escape or arrows without activating anything; an
+  activation-only way out is NEEDS REVIEW with the page's advice as the
+  question (the TT 4.C note on non-standard methods), and FAIL when the
+  loop has no way out by those keys and the page does not say how.
+- **B.** The exact steps for the 5.D jump and the year popup on 5340
+  (which button, which key, what you saw), or a screen capture.
+
+Probe scripts and runs stayed in the session scratchpad (not committed).
 
 ## The problem in one line
 
