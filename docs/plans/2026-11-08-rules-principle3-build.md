@@ -43,8 +43,9 @@ an existing FAIL into a PASS.
 
 ## Order of work
 
-1. **Record the 10 round 2 pages again** (no model tokens; the same
-   recordings serve the ApiJudge gate) and look at three things on them:
+1. **Use round 2's frozen pages** (Abby's archive copy, the exact pages
+   her keys describe; no model tokens; the ApiJudge gate uses them too)
+   and look at four things on them:
    why 4.A missed CILab's video, why 5.D passed on 5340, and what "View
    timeline" does on 5340, and whether a keyboard user can get back to
    the year field from its error popup.
@@ -94,8 +95,11 @@ are still found. Never edit `evals/judging/round2*/`.
 1.1.1→1.2.0; 5.A, 5.B 1.2.0→1.3.0; 5.C 1.4.0→1.5.0; 4.D 1.3.0→1.4.0;
 4.E 1.2.0→1.3.0; 4.F 1.3.0→1.4.0; 5.F 1.3.1→1.4.0.
 
-**Step 1 (recordings):** `FROZEN_PAGES_DIR=runs/gate-frozen`,
-`record_missing` mode, outside git; client backend. CILab: log
+**Step 1 (frozen pages):** restore `round2-frozen` at the repository
+root (`evals/judging/round2/results/ARCHIVE.md`; check each file against
+its manifest; HARs are git-ignored; never change them); run TOBI with
+`FROZEN_PAGES_DIR=evals/judging/round2/frozen` in `tested_frozen` mode (as Agent C ran), client
+backend, runs in `runs/`. CILab: log
 `reasonOf`, `hit()` and visibility for `#demo-reel-row` (guess: its
 centre point is covered, and `hit()` tests the centre only, `t4a.py`
 ~125). 5340: read 5.D's `focus_after_leave`, `leave_expected`; what
