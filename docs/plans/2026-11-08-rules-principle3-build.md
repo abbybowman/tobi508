@@ -37,7 +37,7 @@ an existing FAIL into a PASS.
   videos are too large for TOBI to check. That still fixes the real
   problem (never Does Not Apply).
 - Revealing Home's X buttons is not enough: 5.C also needs a rule for
-  buttons that share one name (question 1).
+  buttons that share one name (decision 1).
 - 9.B has another false PASS today: two unrelated pages that both have a
   plain header and footer look "consistent". Fix 6 closes it.
 
@@ -46,7 +46,8 @@ an existing FAIL into a PASS.
 1. **Record the 10 round 2 pages again** (no model tokens; the same
    recordings serve the ApiJudge gate) and look at three things on them:
    why 4.A missed CILab's video, why 5.D passed on 5340, and what "View
-   timeline" does on 5340.
+   timeline" does on 5340, and whether a keyboard user can get back to
+   the year field from its error popup.
 2. **Three small pieces in parallel** (different files):
    - videos: fixes 1 and 4 (about 2 days);
    - 4.C and 5.D on 5340: fixes 2 and 5 (about 1.5 days);
@@ -59,24 +60,17 @@ Steps 1-3 are the Nov 20 cut; 4 if time allows. Each piece is its own pull
 request: spec first, a test page, the full test suite, and the judge
 eval where a question changes (fixes 4, 9b and 3).
 
-## Questions for Abby
+## Abby's decisions (2026-11-09)
 
-Only these change what gets built:
+1. **Home's X buttons:** ask an open question settled by looking, showing
+   each button's row.
+2. **5340's year popup:** Abby believes focus was trapped in the popup and
+   the year could not be fixed without a mouse click; to check on the
+   recording (step 1). If a keyboard user can get back and fix the value,
+   it is not a failure (TT 4.C note 2); if not, it is a trap (FAIL).
+3. **9.A with no matching pages:** NEEDS REVIEW.
 
-1. **Home's X buttons (fix 9b).** Several buttons share one name
-   ("Remove filter from selection") but sit next to different filters.
-   Should TOBI fail that by rule, or ask an open question showing each
-   button's row? *Recommended: ask, as an open question settled by
-   looking.*
-2. **5340's year error popup (fix 3).** Which keys did you press, and
-   could you get back to the field and fix the year? If you could, TT
-   says requiring input before moving on is not a failure.
-3. **9.A with no matching pages (fix 6).** NEEDS REVIEW (recommended,
-   per your 2026-11-02 decision that 9.A needs other pages), or should
-   TOBI treat the page's own header and menu as the repeated block?
-
-Everything else uses the defaults in the builder notes below; change any
-you disagree with.
+Everything else uses the defaults in the builder notes below.
 
 ---
 
@@ -185,7 +179,7 @@ and it reads opened content only when it holds form fields
   `labels.read_revealed` become readers of it.
 Specs: 5.A, 5.B, 5.C read opened content like load content; 5.C asks one
 open question per set of same-named buttons, with each row's text
-(question 1). **Guard** in 4.A, 4.C, 4.D, 4.E, 4.F, 5.A-5.D: a would-be
+(decision 1). **Guard** in 4.A, 4.C, 4.D, 4.E, 4.F, 5.A-5.D: a would-be
 PASS is NEEDS REVIEW when a trigger was not opened, opened nothing, could
 not be read, or (until phase 2) opened content holds what the test checks.
 In round 2 that turns about 7 PASS cells the key passes into NEEDS REVIEW
@@ -209,8 +203,8 @@ found (a JS `alert()` is out of scope); 4.C runs the error pass itself
 when 5.F is not selected; its replay learns to type text. Fields in
 same-site frames (skipped today, `t5f.py:206-214`) are read with the
 frames bundle. Test pages: top-level name and year form with a
-focus-grabbing popup for years before 1900 (expected outcome per
-question 2); a variant that lets Escape out → PASS; a name field that
+focus-grabbing popup for years before 1900 that a keyboard user
+cannot leave to fix the value → FAIL (decision 2); a variant that lets Escape out → PASS; a name field that
 refuses "#". Baseline TC10.D cases unchanged.
 
 **Assumed until step 1 or the test pages:** why CILab's scan missed, why
