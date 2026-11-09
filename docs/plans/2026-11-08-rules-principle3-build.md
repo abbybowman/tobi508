@@ -51,17 +51,35 @@ certified Trusted Tester results.
 5. **Year popup (decision 2):** not confirmed. With 1800 and a keyboard
    submit there was no popup in the recording. Item 8 waits on question B.
 
-Questions for Abby:
+Abby's answers (2026-11-09):
 
-- **A.** Is an exit that needs Enter on a control *inside* the loop an
-  exit? It starts a different view and no standard key (Tab, arrows, Esc)
-  leaves the first one. Recommendation: no. Count only exits reached by
-  Tab, Shift+Tab, Escape or arrows without activating anything; an
-  activation-only way out is NEEDS REVIEW with the page's advice as the
-  question (the TT 4.C note on non-standard methods), and FAIL when the
-  loop has no way out by those keys and the page does not say how.
-- **B.** The exact steps for the 5.D jump and the year popup on 5340
-  (which button, which key, what you saw), or a screen capture.
+- **A (decided): no.** An exit that needs Enter or another activation on a
+  control inside the loop is not an exit. The page would have to say
+  explicitly how to leave the section (TT 4.C's note on non-standard
+  methods) for it to count; without that, the loop is a trap. Fix 2 uses
+  the rule as recommended above.
+- **B (her steps, Firefox):** Tab until the first year field (2024) is
+  highlighted, type 1800, press Tab: a popup appears ("Birth years must be
+  between 1900 and 2100..."); Tab again focuses the link in the popup, and
+  no key (Tab, Shift+Tab, Escape, arrows) moves focus out of it, so the
+  error cannot be corrected without the mouse. Editing a name or year and
+  pressing Tab also moved focus back to the start of the frame (the 5.D
+  key). She noted Firefox may differ from headless Chromium.
+
+Checked in Chromium on the frozen recording with her exact steps (verified
+by a Playwright probe): the fields are pre-filled (Ayisha 2024, Aidan 2007,
+...); after 1800 and Tab, or 1800 and Enter, **no popup appears** and focus
+moves on (to the "eye" button, then on), and there is no jump to the frame's
+start. So **TOBI, which replays in Chromium, cannot see the popup trap or
+the 5.D jump on 5340**; the 4.C iframe trap does reproduce. The app opens
+the popup from its own state when the input blurs (a Radix popover whose
+`open` follows `isYearError`; the input also shows an on-screen keyboard on
+focus), which is a likely source of the browser difference but is not
+established. Consequences: fix 5 and item 8's popup trap are built and
+tested on custom pages only, and 5340's 5.D and popup cells will still pass
+in TOBI until a Firefox replay exists; say so in the report for those cells.
+Not built: a Firefox replay (a question for Abby: worth it for the pitch, or
+a documented limit?).
 
 Probe scripts and runs stayed in the session scratchpad (not committed).
 
