@@ -66,20 +66,46 @@ Abby's answers (2026-11-09):
   pressing Tab also moved focus back to the start of the frame (the 5.D
   key). She noted Firefox may differ from headless Chromium.
 
-Checked in Chromium on the frozen recording with her exact steps (verified
-by a Playwright probe): the fields are pre-filled (Ayisha 2024, Aidan 2007,
-...); after 1800 and Tab, or 1800 and Enter, **no popup appears** and focus
-moves on (to the "eye" button, then on), and there is no jump to the frame's
-start. So **TOBI, which replays in Chromium, cannot see the popup trap or
-the 5.D jump on 5340**; the 4.C iframe trap does reproduce. The app opens
-the popup from its own state when the input blurs (a Radix popover whose
-`open` follows `isYearError`; the input also shows an on-screen keyboard on
-focus), which is a likely source of the browser difference but is not
-established. Consequences: fix 5 and item 8's popup trap are built and
-tested on custom pages only, and 5340's 5.D and popup cells will still pass
-in TOBI until a Firefox replay exists; say so in the report for those cells.
-Not built: a Firefox replay (a question for Abby: worth it for the pitch, or
-a documented limit?).
+**Root cause found (2026-11-09, verified by probes in Chromium and in
+Playwright's Firefox, both headless in this container): not a browser
+difference. The recording is missing a script.** The app's input handler
+(`handleUpdate`) begins with a lazy `import("./index-CxrirnWy.js")` and only
+then validates the year and opens the popup. That chunk loads on first use,
+so it was never fetched while recording; the HAR holds only the main bundle
+(`index-CeFW2b43.js`). In replay the import fails, the handler never runs,
+and nothing happens. With that one chunk added (fetched into a scratch
+folder and served over the recording; the frozen archive is untouched),
+Chromium **and** Firefox both reproduce Abby's findings: 1800 and Tab opens
+the popup and puts focus in it; Tab, Shift+Tab and Escape all stay on the
+popup's link (the popover is controlled by app state with no way to close it
+from the keyboard, and its focus scope loops). Editing a name and pressing
+Tab moves focus to the frame's root and the next Tab reaches OVERVIEW (the
+5.D finding). Without the chunk, neither happens. So both 5340 FAILs (4.C's
+popup trap, 5.D) are out of reach for TOBI because replays lack code a page
+loads after interaction, on any page that splits its code. Principle 3: a
+PASS from a replay that cannot run the page's own handlers is not tested.
+
+Hints TOBI can read without the chunk (to warn instead of PASS): a
+recorded script holds `import("./<chunk>.js")` (a string literal) and that
+chunk is not in the recording. That is a fact from the recorded files; no
+URL is fetched. The popover's own markup (a Radix popover, `open` driven by
+state) is not in the DOM until it opens, so markup alone is a weaker hint.
+
+Proposed (needs Abby's decision, not built): (1) a guard now: when a
+recorded script names a lazily loaded chunk the recording lacks, tests that
+press keys or type (4.A-4.F, 5.D, 5.F-5.H) cannot PASS: NEEDS REVIEW
+("the page loads more code when it is used, and the recording does not have
+it"), never DNA; (2) a fix to the recording: also record chunks that
+recorded same-site scripts name by a string literal, resolved from the
+script's own address, allowlist-checked on every hop, same host as the
+script, a limited number, each in the HAR. That is page code choosing a
+fetch, so it would be a fourth exception to principle 5 (like 19.A's), for
+Abby to approve or refuse; the guard works without it.
+
+Other browsers: Playwright runs Firefox and WebKit headless in this
+container (no local machine needed). Only Chromium is installed; Firefox was
+downloaded into the session scratch folder (no system install). TOBI itself
+is Chromium-only; the browser is recorded in the report and the SCRT.
 
 Probe scripts and runs stayed in the session scratchpad (not committed).
 
