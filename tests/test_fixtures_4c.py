@@ -201,7 +201,8 @@ async def test_f36_survey_on_one_load_only_is_left_for_a_person(
 
 async def test_f36_survey_on_every_load_is_probed(settings, server, monkeypatch):
     """Every load shows it: the second pass confirms the loop, and the probes
-    find that Enter on its close button lets focus move on (M4)."""
+    find that Enter on its close button closes it (a non-modal section: M4d,
+    NEEDS REVIEW since 1.11.0; it was PASS by M4)."""
     import tobi508.capture as capture
 
     url = f"{server.base}/4c/f36-survey-on-some-loads.html"
@@ -214,7 +215,7 @@ async def test_f36_survey_on_every_load_is_probed(settings, server, monkeypatch)
 
     monkeypatch.setattr(capture, "new_context", new_context)
     f = (await run_4c(settings, url))["finding"]
-    assert (f.outcome.value, instance_rows(f)) == ("PASS", ["M4"]), f.rationale
+    assert (f.outcome.value, instance_rows(f)) == ("NEEDS_REVIEW", ["M4d"]), f.rationale
 
 
 # ── Behavior ─────────────────────────────────────────────────────────────────
@@ -630,11 +631,11 @@ def _inst(modal: bool, probes, fields=(), j2=None, **kw):
     )
 
 
-def test_row_m4_needs_a_modal_dialog_or_a_dismissed_container():
-    """1.11.0: an exit that needs Enter on a control counts only for a modal
-    dialog or when that control dismisses the container holding the trap
-    (M4); otherwise it is M4o, which is not an exit, and an unfinished
-    table fails the loop (M12)."""
+def test_row_m4_needs_a_modal_dialog():
+    """1.11.0: an exit that needs Enter on a control is a PASS only for a
+    modal dialog (M4). Outside one, if that control dismisses the container
+    holding the trap it is NEEDS REVIEW (M4d); otherwise it is M4o, which is
+    not an exit, and an unfinished table fails the loop (M12)."""
     from tobi508.checks.t4c import Probe, State4C, instance_rows
     from tobi508.engine import first_match
 
