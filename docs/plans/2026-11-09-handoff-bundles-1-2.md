@@ -7,7 +7,7 @@ repository owner, tester and decision maker) reviews each pull request.
 ## Read first, in this order
 
 1. `CLAUDE.md`. Its principles are non-negotiable: never claim
-   certification; outcomes come only from `docs/rules/` specs; a false
+   certification; outcomes come only from `specs/rules/` specs; a false
    PASS is the worst error; say what you verified and what you assumed.
 2. `docs/plans/2026-11-08-rules-principle3-build.md` (bundle 2: rule
    fixes). The top half says what and why; "Builder notes" says how.
