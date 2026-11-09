@@ -64,8 +64,9 @@ by TT test ID. Package: `tobi508`.
    note for a person, not more code. The aim is consistency with a careful
    human tester, not exceeding one.
 8. **Opinionated, explained, overridable.** Users are mostly not Trusted
-   Testers. The tool makes judgment calls itself (the calling agent answers
-   open questions once, by rubric) and explains each one in plain language
+   Testers. The tool makes judgment calls itself (the server's judge, or with
+   the client backend the calling agent, answers open questions once, by
+   rubric; approved 2026-11-08) and explains each one in plain language
    with no jargon or spec codes (row IDs stay in the evidence trace). A
    person's answer overrides the agent's. An opinion leads to PASS only when a
    key press or another mechanical check confirms it, or when the spec marks
@@ -242,7 +243,10 @@ src/tobi508/
     t9b.py      9.B consistent navigation: order of shared components
     t9c.py      9.C consistent identification: ANDI names across pages, J1
     t19a.py     19.A multiple ways: links by kind, live site search, suggested pages, J1
-  judgment.py   Judge interface: ClientJudge, ApiJudge (stub); answer recording
+  judgment.py   Judge interface: ClientJudge, ApiJudge (defers; the loop is apijudge.py); answer recording
+  apijudge.py   the server's judge: question groups by family, one request per group, connections
+                (ClaudeCli, AnthropicMessages, Scripted), the loop through answer_questions, dry mode
+  judge_prompt.md  ApiJudge's fixed prompt (its SHA-256 is recorded in every report)
   pipeline.py   run_tt_tests / answer_questions orchestration (generic)
   jobs.py       runs that outlive one call: the call wait, the run cap, tobi_run_status
   inline.py     the pictures attached to a result for its open questions (capped)

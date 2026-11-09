@@ -17,6 +17,16 @@ from tobi508.models import Versions
 from tobi508.rules import spec_versions
 
 
+def _judging_model(settings: Settings) -> str:
+    """The model that answers open questions: with the api backend, the model
+    asked for and the prompt's hash, so a report says which answered."""
+    if settings.judge_backend != "api" or settings.judging_model != "none":
+        return settings.judging_model
+    from tobi508.apijudge import prompt_sha
+
+    return f"server:{settings.judge_model} prompt:{prompt_sha()[:12]}"
+
+
 def collect_versions(
     settings: Settings, browser: Browser | None, no_time_limit: bool = False
 ) -> Versions:
@@ -32,7 +42,7 @@ def collect_versions(
         os=platform.platform(),
         python=platform.python_version(),
         rules_spec=spec_versions(settings.rules_dir),
-        judging_model=settings.judging_model,
+        judging_model=_judging_model(settings),
         display=configured_display(settings),
         run_settings={
             "settle_quiet_ms": settings.settle_quiet_ms,

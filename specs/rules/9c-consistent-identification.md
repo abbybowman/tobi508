@@ -1,7 +1,7 @@
 ---
 tt_test: 9.C
 tt_name: 3.2.4-consistent-identification
-spec_version: 1.1.1
+spec_version: 1.2.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -19,6 +19,7 @@ The tool gives each page one 9.C outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 2. *Same id*: same role and the same non-empty `id`.
 3. *Same name*: same role, same region role and the same ANDI name.
 4. *Same place*: the same role at the same position among that role's components in the same innermost region (not `main`) on both pages, when both regions have the same number of them (a search button named "Search" here and "Go" there).
+With a page that *shares almost nothing* with the tested page (kinship, [9a-bypass.md](9a-bypass.md) Terms; another template), only steps 1 and 2 pair: names and places on unrelated pages pair unlike things (1.2.0).
 Names and descriptions *agree* when they are equal after collapsing spaces and ignoring case.
 
 ## 1. Applicability
@@ -27,6 +28,7 @@ Names and descriptions *agree* when they are equal after collapsing spaces and i
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to compare" | Abby, 2026-11-02 (Q1) |
 | A2 | ANDI did not run, or a page could not be read | NEEDS REVIEW, not performed, naming the page | p. 44 HtT 1; Spec rule |
+| A3o | No pair, every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template (1.2.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No pair, and every page was read in full (with a page over the read cap: G3, 1.1.0) | DOES NOT APPLY | p. 44 Identify Content, Note |
 | A4 | Otherwise | Applies; go to section 3 | |
 
@@ -69,6 +71,7 @@ Each pair is an *instance*.
 | Page PASS | "Links and controls that do the same thing here and on the other pages you gave have the same names for screen reader users." |
 | Page FAIL | "Some links or controls that do the same thing have different names on different pages: "<name here>" here and "<name there>" on <page>. Use the same name on every page." |
 | A1 | "This test could not be performed: it needs other pages of the same site to compare. Run it again with other_pages." |
+| A3o | "The other pages you gave share almost nothing with this page, so they look like they come from a different template, and we could not tell which content repeats. Give pages that use the same header, menu and footer as this one." |
 | A3 | "No link or control on this page also appears on the other pages you gave, so this test does not apply." |
 | C2 | "<component> has a name screen readers announce on one page and none on <page>." |
 

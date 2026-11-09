@@ -2,9 +2,33 @@
 
 Bundle 1 of the server judge pivot's "Sequencing to Nov 20"
 ([2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md)).
-Status: **proposed, nothing built** (revised 2026-11-09 to keep only what
-Nov 20 needs). Agent-assisted results, not certified Trusted Tester
-results.
+Status: **module, wiring, dry mode and tests built** (branch
+`apijudge-module`); the gate scripts and the real-page runs are not.
+Revised 2026-11-09 to keep only what Nov 20 needs. Agent-assisted results,
+not certified Trusted Tester results.
+
+## Status
+
+- Item 5 (builder notes 1-3), 2026-11-09: built. `apijudge.py`,
+  `judge_prompt.md`, config (`JUDGE_*`, startup check), the loop after the
+  report is written (`pipeline._judge_phase`), refusal of client answers to
+  server answers (`record_answers`), "waiting for a person" in `Remaining`,
+  `next_step`, `todo` and `tobi_explain`, the judge record on the report,
+  dry mode (`apijudge.dry`). Verified (commands): `tests/test_apijudge.py`
+  (17 tests, `Scripted` connection: choices limited per question, groups and
+  caps, shared block repeated across a split group, page data only in
+  untrusted blocks, 4.D end to end with the outcome from spec M10, unswitched
+  types left to the client, failed call tried twice then left open, unsure
+  called once and waiting for a person, J0 first and alone, the judging cap,
+  a client answer refused, no key in a report, log or error, startup fails
+  without what a route needs, dry mode changes nothing). **Not verified:** a
+  real model call (none made), the Messages route against a gateway (none
+  exists), tokens (the 0.5-0.6M estimate is unmeasured). **Not built:**
+  judging the questions an agent's answers raise inside
+  `tobi_answer_questions` as a job (the default has nothing switched on, so
+  it only matters once types are on); the 19.A follow-up is judged because it
+  calls `run_tt_tests`, but has no test of its own; the gate scripts and
+  trick-text pages (item 6).
 
 ## The idea in one line
 

@@ -544,6 +544,13 @@ class Report(BaseModel):
         "that code, so tests that press keys or type cannot PASS (guard GU).",
     )
     unrecorded_code_count: int = Field(default=0, description="How many in all.")
+    judge: dict[str, Any] | None = Field(
+        default=None,
+        description="Set with the api judge backend: the route, the model "
+        "asked and reported, the prompt's SHA-256, what was switched on and "
+        "counts of calls, failures, unsure answers and tokens (no key, no "
+        "page text).",
+    )
     started_at: datetime
     finished_at: datetime | None = None
     versions: Versions
@@ -689,12 +696,33 @@ SHARED_DESC = (
 )
 
 
+def unsure_by_server(report: Report) -> list[str]:
+    """Ids of the questions whose answer in force is the server judge's
+    "unsure": they wait for a person (server judge pivot, 2026-11-07)."""
+    latest: dict[str, Answer] = {}
+    for r in report.answers:
+        latest[r.answer.question_id] = r.answer
+    return [
+        qid
+        for qid, a in latest.items()
+        if a.answered_by.startswith("server:")
+        and a.choice is not None
+        and a.choice.choice == "unsure"
+    ]
+
+
 class Remaining(BaseModel):
     """What is left before a run's results are complete (agent follow-through
     plan, change 2: the agent ended with work left when only prose said so)."""
 
     open_questions: int = 0
     follow_up_calls: int = 0
+    waiting_for_person: int = Field(
+        default=0,
+        description="Questions the server's judge answered unsure: they wait "
+        "for a person, not for the calling agent, and do not make the work "
+        "incomplete.",
+    )
     tests_waiting: list[str] = Field(
         default_factory=list,
         description="TT tests whose result can still change.",
@@ -708,6 +736,7 @@ class Remaining(BaseModel):
         return cls(
             open_questions=len(report.open_questions),
             follow_up_calls=len(report.follow_up_calls),
+            waiting_for_person=len(unsure_by_server(report)),
             tests_waiting=[t.value for t in TestId if t.value in waiting],
         )
 

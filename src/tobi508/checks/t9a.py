@@ -30,7 +30,10 @@ from tobi508.models import (
 from tobi508.site import (
     UNIT_CAP,
     UNITS_FN,
+    UNRELATED_REASON,
+    Kinship,
     Unit,
+    kinship,
     norm_href,
     page_label,
     repeated_flags,
@@ -121,6 +124,7 @@ class State9A(BaseModel):
     hot: Cand | None = None
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
+    kinship: Kinship | None = None
 
 
 # ── Evidence ─────────────────────────────────────────────────────────────────
@@ -268,6 +272,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
         return st
     st.units = site.main.units
     st.rep = repeated_flags(site)
+    st.kinship = kinship(site)
+    if st.kinship.unrelated_review:
+        return st  # A3o: nothing more is read
     for p in site.pages:
         if p.truncated:
             st.incomplete.append(
@@ -644,6 +651,14 @@ def evaluate(st: State9A, evidence_refs: list[str]) -> Finding:
         f.rows = ["A2", "G1"]
         return f
     pages = ", ".join(f"other page {p['n']}" for p in st.pages)
+    if st.kinship is not None and st.kinship.unrelated_review:
+        return _finding(
+            Outcome.NEEDS_REVIEW,
+            " ".join([REVIEW_HEAD, UNRELATED_REASON]),
+            ["A3o", "G1"],
+            evidence_refs,
+            note=True,
+        )
     if not any(st.rep):
         return _finding(
             Outcome.DNA,

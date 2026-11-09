@@ -57,9 +57,9 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 5.F | 3.3.1-error-identification | 3.3.1 | [1.4.0](specs/rules/5f-error-identification.md) | ⚠️ Does not check fields inside frames yet (fix planned) |
 | 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.3.0](specs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; often undecided |
 | 5.H | 3.3.4-error-prevention | 3.3.4 | [1.2.0](specs/rules/5h-error-prevention.md) | 🟢 Sure and accurate once answered |
-| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.0.0](specs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; misses with unrelated pages (fix planned) |
-| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.0.0](specs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.1.1](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; also pairs unrelated links (fix planned) |
+| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.1.0](specs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; pages of another template are NEEDS REVIEW, not Does Not Apply |
+| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.1.0](specs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.2.0](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; pairs only by address and id with pages of another template |
 | 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.1.1](specs/rules/19a-multiple-ways.md) | ⚠️ Can fail a page that site search reaches (fixes planned) |
 
 ## Tools

@@ -24,9 +24,12 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.site import (
+    UNRELATED_REASON,
+    Kinship,
     PageRead,
     Unit,
     before,
+    kinship,
     norm_href,
     page_label,
     pair_in_order,
@@ -62,6 +65,7 @@ class State9B(BaseModel):
     no_pages: bool = False
     read_errors: list[str] = Field(default_factory=list)
     cmps: list[Cmp] = Field(default_factory=list)
+    kinship: Kinship | None = None
 
 
 def _has_main(p: PageRead) -> bool:
@@ -134,6 +138,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9B:
     if st.read_errors:
         return st
     st.cmps = [compare(site.main, p) for p in site.others]
+    st.kinship = kinship(site)
     return st
 
 
@@ -183,7 +188,23 @@ def evaluate(st: State9B, evidence_refs: list[str]) -> Finding:
         f = Finding.not_performed(TestId.T9B, " ".join(st.read_errors))
         f.rows = ["A2", "G1"]
         return f
-    compared = [c for c in st.cmps if c.matched > 0]  # N2: not compared
+    kin = st.kinship or Kinship()
+    # N1 first: a page over the read cap is never skipped. N2: nothing matches;
+    # N2o: the page shares almost nothing with the tested page (different
+    # template): neither is compared.
+    compared = [
+        c
+        for c in st.cmps
+        if c.incomplete or (c.matched > 0 and not kin.almost_nothing(c.n))
+    ]
+    if not compared and kin.unrelated_review:
+        return _finding(
+            Outcome.NEEDS_REVIEW,
+            " ".join([REVIEW_HEAD, UNRELATED_REASON]),
+            ["A3o", "G1"],
+            evidence_refs,
+            note=True,
+        )
     if not compared:
         return _finding(
             Outcome.DNA,
