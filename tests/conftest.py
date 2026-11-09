@@ -213,10 +213,13 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             )
             return self._send(200, body.encode())
         path = self.path.split("?")[0]  # fixtures may add a query (F29 paging)
-        # Only files inside the fixtures folder: a path with ".." or an
-        # absolute-looking part resolves outside it and is answered 404.
+        # Only files inside the fixtures folder: reject absolute and traversal
+        # paths before joining, then keep a resolved containment check.
+        rel = Path(path.lstrip("/"))
+        if rel.is_absolute() or ".." in rel.parts:
+            return self._send(404, b"not found")
         root = FIXTURES.resolve()
-        fixture = (root / path.lstrip("/")).resolve()
+        fixture = (root / rel).resolve()
         inside = fixture.is_relative_to(root) and fixture.is_file()
         if path.endswith(".html") and inside:
             return self._send(200, fixture.read_bytes())

@@ -268,3 +268,26 @@ def test_inline_scripts_are_read_by_the_html_rules():
         "c.js",
     ]
     assert _code_of("import('./z.js')", "text/javascript") == "import('./z.js')"
+
+
+def test_the_test_server_answers_404_outside_the_fixtures_folder(server):
+    """CodeQL (path expression): a path with `..` or an absolute part is
+    refused before any file is read, for .html and .js alike."""
+    import http.client
+
+    def get(path: str) -> int:
+        c = http.client.HTTPConnection("127.0.0.1", server.port)
+        c.request("GET", path)
+        status = c.getresponse().status
+        c.close()
+        return status
+
+    assert get("/lazy/l01-chunk.js") == 200
+    for bad in (
+        "/lazy/../conftest.py",
+        "/../conftest.js",
+        "/lazy/../../pyproject.html",
+        "//etc/passwd.js",
+        "/lazy/%2e%2e/%2e%2e/conftest.js",
+    ):
+        assert get(bad) == 404, bad
