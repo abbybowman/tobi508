@@ -1,7 +1,8 @@
 ---
 tt_test: 5.G
 tt_name: 3.3.3-error-suggestion
-spec_version: 1.2.1
+spec_version: 1.3.0
+guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -70,6 +71,8 @@ Each 5.F instance (a field an attempt showed in error) is a 5.G instance.
 | N5 | "The error for <field> (\"<text>\") does not say what to enter instead. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | N6 | "We could not tell whether a correct value for <field> could be known. Please look: load the page and press <keys>." |
 | N7 | "We could not tell whether the error for <field> says how to fix it. Please look: load the page and press <keys>." |
+
+**Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

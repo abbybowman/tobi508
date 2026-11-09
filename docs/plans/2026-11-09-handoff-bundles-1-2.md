@@ -1,5 +1,7 @@
 # Handoff: build bundles 1 and 2 (2026-11-09)
 
+**Continued in [2026-11-09-handoff-items-4-8.md](2026-11-09-handoff-items-4-8.md)** (items 1-3 and 5 are done; items 4, 5', 6, 7, 8 remain).
+
 For a fresh session. You build the parts of two plans that are already
 decided, test them, and keep the plans' status current. Abby (the
 repository owner, tester and decision maker) reviews each pull request.

@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A chunk on another host</title></head><body>
+<h1>Other host</h1>
+<button id="go" type="button">Show</button>
+<script type="module">
+document.getElementById('go').addEventListener('click', async () => {
+  try { await import("//127.0.0.2:9/elsewhere.js"); } catch (e) {}
+});
+</script>
+</body></html>

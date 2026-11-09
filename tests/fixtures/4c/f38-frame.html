@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F38 frame</title></head>
+<body>
+<div id="panel">
+  <p>Please rate this page.</p>
+  <button id="good" type="button">Good</button>
+  <button id="done" type="button">Done</button>
+</div>
+<script>
+  function loop(els) {
+    els.forEach((el, i) => el.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      if (!e.shiftKey && i === els.length - 1) { e.preventDefault(); els[0].focus(); }
+      else if (e.shiftKey && i === 0) { e.preventDefault(); els[els.length - 1].focus(); }
+    }));
+  }
+  const $ = (id) => document.getElementById(id);
+  loop([$("good"), $("done")]);
+  $("done").addEventListener("click", () => parent.postMessage("done", "*"));
+</script>
+</body>
+</html>

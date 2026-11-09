@@ -39,7 +39,7 @@ EXPECTED: dict[str, dict] = {
     "f10-native-dialog": {"outcome": "PASS", "rows": []},
     "f11-aria-modal-close-button": {"outcome": "PASS", "rows": ["M4"]},
     "f12-aria-modal-div-close": {"outcome": "FAIL", "rows": ["M12"]},
-    "f13-cookie-banner": {"outcome": "PASS", "rows": ["M4"]},
+    "f13-cookie-banner": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},
     "f14-zip-gate": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8"],
@@ -49,6 +49,23 @@ EXPECTED: dict[str, dict] = {
     # The survey opens only on loads its cookie chooses (none here); with it
     # on one load or every load: test_f36_survey_*.
     "f36-survey-on-some-loads": {"outcome": "PASS", "rows": []},
+    # 1.11.0 (Abby, 2026-11-09; 5340): a loop inside a frame, and what counts as
+    # leaving it. f37: the view change is another loop. f38: Done closes the
+    # frame (a dismissed container). f39: only Enter on "View timeline" frees
+    # Tab, and nothing says so (M4o), so the loop fails.
+    "f37-timeline-view-loops": {
+        "outcome": "FAIL",
+        "rows": ["M12"],
+        "j2": {"gate": "no", "fields": []},
+    },
+    "f38-done-removes-the-frame": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},
+    "f40-escape-lands-in-another-loop": {"outcome": "FAIL", "rows": ["M12", "M12"]},
+    "f39-view-swap-then-exit": {
+        "outcome": "FAIL",
+        "rows": ["M12"],
+        "note": 'pressing Enter on "View timeline"',
+        "j2": {"gate": "no", "fields": []},
+    },
     "f35-radio-gate": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8"],
@@ -102,6 +119,10 @@ HELPERS = {
     "f20-player-frame-trap",
     "f21-player-frame-ok",
     "f31-other-page",
+    "f37-frame",
+    "f38-frame",
+    "f39-frame",
+    "f40-frame",
 }
 
 
@@ -180,7 +201,8 @@ async def test_f36_survey_on_one_load_only_is_left_for_a_person(
 
 async def test_f36_survey_on_every_load_is_probed(settings, server, monkeypatch):
     """Every load shows it: the second pass confirms the loop, and the probes
-    find that Enter on its close button lets focus move on (M4)."""
+    find that Enter on its close button closes it (a non-modal section: M4d,
+    NEEDS REVIEW since 1.11.0; it was PASS by M4)."""
     import tobi508.capture as capture
 
     url = f"{server.base}/4c/f36-survey-on-some-loads.html"
@@ -193,7 +215,7 @@ async def test_f36_survey_on_every_load_is_probed(settings, server, monkeypatch)
 
     monkeypatch.setattr(capture, "new_context", new_context)
     f = (await run_4c(settings, url))["finding"]
-    assert (f.outcome.value, instance_rows(f)) == ("PASS", ["M4"]), f.rationale
+    assert (f.outcome.value, instance_rows(f)) == ("NEEDS_REVIEW", ["M4d"]), f.rationale
 
 
 # ── Behavior ─────────────────────────────────────────────────────────────────
@@ -585,3 +607,79 @@ async def test_question_screenshots_are_run_resources(settings, server):
         if m.get("screenshot")
     ]
     assert shots and all(s.startswith("run://") for s in shots), shots
+
+
+def _inst(modal: bool, probes, fields=(), j2=None, **kw):
+    from tobi508.checks.t4c import Inst
+
+    return Inst(
+        id="i1",
+        kind=kw.pop("kind", "loop"),
+        key="Tab",
+        source="P1",
+        prefix=["Tab"],
+        members=["a", "b"],
+        member_prefix={},
+        member_info={},
+        unresolved=False,
+        unsettled=False,
+        modal=modal,
+        fields=list(fields),
+        probes=probes,
+        j1={"documented": "no", "keys": [], "guard": False},
+        j2=j2,
+    )
+
+
+def test_row_m4_needs_a_modal_dialog():
+    """1.11.0: an exit that needs Enter on a control is a PASS only for a
+    modal dialog (M4). Outside one, if that control dismisses the container
+    holding the trap it is NEEDS REVIEW (M4d); otherwise it is M4o, which is
+    not an exit, and an unfinished table fails the loop (M12)."""
+    from tobi508.checks.t4c import Probe, State4C, instance_rows
+    from tobi508.engine import first_match
+
+    st = State4C(
+        p1={"end": "loop"},
+        p2={"end": "loop"},
+        stops=2,
+        inventory=9,
+        distinct_p1p2=[],
+    )
+
+    def row(inst):
+        r = first_match(instance_rows(st), inst)
+        return r.id, r.outcome.value
+
+    def enter(**kw):
+        return Probe(name="Enter on x", outside=True, exit=True, end="exit", **kw)
+
+    assert row(_inst(True, [enter()])) == ("M4", "PASS")  # a modal dialog
+    # a banner or section that Enter closes: a person looks (M4d), not PASS
+    assert row(_inst(False, [enter(dismissed=True)])) == ("M4d", "NEEDS_REVIEW")
+    assert row(_inst(False, [enter(dismissed=False)])) == ("M12", "FAIL")
+    assert row(_inst(False, [enter()])) == ("M12", "FAIL")  # not measured
+    # Escape and the opposite direction are standard keys: unchanged (M3)
+    esc = Probe(name="Escape then Tab", outside=True, exit=True, end="exit")
+    assert row(_inst(False, [esc])) == ("M3", "PASS")
+
+
+def test_an_enter_that_did_the_action_and_met_the_trap_again_is_no_gate():
+    """1.11.0: a loop of form controls that J2 calls a gate is NEEDS REVIEW
+    (M8), unless an Enter probe already did the section's action and the trap
+    formed again: it is then no gate that Enter clears (M12)."""
+    from tobi508.checks.t4c import Probe, State4C, instance_rows
+    from tobi508.engine import first_match
+
+    st = State4C(
+        p1={"end": "loop"}, p2={"end": "loop"}, stops=2, inventory=9, distinct_p1p2=[]
+    )
+    gate = {"gate": "yes", "fields": []}
+
+    def row(inst):
+        r = first_match(instance_rows(st), inst)
+        return r.id, r.outcome.value
+
+    again = Probe(name="Enter on x", outside=True, exit=False, end="returned")
+    assert row(_inst(False, [], fields=["a"], j2=gate)) == ("M8", "NEEDS_REVIEW")
+    assert row(_inst(False, [again], fields=["a"], j2=gate)) == ("M12", "FAIL")

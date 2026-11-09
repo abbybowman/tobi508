@@ -1,7 +1,8 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.2.1
+spec_version: 1.3.0
+guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -123,6 +124,8 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 | M14 | "<element> has extra information that shows only when the mouse rests on it (<J2 reasons>); keyboard users never see it. If you disagree, tell your assistant." |
 | M15 | "<element> has information that shows only when the mouse rests on it; please check whether it matters." |
 | M16 | "The page has <kind> that we cannot check automatically; please check it works with the keyboard." |
+
+**Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

@@ -4,7 +4,7 @@ Bundle 2 of the server judge pivot's "Sequencing to Nov 20"
 ([2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md));
 post-round 2 fixes 1-6 and 9b
 ([2026-11-08-post-round2-fixes.md](2026-11-08-post-round2-fixes.md)).
-Status: **step 1 done, no rule changed yet.** Agent-assisted results, not
+Status: **step 1, fix 6, fix 2 and the unrecorded-code guard built; fixes 1, 4, 5, 3 and 9b are not.** Agent-assisted results, not
 certified Trusted Tester results.
 
 ## Status
@@ -13,8 +13,45 @@ certified Trusted Tester results.
   (12 files, all match the manifest). Verified by running TOBI in `replay`
   mode on the frozen copy and by Playwright probes on the recordings
   (scripts not kept). Findings are in "Step 1 findings" below; three differ
-  from what this plan assumed, so fixes 2 and 5 wait for Abby (questions
-  there). Not built: fixes 1-6, 9b, 3. No model calls were made.
+  from what this plan assumed; Abby answered both questions (below), and
+  the root cause of the 5340 results is the recording, not the browser. Not
+  built: fixes 1, 4, 5, 9b, 3. No model calls were made.
+- Fix 2 (4.C exit): built, PR #34, spec 4.C 1.11.0. Rows: M4 (PASS) only
+  for a modal dialog; new M4d (NEEDS REVIEW: Abby chose the "middle option",
+  2026-11-09): outside a modal dialog, Enter on a control that dismisses the
+  container holding the trap (for a loop inside a frame, the frame's whole
+  content); new M4o (any other activation exit is not an exit: Abby's answer
+  A); a loop inside one frame is the frame's *section*: an exit must reach a
+  stop outside it (up to the frame's stops + 3 presses, at most 60); M8/M9
+  skip, and M12 applies, when an Enter probe did the action and the trap
+  formed again. New pages f37-f40; their old results (before the change):
+  f37 PASS by M4 (the 5340 bug), f40 one loop passed by Escape (M3), f39 no
+  note. Changed expectations: f13 (cookie banner) and f36 (survey dialog on
+  every load) PASS -> NEEDS REVIEW (M4d). Verified (commands): all 4.C
+  fixtures and ACT and Baseline cases with those two changes, the new pages,
+  unit tests of the rows; the frozen 5340 page: 4.C was PASS and is NEEDS
+  REVIEW (J1, J2 open; with J1 no and J2 no it is FAIL by M12). Not done:
+  the plan's "per-trap budget" for frame presses beyond the cap of 60.
+- Unrecorded code (new fix, Abby approved 2026-11-09): built, branch
+  `lazy-chunks-recording`. The recording keeps scripts that recorded scripts
+  (and inline scripts) name by a string literal (`capture.py` chunk store:
+  same host, allowlisted, 150 files, 3 MB each, 12 MB, 3 levels, 40 s;
+  served on replay); `capture.unrecorded_code()` reads what is still missing
+  from the recording's own files (so it also checks the frozen pages of
+  round 2); guard GU (spec front matter `guards: unrecorded-code`, run by
+  `engine.apply_guards`): a would-be PASS of 4.A-4.F, 5.D, 5.F-5.H is NEEDS
+  REVIEW while code is missing. Specs +1 MINOR on those ten. Verified
+  (commands): `tests/test_lazy_chunks.py` (script_refs, a chunk stored and
+  its handler runs on replay, the same recording without it does nothing and
+  is reported, nested chunks, a missing chunk and another host listed with
+  why, the chunk limit, a pre-store recording (5340) checked, the ten specs
+  declare the guard, an unknown guard fails, the guard only moves PASS, five
+  tests PASS on a twin page and NEEDS REVIEW with GU when its chunk is
+  gone). Not verified: a live recording of 5340 with the store (the
+  container can reach the site: not run, to keep the frozen pages the
+  reference); the full suite (below). Assumed: 150 files, 12 MB and 40 s are
+  enough for real code-split sites; chunks named another way (a manifest,
+  `new URL(..., import.meta.url)`) are not found.
 - Fix 6 (9.A-9.C other templates): built, branch `template-mismatch-9abc`
   (PR number below). Specs 9.A 1.1.0, 9.B 1.1.0, 9.C 1.2.0; `site.kinship()`
   (counts and a template fingerprint, recorded as `kinship` in each 9.x
@@ -213,11 +250,16 @@ suite; judge eval when a question or its input changes; hackathon
 Before removing any FAIL, read the key's comment and check its elements
 are still found. Never edit `evals/judging/round2*/`.
 
-**Spec versions, in build order:** 3.A 1.0.0→1.1.0; 4.A 1.2.1→1.3.0
-(fix 4)→1.4.0 (9b); 4.C 1.9.0→1.10.0 (fix 2)→1.11.0 (9b)→1.12.0
-(fix 3); 5.D 1.2.0→1.3.0 (fix 5)→1.4.0 (9b); 9.A, 9.B 1.0.0→1.1.0; 9.C
-1.1.1→1.2.0; 5.A, 5.B 1.2.0→1.3.0; 5.C 1.4.0→1.5.0; 4.D 1.3.0→1.4.0;
-4.E 1.2.0→1.3.0; 4.F 1.3.0→1.4.0; 5.F 1.3.1→1.4.0.
+**Spec versions, in build order** (2026-11-09: the guard for code the
+recording lacks, GU, was built first and took one MINOR on 4.A-4.F, 5.D,
+5.F-5.H; the numbers below are the plan's, each one MINOR higher where the
+guard came first): 3.A 1.0.0→1.1.0; 4.A 1.2.1→1.3.0 (GU)→1.4.0 (fix 4)→1.5.0
+(9b); 4.C 1.9.0→1.10.0 (GU)→1.11.0 (fix 2)→1.12.0 (9b)→1.13.0 (fix 3); 5.D
+1.2.0→1.3.0 (GU)→1.4.0 (fix 5)→1.5.0 (9b); 9.A, 9.B 1.0.0→1.1.0; 9.C
+1.1.1→1.2.0; 5.A, 5.B 1.2.0→1.3.0; 5.C 1.4.0→1.5.0; 4.D 1.3.0→1.4.0 (GU)→1.5.0
+(9b); 4.E 1.2.0→1.3.0 (GU)→1.4.0 (9b); 4.F 1.3.0→1.4.0 (GU)→1.5.0 (9b); 5.F
+1.3.1→1.4.0 (GU)→1.5.0 (fix 3); 4.B 1.2.0→1.3.0, 5.G 1.2.1→1.3.0, 5.H 1.1.0→1.2.0
+(GU).
 
 **Step 1 (frozen pages):** restore `round2-frozen` at the repository
 root (`evals/judging/round2/results/ARCHIVE.md`; check each file against

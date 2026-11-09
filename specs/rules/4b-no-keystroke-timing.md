@@ -1,7 +1,8 @@
 ---
 tt_test: 4.B
 tt_name: 2.1.1-no-keystroke-timing
-spec_version: 1.2.0
+spec_version: 1.3.0
+guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -79,6 +80,8 @@ One page-level instance, *P*.
 | M10 | "<element> needs you to <timing>. We pressed <other> normally, and it did not change the page the way <timing> does, so we could not confirm it does the same thing. Please check: load the page, press <alternative keys>, then Enter." |
 | M8 | "<element> works only if you <timing>, and nothing else on the page does the same thing with a normal key press. People who cannot press keys quickly or hold them steadily cannot use it. To see it, load the page, press <keys>, then <timing>." |
 | M9 | "<element> needs you to <timing>; please check whether something else on the page does the same thing without timing." |
+
+**Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

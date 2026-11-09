@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A chunk that is gone</title></head><body>
+<h1>Missing chunk</h1>
+<button id="go" type="button">Show</button><p id="out"></p>
+<script type="module">
+document.getElementById('go').addEventListener('click', async () => {
+  try { const m = await import("./l03-gone.js"); m.show(); }
+  catch (e) { document.getElementById('out').textContent = 'failed'; }
+});
+</script>
+</body></html>

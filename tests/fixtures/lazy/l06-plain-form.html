@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>The same form with no lazy code</title></head><body>
+<h1>Contact</h1>
+<form onsubmit="return false">
+<label for="n">Name</label> <input id="n" name="n" type="text">
+<label for="y">Birth year</label> <input id="y" name="y" type="number">
+<button type="button" id="go">Check</button>
+</form>
+<script type="module">
+document.getElementById('y').addEventListener('blur', () => {});
+</script>
+</body></html>

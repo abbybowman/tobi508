@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F37: a frame whose view change is another loop</title></head>
+<body>
+<h1>Timeline tool</h1>
+<a id="before" href="#">Before the tool</a>
+<iframe id="frame" title="Timeline" src="f37-frame.html" width="420" height="200"></iframe>
+<a id="after" href="#">After the tool</a>
+<script>
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+</script>
+</body>
+</html>

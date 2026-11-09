@@ -536,6 +536,14 @@ class Report(BaseModel):
         description="Set when the pages came from a folder of frozen "
         "recordings (an eval), not loaded live by this run.",
     )
+    unrecorded_code: list[str] = Field(
+        default_factory=list,
+        description="Scripts the tested page's recorded scripts name (code "
+        "split by the page, loaded when it is used) that the recording does "
+        "not hold, without query strings, at most 20. A replay cannot run "
+        "that code, so tests that press keys or type cannot PASS (guard GU).",
+    )
+    unrecorded_code_count: int = Field(default=0, description="How many in all.")
     judge: dict[str, Any] | None = Field(
         default=None,
         description="Set with the api judge backend: the route, the model "

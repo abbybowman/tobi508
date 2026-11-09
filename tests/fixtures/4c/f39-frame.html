@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F39 frame</title></head>
+<body>
+<div id="root">
+  <header><button id="menu" type="button">Menu</button></header>
+  <div id="app">
+    <label>Name <input id="name" type="text"></label>
+    <label>Year <input id="year" type="number"></label>
+    <button id="view" type="button">View timeline</button>
+  </div>
+</div>
+<script>
+  // Focus loops among the first view's controls. Enter on "View timeline"
+  // swaps in a view with nothing that loops, so Tab then leaves the frame.
+  // Nothing on the page says to press it.
+  function loop(els) {
+    els.forEach((el, i) => el.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      if (!e.shiftKey && i === els.length - 1) { e.preventDefault(); els[0].focus(); }
+      else if (e.shiftKey && i === 0) { e.preventDefault(); els[els.length - 1].focus(); }
+    }));
+  }
+  const $ = (id) => document.getElementById(id);
+  loop([$("menu"), $("name"), $("year"), $("view")]);
+  $("view").addEventListener("click", () => {
+    $("app").innerHTML = '<p>Your timeline</p>';
+    document.body.insertAdjacentHTML("beforeend", "");
+  });
+</script>
+</body>
+</html>

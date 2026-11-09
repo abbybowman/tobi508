@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F40 frame</title></head>
+<body>
+<div id="one"><button id="a" type="button">Alpha</button> <button id="b" type="button">Beta</button></div>
+<div id="two"><button id="c" type="button">Gamma</button> <button id="d" type="button">Delta</button></div>
+<script>
+  // Two loops in one frame. Tab and Shift+Tab never leave either of them;
+  // Escape in the first moves focus to the second, which loops the same way.
+  function loop(els) {
+    els.forEach((el, i) => el.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      if (!e.shiftKey && i === els.length - 1) { e.preventDefault(); els[0].focus(); }
+      else if (e.shiftKey && i === 0) { e.preventDefault(); els[els.length - 1].focus(); }
+    }));
+  }
+  const $ = (id) => document.getElementById(id);
+  loop([$("a"), $("b")]);
+  loop([$("c"), $("d")]);
+  $("one").addEventListener("keydown", (e) => { if (e.key === "Escape") $("c").focus(); });
+</script>
+</body>
+</html>

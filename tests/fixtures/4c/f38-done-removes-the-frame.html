@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F38: a frame closed by its Done button</title></head>
+<body>
+<h1>Survey</h1>
+<a id="before" href="#">Before the survey</a>
+<iframe id="frame" title="Survey" src="f38-frame.html" width="420" height="140"></iframe>
+<a id="after" href="#">After the survey</a>
+<script>
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+  window.addEventListener("message", (e) => {
+    if (e.data === "done") { document.getElementById("frame").remove(); document.getElementById("after").focus(); }
+  });
+</script>
+</body>
+</html>

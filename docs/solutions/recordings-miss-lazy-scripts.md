@@ -14,6 +14,15 @@ HAR's URLs. To prove a cause, route the missing file over the recording in a
 scratch Playwright context (fetched live, never into the frozen archive) and
 repeat the steps.
 
+**Built (2026-11-09, Abby approved).** `capture.py`'s chunk store saves
+scripts that recorded scripts and inline scripts name by a string literal
+(same host, allowlisted, capped) inside the HAR zip and serves them on replay;
+`capture.unrecorded_code(har)` lists what the recording still lacks (it also
+reads recordings made before the store); guard GU (`guards: unrecorded-code`
+in a spec's front matter, `engine.apply_guards`) turns a would-be PASS into
+NEEDS REVIEW for tests that press keys or type. Not found: chunks named
+another way (a manifest, `new URL(..., import.meta.url)`, a template string).
+
 **Do.** A replay result for a page with an unrecorded chunk is not a PASS for
 tests that interact (plan `2026-11-08-rules-principle3-build.md`, step 1
 finding 6). Do not blame the browser first.

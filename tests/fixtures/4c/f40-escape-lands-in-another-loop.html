@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F40: Escape only moves to a second loop in the same frame</title></head>
+<body>
+<h1>Widget</h1>
+<a id="before" href="#">Before the widget</a>
+<iframe id="frame" title="Widget" src="f40-frame.html" width="420" height="140"></iframe>
+<a id="after" href="#">After the widget</a>
+<script>
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest('a[href="#"]');
+    if (a) e.preventDefault();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A form whose handler code is missing</title></head><body>
+<h1>Contact</h1>
+<form onsubmit="return false">
+<label for="n">Name</label> <input id="n" name="n" type="text">
+<label for="y">Birth year</label> <input id="y" name="y" type="number">
+<button type="button" id="go">Check</button>
+</form>
+<script type="module">
+document.getElementById('y').addEventListener('blur', async () => {
+  try { const m = await import("./l05-gone.js"); m.check(); } catch (e) {}
+});
+</script>
+</body></html>
