@@ -74,6 +74,32 @@ certified Trusted Tester results.
   14592 and CILab 9.A cells move toward the key's Fail only as far as a
   review: the rule cannot say Fail without comparing against its own
   template. Nothing here turns a Fail or review into a Pass.
+- Fixes 1 and 4 (videos), item 4: built, branch `videos-3a-4a` (no pull
+  request opened yet). Specs 3.A 1.1.0, 4.A 1.4.0. **4.A:** listeners are
+  read from the page's own world (`traverse.FocusReader.listeners`, and
+  `t4a._own_listener_types`; delegated handlers on an ancestor are still
+  listed on the ancestor only, as the spec says); *media start* is an
+  effect for 4.A only (`observe(..., media=True)` adds `media_start`; 4.B and
+  5.D do not read it); J1's input says "started a video or audio". **3.A:**
+  every `<video>`, played or not, hidden or not, is a trigger and is read
+  from its recorded file; other `<source>` files are tried; at most 3
+  videos (played first) and 20 media elements, the rest named in A3; an
+  empty address says "no file we can see", never "streams"; the media store
+  records a 404 as `status`, so a missing file is "not there", not "larger
+  than we record". Verified (commands): `test_fixtures_4a.py` (f14-f17, each
+  failing with media start switched off) and `test_fixtures_3a.py` (f16-f22),
+  the full suite (1135 passed, 3 skipped, 1 xfailed); judge eval for 4.A only
+  (8 packets, one fresh agent, about 104k tokens): 8 of 8 match, including
+  f14, f15 and f16. Frozen pages (replay): CILab 4.A was PASS and is NEEDS
+  REVIEW with J1 open about `#demo-reel-row`, whose click "started a video or
+  audio" (the key is Fail; it becomes FAIL by M6 when J1 is no alternative,
+  which the judge decides, not this change); 14592 3.A was DOES NOT APPLY and
+  is NOT TESTED with a failing assessment (the key is Not Tested); 14592,
+  4914 and the home page for 4.A ask only native-control questions, none from
+  the listener change. Assumed: the CILab J1 answer (not asked on the real
+  page); that the home page's and 14592's other questions are unchanged by
+  the listener read (not compared with a run of the old build). Not done:
+  14592's `<video controls>` question (key Pass), left alone as the plan says.
 
 ## Step 1 findings (2026-11-09)
 
