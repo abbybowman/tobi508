@@ -23,9 +23,11 @@ async def test_client_judge_defers_every_question():
     assert result.answers == [] and result.pending == [Q]
 
 
-async def test_api_judge_is_a_stub():
-    with pytest.raises(NotImplementedError):
-        await ApiJudge().judge([Q])
+async def test_api_judge_defers_to_the_loop_that_runs_after_the_report_is_saved():
+    # The server's answers come from apijudge.judge_run (tests/test_apijudge.py),
+    # which needs the saved run; the Judge interface only defers.
+    result = await ApiJudge().judge([Q])
+    assert result.answers == [] and result.pending == [Q]
 
 
 def test_get_judge():

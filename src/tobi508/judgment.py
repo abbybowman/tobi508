@@ -7,7 +7,10 @@ answers them now or defers them:
                tool output with a rubric and evidence file paths; answers come
                back through the tobi_answer_questions tool. Used because Claude Code
                does not support MCP sampling.
-  ApiJudge     will call NASA's hosted model. Not implemented.
+  ApiJudge     the server's own judge (apijudge.py): it answers the question
+               types switched on in JUDGE_TYPES after a run's report is
+               written; here it defers every question, and the loop in
+               apijudge.judge_run takes the ones it may answer.
 
 Answers are recorded as-is. Turning answers into finding outcomes is the rules
 spec's job, so nothing here changes a Finding.
@@ -52,14 +55,10 @@ class ClientJudge(Judge):
 class ApiJudge(Judge):
     name = "api"
 
-    def __init__(self, endpoint: str | None = None, model: str | None = None):
-        self.endpoint = endpoint
-        self.model = model
-
     async def judge(self, questions: list[OpenQuestion]) -> JudgeResult:
-        raise NotImplementedError(
-            "ApiJudge is a stub; it will be wired to NASA's hosted model later."
-        )
+        # The loop needs the saved report and evidence, so it runs after the
+        # report is written (apijudge.judge_run); nothing is answered here.
+        return JudgeResult(pending=list(questions))
 
 
 def get_judge(backend: str) -> Judge:
@@ -149,6 +148,17 @@ def record_answers(
         tag = answer.question_id
         if q is None:
             errors.append(f"{tag}: no question with this id in this run")
+        elif not answer.answered_by.startswith("server:") and any(
+            r.answer.question_id == tag and r.answer.answered_by.startswith("server:")
+            for r in report.answers
+        ):
+            # The server's judge answered it (server judge pivot): a calling
+            # agent cannot overwrite that, including a "human" answer sent
+            # through MCP. A person answers through TOBI's own page.
+            errors.append(
+                f"{tag}: the server's judge answered this question; a calling "
+                "agent cannot replace its answer"
+            )
         elif (
             (q.kind == "J1") != (answer.j1 is not None)
             or (q.kind == "J2") != (answer.j2 is not None)

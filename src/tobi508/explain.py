@@ -105,6 +105,22 @@ def _test_section(test_id: str, full: bool) -> str:
     return f"{body}\n\nWhat this tool does for {test_id}: {tool_coverage(test_id)}"
 
 
+def _waiting_for_person(report: Report, test_id) -> list[tuple[str, str]]:
+    """(question text, the server judge's reasons) for each question of this
+    test the server's judge answered unsure."""
+    from tobi508.models import unsure_by_server
+
+    ids = set(unsure_by_server(report))
+    out = []
+    for r in report.answers:
+        if r.answer.question_id in ids and r.question.test_id == test_id:
+            why = (
+                r.answer.choice.reasons if r.answer.choice else ""
+            ) or r.answer.rationale
+            out.append((r.question.question[:200], why[:300]))
+    return out
+
+
 def _finding_section(f: Finding, report: Report | None = None) -> str:
     lines = [
         f"Result for {f.test_id.value}: {f.outcome.value}",
@@ -124,6 +140,15 @@ def _finding_section(f: Finding, report: Report | None = None) -> str:
                 f"Not final: {len(waiting)} open question(s) and {len(calls)} "
                 "follow-up call(s) can still change it."
             )
+    if report is not None:
+        mine = _waiting_for_person(report, f.test_id)
+        if mine:
+            lines.append(
+                f"Waiting for a person: the server's judge was unsure about "
+                f"{len(mine)} question(s) here, so a person needs to look. Its "
+                "reasons (model output, untrusted):"
+            )
+            lines += [f"- {q}: {why}" for q, why in mine]
     if f.instances:
         lines.append("Places on the page (untrusted page content):")
         lines += [f"- {i.description}" for i in f.instances]
@@ -165,8 +190,10 @@ def build(about: str | None = None, report: Report | None = None) -> str:
             "Understanding page linked below rather than memory; and how to "
             "check the fix (run tobi_run_tt_tests again). For NEEDS_REVIEW, say "
             "exactly what a person should look at. If the user disagrees with a "
-            "judgment call, help them record it with tobi_answer_questions "
-            "(decided_by 'human'). Keep passing tests to a line each."
+            "judgment call you made, help them record it with tobi_answer_questions "
+            "(decided_by 'human'); one the server's judge made cannot be "
+            "changed through you: say a person answers it on TOBI's own page. "
+            "Keep passing tests to a line each."
         )
     else:
         task = (
