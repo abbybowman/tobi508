@@ -121,16 +121,18 @@ _MEDIA_JS = """() => Array.from(document.querySelectorAll('video, audio'))
   .filter((u) => /^https?:/.test(u || ''))"""
 
 
-async def _media_size(ctx, url: str) -> tuple[int | None, str]:
+async def _media_size(ctx, url: str) -> tuple[int | None, str, int | None]:
     """A media file's size without downloading it: Content-Length from a
     HEAD that succeeded, else the total in Content-Range for byte 0 alone
     (a server that ignores ranges sends the file, whose length is the
-    size)."""
+    size). The third value is the server's error status (404 ...) when it
+    refused both, so a missing file is not reported as too large."""
+    status: int | None = None
     try:
         head = await ctx.request.head(url, timeout=5000)
         size = head.headers.get("content-length", "")
         if head.ok and size.isdigit():
-            return int(size), head.headers.get("content-type", "")
+            return int(size), head.headers.get("content-type", ""), None
     except Exception:
         pass
     try:
@@ -138,12 +140,13 @@ async def _media_size(ctx, url: str) -> tuple[int | None, str]:
         kind = one.headers.get("content-type", "")
         total = re.search(r"/(\d+)$", one.headers.get("content-range", ""))
         if one.status == 206 and total:
-            return int(total.group(1)), kind
+            return int(total.group(1)), kind, None
         if one.ok:
-            return len(await one.body()), kind
+            return len(await one.body()), kind, None
+        status = one.status
     except Exception:
         pass
-    return None, ""
+    return None, "", status
 
 
 async def _fetch_media(
@@ -167,7 +170,10 @@ async def _fetch_media(
     for n, url in enumerate(urls[:20]):
         entry: dict[str, Any] = {"url": url, "file": None, "size": None, "type": ""}
         out.append(entry)
-        entry["size"], entry["type"] = await _media_size(ctx, url)
+        entry["size"], entry["type"], refused = await _media_size(ctx, url)
+        if refused is not None and refused >= 400:
+            entry["status"] = refused  # not there: never "over the cap"
+            continue
         if left is not None and (entry["size"] is None or entry["size"] > left):
             entry["over_cap"] = True  # unknown size counts as over a cap
             continue

@@ -43,7 +43,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.1.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 Accurate; a few regions left for a person to check |
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 Accurate on real pages |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 Accurate on real pages |
-| 3.A | 2.3.1-flashing | 2.3.1 | [1.0.0](specs/rules/3a-flashing.md) | ⚠️ Misses flashing in video that does not play on load (fix planned) |
+| 3.A | 2.3.1-flashing | 2.3.1 | [1.1.0](specs/rules/3a-flashing.md) | Videos that do not play on load are read from their files (checked on test pages and NASA 14592); at most 3 videos and the first 10 s of each; a video it cannot read is left for a person |
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.4.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.11.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |

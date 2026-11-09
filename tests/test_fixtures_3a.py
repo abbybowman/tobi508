@@ -52,6 +52,17 @@ CASES = {
     "f14-strobe-in-iframe": ("NOT_TESTED", ["A2", "F2"], ["fails"]),
     # SMIL steps with setCurrentTime (V7); only the screencast triggers it.
     "f15-smil-strobe": ("NOT_TESTED", ["A2", "F2"], ["fails"]),
+    # Videos that never play (1.1.0): the file is read from the recording
+    # whether or not anyone pressed Play.
+    "f16-click-to-play-strobe": ("NOT_TESTED", ["A2", "F2"], ["video"]),
+    "f17-video-missing-file": ("NEEDS_REVIEW", ["A3"], ["its file is not there"]),
+    "f18-click-to-play-grey": ("DNA", ["A4"], ["does not apply"]),
+    # The first <source> is missing: the next file is read.
+    "f19-second-source": ("NOT_TESTED", ["A2", "F2"], ["video"]),
+    "f20-hidden-video": ("NOT_TESTED", ["A2", "F2"], ["video"]),
+    "f21-four-videos": ("NEEDS_REVIEW", ["A3"], ["a video past the first three"]),
+    # No file until the page gives one on play: not measured, never "streams".
+    "f22-no-file-yet": ("NEEDS_REVIEW", ["A3"], ["no file we can see"]),
     # 2.B's marquee page: a marquee runs by the wall clock (V7): not measured.
     "../2x/t-marquee": ("NEEDS_REVIEW", ["A3"], ["marquee"]),
 }
