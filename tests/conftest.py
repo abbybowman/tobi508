@@ -133,6 +133,24 @@ def _media_3a():
     return mod
 
 
+_FIXTURE_FILES: dict[str, Path] = {}
+
+
+def _fixture_file(path: str) -> Path | None:
+    """The fixture file for a request path (`/4c/f01.html`), from a map of the
+    .html and .js files under FIXTURES, rescanned when a path is not in it
+    (a test may add a page while the server runs)."""
+    global _FIXTURE_FILES
+    key = path.lstrip("/")
+    if key not in _FIXTURE_FILES:
+        _FIXTURE_FILES = {
+            f.relative_to(FIXTURES).as_posix(): f
+            for f in FIXTURES.rglob("*")
+            if f.suffix in (".html", ".js") and f.is_file()
+        }
+    return _FIXTURE_FILES.get(key)
+
+
 class _Handler(http.server.BaseHTTPRequestHandler):
     hits: Counter  # set per server
 
@@ -213,17 +231,13 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             )
             return self._send(200, body.encode())
         path = self.path.split("?")[0]  # fixtures may add a query (F29 paging)
-        # Only files inside the fixtures folder: reject absolute and traversal
-        # paths before joining, then keep a resolved containment check.
-        rel = Path(path.lstrip("/"))
-        if rel.is_absolute() or ".." in rel.parts:
-            return self._send(404, b"not found")
-        root = FIXTURES.resolve()
-        fixture = (root / rel).resolve()
-        inside = fixture.is_relative_to(root) and fixture.is_file()
-        if path.endswith(".html") and inside:
+        # Only fixture files the server found by scanning the fixtures folder
+        # are served: the request is looked up as a key, never joined into a
+        # path, so no request can name a file outside it.
+        fixture = _fixture_file(path)
+        if path.endswith(".html") and fixture is not None:
             return self._send(200, fixture.read_bytes())
-        if path.endswith(".js") and inside:  # lazy/ chunks
+        if path.endswith(".js") and fixture is not None:  # lazy/ chunks
             return self._send(200, fixture.read_bytes(), "text/javascript")
         self._send(404, b"not found")
 
