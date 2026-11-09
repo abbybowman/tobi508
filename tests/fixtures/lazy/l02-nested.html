@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Nested lazy chunks</title></head><body>
+<h1>Nested</h1>
+<button id="go" type="button">Open</button><p id="out"></p>
+<script type="module">
+document.getElementById('go').addEventListener('click', async () => {
+  const a = await import("./l02-a.js");
+  await a.run(document.getElementById('out'));
+});
+</script>
+</body></html>

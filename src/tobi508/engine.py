@@ -13,7 +13,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from tobi508.models import Outcome
+from tobi508.models import REVIEW_HEAD, TEST_NOT_PERFORMED_NOTE, Finding, Outcome
 
 
 @dataclass(frozen=True)
@@ -75,3 +75,35 @@ def page_outcome(e: PageEvidence) -> tuple[str, Outcome]:
     row = first_match(PAGE_ROWS[1:], e)
     assert row is not None  # G5 always matches
     return row.id, row.outcome  # type: ignore[return-value]
+
+
+UNRECORDED_CODE_SENTENCE = (
+    "The page loads more code when it is used, for example when you type in a "
+    "field, and the recording of the page does not have that code, so what "
+    "happens when you press keys or type could not be checked."
+)
+
+
+def apply_guards(f: Finding, guards: tuple[str, ...], report: Any) -> Finding:
+    """The shared page guards a spec declares in its front matter (their rows
+    are in the spec and `_template.md`; this runs them). A guard only moves a
+    would-be PASS to NEEDS REVIEW, never the other way.
+
+    GU (`unrecorded-code`): the recording lacks code that the page's own
+    scripts name and load when used, so a replay cannot run the page's
+    handlers; a test that presses keys or types cannot PASS on it (Abby,
+    2026-11-09)."""
+    if (
+        "unrecorded-code" in guards
+        and f.outcome is Outcome.PASS
+        and getattr(report, "unrecorded_code_count", 0) > 0
+    ):
+        f.outcome = Outcome.NEEDS_REVIEW
+        f.rows = [*f.rows, "GU"]
+        f.summary = f"{REVIEW_HEAD} {UNRECORDED_CODE_SENTENCE}"
+        f.note = TEST_NOT_PERFORMED_NOTE
+        f.rationale += (
+            f" Guard GU: {report.unrecorded_code_count} script(s) the page "
+            "loads when used are not in the recording."
+        )
+    return f

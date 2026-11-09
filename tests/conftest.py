@@ -216,6 +216,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         fixture = FIXTURES / path.lstrip("/")
         if path.endswith(".html") and fixture.is_file():
             return self._send(200, fixture.read_bytes())
+        if path.endswith(".js") and fixture.is_file():  # lazy/ chunks
+            return self._send(200, fixture.read_bytes(), "text/javascript")
         self._send(404, b"not found")
 
 

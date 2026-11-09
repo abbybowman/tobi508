@@ -19,6 +19,7 @@ Nothing here decides an outcome: checks do, from their specs.
 from __future__ import annotations
 
 import asyncio
+import functools
 import json
 import math
 import shutil
@@ -32,7 +33,7 @@ from urllib.parse import urlsplit
 
 from playwright.async_api import Browser, async_playwright
 
-from tobi508 import flashcap, motion, pagecache, scrt
+from tobi508 import config, flashcap, motion, pagecache, rules, scrt
 from tobi508.browser import (
     MOTION_BROWSER,
     NavigationBlocked,
@@ -41,11 +42,12 @@ from tobi508.browser import (
     replay_browser_name,
     replay_in_full_chromium,
 )
-from tobi508.capture import Capture, replay_context
+from tobi508.capture import Capture, replay_context, unrecorded_code
 from tobi508.checks import REGISTRY, RunContext
 from tobi508.checks.base import PageRef
 from tobi508.config import Settings
 from tobi508.egress import EgressProxy
+from tobi508.engine import apply_guards
 from tobi508.frozen import NotFrozen, obtain
 from tobi508.judgment import get_judge, has_image, record_answers
 from tobi508.models import (
@@ -68,7 +70,7 @@ from tobi508.models import (
 )
 from tobi508.motion import MOTION_INIT_JS
 from tobi508.policy import check_url
-from tobi508.redact import safe_error
+from tobi508.redact import safe_error, safe_url
 from tobi508.resources.runs import run_uri
 from tobi508.runlog import RunRecorder, expires_at, prune_runs
 from tobi508.traverse import Pace, ReplayPlan, TooManyItems, WalkTooLong, metered
@@ -742,6 +744,17 @@ def _load_states(run: RunRecorder) -> dict[TestId, Any]:
     return states
 
 
+@functools.lru_cache(maxsize=4)
+def _specs(rules_dir: str):
+    return rules.load_specs(Path(rules_dir))
+
+
+def _guards(test_id: TestId) -> tuple[str, ...]:
+    """The shared page guards a test's spec declares (specs/rules front matter)."""
+    spec = _specs(str(config.settings.rules_dir)).get(test_id)
+    return spec.guards if spec else ()
+
+
 def _evaluate(
     run: RunRecorder,
     report: Report,
@@ -772,7 +785,9 @@ def _evaluate(
         report.questions += [
             q for q in check.questions(states[t], [uri]) if q.question_id not in asked
         ]
-        findings.append(check.evaluate(states[t], [rel]))
+        findings.append(
+            apply_guards(check.evaluate(states[t], [rel]), _guards(t), report)
+        )
     report.findings = findings
     answered = {r.answer.question_id for r in report.answers}
     report.open_questions = [
@@ -916,6 +931,9 @@ async def run_tt_tests(
             report.final_url = cap.final_url
             report.cross_site_frames = cap.cross_site_frames
             report.replay_browser = replay_browser_name(settings, cap.cross_site_frames)
+            missing = unrecorded_code(har)
+            report.unrecorded_code = [safe_url(u) for u in missing[:20]]
+            report.unrecorded_code_count = len(missing)
             pages_cut = ""
             for i, other in enumerate(others, 1):
                 await say(0.5, f"Recording other page {i} of {len(others)}")

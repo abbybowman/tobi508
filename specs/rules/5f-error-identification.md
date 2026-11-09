@@ -1,7 +1,8 @@
 ---
 tt_test: 5.F
 tt_name: 3.3.1-error-identification
-spec_version: 1.3.1
+spec_version: 1.4.0
+guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -99,6 +100,8 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 | M8 | "The error message \"<text>\" does not say <which field is wrong / what is wrong with <field>>. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | M1 (unsettled) | "We read the page after <field> was <done> while it was still changing, so an error message that appeared later may have been missed. Please look: load the page and press <keys>." |
 | M9, M5 | "An error appeared for <field>, and we could not tell whether its message names the field and explains the problem. Please look: load the page and press <keys>." |
+
+**Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

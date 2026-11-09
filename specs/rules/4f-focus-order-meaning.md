@@ -1,7 +1,8 @@
 ---
 tt_test: 4.F
 tt_name: 2.4.3-focus-order-meaning
-spec_version: 1.3.0
+spec_version: 1.4.0
+guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -104,6 +105,8 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | M7 | "The focus order departs from the reading order (<signals>), but it still makes sense: <J1 reasons>. If you disagree, tell your assistant." |
 | M8 | "The order of these elements can't change what the page means (<J1 reasons>), so this test does not apply here. If you disagree, tell your assistant." |
 | M9 | "The focus order departs from the reading order (<signals>), and we could not tell whether that matters. Please tab through the page and check." |
+
+**Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

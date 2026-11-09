@@ -1,7 +1,8 @@
 ---
 tt_test: 4.D
 tt_name: 2.4.7-focus-visible
-spec_version: 1.3.0
+spec_version: 1.4.0
+guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -117,6 +118,8 @@ A page with a confirmed FAIL stays FAIL even when other instances need review.
 | M10 | "<element> changes a little when it gets focus (<J1's description>), but we judged that it doesn't show where focus is. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | M11 | "<element> changes slightly when it gets focus, but we could not decide whether that shows where focus is. Please look: load the page and press <keys>." |
 | G3, unreached part | "Part of the page sits between two keyboard traps, so we could not reach it with the keyboard to check its focus indicators." |
+
+**Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

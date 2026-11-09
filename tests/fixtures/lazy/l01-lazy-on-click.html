@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Lazy chunk on click</title></head><body>
+<h1>Lazy chunk</h1>
+<button id="go" type="button">Show details</button>
+<p id="out" aria-live="polite"></p>
+<script type="module">
+document.getElementById('go').addEventListener('click', async () => {
+  const m = await import("./l01-chunk.js");
+  m.show(document.getElementById('out'));
+});
+</script>
+</body></html>

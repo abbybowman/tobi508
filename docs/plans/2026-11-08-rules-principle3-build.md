@@ -15,6 +15,26 @@ certified Trusted Tester results.
   (scripts not kept). Findings are in "Step 1 findings" below; three differ
   from what this plan assumed, so fixes 2 and 5 wait for Abby (questions
   there). Not built: fixes 1-6, 9b, 3. No model calls were made.
+- Unrecorded code (new fix, Abby approved 2026-11-09): built, branch
+  `lazy-chunks-recording`. The recording keeps scripts that recorded scripts
+  (and inline scripts) name by a string literal (`capture.py` chunk store:
+  same host, allowlisted, 150 files, 3 MB each, 12 MB, 3 levels, 40 s;
+  served on replay); `capture.unrecorded_code()` reads what is still missing
+  from the recording's own files (so it also checks the frozen pages of
+  round 2); guard GU (spec front matter `guards: unrecorded-code`, run by
+  `engine.apply_guards`): a would-be PASS of 4.A-4.F, 5.D, 5.F-5.H is NEEDS
+  REVIEW while code is missing. Specs +1 MINOR on those ten. Verified
+  (commands): `tests/test_lazy_chunks.py` (script_refs, a chunk stored and
+  its handler runs on replay, the same recording without it does nothing and
+  is reported, nested chunks, a missing chunk and another host listed with
+  why, the chunk limit, a pre-store recording (5340) checked, the ten specs
+  declare the guard, an unknown guard fails, the guard only moves PASS, five
+  tests PASS on a twin page and NEEDS REVIEW with GU when its chunk is
+  gone). Not verified: a live recording of 5340 with the store (the
+  container can reach the site: not run, to keep the frozen pages the
+  reference); the full suite (below). Assumed: 150 files, 12 MB and 40 s are
+  enough for real code-split sites; chunks named another way (a manifest,
+  `new URL(..., import.meta.url)`) are not found.
 
 ## Step 1 findings (2026-11-09)
 
@@ -191,11 +211,16 @@ suite; judge eval when a question or its input changes; hackathon
 Before removing any FAIL, read the key's comment and check its elements
 are still found. Never edit `evals/judging/round2*/`.
 
-**Spec versions, in build order:** 3.A 1.0.0→1.1.0; 4.A 1.2.1→1.3.0
-(fix 4)→1.4.0 (9b); 4.C 1.9.0→1.10.0 (fix 2)→1.11.0 (9b)→1.12.0
-(fix 3); 5.D 1.2.0→1.3.0 (fix 5)→1.4.0 (9b); 9.A, 9.B 1.0.0→1.1.0; 9.C
-1.1.1→1.2.0; 5.A, 5.B 1.2.0→1.3.0; 5.C 1.4.0→1.5.0; 4.D 1.3.0→1.4.0;
-4.E 1.2.0→1.3.0; 4.F 1.3.0→1.4.0; 5.F 1.3.1→1.4.0.
+**Spec versions, in build order** (2026-11-09: the guard for code the
+recording lacks, GU, was built first and took one MINOR on 4.A-4.F, 5.D,
+5.F-5.H; the numbers below are the plan's, each one MINOR higher where the
+guard came first): 3.A 1.0.0→1.1.0; 4.A 1.2.1→1.3.0 (GU)→1.4.0 (fix 4)→1.5.0
+(9b); 4.C 1.9.0→1.10.0 (GU)→1.11.0 (fix 2)→1.12.0 (9b)→1.13.0 (fix 3); 5.D
+1.2.0→1.3.0 (GU)→1.4.0 (fix 5)→1.5.0 (9b); 9.A, 9.B 1.0.0→1.1.0; 9.C
+1.1.1→1.2.0; 5.A, 5.B 1.2.0→1.3.0; 5.C 1.4.0→1.5.0; 4.D 1.3.0→1.4.0 (GU)→1.5.0
+(9b); 4.E 1.2.0→1.3.0 (GU)→1.4.0 (9b); 4.F 1.3.0→1.4.0 (GU)→1.5.0 (9b); 5.F
+1.3.1→1.4.0 (GU)→1.5.0 (fix 3); 4.B 1.2.0→1.3.0, 5.G 1.2.1→1.3.0, 5.H 1.1.0→1.2.0
+(GU).
 
 **Step 1 (frozen pages):** restore `round2-frozen` at the repository
 root (`evals/judging/round2/results/ARCHIVE.md`; check each file against

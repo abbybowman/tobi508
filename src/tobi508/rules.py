@@ -20,6 +20,7 @@ from pathlib import Path
 from tobi508.models import TestId
 
 REQUIRED_KEYS = ("tt_test", "tt_name", "spec_version")
+KNOWN_GUARDS = ("unrecorded-code",)
 _FILENAME = re.compile(r"^(?P<id>[0-9]+[a-z])-(?P<short>[a-z0-9-]+)\.md$")
 _SEMVER = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 
@@ -34,6 +35,9 @@ class RuleSpec:
     spec_version: str
     path: Path
     sha256: str
+    # Shared page guards the spec declares in its front matter (`guards:`),
+    # each defined in specs/rules/_template.md; engine.apply_guards runs them.
+    guards: tuple[str, ...] = ()
 
     def version_label(self) -> str:
         return f"{self.spec_version} (sha256:{self.sha256[:12]})"
@@ -98,8 +102,16 @@ def load_spec(path: Path) -> RuleSpec:
         )
     # Hash with LF line endings so a Windows checkout records the same value.
     digest = hashlib.sha256(text.replace("\r\n", "\n").encode("utf-8")).hexdigest()
+    guards = tuple(g.strip() for g in meta.get("guards", "").split(",") if g.strip())
+    unknown = [g for g in guards if g not in KNOWN_GUARDS]
+    if unknown:
+        raise RuleSpecError(f"{path.name}: unknown guard {unknown[0]!r}")
     return RuleSpec(
-        test_id=test_id, spec_version=meta["spec_version"], path=path, sha256=digest
+        test_id=test_id,
+        spec_version=meta["spec_version"],
+        path=path,
+        sha256=digest,
+        guards=guards,
     )
 
 

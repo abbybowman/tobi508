@@ -7,6 +7,7 @@ still vary between replays.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import re
 import time
@@ -14,7 +15,7 @@ import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import urljoin, urlsplit
 
 from playwright.async_api import Browser, BrowserContext
 
@@ -22,6 +23,7 @@ from tobi508.andi import install_andi_routes
 from tobi508.browser import LogFn, NavigationGuard, new_context
 from tobi508.config import Settings
 from tobi508.egress import EgressProxy
+from tobi508.policy import check_url
 from tobi508.redact import safe_url
 from tobi508.traverse import INIT_JS
 
@@ -39,6 +41,9 @@ class Capture:
     cross_site_frames: list[str] = field(default_factory=list)
     # Media saved in full for replay, and files over the cap (media store).
     media: list[dict[str, Any]] = field(default_factory=list)
+    # Scripts that recorded scripts name and the recording did not load
+    # itself (code split by the page), saved or not (the chunk store).
+    chunks: list[dict[str, Any]] = field(default_factory=list)
     frozen: bool = False  # replayed from a frozen pages folder (frozen.py)
 
 
@@ -56,6 +61,16 @@ async def record(
     )
     guard = NavigationGuard(settings, live=True, log=log, egress=egress)
     await guard.install(ctx)
+    scripts: list[Any] = []  # responses of scripts, for the chunk store
+    seen: set[str] = set()
+
+    def note(resp) -> None:
+        seen.add(resp.url.split("#", 1)[0])
+        ctype = resp.headers.get("content-type", "")
+        if resp.ok and (_is_script(resp.url, ctype) or _is_html(ctype)):
+            scripts.append(resp)
+
+    ctx.on("response", note)
     try:
         page = await ctx.new_page()
         final_url = await guard.goto(page, url)
@@ -75,9 +90,11 @@ async def record(
         if frames:
             log("capture_cross_site_frames", count=len(frames))
         media = await _fetch_media(ctx, page, settings, log)
+        chunks = await _fetch_chunks(ctx, scripts, seen, settings, log)
     finally:
         await ctx.close()  # writes the HAR
     _add_media(har_path, media)
+    _add_chunks(har_path, chunks)
     return Capture(
         url,
         final_url,
@@ -85,6 +102,7 @@ async def record(
         guard.redirects,
         frames,
         media=[{k: v for k, v in m.items() if k != "body"} for m in media],
+        chunks=[{k: v for k, v in c.items() if k != "body"} for c in chunks],
     )
 
 
@@ -225,6 +243,243 @@ def media_body(har_path: Path, url: str) -> bytes | None:
     return None
 
 
+# ── Chunk store (Abby, 2026-11-09: a fourth exception to principle 5) ──────
+# A page may load code only when it is used (`import("./chunk.js")`, code
+# splitting), so a recording made from a load never holds it, and on replay
+# the page's handlers silently do nothing: 5340's year popup and focus jump
+# were invisible (docs/solutions/recordings-miss-lazy-scripts.md). While
+# recording, scripts that recorded scripts name by a string literal, relative
+# to the script's own address, are fetched once and stored inside the HAR zip
+# beside the media. Page code does choose these fetches, so the limits are
+# tight: same host as the script that names it, allowlisted (checked here and
+# by the egress proxy), a script, a count and size cap, `CHUNK_ROUNDS` deep.
+# Each is recorded as its own entry; one that could not be stored is listed
+# with the reason, and `unrecorded_code` reports it.
+
+CHUNKS_INDEX = "a11y-chunks.json"
+MAX_CHUNKS = 150
+CHUNK_CONCURRENCY = 8
+CHUNK_STORE_S = 40  # the whole chunk store for one page
+MAX_CHUNK_BYTES = 3_000_000
+MAX_CHUNKS_TOTAL_BYTES = 12_000_000
+CHUNK_ROUNDS = 3
+# `import("./x.js")`, `from"./x.js"` and `import"./x.js"` with a string
+# literal that is a relative or root path to a .js/.mjs file.
+_REF = re.compile(
+    r"""(?:\bimport\s*\(\s*|\bfrom\s*|\bimport\s*)["'](\.{0,2}/[^"'\s?#]+?\.m?js)["']"""
+)
+
+
+_INLINE = re.compile(r"<script\b(?![^>]*\bsrc\s*=)[^>]*>(.*?)</script>", re.S | re.I)
+
+
+def _is_html(content_type: str) -> bool:
+    return "html" in content_type.lower()
+
+
+def _code_of(text: str, content_type: str) -> str:
+    """The code to scan: a script as it is; a page's inline scripts joined."""
+    if _is_html(content_type):
+        return "\n".join(m.group(1) for m in _INLINE.finditer(text))
+    return text
+
+
+def _is_script(url: str, content_type: str) -> bool:
+    path = urlsplit(url).path.lower()
+    return path.endswith((".js", ".mjs")) or "javascript" in content_type.lower()
+
+
+def script_refs(text: str, base_url: str) -> list[str]:
+    """Addresses of the scripts a script names by a string literal, resolved
+    from its own address (fragment dropped, in order, once each)."""
+    out: list[str] = []
+    for m in _REF.finditer(text):
+        ref = urljoin(base_url, m.group(1)).split("#", 1)[0]
+        if ref not in out:
+            out.append(ref)
+    return out
+
+
+async def _fetch_chunk(
+    ctx, entry: dict[str, Any], sem: asyncio.Semaphore
+) -> bytes | None:
+    """Fetch one chunk into `entry` (its body, or why it is missing)."""
+    ref = entry["url"]
+    async with sem:
+        try:
+            got = await ctx.request.get(ref, timeout=10_000)
+            body = await got.body()
+        except Exception as exc:
+            entry["missing"] = f"could not be fetched ({type(exc).__name__})"
+            return None
+    ctype = got.headers.get("content-type", "")
+    if not got.ok:
+        entry["missing"] = f"answered {got.status}"
+    elif not _is_script(ref, ctype):
+        entry["missing"] = "not a script"
+    elif len(body) > MAX_CHUNK_BYTES:
+        entry["missing"] = "over the size limit"
+    else:
+        entry.update(size=len(body), type=ctype or "text/javascript")
+        return body
+    return None
+
+
+async def _fetch_chunks(
+    ctx, scripts: list[Any], seen: set[str], settings: Settings, log: LogFn
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    named: set[str] = set()
+    total = 0
+    deadline = time.monotonic() + CHUNK_STORE_S
+    sem = asyncio.Semaphore(CHUNK_CONCURRENCY)
+    level: list[tuple[str, str]] = []  # (script address, its text)
+    for r in scripts:
+        try:
+            code = _code_of(await r.text(), r.headers.get("content-type", ""))
+            level.append((r.url.split("#", 1)[0], code))
+        except Exception:
+            continue
+    for _ in range(CHUNK_ROUNDS):
+        todo: list[dict[str, Any]] = []
+        fresh: list[dict[str, Any]] = []  # entries made this round
+        for base, text in level:
+            for ref in script_refs(text, base):
+                if ref in seen or ref in named:
+                    continue
+                named.add(ref)
+                entry: dict[str, Any] = {
+                    "url": ref,
+                    "file": None,
+                    "size": None,
+                    "referenced_by": safe_url(base),
+                }
+                out.append(entry)
+                fresh.append(entry)
+                if _host(ref) != _host(base):
+                    entry["missing"] = "another host than the script that names it"
+                elif not check_url(
+                    ref, settings.allowed_domains, settings.dev_mode
+                ).allowed:
+                    entry["missing"] = "not allowed by the allowlist"
+                elif len(todo) + sum(1 for e in out if e.get("size")) >= MAX_CHUNKS:
+                    entry["missing"] = "more than the chunk limit"
+                elif time.monotonic() > deadline:
+                    entry["missing"] = "the time limit for the chunk store passed"
+                else:
+                    todo.append(entry)
+        bodies = await asyncio.gather(*[_fetch_chunk(ctx, e, sem) for e in todo])
+        level = []
+        for entry, body in zip(todo, bodies, strict=True):
+            if body is None:
+                continue
+            if total + len(body) > MAX_CHUNKS_TOTAL_BYTES:
+                entry["missing"], entry["size"] = "over the size limit", None
+                continue
+            total += len(body)
+            n = sum(1 for e in out if e.get("file"))
+            entry.update(file=f"a11y-chunk-{n}.js", body=body)
+            level.append((entry["url"], body.decode("utf-8", "replace")))
+        for e in fresh:
+            log(
+                "chunk_store",
+                "ok" if e.get("file") else "info",
+                url=safe_url(e["url"]),
+                bytes=e.get("size"),
+                missing=e.get("missing"),
+            )
+        if not level:
+            break
+    return out
+
+
+def _add_chunks(har_path: Path, chunks: list[dict[str, Any]]) -> None:
+    if not chunks:
+        return
+    with zipfile.ZipFile(har_path, "a") as z:
+        for c in chunks:
+            if c.get("body") is not None:
+                z.writestr(c["file"], c["body"])
+        z.writestr(
+            CHUNKS_INDEX,
+            json.dumps([{k: v for k, v in c.items() if k != "body"} for c in chunks]),
+        )
+
+
+def chunk_index(har_path: Path) -> list[dict[str, Any]]:
+    """The chunk store's index in a recording ([] when it has none)."""
+    try:
+        with zipfile.ZipFile(har_path) as z:
+            return json.loads(z.read(CHUNKS_INDEX))
+    except (KeyError, OSError, ValueError, zipfile.BadZipFile):
+        return []
+
+
+async def _serve_chunks(ctx: BrowserContext, har_path: Path) -> None:
+    """Answer requests for stored chunks (after route_from_har)."""
+    stored = {c["url"]: c for c in chunk_index(har_path) if c.get("file")}
+    if not stored:
+        return
+    with zipfile.ZipFile(har_path) as z:
+        bodies = {u: z.read(c["file"]) for u, c in stored.items()}
+
+    async def serve(route) -> None:
+        u = route.request.url.split("#", 1)[0]
+        await route.fulfill(
+            status=200,
+            headers={"Content-Type": stored[u].get("type") or "text/javascript"},
+            body=bodies[u],
+        )
+
+    await ctx.route(lambda url: url.split("#", 1)[0] in stored, serve)
+
+
+def unrecorded_code(har_path: Path) -> list[str]:
+    """Scripts that scripts in the recording name by a string literal, on
+    the same host, that the recording does not hold (not in the HAR with a
+    response and not in the chunk store): code the page loads when it is
+    used, which a replay cannot run. Read from the recorded files only; no
+    address is fetched. Works for recordings made before the chunk store."""
+    try:
+        with zipfile.ZipFile(har_path) as z:
+            name = next(n for n in z.namelist() if n.endswith(".har"))
+            entries = json.loads(z.read(name))["log"]["entries"]
+            held = {
+                e["request"]["url"].split("#", 1)[0]
+                for e in entries
+                if e["response"].get("status", 0) > 0
+            }
+            held |= {c["url"] for c in chunk_index(har_path) if c.get("file")}
+            texts: list[tuple[str, str]] = []
+            for e in entries:
+                c = e["response"].get("content", {})
+                url = e["request"]["url"].split("#", 1)[0]
+                mime = c.get("mimeType", "")
+                if e["response"].get("status") != 200 or not (
+                    _is_script(url, mime) or _is_html(mime)
+                ):
+                    continue
+                if c.get("_file"):
+                    raw = z.read(c["_file"]).decode("utf-8", "replace")
+                else:
+                    raw = c.get("text") or ""
+                if raw:
+                    texts.append((url, _code_of(raw, mime)))
+            for ch in chunk_index(har_path):
+                if ch.get("file"):
+                    texts.append(
+                        (ch["url"], z.read(ch["file"]).decode("utf-8", "replace"))
+                    )
+    except (StopIteration, KeyError, OSError, ValueError, zipfile.BadZipFile):
+        return []
+    out: list[str] = []
+    for base, text in texts:
+        for ref in script_refs(text, base):
+            if ref not in held and _host(ref) == _host(base) and ref not in out:
+                out.append(ref)
+    return out
+
+
 async def _serve_media(ctx: BrowserContext, har_path: Path) -> None:
     """Answer byte-range requests for stored media (after route_from_har)."""
     stored = {m["url"]: m for m in media_index(har_path) if m.get("file")}
@@ -338,6 +593,7 @@ async def replay_context(
 
         await ctx.route(lambda url: url in failed, fail)
     await _serve_media(ctx, har_path)  # after route_from_har: runs first
+    await _serve_chunks(ctx, har_path)
     andi_aborted = None
     if with_andi:
         andi_aborted = await install_andi_routes(ctx, settings.third_party_dir)
