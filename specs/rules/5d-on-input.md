@@ -1,7 +1,7 @@
 ---
 tt_test: 5.D
 tt_name: 3.2.2-on-input
-spec_version: 1.3.0
+spec_version: 1.4.0
 guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -34,7 +34,7 @@ The tool gives each page one 5.D outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 1. Arrive: press Tab until focus is on the field; presses the walk saw quiet are quick, except the one that lands on the field (4.C spec section 2, replays). A field revealed by an earlier field (not in P1) that focus reaches on the way is completed too, in turn.
 2. Read the field (kind, type, `inputmode`, `maxlength`, form, `name`, value or checked state, its own widget) and the page text that precedes it in reading order back to the start of its form (or the previous heading when there is no form), at most 1,500 characters.
 3. Complete, observed (the shared `observe`, with submissions): the keys below. A change of context can come from the change itself (a select that moves focus, TC10.C-3-fail-3).
-4. Leave, observed: press Tab, again while focus is still on the field's own widget (a date input's parts), at most 5 times. A change of context can come from leaving (blur), whatever the value (TC10.C-3-fail-1, -fail-2).
+4. Leave, observed: press Tab, again while focus is still on the field's own widget (a date input's parts), at most 5 times. A change of context can come from leaving (blur), whatever the value (TC10.C-3-fail-1, -fail-2). Where focus landed is read twice (1.4.0): once after the settle rule, and again after the settle rule's 1,000 ms window (4.C's re-read after a focus event; Tab always causes one), because a handler can move focus a moment after the field is left with no change to the page for the settle rule to wait on (a timer, an asynchronous check, a re-draw). The second read counts; the evidence says which read it was (`leave_read`: `immediate` when both found focus in the same place, `after_wait` when the second found it elsewhere, with the first read in `focus_first`). The wait is skipped when leaving already submitted, navigated or opened a page.
 5. Read the value or state again: it changed (completed) or not.
 
 An instance's effects are those of steps 3 and 4 together; each records which step it came from.
@@ -67,7 +67,7 @@ Typed values are cut to `maxlength`. Every value used is recorded.
 
 ## 3. Mechanical checks
 
-Each completed field is an *instance*. After the Tab that leaves a field, focus is *where expected* when it is on the next P1 stop after the field (for a radio group, after the group), or on an element that is after the field and not after that stop in document order (a field the change revealed), or at OUT when the field is the last stop. Anything else is focus going elsewhere.
+Each completed field is an *instance*. After the Tab that leaves a field, focus is *where expected* when it is on the next P1 stop after the field (for a radio group, after the group), or on an element that is after the field and not after that stop in document order (a field the change revealed), or at OUT when the field is the last stop. Anything else is focus going elsewhere. The keyboard walk follows a jump the page makes when the field is left, so the stop it lists after the field can be the jump's target (1.4.0): when focus lands on that stop and the stop is in the same frame and comes before the field in the page, with no positive `tabindex` on either, it is not where Tab goes, and that is focus going elsewhere. A jump forward past a field, which the walk also follows, is not detected this way.
 
 **3a. Instance rules (first match wins)**
 
@@ -196,6 +196,10 @@ Only cases that need a rule of their own; everything else follows sections 2–3
 | Field inside an iframe or a shadow root | Completed like any stop (stop identity across frames, 4.C) | V4 |
 | A field revealed by an earlier field | Completed in turn when focus reaches it (section 2, step 1); counts toward `FIELD_MAX` | — |
 | Read-only and disabled fields | Not fields (p. 25: disabled elements excluded; read-only values cannot be changed) | — |
+| A handler that moves focus 500 ms after the field is left, or from a same-site frame to the page | Seen by the second read (1.4.0): M6 | Fixtures f18, f20 |
+| A handler that moves focus back to an earlier element at once | The walk lists that element as the next stop; it comes before the field, so it is not expected (1.4.0): M6 | Fixture f17 |
+| A value checked after the field is left, a message shown, focus where Tab put it | Not focus going elsewhere: the change is content (M11 when J2 says content only) | Fixture f21 |
+| A page redrawn when a value changes | The draw settles within the settle rule, or the second read sees where focus ended; fixture f19 passes with or without the second read (the draw is a page change the settle rule waits for) | Fixture f19 |
 | Search field that searches on Enter | Not a change on input: 5.D never presses Enter | — |
 | `contenteditable` regions | Not fields (the PDF lists form elements) | — |
 | Change of context on focus, before any change | 4.E's matter (4.E checks every stop the walk reaches) | — |

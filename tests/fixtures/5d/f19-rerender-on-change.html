@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F19 Re-render on change</title></head><body>
+<p><a id="top" href="#top">Back to top</a></p>
+<h1>Your details</h1>
+<form onsubmit="return false">
+<p><label for="n">Name</label> <input id="n" name="n" type="text"></p>
+<p><label for="e">Email</label> <input id="e" name="e" type="text"></p>
+<p><button type="submit">Save</button></p>
+</form>
+<script>
+// The form is drawn again when a value changes, and the draw puts focus back
+// on its first field a moment later.
+const form = document.querySelector("form");
+document.getElementById("n").addEventListener("change", () => {
+  setTimeout(() => {
+    const keep = document.getElementById("n").value;
+    form.innerHTML = form.innerHTML;
+    document.getElementById("n").value = keep;
+    document.getElementById("n").focus();
+  }, 900);
+});
+</script>
+</body></html>

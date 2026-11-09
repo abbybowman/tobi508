@@ -6,6 +6,7 @@ page."""
 
 from __future__ import annotations
 
+import json
 import re
 
 import pytest
@@ -86,6 +87,33 @@ EXPECTED: dict[str, dict] = {
     "f12-slider-reloads": {"outcome": "FAIL", "rows": ["M9"], "answers": NOT_TOLD},
     "f13-spinbutton-updates-total": {"outcome": "PASS", "rows": []},
     "f14-plain-form-controls": {"outcome": "PASS", "rows": []},
+    # 1.4.0: focus is read again after 1,000 ms, so a handler that moves it a
+    # moment after the field is left is seen (the first read is where the Tab
+    # put it). Pages f17-f21; test_tab_away_says_which_read_counted.
+    "f17-blur-moves-focus-now": {
+        "outcome": "FAIL",
+        "rows": ["M9"],
+        "answers": NOT_TOLD,
+    },
+    # Two rows: the second field is reached through the first, whose jump
+    # lands while it is being filled in (the replay passes through Name).
+    "f18-blur-moves-focus-later": {
+        "outcome": "FAIL",
+        "rows": ["M9", "M9"],
+        "answers": NOT_TOLD,
+    },
+    "f19-rerender-on-change": {"outcome": "FAIL", "rows": ["M9"], "answers": NOT_TOLD},
+    "f20-blur-moves-focus-from-frame": {
+        "outcome": "FAIL",
+        "rows": ["M9", "M9"],
+        "answers": NOT_TOLD,
+    },
+    # A message that appears after the field is left, focus where Tab put it.
+    "f21-blur-checks-without-moving": {
+        "outcome": "PASS",
+        "rows": ["M11"],
+        "answers": {"J2": {"choice": "content_only"}, "J1": {"choice": "not_told"}},
+    },
     # Four filter boxes that each go to another page, one question for all.
     "f15-filter-checkboxes-navigate": {
         "outcome": "FAIL",
@@ -93,7 +121,7 @@ EXPECTED: dict[str, dict] = {
         "answers": NOT_TOLD,
     },
 }
-HELPERS = {"f01-other", "f09-frame"}
+HELPERS = {"f01-other", "f09-frame", "f20-frame"}
 # Pages from other tests: no form fields at all. A small page: row A1 does
 # not depend on page size, and the 100-link page cost a 50 s walk here.
 REUSED = {"../4d/f01-background-change.html": {"outcome": "DNA", "rows": []}}
@@ -320,3 +348,41 @@ def test_rejected_value_asks_j3_then_stands_when_unsure():
     }
     assert _row(_inst(attempt=rejected)) == "M3"
     assert _row(_inst(attempt=rejected, j3={"choice": "unsure"})) == "M14"
+
+
+# ── 1.4.0: the second read of where focus landed ─────────────────────────────
+
+
+def _attempts(settings, run_id: str) -> dict[str, dict]:
+    """Each field's last attempt, by field name, from the run's evidence."""
+    [path] = (settings.runs_dir / run_id / "evidence").glob("*5d*.json")
+    out = {}
+    for inst in json.loads(path.read_text())["instances"]:
+        if inst.get("attempts"):
+            out[inst["field"]["name"]] = inst["attempts"][-1]
+    return out
+
+
+async def test_tab_away_says_which_read_counted(settings, server, drafts):  # noqa: F811
+    # A jump half a second after the field is left: the first read finds focus
+    # on the next field, the 1,000 ms read finds it on "Back to top", and the
+    # second one counts.
+    got = await run_check(
+        settings,
+        f"{server.base}/5d/f18-blur-moves-focus-later.html",
+        TestId.T5D,
+        NOT_TOLD,
+    )
+    name = _attempts(settings, got["run_id"])["Name"]
+    assert name["leave_read"] == "after_wait" and name["leave_expected"] is False
+    assert name["focus_first"]["name"] == "Email"
+    assert name["focus_after_leave"]["name"] == "Back to top"
+    # No jump: both reads agree.
+    got = await run_check(
+        settings,
+        f"{server.base}/5d/f21-blur-checks-without-moving.html",
+        TestId.T5D,
+        EXPECTED["f21-blur-checks-without-moving"]["answers"],
+    )
+    name = _attempts(settings, got["run_id"])["Name"]
+    assert name["leave_read"] == "immediate" and name["leave_expected"] is True

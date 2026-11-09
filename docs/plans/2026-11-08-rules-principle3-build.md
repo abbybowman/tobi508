@@ -100,6 +100,27 @@ certified Trusted Tester results.
   page); that the home page's and 14592's other questions are unchanged by
   the listener read (not compared with a run of the old build). Not done:
   14592's `<video controls>` question (key Pass), left alone as the plan says.
+- Fix 5 (5.D tab-away), item 5': built on the same branch and pull request
+  (#35). Spec 5.D 1.4.0. `t5d.py`: where focus landed is read after the
+  settle rule and again after 4.C's 1,000 ms window; the second read counts
+  and `Attempt.leave_read` (`immediate` or `after_wait`) and `focus_first`
+  record which; `_expected` no longer takes the walk's "next stop" at its
+  word when it comes before the field in the same frame (no positive
+  tabindex). **Differs from the plan:** the plan assumed an immediate blur
+  jump was already caught; it was not, because the keyboard walk follows the
+  page's own jump, so the stop the walk lists after the field is the jump's
+  target (f17 passed). Not detected: a jump forward past a field, which the
+  walk also follows. Verified (commands): `test_fixtures_5d.py` f17-f21 and
+  `test_tab_away_says_which_read_counted`; f17, f18 and f20 fail with the
+  change switched off; all 5.D, Baseline and ACT cases (206 passed); lint.
+  Frozen 5340 (replay): 5.D NEEDS REVIEW by guard GU (its recording lacks the
+  script that validates a year), so the fix cannot be shown on that page.
+  Assumed: none beyond the page set. f19 (redraw) passes with or without the
+  second read, because the redraw is a page change the settle rule waits for;
+  it stays as a regression page. f18 and f20 report two M9 rows: the second
+  field is reached through the first, whose jump lands while it is filled in
+  (the replay passes through it). Cost: about 1 s more per field that is left
+  without a mechanical change. Full suite: see the pull request.
 
 ## Step 1 findings (2026-11-09)
 

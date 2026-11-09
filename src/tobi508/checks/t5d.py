@@ -48,7 +48,14 @@ from tobi508.observe import (
     cover,
     observe,
 )
-from tobi508.traverse import Cap, Session, screenshot
+from tobi508.traverse import (
+    RERUN_WINDOW_MS,
+    SETTLE_MAX_MS,
+    Cap,
+    Session,
+    screenshot,
+    settle,
+)
 from tobi508.walk import KeyboardWalk
 
 FIELD_MAX = 40
@@ -76,6 +83,16 @@ BETWEEN_FN = """function (fieldCss, nextCss) {
   const after = !!(f.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_FOLLOWING);
   const notPastNext = !n || n === this || !!(this.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING);
   return after && notPastNext;
+}"""
+
+# Does `this` come before the field in the page, with no positive tabindex on
+# either? Tab never goes backward then (1.4.0).
+BEFORE_FN = """function (fieldCss) {
+  const doc = this.ownerDocument;
+  let f = null;
+  try { f = doc.querySelector(fieldCss); } catch (e) {}
+  if (!f || f === this || this.tabIndex > 0 || f.tabIndex > 0) return false;
+  return !!(f.compareDocumentPosition(this) & Node.DOCUMENT_POSITION_PRECEDING);
 }"""
 
 # ── Questions ────────────────────────────────────────────────────────────────
@@ -158,6 +175,12 @@ class Attempt(BaseModel):
     focus_moved_on_complete: dict[str, Any] | None = None
     focus_after_leave: dict[str, Any] | None = None
     leave_expected: bool | None = None
+    # Which read of where focus landed counted (1.4.0): "immediate" (after the
+    # Tab's settle; the 1,000 ms read found it in the same place) or
+    # "after_wait" (the 1,000 ms read found it somewhere else: a handler that
+    # moves focus a moment after the field was left).
+    leave_read: str | None = None
+    focus_first: dict[str, Any] | None = None
     outside_changed: bool = False
     completed: bool | None = None
     rejected: bool = False
@@ -344,7 +367,24 @@ async def _attempt(
         if a.complete:
             a.leave.noise = max(e.noise for e in a.complete)
         if not _mechanical(a.leave):
+            first = await _read(s)
+            # A handler can move focus a moment after the field is left, with
+            # no DOM change for the settle rule to wait on: read again after
+            # 4.C's 1,000 ms window and say which read counted (1.4.0).
+            await settle(s.page, RERUN_WINDOW_MS, RERUN_WINDOW_MS + SETTLE_MAX_MS)
             land = await _read(s)
+            a.leave_read = (
+                "immediate"
+                if (land.kind, land.path_key) == (first.kind, first.path_key)
+                else "after_wait"
+            )
+            if a.leave_read == "after_wait":
+                a.focus_first = {
+                    "kind": first.kind,
+                    "css_path": first.css_path,
+                    "name": first.name,
+                    "path_key": first.path_key,
+                }
             a.focus_after_leave = {
                 "kind": land.kind,
                 "css_path": land.css_path,
@@ -425,6 +465,12 @@ async def _expected(s: Session, f: Field5D, land: Stop) -> bool:
     if land.kind != "element":
         return False
     if land.path_key == f.next_path:
+        # The keyboard walk follows a jump the page makes when the field is
+        # left, so its "next stop" can be the jump's target (1.4.0). A target
+        # in the same frame that comes before the field is not where Tab goes.
+        if land.frame_chain == f.frame_chain:
+            back = await s.traversal.reader.call(land, BEFORE_FN, [f.css_path])
+            return not back
         return True
     if land.frame_chain != f.frame_chain:
         return False
