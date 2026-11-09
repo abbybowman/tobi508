@@ -895,18 +895,25 @@ def apply_answers(st: State4C, report) -> list[Inst]:
 
 
 def _enter_exit(inst: Inst) -> bool:
-    """M4: Enter on a control exits, and the trap is a modal dialog or the
-    container holding it is dismissed (a banner or dialog closed)."""
-    return any(
-        p.exit and p.name.startswith("Enter") and (inst.modal or p.dismissed is True)
+    """M4: Enter on a control exits and the trap is a modal dialog."""
+    return inst.modal and any(
+        p.exit and p.name.startswith("Enter") for p in inst.probes
+    )
+
+
+def _enter_dismisses(inst: Inst) -> bool:
+    """M4d: not a modal dialog; Enter on a control exits and dismisses the
+    container holding the trap (a banner or section closed): a person looks."""
+    return not inst.modal and any(
+        p.exit and p.name.startswith("Enter") and p.dismissed is True
         for p in inst.probes
     )
 
 
 def _counts(inst: Inst, p: Probe) -> bool:
-    """A probe that exits and counts as a way out. One that needed Enter on a
-    control counts only for a modal dialog or a dismissed container (M4);
-    otherwise it is row M4o (1.11.0)."""
+    """A probe that exits and ends the search for a way out. One that needed
+    Enter on a control ends it for a modal dialog (M4) or a dismissed
+    container (M4d, for a person); otherwise it is row M4o (1.11.0)."""
     if not p.exit:
         return False
     if not p.name.startswith("Enter"):
@@ -955,9 +962,17 @@ def instance_rows(st: State4C) -> list[Row]:
             Outcome.PASS,
             "p. 21 HtT 2.b notes 1-2",
         ),
-        # M4o (1.11.0, Abby 2026-11-09): outside a modal dialog, an exit that
-        # needs a control activated is not an exit: a keyboard user would
-        # have to know to press it. Not decisive; the table goes on.
+        # M4d (1.11.0, Abby 2026-11-09): outside a modal dialog, Enter on a
+        # control that closes the section (a banner) is a way out only if the
+        # user knows to press it: a person looks.
+        Row(
+            "M4d",
+            lambda i: _enter_dismisses(i),
+            Outcome.NEEDS_REVIEW,
+            "p. 21 HtT 2.b note 2, HtT 3; Abby 2026-11-09",
+        ),
+        # M4o (1.11.0): any other activation exit is not an exit: a keyboard
+        # user would have to know to press it. Not decisive; the table goes on.
         Row(
             "M4o",
             lambda i: _mech_exit(i, ("Enter",)) and not _enter_exit(i),
@@ -1070,11 +1085,20 @@ def evaluate(st: State4C, evidence_refs: list[str]) -> Finding:
             and rid not in ("M2", "M3", "M6")
         ):
             who = inst.member_info.get(enter.name.removeprefix("Enter on "), {})
-            notes.append(
-                f'{inst.id}: pressing Enter on "{who.get("name") or "a control"}" '
-                "lets focus move on, but nothing on the page tells a keyboard "
-                "user to do that, so it does not count as a way out."
-            )
+            name = who.get("name") or "a control"
+            if rid == "M4d":
+                notes.append(
+                    f'{inst.id}: pressing Enter on "{name}" closes this section '
+                    "and lets focus move on, but a keyboard user has to know to "
+                    "press it. A person should check that the page makes that "
+                    "clear."
+                )
+            else:
+                notes.append(
+                    f'{inst.id}: pressing Enter on "{name}" lets focus move on, '
+                    "but nothing on the page tells a keyboard user to do that, "
+                    "so it does not count as a way out."
+                )
         if rid == "M10":
             notes.append(
                 f"{inst.id}: whole-page focus cycle with no exit to the browser; "

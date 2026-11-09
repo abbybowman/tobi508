@@ -213,10 +213,14 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             )
             return self._send(200, body.encode())
         path = self.path.split("?")[0]  # fixtures may add a query (F29 paging)
-        fixture = FIXTURES / path.lstrip("/")
-        if path.endswith(".html") and fixture.is_file():
+        # Only files inside the fixtures folder: a path with ".." or an
+        # absolute-looking part resolves outside it and is answered 404.
+        root = FIXTURES.resolve()
+        fixture = (root / path.lstrip("/")).resolve()
+        inside = fixture.is_relative_to(root) and fixture.is_file()
+        if path.endswith(".html") and inside:
             return self._send(200, fixture.read_bytes())
-        if path.endswith(".js") and fixture.is_file():  # lazy/ chunks
+        if path.endswith(".js") and inside:  # lazy/ chunks
             return self._send(200, fixture.read_bytes(), "text/javascript")
         self._send(404, b"not found")
 

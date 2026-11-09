@@ -13,6 +13,7 @@ import re
 import time
 import zipfile
 from dataclasses import dataclass, field
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin, urlsplit
@@ -270,7 +271,39 @@ _REF = re.compile(
 )
 
 
-_INLINE = re.compile(r"<script\b(?![^>]*\bsrc\s*=)[^>]*>(.*?)</script>", re.S | re.I)
+class _InlineScripts(HTMLParser):
+    """The text of a page's inline scripts (those with no `src`), read by the
+    standard HTML parser, which follows the HTML rules for script end tags
+    (`</script >`, attributes, case) that a regular expression gets wrong."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=False)
+        self.parts: list[str] = []
+        self._in: bool | None = None  # None: not in a script; True: inline
+
+    def handle_starttag(self, tag: str, attrs) -> None:
+        if tag == "script":
+            self._in = not any(k == "src" for k, _ in attrs)
+            if self._in:
+                self.parts.append("")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "script":
+            self._in = None
+
+    def handle_data(self, data: str) -> None:
+        if self._in:
+            self.parts[-1] += data
+
+
+def _inline_scripts(html: str) -> str:
+    p = _InlineScripts()
+    try:
+        p.feed(html)
+        p.close()
+    except Exception:
+        pass  # what was read is kept
+    return "\n".join(p.parts)
 
 
 def _is_html(content_type: str) -> bool:
@@ -280,7 +313,7 @@ def _is_html(content_type: str) -> bool:
 def _code_of(text: str, content_type: str) -> str:
     """The code to scan: a script as it is; a page's inline scripts joined."""
     if _is_html(content_type):
-        return "\n".join(m.group(1) for m in _INLINE.finditer(text))
+        return _inline_scripts(text)
     return text
 
 

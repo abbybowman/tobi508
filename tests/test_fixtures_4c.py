@@ -39,7 +39,7 @@ EXPECTED: dict[str, dict] = {
     "f10-native-dialog": {"outcome": "PASS", "rows": []},
     "f11-aria-modal-close-button": {"outcome": "PASS", "rows": ["M4"]},
     "f12-aria-modal-div-close": {"outcome": "FAIL", "rows": ["M12"]},
-    "f13-cookie-banner": {"outcome": "PASS", "rows": ["M4"]},
+    "f13-cookie-banner": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},
     "f14-zip-gate": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8"],
@@ -58,7 +58,7 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M12"],
         "j2": {"gate": "no", "fields": []},
     },
-    "f38-done-removes-the-frame": {"outcome": "PASS", "rows": ["M4"]},
+    "f38-done-removes-the-frame": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},
     "f40-escape-lands-in-another-loop": {"outcome": "FAIL", "rows": ["M12", "M12"]},
     "f39-view-swap-then-exit": {
         "outcome": "FAIL",
@@ -654,7 +654,8 @@ def test_row_m4_needs_a_modal_dialog_or_a_dismissed_container():
         return Probe(name="Enter on x", outside=True, exit=True, end="exit", **kw)
 
     assert row(_inst(True, [enter()])) == ("M4", "PASS")  # a modal dialog
-    assert row(_inst(False, [enter(dismissed=True)])) == ("M4", "PASS")  # banner
+    # a banner or section that Enter closes: a person looks (M4d), not PASS
+    assert row(_inst(False, [enter(dismissed=True)])) == ("M4d", "NEEDS_REVIEW")
     assert row(_inst(False, [enter(dismissed=False)])) == ("M12", "FAIL")
     assert row(_inst(False, [enter()])) == ("M12", "FAIL")  # not measured
     # Escape and the opposite direction are standard keys: unchanged (M3)

@@ -246,3 +246,25 @@ async def test_a_page_whose_chunk_is_missing_cannot_pass_but_its_twin_can(
             "GU",
             "This test could not be performed",
         ), (f.test_id, f.rows)
+
+
+def test_inline_scripts_are_read_by_the_html_rules():
+    """An end tag with a space, attributes or other case still ends the
+    script (a regular expression for `</script>` missed these), a script with
+    a src has no inline code, and text outside scripts is not read."""
+    from tobi508.capture import _code_of
+
+    html = (
+        '<p>import("./not-code.js")</p>'
+        '<script type="module">import("./a.js")</script >'
+        '<SCRIPT>import("./b.js")</SCRIPT foo="1">'
+        '<script src="x.js">import("./ignored.js")</script>'
+        "<script>import('./c.js')</script>"
+    )
+    code = _code_of(html, "text/html; charset=utf-8")
+    assert [r.rsplit("/", 1)[-1] for r in script_refs(code, BASE)] == [
+        "a.js",
+        "b.js",
+        "c.js",
+    ]
+    assert _code_of("import('./z.js')", "text/javascript") == "import('./z.js')"
