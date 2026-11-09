@@ -15,6 +15,28 @@ certified Trusted Tester results.
   (scripts not kept). Findings are in "Step 1 findings" below; three differ
   from what this plan assumed, so fixes 2 and 5 wait for Abby (questions
   there). Not built: fixes 1-6, 9b, 3. No model calls were made.
+- Fix 6 (9.A-9.C other templates): built, branch `template-mismatch-9abc`
+  (PR number below). Specs 9.A 1.1.0, 9.B 1.1.0, 9.C 1.2.0; `site.kinship()`
+  (counts and a template fingerprint, recorded as `kinship` in each 9.x
+  evidence file). Verified (commands): `test_fixtures_9x.py` (20 + 6 new:
+  unrelated, microsite, microsite-with-header-footer, same-template,
+  related-and-microsite, microsite-is-tested; A3o rows; kinship counts; 9.B
+  capped read), see the full-suite line when added. Assumed: "navigation of
+  its own" (a banner, navigation, search or contentinfo region, or 4+ links
+  outside main) and "almost nothing" (no region with the same label or id,
+  and one unit or under 4 words shared) are my reading of the plan's words,
+  for Abby to confirm; 9.C's A3o applies only when no pair was made (a pair
+  by address or id still goes through the instance rules). Full suite:
+  1088 passed, 3 skipped, 1 xfailed (the skips are the agent-eval browser
+  tests). Frozen pages (replay mode, 9.A / 9.B / 9.C): 14592 with CILab ->
+  all three NEEDS REVIEW by A3o (were Does Not Apply; key: 9.A Fail, 9.B and
+  9.C Pass); 5144 with 4914 and 4914 with 5144 -> 9.A FAIL, 9.B PASS, 9.C
+  PASS, as the key; CILab with home, help, search and galleries -> all three
+  NEEDS REVIEW because pages are over the 600-piece read cap (key: 9.A Fail,
+  9.B and 9.C Pass, "totally different header from rest of site"). The
+  14592 and CILab 9.A cells move toward the key's Fail only as far as a
+  review: the rule cannot say Fail without comparing against its own
+  template. Nothing here turns a Fail or review into a Pass.
 
 ## Step 1 findings (2026-11-09)
 

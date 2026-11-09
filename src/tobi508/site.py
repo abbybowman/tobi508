@@ -15,6 +15,7 @@ are the caller's.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -351,3 +352,95 @@ def pair_in_order(left: list[tuple[str, int]], right: list[tuple[str, int]]):
             out.append((pos, slots[k][j]))
             taken[k] = j + 1
     return out
+
+
+# ── Kinship: do the other pages share a template with the tested page? ──────
+# Counts only; 9.A, 9.B and 9.C decide what they mean (their specs, A3o and
+# N2o). Round 2: pages of different templates shared 0, pages of one template
+# 10 or more.
+
+SMALL_WORDS = 4  # 9.A A4: "one control, or fewer than 4 words in all"
+NAV_ROLES = {"banner", "navigation", "search", "contentinfo"}
+NAV_LINKS = 4  # links outside main that count as a navigation of their own
+
+
+class Kin(BaseModel):
+    """The tested page compared with one other page."""
+
+    n: int
+    shared_units: int = 0  # tested-page units whose text key is on that page
+    shared_controls: int = 0
+    shared_words: int = 0
+    shared_regions: list[str] = Field(default_factory=list)  # by label or id
+    almost_nothing: bool = False
+
+
+class Kinship(BaseModel):
+    """Recorded in each 9.x evidence file (for the later site-wide store)."""
+
+    own_navigation: bool = False  # the tested page has navigation of its own
+    fingerprints: dict[int, str] = Field(default_factory=dict)  # page n -> hash
+    pages: list[Kin] = Field(default_factory=list)
+    all_unrelated: bool = False  # every other page shares almost nothing
+    # A3o (9.A, 9.C) and N2o/A3o (9.B): nothing can be said about repetition
+    unrelated_review: bool = False  # all_unrelated and own_navigation
+
+    def almost_nothing(self, n: int) -> bool:
+        return any(k.n == n and k.almost_nothing for k in self.pages)
+
+
+UNRELATED_REASON = (
+    "The other pages you gave share almost nothing with this page, so they "
+    "look like they come from a different template, and we could not tell "
+    "which content repeats. Give pages that use the same header, menu and "
+    "footer as this one."
+)
+
+
+def _named_regions(p: PageRead) -> set[str]:
+    """Region keys that name a label or id (`role|label`, `role|#id`), not a
+    place among their role (`role|@n`); main is left out."""
+    return {r.key for r in p.regions if r.role != "main" and "|@" not in r.key}
+
+
+def template_fingerprint(p: PageRead) -> str:
+    named = sorted(_named_regions(p))
+    roles = sorted(r.role for r in p.regions if r.role != "main")
+    blob = "\n".join(named) + "\n--\n" + ",".join(roles)
+    return hashlib.sha256(blob.encode()).hexdigest()[:12]
+
+
+def has_own_navigation(p: PageRead) -> bool:
+    if any(r.role in NAV_ROLES for r in p.regions):
+        return True
+    links = [u for u in p.units if u.kind == "control" and u.role == "link"]
+    return sum(1 for u in links if not u.in_main) >= NAV_LINKS
+
+
+def kin(main: PageRead, other: PageRead) -> Kin:
+    there = {u.text for u in other.units if u.text and u.kind != "frame"}
+    shared = [u for u in main.units if u.text and u.kind != "frame" and u.text in there]
+    regions = sorted(_named_regions(main) & _named_regions(other))
+    words = sum(len(u.text.split()) for u in shared)
+    controls = sum(1 for u in shared if u.kind == "control")
+    return Kin(
+        n=other.n,
+        shared_units=len(shared),
+        shared_controls=controls,
+        shared_words=words,
+        shared_regions=regions,
+        almost_nothing=not regions and (len(shared) <= 1 or words < SMALL_WORDS),
+    )
+
+
+def kinship(site: SiteRead) -> Kinship:
+    pages = [kin(site.main, p) for p in site.others]
+    own = has_own_navigation(site.main)
+    every = bool(pages) and all(k.almost_nothing for k in pages)
+    return Kinship(
+        own_navigation=own,
+        fingerprints={p.n: template_fingerprint(p) for p in site.pages},
+        pages=pages,
+        all_unrelated=every,
+        unrelated_review=every and own,
+    )

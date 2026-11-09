@@ -40,9 +40,48 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.A": "PASS", "9.B": "PASS", "9.C": "FAIL"},
         {"9.C": {"J1": {"choice": "inconsistent"}}},
     ),
+    # Pages of another template: nothing can be said (spec 1.1.0 / 1.2.0,
+    # A3o). They were DOES NOT APPLY before.
     "unrelated": (
         "a1-home",
         ["c1-unrelated"],
+        {"9.A": "NEEDS_REVIEW", "9.B": "NEEDS_REVIEW", "9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    "microsite": (
+        "a1-home",
+        ["e1-microsite"],
+        {"9.A": "NEEDS_REVIEW", "9.B": "NEEDS_REVIEW", "9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    # A microsite that has its own header and footer still shares nothing
+    # by label or id with the tested page.
+    "microsite-with-header-footer": (
+        "a1-home",
+        ["e3-microsite-with-header-footer"],
+        {"9.A": "NEEDS_REVIEW", "9.B": "NEEDS_REVIEW", "9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    # The same template: nothing changes.
+    "same-template": (
+        "a1-home",
+        ["e2-same-template"],
+        {"9.A": "PASS", "9.B": "PASS", "9.C": "PASS"},
+        {},
+    ),
+    # One related page among others: the unrelated one is not compared (N2o)
+    # and does not turn the related page's result into a review.
+    "related-and-microsite": (
+        "a1-home",
+        ["e2-same-template", "e1-microsite"],
+        {"9.A": "PASS", "9.B": "PASS", "9.C": "PASS"},
+        {},
+    ),
+    # The tested page is the microsite: it has no navigation of its own, so
+    # there is nothing a person should look for (A3).
+    "microsite-is-tested": (
+        "e1-microsite",
+        ["a1-home"],
         {"9.A": "DNA", "9.B": "DNA", "9.C": "DNA"},
         {},
     ),
@@ -129,3 +168,88 @@ def test_9c_page_over_the_cap_is_never_pass_or_dna():
     assert "other page 1" in f.summary
     none = State9C(pages=[page(0, True), page(1, False)], pairs=[])
     assert evaluate(none, []).outcome.value == "NEEDS_REVIEW"
+
+
+@pytest.mark.parametrize(
+    "case", ["unrelated", "microsite", "microsite-with-header-footer"]
+)
+async def test_other_template_is_a_review_by_row_a3o(case, settings, server, drafts):  # noqa: F811
+    page, others, want, answers = EXPECTED[case]
+    got = await run_tests(
+        settings,
+        f"{server.base}/9x/{page}.html",
+        list(want),
+        answers,
+        other_pages=[f"{server.base}/9x/{o}.html" for o in others],
+    )
+    for t in want:
+        assert got[t].rows == ["A3o", "G1"], (t, got[t].rows)
+        assert got[t].note == "This test could not be performed"
+        assert "different template" in got[t].summary
+
+
+def test_kinship_counts_and_fingerprints():
+    """Facts only (site.py): what two pages share by label or id and by text."""
+    from tobi508.site import PageRead, Region, Unit, kin, template_fingerprint
+
+    def unit(i, text, kind="control", in_main=False):
+        return Unit(
+            i=i,
+            kind=kind,
+            role="link",
+            text=text,
+            name=text,
+            css=f"a{i}",
+            in_main=in_main,
+        )
+
+    def region(key, role):
+        return Region(key=key, role=role, css=key)
+
+    nav = region("navigation|Main", "navigation")
+    here = PageRead(
+        n=0,
+        url="u0",
+        units=[unit(0, "home"), unit(1, "about us today please")],
+        regions=[nav, region("banner|@1", "banner")],
+    )
+    same = PageRead(n=1, url="u1", units=here.units, regions=[nav])
+    other = PageRead(
+        n=2, url="u2", units=[unit(0, "home")], regions=[region("banner|@1", "banner")]
+    )
+    assert kin(here, same).shared_regions == ["navigation|Main"]
+    assert not kin(here, same).almost_nothing
+    # a place among its role (`@1`) is not a match; one shared control is small
+    k = kin(here, other)
+    assert (k.shared_regions, k.shared_units, k.almost_nothing) == ([], 1, True)
+    assert template_fingerprint(here) != template_fingerprint(other)
+    assert template_fingerprint(here) == template_fingerprint(
+        here.model_copy(update={"n": 5})
+    )
+
+
+def test_9b_page_over_the_cap_is_never_dna():
+    """A capped read with no matches cannot be called DNA (N1 before N2, as
+    9.C 1.1.0), and a page of another template is skipped (N2o) unless it was
+    capped. Built evidence: no fixture page this large is worth vendoring."""
+    from tobi508.checks.t9b import Cmp, State9B, evaluate
+    from tobi508.site import Kin, Kinship
+
+    unrelated = Kinship(
+        own_navigation=True,
+        pages=[Kin(n=1, almost_nothing=True)],
+        all_unrelated=True,
+        unrelated_review=True,
+    )
+    capped = State9B(cmps=[Cmp(n=1, url="u1", incomplete=True)], kinship=unrelated)
+    f = evaluate(capped, [])
+    assert (f.outcome.value, f.rows[-1]) == ("NEEDS_REVIEW", "G3"), f.rows
+    whole = State9B(cmps=[Cmp(n=1, url="u1")], kinship=unrelated)
+    assert evaluate(whole, []).rows == ["A3o", "G1"]
+    no_nav = unrelated.model_copy(
+        update={"own_navigation": False, "unrelated_review": False}
+    )
+    assert (
+        evaluate(State9B(cmps=[Cmp(n=1, url="u1")], kinship=no_nav), []).outcome.value
+        == "DNA"
+    )
