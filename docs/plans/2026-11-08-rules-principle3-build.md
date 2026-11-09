@@ -26,9 +26,17 @@ certified Trusted Tester results.
   outside main) and "almost nothing" (no region with the same label or id,
   and one unit or under 4 words shared) are my reading of the plan's words,
   for Abby to confirm; 9.C's A3o applies only when no pair was made (a pair
-  by address or id still goes through the instance rules). Not yet run on
-  the frozen CILab and 14592 pages (their other pages are not in the frozen
-  set).
+  by address or id still goes through the instance rules). Full suite:
+  1088 passed, 3 skipped, 1 xfailed (the skips are the agent-eval browser
+  tests). Frozen pages (replay mode, 9.A / 9.B / 9.C): 14592 with CILab ->
+  all three NEEDS REVIEW by A3o (were Does Not Apply; key: 9.A Fail, 9.B and
+  9.C Pass); 5144 with 4914 and 4914 with 5144 -> 9.A FAIL, 9.B PASS, 9.C
+  PASS, as the key; CILab with home, help, search and galleries -> all three
+  NEEDS REVIEW because pages are over the 600-piece read cap (key: 9.A Fail,
+  9.B and 9.C Pass, "totally different header from rest of site"). The
+  14592 and CILab 9.A cells move toward the key's Fail only as far as a
+  review: the rule cannot say Fail without comparing against its own
+  template. Nothing here turns a Fail or review into a Pass.
 
 ## Step 1 findings (2026-11-09)
 
