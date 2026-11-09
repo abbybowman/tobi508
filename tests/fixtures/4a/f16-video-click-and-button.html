@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head><title>Launch video with a button</title></head>
+<body>
+<h1>Launch video with a button</h1>
+<p><button type="button" id="play">Play the video</button></p>
+<video id="v" src="/3a/media/video-strobe.webm" width="160" height="120" muted loop playsinline aria-label="Demo reel clip"></video>
+<script>
+var v = document.getElementById('v');
+v.addEventListener('click', function () { v.play(); });
+document.getElementById('play').addEventListener('click', function () { v.play(); });
+</script>
+</body>
+</html>

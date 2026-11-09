@@ -45,6 +45,21 @@ EXPECTED: dict[str, dict] = {
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
     "f12-roving-tabs": {"outcome": "PASS", "rows": []},
+    # Media start (1.4.0): a click that starts a video is an effect. The row's
+    # click handler is added by script, which the main-world listener read
+    # finds (CILab, round 2).
+    "f14-script-added-click-row": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
+    "f15-video-click-to-play": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
+    "f16-video-click-and-button": {
+        "outcome": "PASS",
+        "rows": ["M5"],
+        "choice": {"J1": {"choice": "alternative", "element": 1}},
+    },
+    "f17-click-only-play-button": {"outcome": "FAIL", "rows": ["M10"]},
 }
 
 ACT = {

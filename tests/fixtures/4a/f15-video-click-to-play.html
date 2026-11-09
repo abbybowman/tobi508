@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head><title>Launch video</title></head>
+<body>
+<h1>Launch video</h1>
+<p><a href="#notes">Launch notes</a></p>
+<video id="v" src="/3a/media/video-strobe.webm" width="160" height="120" muted loop playsinline aria-label="Demo reel clip"></video>
+<p id="notes">Click the picture to watch.</p>
+<script>
+// Clicking the picture is the only way to start it: no controls, no button.
+var v = document.getElementById('v');
+v.addEventListener('click', function () { v.play(); });
+</script>
+</body>
+</html>

@@ -463,11 +463,41 @@ class FocusReader:
             raise RuntimeError(str(res["exceptionDetails"].get("text")))
         return res["result"].get("value")
 
-    async def listeners(self, session: CDPSession, ctx: int) -> list[dict[str, Any]]:
+    async def _main_context(self, session: CDPSession, frame_id: str) -> int | None:
+        """The page's own (main world) execution context of a frame. Runtime
+        reports each existing context when it is enabled, so enable it, take
+        the default context of this frame, and disable it again."""
+        found: dict[str, int] = {}
+
+        def on_ctx(ev: dict) -> None:
+            c = ev.get("context", {})
+            aux = c.get("auxData") or {}
+            if aux.get("isDefault") and aux.get("frameId"):
+                found[aux["frameId"]] = c["id"]
+
+        session.on("Runtime.executionContextCreated", on_ctx)
+        try:
+            await session.send("Runtime.enable")
+            await session.send("Runtime.disable")
+        finally:
+            session.remove_listener("Runtime.executionContextCreated", on_ctx)
+        return found.get(frame_id)
+
+    async def listeners(
+        self, session: CDPSession, frame_id: str
+    ) -> list[dict[str, Any]]:
         """Event listeners on the nodes of a frame's document (own listeners
-        only, by backend node ID; `window` listeners are not included)."""
+        only, by backend node ID; `window` listeners are not included).
+
+        Read from the page's own world: from TOBI's isolated world CDP lists
+        none of the listeners the page's scripts added (docs/solutions/
+        listeners-from-the-main-world.md). A handler on an ancestor that
+        serves a child (delegation) is listed on the ancestor only."""
+        main = await self._main_context(session, frame_id)
+        if main is None:
+            raise LookupError(f"no main world for frame {frame_id}")
         doc = await session.send(
-            "Runtime.evaluate", {"expression": "document", "contextId": ctx}
+            "Runtime.evaluate", {"expression": "document", "contextId": main}
         )
         res = await session.send(
             "DOMDebugger.getEventListeners",
