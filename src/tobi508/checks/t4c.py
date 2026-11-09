@@ -48,7 +48,30 @@ from tobi508.walk import KeyboardWalk
 ARROWS = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"]
 P3_MAX_MEMBERS = 10
 P4_MAX_WIDGETS = 20
+# Smallest element holding the focused member (`this`) and the other members
+# (CSS paths in its frame); stored for CONTAINER_GONE_JS (M4, spec 1.11.0).
+CONTAINER_MARK_JS = """function (paths, whole) {
+  if (whole) { window.__a4c_lca = document.body; return 'ok'; }
+  let lca = this;
+  for (const p of paths) {
+    let el = null;
+    try { el = document.querySelector(p); } catch (e) {}
+    while (el && lca && !lca.contains(el)) lca = lca.parentElement;
+  }
+  if (!lca || lca === document.body || lca === document.documentElement) {
+    window.__a4c_lca = null; return 'page';
+  }
+  window.__a4c_lca = lca; return 'ok';
+}"""
+CONTAINER_GONE_JS = """function () {
+  const e = window.__a4c_lca;
+  if (!e) return null;
+  const shown = e.isConnected && (e.checkVisibility
+    ? e.checkVisibility({ visibilityProperty: true }) : e.getClientRects().length > 0);
+  return !shown;
+}"""
 EXIT_CHECK_PRESSES = 3
+SECTION_PRESS_CAP = 60  # presses to leave a frame section: its stops + 3, at most
 MAX_INSTANCES = 20
 HORIZONTAL_WIDGETS = ("menubar", "tablist", "toolbar")
 
@@ -93,6 +116,11 @@ class Probe(BaseModel):
         description="Outside, and the trap did not happen again in the check."
     )
     keys: list[str] = Field(default_factory=list, description="Full key sequence.")
+    # Enter probes only (spec 1.11.0, M4): after Enter, the smallest element
+    # holding every member of the trap is gone from the page (a dialog or
+    # banner dismissed), not still there with other content in it. None: not
+    # measured (not an Enter probe, or the trap fills the page).
+    dismissed: bool | None = None
 
 
 class Inst(BaseModel):
@@ -107,6 +135,12 @@ class Inst(BaseModel):
     unresolved: bool
     unsettled: bool
     modal: bool
+    # The trap's section (spec 1.11.0, Terms): for a loop whose members all
+    # sit in one frame, that frame's path-key prefix ("<frame css> >> "); an
+    # exit must reach a stop outside it. None: the trap is the element or
+    # the loop itself. section_size: the frame's distinct stops in the pass.
+    section: str | None = None
+    section_size: int = 0
     # Seen on one load only: a second pass from a fresh load did not repeat
     # it (spec section 2, 1.9.0). Not probed: a replay would not reach it.
     once: bool = False
@@ -281,6 +315,17 @@ class Collector:
             modal=any(s.stop.modal for s in trap_steps),
             fields=[m for m in members if info.get(m, {}).get("field")],
         )
+        chains = {tuple(v.get("frame_chain") or []) for v in info.values()}
+        if kind == "loop" and len(chains) == 1 and next(iter(chains)):
+            inst.section = " >> ".join(next(iter(chains))) + " >> "
+            inst.section_size = len(
+                {
+                    s.stop.path_key
+                    for s in steps
+                    if s.stop.kind == "element"
+                    and s.stop.path_key.startswith(inst.section)
+                }
+            )
         if shot:
             inst.member_info[members[0]]["screenshot"] = shot
         self.state.instances.append(inst)
@@ -296,15 +341,41 @@ class Collector:
         within: int,
         stop_when_outside: bool = False,
     ) -> Probe:
+        holder: dict[str, bool | None] = {}
+        pr = await self._probe(
+            inst, name, prefix, keys, direction, within, stop_when_outside, holder
+        )
+        pr.dismissed = holder.get("dismissed")
+        return pr
+
+    async def _probe(
+        self,
+        inst: Inst,
+        name: str,
+        prefix: list[str],
+        keys: list[str],
+        direction: str,
+        within: int,
+        stop_when_outside: bool,
+        holder: dict[str, bool | None],
+    ) -> Probe:
         """Replay `prefix`, press `keys`, then up to `within` presses of
         `direction` until a stop outside the trap. Exit: outside, and the trap
         does not happen again within the check presses (spec section 3)."""
         s: Session | None = None
 
-        def is_outside(step: Step) -> bool:
-            return (
-                step.stop.kind == "element" and step.stop.path_key not in inst.members
+        def in_trap(key: str) -> bool:
+            return key in inst.members or (
+                inst.section is not None and key.startswith(inst.section)
             )
+
+        def is_outside(step: Step) -> bool:
+            # Spec 1.11.0: for a loop inside a frame the section is the whole
+            # frame, so moving to another stop of the frame is not an exit.
+            return step.stop.kind == "element" and not in_trap(step.stop.path_key)
+
+        if inst.section is not None and within > 0:
+            within = max(within, min(SECTION_PRESS_CAP, inst.section_size + 3))
 
         def nav(step: Step) -> bool:
             return navigated(step, s.start_url, s.start_pages)
@@ -312,12 +383,15 @@ class Collector:
         try:
             s = await self.session_at(inst, prefix)
             start = len(s.traversal.steps)
+            marked = name.startswith("Enter on") and await self._mark_container(s, inst)
             pressed: list[str] = []
             for k in keys:
                 step = await s.traversal.press(k)
                 pressed.append(k)
                 if stop_when_outside and is_outside(step):
                     break
+            if marked:
+                holder["dismissed"] = await self._container_gone(s)
             if "Enter" in pressed:
                 await self.keep_revealed(s.page, f"revealed by Enter in {inst.id}")
             full = prefix + pressed
@@ -370,7 +444,7 @@ class Collector:
                 if step.stop.kind == "OUT":
                     break  # past the rest of the page: confirmed
                 hit = detect_p1_end(check, None)
-                if hit and set(_members_at_end(check, hit[0])) <= set(inst.members):
+                if hit and all(in_trap(k) for k in _members_at_end(check, hit[0])):
                     return Probe(
                         name=name, outside=True, exit=False, end="returned", keys=full
                     )
@@ -383,6 +457,41 @@ class Collector:
         finally:
             if s is not None:
                 await s.close()
+
+    async def _mark_container(self, s: Session, inst: Inst) -> bool:
+        """Before Enter: remember the smallest element holding the focused
+        member and every other member in its frame, unless that is the whole
+        page (then the trap has no container to dismiss)."""
+        steps = s.traversal.steps
+        cur = steps[-1].stop if steps else None
+        if cur is None or cur.kind != "element":
+            return False
+        paths = [
+            v["css_path"]
+            for v in inst.member_info.values()
+            if v.get("css_path") and v.get("frame_chain") == cur.frame_chain
+        ]
+        # A trap inside a frame is the frame's section: only the frame's whole
+        # content going away is a dismissal; a view swapped inside it is not.
+        got = await s.traversal.reader.call(
+            cur, CONTAINER_MARK_JS, [paths, inst.section is not None]
+        )
+        return got == "ok"
+
+    async def _container_gone(self, s: Session) -> bool | None:
+        """After Enter: True when the remembered container is gone or hidden."""
+        reader = s.traversal.reader
+        failed = False
+        for _, sess, ctx in await reader.frames():
+            try:
+                v = await reader.call_in(sess, ctx, CONTAINER_GONE_JS)
+            except Exception:
+                failed = True
+                continue
+            if v is not None:
+                return bool(v)
+        # No frame still holds the mark: the frame that did is gone (closed).
+        return None if failed else True
 
     async def p3(self, inst: Inst) -> None:
         """Mechanical exit probes, in table 3a order; stop at the first exit."""
@@ -659,7 +768,7 @@ def questions_for(st: State4C, evidence_paths: list[str]) -> list[OpenQuestion]:
 
     for inst in st.instances:
         if (
-            any(p.exit for p in inst.probes)
+            any(_counts(inst, p) for p in inst.probes)
             or inst.unresolved
             or inst.unsettled
             or inst.once
@@ -785,8 +894,34 @@ def apply_answers(st: State4C, report) -> list[Inst]:
 # ── Rules ────────────────────────────────────────────────────────────────────
 
 
+def _enter_exit(inst: Inst) -> bool:
+    """M4: Enter on a control exits, and the trap is a modal dialog or the
+    container holding it is dismissed (a banner or dialog closed)."""
+    return any(
+        p.exit and p.name.startswith("Enter") and (inst.modal or p.dismissed is True)
+        for p in inst.probes
+    )
+
+
+def _counts(inst: Inst, p: Probe) -> bool:
+    """A probe that exits and counts as a way out. One that needed Enter on a
+    control counts only for a modal dialog or a dismissed container (M4);
+    otherwise it is row M4o (1.11.0)."""
+    if not p.exit:
+        return False
+    if not p.name.startswith("Enter"):
+        return True
+    return inst.modal or p.dismissed is True
+
+
 def _mech_exit(inst: Inst, names: tuple[str, ...]) -> bool:
     return any(p.exit and p.name.startswith(names) for p in inst.probes)
+
+
+def _action_done(i: Inst) -> bool:
+    """An Enter probe did the section's action (focus moved on) and the trap
+    formed again: it is no gate that Enter clears, so M8 and M9 do not apply."""
+    return any(p.name.startswith("Enter") and p.end == "returned" for p in i.probes)
 
 
 def _has_fields(i: Inst) -> bool:
@@ -816,9 +951,18 @@ def instance_rows(st: State4C) -> list[Row]:
         ),
         Row(
             "M4",
-            lambda i: _mech_exit(i, ("Enter",)),
+            lambda i: _enter_exit(i),
             Outcome.PASS,
             "p. 21 HtT 2.b notes 1-2",
+        ),
+        # M4o (1.11.0, Abby 2026-11-09): outside a modal dialog, an exit that
+        # needs a control activated is not an exit: a keyboard user would
+        # have to know to press it. Not decisive; the table goes on.
+        Row(
+            "M4o",
+            lambda i: _mech_exit(i, ("Enter",)) and not _enter_exit(i),
+            None,
+            "p. 21 HtT 3; Abby 2026-11-09",
         ),
         Row(
             "M5",
@@ -836,19 +980,21 @@ def instance_rows(st: State4C) -> list[Row]:
         Row("M7", lambda i: i.j1["documented"] == "yes", None, "p. 21 HtT 3.b"),
         Row(
             "J2?",
-            lambda i: _has_fields(i) and i.j2 is None,
+            lambda i: _has_fields(i) and not _action_done(i) and i.j2 is None,
             Outcome.NEEDS_REVIEW,
             "Open question J2",
         ),
         Row(
             "M8",
-            lambda i: _has_fields(i) and i.j2["gate"] == "yes",
+            lambda i: _has_fields(i) and not _action_done(i) and i.j2["gate"] == "yes",
             Outcome.NEEDS_REVIEW,
             "p. 21 HtT 2.b note 2",
         ),
         Row(
             "M9",
-            lambda i: _has_fields(i) and i.j2["gate"] == "unsure",
+            lambda i: (
+                _has_fields(i) and not _action_done(i) and i.j2["gate"] == "unsure"
+            ),
             Outcome.NEEDS_REVIEW,
             "Spec rule",
         ),
@@ -867,7 +1013,10 @@ def instance_rows(st: State4C) -> list[Row]:
         Row("M11", lambda i: i.kind == "stuck", Outcome.FAIL, "p. 21 ER 1"),
         Row(
             "M12",
-            lambda i: i.kind == "loop" and (not i.fields or i.j2["gate"] == "no"),
+            lambda i: (
+                i.kind == "loop"
+                and (not i.fields or _action_done(i) or i.j2["gate"] == "no")
+            ),
             Outcome.FAIL,
             "p. 21 ER 2",
         ),
@@ -912,6 +1061,20 @@ def evaluate(st: State4C, evidence_refs: list[str]) -> Finding:
         opp = _opposite(inst.key)
         if rid in ("M2", "M3") and not _mech_exit(inst, ("Escape", *ARROWS)):
             notes.append(f"{inst.id}: only {opp} leaves the trap; logged for 4.F.")
+        enter = next(
+            (p for p in inst.probes if p.exit and p.name.startswith("Enter")), None
+        )
+        if (
+            enter is not None
+            and not _enter_exit(inst)
+            and rid not in ("M2", "M3", "M6")
+        ):
+            who = inst.member_info.get(enter.name.removeprefix("Enter on "), {})
+            notes.append(
+                f'{inst.id}: pressing Enter on "{who.get("name") or "a control"}" '
+                "lets focus move on, but nothing on the page tells a keyboard "
+                "user to do that, so it does not count as a way out."
+            )
         if rid == "M10":
             notes.append(
                 f"{inst.id}: whole-page focus cycle with no exit to the browser; "

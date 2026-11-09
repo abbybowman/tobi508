@@ -1,7 +1,7 @@
 ---
 tt_test: 4.C
 tt_name: 2.1.2-no-keyboard-trap
-spec_version: 1.10.0
+spec_version: 1.11.0
 guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -15,7 +15,7 @@ The tool gives each page one 4.C outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 **W3C sources.** [Understanding 2.1.2](https://www.w3.org/TR/UNDERSTANDING-WCAG20/keyboard-operation-trapping.html), technique [G21](https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/G21), and ACT rules [a1b64e](https://www.w3.org/WAI/standards-guidelines/act/rules/a1b64e/proposed/) (standard navigation), [ebe86a](https://www.w3.org/WAI/standards-guidelines/act/rules/ebe86a/) (non-standard navigation) and their composite 80af7b. DHS scored those rules' test cases with TT 5.1 ([report](https://www.w3.org/WAI/standards-guidelines/act/implementations/trusted-tester/), [data](https://raw.githubusercontent.com/Section508Coordinators/act-tt/main/act-trusted-tester.json)). They inform OPEN items and fixtures only; the PDF stays the authority.
 
-**Terms.** A *stop* is the element holding focus after a key press. *OUT* means focus has left the page for browser controls. *BODY* means focus fell to the document body. A *loop* is a repeating cycle of stops that never reaches OUT. The *same URL* ignores the fragment: a change to only the part after `#` is not a navigation.
+**Terms.** A *stop* is the element holding focus after a key press. *OUT* means focus has left the page for browser controls. *BODY* means focus fell to the document body. A *loop* is a repeating cycle of stops that never reaches OUT. The *same URL* ignores the fragment: a change to only the part after `#` is not a navigation. The *trap's section* (1.11.0): for a loop whose members all sit in one frame, that frame; otherwise the trap itself (a single stuck element is its own section). A probe exits only when it reaches a stop outside the trap's section, so moving to another stop of the same frame is not an exit, and a loop that forms again among the frame's stops is the trap again. A probe may press up to the frame's stops + 3 times (at most 60) to leave a frame section. An *activation exit* is an exit that needs Enter on a control inside the trap. It counts (row M4) only when the trap is a modal dialog, or Enter on that control dismisses the container that holds every member of the trap (the smallest element containing them, measured before Enter in the member's own frame, is gone or hidden after it, and it is not the whole page; for a trap inside a frame the container is the frame's whole content, so a view swapped inside the frame does not count): a dialog or banner closed, or a frame closed by its own Done button. Otherwise it is row M4o: a keyboard user would have to know to press that control, and nothing on the page says so (Abby, 2026-11-09, answering the 5340 "View timeline" case).
 
 ## 1. Applicability
 
@@ -81,15 +81,16 @@ Each trap event is an *instance* judged by the first matching row of table 3a. T
 | M1 | Any stop in the trap is unresolved, or a trap step is unsettled, or the trap was seen once (a second pass from a fresh load did not repeat it, section 2; 1.9.0) | NEEDS REVIEW | Spec rule |
 | M2 | Stuck: Shift+Tab, an arrow key, or Escape then Tab exits | PASS (standard keys). If Shift+Tab is the only exit, the instance is also logged for 4.F | p. 21 HtT 1, 2.a; ER 1.a |
 | M3 | Loop: the opposite direction (Shift+Tab for a forward loop, Tab for a backward one), or Escape then Tab, exits | PASS (standard keys; modal exception if a dialog). If the opposite direction is the only exit, the instance is also logged for 4.F | p. 21 HtT 1, 2.b note 1; ER 2.a |
-| M4 | Stuck or loop: Enter on one control in the trap keeps the same URL and page, and the next press exits | PASS (dialog closed or interaction gate cleared) | p. 21 HtT 2.b notes 1–2; ACT standard keyboard navigation |
+| M4 | Stuck or loop: Enter on one control in the trap keeps the same URL and page, the next press exits, and the trap is a modal dialog or that control dismisses the container holding the trap (activation exit above; 1.11.0) | PASS (dialog or banner closed) | p. 21 HtT 2.b notes 1–2; ACT standard keyboard navigation |
+| M4o | Stuck or loop that is not a modal dialog: the only exit found is an activation exit that dismisses no container (1.11.0) | Not an exit; continue down the table (J1 may still find a documented key: M6) | p. 21 HtT 3 (a method the page does not advise); Abby, 2026-11-09 |
 | M5 | The only exit found navigates, reloads or opens a new page | Not an exit; continue down the table | Spec rule: leaving the page is not an exit |
 | M6 | A key found by J1 is pressed and exits | PASS (documented custom key) | p. 21 HtT 3; ER 1.b, 2.b |
 | M7 | A key found by J1 does not exit | Not an exit; continue down the table | p. 21 HtT 3.b |
-| M8 | Loop holds form controls (text fields, selects, listboxes, checkboxes, switches, radio buttons, comboboxes, sliders, spinbuttons; 1.8.0), and J2 says gate = yes | NEEDS REVIEW. The finding gives J2's values (if any) in plain words for a person to try | p. 21 HtT 2.b note 2 |
-| M9 | Loop holds fields, and J2 is unsure | NEEDS REVIEW | Spec rule |
+| M8 | Loop holds form controls (text fields, selects, listboxes, checkboxes, switches, radio buttons, comboboxes, sliders, spinbuttons; 1.8.0), no Enter probe has already done the section's action and found the trap again (1.11.0: then it is no gate that Enter clears, and M12 applies, whatever J2 says), and J2 says gate = yes | NEEDS REVIEW. The finding gives J2's values (if any) in plain words for a person to try | p. 21 HtT 2.b note 2 |
+| M9 | Loop holds fields, no Enter probe did the section's action and found the trap again, and J2 is unsure | NEEDS REVIEW | Spec rule |
 | M10 | Loop contains every stop reached in both passes, never reaches OUT, and holds at least as many stops as the DOM inventory has candidates (whole-page cycle) | PASS, with the instance logged for tester review on real pages | p. 21 HtT 2.b |
 | M11 | Stuck, and every exit above failed | FAIL | p. 21 ER 1 |
-| M12 | Loop, every exit above failed, and J2 = no or the loop has no fields | FAIL | p. 21 ER 2 |
+| M12 | Loop, every exit above failed, and J2 = no, or the loop has no fields, or an Enter probe did the section's action and the trap formed again (1.11.0) | FAIL | p. 21 ER 2 |
 
 **Opposite-direction exits (M2, M3).** The PDF lists SHIFT + TAB among the standard navigation keys (p. 21 HtT 1), and ER 1.a and 2.a pass when focus can be moved away using standard navigation keys, so an exit by the opposite direction is an exit. Content past a forward-only exit is still tested: P2 reaches it from the end (p. 21 Note). DHS's FAIL on ACT d2f5325f does not contradict this: in Chrome its two buttons pull focus back even from the browser UI (V15), so Tab and Shift+Tab both cycle, and M12 fails it.
 

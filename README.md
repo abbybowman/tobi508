@@ -46,7 +46,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.0.0](specs/rules/3a-flashing.md) | ⚠️ Misses flashing in video that does not play on load (fix planned) |
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.3.0](specs/rules/4a-keyboard-access.md) | ⚠️ Misses video that plays only on a mouse click (fix planned); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
-| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.10.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |
+| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.11.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.4.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
 | 4.E | 3.2.1-on-focus | 3.2.1 | [1.3.0](specs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.4.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question needs a clearer rubric before a server judge answers it (fix planned) |

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>F37 frame</title></head>
+<body>
+<div id="root">
+  <header><button id="menu" type="button">Menu</button></header>
+  <div id="app">
+    <label>Name <input id="name" type="text"></label>
+    <label>Year <input id="year" type="number"></label>
+    <button id="view" type="button">View timeline</button>
+  </div>
+</div>
+<script>
+  // Tab on the last control goes to the first, Shift+Tab the other way:
+  // focus never leaves the frame by Tab or Shift+Tab. Enter on "View
+  // timeline" swaps the view in place for another set of controls that loops
+  // the same way.
+  function loop(els) {
+    els.forEach((el, i) => el.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab") return;
+      if (!e.shiftKey && i === els.length - 1) { e.preventDefault(); els[0].focus(); }
+      else if (e.shiftKey && i === 0) { e.preventDefault(); els[els.length - 1].focus(); }
+    }));
+  }
+  const $ = (id) => document.getElementById(id);
+  loop([$("menu"), $("name"), $("year"), $("view")]);
+  $("view").addEventListener("click", () => {
+    $("app").innerHTML = '<button id="back" type="button">Back</button> <button id="share" type="button">Share</button>';
+    loop([$("menu"), $("back"), $("share")]);
+  });
+</script>
+</body>
+</html>

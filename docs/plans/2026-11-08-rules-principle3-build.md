@@ -15,6 +15,27 @@ certified Trusted Tester results.
   (scripts not kept). Findings are in "Step 1 findings" below; three differ
   from what this plan assumed, so fixes 2 and 5 wait for Abby (questions
   there). Not built: fixes 1-6, 9b, 3. No model calls were made.
+- Fix 2 (4.C exit): built, branch `fix2-4c-exit` (stacked on
+  `lazy-chunks-recording`), spec 4.C 1.11.0. Rows: M4 narrowed to a modal
+  dialog or an activation exit that dismisses the container holding the trap
+  (for a loop inside a frame, the frame's whole content); new M4o (an
+  activation exit that dismisses nothing is not an exit: Abby's answer A);
+  a loop inside one frame is the frame's *section*: an exit must reach a
+  stop outside it (up to the frame's stops + 3 presses, at most 60); M8/M9
+  skip, and M12 applies, when an Enter probe did the action and the trap
+  formed again. New pages f37-f40; their old results (before the change,
+  run on `lazy-chunks-recording`): f37 PASS by M4 (the 5340 bug), f40 one
+  loop passed by Escape (M3), f39 no note. Verified (commands): all 4.C
+  fixtures and ACT cases (f11, f13, f36 unchanged), the new pages, unit
+  tests of the rows; the frozen 5340 page: 4.C was PASS and is NEEDS REVIEW
+  (J1, J2 open; with J1 no and J2 no it is FAIL by M12). Assumed: the
+  container test (smallest element holding every member, or the frame's
+  body) tells a dismissed dialog or banner from a view swap. It cannot tell a
+  top-level section whose container the page replaces on Enter from a closed
+  banner: that case still passes (logged only in the instance); the strict
+  alternative (M4 for modal dialogs only) would turn f13's cookie banner into
+  a FAIL. For Abby to choose. Not done: the plan's "per-trap budget" for
+  frame presses beyond the cap of 60.
 - Unrecorded code (new fix, Abby approved 2026-11-09): built, branch
   `lazy-chunks-recording`. The recording keeps scripts that recorded scripts
   (and inline scripts) name by a string literal (`capture.py` chunk store:
