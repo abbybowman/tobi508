@@ -11,7 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -189,11 +189,50 @@ class Settings(BaseSettings):
 
     # ── Versions recorded in every report ─────────────────────────────────────
     # "client": open questions go to the calling agent (tobi_answer_questions).
-    # "api" (NASA hosted model) joins this choice when ApiJudge is built, so an
-    # unbuilt backend fails at startup, not after a run.
-    judge_backend: Literal["client"] = "client"
-    # Identifier of the model that answers open questions, if any.
+    # "api": the server answers the question types in JUDGE_TYPES itself
+    # (apijudge.py; the rest still go to the calling agent). Settings come
+    # from the environment only; startup fails if "api" lacks what its route
+    # needs, so a misconfigured server never starts.
+    judge_backend: Literal["client", "api"] = "client"
+    # "cli": `claude -p` (development and the gate). "anthropic-messages": a
+    # Messages API gateway (production).
+    judge_route: Literal["cli", "anthropic-messages"] = "cli"
+    judge_base_url: str | None = None
+    judge_api_key: SecretStr | None = None
+    judge_auth_header: str = "x-api-key"
+    judge_model: str = "claude-sonnet-5-5"
+    # Test ids whose questions the server answers, comma separated (for
+    # example "4.A,4.D"). Empty: nothing is switched on until the gate passes.
+    judge_types: str = ""
+    judge_concurrency: int = Field(default=3, ge=1, le=16)
+    judge_call_timeout_s: int = Field(default=300, ge=10)
+    # A run's whole judging phase stops here; what is left stays open.
+    judge_cap_s: int = Field(default=900, ge=30)
+    # Identifier of the model that answers open questions, if any. With the
+    # api backend it is set from the model and prompt (versions.py).
     judging_model: str = "none"
+
+    @property
+    def judge_types_set(self) -> set[str]:
+        return {t.strip() for t in self.judge_types.split(",") if t.strip()}
+
+    @model_validator(mode="after")
+    def _judge_is_complete(self) -> Settings:
+        if self.judge_backend == "api" and self.judge_route == "anthropic-messages":
+            missing = [
+                n
+                for n, v in (
+                    ("JUDGE_BASE_URL", self.judge_base_url),
+                    ("JUDGE_API_KEY", self.judge_api_key),
+                )
+                if not v
+            ]
+            if missing:
+                raise ValueError(
+                    "JUDGE_BACKEND=api with JUDGE_ROUTE=anthropic-messages "
+                    f"needs {', '.join(missing)}"
+                )
+        return self
 
 
 settings = Settings()

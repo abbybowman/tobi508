@@ -63,6 +63,7 @@ from tobi508.models import (
     Report,
     RunResult,
     TestId,
+    unsure_by_server,
     utcnow,
     waiting_head,
 )
@@ -1161,6 +1162,8 @@ async def run_tt_tests(
     report.follow_up_calls = follow_ups(report, states, skipped)
     run.write_json(run.report_path, report)
     pre_scrt = scrt.write_for_run(run.dir, run.report_path, report)
+    if settings.judge_backend == "api":
+        report, states = await _judge_phase(settings, run, report, states, say)
     run.log("run_end", status="error" if report.errors else "ok")
     qview = _question_view(report.open_questions[:QUESTION_PAGE])
     calls = report.follow_up_calls
@@ -1189,6 +1192,27 @@ async def run_tt_tests(
         more_questions=max(0, len(report.open_questions) - QUESTION_PAGE),
     )
     return fit(result, report, states)
+
+
+async def _judge_phase(
+    settings: Settings, run: RunRecorder, report: Report, states, say
+):
+    """The server's own judge (apijudge.py) answers the switched-on question
+    types of a finished run through answer_questions, then the result is
+    built from the saved report. Nothing switched on: only the record."""
+    from tobi508 import apijudge
+
+    stats = None
+    if settings.judge_types_set:
+        try:
+            stats = await apijudge.judge_run(settings, run.run_id, say=say)
+        except Exception as exc:
+            # A judge that fails leaves its questions to the calling agent.
+            run.log("judge_error", "error", error=safe_error(exc))
+    report = Report.model_validate_json(run.report_path.read_text("utf-8"))
+    report.judge = apijudge.judge_record(settings, stats)
+    run.write_json(run.report_path, report)
+    return report, _load_states(run)
 
 
 def follow_ups(
@@ -1252,8 +1276,15 @@ def next_step(
         "it), never as a pass or a fail"
     )
     if not qs:
+        waiting = len(unsure_by_server(report))
+        person = (
+            f" {waiting} question(s) the server's judge was unsure about wait "
+            "for a person, not for you: say so, and do not answer them."
+            if waiting
+            else ""
+        )
         return (
-            f"No open questions. Relay each finding's summary; {review}."
+            f"No open questions. Relay each finding's summary; {review}.{person}"
             + _calls_text(calls)
             + " Then save the report (save_hint)."
             + FINISH
@@ -1326,6 +1357,12 @@ def todo(
         out.append(
             f"[ ] Ask the user about {len(user)} call(s) that need no_time_limit "
             "(in follow_up_calls; they can take many minutes), then make them."
+        )
+    waiting = len(unsure_by_server(report))
+    if waiting:
+        out.append(
+            f"[ ] {waiting} question(s) wait for a person (the server's judge "
+            "was unsure): do not answer them; say they need a person."
         )
     out.append(
         "[ ] Before reporting: call tobi_run_status with no job_id, and repeat "
