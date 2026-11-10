@@ -478,6 +478,22 @@ async def read_revealed(ctx, s: Session, origin: str) -> bool | None:
     return True
 
 
+def _signature(c: Comp) -> tuple:
+    """What makes a control the same control across opened states."""
+    return (
+        c.tag,
+        c.type,
+        c.role,
+        c.own_text,
+        c.row_text,
+        tuple(c.labels),
+        tuple(c.group_labels),
+        c.heading,
+        c.aria_label,
+        (c.andi or {}).get("name") if isinstance(c.andi, dict) else None,
+    )
+
+
 async def labels_pass(ctx, walk) -> LabelsPass:
     """Pass L, once per call (5.A and 5.C both read it)."""
     if "labels-pass" in ctx.cache:
@@ -490,14 +506,23 @@ async def labels_pass(ctx, walk) -> LabelsPass:
     finally:
         await s.close()
     seen = {c.css for c in lp.components}
+    # The same control read in another opened state has another path (a list
+    # that grew above it moved its position): it is the same control when its
+    # kind, text, group, heading and row are the same. Compared with what was
+    # read before that state, so identical controls inside one state stay.
+    sigs = {_signature(c) for c in lp.components}
     for extra in ctx.cache.get("labels-revealed", []):
+        fresh: set[tuple] = set()
         for c in extra.components:
-            if c.css in seen:
+            sig = _signature(c)
+            if c.css in seen or sig in sigs:
                 continue
             seen.add(c.css)
+            fresh.add(sig)
             lp.components.append(c.model_copy(update={"n": len(lp.components) + 1}))
             if c.origin not in lp.revealed_from:
                 lp.revealed_from.append(c.origin)
+        sigs |= fresh
     if walk is not None:
         idx = {
             st.stop.css_path: i
