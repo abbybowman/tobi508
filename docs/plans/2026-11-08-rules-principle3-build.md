@@ -100,6 +100,45 @@ certified Trusted Tester results.
   page); that the home page's and 14592's other questions are unchanged by
   the listener read (not compared with a run of the old build). Not done:
   14592's `<video controls>` question (key Pass), left alone as the plan says.
+- Fix 9b phase 1 (opening everything), item 7: built on the same branch and
+  pull request (#35). New `reveal.py` (once per call, after the walk, for the
+  nine checks that set `uses_reveal`): triggers are walk stops that are
+  collapsed, have `aria-haspopup`, name a *hidden* region in `aria-controls`,
+  or are an unselected tab; form fields and the parts of a native date input
+  are not triggers (found on the first full run: a spinbutton and a combobox
+  carry `aria-controls`, a selected tab's panel is shown). Each opens on a
+  fresh load (focus it, Enter, a click when Enter showed nothing), up to 20;
+  for 5.A-5.C each opened state is read with ANDI and up to two options of
+  each of up to 3 opened sets are chosen together on a fresh load and read
+  again. Evidence `evidence/reveal.json`, `Report.reveal`. Guards RV
+  (`reveal`: a trigger not opened or not read) and RC (`reveal-content`:
+  opened content holds controls) in `engine.apply_guards`; specs 4.A 1.5.0,
+  4.C 1.12.0, 4.D 1.5.0, 4.E 1.4.0, 4.F 1.5.0, 5.A 1.3.0, 5.B 1.3.0, 5.C 1.5.0,
+  5.D 1.5.0. **Differs from the plan:** 4.F has RV only, no RC (its pass R
+  already Tabs through what the first six triggers open; RC on top would turn
+  every 4.F disclosure page into a review: to confirm with Abby). 5.C: one
+  question for a set of same-named buttons whose rows differ, with each row's
+  text; its quote may hold several rows. A revealed control read again in
+  another opened state is merged (kind, text, group, heading, row).
+  Verified (commands): `test_reveal.py` (14: the trigger rule, the summary,
+  both guards), pages 5a f22-f24 (filter adding remove buttons, accordion
+  with an unlabeled field, a trigger that opens nothing) and the 5.C set
+  question tests; every earlier expectation re-run: moved on purpose are
+  4.A f13 (PASS to NEEDS REVIEW: its custom picker opens controls, RC) and
+  5a f18 (its second menu button had no handler or panel: fixed). Judge eval
+  for 5.A-5.C on the changed pages (10 packets, one fresh agent, about 134k
+  tokens): 9 of 10 match; the mismatch (f22: the agent quoted two rows) was a
+  flaw in the quote check, fixed and tested with its exact answer. Frozen
+  Home (replay): 5.C was PASS and is FAIL: the 12 "Exclude results that
+  match this filter" buttons are found, in one question with each row's text
+  (the key's comment: same title, cannot tell which category is excluded),
+  plus 13 single questions about the filter checkboxes (their visible text
+  holds "ID: ..." counters and icon glyphs that are not announced). Not done:
+  the full suite on the final head (see the pull request); a judge answer on
+  the real Home question; phase 2 (the keyboard walk through opened content)
+  and phase 3 (5.D fills opened fields) are on the ROADMAP. Assumed: that the
+  7 round 2 cells the plan expected to move (4.E on 5 pages, 4.A Help, 5.D
+  Home) move: not re-run on the frozen pages.
 - Fix 5 (5.D tab-away), item 5': built on the same branch and pull request
   (#35). Spec 5.D 1.4.0. `t5d.py`: where focus landed is read after the
   settle rule and again after 4.C's 1,000 ms window; the second read counts

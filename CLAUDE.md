@@ -218,6 +218,8 @@ src/tobi508/
   site.py       other pages of the same site (9.A-9.C, 19.A): units, regions, search forms per page,
                 read once; what repeats and what matches (no outcomes)
   walk.py       the shared keyboard walk (P1 Tab, P2 Shift+Tab), once per page
+  reveal.py     opening everything, phase 1: each menu, tab, accordion and filter the walk found opened on a
+                fresh load, what appeared, what was not opened (evidence/reveal.json, Report.reveal; guards RV, RC)
   engine.py     shared first-match tables and page rows G1-G5
   checks/       one module per TT test, registered in checks/__init__.py;
                 base.py has the interface and the "add a check" steps

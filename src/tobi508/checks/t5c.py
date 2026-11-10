@@ -180,6 +180,22 @@ def _quote_ok(st: State5C, c: Comp) -> bool:
     texts = shown(c) + ([c.heading] if c.heading and not c.button else [])
     if c.button and c.row_text:
         texts = [*texts, c.row_text]
+    # One answer covers a whole set of same-named buttons (1.5.0), so its quote
+    # may hold words from several of their rows ("Earth; Sun"): each piece
+    # must be shown in some row of the set, and none announced.
+    rows = [
+        x.row_text
+        for cs in button_sets(st.lp).values()
+        if c in cs
+        for x in cs
+        if x.row_text
+    ]
+    if c.button and rows:
+        pieces = [p for p in re.split(r"[;,|/\n]+", q) if norm(p)]
+        return bool(pieces) and all(
+            quote_in(p, rows + shown(c)) and not quote_in(p, [programmatic(c)])
+            for p in pieces
+        )
     return quote_in(q, texts) and not quote_in(q, [programmatic(c)])
 
 
@@ -313,7 +329,8 @@ J1_BUTTONS_QUESTION = (
     "tell a screen reader user which row it acts on, or is it the same for "
     'all of them (such as "X" or "Remove")? Answer complete (the '
     "announced text, with the context it comes with, tells them apart), "
-    "missing (copy the row words that tell them apart, as shown, into quote), "
+    "missing (copy the row words that tell them apart, as shown, into quote: "
+    "several rows may be separated by semicolons), "
     "not_purpose or unsure; the answer applies to every button listed."
 )
 

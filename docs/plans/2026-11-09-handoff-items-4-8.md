@@ -96,7 +96,7 @@ start item 4 from `main` once #34 is merged (or from `fix2-4c-exit`).
 | 4 | **Videos: fixes 1 (3.A) and 4 (4.A)**, with the main-world listener fix first. **Built, branch `videos-3a-4a` (status in the bundle 2 plan)** | bundle 2 | judge eval for 4.A only (done: 8 of 8) |
 | 5' | **Fix 5: 5.D waits after Tab-away** (custom pages only: immediate jump, 500 ms jump, re-render on change, a jump inside a same-site frame). **Built on `videos-3a-4a` (PR #35)** | bundle 2 | none |
 | 6 | ApiJudge gate scripts and trick-text pages, built and tried on 2 pages only | bundle 1 note 4 | a small CLI trial |
-| 7 | Opening everything, phase 1 (fix 9b) | bundle 2 | judge eval for 5.A-5.C |
+| 7 | Opening everything, phase 1 (fix 9b). **Built on `videos-3a-4a` (PR #35); status in the bundle 2 plan** | bundle 2 | judge eval for 5.A-5.C (done: 9 of 10, the tenth fixed) |
 | 8 | Error values (fix 3), top-level forms only | bundle 2 | judge eval for 5.F, 4.C |
 
 Item 4's notes: 3.A makes every `<video>` a trigger (`t3a.triggers`

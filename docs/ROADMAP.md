@@ -294,6 +294,16 @@ None blocks an outcome: each is NEEDS REVIEW-safe today.
   core evidence for most of it). Research on what the browser, ANDI,
   scanners and image libraries can settle, and on ApiJudge (built off by default, 2026-11-09; gate scripts and trick-text pages built and tried on two pages, 2026-11-10; the full gate runs once after bundles 2, 4 and 5, when Abby says: `docs/plans/2026-11-08-apijudge-build.md`):
   [research/2026-11-07-visual-judgment-and-apijudge.md](research/2026-11-07-visual-judgment-and-apijudge.md).
+- **Opening everything, phases 2 and 3 (fix 9b; 2026-11-10).** Phase 1 is built
+  (`reveal.py`: every menu, tab, accordion and filter the walk finds is opened on
+  a fresh load; 5.A-5.C read what appears; guards RV and RC keep a PASS from
+  standing while something that opens was not opened or is not checked yet).
+  Phase 2: 4.A, 4.C, 4.D, 4.E (and 4.F beyond its first six triggers) walk the
+  keyboard through opened content, which removes guard RC from their specs.
+  Phase 3: 5.D fills fields in opened content. Also: nested triggers (a menu
+  inside a menu), a combobox's list (5.D), `aria-haspopup` buttons that need a
+  key other than Enter (tabs that move with the arrow keys are opened by Enter or
+  a click here, not by an arrow), and phase 1's cap of 20 triggers and 3 sets.
 - **Answer once per site (Abby, 2026-11-07).** A judgment about the same thing on several pages of a site is made once and reused until something differs, as 9.A-9.C already do with repeated content. It covers per-image questions (7.E, 7.A, 13.C text in images), and media: videos, GIFs and other moving content in 2.A-2.D and 3.A. Key it by content (the image or media bytes' hash, and the question's spec version), never by URL alone. A new scan reuses an answer only when the hash and spec version match, and says so in the finding. A person's answer beats a reused model answer. Hosted, this can outlive one server session (a store beside run state, with an expiry); stdio keeps it in memory (`pagecache.keep_read`). Plan first: what is stored, for how long, and who may see answers from another user's runs.
 - **A review view for people: parked (Abby, 2026-11-07).** Before building one, decide what is most usable and accessible for people who review results, answer open questions and add what the tool missed. One idea: open the recorded page (the HAR replay) beside the pre-SCRT file, so the reviewer can mark it up and answer comments in place. Whether that works outside Claude's artifacts is unknown. Not near term: reliability of the tool itself comes first.
 - **13.C: ANDI's rounding (found 2026-11-07).** ANDI's contrast ratios equal exact WCAG maths rounded to 2 decimals (444 pairs checked), but ANDI compares after rounding, so 4.495-4.499 counts as 4.5 and PASS. WCAG Understanding 1.4.3 and the ICT Baseline say ratios are not rounded; the TT says to use ANDI's number. Decide in the 13.C spec; principle 3 suggests NEEDS REVIEW for that band. axe-core 4.14 compares unrounded. Details: research/2026-11-07-visual-cluster-per-test.md (13.C).
