@@ -60,6 +60,33 @@ EXPECTED: dict[str, dict[str, dict]] = {
         "5.F": {"outcome": "FAIL", "rows": ["M3"]},
         "5.G": {"outcome": "FAIL", "rows": ["N3"]},
     },
+    # 1.5.0 (fix 3): a realistic wrong value for the field's kind. "abc" is a
+    # valid name and types nothing into a number field, so these two pages'
+    # silent refusals (a red border, no text) were never reached.
+    "f22-name-refuses-symbols": {
+        "5.F": {
+            "outcome": "FAIL",
+            "rows": ["M3", "M6"],
+            "answers": {"J1": {"choice": "described", "quote": "required"}},
+        },
+        "5.G": {
+            "outcome": "FAIL",
+            "rows": ["N3", "N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "required"}},
+        },
+    },
+    "f23-year-out-of-range": {
+        "5.F": {
+            "outcome": "FAIL",
+            "rows": ["M3", "M6"],
+            "answers": {"J1": {"choice": "described", "quote": "required"}},
+        },
+        "5.G": {
+            "outcome": "FAIL",
+            "rows": ["N3", "N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "required"}},
+        },
+    },
     "f06-password-only": {
         "5.F": {
             "outcome": "PASS",
@@ -318,3 +345,46 @@ def test_please_look_sentences_end_with_the_keys(test, row):
     else:
         text = t5g._sentence(t5g.State5G.model_construct(ps=ps, j={}), i, row)
     assert text.endswith("load the page and tab 2 times, press Enter."), text
+
+
+# ── 1.5.0: the wrong value, by the field's kind ──────────────────────────────
+
+
+@pytest.mark.parametrize(
+    ("info", "value"),
+    [
+        ({"type": "email"}, "test@"),
+        ({"type": "text", "autocomplete": "email"}, "test@"),
+        ({"type": "text", "label": "Your e-mail address"}, "test@"),
+        ({"type": "tel"}, "123"),
+        ({"type": "text", "name": "mobile"}, "123"),
+        # a year: past the range, else before it, else far away
+        (
+            {"type": "number", "label": "Birth year", "min": "1900", "max": "2100"},
+            "2101",
+        ),
+        ({"type": "text", "label": "Year of birth", "min": "1900"}, "1899"),
+        ({"type": "text", "id": "byear"}, "abc"),  # "byear" is not the word year
+        ({"type": "text", "label": "Year"}, "3000"),
+        ({"type": "number", "max": "10"}, "11"),
+        ({"type": "number", "min": "1"}, "0"),
+        ({"type": "number"}, "abc"),
+        ({"inputmode": "numeric", "label": "Quantity", "max": "5"}, "6"),
+        # a person's name; a user name or a file name is not one
+        ({"type": "text", "autocomplete": "name"}, "J@n3#"),
+        ({"type": "text", "label": "First name"}, "J@n3#"),
+        ({"type": "text", "name": "family_name"}, "J@n3#"),
+        ({"type": "text", "label": "Full name"}, "J@n3#"),
+        ({"type": "text", "label": "User name"}, "abc"),
+        ({"type": "text", "label": "File name"}, "abc"),
+        ({"type": "text", "label": "ZIP code"}, "abc"),
+        ({}, "abc"),
+        # cut to maxlength
+        ({"type": "email", "maxlength": 3}, "tes"),
+        ({"type": "text", "label": "Last name", "maxlength": 2}, "J@"),
+    ],
+)
+def test_the_wrong_value_by_the_fields_kind(info, value):
+    from tobi508.checks.t5f import wrong_value
+
+    assert wrong_value(info) == value

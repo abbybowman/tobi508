@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F23 Birth year</title>
+<style>[aria-invalid=true] { border: 2px solid #c00; }</style></head><body>
+<h1>Your details</h1>
+<form action="send" method="post" novalidate>
+<p><label for="y">Birth year</label> <input id="y" name="byear" type="number" min="1900" max="2100" aria-describedby="e"></p>
+<p id="e" role="alert"></p>
+<p><button type="submit">Continue</button></p>
+</form>
+<script>
+// A missing year gets a message. A year outside 1900-2100 is refused only by
+// marking the field invalid (a red border): no text says why.
+const y = document.getElementById("y"), e = document.getElementById("e");
+function check() {
+  const empty = y.value === "", v = Number(y.value), bad = !empty && (v < 1900 || v > 2100);
+  y.setAttribute("aria-invalid", String(empty || bad));
+  e.textContent = empty ? "Birth year is required." : "";
+  return !(empty || bad);
+}
+y.addEventListener("blur", check);
+document.querySelector("form").addEventListener("submit", (ev) => { if (!check()) ev.preventDefault(); });
+</script></body></html>

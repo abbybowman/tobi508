@@ -139,6 +139,22 @@ certified Trusted Tester results.
   and phase 3 (5.D fills opened fields) are on the ROADMAP. Assumed: that the
   7 round 2 cells the plan expected to move (4.E on 5 pages, 4.A Help, 5.D
   Home) move: not re-run on the frozen pages.
+- Fix 3 (error values), item 8, **part 1 built: 5.F 1.5.0** (branch
+  `error-values-5f-4c`, after PR #35 merged). `t5f.wrong_value()`: a realistic
+  wrong value by the field's kind (email `test@`, phone `123`, a person's name
+  `J@n3#`, a year or number past `max` else before `min` else `3000` for a year,
+  "abc" otherwise), cut to `maxlength`; `FIELD_FN` also returns `autocomplete`,
+  `name`, `id`, `min`, `max`; the reproduction steps and plain sentences name
+  what was typed. Verified (commands): a unit table of 23 field kinds, pages
+  5f f22 (a name refused only by a red border) and f23 (a year outside
+  1900-2100, same), both FAIL with the new values where "abc" gave "the form
+  was sent" and no tested year; all 5.F, 5.G, Baseline TC10.D and ACT cases
+  re-run (f11's own email check was tightened: the page accepted "test@").
+  **Not built:** part 2, 4.C's pass that Tabs through each error state 5.F
+  finds (and 4.C running the error pass itself when 5.F is not selected, its
+  replay typing text); the test page with the focus-grabbing year popup and its
+  variant that lets Escape out; a judge eval for 5.F and 4.C (the changed
+  question input is the typed value only); the full suite on this head.
 - Fix 5 (5.D tab-away), item 5': built on the same branch and pull request
   (#35). Spec 5.D 1.4.0. `t5d.py`: where focus landed is read after the
   settle rule and again after 4.C's 1,000 ms window; the second read counts

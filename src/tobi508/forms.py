@@ -92,6 +92,8 @@ FIELD_FN = _on_host(
   const invalid = this.getAttribute('aria-invalid') === 'true' ||
     (!!this.willValidate && typeof this.checkValidity === 'function' && !this.checkValidity());
   return { tag, role, type, inputmode: this.getAttribute('inputmode'),
+           autocomplete: this.getAttribute('autocomplete'), name: this.getAttribute('name') || '', id: this.id || '',
+           min: this.getAttribute('min'), max: this.getAttribute('max'),
            maxlength: this.maxLength > 0 ? this.maxLength : null, value, label: label.trim(),
            options: mates.length || null, own: Array.from(own).map((e) => path(e)),
            before, invalid, pattern: this.getAttribute('pattern'),

@@ -297,6 +297,52 @@ class PassE(BaseModel):
     notes: list[str] = Field(default_factory=list)
 
 
+_NAME_AC = {"name", "given-name", "additional-name", "family-name", "nickname"}
+_NAME_WORDS = re.compile(
+    r"\b(first|last|given|family|full|middle|sur|nick)[ _-]?name\b"
+)
+
+
+def _whole(v: Any) -> int | None:
+    try:
+        return int(float(str(v)))
+    except (TypeError, ValueError):
+        return None
+
+
+def wrong_value(info: dict[str, Any]) -> str:
+    """The value typed into a text field to make it wrong (spec section 2,
+    "The wrong value, by the field's kind"): a realistic mistake for what the
+    field asks for, `WRONG_VALUE` when its kind is not in the table. Cut to
+    `maxlength`. `info` is FIELD_FN's read of the field."""
+    kind = (info.get("type") or "").lower()
+    ac = (info.get("autocomplete") or "").lower()
+    mode = (info.get("inputmode") or "").lower()
+    words = " ".join(
+        str(info.get(k) or "") for k in ("name", "id", "label", "autocomplete")
+    ).lower()
+    lo, hi = _whole(info.get("min")), _whole(info.get("max"))
+    ranged = str(hi + 1) if hi is not None else str(lo - 1) if lo is not None else None
+    if kind == "email" or "email" in ac or re.search(r"e-?mail", words):
+        value = "test@"
+    elif (
+        kind == "tel"
+        or "tel" in ac
+        or re.search(r"\b(phone|telephone|mobile|fax)\b", words)
+    ):
+        value = "123"
+    elif re.search(r"\byear\b", words) or "bday-year" in ac:
+        value = ranged or "3000"
+    elif kind == "number" or mode in ("numeric", "decimal"):
+        value = ranged or WRONG_VALUE
+    elif ac in _NAME_AC or _NAME_WORDS.search(words):
+        value = "J@n3#"
+    else:
+        value = WRONG_VALUE
+    ml = info.get("maxlength")
+    return value[:ml] if ml else value
+
+
 def wrong_date(min_: str | None, max_: str | None) -> tuple[str, str]:
     """A date outside the field's range (spec section 2): a year past `max`,
     else a year before `min`, else far in the future (Understanding 3.3.1:
@@ -468,10 +514,10 @@ async def attempt(
                     await s.page.keyboard.type(digits)
                     a.values[str(f.n)] = f"entered the date {words}"
                 else:
-                    ml = info.get("maxlength")
+                    value = wrong_value(info)
                     await s.page.keyboard.press("Control+A")
-                    await s.page.keyboard.type(WRONG_VALUE[:ml] if ml else WRONG_VALUE)
-                    a.values[str(f.n)] = f'typed "{WRONG_VALUE}"'
+                    await s.page.keyboard.type(value)
+                    a.values[str(f.n)] = f'typed "{value}"'
                 await s.traversal.resync()
                 a.typed.append(f.n)
                 if btn is None and f is text[-1]:
@@ -484,8 +530,17 @@ async def attempt(
                     step = await s.traversal.press("Tab")
                     a.unsettled = a.unsettled or step.unsettled
                 a.reads.append(await _read(s, f"tab:{f.n}", fields))
+            typed = list(
+                dict.fromkeys(
+                    v.removeprefix('typed "').removesuffix('"')
+                    for v in a.values.values()
+                    if v.startswith('typed "')
+                )
+            )
             steps.append(
-                f'type "{WRONG_VALUE}" into each text field'
+                "type a wrong value into each text field ("
+                + ", ".join(f'"{t}"' for t in typed)
+                + ")"
                 + (
                     " and a date outside the allowed range into each date field"
                     if form.dates
@@ -1305,7 +1360,7 @@ def evaluate(st: State5F, evidence_refs: list[str]) -> Finding:
         trace += ["A3", "G1"]
         return finding(
             Outcome.DNA,
-            "We left required fields empty and typed letters into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form, and the page did not check for errors, so this test does not apply.",
+            "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form, and the page did not check for errors, so this test does not apply.",
             trace,
         )
     if any(o is Outcome.FAIL for _, o in results):
@@ -1315,7 +1370,7 @@ def evaluate(st: State5F, evidence_refs: list[str]) -> Finding:
         gid, outcome, head = "G3", Outcome.NEEDS_REVIEW, REVIEW_HEAD
     elif results:
         gid, outcome = "G4", Outcome.PASS
-        head = "We left required fields empty and typed letters into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form. Each error the page found was named and explained in text."
+        head = "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form. Each error the page found was named and explained in text."
     else:
         gid, outcome, head = "G5", Outcome.NEEDS_REVIEW, REVIEW_HEAD
     trace.append(gid)

@@ -9,7 +9,7 @@
 <script>
 document.getElementById("go").addEventListener("click", () => {});
 document.getElementById("send").addEventListener("click", () => {
-  const ok = /@/.test(document.getElementById("email").value);
+  const ok = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(document.getElementById("email").value);
   document.getElementById("msg").textContent = ok ? "" : "Your email address: enter an address with an @, like name@example.com.";
 });
 </script></body></html>

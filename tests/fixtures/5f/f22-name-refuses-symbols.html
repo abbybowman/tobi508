@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F22 Your name</title>
+<style>[aria-invalid=true] { border: 2px solid #c00; }</style></head><body>
+<h1>Join the list</h1>
+<form action="send" method="post" novalidate>
+<p><label for="n">Full name</label> <input id="n" name="fullname" type="text" autocomplete="name" aria-describedby="e"></p>
+<p id="e" role="alert"></p>
+<p><button type="submit">Join</button></p>
+</form>
+<script>
+// An empty name gets a message. A name with symbols is refused too, but only
+// by marking the field invalid (a red border): no text says why.
+const n = document.getElementById("n"), e = document.getElementById("e");
+function check() {
+  const empty = n.value.trim() === "", bad = /[^A-Za-z '\-]/.test(n.value);
+  n.setAttribute("aria-invalid", String(empty || bad));
+  e.textContent = empty ? "Full name is required." : "";
+  return !(empty || bad);
+}
+n.addEventListener("blur", check);
+document.querySelector("form").addEventListener("submit", (ev) => { if (!check()) ev.preventDefault(); });
+</script></body></html>
