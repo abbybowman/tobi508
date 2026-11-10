@@ -19,7 +19,12 @@ document.querySelectorAll("input[name=t]").forEach((c) => c.addEventListener("ch
   chosen.innerHTML = "";
   document.querySelectorAll("input[name=t]:checked").forEach((x) => {
     const li = document.createElement("li");
-    li.innerHTML = "<span>" + x.value + "</span> <button type=\"button\">X</button>";
+    const label = document.createElement("span");
+    label.textContent = x.value;
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "X";
+    li.append(label, " ", remove);
     chosen.append(li);
   });
 }));

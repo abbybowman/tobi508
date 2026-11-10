@@ -4,7 +4,7 @@ Bundle 2 of the server judge pivot's "Sequencing to Nov 20"
 ([2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md));
 post-round 2 fixes 1-6 and 9b
 ([2026-11-08-post-round2-fixes.md](2026-11-08-post-round2-fixes.md)).
-Status: **step 1, fix 6, fix 2 and the unrecorded-code guard built; fixes 1, 4, 5, 3 and 9b are not.** Agent-assisted results, not
+Status: **built (PR #35 unless noted): step 1, fixes 1, 2 (#34), 4, 5, 6 (#32), the unrecorded-code guard (#34) and fix 9b phase 1; not built: fix 3 (error values, item 8), 9b phases 2 and 3.** Agent-assisted results, not
 certified Trusted Tester results.
 
 ## Status
@@ -133,9 +133,9 @@ certified Trusted Tester results.
   match this filter" buttons are found, in one question with each row's text
   (the key's comment: same title, cannot tell which category is excluded),
   plus 13 single questions about the filter checkboxes (their visible text
-  holds "ID: ..." counters and icon glyphs that are not announced). Not done:
-  the full suite on the final head (see the pull request); a judge answer on
-  the real Home question; phase 2 (the keyboard walk through opened content)
+  holds "ID: ..." counters and icon glyphs that are not announced). Full suite on
+  head 6463a35: 1171 passed, 3 skipped, 1 xfailed, 0 failed. Not done: a judge
+  answer on the real Home question; phase 2 (the keyboard walk through opened content)
   and phase 3 (5.D fills opened fields) are on the ROADMAP. Assumed: that the
   7 round 2 cells the plan expected to move (4.E on 5 pages, 4.A Help, 5.D
   Home) move: not re-run on the frozen pages.

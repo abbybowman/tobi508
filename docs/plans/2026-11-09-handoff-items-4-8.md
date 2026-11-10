@@ -116,6 +116,47 @@ Judging the questions an agent's answers raise inside
 `tobi_answer_questions` (a job); a separate test of the 19.A follow-up path;
 the gate scripts (item 6); a real model call and token measurement.
 
+## Where things stand (2026-11-10, end of the third thread)
+
+Everything below is on branch `videos-3a-4a`, **draft pull request #35**
+(readable branch name, at Abby's request). Full suite on the last code head
+(6463a35): 1171 passed, 3 skipped, 1 xfailed, 0 failed; the one load-sensitive
+test seen earlier (`test_fixtures_3a.py::test_page[f07-exactly-3]`, a
+one-second flash count) passed alone three times and in the later full runs.
+Each item's own status line (verified vs assumed) is in the plan it belongs to.
+
+| Item | State | Where the status is |
+| --- | --- | --- |
+| 4 videos (3.A 1.1.0, 4.A 1.4.0) | built, judge eval 8 of 8 | bundle 2 plan, Status |
+| 5' fix 5 (5.D 1.4.0, tab-away) | built (custom pages only) | bundle 2 plan, Status |
+| 6 ApiJudge gate scripts, trick pages, 2-page CLI trial | built; nothing switched on | apijudge plan, Status |
+| 7 opening everything, phase 1 (fix 9b) | built, judge eval 9 of 10 (the tenth fixed) | bundle 2 plan, Status |
+| 8 error values (fix 3) | **not started** | bundle 2 plan, builder notes; needs a judge eval for 5.F and 4.C |
+
+**Open for Abby (decisions, none blocks a build):**
+
+1. 4.F has guard RV but not RC (`reveal-content`): its pass R already Tabs
+   through what its first six triggers open (4.F spec, "Why 4.F has no guard
+   RC"). Confirm, or put RC back (every 4.F disclosure and dialog page then
+   needs review until phase 2).
+2. Phase 1 turns some round 2 PASS cells into NEEDS REVIEW as the plan
+   expected (about 7: 4.E on 5 pages, 4.A Help, 5.D Home); the frozen pages
+   were not re-run for them. Home's 5.C is now FAIL with the key's finding
+   asked as one question; the real question has not been answered by a judge.
+3. The ApiJudge gate: the full run (10 pages, 3 repeats, every type) is for
+   after bundles 2, 4 and 5; `JUDGE_TYPES` stays empty and does not read
+   `gate.json` until Abby approves a list.
+4. Phase 2 (keyboard walk through opened content: removes guard RC) and
+   phase 3 (5.D fills opened fields) are on the ROADMAP.
+
+**Start item 8 from here** (branch `videos-3a-4a`, or a fresh branch from
+`main` once #35 merges): read "Fix 3, error values" in the bundle 2 plan,
+the 5.F and 4.C specs, and `docs/solutions/` (README, then
+`opening-triggers.md`). Run the 5.F and 4.C judge eval for the changed
+questions only; count packets and tokens with dry mode or the packet count
+first. Never run the container's tests while editing files, and probe one
+page at a time beside a running suite.
+
 ## Open for Abby
 
 - Whether a Firefox replay (or any second browser) matters for the pitch, or
