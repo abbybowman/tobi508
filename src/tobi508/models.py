@@ -131,6 +131,15 @@ class Stop(BaseModel):
         default=False, description="A disclosure control with aria-expanded=false."
     )
     modal: bool = Field(default=False, description="Inside a modal dialog (markup).")
+    haspopup: str | None = Field(
+        default=None, description="aria-haspopup, when not false (reveal.py)."
+    )
+    controls: str | None = Field(
+        default=None, description="aria-controls: the region it controls."
+    )
+    tab_unselected: bool = Field(
+        default=False, description="A tab that is not the selected one."
+    )
 
     @property
     def path_key(self) -> str:
@@ -544,6 +553,14 @@ class Report(BaseModel):
         "that code, so tests that press keys or type cannot PASS (guard GU).",
     )
     unrecorded_code_count: int = Field(default=0, description="How many in all.")
+    reveal: dict[str, Any] = Field(
+        default_factory=dict,
+        description="What opening the page's menus, tabs and sections found "
+        "(reveal.py): how many there were, how many opened, the ones that did "
+        "not and why, and how many opened content a keyboard user could reach. "
+        "Empty when no selected test reads opened content. Guards `reveal` "
+        "and `reveal-content` read it.",
+    )
     judge: dict[str, Any] | None = Field(
         default=None,
         description="Set with the api judge backend: the route, the model "

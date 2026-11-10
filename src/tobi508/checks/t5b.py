@@ -349,6 +349,7 @@ class Check5B:
     test_id = TestId.T5B
     state_type = State5B
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     shares = -1  # collects last, with 5.A and 5.C (they share pass L)
     about = (
         "It reads the label people see on each form field and button (from the "

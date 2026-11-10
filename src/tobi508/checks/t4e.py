@@ -632,6 +632,7 @@ class Check4E:
     test_id = TestId.T4E
     state_type = State4E
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     about = (
         "It watches what happens each time keyboard focus lands on an element "
         "during the Tab and Shift+Tab walks: whether the page goes to another "

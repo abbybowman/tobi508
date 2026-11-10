@@ -1380,6 +1380,7 @@ class Check4C:
     test_id = TestId.T4C
     state_type = State4C
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     about = (
         "It records the page once, then moves through the recorded copy with Tab "
         "and with Shift+Tab. Wherever focus seems stuck or keeps cycling, it "

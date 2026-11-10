@@ -303,6 +303,7 @@ class Check5A:
     test_id = TestId.T5A
     state_type = State5A
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     shares = -1  # collects last, as 5.C (they share pass L)
     about = (
         "It moves to each form field and takes a picture of it with what is "

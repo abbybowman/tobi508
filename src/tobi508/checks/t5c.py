@@ -128,6 +128,28 @@ def shown(c: Comp) -> list[str]:
     return c.nearby + [t for t in c.nearby_css if t not in c.nearby]
 
 
+def button_sets(lp: LabelsPass) -> dict[str, list[Comp]]:
+    """Buttons that share one announced name while the rows they sit in
+    differ (fix 9b, Abby 2026-11-09 decision 1: a filter's remove buttons all
+    named "X"): by name, two or more, with two or more different row texts.
+    Menu buttons are not counted."""
+    by: dict[str, list[Comp]] = {}
+    for c in lp.components:
+        name = " ".join(programmatic(c).lower().split())
+        if c.button and not c.menu and name and c.andi is not None:
+            by.setdefault(name, []).append(c)
+    return {
+        n: cs
+        for n, cs in by.items()
+        if len(cs) > 1
+        and len({" ".join(c.row_text.split()) for c in cs if c.row_text}) > 1
+    }
+
+
+def in_button_set(lp: LabelsPass, c: Comp) -> bool:
+    return any(c in cs for cs in button_sets(lp).values())
+
+
 def covered(c: Comp, multi: bool) -> bool:
     """M5: the announced text holds every word shown around the field (or a
     button's own text), any required cue, and a group label for an option
@@ -156,12 +178,15 @@ def _j(st: State5C, c: Comp) -> str | None:
 def _quote_ok(st: State5C, c: Comp) -> bool:
     q = (st.j.get(f"c{c.n}-J1") or {}).get("quote", "")
     texts = shown(c) + ([c.heading] if c.heading and not c.button else [])
+    if c.button and c.row_text:
+        texts = [*texts, c.row_text]
     return quote_in(q, texts) and not quote_in(q, [programmatic(c)])
 
 
 def instance_rows(st: State5C) -> list[Row]:
     multi = groups(st.lp)
     heads = headings_of_set(st.lp)
+    named = {id(c) for cs in button_sets(st.lp).values() for c in cs}
     return [
         # A field whose focus read failed has no nearby text, and M5 would
         # compare nothing against its name.
@@ -206,7 +231,9 @@ def instance_rows(st: State5C) -> list[Row]:
         ),
         Row(
             "M5",
-            lambda c: covered(c, multi.get(c.group or "", 0) > 1),
+            lambda c: (
+                id(c) not in named and covered(c, multi.get(c.group or "", 0) > 1)
+            ),
             Outcome.PASS,
             "p. 27 ER 1, 3; Note 4",
         ),
@@ -279,6 +306,18 @@ J1_SET_QUESTION = (
 )
 
 
+J1_BUTTONS_QUESTION = (
+    "Each component in input.components is a button, and they all have the "
+    "same announced name. input.visible is the text of the row each one sits "
+    "in (what tells them apart on the page). Does input.announced of each "
+    "tell a screen reader user which row it acts on, or is it the same for "
+    'all of them (such as "X" or "Remove")? Answer complete (the '
+    "announced text, with the context it comes with, tells them apart), "
+    "missing (copy the row words that tell them apart, as shown, into quote), "
+    "not_purpose or unsure; the answer applies to every button listed."
+)
+
+
 def _set_key(c: Comp) -> tuple | None:
     """Options asked about together: one set, by field name, legend and the
     heading over them."""
@@ -303,10 +342,14 @@ def j1_sets(st: State5C) -> list[list[Comp]]:
     group label. Any other component is a group of one."""
     keyed: dict[tuple, list[Comp]] = {}
     out: list[list[Comp]] = []
+    named = {id(c): n for n, cs in button_sets(st.lp).items() for c in cs}
     for c in st.lp.components:
         if not needs_j1(st, c):
             continue
-        key = _set_key(c) if _only_set_label(c) else None
+        if id(c) in named:
+            key: tuple | None = ("buttons", named[id(c)])
+        else:
+            key = _set_key(c) if _only_set_label(c) else None
         if key is None:
             out.append([c])
         elif key in keyed:
@@ -333,14 +376,16 @@ def questions_for(st: State5C, evidence_refs: list[str]) -> list[OpenQuestion]:
                     choices=J1_CHOICES,
                     instance=f"c{head.n}",
                     also_instances=[f"c{c.n}" for c in group[1:]],
-                    question=J1_SET_QUESTION,
+                    question=J1_BUTTONS_QUESTION if head.button else J1_SET_QUESTION,
                     rubric=J1_RUBRIC,
                     input={
                         "components": [
                             {
                                 "kind": c.kind,
                                 "announced": announced(c),
-                                "visible": shown(c),
+                                "visible": [*shown(c), c.row_text]
+                                if c.button and c.row_text
+                                else shown(c),
                             }
                             for c in group
                         ],
@@ -500,6 +545,7 @@ class Check5C:
     test_id = TestId.T5C
     state_type = State5C
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     shares = -1  # collects last: 4.F and 5.D replays may reveal fields first
     about = (
         "It lists every form field and button on the page and runs ANDI, the "

@@ -64,6 +64,7 @@ addopts = "-m 'not slow' -n auto"
 "src/tobi508/checks/t4c.py" = ["E501"]
 "src/tobi508/checks/t5d.py" = ["E501"]
 "src/tobi508/forms.py" = ["E501"]
+"src/tobi508/reveal.py" = ["E501"]
 "src/tobi508/andi.py" = ["E501"]
 "src/tobi508/motion.py" = ["E501"]
 "src/tobi508/checks/t2b.py" = ["E501"]

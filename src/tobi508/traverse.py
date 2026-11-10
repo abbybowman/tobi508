@@ -252,11 +252,17 @@ _DESCRIBE_FN = (
   }
   const collapsed = this.getAttribute('aria-expanded') === 'false' ||
     (tag === 'summary' && !!this.parentElement && this.parentElement.tagName === 'DETAILS' && !this.parentElement.open);
+  // What opens something (reveal.py): a menu or dialog it announces, the
+  // region it controls, a tab that is not the selected one.
+  const hp = this.getAttribute('aria-haspopup');
+  const haspopup = hp && hp !== 'false' ? hp : null;
+  const controls = this.getAttribute('aria-controls') || null;
+  const tabUnselected = role === 'tab' && this.getAttribute('aria-selected') === 'false';
   const dlg = this.closest('dialog, [role=dialog], [role=alertdialog]');
   const modal = !!dlg && ((dlg.tagName === 'DIALOG' && dlg.matches(':modal')) || dlg.getAttribute('aria-modal') === 'true');
   return { css: path(this), tag, x: r.x, y: r.y, w: r.width, h: r.height,
            isBody: this === document.body || this === document.documentElement,
-           widget, control, readonly, disabled, group, collapsed, modal };
+           widget, control, readonly, disabled, group, collapsed, modal, haspopup, controls, tabUnselected };
 }"""
 )
 
@@ -731,6 +737,9 @@ class FocusReader:
             disabled=bool(info.get("disabled")),
             group=(" >> ".join([*chain, info["group"]]) if info.get("group") else None),
             collapsed=info["collapsed"],
+            haspopup=info.get("haspopup"),
+            controls=info.get("controls"),
+            tab_unselected=bool(info.get("tabUnselected")),
             modal=info["modal"],
         )
 

@@ -1282,6 +1282,7 @@ class Check4A:
     test_id = TestId.T4A
     state_type = State4A
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     about = (
         "After the Tab walk, it looks for anything a mouse can use that keyboard "
         "focus never reaches: clickable elements, menus that open when the mouse "

@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F22 Filter</title></head><body>
+<h1>Videos</h1>
+<button type="button" id="ft" aria-expanded="false" aria-controls="panel">Filters</button>
+<div id="panel" hidden>
+<fieldset><legend>Topic</legend>
+<label><input type="checkbox" name="t" value="Earth"> Earth</label>
+<label><input type="checkbox" name="t" value="Sun"> Sun</label>
+<label><input type="checkbox" name="t" value="Moon"> Moon</label>
+</fieldset>
+</div>
+<h2>Selected filters</h2>
+<ul id="chosen"></ul>
+<script>
+const ft = document.getElementById("ft"), panel = document.getElementById("panel");
+ft.addEventListener("click", () => { const open = ft.getAttribute("aria-expanded") === "true";
+  ft.setAttribute("aria-expanded", String(!open)); panel.hidden = open; });
+const chosen = document.getElementById("chosen");
+document.querySelectorAll("input[name=t]").forEach((c) => c.addEventListener("change", () => {
+  chosen.innerHTML = "";
+  document.querySelectorAll("input[name=t]:checked").forEach((x) => {
+    const li = document.createElement("li");
+    li.innerHTML = "<span>" + x.value + "</span> <button type=\"button\">X</button>";
+    chosen.append(li);
+  });
+}));
+</script></body></html>

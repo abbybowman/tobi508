@@ -916,6 +916,7 @@ class Check4F:
     test_id = TestId.T4F
     state_type = State4F
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     shares = 1  # collects before 4.A, which reuses its replays (ctx.cache)
     about = (
         "It uses the order of the Tab and Shift+Tab walks and checks it against "

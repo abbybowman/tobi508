@@ -81,6 +81,16 @@ COMPONENTS_JS = (
   window.__a11yLabelEls = els;
   const ownText = (li) => Array.from(li.childNodes).filter((n) => n.nodeType === 3)
     .map((n) => n.textContent).join(' ').replace(/\\s+/g, ' ').trim();
+  // The text of the row a button sits in, without the button's own text: what
+  // tells same-named buttons apart (5.C, fix 9b).
+  const rowText = (el) => {
+    const row = el.closest('li, tr, [role=row], [role=listitem], article');
+    if (!row) return '';
+    const own = txt(el);
+    let t = (row.innerText || '').replace(/\\s+/g, ' ').trim();
+    if (own && t.includes(own)) t = t.split(own).join(' ');
+    return t.replace(/\\s+/g, ' ').trim().slice(0, 120);
+  };
   const headers = (el) => {
     const cell = el.closest('td,th');
     if (!cell || !cell.closest('table')) return [];
@@ -134,6 +144,7 @@ COMPONENTS_JS = (
       aria_label: el.getAttribute('aria-label') || '',
       title: el.getAttribute('title') || '',
       own_text: button ? (txt(el) || el.value || '') : '',
+      row_text: button ? rowText(el) : '',
       menu: button && isMenu(el),
       heading: isOpt(el) ? headingOf(el) : '',
       table_headers: headers(el),
@@ -285,6 +296,7 @@ class Comp(BaseModel):
     aria_label: str = ""
     title: str = ""
     own_text: str = ""
+    row_text: str = ""  # a button: the text of the row it sits in, without its own
     menu: bool = False  # a menu or disclosure button (aria-expanded, aria-haspopup)
     heading: str = (
         ""  # an option's nearest visible heading in its form or section (5.C)
@@ -446,20 +458,24 @@ def wanted(ctx) -> bool:
     return bool({"5.A", "5.B", "5.C"} & set(ctx.selected))
 
 
-async def read_revealed(ctx, s: Session, origin: str) -> None:
-    """At the end of a replay that revealed content (4.F pass R, 5.D pass F):
-    read its form components with ANDI, for 5.A and 5.C (spec 5.C section 2,
-    fields revealed by interaction). Only when 5.A or 5.C runs in this call;
-    call it last on the session (ANDI changes the page)."""
-    if not wanted(ctx) or ctx.out_of_time():
-        return
+async def read_revealed(ctx, s: Session, origin: str) -> bool | None:
+    """At the end of a replay that revealed content (4.F pass R, 5.D pass F,
+    reveal.py): read its form components with ANDI, for 5.A-5.C (spec 5.C
+    section 2, fields revealed by interaction). Only when one of them runs in
+    this call (None: not asked); call it last on the session (ANDI changes
+    the page). True when read, False when it could not be."""
+    if not wanted(ctx):
+        return None
+    if ctx.out_of_time():
+        return False
     try:
         got = await read_session(
             ctx, s, origin, True, f"r{len(ctx.cache.get('labels-revealed', [])) + 1}"
         )
     except Exception:
-        return
+        return False
     ctx.cache.setdefault("labels-revealed", []).append(got)
+    return True
 
 
 async def labels_pass(ctx, walk) -> LabelsPass:

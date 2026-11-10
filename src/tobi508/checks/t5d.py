@@ -1139,6 +1139,7 @@ class Check5D:
     test_id = TestId.T5D
     state_type = State5D
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     about = (
         "It fills in every form field it can reach with the keyboard, in order: "
         "it types a plain value into text fields, ticks checkboxes, chooses each "

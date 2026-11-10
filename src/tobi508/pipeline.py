@@ -33,7 +33,7 @@ from urllib.parse import urlsplit
 
 from playwright.async_api import Browser, async_playwright
 
-from tobi508 import config, flashcap, motion, pagecache, rules, scrt
+from tobi508 import config, flashcap, motion, pagecache, reveal, rules, scrt
 from tobi508.browser import (
     MOTION_BROWSER,
     NavigationBlocked,
@@ -1127,6 +1127,37 @@ async def run_tt_tests(
                     run.write_json(run.evidence_dir / "walk.json", walk)
                     run.log("walk", **_walk_summary(walk), cost=asdict(cost))
                 break
+            if walk is not None and any(
+                getattr(c, "uses_reveal", False) for c in checks
+            ):
+                # Open every menu, tab and section the walk found, once, for
+                # the tests that read opened content (fix 9b, reveal.py).
+                await say(1.5, "Opening menus and expandable sections")
+                try:
+                    with metered() as cost:
+                        rv = await _bounded(
+                            reveal.collect(ctx, walk), hard + allowance[0]
+                        )
+                    ctx.cache["reveal"] = rv
+                    report.reveal = rv.summary()
+                    run.write_json(run.evidence_dir / "reveal.json", rv)
+                    run.log(
+                        "reveal",
+                        triggers=report.reveal["triggers"],
+                        opened=report.reveal["opened"],
+                        cost=asdict(cost),
+                    )
+                except Exception as exc:
+                    # Nothing known about what opens: a guard then keeps a
+                    # PASS from standing (principle 3).
+                    err = (
+                        "time limit"
+                        if isinstance(exc, TimeoutError)
+                        else safe_error(exc)
+                    )
+                    report.reveal = {"failed": True, "triggers": 0, "opened": 0}
+                    report.errors.append(f"Opening menus and sections failed: {err}")
+                    run.log("reveal", "error", error=err)
             for c in checks:
                 if pages_cut and uses_pages(c):
                     continue  # NEEDS REVIEW, not performed: pages_cut says why
