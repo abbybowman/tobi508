@@ -1,0 +1,11 @@
+{
+ "date": "2026-11-10",
+ "types": "4.A",
+ "repeat": 1,
+ "pages": [
+  "https://svs.gsfc.nasa.gov/cilab/",
+  "https://svs.gsfc.nasa.gov/14592/"
+ ],
+ "dry": false,
+ "started": "2026-11-10T00:13:57.023144+00:00"
+}
