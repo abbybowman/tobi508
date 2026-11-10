@@ -34,8 +34,9 @@ EXPECTED: dict[str, dict] = {
     },
     "f07-same-address-link": {"outcome": "PASS", "rows": ["M3"]},
     # Native date input parts are native (1.2.0): only the custom picker is
-    # executed.
-    "f13-native-date-and-custom-picker": {"outcome": "PASS", "rows": ["M8"]},
+    # executed. NEEDS REVIEW since 1.5.0: the picker opens a panel with
+    # controls, which this test does not walk yet (guard RC, fix 9b phase 2).
+    "f13-native-date-and-custom-picker": {"outcome": "NEEDS_REVIEW", "rows": ["M8"]},
     "f08-title-only-format": {
         "outcome": "FAIL",
         "rows": ["M14"],

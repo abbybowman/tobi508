@@ -143,6 +143,29 @@ EXPECTED: dict[str, dict] = {
     # Post-round 1 fix 10: a header's menu button beside a placeholder-only
     # search box does not label it (5.A 1.2.0): M3, no question. Its name
     # comes from a hidden <label>, so screen readers announce "Search".
+    # Fix 9b (5.A-5.C 1.3.0/1.5.0): what a menu, tab or filter shows when
+    # opened is read like the page at load. A filter whose choices add remove
+    # buttons that all announce "X" while the rows differ: one question for
+    # the set (decision 1).
+    "f22-filter-adds-remove-buttons": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.C": {
+            "outcome": "FAIL",
+            "rows": ["M5", "M5", "M5", "M5", "M7", "M9"],
+            "answers": missing("Earth"),
+        },
+    },
+    # An accordion hides a text field with no label.
+    "f23-accordion-unlabeled-field": {
+        "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5"]},
+    },
+    # A collapsed control that opens nothing: what it should hold was not
+    # checked (guard RV), never a PASS.
+    "f24-trigger-opens-nothing": {
+        "5.A": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
+        "5.C": {"outcome": "NEEDS_REVIEW", "rows": ["M5", "M5"]},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},

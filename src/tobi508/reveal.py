@@ -6,8 +6,9 @@ decided here (CLAUDE.md principle 2): the guard rows are in the specs.
 
 A *trigger* is a stop of the Tab walk that announces it opens something: a
 collapsed control (`aria-expanded` false, a closed `<summary>`), one with
-`aria-haspopup`, one that names a region in `aria-controls`, or a tab that is
-not the selected one. A plain button with no such hint is not a trigger.
+`aria-haspopup`, one that names a region in `aria-controls` that is hidden, or
+a tab that is not the selected one. Form fields (including the parts of a
+native date input) are not triggers. A plain button with no such hint is not a trigger.
 Each is opened on its own fresh load: focus is put on it directly and Enter is
 pressed (a click when Enter did nothing). What was not visible before and is
 now is what it opened. When the opened content holds sets of check boxes or
@@ -201,12 +202,17 @@ class Reveal(BaseModel):
 
 def reasons(stop) -> list[str]:
     """Why a stop is a trigger; empty when it is not one."""
-    out = []
+    out: list[str] = []
+    # A form field is not a disclosure (a combobox opens its list as you type,
+    # a spinbutton updates a total: 5.D's matter), and the parts of a native
+    # date input open the browser's own picker, which is not page content.
+    if stop.control or stop.group:
+        return out
     if stop.collapsed:
         out.append("summary" if stop.tag == "summary" else "collapsed")
     if stop.haspopup:
         out.append("popup")
-    if stop.controls:
+    if stop.controls and stop.controls_hidden:
         out.append("controls")
     if stop.tab_unselected:
         out.append("tab")

@@ -137,6 +137,10 @@ class Stop(BaseModel):
     controls: str | None = Field(
         default=None, description="aria-controls: the region it controls."
     )
+    controls_hidden: bool = Field(
+        default=False,
+        description="The region aria-controls names exists and is hidden.",
+    )
     tab_unselected: bool = Field(
         default=False, description="A tab that is not the selected one."
     )

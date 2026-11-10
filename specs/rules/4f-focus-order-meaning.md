@@ -2,7 +2,7 @@
 tt_test: 4.F
 tt_name: 2.4.3-focus-order-meaning
 spec_version: 1.5.0
-guards: unrecorded-code, reveal, reveal-content
+guards: unrecorded-code, reveal
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -110,7 +110,7 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
-**Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). Pass R opens up to 6 triggers, but the focus order is not read through every opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
+**Why 4.F has no guard RC (reveal-content; Abby, 2026-11-09, to confirm).** Pass R already opens up to `REVEAL_MAX` (6) triggers, presses Tab into what each opened and records where focus went (S6, the dialog check D), which is what this test checks about opened content; a page with more than six is NEEDS REVIEW already (G3). A guard RC on top would turn every disclosure or dialog test of 4.F into a review, including the ones pass R has just checked.
 
 ## 4. Judgment questions
 

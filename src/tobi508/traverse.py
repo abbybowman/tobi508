@@ -258,11 +258,18 @@ _DESCRIBE_FN = (
   const haspopup = hp && hp !== 'false' ? hp : null;
   const controls = this.getAttribute('aria-controls') || null;
   const tabUnselected = role === 'tab' && this.getAttribute('aria-selected') === 'false';
+  // Does the region it controls exist and stay hidden? (aria-controls on a
+  // control whose region is already shown, such as the selected tab's panel
+  // or a field that updates a total, does not announce hidden content.)
+  const ctl = (controls || '').split(/\s+/).filter(Boolean)
+    .map((id) => this.ownerDocument.getElementById(id)).filter(Boolean);
+  const controlsHidden = ctl.length > 0 && ctl.every((e) => !(e.checkVisibility
+    ? e.checkVisibility({ visibilityProperty: true }) : e.getClientRects().length > 0));
   const dlg = this.closest('dialog, [role=dialog], [role=alertdialog]');
   const modal = !!dlg && ((dlg.tagName === 'DIALOG' && dlg.matches(':modal')) || dlg.getAttribute('aria-modal') === 'true');
   return { css: path(this), tag, x: r.x, y: r.y, w: r.width, h: r.height,
            isBody: this === document.body || this === document.documentElement,
-           widget, control, readonly, disabled, group, collapsed, modal, haspopup, controls, tabUnselected };
+           widget, control, readonly, disabled, group, collapsed, modal, haspopup, controls, controlsHidden, tabUnselected };
 }"""
 )
 
@@ -739,6 +746,7 @@ class FocusReader:
             collapsed=info["collapsed"],
             haspopup=info.get("haspopup"),
             controls=info.get("controls"),
+            controls_hidden=bool(info.get("controlsHidden")),
             tab_unselected=bool(info.get("tabUnselected")),
             modal=info["modal"],
         )

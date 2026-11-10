@@ -44,16 +44,16 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 Accurate on real pages |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 Accurate on real pages |
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.1.0](specs/rules/3a-flashing.md) | Videos that do not play on load are read from their files (checked on test pages and NASA 14592); at most 3 videos and the first 10 s of each; a video it cannot read is left for a person |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.4.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.5.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
-| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.11.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |
-| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.4.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
-| 4.E | 3.2.1-on-focus | 3.2.1 | [1.3.0](specs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
-| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.4.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question needs a clearer rubric before a server judge answers it (fix planned) |
-| 5.A | 3.3.2-label-provided | 3.3.2 | [1.2.0](specs/rules/5a-label-provided.md) | ⚠️ Fails search fields that an icon button labels (fix planned) |
-| 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.2.0](specs/rules/5b-label-descriptive.md) | ⚠️ Does Not Apply where it should pass, following 5.A (fix planned) |
-| 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.4.0](specs/rules/5c-programmatic-label.md) | ⚠️ Fails hidden carousel buttons; misses controls that appear only after interaction (fixes planned) |
-| 5.D | 3.2.2-on-input | 3.2.2 | [1.4.0](specs/rules/5d-on-input.md) | Reads where focus landed again after 1 s, so focus that jumps a moment after a field is left is seen (checked on test pages, not on NASA 5340: its recording lacks the script that does it, see the guard) |
+| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.12.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |
+| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.5.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
+| 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
+| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.5.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question needs a clearer rubric before a server judge answers it (fix planned) |
+| 5.A | 3.3.2-label-provided | 3.3.2 | [1.3.0](specs/rules/5a-label-provided.md) | ⚠️ Fails search fields that an icon button labels (fix planned) |
+| 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.3.0](specs/rules/5b-label-descriptive.md) | ⚠️ Does Not Apply where it should pass, following 5.A (fix planned) |
+| 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.5.0](specs/rules/5c-programmatic-label.md) | ⚠️ Fails hidden carousel buttons; misses controls that appear only after interaction (fixes planned) |
+| 5.D | 3.2.2-on-input | 3.2.2 | [1.5.0](specs/rules/5d-on-input.md) | Reads where focus landed again after 1 s, so focus that jumps a moment after a field is left is seen (checked on test pages, not on NASA 5340: its recording lacks the script that does it, see the guard) |
 | 5.F | 3.3.1-error-identification | 3.3.1 | [1.4.0](specs/rules/5f-error-identification.md) | ⚠️ Does not check fields inside frames yet (fix planned) |
 | 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.3.0](specs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; often undecided |
 | 5.H | 3.3.4-error-prevention | 3.3.4 | [1.2.0](specs/rules/5h-error-prevention.md) | 🟢 Sure and accurate once answered |
