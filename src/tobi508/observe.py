@@ -144,6 +144,39 @@ NOISE_MS = 300
 CDP_TIMEOUT_S = 2.0
 
 
+# Which audio and video elements are playing, in document order (shadow roots
+# included). Read in TOBI's isolated world, per frame (4.A, media start).
+MEDIA_JS = """() => {
+  const out = [];
+  const walk = (root) => {
+    for (const m of root.querySelectorAll('audio,video'))
+      out.push(!m.paused && !m.ended);
+    for (const el of root.querySelectorAll('*'))
+      if (el.shadowRoot) walk(el.shadowRoot);
+  };
+  walk(document);
+  return out;
+}"""
+
+
+async def playing_media(s: Session) -> set[tuple[str, int]]:
+    """(frame, index) of every audio or video element that is playing, in
+    every frame TOBI can read. A frame it cannot read contributes nothing."""
+    out: set[tuple[str, int]] = set()
+    r = s.traversal.reader
+    try:
+        frames = await r.frames()
+    except Exception:
+        return out
+    for fid, sess, ctx in frames:
+        try:
+            states = await r.call_in(sess, ctx, MEDIA_JS)
+        except Exception:
+            continue
+        out |= {(fid, i) for i, on in enumerate(states) if on}
+    return out
+
+
 class Effect(BaseModel):
     kinds: list[str] = Field(default_factory=list)
     mutations: int = 0
@@ -159,7 +192,7 @@ class Effect(BaseModel):
         return self.noise > 0 and self.kinds == ["dom"]
 
 
-async def snapshot(s: Session) -> dict[str, Any]:
+async def snapshot(s: Session, media: bool = False) -> dict[str, Any]:
     page = s.page
     focus = None
     try:
@@ -181,6 +214,7 @@ async def snapshot(s: Session) -> dict[str, Any]:
         "pages": len(s.traversal.context.pages),
         "focus": focus,
         "dialogs": dialogs,
+        "media": await playing_media(s) if media else set(),
     }
 
 
@@ -236,15 +270,19 @@ async def observe(
     own: str | None,
     submits: bool = False,
     noise_ms: int = NOISE_MS,
+    media: bool = False,
 ) -> Effect:
     """What an action changes (spec: Terms, effect). `own` is the path key of
     the element acted on: focus moving onto it (a click) is not an effect.
     `submits` (5.D) also records form submissions as the effect "submit";
     off for 4.A and 4.B, whose specs do not read it. `noise_ms` 0 skips the
-    noise window (5.D's leave step reuses the one its completion measured)."""
+    noise window (5.D's leave step reuses the one its completion measured).
+    `media` (4.A only, spec term *media start*) also records "media_start":
+    an audio or video element that was not playing before the action and is
+    after it. Off elsewhere, so 4.B and 5.D keep the effect they cite."""
     page = s.page
     await settle(page, quiet_ms)
-    before = await snapshot(s)
+    before = await snapshot(s, media)
     sub0 = len(await submissions(page)) if submits else 0
     m0, *_ = await _read_logs(page)
     if noise_ms:
@@ -256,7 +294,7 @@ async def observe(
         earlier = set(opened.ids)
         await act()
         await settle(page, quiet_ms)
-        after = await snapshot(s)
+        after = await snapshot(s, media)
         sub1 = len(await submissions(page)) if submits else 0
         m2, *_ = await _read_logs(page)
         new_windows = opened.ids - earlier if opened.ok else set()
@@ -275,6 +313,8 @@ async def observe(
     f = after["focus"]
     if f != before["focus"] and not (own and f and f.startswith(own)):
         e.kinds.append("focus")
+    if after["media"] - before["media"]:
+        e.kinds.append("media_start")
     if e.mutations > 0:
         e.kinds.append("dom")
     return e

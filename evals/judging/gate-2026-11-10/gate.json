@@ -1,0 +1,68 @@
+{
+ "full_gate": false,
+ "date": "2026-11-10",
+ "scored_at": "2026-11-10T00:15:03.993635+00:00",
+ "types_switched_on": [
+  "4.A"
+ ],
+ "repeat": 1,
+ "pages": [
+  "https://svs.gsfc.nasa.gov/cilab/",
+  "https://svs.gsfc.nasa.gov/14592/"
+ ],
+ "types": {
+  "4.A": {
+   "cells": 2,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "unsure": 1,
+   "other": 0,
+   "passes": false,
+   "why_not": [
+    "a trial: 2 of 10 pages, 1 of 3 repeats"
+   ]
+  }
+ },
+ "cells": [
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "4.A",
+   "verdict": "agree",
+   "key": "Fail",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "4.A-k1-J1",
+     "choice": "no_alternative",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p06",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-k1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.A-t21-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  }
+ ],
+ "passing": [],
+ "judge_types_if_approved": "",
+ "note": "Written by the gate; JUDGE_TYPES stays empty until Abby approves."
+}

@@ -1,7 +1,8 @@
 ---
 tt_test: 5.A
 tt_name: 3.3.2-label-provided
-spec_version: 1.2.0
+spec_version: 1.3.0
+guards: reveal
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -70,6 +71,10 @@ Each data-entry field is an *instance*; each radio button and checkbox is its ow
 | M3 | "<field>'s only label is the gray example text inside it, which disappears as soon as someone starts typing. Add a label that stays visible. To see it, load the page and move to the field." |
 | M5 | "<field> has no label or instructions people can see (screen readers may still announce a name). To see it, load the page and move to the field." |
 | M6, M1 | "We could not tell whether <field> has a label people can see. Please look at it." |
+
+**Opened content is read like content at load** (fix 9b; Abby, 2026-11-09). Every state `reveal.py` opens is read with ANDI like the page as loaded, and when opened content holds sets of check boxes or radio buttons, up to two options of each (at most 3 sets) are chosen together with Space on a fresh load and the page is read again, because choosing can add controls (a filter that adds a remove button for each choice). Components found this way are tested like any other and say how they were reached.
+
+**Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

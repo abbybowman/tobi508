@@ -144,6 +144,10 @@ class Check(Protocol):
     test_id: ClassVar[TestId]
     state_type: ClassVar[type[BaseModel]]
     uses_walk: ClassVar[bool]  # needs the shared keyboard walk
+    # Optional `uses_reveal = True`: reads what the page's menus, tabs and
+    # sections show when opened (reveal.py, once per call, before collect);
+    # its spec declares guards `reveal` (and `reveal-content` while the keyboard
+    # walk does not go through opened content).
     # Plain words for users: what the tool does for this test automatically,
     # and what it leaves to a person (explain.py shows it before a run).
     about: ClassVar[str]

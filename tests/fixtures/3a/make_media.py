@@ -71,6 +71,8 @@ def main() -> None:
         14,
         "if(lt(N\\,360)\\,128\\,if(lt(mod(N\\,6)\\,3)\\,16\\,235))",
     )
+    # Grey for 3 s: a clip that never flashes (an unplayed video, 1.1.0).
+    _webm("video-grey.webm", 3, "128")
 
 
 if __name__ == "__main__":

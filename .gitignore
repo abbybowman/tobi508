@@ -52,3 +52,7 @@ node_modules/
 evals/judging/round1-postfix/results/*/runs/
 evals/judging/round1-postfix/results/*/transcript.json
 /archives/
+
+# ApiJudge gate runs: the report and pre-SCRT files of each page are kept locally;
+# gate.json, run.json and the eval results are what goes in git.
+evals/judging/gate-*/r*/results/

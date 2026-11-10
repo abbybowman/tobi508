@@ -394,7 +394,12 @@ MOTION_INIT_JS = (
     time: m.currentTime, duration: isFinite(m.duration) ? m.duration : null, loop: m.loop, autoplay: m.autoplay,
     controls: m.controls, error: m.error ? m.error.code : null,
     decoded: typeof m.webkitAudioDecodedByteCount === 'number' ? m.webkitAudioDecodedByteCount : null,
-    src: (m.currentSrc || '').slice(0, 500) }));
+    src: (m.currentSrc || '').slice(0, 500),
+    // Every address the element could play (its src and its <source> children),
+    // for 3.A, which reads a video that never played from its file.
+    urls: [m.getAttribute('src') ? m.src : '', ...Array.from(m.querySelectorAll('source')).map((x) => x.src)]
+      .filter((u) => /^https?:/.test(u || '')).map((u) => u.slice(0, 500)).slice(0, 6),
+    total: document.querySelectorAll('video, audio').length }));
   // <blink> and text-decoration: blink do not blink in Chrome (plan item 9):
   // a note for 2.B only.
   const blinkMarkup = () => {
@@ -749,6 +754,8 @@ class Media(BaseModel):
     error: int | None = None
     decoded: int | None = None
     src: str = ""
+    urls: list[str] = Field(default_factory=list)
+    total: int = 0  # audio and video elements in the frame (the read lists 20)
 
 
 class Poll(BaseModel):

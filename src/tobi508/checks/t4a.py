@@ -269,10 +269,13 @@ class StopHook:
 async def _own_listener_types(t: Traversal, step: Step) -> set[str]:
     frame_id, _, backend = step.stop.key.rpartition(":")
     try:
-        session, ctx = await t.reader._session_for(frame_id)
+        session, _ctx = await t.reader._session_for(frame_id)
+        main = await t.reader._main_context(session, frame_id)
+        if main is None:
+            return set()
         obj = await session.send(
             "DOM.resolveNode",
-            {"backendNodeId": int(backend), "executionContextId": ctx},
+            {"backendNodeId": int(backend), "executionContextId": main},
         )
         res = await session.send(
             "DOMDebugger.getEventListeners", {"objectId": obj["object"]["objectId"]}
@@ -387,9 +390,9 @@ async def _point(s: Session, frames, path_key: str) -> dict | None:
 
 async def _mark_listeners(s: Session) -> None:
     r = s.traversal.reader
-    for _, sess, ctx in await r.frames():
+    for fid, sess, ctx in await r.frames():
         try:
-            ls = await r.listeners(sess, ctx)
+            ls = await r.listeners(sess, fid)
         except Exception:
             continue
         click = sorted({x["backendNodeId"] for x in ls if x["type"] in CLICK_TYPES})
@@ -790,7 +793,7 @@ async def _click_check(ctx: RunContext, st: State4A, inst: Inst4A) -> Effect | N
         async def act() -> None:
             await s.page.mouse.click(pt["x"], pt["y"])
 
-        return await observe(s, ctx.quiet_ms, act, inst.target["path_key"])
+        return await observe(s, ctx.quiet_ms, act, inst.target["path_key"], media=True)
     except Exception:
         inst.unreliable = True
         return None
@@ -812,11 +815,19 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
             inst.unreliable = True
             return
         inst.enter = await observe(
-            s, ctx.quiet_ms, lambda: s.page.keyboard.press("Enter"), sr.path_key
+            s,
+            ctx.quiet_ms,
+            lambda: s.page.keyboard.press("Enter"),
+            sr.path_key,
+            media=True,
         )
         if not inst.enter.any:
             inst.space = await observe(
-                s, ctx.quiet_ms, lambda: s.page.keyboard.press(" "), sr.path_key
+                s,
+                ctx.quiet_ms,
+                lambda: s.page.keyboard.press(" "),
+                sr.path_key,
+                media=True,
             )
     except Exception:
         inst.unreliable = True
@@ -837,11 +848,16 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
         async def act() -> None:
             await s.page.mouse.click(pt["x"], pt["y"])
 
-        inst.click = await observe(s, ctx.quiet_ms, act, sr.path_key)
+        inst.click = await observe(s, ctx.quiet_ms, act, sr.path_key, media=True)
     except Exception:
         inst.unreliable = True
     finally:
         await s.close()
+
+
+def _click_words(kinds: list[str]) -> list[str]:
+    """What a click did, for J1's input: a media start reads as what it is."""
+    return ["started a video or audio" if k == "media_start" else k for k in kinds]
 
 
 # ── Questions and answers ────────────────────────────────────────────────────
@@ -895,7 +911,7 @@ def questions_for(st: State4A, evidence_refs: list[str]) -> list[OpenQuestion]:
                                 for k in ("role", "name", "tag", "href", "css_path")
                             },
                             "shown_by_mouse_hover_on": inst.revealed_by,
-                            "click": inst.click.kinds
+                            "click": _click_words(inst.click.kinds)
                             if inst.click
                             else ["native control"],
                         },
@@ -1266,6 +1282,7 @@ class Check4A:
     test_id = TestId.T4A
     state_type = State4A
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     about = (
         "After the Tab walk, it looks for anything a mouse can use that keyboard "
         "focus never reaches: clickable elements, menus that open when the mouse "

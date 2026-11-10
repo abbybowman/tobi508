@@ -1,7 +1,8 @@
 ---
 tt_test: 5.B
 tt_name: 2.4.6-label-descriptive
-spec_version: 1.2.0
+spec_version: 1.3.0
+guards: reveal
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -62,6 +63,10 @@ Each item is an instance.
 | Page FAIL | "Some labels do not say what to enter or what the button does: <items>." |
 | A1 | "This page has no form fields, so this test does not apply." |
 | A2 | "No form field on this page has a label people can see, so there is no label to judge here (a missing label is reported by the label test)." |
+
+**Opened content is read like content at load** (fix 9b; Abby, 2026-11-09). Every state `reveal.py` opens is read with ANDI like the page as loaded, and when opened content holds sets of check boxes or radio buttons, up to two options of each (at most 3 sets) are chosen together with Space on a fresh load and the page is read again, because choosing can add controls (a filter that adds a remove button for each choice). Components found this way are tested like any other and say how they were reached.
+
+**Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 ## 4. Judgment questions
 

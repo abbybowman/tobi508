@@ -27,6 +27,10 @@ from tobi508.redact import safe_error
 from tobi508.walk import KeyboardWalk
 
 FAST_MS = 334  # faster than every 334 ms: more than 3 changes a second
+# Spec 1.1.0, A3: at most this many videos are decoded; the rest are named.
+VIDEO_MAX = 3
+MEDIA_MAX = 20
+
 STREAMING = re.compile(
     r"^https?://(www\.)?(youtube(-nocookie)?\.com/embed|player\.vimeo\.com)/",
     re.IGNORECASE,
@@ -38,6 +42,8 @@ class Trigger(BaseModel):
     detail: str = ""
     css: str = ""
     src: str = ""
+    urls: list[str] = Field(default_factory=list)  # other files it could play
+    played: bool = False  # video: it played during the watch
     frame_url: str = ""
 
 
@@ -110,16 +116,36 @@ def triggers(mp: motion.MotionPass) -> tuple[list[Trigger], list[flashcap.Unmeas
             out.append(
                 Trigger(kind="image", src=img["src"], detail=f"frames of {ms} ms")
             )
+    # Every video is a trigger, played or not (1.1.0: 14592's videos never
+    # played in the watch, so nothing looked at their files). Hidden ones too.
     reads: dict[tuple[int, str], list[motion.Media]] = {}
     for m in mp.media:
         if m.tag == "video":
             reads.setdefault((m.frame, m.css), []).append(m)
     for (_, css), rs in reads.items():
-        if played(rs):
-            last = rs[-1]
-            out.append(
-                Trigger(kind="video", css=css, src=last.src, frame_url=last.frame_url)
+        last = rs[-1]
+        urls = list(dict.fromkeys(u for m in rs for u in m.urls))
+        out.append(
+            Trigger(
+                kind="video",
+                css=css,
+                src=last.src,
+                urls=urls,
+                played=played(rs),
+                frame_url=last.frame_url,
             )
+        )
+    # Pass T reads at most 20 audio and video elements in a frame.
+    per_frame: dict[int, int] = {}
+    for m in mp.media:
+        per_frame[m.frame] = max(per_frame.get(m.frame, 0), m.total)
+    if any(n > MEDIA_MAX for n in per_frame.values()):
+        gone.append(
+            flashcap.Unmeasured(
+                what="audio and video elements past the first 20",
+                why=f"the page has {max(per_frame.values())} and we look at 20",
+            )
+        )
     for src in mp.iframes:
         if STREAMING.match(src):
             gone.append(
@@ -369,13 +395,40 @@ async def _measure(
                     len(st.sources),
                     [frames[i] for i in idx[: flashcap.FPS : 2]],
                 )
-        for t in [t for t in st.triggers if t.kind == "video"]:
+        done: set[str] = set()
+        videos = sorted(
+            (t for t in st.triggers if t.kind == "video"), key=lambda t: not t.played
+        )
+        for t in videos:
+            key = _files(t)[0] if _files(t) else f"{t.frame_url}|{t.css}"
+            if key in done:
+                continue  # the same file again: measured or named once
+            done.add(key)
+            if len(done) > VIDEO_MAX:
+                st.unmeasured.append(
+                    flashcap.Unmeasured(
+                        what="a video past the first three",
+                        why=f"we look at {VIDEO_MAX} videos on a page",
+                        css=t.css,
+                        src=key[:200],
+                    )
+                )
+                continue
             await _video(ctx, st, mp, page, har, t, tool)
-            if tool is None and st.sources and st.sources[-1].kind == "video":
-                pass
     finally:
         if tool_ctx is not None:
             await tool_ctx.close()
+
+
+def _files(t: Trigger) -> list[str]:
+    """The web addresses a video could play: the one it chose, then the rest."""
+    return list(
+        dict.fromkeys(
+            u.split("#")[0]
+            for u in [t.src, *t.urls]
+            if u.startswith(("http:", "https:"))
+        )
+    )
 
 
 async def _video(ctx, st: State3A, mp, page, har: Path, t: Trigger, tool) -> None:
@@ -384,43 +437,72 @@ async def _video(ctx, st: State3A, mp, page, har: Path, t: Trigger, tool) -> Non
         gone.why = "the run reached its time limit"
         st.unmeasured.append(gone)
         return
-    if t.src.startswith("blob:") or not t.src.startswith(("http:", "https:")):
-        gone.why = "it streams its video, which we cannot play from our recording"
+    files = _files(t)
+    if not files:
+        gone.src = ""
+        if t.src.startswith("blob:"):
+            gone.why = "it streams its video, which we cannot play from our recording"
+        elif t.src:
+            gone.why = "its file is not at a web address we record"
+        else:
+            gone.why = (
+                "it has no file we can see (the page may give it one only when "
+                "it is used)"
+            )
         st.unmeasured.append(gone)
         return
-    body = capture.media_body(har, t.src) if har.exists() else None
     over = {m["url"] for m in mp.media_store if m.get("over_cap")}
-    if body is None:
-        gone.why = (
-            "its file is larger than we record"
-            if t.src.split("#")[0] in over
-            else "its file was not recorded"
-        )
-        st.unmeasured.append(gone)
-        return
-    if len(body) > flashcap.VIDEO_MAX_BYTES:
-        gone.why = "its file is too large to decode"
-        st.unmeasured.append(gone)
-        return
+    refused = {
+        m["url"]: m["status"]
+        for m in mp.media_store
+        if m.get("status") and not m.get("file")
+    }
+    # The element's other files are tried when the first one cannot be read or
+    # decoded (a <source> list holds a format Chromium cannot play first).
+    frames = times = None
+    length = None
+    first_why = ""
     own_ctx = None
-    if tool is None:
-        own_ctx, tool = await motion._secure_tool_page(page)
     try:
-        frames, times, length, err = await flashcap.video_frames(
-            tool, body, flashcap.video_type(body, t.src)
-        )
-    except Exception as exc:
-        frames, times, length, err = (
-            [],
-            [],
-            None,
-            f"it could not be decoded ({safe_error(exc)})",
-        )
+        for url in files:
+            body = capture.media_body(har, url) if har.exists() else None
+            if body is None:
+                if url in over:
+                    why = "its file is larger than we record"
+                elif url in refused:
+                    why = f"its file is not there (the server answered {refused[url]})"
+                else:
+                    why = "its file was not recorded"
+            elif len(body) > flashcap.VIDEO_MAX_BYTES:
+                why = "its file is too large to decode"
+            else:
+                if tool is None:
+                    own_ctx, tool = await motion._secure_tool_page(page)
+                try:
+                    fr, tm, ln, err = await flashcap.video_frames(
+                        tool, body, flashcap.video_type(body, url)
+                    )
+                except Exception as exc:
+                    fr, tm, ln, err = (
+                        [],
+                        [],
+                        None,
+                        f"it could not be decoded ({safe_error(exc)})",
+                    )
+                why = err or (
+                    "it showed too few frames to analyze" if len(fr) < 2 else ""
+                )
+                if not why:
+                    frames, times, length = fr, tm, ln
+                    t = t.model_copy(update={"src": url})
+                    break
+            first_why = first_why or why
     finally:
         if own_ctx is not None:
             await own_ctx.close()
-    if err or len(frames) < 2:
-        gone.why = err or "it showed too few frames to analyze"
+    if frames is None or times is None:
+        gone.why = first_why
+        gone.src = files[0][:200]
         st.unmeasured.append(gone)
         return
     box = []

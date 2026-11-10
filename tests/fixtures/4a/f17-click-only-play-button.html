@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head><title>Launch video, click-only button</title></head>
+<body>
+<h1>Launch video, click-only button</h1>
+<div role="button" tabindex="0" id="play">Play the video</div>
+<video id="v" src="/3a/media/video-strobe.webm" width="160" height="120" muted loop playsinline aria-label="Demo reel clip"></video>
+<script>
+// Reached by Tab, but only a click starts the video.
+document.getElementById('play').addEventListener('click', function () {
+  document.getElementById('v').play();
+});
+</script>
+</body>
+</html>

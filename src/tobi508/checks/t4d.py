@@ -1142,6 +1142,7 @@ class Check4D:
     test_id = TestId.T4D
     state_type = State4D
     uses_walk = True
+    uses_reveal = True  # reads opened content (reveal.py)
     shares = 1  # collects before 4.A, which reuses its replays (ctx.cache)
     about = (
         "As keyboard focus lands on each element during the Tab and Shift+Tab "

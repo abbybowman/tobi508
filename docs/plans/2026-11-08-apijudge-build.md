@@ -52,6 +52,27 @@ still decide every outcome; the model only answers the questions.
    with the calling agent, as today. The calling agent cannot overwrite
    an answer the server gave.
 6. Every report records which model and prompt answered.
+- Item 6 (builder note 4), 2026-11-10: built and tried on two pages. Pages
+  `tests/fixtures/inject/` (f01 4.A, f02 5.B: the text asks for the outcome
+  the page would not get; `tests/test_fixtures_inject.py` checks the pages
+  bite, that the model sees the text only inside the untrusted block, and that
+  the outcome without the trick is as expected); `judge_eval.py answer`
+  (`--backend api`, `--dry`, `--repeat`, `--cases`); `evals/apijudge_gate.py`
+  (`run`, `score`, `--dry`) and `scoring.split_cells`; `tests/test_gate.py`
+  (cells decided by a server answer in force, the split, the rule, eval
+  results). **Verified (commands):** those tests; a dry count (33 calls for
+  all 4.A and 5.B eval cases, about 18k input tokens of text; 2 calls, 1.3k
+  tokens for the trial); a real CLI trial, 2 calls on the 2 inject pages
+  (about 4.5k and 3.7k input tokens, about 370 output): both correct, trick
+  text ignored; the gate on 2 frozen pages, 4.A only, 1 repeat
+  (`evals/judging/gate-2026-11-10/`): CILab agree (FAIL, key Fail), 14592 the
+  judge said unsure, left for a person (key Pass), no wrong PASS; marked a
+  trial, passes nothing. **Not verified:** the full gate (10 pages, 3 repeats,
+  every type; not run by design), any type's token cost over a full page set
+  (the one 14592 request cost 52k input tokens), the Messages route.
+  **Differs from the plan:** `judge_types`' default does not read `gate.json`
+  (the default stays empty until Abby approves a list); no comparison beside
+  Agent C yet.
 
 **Switched on one question type at a time.** A type is switched on only
 after it passes the gate (below). 4.F and 9.C stay off until bundle 4

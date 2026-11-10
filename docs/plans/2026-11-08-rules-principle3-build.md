@@ -4,7 +4,7 @@ Bundle 2 of the server judge pivot's "Sequencing to Nov 20"
 ([2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md));
 post-round 2 fixes 1-6 and 9b
 ([2026-11-08-post-round2-fixes.md](2026-11-08-post-round2-fixes.md)).
-Status: **step 1, fix 6, fix 2 and the unrecorded-code guard built; fixes 1, 4, 5, 3 and 9b are not.** Agent-assisted results, not
+Status: **built (PR #35 unless noted): step 1, fixes 1, 2 (#34), 4, 5, 6 (#32), the unrecorded-code guard (#34) and fix 9b phase 1; not built: fix 3 (error values, item 8), 9b phases 2 and 3.** Agent-assisted results, not
 certified Trusted Tester results.
 
 ## Status
@@ -74,6 +74,92 @@ certified Trusted Tester results.
   14592 and CILab 9.A cells move toward the key's Fail only as far as a
   review: the rule cannot say Fail without comparing against its own
   template. Nothing here turns a Fail or review into a Pass.
+- Fixes 1 and 4 (videos), item 4: built, branch `videos-3a-4a` (no pull
+  request opened yet). Specs 3.A 1.1.0, 4.A 1.4.0. **4.A:** listeners are
+  read from the page's own world (`traverse.FocusReader.listeners`, and
+  `t4a._own_listener_types`; delegated handlers on an ancestor are still
+  listed on the ancestor only, as the spec says); *media start* is an
+  effect for 4.A only (`observe(..., media=True)` adds `media_start`; 4.B and
+  5.D do not read it); J1's input says "started a video or audio". **3.A:**
+  every `<video>`, played or not, hidden or not, is a trigger and is read
+  from its recorded file; other `<source>` files are tried; at most 3
+  videos (played first) and 20 media elements, the rest named in A3; an
+  empty address says "no file we can see", never "streams"; the media store
+  records a 404 as `status`, so a missing file is "not there", not "larger
+  than we record". Verified (commands): `test_fixtures_4a.py` (f14-f17, each
+  failing with media start switched off) and `test_fixtures_3a.py` (f16-f22),
+  the full suite (1135 passed, 3 skipped, 1 xfailed); judge eval for 4.A only
+  (8 packets, one fresh agent, about 104k tokens): 8 of 8 match, including
+  f14, f15 and f16. Frozen pages (replay): CILab 4.A was PASS and is NEEDS
+  REVIEW with J1 open about `#demo-reel-row`, whose click "started a video or
+  audio" (the key is Fail; it becomes FAIL by M6 when J1 is no alternative,
+  which the judge decides, not this change); 14592 3.A was DOES NOT APPLY and
+  is NOT TESTED with a failing assessment (the key is Not Tested); 14592,
+  4914 and the home page for 4.A ask only native-control questions, none from
+  the listener change. Assumed: the CILab J1 answer (not asked on the real
+  page); that the home page's and 14592's other questions are unchanged by
+  the listener read (not compared with a run of the old build). Not done:
+  14592's `<video controls>` question (key Pass), left alone as the plan says.
+- Fix 9b phase 1 (opening everything), item 7: built on the same branch and
+  pull request (#35). New `reveal.py` (once per call, after the walk, for the
+  nine checks that set `uses_reveal`): triggers are walk stops that are
+  collapsed, have `aria-haspopup`, name a *hidden* region in `aria-controls`,
+  or are an unselected tab; form fields and the parts of a native date input
+  are not triggers (found on the first full run: a spinbutton and a combobox
+  carry `aria-controls`, a selected tab's panel is shown). Each opens on a
+  fresh load (focus it, Enter, a click when Enter showed nothing), up to 20;
+  for 5.A-5.C each opened state is read with ANDI and up to two options of
+  each of up to 3 opened sets are chosen together on a fresh load and read
+  again. Evidence `evidence/reveal.json`, `Report.reveal`. Guards RV
+  (`reveal`: a trigger not opened or not read) and RC (`reveal-content`:
+  opened content holds controls) in `engine.apply_guards`; specs 4.A 1.5.0,
+  4.C 1.12.0, 4.D 1.5.0, 4.E 1.4.0, 4.F 1.5.0, 5.A 1.3.0, 5.B 1.3.0, 5.C 1.5.0,
+  5.D 1.5.0. **Differs from the plan:** 4.F has RV only, no RC (its pass R
+  already Tabs through what the first six triggers open; RC on top would turn
+  every 4.F disclosure page into a review: to confirm with Abby). 5.C: one
+  question for a set of same-named buttons whose rows differ, with each row's
+  text; its quote may hold several rows. A revealed control read again in
+  another opened state is merged (kind, text, group, heading, row).
+  Verified (commands): `test_reveal.py` (14: the trigger rule, the summary,
+  both guards), pages 5a f22-f24 (filter adding remove buttons, accordion
+  with an unlabeled field, a trigger that opens nothing) and the 5.C set
+  question tests; every earlier expectation re-run: moved on purpose are
+  4.A f13 (PASS to NEEDS REVIEW: its custom picker opens controls, RC) and
+  5a f18 (its second menu button had no handler or panel: fixed). Judge eval
+  for 5.A-5.C on the changed pages (10 packets, one fresh agent, about 134k
+  tokens): 9 of 10 match; the mismatch (f22: the agent quoted two rows) was a
+  flaw in the quote check, fixed and tested with its exact answer. Frozen
+  Home (replay): 5.C was PASS and is FAIL: the 12 "Exclude results that
+  match this filter" buttons are found, in one question with each row's text
+  (the key's comment: same title, cannot tell which category is excluded),
+  plus 13 single questions about the filter checkboxes (their visible text
+  holds "ID: ..." counters and icon glyphs that are not announced). Full suite on
+  head 6463a35: 1171 passed, 3 skipped, 1 xfailed, 0 failed. Not done: a judge
+  answer on the real Home question; phase 2 (the keyboard walk through opened content)
+  and phase 3 (5.D fills opened fields) are on the ROADMAP. Assumed: that the
+  7 round 2 cells the plan expected to move (4.E on 5 pages, 4.A Help, 5.D
+  Home) move: not re-run on the frozen pages.
+- Fix 5 (5.D tab-away), item 5': built on the same branch and pull request
+  (#35). Spec 5.D 1.4.0. `t5d.py`: where focus landed is read after the
+  settle rule and again after 4.C's 1,000 ms window; the second read counts
+  and `Attempt.leave_read` (`immediate` or `after_wait`) and `focus_first`
+  record which; `_expected` no longer takes the walk's "next stop" at its
+  word when it comes before the field in the same frame (no positive
+  tabindex). **Differs from the plan:** the plan assumed an immediate blur
+  jump was already caught; it was not, because the keyboard walk follows the
+  page's own jump, so the stop the walk lists after the field is the jump's
+  target (f17 passed). Not detected: a jump forward past a field, which the
+  walk also follows. Verified (commands): `test_fixtures_5d.py` f17-f21 and
+  `test_tab_away_says_which_read_counted`; f17, f18 and f20 fail with the
+  change switched off; all 5.D, Baseline and ACT cases (206 passed); lint.
+  Frozen 5340 (replay): 5.D NEEDS REVIEW by guard GU (its recording lacks the
+  script that validates a year), so the fix cannot be shown on that page.
+  Assumed: none beyond the page set. f19 (redraw) passes with or without the
+  second read, because the redraw is a page change the settle rule waits for;
+  it stays as a regression page. f18 and f20 report two M9 rows: the second
+  field is reached through the first, whose jump lands while it is filled in
+  (the replay passes through it). Cost: about 1 s more per field that is left
+  without a mechanical change. Full suite: see the pull request.
 
 ## Step 1 findings (2026-11-09)
 

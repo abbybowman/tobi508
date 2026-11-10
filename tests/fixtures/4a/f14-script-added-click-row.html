@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><title>Demo reel</title>
+<style>#row { padding: 8px; margin: 8px 0; border: 1px solid #333; }</style>
+</head>
+<body>
+<h1>Demo reel</h1>
+<p><a href="#about">About the reel</a></p>
+<div id="row"><span>Demo reel, 2 minutes</span></div>
+<video id="v" src="/3a/media/video-strobe.webm" width="160" height="120" muted loop playsinline aria-label="Demo reel clip"></video>
+<p id="about">The reel shows our recent work.</p>
+<script>
+// The handler is added by script (as a library does), not by an attribute,
+// and the row has no pointer cursor and no role.
+document.getElementById('row').addEventListener('click', function () {
+  document.getElementById('v').play();
+});
+</script>
+</body>
+</html>

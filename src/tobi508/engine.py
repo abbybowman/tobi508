@@ -77,6 +77,12 @@ def page_outcome(e: PageEvidence) -> tuple[str, Outcome]:
     return row.id, row.outcome  # type: ignore[return-value]
 
 
+def _names(items: list[str], more: str = "") -> str:
+    shown = [f'"{i}"' for i in items[:3]]
+    left = len(items) - len(shown)
+    return ", ".join(shown) + (f" and {left} more" if left > 0 else "") + more
+
+
 UNRECORDED_CODE_SENTENCE = (
     "The page loads more code when it is used, for example when you type in a "
     "field, and the recording of the page does not have that code, so what "
@@ -105,5 +111,45 @@ def apply_guards(f: Finding, guards: tuple[str, ...], report: Any) -> Finding:
         f.rationale += (
             f" Guard GU: {report.unrecorded_code_count} script(s) the page "
             "loads when used are not in the recording."
+        )
+    rv = getattr(report, "reveal", None) or {}
+    # RV (`reveal`): something that opens was not opened or not read, so what
+    # is inside it was not checked (Abby, 2026-11-09, fix 9b).
+    if "reveal" in guards and f.outcome is Outcome.PASS and rv:
+        bad = [x["name"] for x in rv.get("not_opened", [])] + list(
+            rv.get("read_failed", [])
+        )
+        if bad or rv.get("failed"):
+            f.outcome = Outcome.NEEDS_REVIEW
+            f.rows = [*f.rows, "RV"]
+            f.summary = (
+                f"{REVIEW_HEAD} The page has menus or sections that open, and "
+                f"some could not be opened or read ({_names(bad)}), so what is "
+                "inside them was not checked."
+                if bad
+                else f"{REVIEW_HEAD} The page's menus and sections could not be "
+                "opened, so what is inside them was not checked."
+            )
+            f.note = TEST_NOT_PERFORMED_NOTE
+            f.rationale += " Guard RV: something that opens was not opened or read."
+    # RC (`reveal-content`): opened content holds things this test checks,
+    # and the keyboard walk and the fields' fill do not go through opened
+    # content until phase 2 and 3 of fix 9b are built.
+    if (
+        "reveal-content" in guards
+        and f.outcome is Outcome.PASS
+        and rv.get("opened_with_focusable", 0) > 0
+    ):
+        f.outcome = Outcome.NEEDS_REVIEW
+        f.rows = [*f.rows, "RC"]
+        f.summary = (
+            f"{REVIEW_HEAD} The page has menus or sections that open to show "
+            "more controls, and this test has not checked inside them yet, so a "
+            "person needs to check what they hold."
+        )
+        f.note = TEST_NOT_PERFORMED_NOTE
+        f.rationale += (
+            f" Guard RC: {rv['opened_with_focusable']} opened section(s) hold "
+            "controls that were not checked."
         )
     return f

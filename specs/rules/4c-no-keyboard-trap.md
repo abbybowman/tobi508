@@ -1,8 +1,8 @@
 ---
 tt_test: 4.C
 tt_name: 2.1.2-no-keyboard-trap
-spec_version: 1.11.0
-guards: unrecorded-code
+spec_version: 1.12.0
+guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -112,6 +112,10 @@ Each trap event is an *instance* judged by the first matching row of table 3a. T
 A page with a confirmed FAIL stays FAIL even when other instances need review: one confirmed trap fails the condition (p. 21 ER: "ALL of the following").
 
 **Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
+
+**Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
+
+**Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test's keyboard walk and exit probes do not go through opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
 
 ## 4. Judgment questions
 

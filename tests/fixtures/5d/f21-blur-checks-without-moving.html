@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F21 Blur checks the value</title></head><body>
+<p><a id="top" href="#top">Back to top</a></p>
+<h1>Your details</h1>
+<form onsubmit="return false">
+<p><label for="n">Name</label> <input id="n" name="n" type="text"></p>
+<p><label for="e">Email</label> <input id="e" name="e" type="text"></p>
+<p><button type="submit">Save</button></p>
+</form>
+<p id="msg"></p>
+<script>
+// The value is checked after the field is left, a moment later; focus stays
+// where the Tab put it.
+document.getElementById("n").addEventListener("blur", () => setTimeout(() => {
+  document.getElementById("msg").textContent = "Thanks, name saved.";
+}, 500));
+</script>
+</body></html>

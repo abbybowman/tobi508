@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head><title>Player with no file</title>
+<style>body { margin: 0; font: 16px sans-serif; background: #808080; } h1 { margin: 8px; font-size: 20px; }</style>
+</head>
+<body>
+<main>
+<h1>Player with no file</h1>
+<video id="v" width="320" height="240" controls preload="none"></video><script>/* the page gives the video a file only when it is used */ document.getElementById("v").addEventListener("play", function(){ this.src="/3a/media/video-strobe.webm"; });</script>
+</main>
+</body>
+</html>

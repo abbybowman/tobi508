@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Name and email</title></head><body>
+<form onsubmit="return false">
+<p><label for="n">Name</label> <input id="n" name="n" type="text"></p>
+<p><label for="e">Email</label> <input id="e" name="e" type="text"></p>
+</form>
+<script>
+// A frame from the same site that sends focus back to the page, later.
+document.getElementById("n").addEventListener("blur", () => setTimeout(() => parent.document.getElementById("top").focus(), 500));
+</script></body></html>

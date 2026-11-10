@@ -198,3 +198,67 @@ def adjudications(round_dir) -> dict[str, dict[str, ScrtResult]]:
             t: words[str(v.get("result", "")).lower()] for t, v in tests.items()
         }
     return out
+
+
+# ── cells an answer decided (the ApiJudge gate; bundle 8 reuses it) ─────────
+
+# The words the gate uses for a verdict, "wrong" meaning against the key.
+GATE_WORDS = {
+    Verdict.AGREE: "agree",
+    Verdict.VALIDATED_CATCH: "agree",
+    Verdict.FALSE_PASS: "wrong_pass",
+    Verdict.MISSED_FAIL: "wrong_dna",
+    Verdict.FALSE_FAIL: "wrong_fail",
+    Verdict.FAIL_NOT_APPLICABLE: "wrong_fail",
+    # A cell the judge left unsure waits for a person: the tool performed no
+    # outcome for it.
+    Verdict.NEEDS_REVIEW: "unsure",
+    Verdict.NOT_PERFORMED: "unsure",
+}
+
+
+def decided_tests(report) -> dict[str, int]:
+    """Per TT test id: how many of its questions an answer of the server's
+    judge is in force for (the latest answer to each question). A cell whose
+    outcome no answer touched is not the judge's to be scored on."""
+    latest: dict[str, tuple[str, str]] = {}
+    for r in report.answers:
+        a = r.answer
+        latest[a.question_id] = (a.question_id.split("-")[0], a.answered_by)
+    out: dict[str, int] = {}
+    for _, (test, by) in latest.items():
+        if by.startswith("server:"):
+            out[test] = out.get(test, 0) + 1
+    return out
+
+
+def split_cells(
+    scores: dict[str, "Score"], decided: dict[str, dict[str, int]]
+) -> dict[str, dict[str, int]]:
+    """`scores`: page -> its Score; `decided`: page -> `decided_tests`. Per TT
+    test id, counts by gate word over the cells (page, test) that an answer
+    of the server's judge decided; any other verdict counts as "other"."""
+    out: dict[str, dict[str, int]] = {}
+    for page, sc in scores.items():
+        for t in sc.tests:
+            test = t.test.test_id
+            if not decided.get(page, {}).get(test):
+                continue
+            row = out.setdefault(
+                test,
+                dict.fromkeys(
+                    (
+                        "cells",
+                        "agree",
+                        "wrong_pass",
+                        "wrong_dna",
+                        "wrong_fail",
+                        "unsure",
+                        "other",
+                    ),
+                    0,
+                ),
+            )
+            row["cells"] += 1
+            row[GATE_WORDS.get(t.verdict, "other")] += 1
+    return out

@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F23 Accordion</title></head><body>
+<h1>Contact us</h1>
+<button type="button" id="b" aria-expanded="false" aria-controls="more">More ways to reach us</button>
+<div id="more" hidden>
+<p><input type="text" id="x" name="x"></p>
+</div>
+<script>
+const b = document.getElementById("b"), more = document.getElementById("more");
+b.addEventListener("click", () => { const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open)); more.hidden = open; });
+</script></body></html>

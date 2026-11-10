@@ -1,7 +1,7 @@
 ---
 tt_test: 3.A
 tt_name: 2.3.1-flashing
-spec_version: 1.0.0
+spec_version: 1.1.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -45,7 +45,7 @@ Approved at 1.0.0 (Abby, 2026-11-07); built in `checks/t3a.py`, `flashcap.py` (c
 | --- | --- | --- | --- |
 | A1 | Pass T could not run | NEEDS REVIEW, not performed, with the reason | p. 5 |
 | A2 | Flashing found in any source | NOT TESTED, with the assessment (section 3) | p. 18 test condition; research O1, O2 |
-| A3 | No flashing found, but something was not measured: a streaming player, media over the recording cap or not recorded, a video that cannot be decoded, a video beyond the first 10 s (O4), a `<marquee>`, a capture that failed or that time cut short, or the screencast saw more flashing than every measurement explains (by more than one transition; the net for real-time content the capture cannot step, such as a CSS background GIF: Abby, 2026-11-07) | NEEDS REVIEW, not performed, naming what was not measured | p. 5; research section 4 |
+| A3 | No flashing found, but something was not measured: a streaming player, media over the recording cap or not recorded, a video that cannot be decoded or has no file the tool can see (no `src`, a file the server does not have, a streaming address, a file over the cap), more than 3 videos on the page (1.1.0: the first 3, played ones first, are read; the rest are named), more than 20 audio and video elements in a frame (pass T reads 20), a video beyond the first 10 s (O4), a `<marquee>`, a capture that failed or that time cut short, or the screencast saw more flashing than every measurement explains (by more than one transition; the net for real-time content the capture cannot step, such as a CSS background GIF: Abby, 2026-11-07) | NEEDS REVIEW, not performed, naming what was not measured | p. 5; research section 4 |
 | A4 | No flashing found, and every trigger was measured (or there were none) | DOES NOT APPLY | p. 18 test condition |
 
 **O4 (decided).** A video counts in full, but the tool analyzes at most the first 10 s of each one. Beyond that, A3 applies unless flashing was found elsewhere (A2). Every "does not fail" for such a video says how much was analyzed ("the first 10 s of 150 s").
@@ -57,7 +57,7 @@ Approved at 1.0.0 (Abby, 2026-11-07); built in `checks/t3a.py`, `flashcap.py` (c
 - a running animation or transition whose keyframes change colour, background (colour, image, position or size), opacity, visibility, filter, fill, stroke, border or outline colour, or shadows more than 3 times a second (each keyframe change, a `steps(n)` easing counting n, per iteration; read at the end of the watch: `MotionPass.fast_animations`);
 - more than 6 callbacks in one second of timers under 334 ms (`setTimeout` chains included) or of `requestAnimationFrame` that change the DOM or draw on a canvas (2D or WebGL) (`MotionPass.fast_callbacks`);
 - an animated image (`ImageDecoder` on the recorded bytes) with a frame shown for under 334 ms; Chrome shows a frame of 10 ms or less for 100 ms (`animated_images[].min_ms`);
-- a video that played during the watch (pass T's media reads);
+- every `<video>` on the page, whether it played during the watch or waits for a click, and whether it is shown or hidden (1.1.0: NASA's 14592 has videos that start only when pressed; pass T saw no video play, so nothing looked at their files, and the page was Does Not Apply where the tester recorded Not Tested for flashing in its videos). A viewer can start any of them, so each is read from its recorded file (pass T's media reads give its addresses: the one the browser chose and the element's other `<source>` files). The same file twice is read once;
 - a 2 s CDP screencast (frames only when something changed, about 55 a second, 640 px wide) on its own load after pass T, so pass T's timing and 2.A-2.D's outcomes are unchanged (built 2026-11-07; the 0.1.0 draft said beside pass T). More than 6 transitions of a cell in a second is a trigger. Its small frames cannot see fine patterns, and it is never evidence for DOES NOT APPLY on its own (research section 4).
 
 A page with no trigger is A4 with no capture.
@@ -66,7 +66,7 @@ A page with no trigger is A4 with no capture.
 
 - **Stepped** (when an animation, callback or screencast trigger fired): a fresh load at 1024 × 768 with Playwright's clock installed and paused before the page loads; 100 ms of page time first (or up to 200 ms before the first fast callback pass T saw, at most 6 s); then 3 s of page time at 60 steps a second (whole-millisecond steps of 17, 16, 17 ms): run the clock, set every animation's `currentTime` and every SMIL document's time (paused once; what runs at the first step started with the load), take a screenshot. Videos, the animated images being decoded, and marquees are masked out of these frames (they run by the wall clock). Counted inside the box of what changed.
 - **Animated images:** every frame decoded with `ImageDecoder`, drawn at the size the page shows it at 1024 × 768 (transparent pixels over white), at 60 frames a second, over two plays and at least 2 s (or as long as it plays, when shorter). An image not shown at this size is not measured (nothing is seen).
-- **Video:** decoded from the recorded bytes in a tool page, played at 0.5× with `requestVideoFrameCallback` (every frame), the first 10 s, drawn at full screen on a 256 × 192 canvas (one pixel per 4 × 4 CSS px cell; the canvas averages in sRGB, an approximation). No fine-pattern check. Chromium cannot decode H.264: such a video is A3.
+- **Video:** decoded from the recorded bytes in a tool page, played at 0.5× with `requestVideoFrameCallback` (every frame), the first 10 s, drawn at full screen on a 256 × 192 canvas (one pixel per 4 × 4 CSS px cell; the canvas averages in sRGB, an approximation). No fine-pattern check. Chromium cannot decode H.264: such a video is A3. When the first file of an element cannot be read or decoded, its next `<source>` file is tried (1.1.0); the reason named is the first one's.
 - **Not steppable** (V7): `<marquee>` runs by the wall clock: A3. SMIL steps.
 
 **Time budget.** Only when a trigger fires: the screencast about 3 s (load and 2 s); the stepped capture about 6-7 s of wall time; each video up to 20 s; images under a second. It comes out of the moving-content allowance (`MOVING_ALLOWANCE_S`, 2.x plan Q2) when the run is held to a limit. `ctx.out_of_time()` is checked before the screencast, the capture, every 30 steps, each image and each video; work cut by time is A3.
@@ -114,6 +114,10 @@ None. Every step is a measurement. Where measurement cannot decide (F1, F4), the
 | Red and a grey of the same luminance | Red transitions only: F3 | V4; fixture f06 |
 | A video | Analyzed at 1024 × 768, full screen | V5; fixture f10 |
 | A looping GIF | Two plays and at least 2 s | V6; fixture f09 |
+| A video that plays only when clicked, flashing | Read from its file like one that autoplays: NOT TESTED (1.1.0) | fixtures f16, f19 |
+| A video that plays only when clicked, not flashing | Every trigger measured: DOES NOT APPLY (1.1.0) | fixture f18 |
+| A video with a missing file, or no file until the page gives it one on play | Not measured: A3 with the reason, never "streams" (1.1.0) | fixtures f17, f22 |
+| A video in a hidden element; more than 3 videos | Hidden ones count; past the first 3 are named in A3 (1.1.0) | fixtures f20, f21 |
 | A flash only after 10 s of a video | Not analyzed; A3, or the disclosure when other flashing was found | O4; fixture f11 |
 | A strobe in a cross-site iframe | Captured in the viewport (the paused clock reaches it) | V8; fixture f14 |
 | A strobe drawn on a canvas every frame | Stepped: about 30 flashes a second, fails | V1; fixture f05 |

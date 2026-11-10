@@ -34,8 +34,9 @@ EXPECTED: dict[str, dict] = {
     },
     "f07-same-address-link": {"outcome": "PASS", "rows": ["M3"]},
     # Native date input parts are native (1.2.0): only the custom picker is
-    # executed.
-    "f13-native-date-and-custom-picker": {"outcome": "PASS", "rows": ["M8"]},
+    # executed. NEEDS REVIEW since 1.5.0: the picker opens a panel with
+    # controls, which this test does not walk yet (guard RC, fix 9b phase 2).
+    "f13-native-date-and-custom-picker": {"outcome": "NEEDS_REVIEW", "rows": ["M8"]},
     "f08-title-only-format": {
         "outcome": "FAIL",
         "rows": ["M14"],
@@ -45,6 +46,21 @@ EXPECTED: dict[str, dict] = {
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
     "f12-roving-tabs": {"outcome": "PASS", "rows": []},
+    # Media start (1.4.0): a click that starts a video is an effect. The row's
+    # click handler is added by script, which the main-world listener read
+    # finds (CILab, round 2).
+    "f14-script-added-click-row": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
+    "f15-video-click-to-play": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
+    "f16-video-click-and-button": {
+        "outcome": "PASS",
+        "rows": ["M5"],
+        "choice": {"J1": {"choice": "alternative", "element": 1}},
+    },
+    "f17-click-only-play-button": {"outcome": "FAIL", "rows": ["M10"]},
 }
 
 ACT = {

@@ -143,6 +143,29 @@ EXPECTED: dict[str, dict] = {
     # Post-round 1 fix 10: a header's menu button beside a placeholder-only
     # search box does not label it (5.A 1.2.0): M3, no question. Its name
     # comes from a hidden <label>, so screen readers announce "Search".
+    # Fix 9b (5.A-5.C 1.3.0/1.5.0): what a menu, tab or filter shows when
+    # opened is read like the page at load. A filter whose choices add remove
+    # buttons that all announce "X" while the rows differ: one question for
+    # the set (decision 1).
+    "f22-filter-adds-remove-buttons": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.C": {
+            "outcome": "FAIL",
+            "rows": ["M5", "M5", "M5", "M5", "M7", "M7"],
+            "answers": missing("Earth; Sun"),
+        },
+    },
+    # An accordion hides a text field with no label.
+    "f23-accordion-unlabeled-field": {
+        "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5"]},
+    },
+    # A collapsed control that opens nothing: what it should hold was not
+    # checked (guard RV), never a PASS.
+    "f24-trigger-opens-nothing": {
+        "5.A": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
+        "5.C": {"outcome": "NEEDS_REVIEW", "rows": ["M5", "M5"]},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
@@ -256,3 +279,49 @@ async def test_options_of_one_set_are_asked_about_once(settings, server, drafts)
         ["Future"],
         ["Past"],
     ]
+
+
+async def test_same_named_buttons_are_asked_about_once_with_each_rows_text(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """5.C 1.5.0, fix 9b decision 1 (NASA Home: twelve remove buttons, all
+    announced alike, each beside a different filter)."""
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/5a/f22-filter-adds-remove-buttons.html",
+        [TestId.T5C],
+    )
+    qs = [q for q in out.report.open_questions if q.test_id is TestId.T5C]
+    assert len(qs) == 1, [q.question_id for q in qs]
+    [q] = qs
+    assert len(q.also_instances) == 1  # two buttons, one question
+    assert [c["announced"] for c in q.input["components"]] == [
+        {"name (ANDI)": "X"},
+        {"name (ANDI)": "X"},
+    ]
+    assert [c["visible"] for c in q.input["components"]] == [
+        ["X", "Earth"],
+        ["X", "Sun"],
+    ]
+
+
+async def test_a_quote_for_a_button_set_may_hold_words_of_several_rows(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    url = f"{server.base}/5a/f22-filter-adds-remove-buttons.html"
+
+    async def rows(quote):
+        got = await run_both(settings, url, {"5.A": {}, "5.C": missing(quote)}, [])
+        return got["5.C"].outcome.value, instance_rows(got["5.C"])[-2:]
+
+    # words from one row, from both rows, and a quote shown on no button's row
+    assert await rows("Earth") == ("FAIL", ["M7", "M7"])
+    assert await rows("Earth; Sun") == ("FAIL", ["M7", "M7"])
+    out, last = await rows("Moon")  # the Moon row is not on the page's buttons
+    assert out == "NEEDS_REVIEW" and last == ["M9", "M9"]
+    # the button's own announced word is not a missing word
+    assert (await rows("X"))[0] == "NEEDS_REVIEW"

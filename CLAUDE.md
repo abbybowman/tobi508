@@ -218,6 +218,8 @@ src/tobi508/
   site.py       other pages of the same site (9.A-9.C, 19.A): units, regions, search forms per page,
                 read once; what repeats and what matches (no outcomes)
   walk.py       the shared keyboard walk (P1 Tab, P2 Shift+Tab), once per page
+  reveal.py     opening everything, phase 1: each menu, tab, accordion and filter the walk found opened on a
+                fresh load, what appeared, what was not opened (evidence/reveal.json, Report.reveal; guards RV, RC)
   engine.py     shared first-match tables and page rows G1-G5
   checks/       one module per TT test, registered in checks/__init__.py;
                 base.py has the interface and the "add a check" steps
@@ -281,7 +283,7 @@ docs/research/  research notes (e.g. the TT scanner coverage map); not authoriti
 docs/solutions/ lessons that save the next test time
 third_party/    ANDI 29.2.2, jQuery 3.7.1, SCRT 5.2.0 (template read by scrt.py;
                 its pages for tests only), PROVENANCE.json
-tests/fixtures/ no_trap.html (general evidence); 4a/ … 4f/, 5a/, 5d/, 5f/, 5h/ fNN-short-name.html;
+tests/fixtures/ inject/ (pages whose text tries to steer the judge); no_trap.html (general evidence); 4a/ … 4f/, 5a/, 5d/, 5f/, 5h/ fNN-short-name.html;
                 2x/ (t-*.html: pass T pages); 3a/ (flash pages; make_media.py writes their media)
                 (custom fixtures per test); 9x/, 19a/ (small multi-page sites for 9.A-9.C, 19.A); act/ (vendored W3C ACT cases,
                 manifest.json, sync_act.py); baseline/ (vendored Section 508
@@ -294,7 +296,10 @@ tests/harness.py     end-to-end runs of any check with scripted answers (test da
 tests/scoring.py     DHS / ACT agreement printed after every test run (per worker files)
 tests/test_baseline_cases.py   every (case, TT test) pair in fixtures/baseline/manifest.json
 evals/          judge eval: fresh agents answer the open questions from isolated
-                packets; judge_eval.py, README.md (results of each run);
+                packets; judge_eval.py (also `answer --backend api`: the server's judge
+                on the same cases, `--dry` first), README.md (results of each run);
+                apijudge_gate.py (when a question type may be switched on: round 2's
+                frozen pages against the keys, on cells an answer decided);
                 time_budget.py (each phase's cost from steps.jsonl);
                 scoring.py (a tool file against an answer key: false PASS first);
                 judging.py (real pages against a tester's blind SCRT files,
@@ -322,6 +327,7 @@ grep -cE " (PASSED|FAILED|ERROR|SKIPPED|XFAIL)" "$TEMP/pytest.log"; grep -E "FAI
 cat runs/test-progress.txt       # any run: done of total, elapsed, rough ETA, failures
 uv run python evals/judge_eval.py prepare /tmp/eval   # judge eval packets ...
 uv run python evals/judge_eval.py apply /tmp/eval     # ... after one agent answers them
+uv run python evals/judge_eval.py answer /tmp/eval --backend api --dry   # the server judge: size first, no model call
 uv run python evals/time_budget.py budget/agency-home.html   # where a run's time goes
 uv run python evals/judging.py scan evals/judging/<round>   # then apply, lock, score (evals/README.md)
 uv run python -m evals.agent.freeze evals/judging/<round>   # agent eval: then run --arm a|b, lock, score
