@@ -42,10 +42,11 @@ measurement, G the rest of tools and pipeline.
 
 ## P0
 
-Six items. Four give a wrong outcome on any page built with web
-components; two are security holes that open only in a mode that is off
-by default (hosted sign-in, the server judge) but that the demo plan
-turns on.
+Four give a wrong outcome on any page built with web components
+(D-03, D-01, K-01, K-02). Phase 2 added wrong outcomes in single checks
+(F-02, F-11 and those after them). Two are security holes that open only
+in a mode that is off by default (hosted sign-in, the server judge) but
+that the demo plan turns on (A-01, B-01).
 
 ### D-03 4.A passes a page whose mouse-only control is in a shadow root
 
@@ -127,6 +128,45 @@ turns on.
 - **Checked:** verified (run) for shadow roots: two pages sharing a
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
+
+### F-02 4.D passes an element with no focus indicator when the page shifts under it
+
+- **What is wrong:** 4.D compares a picture of each element with focus
+  and without. Row M6 passes when there is a "style signal" and at
+  least 12 strongly changed pixels. The element's box having moved
+  between the two pictures counts as a style signal. If anything shifts
+  the page between them (a banner, a spacer, late content), the box
+  moves, the two pictures show different things, and the pixels differ.
+- **Why it matters:** a false PASS: "every one showed where focus was"
+  for a link with `outline: none`. The spec means the moving box for
+  skip links that appear on focus; the code applies it to any move.
+- **Where:** `src/tobi508/checks/t4d.py:826-827` (`_style_signal`),
+  `929-934` (M6), `325-326` (`moved`).
+- **Smallest fix:** count a move as a signal only when the element is
+  shown only on focus (its unfocused box is empty, hidden or off
+  screen); otherwise a moved element with changed pixels is "no clear
+  view" (M4, NEEDS REVIEW). This turns a PASS into NEEDS REVIEW, so it
+  needs Abby and a MINOR spec change. One fixture.
+- **Checked:** verified (run). Three links, the first with
+  `outline: none`; focusing the second grows a spacer above them. 4.D
+  PASS, rows d1:M6, d2:M6, d3:M6, G4.
+
+### F-11 4.F says "only one element takes focus" when the first element traps Tab
+
+- **What is wrong:** 4.F's DOES NOT APPLY row counts the distinct stops
+  the walk reached. When the first element traps Tab, the walk reaches
+  one. The row is tested before the row that says "the forward pass
+  did not finish, so the order is unknown".
+- **Why it matters:** a wrong DOES NOT APPLY, with a sentence that is
+  untrue of the page. 4.C does catch the trap on the same page, so the
+  page is not clean overall, but 4.F's own line is wrong.
+- **Where:** `src/tobi508/checks/t4f.py:597-600` (`distinct`),
+  `744-749` (A3), `843-858` (A3 returns before the G3 check).
+- **Smallest fix:** A3 applies only when both passes ended in a wrap (or
+  the same trap); otherwise fall through to NEEDS REVIEW.
+- **Checked:** verified (run). Four links, the first swallowing Tab:
+  4.F DOES NOT APPLY ("The page has only one element that takes
+  keyboard focus"); 4.C on the same run asked its trap question.
 
 ### A-01 Hosted mode: one signed-in user can list and collect another user's run
 
@@ -346,6 +386,71 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
   new Error('x')")` and got `None`; I did not repeat it. No real page is
   known to trigger it.
 
+#### F-06 4.E fails a page that only changes the `#fragment` on focus
+
+- **What is wrong:** 4.E counts every "frame navigated" event as the
+  page going somewhere. Chrome also reports that event when a script
+  sets `location.hash` or calls `pushState`. The spec says a change of
+  fragment only is not a change of context.
+- **Why it matters:** a wrong FAIL ("the page goes to another address")
+  on tab lists and section menus that update the address as focus
+  moves.
+- **Where:** `src/tobi508/checks/t4e.py:77-81, 92-95, 176-177`.
+- **Smallest fix:** count a navigation only when the address without
+  its fragment changed, or the document reloaded.
+- **Checked:** verified (run). A link whose focus handler sets
+  `location.hash`: 4.E FAIL, rows e1:M4, G2.
+
+#### F-01 4.D is NEEDS REVIEW for any menu with seven or more items
+
+- **What is wrong:** inside a menu or tab list, 4.D presses the arrow
+  key six times and then stops on the seventh item without the closing
+  step, so that item has no "after" picture and counts as "could not
+  be compared". The spec says the first five items stand for the rest.
+- **Why it matters:** a clean page with an ordinary navigation menu
+  never gets a 4.D PASS.
+- **Where:** `src/tobi508/checks/t4d.py:675-686` (the loop),
+  `619-620`.
+- **Smallest fix:** after the loop, press the opposite arrow once and
+  judge only the first five items.
+- **Checked:** verified (run). A menubar of 8 items, each with a clear
+  outline: 4.D NEEDS REVIEW, naming "Item 7".
+
+#### F-12 4.F treats an element it could not measure as "no order problem"
+
+- **What is wrong:** 4.F's order signals need each stop's position and
+  place in the page. When that reading fails for a stop, the stop is
+  skipped by every signal, and the "unreliable" flag is only looked at
+  for stops a signal names, which a skipped stop never is.
+- **Why it matters:** a page whose stops could not be measured has no
+  signals, and "no signals" is PASS.
+- **Where:** `src/tobi508/checks/t4f.py:129-147, 208-221, 234-278,
+  621-625, 762`.
+- **Smallest fix:** when any forward stop has no measurements, mark the
+  page instance unreliable (row M1, NEEDS REVIEW).
+- **Checked:** verified (read). Not reproduced on a page: neither the
+  reviewer nor I found a cheap page with an unreadable stop.
+
+#### F-15 4.F shows the agent only the first 60 stops and does not say so
+
+- **What is wrong:** the spec says a page with more than 60 stops gets
+  one order picture per 60. The code makes one picture with the first
+  60 numbered and lists only those. Signals are still computed on all
+  stops, so a signal at stop 120 reaches the agent as words with no
+  badge and no row, under a caption that says the picture shows "the
+  whole page".
+- **Why it matters:** the agent's "the order makes sense" is a PASS
+  (principle 8 allows it for 4.F), given here on evidence that leaves
+  out the stops in question. The rubric's "answer unsure if the
+  picture does not show them" is the only guard.
+- **Where:** `src/tobi508/checks/t4f.py:472, 549-553, 661-680,
+  700-705`; spec 4.F, "Order image".
+- **Smallest fix:** build the pictures the spec describes, or, when a
+  signal's stop is past 60, add a "stops after 60 were not shown"
+  reason, which makes the page NEEDS REVIEW.
+- **Checked:** verified (read): four places cut at `BADGE_MAX` and the
+  spec line is there. No fixture has more than 60 stops.
+
 ### Hangs and waste
 
 #### G-03 `tobi_answer_questions` is the one tool with no time limit
@@ -510,7 +615,10 @@ not checked.
   and requirements) or that an agent cannot use: 5,500 characters are
   rule codes ("x1:M8; x2:M9", "[M15 NEEDS_REVIEW]") and "technical
   reasoning, for your reference only", which principle 8 says stay in
-  the evidence trace. One test (4.D) lists 81 places.
+  the evidence trace. One test (4.D) lists 81 places, because 4.D
+  records every stop as an instance, PASS ones included, where its
+  spec says PASS instances appear only as a count (F-19,
+  `checks/t4d.py:1066-1092`).
   `explain.py:106-132, 177-237`. Fix: per finding, the places and one
   link; cap the places ("N more in the report"); keep the codes in
   `report.json`.
@@ -528,7 +636,10 @@ not checked.
   with a different element (574 characters each).
   `checks/t4f.py`, `checks/t4a.py`. Fix: list only the items whose
   order differs, with a count; ask the five as one question with a
-  list.
+  list. 4.F also repeats the whole list in every question (the page
+  question plus up to six for opened menus, about 6,800 characters
+  each), where `shared_inputs` would send it once (F-17,
+  `t4f.py:661-707`).
 - **B-08** Other pages are recorded one after another before the walk
   starts: 5 pages can add 100 s, 50 pages 1,000 s. `pipeline.py:939-1032`.
   Fix: record them beside the walk, two or three at a time.
@@ -627,6 +738,31 @@ not checked.
 - **B-07** On refusal the run folder is deleted while the motion watcher
   is still writing into it, which can recreate it; a browser that fails
   to start leaves the folder. `pipeline.py:894-895, 1104-1108, 1193-1203`.
+- **4.D gaps (F-03, F-05, F-20)** A dropped-focus FAIL skips the
+  "unreliable step" check that 4.E applies to the same step, so 4.D can
+  FAIL where 4.E says NEEDS REVIEW (`t4d.py:565-586`). The second pass
+  does not re-read stops whose first reading was later rejected, so
+  they stay NEEDS REVIEW (`t4d.py:369-376`). When neither arrow key
+  moves inside a widget, its items are not tested and nothing says so,
+  and the page can PASS (`t4d.py:658-708`).
+- **4.E gaps (F-07, F-08, F-09)** The control replay waits a fixed 2 s
+  where the spec says "as long as the original step took", so a slow
+  timed redirect is blamed on focus; each dialog costs a full replay
+  and uses up the limit of 10 (`t4e.py:34, 282-356`). Dialogs in frames
+  or shadow roots, or built without a dialog role, are not seen, and a
+  failed dialog read is taken as "none" (`observe.py:51-77`,
+  `t4e.py:86-88`). An unreliable step with no signal found does not
+  hold back a PASS; that follows the spec, and is a question for Abby.
+- **4.F gaps (F-13, F-14, F-16)** A backward pass that gets stuck is not
+  "incomplete", so the backward order goes unchecked
+  (`t4f.py:597-606`). In the dialog check, focus landing on the page
+  body counts as staying inside the dialog (`t4f.py:440-455`). A
+  replay that fails in `_reveal` is outside the `try` and ends the
+  whole check (`t4f.py:341`).
+- **4.F, for Abby:** the answer "order does not matter" on the page
+  question makes the whole test DOES NOT APPLY on the agent's word,
+  even when a split form group was the reason for asking. That is what
+  rows M8 and G4 say today.
 - **G-04** A run stopped at the default limit (1,800 s) is told it
   "reached its time limit (600 s)" and to "run again with
   no_time_limit=true", which it already was; an agent that obeys
@@ -837,6 +973,19 @@ Cleanup. All reviewers' claims unless marked.
   page is counted as a link (D-22). The 300 ms noise window and a Chrome
   session are repeated per action (D-23, D-24). Past 20 nested frames
   focus reads as "body" instead of "unknown" (D-25).
+- **4.D-4.F cleanup:** 4.D's "why it could not be compared" reasons
+  are written to a dict after Pydantic has copied it, so the summary
+  always says "the images could not be compared" (F-04, confirmed by a
+  snippet). 4.E's instance identity leaves out the frame, so the same
+  path in two frames merges (F-10). 4.F scans every node of the page
+  once per stop (F-18), and 4.D reads a whole computed style, about
+  350 properties, twice per stop (F-21). About 100 lines of
+  applicability rows, labels, key text and trap bookkeeping are copied
+  in `t4d.py`, `t4e.py` and `t4f.py` and have drifted; the `notes`
+  fields are never written (F-22). 4.D gets its "focus dropped" FAIL
+  by calling 4.E's whole classifier (F-23). Worst case per run: 4.D up
+  to 20 widget replays, 4.E up to 20 loads and 20 s of fixed waits,
+  4.F up to 19 loads.
 - **9.x duplication:** `_finding`, the "not performed" block and the
   cache-or-read pattern are copied in 9.B, 9.C and 19.A (K-13).
 
@@ -875,6 +1024,11 @@ reviewer (phase 1); I read the summary, not every line behind it.
   list and the picture rule; element numbers are re-checked by the
   checks. A later agent answer cannot replace a person's or the server
   judge's.
+- **4.D, 4.E and 4.F follow their specs' tables** row for row, in
+  order and in thresholds; the constants in `t4d.py` equal the spec's.
+  The problems found are in the evidence fed to the tables (F-02,
+  F-11, F-12), not in the tables. The questions that may settle a PASS
+  by looking do so only as principle 8 allows.
 - **The judge prompt** tells the judge to answer "unsure" when the
   evidence does not settle a question.
 - **Config defaults** match CLAUDE.md (45 s, 1,800 s, 600 s, 20 s, 45 s,
@@ -916,6 +1070,13 @@ above.
 - A second walk pass after a trap doubles the walk time on a long page.
 - 9.C's place pairing uses `regions[-1]`, which may be `main`.
 - No test covers a live search that goes off host or off port.
+- 4.D and 4.E accept "stuck going forward, wrapped going back" as a
+  complete walk; the spec says "wrap or the same trap".
+- 4.F: a dialog open at load whose focus escapes to a stop seen
+  earlier is not noticed; 4.E: a popup that opens and closes within
+  one step is not seen.
+- 4.D passes any text field with a caret colour that is not
+  "transparent", including one equal to the background.
 - In the judge's request a Tab stop is written as one line with the
   element's name unescaped; a name holding a line break could forge a
   stop line. Chrome usually collapses such names; not tried.
