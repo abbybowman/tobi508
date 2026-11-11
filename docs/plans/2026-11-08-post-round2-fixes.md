@@ -13,7 +13,7 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | --- | --- | --- |
 | 1 | 3.A: every video is a trigger, played or not | Built (3.A 1.1.0) |
 | 2 | 4.C: an exit that needs activation inside the trap | Built (4.C 1.11.0: rows M4, M4d, M4o) |
-| 3 | 5.F error values by field type; 4.C Tabs through each error state | **Not started** (below) |
+| 3 | 5.F error values by field type; 4.C Tabs through each error state | Built (5.F 1.5.0: a realistic wrong value by field kind; 4.C 1.13.0: pass E) |
 | 4 | 4.A: a click that starts a video; listeners read from the page's world | Built (4.A 1.4.0) |
 | 5 | 5.D: focus read again after tabbing away | Built (5.D 1.4.0), shown on custom pages only |
 | 6 | 9.A-9.C: other pages from another template are NEEDS REVIEW | Built (9.A, 9.B 1.1.0; 9.C 1.2.0) |
@@ -63,39 +63,16 @@ its start). Agent-assisted results, not certified Trusted Tester results.
 
 ### Principle 3: a failure passed or set aside
 
-#### 3. 4.C and 5.F: error states, including JS-only validation
-- **Evidence:** 5340. Key: the "year before 1900" error popup is a
-  keyboard trap. 5.F's error pass never ran there (frames, fix 7), and it
-  types "abc" into every text field.
-- **Markup can show where errors are likely, never that there are none:**
-  `required`, `pattern`, `min`/`max`, `maxlength`, `type`, `inputmode`,
-  `autocomplete`, `aria-invalid`, `aria-errormessage` and
-  `aria-describedby` pointing at empty or hidden message containers,
-  `role="alert"` and live regions, `novalidate`, validation library
-  attributes. A script-built app may show none of these.
-- **Fix (Abby):** standard "likely to error" values by field type and
-  purpose: names with odd characters; invalid emails and phone numbers;
-  numbers and years outside any declared range, or far past and future
-  when none is; dates far past and future (`wrong_date` exists). Then,
-  in any error message or dialog that appears, a 4.C exit check.
-- **Fixture:** a form whose year field shows a JS dialog for years before
-  1900, with no `min`.
-
-- **Builder note (2026-11-09).** (TT pp. 28-29; 4.C p. 21 notes 1-2; Baseline
-TC10.D). 5.F types "abc" only (`t5f.py:44`; year fields: 2999 with no
-range). New table by field type and purpose (`type`, `inputmode`,
-`autocomplete`, `min`/`max`, name, id, label words): names `J@n3#`,
-email `test@`, phone `123`, numbers and years min−1 and max+1 (or 1000
-and 3000 with no range), dates far past and far future, other "abc".
-The spec records Abby's 2026-11-08 decision in place of "no values from
-instructions". 4.C gains a pass that Tabs through each error state 5.F
-found (a JS `alert()` is out of scope); 4.C runs the error pass itself
-when 5.F is not selected; its replay learns to type text. Fields in
-same-site frames (skipped today, `t5f.py:206-214`) are read with the
-frames bundle. Test pages: top-level name and year form with a
-focus-grabbing popup for years before 1900 that a keyboard user
-cannot leave to fix the value → FAIL (decision 2); a variant that lets Escape out → PASS; a name field that
-refuses "#". Baseline TC10.D cases unchanged.
+#### 3. 4.C and 5.F: error states (built)
+5.F 1.5.0 types a realistic wrong value for each field's kind (`t5f.wrong_value`);
+4.C 1.13.0 replays each state in which the error pass saw something new (replays
+type text: `Type:` and `Insert:` keys), presses Tab from there and takes a trap as
+any other event (pass E; pages 4c f41-f43, 5f f22-f23). Not covered: a JS `alert()`
+(the browser's), fields in same-site frames (fix 7), and 5340's own popup (its
+recording lacks the script: guard GU, so it is NEEDS REVIEW until re-recorded).
+Judge eval on the changed 5.F and 4.C questions: 3 of 3 scored match (the fourth
+packet's answer matched; its follow-up round was not sent). Time cost of the error
+pass inside 4.C on a realistic page is not measured.
 
 ### 7. Frames, as TT tells a person to test them
 - **Evidence:** fixes 2, 3 and 5; 5.F "15 form field(s) are inside

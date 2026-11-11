@@ -1,7 +1,7 @@
 ---
 tt_test: 5.F
 tt_name: 3.3.1-error-identification
-spec_version: 1.4.0
+spec_version: 1.5.0
 guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -37,9 +37,20 @@ The tool gives each page one 5.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | Attempt | What is done | TT and Baseline step |
 | --- | --- | --- |
 | 1. As loaded | Replay to the form's submit control and press it (Enter on a button; Space on a role button); with no button, replay to the form's last text field and press Enter there (1.1.0). No field is touched, so required fields are empty | p. 28 HtT 1 ("leave a required form field empty"), HtT 2; G83 |
-| 2. Wrong values | Replay to the form's first text or date field. For each text field and each native `type=date` field of the form in P1 order: arrive (as 5.D section 2 step 1); a text field: select all, type `WRONG_VALUE`; a date field: type the digits of `WRONG_DATE` in the field's order (as 5.D); press Tab (for a date, again while focus is still on the input's own parts, at most 5 times); read. Selects, checkboxes, radios, other date and time kinds and custom widgets are left as loaded. Then arrive at the submit control (Tab; Shift+Tab when it precedes the fields) and press it, read | p. 28 HtT 1 ("use a different date format", "a password that does not meet the password strength requirements"), HtT 2 ("and/or move to the next page"); Baseline 10.D ("shifting focus away from the item in error or when trying to submit"); Understanding 3.3.1 ("a birth date 2 years in the future") |
+| 2. Wrong values | Replay to the form's first text or date field. For each text field and each native `type=date` field of the form in P1 order: arrive (as 5.D section 2 step 1); a text field: select all, type the field's *wrong value* (below; `WRONG_VALUE` when the field's kind is not in the table); a date field: type the digits of `WRONG_DATE` in the field's order (as 5.D); press Tab (for a date, again while focus is still on the input's own parts, at most 5 times); read. Selects, checkboxes, radios, other date and time kinds and custom widgets are left as loaded. Then arrive at the submit control (Tab; Shift+Tab when it precedes the fields) and press it, read | p. 28 HtT 1 ("use a different date format", "a password that does not meet the password strength requirements"), HtT 2 ("and/or move to the next page"); Baseline 10.D ("shifting focus away from the item in error or when trying to submit"); Understanding 3.3.1 ("a birth date 2 years in the future") |
 
-`WRONG_VALUE` is `abc`, cut to `maxlength`: letters break every numeric, date, phone, ZIP, SSN, email and URL format, are not a valid state abbreviation, and are not a strong password; a field that accepts them (a name) is not in error, and attempt 1 covers its being required. A value from the field's own instructions (an agent proposing a wrong date format) is not tried: letters already break any stated format (principle 7).
+**The wrong value, by the field's kind** (1.5.0; Abby, 2026-11-08, replacing "no values from the field's instructions": a careful tester types a realistic mistake, not only letters; post-round 2 fix 3). The first row whose condition holds, from the field's `type`, `autocomplete`, `inputmode`, `min`, `max`, `name`, `id` and its label, as lower-case words. The value is cut to `maxlength`.
+
+| Kind | Condition | Wrong value |
+| --- | --- | --- |
+| Email | `type=email`, `autocomplete` holds "email", or the words hold "email" or "e-mail" | `test@` |
+| Phone | `type=tel`, `autocomplete` holds "tel", or the words hold phone, telephone, mobile or fax | `123` |
+| Year | the words hold "year" (or `autocomplete` holds "bday-year") | one past `max` when it has one, else one before `min`, else `3000` |
+| Number | `type=number` or `inputmode` numeric or decimal | one past `max` when it has one, else one before `min`, else `WRONG_VALUE` |
+| Name | `autocomplete` is a name kind (name, given-name, additional-name, family-name, nickname) or the words hold first, last, given, family, full, middle, sur or nick followed by "name" | `J@n3#` |
+| Other | | `WRONG_VALUE` |
+
+A user name, a file name or a company name is not a person's name here: only the rows above count. `WRONG_VALUE` is `abc`, cut to `maxlength`: letters break every numeric, date, phone, ZIP, SSN, email and URL format, are not a valid state abbreviation, and are not a strong password; a field that accepts them (a name) is not in error, and attempt 1 covers its being required. A value from the field's own instructions (an agent proposing a wrong date format) is not tried: letters already break any stated format (principle 7).
 
 `WRONG_DATE` is a date outside the field's range: a year after its `max`, else a year before its `min`, else 1 January 2999. A native date input cannot take a wrong format (the browser enforces it), but it can take a date the page must refuse (Understanding 3.3.1's example: a birth date in the future). A date field is read through its input: the walk's stop is its first part, inside the input's own shadow root (5.D V3).
 
@@ -88,10 +99,10 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 
 | Row | Sentence |
 | --- | --- |
-| Page PASS | "We left required fields empty and typed letters into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form. Each error the page found was named and explained in text." |
+| Page PASS | "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form. Each error the page found was named and explained in text." |
 | Page FAIL | "Some form errors are not named or explained in text, so a person may not know which field is wrong or why." |
 | Page NEEDS REVIEW | "We could not finish this test, so a person needs to check it." |
-| A3 | "We left required fields empty and typed letters into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form, and the page did not check for errors, so this test does not apply." |
+| A3 | "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form, and the page did not check for errors, so this test does not apply." |
 | A3s | "The page's only form that was sent is a site search: it accepts anything typed into it and showed no error on the page, so there is nothing to get wrong and this test does not apply." |
 | A4 | "The form was sent to its server, and our copy of the page cannot show what the server answers. Please submit it with mistakes on the live site and check the error messages." |
 | M2 (note) | "The browser's own message points to <field> and explains the error; that is fine." |

@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F42 Birth year popup, Escape closes it</title></head><body>
+<h1>Your details</h1>
+<form onsubmit="return false">
+<p><label for="n">Name</label> <input id="n" type="text"></p>
+<p><label for="y">Birth year</label> <input id="y" type="text" inputmode="numeric"></p>
+<p><button type="submit">Continue</button></p>
+</form>
+<div id="pop" role="dialog" aria-label="Birth year error" hidden>
+<p>Birth years must be between 1900 and 2100. Press Escape to close this.</p>
+<a href="#help" id="more">Learn more</a>
+</div>
+<script>
+// The same popup, but Escape closes it and returns focus to the year field.
+const y = document.getElementById("y"), pop = document.getElementById("pop"), more = document.getElementById("more");
+y.addEventListener("change", () => {
+  const v = Number(y.value);
+  if (y.value !== "" && (v < 1900 || v > 2100)) { pop.hidden = false; more.focus(); }
+});
+pop.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") { e.preventDefault(); more.focus(); }
+  if (e.key === "Escape") { pop.hidden = true; y.focus(); }
+});
+</script></body></html>

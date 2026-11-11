@@ -66,6 +66,14 @@ EXPECTED: dict[str, dict] = {
         "note": 'pressing Enter on "View timeline"',
         "j2": {"gate": "no", "fields": []},
     },
+    # 1.13.0, pass E (fix 3, Abby's decision 2): a year before 1900 opens a
+    # popup that keeps focus (no key leaves it, nothing closes it): a trap
+    # found only from the error state 5.F reaches. With Escape closing it and
+    # focus returning to the field it is not a trap; an inline message is not
+    # a popup at all.
+    "f41-error-popup-traps": {"outcome": "FAIL", "rows": ["M11"]},
+    "f42-error-popup-escape": {"outcome": "PASS", "rows": ["M2"]},
+    "f43-error-inline-text": {"outcome": "PASS", "rows": []},
     "f35-radio-gate": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8"],

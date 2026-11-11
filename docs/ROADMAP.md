@@ -68,11 +68,7 @@ work and is not a formal gate.
 
 **If the days allow, in this order**
 
-6. **Fix 3: error values** (5.F types likely-wrong values by field type;
-   4.C Tabs through each error state; top-level forms only; about three
-   days). Builder note in the
-   [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md).
-7. **VAST: sign in from Claude Code and run one page end to end**
+6. **VAST: sign in from Claude Code and run one page end to end**
    ([plan](plans/2026-11-06-hosted-auth.md)), when the admin's answers
    arrive. Verify the code review's security leads first. Fallback: a
    recorded demo from a local server.

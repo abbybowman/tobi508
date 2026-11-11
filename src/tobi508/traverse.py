@@ -927,7 +927,16 @@ class Traversal:
         _count("presses")
         if quick:
             _count("quick")
-        await self.page.keyboard.press(key)
+        if key.startswith("Type:"):
+            # Text typed into the focused field, replacing what is there (5.F's
+            # wrong values; 4.C replays them to reach an error state).
+            await self.page.keyboard.press("Control+A")
+            await self.page.keyboard.type(key.removeprefix("Type:"))
+        elif key.startswith("Insert:"):
+            # The same without selecting first (the digits of a date field).
+            await self.page.keyboard.type(key.removeprefix("Insert:"))
+        else:
+            await self.page.keyboard.press(key)
         settled = await settle(self.page, 0 if quick else self.quiet_ms)
         stop, has_focus = await self.reader.read()
         m, f, _, _, q = await _read_logs(self.page)
