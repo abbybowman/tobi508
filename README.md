@@ -46,7 +46,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.1.0](specs/rules/3a-flashing.md) | Videos that do not play on load are read from their files (checked on test pages and NASA 14592); at most 3 videos and the first 10 s of each; a video it cannot read is left for a person |
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.5.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
-| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.12.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Misses keyboard traps inside embedded apps in frames (fix planned) |
+| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.12.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Does not yet Tab through a form's error states (fix planned); a trap in code the recording lacks is NEEDS REVIEW |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.5.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
 | 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.5.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question needs a clearer rubric before a server judge answers it (fix planned) |
@@ -213,7 +213,8 @@ Details: [docs/hackathon/evaluation.md](docs/hackathon/evaluation.md).
 
 **Known limits:**
 - A recording freezes network responses, not randomness or time.
-- A Content-Security-Policy that blocks inline scripts blocks ANDI.
+- The test browser bypasses the page's Content-Security-Policy so that ANDI
+  can run (`BYPASS_CSP`, on by default; the report records it).
 - CI runs headless Chromium; headed Chrome on Windows is checked by hand.
 
 ## Contribute

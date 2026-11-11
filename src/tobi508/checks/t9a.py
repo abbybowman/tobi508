@@ -201,7 +201,7 @@ async def _read_after(s: Session, st: State9A, c: Cand, url0: str) -> None:
         c.nav = True
         return
     # Isolated world: page script cannot fake document.activeElement there
-    # (docs/solutions/focus-reading.md), and the landing decides M5 and M7.
+    # (docs/solutions/focus-and-walk.md), and the landing decides M5 and M7.
     args = json.dumps([c.css, block_css, UNIT_CAP])
     got = await s.traversal.reader.evaluate_top(f"({LANDING_JS})({args})")
     if not isinstance(got, dict):

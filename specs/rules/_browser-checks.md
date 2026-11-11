@@ -169,7 +169,7 @@ Spec: [19a-multiple-ways.md](19a-multiple-ways.md).
 
 Spec: [2c-auto-updating.md](2c-auto-updating.md).
 
-The scratch scripts in `docs/research/2026-11-03-2x-experiments/` (removed at 1.0.0; in git history at 9efe907) checked
+The 2.x scratch scripts (removed at 1.0.0; in git history at 9efe907) checked
 most of these on Linux. Each becomes a test with local fixtures and no
 network.
 

@@ -207,7 +207,7 @@ The licenses cover the code, not its output; scan results are our data.
 **Recommendation.** pa11y launches its own browser through Puppeteer. Load
 the engines into our own Playwright page instead: axe (MPL) and HTMLCS
 (BSD, the engine pa11y runs by default) on their own fresh load after the
-walk ([solutions/scanners-after-the-walk.md](../solutions/scanners-after-the-walk.md)).
+walk ([solutions/andi-output.md](../solutions/andi-output.md)).
 Same results as pa11y, one browser, the most permissive licenses. Not legal
 advice: NASA's software release process reviews the dependency list before
 open sourcing.

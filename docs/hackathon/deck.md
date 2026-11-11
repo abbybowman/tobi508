@@ -2,10 +2,12 @@
 
 GSA MCP and AI Agent Hackathon
 
-> **Draft.** One section per slide, following GSA's sample deck. "On the
-> slide" is the text to show; "Notes" is what to say. Figures come from
-> [evaluation.md](evaluation.md); update both together. **[FILL: …]** marks a
-> final figure; **[PENDING]** marks work not done yet.
+> **Draft.** One section per slide, in the order of GSA's sample deck
+> (challenge, solution, design and key decisions, demo, evaluation,
+> security, lessons). "On the slide" is the text to show; "Notes" is what
+> to say. Figures come from [evaluation.md](evaluation.md); update both
+> together. **[FILL: …]** marks a final figure from the scored run;
+> **[PENDING]** marks work not done yet.
 
 ---
 
@@ -14,10 +16,10 @@ GSA MCP and AI Agent Hackathon
 **On the slide**
 
 - Section 508 TOBI: Tester-Oriented Browser Inspector
-- Agent-assisted keyboard testing that follows the DHS Trusted Tester process
-- Not a certified Trusted Tester result
+- An MCP server that follows the DHS Trusted Tester process in a real browser
+- Agent-assisted results, not certified Trusted Tester results
 
-**Notes:** Built by a certified Trusted Tester with Claude Code. Open source at github.com/abbybowman/tobi508.
+**Notes:** Built by a certified Trusted Tester with Claude Code, from GSA's template. It reads public government web pages and writes nothing to them.
 
 ---
 
@@ -27,16 +29,14 @@ GSA MCP and AI Agent Hackathon
 
 - 60% of federal reporting entities have no or only some staff trained in Section 508 web testing (GSA, FY 2024)
 - Testing is the weakest part of federal Section 508 programs: 2.00 of 5 (GSA, FY 2025)
-- Becoming a certified Trusted Tester takes about 70 hours of training plus a multi-hour exam (ONRR); DHS lowered the pass mark from 90% to 85% in 2024 to make it more attainable
-- Scanners miss many barriers, and every keyboard trap: axe-core has no rule for keyboard traps, focus visibility, focus changes or focus order
-- Of 60 active Trusted Tester test conditions, scanners reliably cover 3 and partly cover 21; 36 get no coverage (our map, axe-core 4.14 and pa11y 10)
+- A certified Trusted Tester needs about 70 hours of training plus a multi-hour exam (ONRR)
+- Scanners miss most barriers and every keyboard trap: of the Trusted Tester test conditions we mapped, they reliably cover 3, partly cover 21 and miss 36
 
 **Notes:**
 
 - Sources are in [evaluation.md](evaluation.md), section 1.
-- A keyboard trap locks out anyone who can't use a mouse, including many blind users and people with motor disabilities.
+- A keyboard trap locks out anyone who cannot use a mouse, including many blind users and people with motor disabilities.
 - The Trusted Tester process is precise: it says which keys to press and what counts as a failure. That precision makes it a candidate for an agent, as long as the agent never claims to be a certified tester.
-- **[PENDING]** DHS doesn't publish how many certified testers there are; request the figures listed in evaluation.md.
 
 ---
 
@@ -45,16 +45,16 @@ GSA MCP and AI Agent Hackathon
 **On the slide**
 
 - Opens the page in real Chrome and presses real keys
-- Follows TT 5.1.3 step by step, from rules written in version control
+- Follows TT 5.1.3 step by step, from rules kept in version control
 - Reports each finding by TT test ID, in plain language, with evidence
-- Asks the agent narrow questions only where a rule needs judgment; a person can override
 - Says "needs review" instead of guessing
-- Handles the clear-cut cases, so certified testers can focus on edge cases and low-confidence calls
+- 22 tests so far: keyboard, forms, moving and flashing content, and consistency across a site's pages
+- Handles the clear-cut cases, so certified testers can spend their time on the hard ones
 
 **Notes:**
 
-- The agent never decides an outcome on its own.
-- The rules decide outcomes. The agent answers narrow factual questions, such as "does the page document a key that escapes this section?", and the tool checks the answer by pressing that key.
+- Any MCP client is the front end: a developer asks in plain words, in the tool they already use.
+- The rules decide every outcome. A model only answers narrow questions a rule asks, such as "does the page say how to leave this section?", and where it can, the tool checks the answer by pressing the key.
 
 ---
 
@@ -64,76 +64,74 @@ GSA MCP and AI Agent Hackathon
 
 ```mermaid
 flowchart LR
-  A[AI agent<br/>e.g. Claude Code] -->|tobi_run_tt_tests| S[TOBI<br/>MCP server]
-  A -->|tobi_answer_questions| S
-  S --> R[Record page once<br/>replay every pass]
-  R --> W[Shared keyboard walk<br/>Tab, Shift+Tab]
-  W --> C[One check per TT test<br/>rows from its spec]
-  C --> F[Findings by TT test ID<br/>+ open questions]
+  A[AI agent<br/>any MCP client] -->|tobi_run_tt_tests| S[TOBI<br/>MCP server]
+  S --> R[Record the page once<br/>replay every pass]
+  R --> W[Shared keyboard walk<br/>and other passes]
+  W --> C[One check per TT test<br/>rows from its rules spec]
+  C --> Q{A rule needs<br/>a judgment?}
+  Q -->|yes| J[Judge answers by rubric<br/>unsure goes to a person]
+  J --> C
+  Q -->|no| F[Findings by TT test ID<br/>with evidence]
   F --> A
   T[(TT 5.1.3 as data<br/>tt:// resources)] -.-> C
 ```
 
 **Notes:**
 
-- **Two broad tools.** `tobi_run_tt_tests` takes a URL and test IDs. `tobi_answer_questions` takes the agent's answers to open questions.
-- **Resources.** `tt://5.1.3/...` serves the TT text; `run://` serves a run's evidence while it is kept.
-- **Prompt.** `explain` covers a test or a result in plain language.
-- **Python stack.** FastMCP, Pydantic and Playwright, from the GSA template.
+- **Five tools, each a whole task:** run tests on a page, wait for a long run, answer open questions, explain a result, read and compare report files. Inputs are validated Pydantic models; the list of implemented tests in the tool description comes from the code's registry.
+- **Resources:** `tt://5.1.3/...` serves the Trusted Tester text; `run://` serves a run's evidence while it is kept.
+- **One module per TT test,** one rules spec per module, one tool per file. Adding a test changes no tool.
+- Python, FastMCP, Pydantic and Playwright, from the GSA template.
 
 ---
 
-## 5. Key decision: the TT PDF is the authority
+## 5. Key decision: the Trusted Tester PDF is the authority
 
 **On the slide**
 
 - One rules spec per TT test, citing the PDF's page and step for every rule
-- Outcome logic lives only in spec rows; each report records the spec version
-- The whole PDF is stored as data (63 conditions), checked word for word against the PDF
+- Outcome logic lives only in spec rows; every report records the spec version
+- The whole PDF is stored as data and checked word for word against the PDF
 
-**Notes:** When the PDF disagrees with itself, we record it rather than resolve it silently. Examples: it says 63 conditions on one page and lists 62 in an appendix, and 6.B was removed but still appears in the quick reference.
-
----
-
-## 6. Key decision: collect once, evaluate many
-
-**On the slide**
-
-- One keyboard walk per page feeds every Test 4 check, and 5.D On input
-- Each check declares the extra evidence it needs
-- Time budget: under 60 s per page for Test 4, hard limit 10 min per run (+45 s when content keeps changing by itself, like a ticker); a call returns within 45 s and a longer run goes on in the server, at most two at once
-- No time limit by default since 2026-11-07 (a run stops at 30 min; each still-running result gives a progress line to relay); a caller can ask for the 10-minute limit, and a page too large for it is refused early
-- Replays reuse what the walk saw: realistic agency page 151 s → 97 s, same outcomes
-- Checks reuse each other's replays (4.A reads 4.D's arrow presses and 4.F's Enter presses): with 5.F and 5.G added, both realistic pages still fit with all eleven tests (110.2 s and 97.1 s)
-
-**Notes:**
-
-- The PDF chains these tests itself: 4.D continues from 4.C, 4.E from 4.D.
-- Each new test should cost less to add than the last.
+**Notes:** When the PDF disagrees with itself we record it and do not resolve it silently. A spec step must match something the PDF asks a human tester to do: the aim is consistency with a careful tester, not exceeding one.
 
 ---
 
-## 7. Key decision: a false PASS is the worst error
+## 6. Key decision: a false PASS is the worst error
 
 **On the slide**
 
-- When a rule can't decide → NEEDS REVIEW, never PASS
-- An agent's opinion becomes PASS only when a key press confirms it
-- Proportionate to the PDF: do what a careful tester does, not more
+- When a rule cannot decide: NEEDS REVIEW, never PASS
+- An opinion becomes PASS only when a key press confirms it, or the question is one a tester settles by looking
+- A test the tool cannot perform says so, by name
 
-**Notes:** Trimming spec steps that went past what the PDF asks of a human cut test time sharply. **[FILL: figures, if still representative.]**
+**Notes:** A false PASS hides a barrier from the people it blocks. A false FAIL costs a developer time. The scoring weights say the same: a false PASS counts three times any other error.
 
 ---
 
-## 8. Key decision: repeatable by construction
+## 7. Key decision: record once, replay every pass
 
 **On the slide**
 
-- Pages recorded once and replayed; test pages stored with hashes; pages with cross-site iframes replay in full Chromium
-- ANDI, jQuery and browser automation pinned and recorded in every report
-- Focus read through Chrome DevTools, so page scripts can't fake it
+- The page is recorded once; every key press and form entry goes to the recording, never the live site
+- Same recording, same result: variation can only come from judgment, where it can be measured
+- ANDI, jQuery and the browser automation are pinned and recorded in every report
+- Focus is read through Chrome DevTools, so page scripts cannot fake it
 
-**Notes:** Variation between runs should come only from the agent's judgment, so it can be traced and measured.
+**Notes:** One keyboard walk feeds every keyboard test, and each new test reuses what earlier ones collected. A recording can lack code a page loads only when it is used; the tool keeps such scripts and holds a pass back when one is missing (found on a real NASA page in round 2).
+
+---
+
+## 8. Key decision: the server judges, a person reviews, the agent explains
+
+**On the slide**
+
+- Calling agents skipped the judgment work or guessed at it, whatever the wording
+- So the judge moved into the server: one pinned model and prompt, recorded in every report
+- "Unsure" goes to a person, and a person's answer overrides the model's
+- The calling agent does what the server cannot: explain results in the user's own project and help fix them
+
+**Notes:** The agency controls the judge, a person has the last word, and any MCP agent is the front end. The server judge is built and off by default; it is switched on one question type at a time as checks against a certified tester's answers show it is sound. **[FILL: question types switched on at submission.]**
 
 ---
 
@@ -143,10 +141,10 @@ flowchart LR
 
 **Script [PENDING: rehearse; record a fallback video]:**
 
-1. In Claude Code, ask in plain words to check a page for keyboard traps (an ACT trap case served locally, or a .gov page).
-2. Show the progress messages, then the finding: FAIL, which elements trap focus, steps to reproduce, screenshot.
-3. Show an open question and the agent's answer, then how a person overrides it.
-4. Run the `explain` prompt on the result: what failed and how to fix it.
+1. In an MCP client, ask in plain words to check a page for keyboard problems (a W3C test page served locally, or a .gov page).
+2. Show the progress line, then a finding: FAIL, which elements trap focus, steps to reproduce, the screenshot.
+3. Show an open question, the answer it got, and what "needs review" looks like.
+4. Ask for an explanation of the result: what failed and how to fix it.
 5. Point at the disclaimer in the output.
 
 ---
@@ -155,18 +153,17 @@ flowchart LR
 
 **On the slide**
 
-- Answer key from DHS: Trusted Tester verdicts on W3C's ACT test pages
-- **[FILL: cases per TT test, and DHS's PASS / FAIL / DNA split]**
-- Exact match on outcomes; no LLM judge
-- Development pages reported apart from held-out real .gov pages
+- Answer key from DHS: Trusted Tester verdicts on W3C's test pages, exact match, no LLM judge
+- Real .gov pages labeled blind by a certified Trusted Tester; the tool's results locked before the answers are revealed
+- A harder baseline than "no tool": the same model with a general browser tool
+- Rule-decided and judge-decided results scored apart
 
 **Notes:**
 
-- We didn't write our own answer key, because that would measure agreement with ourselves.
-- **[FILL: whether open questions were answered by a script or by Claude in the scored run.]**
-- **[PENDING]** Held-out real .gov pages, labeled blind by a certified tester in SCRT and scored by commit and reveal: page list and answer-file hashes committed when a round starts, the tool's results locked before the answers are added (`evals/judging.py`).
-- **[PENDING]** Agent-level evaluation against a browser-agent baseline (same model with Playwright MCP): blind-labeled real .gov pages and seeded faults (DHS training-course pages if allowed), three model families through NASA's Ask Sage, outcomes scored in code and wording by a judge from another family. Round 1 first: 9 pages, one run per arm (Sonnet 5.5 through the Claude Code CLI), the same WCAG 2.0 criteria prompt, tested pages frozen and the rest of the site live, scored per TT test and per criterion.
-- Fixes after round 1, before round 2: alike open questions asked once (5.D 1.1.0: a page's 96 filter-checkbox questions became 4); a site search is Does Not Apply for 5.F and 5.G (1.2.0); header menu buttons are not form controls (5.A, 5.B 1.2.0). Calls return within 45 s while longer runs go on in the server. Each result says what to do next; a page with too many fields is tested without 5.D; 19.A asks the agent to add pages; 4.D leaves an element that moved while pictured for review (1.2.0). 4.F ignores a site overlay that a menu did not open, and reads card grids and checkbox labels as people see them (1.2.0). The scorer scores split calls test by test and says why each result needs review. Results attach the pictures their questions need and stay under client limits; a set of filter boxes is one question (5.C 1.2.0); questions settled by reading carry no pictures (2.D 1.1.0, 5.F 1.3.0), and groups whose headings screen readers never hear fail (1.3.0); one call lists the work left across a session's runs; a keyboard trap must happen on two loads before the walk stops for it, and one seen on one load is left for a person (4.C 1.9.0); an error check read before the page finished reacting is left for review (5.F 1.3.1, 5.G 1.2.1); the focus question counts the changed pixels on, touching and away from the element (4.D 1.3.0); a required "*" drawn by CSS counts as shown text (5.C 1.4.0); a dialog or change over most of the window is never "content only" (4.E, 5.D 1.2.0); the focus order picture is cut to the part in question (4.F 1.3.0); moving content below the first screen gets its own pictures (2.B 1.1.0). Round 2 adds a third arm, the server judge (Agent C): TOBI's questions answered on the server by a pinned model and prompt, three repeats, scored beside A and B, with judge-decided cells reported apart from rule-decided ones. Round 2, paused before scoring: a result that would pass the client's size limit shows fewer questions and cuts long page text to the passages its question quotes, and replays of large recordings wait up to 120 s. 4.C no longer treats a button that swaps a frame's view as a way out of a keyboard trap, nor a hop to another control in the same frame (spec 1.11.0; found on NASA 5340). Recordings keep the scripts a page loads when it is used (same host, allowlisted, capped), and a keyboard or typing test cannot PASS while the recording lacks such code (2026-11-09: on NASA's 5340 the recording, not the browser, hid a trap and a focus jump). TOBI now opens menus, tabs, accordions and filters, reads what appears and asks once about buttons that share a name (5.C 1.5.0; NASA Home's twelve remove buttons: the page now fails 5.C like the key); what it cannot open turns a PASS into NEEDS REVIEW, and the keyboard tests do not walk through opened content yet (4.A, 4.C-4.F, 5.A-5.D, 2026-11-10). The server judge's gate scripts and trick-text test pages are built and tried on two pages (a trial, not a gate result; nothing switched on): the model answered both trick pages correctly and treated the injected text as page text. 5.D reads where focus landed a second after the Tab, so a jump that comes a moment later is seen (spec 1.4.0; test pages only: NASA 5340's recording lacks the script that does it). 3.A reads every video's file, not only videos that played, so a click-to-play video that flashes is Not Tested and one the tool cannot read is left for a person (spec 1.1.0; NASA 14592's key said Not Tested, TOBI said Does Not Apply). 4.A now sees click handlers that page scripts add and counts a click that starts a video as something a mouse can do (spec 1.4.0; NASA's CILab demo reel was a false PASS; checked on four test pages, not yet re-scored on the NASA page). Built, off by default (2026-11-09): the server's own judge (ApiJudge): one request per group of related questions, page data in an untrusted block, answers limited to each question's choices and applied through the same checks, unsure to a person, a client answer to a server answer refused, model and prompt recorded; nothing is on until the gate passes (not run yet).
+- We did not write our own answer key, because that would measure agreement with ourselves.
+- **[FILL: cases per TT test, and DHS's PASS / FAIL / DNA split.]**
+- Two rounds on real pages so far (19 pages, two NASA sites). Both are development evidence: the sites were then used to fix the tool.
+- After any change to a question, a fresh agent answers it from the tool's output alone.
 
 ---
 
@@ -174,15 +171,17 @@ flowchart LR
 
 **On the slide**
 
-- Agreed with DHS on **[FILL]** of **[FILL]** pages, per TT test
-- Caught **[FILL]** of **[FILL]** failures: **[FILL]** false PASS
-- **[FILL]** false FAIL; **[FILL]** left as "needs review"
-- Held-out real pages: **[FILL]**
+- Published answer keys: agreed on **[FILL]** of **[FILL]** cases; **[FILL]** false PASS; **[FILL]** false FAIL; **[FILL]** left as "needs review"
+- Round 1, real pages: TOBI 0 false PASSes; the same model with a general browser tool 16-20, and it reported no failure anywhere
+- Round 2: every false PASS came from a rule, none from a judge's answer; the server judge was repeatable but wrong toward FAIL on one question
+- Each round changed the tool: **[FILL: the check against round 2 after the fixes]**
 
 **Notes:**
 
-- **[FILL: the main disagreements and whether any is a false PASS.]**
-- Unless each test has about 60 true failures, say "promising, not proven."
+- Round 1 taught us agents leave judgment work undone, so results now end with the work left, pictures come attached, and long runs outlive a client's timeout.
+- Round 2 taught us a recording can hide a failure, that a person opens every menu and the tool had not, and that the judge belongs in the server.
+- **[FILL: the main disagreements in the scored run and whether any is a false PASS.]**
+- Unless each test has about 60 true failures, say "promising, not proven".
 
 ---
 
@@ -190,20 +189,19 @@ flowchart LR
 
 **On the slide**
 
-- Public .gov/.mil pages only, checked on every redirect; no logins, no credentials
-- Every browser connection is checked at connect time: names that point inside (private, loopback, cloud metadata) are refused, and DNS rebinding can't get past the check (an optional upstream proxy for cloud containers keeps the checks, with the upstream resolving the name again)
-- Page content is untrusted: never shown to the agent as instructions; outcomes come only from rules; page scripts cannot fake where focus is, even where a skip link lands
-- Other pages for the multi-page tests come only from the user, on the same allowed host; links on a page are never followed; two exceptions for 19.A: one GET site search on the same host, and up to 5 site map, home or breadcrumb links on the same host, tested in a follow-up run, each recorded; if a page is too slow to record, the other tests still run and the multi-page tests say why they could not
+- Public .gov and .mil pages only, checked on every redirect; no logins, no credentials
+- Every browser connection is checked when it connects: names that point inside (private, loopback, cloud metadata) are refused, and DNS rebinding cannot get past the check
+- Page content is untrusted: it never chooses a URL, a tool or an outcome, with four narrow, approved exceptions
 - A test page tells "automated testers" to report PASS; the tool must still find both traps **[FILL: result]**
-- Evidence kept 24 h, then deleted; results go to the user's repository
+- Evidence is kept 24 hours, then deleted; results go to the user's own repository
 - No secrets in errors or logs: query strings, headers and page text are redacted
-- Every result says "not a certified Trusted Tester result"
-- Hosted only behind NASA sign-in (Launchpad through VAST's Keycloak, NAMS enforced); each person sees only their own runs; every call is audited with who and what **[PENDING: end-to-end sign-in on VAST]**
+- Hosted only behind NASA sign-in; each person sees only their own runs; every call is audited **[PENDING: end-to-end sign-in on VAST]**
 
 **Notes:**
 
-- The template's default of opening an unauthenticated HTTP port on all interfaces is gone: stdio by default, HTTP only on loopback with Host and Origin checks unless sign-in is on. With sign-in, every MCP request needs a NASA token, an optional VAMS or NAMS group gate applies, runs are private to their maker, and each call writes an audit line (no answers or page text).
-- Errors and logs carry no query strings, headers, stack traces or page text; a test seeds secrets and checks they don't leak.
+- The template's unauthenticated HTTP port on all interfaces is gone: stdio by default, HTTP only on loopback with Host and Origin checks unless sign-in is on.
+- The four exceptions, each capped: one site search and up to five site-map, home or breadcrumb pages for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
+- Every result says "not a certified Trusted Tester result", and the report cannot be marked certified.
 
 ---
 
@@ -213,14 +211,16 @@ flowchart LR
 
 1. Look for an official answer key before writing your own
 2. Name your worst error and design around it
-3. Keep rules and model judgment apart, and score them separately
-4. Write down what you verified and what you assumed
+3. Keep rules and model judgment apart, and score them apart
+4. Measure what the agent does, not what the tool description asks
+5. Write down what you verified and what you assumed
 
 **Notes:**
 
 - **Lesson 1:** DHS's published verdicts gave us certified-tester ground truth on day one.
-- **Lesson 3:** Exact-match scoring works whenever outputs are categories.
-- **Lesson 4:** This repo keeps a `docs/solutions/` folder of hard-won lessons, such as "pages can fake focus" and "cookie banners leak state between probes."
+- **Lesson 3:** splitting the score showed the rules, not the model, caused every false PASS in round 2.
+- **Lesson 4:** more wording moved the shortcut; putting the next step in the data, and then moving the judge into the server, removed it.
+- **Lesson 5:** this repository keeps a `docs/solutions/` folder of hard-won lessons, such as "pages can fake focus" and "a recording can lack code the page loads when used".
 
 ---
 
@@ -228,12 +228,11 @@ flowchart LR
 
 **On the slide**
 
-- **[FILL: remaining Test 4 work at submission]**
-- Real-site holdout with a second certified tester
-- A published side-by-side on real .gov pages: certified testers, TOBI and five scanners
-- Export drafts to DHS's SCRT format so a certified tester can review and finish them
-- Test 2 (2.A Audio control, 2.B Blinking and moving, 2.C Auto-updating, 2.D Change notification; 1.0.0): a second browser watches the page with autoplay allowed, then tries the controls near changing content with the keyboard (W3C ACT efbfc7 11/11 and 80f0bf, 4c31df, aaa1bf 14/14 as expected; judge eval 18/18, no false PASS)
-- 3.A Flashing (1.0.0): the page's own clock stepped frame by frame and media decoded, because screenshots alias a strobe; flashing found is NOT TESTED as the TT says, with the tool's experimental WCAG 2.3.1 assessment as a note for DHS or W3C to judge (16 custom pages; no answer key exists)
-- Built after Test 4: 5.D On input (forms that change context when filled in), 5.F Error identification and 5.G Error suggestion (forms whose errors are not named, explained, announced or fixable), 5.A Label provided, 5.B Label descriptive and 5.C Programmatic label (labels people can see, and what ANDI says screen readers announce); 5.H Error prevention (payments and other consequential forms can be reviewed, undone or checked), which completes Test 5
-- Multi-page 9.A Bypass, 9.B Consistent navigation, 9.C Consistent identification and 19.A Multiple ways: the page compared with other pages of the same site the user names (judge eval 6/6, no false PASS, with the evidence in hand; real agents rarely opened screenshots, which a fix addresses; 9.C spec 1.1.1 says when names alone show two controls do different things; since 2026-11-09, other pages of another template are NEEDS REVIEW, not Does Not Apply: 9.A, 9.B 1.1.0, 9.C 1.2.0)
-- Then: more form tests, headings, reading order — where scanners fall short
+- Fewer false FAILs and fewer "unsure" answers: the rule and question fixes round 2 pointed to
+- Fields inside frames, and the keyboard walk through everything a page can open
+- A person's answer from TOBI's own signed-in page, kept so the same question is answered once per site
+- A third round on a site not used before, with a second certified tester if one is available
+- More of the 61 tests: images, contrast, headings, resize, where scanners and people disagree most
+- Drafts a certified tester can finish in DHS's own report format
+
+**Notes:** Each test's status on real pages is in the repository's README. **[FILL: tests and spec versions at submission.]**

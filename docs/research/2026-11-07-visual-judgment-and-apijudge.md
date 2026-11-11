@@ -204,7 +204,7 @@ Facts come from the PyPI and npm registries on 2026-11-07.
 
 **In the repository:**
 - CLAUDE.md;
-- `docs/plans/2026-11-06-agent-follow-through.md` (changes 3 and 6);
+- the agent follow-through plan of 2026-11-06 (changes 3 and 6; removed 2026-11-11, in git history);
 - `docs/solutions/agent-follow-through.md`, `judge-eval.md`;
 - `docs/research/2026-10-31-tt-coverage-map.md`, `2026-11-07-visual-cluster-per-test.md`;
 - `specs/rules/*.md` section 4;

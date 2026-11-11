@@ -85,8 +85,9 @@ from `d.day`. Never use `%-d`, `%-m` or the like in this repo.
   asyncio` (WinError 10106). The product is not affected. Fixed 2026-11-02:
   the tests pass `SYSTEMROOT` through on Windows only (3 passed, headless).
 
-**What this settles.** Each build-task file's "headed Chrome on Windows:
-every fixture gives the same outcome" item is now answered for its test.
+**What this settles** (as of 2026-11-02; not run again since, so not for
+specs changed after that or for 2.x and 3.A). "Headed Chrome on Windows:
+every fixture gives the same outcome" is answered for these tests.
 4.C, 4.D, 4.E and 4.F: yes, every fixture and ACT case. 4.B: yes. 4.A: yes
 except ACT 8f9b5bf5 (scrollbars, above). 5.D: yes after the new-window fix
 (headless full suite, and a headed run of the 4.A, 4.B, 5.D and Baseline
@@ -99,7 +100,7 @@ covers, such as 4.B V1 (repeated keydown on a held key) and 4.D V8 (cost
 per stop), are still open.
 
 **Running headed beside your own work.** Every page load gets a fresh
-browser context ([fresh-load-per-probe.md](fresh-load-per-probe.md)), and in
+browser context ([focus-and-walk.md](focus-and-walk.md)), and in
 headed mode Playwright shows each context as its own new window. Windows
 keep opening and closing in front of other work, and a stray click moves
 keyboard focus, which these tests measure. Stay off the machine during a

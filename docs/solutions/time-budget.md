@@ -1,5 +1,12 @@
 # Where a run's time goes, and the tool's own screenshots
 
+**Read the figures with their date.** Most measurements below were taken
+when one run had to fit a 120 s limit (110 s soft deadline). Since
+2026-11-07 a run tests the whole page by default and stops only at
+`MAX_RUN_S` (1800 s); `no_time_limit=false` holds it to `RUN_LIMIT_S`
+(600 s). The lessons stand (a faster run is still a better one); the
+"out of time" and "refused" cells describe the old limit.
+
 **Measure first.** `uv run python evals/time_budget.py [--no-time-limit] <pages>`
 runs every implemented test and prints each phase's cost from steps.jsonl
 (`walk` and `collected` entries carry `cost`: seconds, page loads, presses,
@@ -12,7 +19,7 @@ timers for one question.
 wait (~190 ms a press: two animation frames plus the 150 ms quiet window
 after the press's own focus event), and about 70% of presses were replays
 Tabbing back to a stop. Page loads, CDP reads and context creation are
-small (as in [fresh-load-per-probe.md](fresh-load-per-probe.md)).
+small (as in [focus-and-walk.md](focus-and-walk.md)).
 
 **Measured** (Linux, headless; all implemented tests; before → after the
 cuts of 2026-11-01, every outcome unchanged):

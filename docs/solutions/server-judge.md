@@ -1,4 +1,8 @@
-# ApiJudge: what to know before changing it
+# The server judge (ApiJudge) and its stand-in
+
+What to know before changing `apijudge.py`, and what Agent C showed on real pages in round 2.
+
+## ApiJudge: what to know before changing it
 
 The server answers its own open questions (`src/tobi508/apijudge.py`,
 `judge_prompt.md`; plan `docs/plans/2026-11-08-apijudge-build.md`).
@@ -7,11 +11,11 @@ The server answers its own open questions (`src/tobi508/apijudge.py`,
   `pipeline.answer_questions` like an agent's: `record_answers`' guards, the
   spec's rows. `answered_by` is `server:<model>`. A client answer (even
   `decided_by: human` through MCP) to a question the server answered is
-  refused; a person answers on TOBI's own page (bundle 6).
+  refused; a person answers on TOBI's own page (not built yet: ROADMAP).
 - **Off until the gate.** `JUDGE_TYPES` is empty by default; with
   `JUDGE_BACKEND=client` nothing changes. Any change to the prompt, the
   request, the groups table or a question's rubric or input needs a new gate
-  run (bundle 1 builder note 4), and the judge eval for the changed types.
+  run (`docs/plans/2026-11-08-apijudge-build.md`), and the judge eval for the changed types.
 - **Page data stays in one `<untrusted_page_data>` block**: the shared block
   (Tab stops as lines, page-text excerpts) and each question's block. Never
   put page text in the system prompt.
@@ -54,3 +58,43 @@ The server answers its own open questions (`src/tobi508/apijudge.py`,
   `tobi_answer_questions` (a job), a test of the 19.A follow-up path, the
   gate's comparison beside Agent C's answers, and `judge_types`' default from
   `gate.json` (deliberately left to Abby).
+
+## A server judge on real pages (Agent C, round 2)
+
+What a model answering TOBI's questions on the server does, measured on
+round 2's 10 pages (`evals/agent/judge_c.py`; results in
+`evals/judging/round2-armc/abc-score.md`). Agent-assisted results, not
+certified Trusted Tester results.
+
+**What happened.** Sonnet 5.5, one call per question, fixed system prompt,
+the question's data in one untrusted block, every picture the input names
+at native resolution (tall ones in 1,400 px slices), choices as an enum,
+applied through `answer_questions`. 194 of 194 answered in each of 3
+repeats, 0 failed calls, about 32% unsure; repeats agree on 194 of 200
+criterion cells. No false PASS or false DNA from its answers; its errors
+were false FAILs, mostly 4.F J1 (5-6 pages) and 9.C J1 (2).
+
+**What we do now.**
+- **Fix the question before blaming the model.** C's reasons named the
+  cause: 4.F's rubric let "differs from the visual order" stand for "does
+  not preserve meaning"; its order picture drew boxes for stops nobody can
+  see; 9.C paired unrelated content links and its rubric called different
+  words inconsistent. Read the model's `reasons` and `seen` per wrong
+  cell.
+- **Switch the server judge on per question type,** behind the judge eval
+  with real-page packets (`round2-armc/first-round/`).
+- **Put a page's shared inputs first and send its questions together.**
+  The Tab-stop list and page text repeat in every question of a page
+  (Home: 63 questions, 794k input tokens); a warm prompt cache made a
+  repeat cost a fifth as much.
+- **Small crops can be too small:** 4.D's on and off pictures were 48 x 47
+  px for a button. Native resolution does not help a picture that shows
+  too little (the cropping review, post-round 2 plan).
+- **The CLI route works as a stand-in** (`claude -p`, `--system-prompt`,
+  `--tools ""`, `--json-schema`, stream-json input with base64 images;
+  the only tool the model sees is the CLI's StructuredOutput). Temperature
+  cannot be set there.
+
+**How we know.** `evals/judging/round2-armc/abc-score.md`;
+`tests/test_agent_judge_c.py` (schema, answers never defaulted, gate
+order, request blocks and slices).

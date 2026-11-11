@@ -24,5 +24,4 @@ NEEDS REVIEW for tests that press keys or type. Not found: chunks named
 another way (a manifest, `new URL(..., import.meta.url)`, a template string).
 
 **Do.** A replay result for a page with an unrecorded chunk is not a PASS for
-tests that interact (plan `2026-11-08-rules-principle3-build.md`, step 1
-finding 6). Do not blame the browser first.
+tests that interact (guard GU). Do not blame the browser first.

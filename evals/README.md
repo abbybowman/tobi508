@@ -12,7 +12,7 @@ Playwright MCP) is in `agent/`: see [agent/README.md](agent/README.md).
 ```bash
 uv run python evals/judge_eval.py prepare /tmp/eval   # packets in /tmp/eval-packets
 # ONE fresh agent answers every packet folder (questions.json -> answers.json);
-# one agent per folder costs ~55k tokens each (docs/solutions/subagent-token-cost.md).
+# one agent per folder costs ~55k tokens each (docs/solutions/judge-eval.md).
 uv run python evals/judge_eval.py apply /tmp/eval     # follow-ups -> round2; score
 ```
 
