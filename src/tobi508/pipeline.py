@@ -123,7 +123,7 @@ def _opener(
     paused_clock: bool = False,
 ):
     """A fresh replay context and page for every load (docs/solutions/
-    fresh-load-per-probe.md). A page with cross-site frames replays in full
+    focus-and-walk.md). A page with cross-site frames replays in full
     Chromium (browser.replay_in_full_chromium). `init_scripts`: extra hooks;
     `autoplay`: pass T's browser (full Chromium, headless, autoplay allowed;
     plan Q1 and Q11). `viewport` and `paused_clock`: 3.A's flash capture

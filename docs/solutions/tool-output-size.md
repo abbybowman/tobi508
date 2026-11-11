@@ -1,11 +1,41 @@
-# Large pages: results over the client's limit, and slow replays
+# Tool output: keeping it small, and large pages
+
+What a consumer agent can take in one result, and what large pages do to results and replays.
+
+## Keep tool output small: links and shared evidence
+
+**Problem.** A Test 4 run on a two-link page returned about 20,000
+characters (5,000 tokens), 60% of it the full report repeated after the
+findings, and each 4.A question repeated the whole stop list (on a real page
+with ten candidates, ten copies).
+
+**What we do.** `RunResult.report` and `AnswerResult.report` stay on the
+Python object (pipeline, tests and evals use them) but are `exclude=True`, so
+the client gets `report_uri` (a `run://` resource) instead and reads it only
+to save it. Evidence several questions use goes once in `shared_inputs` (a
+check's optional `shared_inputs(state)`, like `page_text(state)`), and each
+question lists the keys it uses in `shared`. 4.A and 4.B share one `stops`
+key, so it goes once when both run. Same run: 8,300 characters (−59%).
+Covered by `tests/test_tools.py` (`test_shared_evidence_is_sent_once`, the
+report-link assertions).
+
+**2026-11-07, the result refactor.** Findings are one line each in
+results (a FAIL keeps its summary up to 1500 characters; a summary of 400
+characters or less is kept whole). Answer results carry only the findings
+that changed. Open questions come 10 at a time. The detail is in
+`tobi_explain`. Measured on the realistic pages: first results 39.5k and
+49.5k characters became 30.4k and 36.1k; new context per answering run
+fell 35-40%. What is left is mostly question evidence. See
+[agent-follow-through.md](agent-follow-through.md).
+
+## Large pages: results over the client's limit, and slow replays
 
 Round 2 of the agent eval (svs.gsfc.nasa.gov, 2026-11-08) left about 170
 cells unanswered for two reasons that the nasa.gov round never showed. Both
 were fixed without changing a check, a question or a rubric: only whether a
 cell gets answered, never how.
 
-## Results over the client's size limit
+### Results over the client's size limit
 
 **What happened.** Claude Code passes an MCP result to the agent only up to
 about 25k tokens (`MAX_MCP_OUTPUT_TOKENS`, default 25,000). A larger one is
@@ -60,7 +90,7 @@ round 2's real results rebuilt with `fit`: Home 44k (10 questions, names
 cut), Search 33k (10, uncut), Galleries 44k (1: 4.B with an excerpt of its
 page text), Help 30k.
 
-## Replays of large recordings time out when loads overlap
+### Replays of large recordings time out when loads overlap
 
 **What happened.** `arm-a-g2-1` could not load 14592 and 14194 (95 and 71 MB
 recordings, multi-megabyte JPEGs): `Page.goto: Timeout 30000ms exceeded`

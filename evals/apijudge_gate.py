@@ -1,5 +1,5 @@
 """The ApiJudge gate: when a question type may be switched on (plan
-docs/plans/2026-11-08-apijudge-build.md, "The gate", builder note 4).
+docs/plans/2026-11-08-apijudge-build.md, "The gate").
 
 A type passes only when both hold:
 

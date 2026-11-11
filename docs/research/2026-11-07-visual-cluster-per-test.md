@@ -37,7 +37,7 @@ The coverage map's axe-core column already lists the rules per TT test. What is 
   - `table-fake-caption` (experimental);
   - `meta-viewport` (wcag144);
   - best-practice only: `heading-order`, `empty-heading`, `empty-table-header`, `scope-attr-valid`.
-- **Running it.** The roadmap's plan is to run axe on its own fresh load after the walk (`docs/solutions/scanners-after-the-walk.md`). Its results are evidence for spec rows, never a PASS by themselves.
+- **Running it.** The roadmap's plan is to run axe on its own fresh load after the walk (`docs/solutions/andi-output.md`). Its results are evidence for spec rows, never a PASS by themselves.
 
 ### Our own code that the cluster can reuse
 

@@ -1,45 +1,50 @@
 # Solutions: lessons that save the next test time
 
-One short file per lesson: what happened, what we do now, and how we know.
-Specs link here instead of repeating the reasoning. Add a file when a problem
-took more than an hour to understand; update it when the answer changes.
+What happened, what we do now, and how we know. Specs and code link here
+instead of repeating the reasoning. Add a lesson when a problem took more
+than an hour to understand, to the file of its topic (a new file only for
+a new topic), and update it when the answer changes. Every file is listed
+here.
 
-| File | Lesson |
+## Building a TT test: read these first
+
+| File | What it covers |
 | --- | --- |
-| [focus-reading.md](focus-reading.md) | Read focus through CDP, not page script; how stops are identified across loads |
-| [fresh-load-per-probe.md](fresh-load-per-probe.md) | Why every probe gets a new browser context, not just a new page |
-| [exit-check-on-small-pages.md](exit-check-on-small-pages.md) | An exit check must accept reaching the end of the page |
-| [scanners-after-the-walk.md](scanners-after-the-walk.md) | ANDI changes the page; run scanners on their own load |
-| [tt-pdf-as-data.md](tt-pdf-as-data.md) | The TT PDF converted once to Markdown and JSON; layout traps; where the PDF disagrees with itself |
-| [focus-events-in-chrome.md](focus-events-in-chrome.md) | What the focus log shows; blur inside a focus handler fires no focus-in; `id="close"` is shadowed by `window.close` |
-| [animation-noise.md](animation-noise.md) | A second focused read separates animation from a focus indicator |
-| [widget-items.md](widget-items.md) | Arrowing through roving-tabindex and aria-activedescendant widgets |
-| [unique-paths-and-frame-coordinates.md](unique-paths-and-frame-coordinates.md) | Paths need `:nth-of-type`; positions must be top-level, not frame-relative |
+| [focus-and-walk.md](focus-and-walk.md) | Reading focus through CDP; identifying stops across loads; a fresh browser context per probe; unique paths and top-level positions; shadow roots; listeners from the page's own world; exit checks on small pages; animation against focus indicators; widget items |
+| [time-budget.md](time-budget.md) | Measure with `evals/time_budget.py`; where a run's time goes; replay with `ctx.replay`; the tool's own screenshots are DOM changes |
+| [recordings-miss-lazy-scripts.md](recordings-miss-lazy-scripts.md) | A recording can lack code the page loads when used: the chunk store and guard GU |
+| [andi-output.md](andi-output.md) | Reading ANDI's per-element output; what its wrapper changes; ANDI and scanners run on their own load |
+| [tt-pdf-as-data.md](tt-pdf-as-data.md) | The TT PDF as Markdown and JSON; layout traps; where the PDF disagrees with itself |
 | [testing-what-no-page-can-trigger.md](testing-what-no-page-can-trigger.md) | Test timing-dependent rows on hand-built evidence |
-| [editing-formatted-code.md](editing-formatted-code.md) | Agents: format first, then edit against the formatted text |
-| [shadow-paths-and-contains.md](shadow-paths-and-contains.md) | `contains()` and `querySelector` stop at shadow roots; resolve walk paths part by part |
-| [browser-specific-results.md](browser-specific-results.md) | Chrome tabs to scrollers (ACT 0ssw9k); a Baseline test page broken by its SRI hash; results are per browser |
-| [judge-eval.md](judge-eval.md) | Scripted answers test rules, not questions; how the judge eval stays unbiased; what agents need in a question; packets hand images over as files, real agents rarely open `run://` links |
-| [subagent-token-cost.md](subagent-token-cost.md) | One subagent per question costs ~55k tokens each; batch all questions in one |
-| [parallel-tests.md](parallel-tests.md) | pytest-xdist; per-worker files for anything tests write in common; `auto` in a container counts the CPU limit |
-| [linux-container.md](linux-container.md) | The Linux image (built in GitHub Actions, run on VAST): FIPS hosts, `.dockerignore`, running the suite detached with progress; VAST sessions: certificates, PowerShell not Git Bash, home persists, dropped connections |
-| [small-tool-output.md](small-tool-output.md) | Report as a `run://` link; shared evidence once per result |
-| [andi-output.md](andi-output.md) | Reading ANDI's per-element output; its wrapper changes CSS paths; viewport clips; scoping nearby text |
-| [form-fields.md](form-fields.md) | Read vendored cases first; one control kind per stop; Chrome's date-input parts; changes outside a field's own widget; submission log; draft checks; before-reads on the fresh load; alerts, native validation and live regions; read every listed technique before a rubric (5.H) |
-| [time-budget.md](time-budget.md) | Measure with `evals/time_budget.py`; the tool's own screenshots are DOM mutations; replay with `ctx.replay` |
-| [windows-chrome-results.md](windows-chrome-results.md) | First Windows runs (headless and headed Chrome 156) against Linux: 5.D false PASS, egress tests, one 4.A ACT case; load-only and harness-only failures; stay off the machine in headed runs |
-| [egress-proxy.md](egress-proxy.md) | `route.fetch` goes through the launch proxy; a CONNECT 403 is a response, not an error; HAR replay hangs on failed requests |
-| [multi-page.md](multi-page.md) | Other pages come from the caller; read content, not stops (ACT's text-only blocks); where a skip link lands; stop once bypassed; rules-only cases and the judge eval; 19.A's live search and suggested pages |
-| [scrt-format.md](scrt-format.md) | SCRT's JSON: one-item array, strings, child rows, screenshots inside; a row set back to "No Selection" is dropped on save; child issues shift Global issue choices |
-| [full-chromium-iframes.md](full-chromium-iframes.md) | Headless `chromium` is the shell, which runs cross-site iframes in-process; those pages replay in full Chromium |
-| [agent-eval-harness.md](agent-eval-harness.md) | Pausing a broken round blind; check transcripts for saved results; pairs by template; first-round state only before answers; archives that reference each other; Freezing a round for two arms; Playwright MCP's snapshots go to a file; read-resource and helper tools; leak check; subprocess environment; the CLI's 120 s background move; subagent fan-out |
-| [agent-eval-scoring.md](agent-eval-scoring.md) | Who decided each wrong cell (rule or judge); open questions score 0; keys can slip; The lock covers the scorer and the prompt; "not performed" is mostly needs review; split calls; rerunning a locked round's pages; usage and cost per run |
-| [watching-a-page-over-time.md](watching-a-page-over-time.md) | Pass T for 2.A-2.D: its own load and autoplay browser; regions over the whole watch; sampling that does not alias a blink; the probe's clip, slowed and focus-only rules; the media store and #fragments; content that keeps changing slows the walk (T1) |
-| [agent-follow-through.md](agent-follow-through.md) | Prose loses to the agent's "done": fewer steps, status in the data, the to-do list last; proof fields get filled, not followed; one run is noise for behaviour; measure a result by field before cutting it; snapshots before a refactor; tall pictures in parts; rubric examples not the fixtures' words |
-| [trap-seen-once.md](trap-seen-once.md) | A trap seen on one load only (Artemis III's survey on 1 load in 10): a second pass confirms a trap event before the walk ends; testing a page that differs per load |
-| [flashing-needs-stepped-frames.md](flashing-needs-stepped-frames.md) | 3.A: real-time screenshots alias a strobe; step the page's clock, decode images and video; triggers first; GIF delays, short loops, noisy plateaus, screencast jitter, fine patterns |
-| [large-pages-results-and-replays.md](large-pages-results-and-replays.md) | Results over the client's ~25k-token limit are saved to a file the agent never reads: fit each result (fewer questions, evidence only for those shown, excerpts); replays of large recordings need longer than 30 s when loads overlap |
-| [server-judge-standin.md](server-judge-standin.md) | A server judge (Agent C) on real pages: no false PASS from its answers, false FAILs from our questions (4.F rubric and picture, 9.C pairing); switch on per type; shared inputs first for the cache; the CLI route as a stand-in |
-| [listeners-from-the-main-world.md](listeners-from-the-main-world.md) | CDP lists a page's event listeners only from the page's own world: from the isolated world 4.A saw none (CILab's jQuery click row passed); read them from the main world |
-| [recordings-miss-lazy-scripts.md](recordings-miss-lazy-scripts.md) | A HAR made from a load misses scripts a page imports after interaction (code splitting): handlers silently do nothing in replay, so 5340's popup trap and 5.D jump were invisible; check recorded scripts for `import("./x.js")` against the HAR |
-| [opening-triggers.md](opening-triggers.md) | reveal.py: aria-controls alone is not a trigger; choose a set's options together and read once; merge a control read in another opened state; one quote per set answer; why 4.F has no reveal-content |
+| [judge-eval.md](judge-eval.md) | Scripted answers test rules, not questions; what an agent needs in a question; keeping the eval unbiased; one agent for all packets, not one per question |
+| [tool-output-size.md](tool-output-size.md) | The report as a `run://` link; shared evidence once; results over a client's limit; slow replays of large recordings |
+
+## By test family
+
+| File | What it covers |
+| --- | --- |
+| [trap-seen-once.md](trap-seen-once.md) | 4.C: a trap seen on one load only is confirmed on a second |
+| [form-fields.md](form-fields.md) | 5.x: read vendored cases first; one control kind per stop; date-input parts; changes outside a field |
+| [opening-triggers.md](opening-triggers.md) | Opening menus, tabs and sections (`reveal.py`) and what it cost |
+| [multi-page.md](multi-page.md) | 9.A-9.C, 19.A: other pages come from the caller; read content, not stops; the live site search |
+| [watching-a-page-over-time.md](watching-a-page-over-time.md) | 2.A-2.D: pass T, its own load and browser, regions, the settle rule's ignore list |
+| [flashing-needs-stepped-frames.md](flashing-needs-stepped-frames.md) | 3.A: real-time screenshots alias a strobe; step the page's clock |
+| [scrt-format.md](scrt-format.md) | SCRT's JSON and its quirks |
+
+## Browsers and environment
+
+| File | What it covers |
+| --- | --- |
+| [environment.md](environment.md) | The Linux container image; parallel tests and per-worker files; tests that depend on chance; editing formatted code; working beside a running suite; probing recordings |
+| [egress-proxy.md](egress-proxy.md) | Every browser connection goes through the egress proxy; what a refused connection looks like; HAR replay |
+| [full-chromium-iframes.md](full-chromium-iframes.md) | Pages with cross-site iframes replay in full Chromium, never the headless shell |
+| [browser-specific-results.md](browser-specific-results.md) | Results that differ by browser version; load a vendored case in Chrome before trusting it |
+| [windows-chrome-results.md](windows-chrome-results.md) | Windows headless and headed Chrome 156 against Linux (2026-11-02): what differed and why |
+
+## Agents, evals and the server judge
+
+| File | What it covers |
+| --- | --- |
+| [agent-follow-through.md](agent-follow-through.md) | Getting a calling agent to finish: fewer steps, status in the data, the to-do list last, proof the picture was seen |
+| [server-judge.md](server-judge.md) | ApiJudge: what to know before changing it; what Agent C showed on real pages |
+| [agent-eval.md](agent-eval.md) | The agent eval harness and scoring: what cost time |

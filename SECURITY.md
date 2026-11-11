@@ -31,13 +31,16 @@ to test: it loads real agency sites.
 
 Pre-release. Only `main` is supported; there are no tagged releases yet.
 
-## Status: local use only
+## Status: local use; hosted sign-in built, not yet deployed
 
-The server runs on the user's own machine, over stdio by default. **It has
-no authentication.** Its HTTP transport listens on loopback only (127.0.0.1
-or ::1; any other host is refused at start) and checks the Host and Origin
-headers on every request. Do not expose it on a network or host it for
-others until the items under "Before a hosted deployment" are done.
+The server runs on the user's own machine, over stdio by default. Without
+sign-in its HTTP transport listens on loopback only (127.0.0.1 or ::1; any
+other host is refused at start) and checks the Host and Origin headers on
+every request. Hosted sign-in exists (`AUTH=oidc`: an OIDC proxy, a group
+gate, runs private to the person who made them, audit lines) and is tested
+against a stand-in provider; it has not yet run against NASA's identity
+provider. Do not host the server for others until the items under "Before
+a hosted deployment" are done.
 
 ## What the server does to stay safe
 
@@ -53,16 +56,24 @@ others until the items under "Before a hosted deployment" are done.
   stays end to end. If the proxy is down, nothing gets through.
 - **The caller chooses the pages, never the page.** Other pages of the same
   site come only from the caller and must be on the tested page's host,
-  before and after redirects. Links found on a page are suggested to the
-  user, never visited. One exception: 19.A may run the site's own search
-  once (a GET form on the same host, allowlisted, every hop checked).
+  before and after redirects. No other URL found on a page is visited.
+  The approved exceptions, each with its limits in `CLAUDE.md` (principle
+  5): 19.A may run the site's own search once (a GET form on the same
+  host, allowlisted, every hop checked) and follow up with at most 5 pages
+  its caller's pages link to as a site map, home page or breadcrumb (same
+  host, allowlisted); a key combination that page text names as a way to
+  stop moving content or audio may be pressed once on a replay; and the
+  recorder saves scripts that recorded scripts name (same host as the
+  script, allowlisted, capped in number, size, depth and time).
 - **Tests run on a recording.** Each page is recorded once (HAR) and tested
   from the replay, so the tests' key presses and form entries never reach
   the live site. 5.F–5.H submit forms with wrong values only into the
   replay.
 - **ANDI is served from the repository.** It is never loaded from ssa.gov;
-  other www.ssa.gov requests are aborted. No Content-Security-Policy bypass
-  is used.
+  other www.ssa.gov requests are aborted. The page's
+  Content-Security-Policy is bypassed in the test browser so that ANDI's
+  injected script runs (`BYPASS_CSP`, on by default; the report records
+  it). The browser only ever shows the recording.
 
 **Page content is untrusted**
 - Text from tested pages (DOM, accessible names, URLs, titles, screenshots,
@@ -100,13 +111,15 @@ others until the items under "Before a hosted deployment" are done.
 
 ## Before a hosted deployment
 
-Hosting is the target (see `docs/plans/2026-11-04-results-service.md`), and
-these are not built yet:
-- authentication and authorization on the MCP endpoint;
+Hosting is the target (see `docs/plans/2026-11-07-server-judge-pivot.md`).
+Sign-in and per-user separation of runs are built
+(`docs/plans/2026-11-06-hosted-auth.md`). Not done yet:
+- sign-in verified end to end against NASA's identity provider;
 - network-level egress rules on the host, as a second layer behind the
   proxy;
-- access control and retention for stored runs, and per-user separation of
-  run data;
+- a retention rule for stored runs, and a store that outlives a restart;
+- a person's answer accepted only from TOBI's own signed-in page (today an
+  answer through MCP may still say it is a person's);
 - NASA's security review and ATO for the hosting environment;
 - NASA's software release review before the code is published.
 

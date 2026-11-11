@@ -2,7 +2,6 @@
 
 Development runs 4-11 (`evals/judging/round1-postfix/README.md`, 2026-11-05
 to 07), each with a debrief turn asking the agent what it skipped and why.
-Plan: `docs/plans/2026-11-06-agent-follow-through.md`.
 
 ## Prose loses to the agent's own idea of "done"
 
@@ -115,5 +114,3 @@ examples, is the real result.
   progress notifications (not confirmed in Anthropic's docs). Each
   still-running result now carries a progress line with elapsed time and
   asks the agent to relay it.
-- **The repository moved** (`tobi508`), but this session's git access
-  covers the old name, which redirects; push there.

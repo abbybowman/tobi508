@@ -1,18 +1,44 @@
 # Plan: fixes after agent eval round 2
 
-Status: **proposed 2026-11-08, nothing built yet** except the harness and
-delivery fixes made during the round (end). Round 2: 10 pages of
-svs.gsfc.nasa.gov, arms A, B and C, scored against Abby's blind SCRT
-files. Results: [`evals/judging/round2-armc/abc-score.md`](../../evals/judging/round2-armc/abc-score.md).
+The fix catalogue from round 2 (10 pages of svs.gsfc.nasa.gov, arms A, B
+and C, scored against Abby's blind SCRT files). Results:
+[`evals/judging/round2-armc/abc-score.md`](../../evals/judging/round2-armc/abc-score.md).
 Each rule cell reviewed with Abby: [`evals/judging/round2/review-with-tester.md`](../../evals/judging/round2/review-with-tester.md).
-Related plan: [2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md).
+What is scheduled when is in [the roadmap](../ROADMAP.md); the reasons for
+the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md).
+
+## Status (2026-11-11)
+
+| Fix | What | Status |
+| --- | --- | --- |
+| 1 | 3.A: every video is a trigger, played or not | Built (3.A 1.1.0) |
+| 2 | 4.C: an exit that needs activation inside the trap | Built (4.C 1.11.0: rows M4, M4d, M4o) |
+| 3 | 5.F error values by field type; 4.C Tabs through each error state | **Not started** (below) |
+| 4 | 4.A: a click that starts a video; listeners read from the page's world | Built (4.A 1.4.0) |
+| 5 | 5.D: focus read again after tabbing away | Built (5.D 1.4.0), shown on custom pages only |
+| 6 | 9.A-9.C: other pages from another template are NEEDS REVIEW | Built (9.A, 9.B 1.1.0; 9.C 1.2.0) |
+| 7 | Frames: 5.x reads fields in frames | Not started |
+| 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Not started |
+| 9b | Opening everything | Phase 1 built (`reveal.py`, guards RV and RC); phases 2 and 3 on the roadmap |
+| 12-14 | 4.F rubric and order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
+| 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
+| 18-20, 22, 23 | Harness and process notes | Open, low priority |
+| 21 | A person's answer only from TOBI's own UI | Not started; the MCP closure is the first step ([pivot plan](2026-11-07-server-judge-pivot.md)) |
+| 24-27 | Questions that end in "unsure" (4.A, 4.D, 2.B) | Not started |
+| 28 | Judge requests: the page's shared inputs once | Built (`apijudge.py`) |
+| 29 | CI skips docs-only changes and runs in parallel | Built (`.github/workflows/ci.yml`) |
+| GU | Recordings that lack code the page loads when used (found while building fixes 2 and 5) | Built: chunk store and guard GU ([lesson](../solutions/recordings-miss-lazy-scripts.md)) |
+
+Built fixes are described by their spec and its tests; their text is
+removed from this file (git history has it). The evidence for fixes 2, 3
+and 5 on page 5340 was later found to be hidden by the recording, not the
+browser: test them on custom pages.
 
 **Rules for every fix here.** A rule change goes through its spec
 (principle 2), MINOR version bump, with a fixture (a vendored ACT or
 Baseline case first, a custom page only for a gap), the full suite, and
 the judge eval when a question, rubric or question input changes
-(principle 6). Each fix is checked on round 2's frozen pages before the
-next round; round 2's results stay as locked (they measured the code at
+(principle 6). Round 2's results stay as locked (they measured the code at
 its start). Agent-assisted results, not certified Trusted Tester results.
 
 ## What round 2 showed
@@ -33,44 +59,9 @@ its start). Agent-assisted results, not certified Trusted Tester results.
 - **Agents relayed rule errors faithfully** (A) or made their own (B: 15-19
   false PASSes per run).
 
-## Order
-
-1. **Principle 3 first:** fixes 1-6 (a failure passed, or set aside as
-   Does Not Apply).
-2. **Frames** (fix 7): they feed fixes 2, 3 and 5 and the 1.3.1 and 4.1.2
-   cells.
-3. **False FAILs by rule:** fixes 8-11 (5.A alone is 7 cells per run).
-   **Fix 9b (testing what interaction reveals) is a principle 3 fix:**
-   build it with the frames work (fix 7), and before fix 9 removes any
-   FAIL, check the key's failing element is still found.
-4. **Questions and pictures** for any judge: fixes 12-14 (before
-   ApiJudge is switched on for 4.F or 9.C), and fixes 24-28, which turn
-   most unsure answers into decisions or remove the question.
-5. **Cross-page and harness:** fixes 15-19.
-6. **Process:** fixes 20-23, and CI (fix 29).
-
 ## Fixes
 
 ### Principle 3: a failure passed or set aside
-
-#### 1. 3.A: video that never played became Does Not Apply
-- **Evidence:** 14592. Key: Not Tested, "several videos appear to
-  contain flashing content". TOBI: DNA, "Triggers: none. No trigger
-  fired, so no capture ran."
-- **Fix:** a page with video the capture did not decode is NEEDS REVIEW
-  for 3.A, never DNA (no trigger is not evidence of no flashing). Then:
-  decode video that does not autoplay (the media store's bytes, as
-  flashcap does for media that plays) so it can be counted.
-- **Fixture:** a page with a click-to-play video holding a known flash.
-
-#### 2. 4.C: an exit that only moves focus within the trap
-- **Evidence:** 5340. Key: Fail, the embedded app (iframe) is a trap.
-  TOBI: PASS by M4, "pressing Enter on View timeline lets focus move on",
-  but focus stays in the app.
-- **Fix:** an exit counts only when focus leaves the looping set of
-  stops (here the frame), not when a key moves it within the set.
-- **Fixture:** an iframe whose Tab loop has a button that moves focus to
-  another control in the same frame.
 
 #### 3. 4.C and 5.F: error states, including JS-only validation
 - **Evidence:** 5340. Key: the "year before 1900" error popup is a
@@ -90,39 +81,21 @@ its start). Agent-assisted results, not certified Trusted Tester results.
 - **Fixture:** a form whose year field shows a JS dialog for years before
   1900, with no `min`.
 
-#### 4. 4.A: click-to-play video
-- **Evidence:** CILab. Key: Fail, "cannot play the video on the homepage
-  with only the keyboard, but can with a mouse click". TOBI: PASS, its
-  pointer scan found nothing.
-- **Fix:** treat a `<video>` (or a cover over one) that a click plays and
-  no focusable control plays as a pointer-only element. Confirm the page's
-  markup first.
-- **Fixture:** a video with a click handler and no keyboard control.
-
-#### 5. 5.D: focus after tabbing away from an edited field
-- **Evidence:** 5340. Key: Fail, after editing name or year, Tab sends
-  focus back to the start of the frame. TOBI: PASS, "none moved focus on
-  its own".
-- **TT:** 5.D How to test step 3, "Exit (tab away from) the completed form
-  element and determine whether there are any instances of an unexpected
-  change of context"; step 4 lists a change of focus.
-- **Fix:** after each input, one Tab; compare where focus lands with the
-  walk's next stop. Elsewhere is a change of focus (unless the page
-  says so first, step 4a).
-- **Fixture:** a field whose change handler, on blur, focuses the first
-  control of its container.
-
-#### 6. 9.A-9.C: other pages from another template
-- **Evidence:** CILab and 14592 were each other's only other page (our
-  pairing), different templates, so 9.A was DNA where the key fails (no
-  skip link), and 9.B and 9.C DNA where it passes.
-- **Fix, now:** when the other pages share almost nothing with the
-  tested page, 9.A-9.C are NEEDS REVIEW ("the other pages may be another
-  part of the site"), not DNA. **Later (service):** VAST keeps a
-  site-wide record of templates with example pages; a page matching one
-  inherits its 9.A-9.C context, a page matching none says so (Abby).
-- **Fixture:** two pages of different templates as each other's only
-  other page.
+- **Builder note (2026-11-09).** (TT pp. 28-29; 4.C p. 21 notes 1-2; Baseline
+TC10.D). 5.F types "abc" only (`t5f.py:44`; year fields: 2999 with no
+range). New table by field type and purpose (`type`, `inputmode`,
+`autocomplete`, `min`/`max`, name, id, label words): names `J@n3#`,
+email `test@`, phone `123`, numbers and years min−1 and max+1 (or 1000
+and 3000 with no range), dates far past and far future, other "abc".
+The spec records Abby's 2026-11-08 decision in place of "no values from
+instructions". 4.C gains a pass that Tabs through each error state 5.F
+found (a JS `alert()` is out of scope); 4.C runs the error pass itself
+when 5.F is not selected; its replay learns to type text. Fields in
+same-site frames (skipped today, `t5f.py:206-214`) are read with the
+frames bundle. Test pages: top-level name and year form with a
+focus-grabbing popup for years before 1900 that a keyboard user
+cannot leave to fix the value → FAIL (decision 2); a variant that lets Escape out → PASS; a name field that
+refuses "#". Baseline TC10.D cases unchanged.
 
 ### 7. Frames, as TT tells a person to test them
 - **Evidence:** fixes 2, 3 and 5; 5.F "15 form field(s) are inside
@@ -163,28 +136,9 @@ its start). Agent-assisted results, not certified Trusted Tester results.
   navigation). Still fail aria-hidden controls that Tab reaches.
 
 #### 9b. Test what interaction reveals, as a person does (principle 3)
-- **Evidence:** Home. Key: 5.C Fail, "inside the card feed filter options,
-  all of the X buttons for each category/page type have the same title,
-  making it impossible to know which category/page type you are
-  excluding". Those X buttons (each named "Remove filter from selection")
-  appear only after a filter is chosen; TOBI never saw them. (TOBI's Fail
-  on Home was right on other elements: the filter headings, fix 9c.)
-- **Why it matters beyond 5.C (Abby):** a person opens everything on the
-  page (menus, accordions, tabs, filters, dialogs, "show more") and runs
-  every test on what appears, not only on the state at load. TT says so
-  for several tests: changes after interaction are included (4.A ER
-  Note 1; 5.C Notes). Today TOBI opens the first 6 menus or disclosures
-  (4.F's pass R, `REVEAL_MAX`) and reads fields that appear while 5.D
-  fills a form (`labels.read_revealed`); 5.C's summary says "others a
-  person may reveal are not covered", but that note does not stop a PASS.
-- **Fix:** a reveal pass shared by every test: open each disclosure,
-  menu, tab, accordion, filter option and dialog trigger (bounded, each
-  on a fresh replay), record what appeared, and run the tests that read
-  components or focus (4.A, 4.D, 4.F, 5.A-5.D, 2.x where relevant) on it.
-  Where the bound stops it, or a trigger cannot be opened, a test that
-  would PASS is NEEDS REVIEW with that reason, never PASS.
-- **Fixtures:** a filter whose checked options add "remove" buttons with
-  one shared name; an accordion holding an unlabeled field.
+- **Phase 1 is built** (`reveal.py`; guards RV and RC). Phases 2 and 3
+  (the keyboard walk through opened content; 5.D filling opened fields)
+  are on [the roadmap](../ROADMAP.md).
 
 #### 9c. 5.C: card text leaks into a checkbox's visible text; filter headings
 - **Evidence:** Home's 36 filter checkboxes (3 filter forms, two sets
@@ -323,10 +277,6 @@ of a page set's unsure answers, the people's queue the pivot plan counts
 - A pass T region whose before and after pictures show no difference is
   not presented as moving (5340's 41 px box at the top).
 
-#### 28. Judge requests: the page's shared inputs once
-- See the pivot plan: put a page's shared inputs first and send its
-  questions together, for the prompt cache.
-
 ### Process
 
 #### 20. A list of the rules' judgment calls
@@ -350,28 +300,10 @@ of a page set's unsure answers, the people's queue the pivot plan counts
   (`same_as` in the manifest), and are restored in order;
   `ARCHIVE.md` in each round folder.
 
-#### 29. CI: skip docs-only changes, run in parallel
-- A docs-only push runs the whole suite (about 20 minutes on #26-#28).
-  Skip the test, container and CodeQL jobs when only `docs/**` and
-  `**/*.md` change (`paths-ignore`, or a paths-filter job the others need);
-  split the suite across a job matrix by test-file group (Abby,
-  2026-11-08).
-- **Built (`.github/workflows/ci.yml`):** a `changes` job diffs against the
-  base; docs-only means every changed file is under `docs/` or is `*.md`,
-  except `README.md` and `specs/**`, which tests
-  read (the specs are outcome logic). Then `lint` and a four-group `test`
-  matrix (keyboard 4.x, forms-and-site 5.x/9.x/19.A, motion-and-cases 2.x/3.A/ACT/baseline,
-  rest = everything unnamed, so a new test file is never dropped) run;
-  otherwise they are skipped. `CI` is the one check to require (skipped
-  counts as passed). Container image already filters by path. CodeQL is not
-  a workflow file in the repo (GitHub's default setup): its path filter is
-  a repository setting for Abby. Group balance is untimed: check the first
-  runs and move files between groups.
-
 ## Done during round 2 (delivery and harness, not rules)
 
 - **Results fit the client's limits** (`pipeline.fit`, 45k characters;
-  `docs/solutions/large-pages-results-and-replays.md`).
+  `docs/solutions/tool-output-size.md`).
 - **Replays of large recordings wait 120 s** (`replay_navigation_timeout_ms`).
 - **Harness:** `--group`, `--group-size`, `--debrief` for either arm, the
   CLI's result limit pinned and recorded.

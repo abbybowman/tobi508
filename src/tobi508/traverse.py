@@ -504,7 +504,7 @@ class FocusReader:
 
         Read from the page's own world: from TOBI's isolated world CDP lists
         none of the listeners the page's scripts added (docs/solutions/
-        listeners-from-the-main-world.md). A handler on an ancestor that
+        focus-and-walk.md). A handler on an ancestor that
         serves a child (delegation) is listed on the ancestor only."""
         main = await self._main_context(session, frame_id)
         if main is None:

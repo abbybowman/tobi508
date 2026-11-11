@@ -237,7 +237,7 @@ Settings load from a `.env` file or environment variables (a Kubernetes Secret w
   - **Audit trail.** One JSON line per tool call, resource read and prompt: who (Keycloak subject and NASA email), what (tool, URL without its query string, run ID, test IDs, how many answers), outcome and duration. It never includes answers, page text or report content. Lines go to stderr, where the platform collects them.
   - **[PENDING]** An end-to-end sign-in against VAST's Keycloak with a real MCP client; tested so far with a full sign-in against a local stand-in provider (`tests/test_access_signin.py`).
 - **Fresh state for every load.** Each page load gets a fresh browser context, so cookies and storage can't carry state between probes.
-- **No CSP bypass.** No content security policy bypass is enabled.
+- **CSP bypass, recorded.** The page's Content-Security-Policy is bypassed in every test browser context so that ANDI's injected script runs (`BYPASS_CSP`, on by default since 2026-11-07); every report records the setting. The browser only shows the recording.
 - **Pinned third-party code.** ANDI and jQuery are bundled with hashes, and requests to ssa.gov are blocked so ANDI is never loaded live.
 
 The template's entry point started an unauthenticated HTTP server on all interfaces whenever a `PORT` or `DATABRICKS_APP_PORT` environment variable was set. That branch is removed and those variables are ignored; HTTP beyond loopback now requires sign-in (above).
