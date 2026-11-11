@@ -168,6 +168,86 @@ that the demo plan turns on (A-01, B-01).
   4.F DOES NOT APPLY ("The page has only one element that takes
   keyboard focus"); 4.C on the same run asked its trap question.
 
+### H-01 5.A passes a label whose words nobody can see
+
+- **What is wrong:** row M2 ("a visible label with text") is true when
+  the label element has a box near the field and any text. The text is
+  read with `innerText`, which includes words hidden with the usual
+  screen-reader-only CSS, words pushed off screen with `text-indent`,
+  and the options of a `<select>` that the label wraps.
+- **Why it matters:** a false PASS with no question asked. A label that
+  shows only "*" while its words are in a hidden span is a common
+  pattern. The spec says a visible label is text "rendered and readable
+  while the field has focus".
+- **Where:** `src/tobi508/labels.py:40` (`txt`), `188-189`;
+  `src/tobi508/checks/t5a.py:40-46`.
+- **Smallest fix:** take a label's text from its text nodes that pass
+  the visibility test (as the nearby-text reader already does at
+  `labels.py:212-225`), leaving out `select` and `option`; a label with
+  no visible text goes to the question.
+- **Checked:** verified (run). Three fields: a label of a hidden span
+  plus "*", an empty label wrapping a select, a label with
+  `text-indent: -9999px`. 5.A PASS, all three on row M2.
+
+### H-02 5.C passes any field whose visible text is not in Latin letters
+
+- **What is wrong:** 5.C compares the words people see with the words
+  a screen reader announces. Its word splitter keeps only `a-z` and
+  `0-9`. Cyrillic, Greek, Arabic, Hebrew, Chinese, Japanese and Korean
+  text yields no words, and "every visible word is announced" is then
+  true of nothing.
+- **Why it matters:** a false PASS on translated pages, whatever the
+  field announces. The same splitter makes 5.A's row M2o treat
+  non-Latin text beside an option as no text (a wrong FAIL; not run).
+- **Where:** `src/tobi508/checks/t5c.py:34-35` (`words`), `153-163`
+  (M5), `107-110`; `src/tobi508/checks/t5a.py:55, 70-71`.
+- **Smallest fix:** split on Unicode word characters, and never let M5
+  pass when there is visible text that yields no words.
+- **Checked:** verified (run). Fields labelled "Имя пользователя" and
+  "必須の住所を入力してください" with `aria-label="f1"` and `"x1"`:
+  both on row M5 (pass), not asked.
+
+### H-03 5.D passes a form it stopped filling at a keyboard trap
+
+- **What is wrong:** the spec says NEEDS REVIEW when the walk "ended in
+  a trap before the last field". The code counts the two trap endings
+  as a complete walk. Fields after the trap were never reached, so they
+  are not in the list of fields to complete, and nothing compares that
+  list with the number of fields on the page.
+- **Why it matters:** a false PASS: "We filled in each of the 1 form
+  fields" on a form with two, the second of which navigates away on
+  blur.
+- **Where:** `src/tobi508/checks/t5d.py:1086, 1090-1094`; spec 5.D
+  section 3b, G3.
+- **Smallest fix:** treat a trap ending like any other unfinished walk,
+  and add "N form fields the keyboard walk did not reach" whenever the
+  page has more fields than were completed.
+- **Checked:** verified (run). A field, a link that swallows Tab, a
+  second field with `onblur` navigation: 5.D PASS, rows A3, G4.
+
+### H-08 A form behind a plain button is "no form fields" (needs Abby)
+
+- **What is wrong:** the tests list form fields that are rendered when
+  the page loads. A form that a button or link shows is found only if
+  the control carries a marker the reveal pass looks for
+  (`aria-expanded`, `aria-haspopup`, `aria-controls`, a tab, a
+  `<summary>`). Behind a plain button it is never opened. The reveal
+  guard holds back a PASS only: the spec says FAIL and DOES NOT APPLY
+  are unchanged (Abby, 2026-11-09).
+- **Why it matters:** a wrong DOES NOT APPLY on a common pattern (a
+  "Sign up" or "Log in" button that opens a form), and 5.C can PASS
+  without the hidden field. `contenteditable` boxes are not fields at
+  all, by the spec's choice.
+- **Where:** `src/tobi508/labels.py:28, 53-59`;
+  `src/tobi508/engine.py:115-134` (guard RV); A1 in specs 5.A-5.D.
+- **Smallest fix:** a spec decision. One option: when the page has
+  hidden form fields in its DOM (`display: none` or `hidden` ancestors),
+  DOES NOT APPLY becomes NEEDS REVIEW with "N form fields are hidden
+  until something opens them". Counting them is one query.
+- **Checked:** verified (run). A button with a click handler that
+  unhides a form with an email field: 5.A DOES NOT APPLY ("only form
+  controls are buttons"), 5.D DOES NOT APPLY, 5.C PASS.
+
 ### A-01 Hosted mode: one signed-in user can list and collect another user's run
 
 - **What is wrong:** jobs are kept in one list for the whole server, with
@@ -451,6 +531,54 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
 - **Checked:** verified (read): four places cut at `BADGE_MAX` and the
   spec line is there. No fixture has more than 60 stops.
 
+#### H-04 5.D: the page's own `aria-controls` can hide a change of content (needs Abby)
+
+- **What is wrong:** 5.D ignores changes inside a field's "own widget",
+  which includes anything the field names in `aria-controls`,
+  `aria-owns`, `list` or `aria-describedby`, however large.
+- **Why it matters:** a select with `aria-controls="main"` that replaces
+  the whole main content reads as "no effect" and passes with no
+  question. The spec defines the own widget this way; the effect is
+  that the page chooses which region is exempt.
+- **Where:** `src/tobi508/forms.py:20-39` (`_OWN_JS`), `107-123`.
+- **Smallest fix:** never exempt a landmark or `main`, or send a large
+  change inside an exempt region to the "is this a change of context"
+  question. A spec change.
+- **Checked:** verified (run). A select with `aria-controls="main"`
+  replacing "Apply for a benefit" with "Payment ... Pay now": 5.D PASS.
+
+#### H-05, H-07 5.B leaves out fields that could not be read, and opened states lose their "not checked" notes
+
+- **What is wrong:** when a field's reading fails (it vanished, or the
+  read returned nothing), 5.A and 5.C send it to NEEDS REVIEW. 5.B
+  counts it as "has no label, not an item" and drops it, with no note.
+  Separately, each opened menu or tab is read with its own cap, time
+  check and frame count, and those notes are thrown away when the
+  reads are merged, so a partly read opened state looks fully read.
+- **Why it matters:** 5.B can PASS, or say DOES NOT APPLY, on the
+  fields that happened to be readable.
+- **Where:** `src/tobi508/checks/t5b.py:74-118, 289-306`;
+  `src/tobi508/labels.py:402-407, 508-525`.
+- **Smallest fix:** in 5.B, a field that was not read sets NEEDS
+  REVIEW, as in 5.A; merge each opened state's notes into the pass's.
+- **Checked:** H-05 verified (run): a field hidden by its neighbour's
+  focus handler is row M1 in 5.A and absent from 5.B's one question.
+  H-07 verified (read).
+
+#### H-06 5.D reads "the page changed" as "visible text or the number of dialogs changed"
+
+- **What is wrong:** the spec's row M7 is "a dialog appeared or the DOM
+  changed outside the field's own widget". The code compares visible
+  text and a dialog count. A change of pictures, a canvas, a frame's
+  content or layout is "no effect". If either reading fails, the
+  comparison is skipped and the result is also "no effect".
+- **Why it matters:** missing evidence ends in PASS (row M14).
+- **Where:** `src/tobi508/forms.py:107-123`;
+  `src/tobi508/checks/t5d.py:352-354, 411-413, 487-504`.
+- **Smallest fix:** a failed reading makes the field unreliable (M1);
+  count a large number of DOM changes outside the widget as a change.
+- **Checked:** verified (read) by the reviewer; I did not run it.
+
 ### Hangs and waste
 
 #### G-03 `tobi_answer_questions` is the one tool with no time limit
@@ -667,6 +795,15 @@ not checked.
 - **D-13** A fixed half-second sleep after every ANDI injection,
   repeated for every opened state (tens of seconds in the worst case).
   `labels.py:445`. Fix: poll for ANDI's rows.
+- **H-13, H-14** The label pass is one load, but every opened state
+  (up to 20 triggers plus 3 sets each, 80 loads at worst) repeats the
+  full read: a scan and a screenshot per field, ANDI, the half-second
+  sleep. 5.D spends about 1.5 s of fixed waits per field (a 300 ms
+  noise window per action, a 1,000 ms second look after every Tab),
+  writes a "before" picture for every field though only a content
+  change uses it, and after each change of context refills every
+  earlier field. `labels.py:160-277, 423-445`; `checks/t5d.py:301-302,
+  374, 515-535`.
 - **D-14** The reveal pass computes a path for every element three or
   more times per trigger, and once more only to read the frame chain.
   Its cap of 6,000 elements is silent. `reveal.py:81-91, 267-330`.
@@ -704,11 +841,6 @@ not checked.
 - **K-10** The site read reads the page straight after load, with no
   settle step; a menu drawn just after load is missing, which gives DNA
   or FAIL (see K-02 for the same effect). `site.py:248-256`.
-- **D-18** The label pass caches its result when first asked. If 5.A-5.C
-  ever ran before 4.F or 5.D, fields those reveal later would never be
-  checked for a label. Depends on check order; nobody verified the
-  order. `labels.py:497-535`. Fix: a test that pins the order, or merge
-  again on each call.
 - **D-10** When Enter opens nothing, the reveal pass clicks at
   coordinates measured inside the trigger's frame but applied to the top
   page, so it clicks the wrong thing for triggers in frames.
@@ -759,6 +891,16 @@ not checked.
   body counts as staying inside the dialog (`t4f.py:440-455`). A
   replay that fails in `_reveal` is outside the `try` and ends the
   whole check (`t4f.py:341`).
+- **5.D gaps (H-09, H-11)** When a before or after screenshot fails,
+  the "covers more than half the window" guard is silently off and
+  "content only" passes (`t5d.py:267-274, 416-450`). A field that only
+  changes the `#fragment` is reported as navigation, the same mistake
+  as F-06 (`observe.py:302`). The second look after leaving a field
+  re-reads focus only, so a navigation 1.2 s after blur is missed. The
+  spec's "unsettled step" in M1 has no code.
+- **5.A-5.C silent caps (H-12)** Nearby text is cut at 400 characters,
+  neighbours at 6, the scan at 3,000 elements, none reported; 5.C then
+  compares only what was kept. `labels.py:24, 234-268`.
 - **4.F, for Abby:** the answer "order does not matter" on the page
   question makes the whole test DOES NOT APPLY on the agent's word,
   even when a split form group was the reason for asking. That is what
@@ -808,6 +950,11 @@ not checked.
   ("Control+W", "F5"). CLAUDE.md allows page-named keys only for
   2.A-2.C under limits. `checks/t4b.py:121-129`, `apijudge.py:622-639`.
   Verified (read) that `_key` passes any string through.
+- **H-10** 5.D types the agent's suggested value as given: a line
+  break in it presses Enter and submits the form, which 5.D then
+  records as "sent the form". The value comes from an agent that read
+  page text. `checks/t5d.py:283-311, 652-669`. Fix: refuse control
+  characters. The reviewer confirmed the mechanism with a snippet.
 - **K-07** 19.A's live search compares host only, not scheme or port, and
   "one search per run" holds only because one caller calls it once.
   `pipeline.py:281-287, 328-368`. Fix: compare scheme and port; refuse a
@@ -986,6 +1133,16 @@ Cleanup. All reviewers' claims unless marked.
   by calling 4.E's whole classifier (F-23). Worst case per run: 4.D up
   to 20 widget replays, 4.E up to 20 loads and 20 s of fixed waits,
   4.F up to 19 loads.
+- **5.A-5.D cleanup:** a field inside `<fieldset disabled>` is counted
+  as enabled, and the four tests then disagree about one page (H-15,
+  confirmed by a run; fix: `el.matches(':disabled')`). `_finding` is
+  copied in 13 check files and the words "This test could not be
+  performed" are typed 27 times though a constant exists; 5.A and 5.C
+  share one skeleton; each of 5.A, 5.B and 5.C saves its own copy of
+  the whole label pass (H-16). Question and rubric sizes: 5.A 370 and
+  1,278 characters, 5.C 580 and 972, with one 5.A question and picture
+  per field, up to 60 (H-17). 5.C tests M3o before M3s where the spec
+  lists M3s first; both are FAIL.
 - **9.x duplication:** `_finding`, the "not performed" block and the
   cache-or-read pattern are copied in 9.B, 9.C and 19.A (K-13).
 
@@ -1029,6 +1186,9 @@ reviewer (phase 1); I read the summary, not every line behind it.
   The problems found are in the evidence fed to the tables (F-02,
   F-11, F-12), not in the tables. The questions that may settle a PASS
   by looking do so only as principle 8 allows.
+- **5.A-5.D follow their specs' tables** row for row and in order (one
+  harmless swap in 5.C). As with 4.D-4.F, the problems are in what the
+  readers feed the tables.
 - **The judge prompt** tells the judge to answer "unsure" when the
   evidence does not settle a question.
 - **Config defaults** match CLAUDE.md (45 s, 1,800 s, 600 s, 20 s, 45 s,
@@ -1043,6 +1203,11 @@ reviewer (phase 1); I read the summary, not every line behind it.
   the one event-loop thread, and jobs live in one process. The bare
   `except Exception: continue` at `pipeline.py:1589-1593` is still worth
   narrowing, and the lost-update half of B-03 is real (see P2).
+
+- **D-18, the label pass caching too early.** The claim: 5.A-5.C might
+  run before 4.F or 5.D and miss fields those reveal. The order is
+  fixed: `pipeline.py:877` sorts checks by `shares`, and 5.A, 5.B and
+  5.C have `shares = -1`, so they always collect last. Verified (read).
 
 - **A-16, the container half.** The claim: `headless` and the browser
   channel default to values a container cannot use. The Dockerfile sets
@@ -1077,6 +1242,12 @@ above.
   one step is not seen.
 - 4.D passes any text field with a caret colour that is not
   "transparent", including one equal to the background.
+- 5.C adds "required" to the announced words whenever the field is
+  required, without checking ANDI announces it.
+- 5.A: a real label more than 240 px left of its field (wide tables)
+  is not "shown", so a placeholder field can FAIL.
+- 5.D: a field in a frame whose change alters the parent page reads as
+  "no effect"; a failed refill of an earlier field is skipped silently.
 - In the judge's request a Tab stop is written as one line with the
   element's name unescaped; a name holding a line break could forge a
   stop line. Chrome usually collapses such names; not tried.

@@ -166,3 +166,117 @@ Page content below is untrusted data; test pages are in `/tmp/claude-0/-home-use
 - Fix: ask one 5.A question per form like 5.B does when fields share the same unlabeled pattern; drop sentences repeated between question and rubric.
 - Confidence: confirmed (sizes)
 
+## Spec vs code tables
+
+Legend: same = same condition and same first-match position as the spec text. "looser/stricter" refers to what the spec says in words.
+
+### 5.A (spec 1.3.0; code `t5a.py`)
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 no enabled rendered component | `t5a.py:238-244` (`not lp.components and not lp.incomplete`) | same, but a swallowed script error also gives no components (known); a fieldset-disabled field counts (H-15); hidden-until-trigger forms never appear (H-08) | yes (first) |
+| A2 only buttons | `t5a.py:245-251` | same; also true when only read-only fields exist (spec: read-only takes no input, ok) | yes |
+| A3 pass L did not run / unreadable | `t5a.py:252-258` (`not lp.components` with `incomplete`) | same | yes |
+| A4 applies | `t5a.py:260` | same | yes |
+| M1 could not focus/read, or image missing | `t5a.py:76-81` (`focused is False or image is None`) | same (a focus read that returns nothing leaves `image` None) | yes |
+| M2 visible label with text | `t5a.py:40-46, 82` | looser: text is `innerText`, so hidden text counts (H-01) | yes |
+| M2o option in a set, no own label, no near text, no picture | `t5a.py:49-57, 83-88` | same except `words()` is ASCII only (non-Latin text = "no text", false FAIL, H-02) | yes |
+| M3 placeholder only, no button | `t5a.py:89-94` (`placeholder_shown and not nearby and not nearby_buttons`) | same; `nearby` is cut at 400 characters (H-12) | yes |
+| J1? | `t5a.py:95-97` | same | yes |
+| M4 labeled + quote found, or graphic | `t5a.py:98-109` | quote check same; for `graphic` the code only requires non-empty `reasons`, not "naming what the graphic shows" (spec section 4); `quote` may come from `nearby_other` (other fields' labels), which the rubric allows only for sets | yes |
+| M5 not_labeled FAIL | `t5a.py:110-115` | same | yes |
+| M6 anything else NEEDS REVIEW | `t5a.py:116` | same | yes |
+| G1-G4 | `t5a.py:238-258, 277-285` | same; FAIL wins over `incomplete` (spec G2 before G3) | yes |
+| Guard RV (front matter) | `base`/pipeline `apply_guards` (`engine.py:115-134`) | same (PASS only) | n/a |
+| J1 "unsure when evidence does not settle" | rubric text `t5a.py:129-150` | stated; no code check, spec allows (principle 8) | n/a |
+| Spec rows with no code | none found | | |
+| Code deciding outcomes the spec does not state | none found | | |
+
+### 5.B (spec 1.3.0; code `t5b.py`)
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 no components | `t5b.py:275-281` | same | yes |
+| A2 components, none an item, pass L read every field | `t5b.py:298-305` | looser: "read every field" is `lp.incomplete` only; an unread field counts as "no label" (H-05) | yes |
+| A3 pass L did not run | `t5b.py:282-288`, `289-297` | same | yes |
+| A4 applies | `t5b.py:307` | same | yes |
+| Item definition (Terms) | `t5b.py:74-118` | field: label or near text (any text in region, so looser than a "label"); button: own text, not menu, its form has a labelled field; stricter: an icon-only or unread field is dropped | n/a |
+| J1? (form's J1 not answered) | `t5b.py:154-156` | same | yes (first) |
+| M1 all_descriptive PASS | `t5b.py:157-161` | same | yes |
+| M2 some_not_descriptive and item named FAIL | `t5b.py:162-171` | same (`_valid`: non-empty list, all in 1..n) | yes |
+| M3 some_not_descriptive, valid numbers, not named PASS | `t5b.py:172-178` | same | yes |
+| M4 anything else NEEDS REVIEW | `t5b.py:179` | same | yes |
+| G1-G4 | `t5b.py:272-340` | same | yes |
+| Spec rows with no code | none | | |
+| Code deciding without a spec row | none | | |
+
+### 5.C (spec 1.5.0; code `t5c.py`)
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 no component | `t5c.py:502-508` | same (see H-08, H-15) | yes |
+| A2 pass L / ANDI did not run | `t5c.py:509-515` (`not lp.andi_ran`; `andi_output` returns None on any exception or when ANDI is absent) | same; `andi_ran` stays True when ANDI ran on the base load but failed on a revealed state (those comps get M2) | yes |
+| A3 applies | `t5c.py:517` | same | yes |
+| M1 could not be read | `t5c.py:209-214` (`entry and focused is not True`) | same, only for entry fields | yes |
+| M2 no ANDI output | `t5c.py:215` | same | yes |
+| M3 programmatic text empty | `t5c.py:216-221` | same | yes |
+| M3s several headings, heading not announced | `t5c.py:236-247` | same (headings compared with ASCII `words()`, H-02) | NO: code puts M3o before M3s (`t5c.py:222` vs `236`); spec lists M3s first. Both FAIL, only the row id and sentence differ |
+| M3o option, only group label | `t5c.py:222-235` | same | NO (see above) |
+| M4 multi-part (covered by M3) | none (no row) | n/a | n/a |
+| M5 programmatic text contains every word, group label for options, not a same-named button | `t5c.py:248-255`, `153-163` | looser: ASCII words (H-02); vacuous when no visible text; `required` adds "*" and "required" without checking ANDI says so; 400-char cap (H-12) | yes |
+| J1? | `t5c.py:256-258` | same | yes |
+| M6 complete PASS | `t5c.py:259` | same (M3 first, so non-empty) | yes |
+| M7 missing + quote in visible text/heading, not in announced | `t5c.py:260-265, 178-199` | substring test (not word test): a short quote can match inside another word, giving FAIL on a weak match or NEEDS REVIEW | yes |
+| M8 not_purpose FAIL | `t5c.py:266-271` | same | yes |
+| M9 anything else | `t5c.py:272` | same | yes |
+| G1-G4 | `t5c.py:500-556` | same | yes |
+| Same-named buttons (1.5.0) | `t5c.py:131-150, 186-199` | same | n/a |
+| Spec rows with no code | M4 (a no-op row, ok) | | |
+| Code deciding without a spec row | none | | |
+
+### 5.D (spec 1.5.0; code `t5d.py`, `forms.py`)
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 no field stop and no inventory fields | `t5d.py:876-881` | same; `contenteditable` is not a field (spec says so) | yes |
+| A2 no field stop, inventory has fields | `t5d.py:882-887` | same | yes |
+| A3 at least one field stop | `t5d.py:888` | same | yes |
+| M1 not arrived / unreliable / unsettled or unresolved | `t5d.py:913-918`, `507-512` | stricter on arrival; looser on "unreliable" (only content changes with noise) and "unsettled" (not read at all) (H-11) | yes |
+| M2 value did not change, no effect | `t5d.py:907-909, 919` | same; "effect" excludes `dom` kind | yes |
+| M3 J3 asked, not answered | `t5d.py:773-775, 920-925` | same; J3 `unsure` leaves the instance as observed (spec) | yes |
+| M4-M6 ask J1 | `t5d.py:487-504, 902-904` | M4: fragment-only change counts (H-11); M6 same | yes |
+| M7 dialog or DOM changed outside widget -> J2+J1 | `t5d.py:502-503, 786-806` | looser: visible text and dialog count only (H-06); the `aria-controls`/`aria-owns`/`list`/`aria-describedby` targets are exempt (H-04) | yes |
+| J1? | `t5d.py:926-932` | same | yes |
+| M8 told + quote found | `t5d.py:933-938, 866-870` | same (substring) | yes |
+| M9 not_told FAIL | `t5d.py:939-941` | same | yes |
+| M10 unsure / quote not found | `t5d.py:942` | same | yes |
+| M15 content_only but covers > 0.5 or modal | `t5d.py:943-950, 444-450` | looser when a screenshot is missing (H-09) | yes |
+| M11 content_only PASS | `t5d.py:951-956` | same | yes |
+| M12 changes_context -> J1 | handled by `_asks_j1` (`t5d.py:902-904`) | same | yes |
+| M13 J2 unsure or not answered | `t5d.py:957-962` | same | yes |
+| M14 no effect / own widget only PASS | `t5d.py:963` | looser (see H-06, H-04) | yes |
+| G1 | `t5d.py:1043-1060` | same | yes |
+| G2, G3 | `t5d.py:966-975` | G3 lacks "ended in a trap before the last field" (H-03); other conditions present (cap 40, run limit, P1 error) | yes |
+| G4 "every field P1 reached was completed" | `t5d.py:976, 1085-1094` | same wording; but unreached fields are never counted (H-03) | yes |
+| Guards GU, RV, RC | `engine.py:93-155` | same | n/a |
+| J1/J2/J3 mechanical checks | quote in `before` (`t5d.py:866-870`); J2 guard by pixels/DOM; J3 value unsanitised (H-10) | | |
+| Spec rows with no code | the "alike fields, one question" grouping is implemented (`t5d.py:721-744`); no spec row without code found | | |
+| Code deciding without a spec row | none; `a.completed` for custom widgets compares `aria-valuenow`/`aria-checked`/`textContent` (a spec-silent value definition, NEEDS REVIEW direction) | | |
+
+## Other notes
+
+- Check order (asked): `checks.sort(key=lambda c: -getattr(c, "shares", 0))` at `pipeline.py:877`; `shares`: 4.D, 4.F = 1; 5.D has none (0); 5.A, 5.B, 5.C = -1. So 5.A-5.C always run after 4.F and 5.D in one call. After the first collect they read `ctx.cache["labels-pass"]`; later revealed reads cannot arrive. Reveal itself (`pipeline.py:1126-1150`) runs before every check collects, so its reads are in `labels-revealed` first.
+- Page loads (worst case) per run for these checks: pass L 1; `reveal.py` up to 20 triggers plus up to 3 sets each (80 loads, each with a full pass-L read when any of 5.A-5.C is selected, none otherwise); 5.D 1 load plus one replay per change of context or J3 answer (each re-filling earlier fields). Fixed sleeps: 500 ms per ANDI read (`labels.py:445`), 300 ms noise per 5.D action, 1,000 ms post-leave re-read per field.
+- 5.A/5.B/5.C per-element round trips: 5.A-5.C make one `evaluate_top` per entry field (focus read) plus one screenshot each; 5.D makes about 8 `_read`, 6 `reader.call` and 4 `evaluate` calls per field.
+- `label_of` (`t5c.py:47-62`) builds the "name" in finding sentences from the first of label, ANDI name, aria-label...; for a field whose only name is its placeholder the sentence says it is "labelled" by it. Cosmetic.
+
+## Unverified leads
+
+- 5.A M2o on non-Latin option text (H-02) was derived from the code, not run.
+- 5.C `required` adds "*" and "required" to the announced words (`t5c.py:158-159`) without checking ANDI announces required; an `aria-required` on a role that does not expose it passes M5 (not run).
+- 5.A: a label far from the field (more than 240 px left or 120 px up, as in wide tables) is not "shown" so a field with a placeholder gets M3 FAIL even with a real label (`labels.py:23, 188-189`); matches the spec's "inside the image" wording but may be a false FAIL on real forms (not run).
+- 5.D: `SIG_FN`/`FIELD_FN` run in the field's frame only; a field in an iframe whose change alters the parent page is M14 PASS (spec section 5 edge case says frames are "completed like any stop"; not run).
+- 5.D `_arrive`/`_session_for` swallow a failed refill (`here is None: continue`, `t5d.py:526-528`), so a later field may be tested on a page where an earlier field was not filled (a form that submits only when all fields are filled stays unreached); not run.
+- 5.D `_revealed` (`t5d.py:577-602`) inserts a field focus landed on after a leave when it is a control; a focus-stealing handler that lands on a field outside the form is then "completed" (not run).
+- `labels.py:373-376` swallows an exception while counting frame fields: a frame that cannot be evaluated is not counted as "form fields inside frames were not checked" (not run).
+- 5.B items use `c.nearby` (any text in the region) as the near text; a field with no label but an adjacent unrelated sentence becomes an item and is judged as "labelled" by that text (not run).
