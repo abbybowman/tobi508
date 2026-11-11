@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F43 Birth year, inline message</title></head><body>
+<h1>Your details</h1>
+<form onsubmit="return false">
+<p><label for="n">Name</label> <input id="n" type="text"></p>
+<p><label for="y">Birth year</label> <input id="y" type="text" inputmode="numeric" aria-describedby="e"></p>
+<p id="e" role="alert"></p>
+<p><button type="submit">Continue</button></p>
+</form>
+<script>
+// A year before 1900 shows a message beside the field. Focus is not moved.
+const y = document.getElementById("y"), e = document.getElementById("e");
+y.addEventListener("change", () => {
+  const v = Number(y.value);
+  e.textContent = y.value !== "" && (v < 1900 || v > 2100) ? "Birth years must be between 1900 and 2100." : "";
+});
+</script></body></html>

@@ -1,7 +1,7 @@
 ---
 tt_test: 4.C
 tt_name: 2.1.2-no-keyboard-trap
-spec_version: 1.12.0
+spec_version: 1.13.0
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -62,6 +62,10 @@ The tool does what p. 21 asks a human tester to do, and no more: walk the page w
 
 There is no P5. Content behind disclosure controls (menus, accordions, dialogs opened by a button) is not opened by 4.C; the finding carries a note with the number of collapsed controls. 4.F (p. 23, HtT 2.b) asks for revealing hidden content, and that step will be shared with 4.C once 4.F is specified.
 
+| P7 Error states | After P1-P6 and their probes. The error pass of 5.F (`t5f.error_pass`, run here too when 5.F is not selected and shared when it is; spec 5.F section 2) types a wrong value for each field's kind and presses the submit control. Every state in which the page showed something new (new text, a live region or a dialog) is replayed from a fresh load by the keys that made it, typed text included: at most `ERROR_STATES_MAX` (6), each reached by up to the first `Read.at` presses of an attempt. From each, press Tab up to `ERROR_WALK` (24) times with P1's stuck and loop rules. A trap found here is an event like any other: it gets P3's exit probes, replayed by the same keys (reached "by keys alone", `via` with no mouse bypass), and the same rows | As P1 | As P1 |
+
+**Why pass E (1.13.0; Abby's decision 2, 2026-11-09).** An error message or popup is content that exists only after a mistake, so the walk at load never meets it. NASA's Climate Legacies tool (5340) shows a popup for a year before 1900 that takes focus and keeps it: the person cannot get back to the field to fix the value (TT p. 21 notes 1 and 2; the key: a trap). A popup the keyboard can leave (Escape returns to the field) is not a trap (M2), and an inline message that does not move focus is not an event at all. A JS `alert()` is out of scope: the browser handles it, not the page. A state the error pass could not reach (a form it did not complete) is not tested here; the page's own NEEDS REVIEW from 5.F says so. Page content never chooses what is typed: the values come from the field's kind (5.F, section 2).
+
 **Why P6 is enough.** An element P2 leaves backward can be left by Shift+Tab, so it passes M2 or M3; the same holds for P1 and Tab. Only stops that neither pass reaches need the bypass, and those exist only when both passes end in different traps.
 
 **Run limits.** `run_limit_s` (default 600 s since 2026-11-05, a server setting the report records; it was 120 s) per page for the whole run, counted from the start of the call. `settle_quiet_ms` (default 150) is the settle rule's quiet window; `record_scroll_passes` (default 1) is the recorder's scroll count. All three live in server config and every report records their values. Ctrl+Tab is sent only if V4 shows the page receives it. A pass or probe that hits a cap or the run limit is *incomplete*. (1.6.0, time budget 2026-11-01:)
@@ -106,7 +110,7 @@ Each trap event is an *instance* judged by the first matching row of table 3a. T
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
 | G3 | Any instance is NEEDS REVIEW; or any pass, probe or P4 is incomplete | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
-| G4 | P1 and P2 each ended in a wrap, or in a trap event whose instance is PASS; every P6 bypass ran to its end; every instance is PASS | PASS |
+| G4 | P1 and P2 each ended in a wrap, or in a trap event whose instance is PASS; every P6 bypass ran to its end; every P7 error state was Tabbed through; every instance is PASS | PASS |
 | G5 | Anything else | NEEDS REVIEW |
 
 A page with a confirmed FAIL stays FAIL even when other instances need review: one confirmed trap fails the condition (p. 21 ER: "ALL of the following").

@@ -255,6 +255,9 @@ class Read(BaseModel):
     dialogs: int = 0
     url: str = ""
     failed: bool = False  # the page could not be read (it left)
+    # How many key presses had been made when this was read: the first `at`
+    # keys of the attempt's `replay` reach the state it saw (4.C's error pass).
+    at: int = 0
     capped: bool = False  # new text past NEW_MAX, or the base read was lost
     # Base read only: all visible text, for 5.H's hint at collect time; never
     # saved (it would bloat the evidence files).
@@ -268,6 +271,9 @@ class AttemptE(BaseModel):
     reached: bool = True
     error: str | None = None
     keys: str = ""  # how to reproduce, in plain words
+    # The same as key presses a replay can make ("Tab", "Type:J@n3#", "Enter"):
+    # 4.C replays the first `Read.at` of them to each state that showed something.
+    replay: list[str] = Field(default_factory=list)
     typed: list[int] = Field(default_factory=list)  # Field5D.n made wrong in attempt 2
     values: dict[str, str] = Field(default_factory=dict)  # n -> what was entered
     base: Read | None = None
@@ -402,6 +408,10 @@ def _rel(ctx: RunContext, path) -> str:
 
 
 async def _shot(ctx: RunContext, s: Session, name: str) -> str | None:
+    # The pictures are 5.F's, 5.G's and 5.H's evidence; 4.C runs the error pass
+    # for its states alone and leaves none (screenshots only at its trap events).
+    if not ({"5.F", "5.G", "5.H"} & set(ctx.selected)):
+        return None
     try:
         ctx.shots.mkdir(parents=True, exist_ok=True)
         path = ctx.shots / f"5f-{name}.png"
@@ -511,14 +521,12 @@ async def attempt(
                 if f.n in form.dates:
                     fi = ps.info.get(str(f.n)) or {}
                     digits, words = wrong_date(fi.get("min"), fi.get("max"))
-                    await s.page.keyboard.type(digits)
+                    await s.traversal.press(f"Insert:{digits}")
                     a.values[str(f.n)] = f"entered the date {words}"
                 else:
                     value = wrong_value(info)
-                    await s.page.keyboard.press("Control+A")
-                    await s.page.keyboard.type(value)
+                    await s.traversal.press(f"Type:{value}")
                     a.values[str(f.n)] = f'typed "{value}"'
-                await s.traversal.resync()
                 a.typed.append(f.n)
                 if btn is None and f is text[-1]:
                     break  # Enter in this field submits (implicit submission)
@@ -530,6 +538,10 @@ async def attempt(
                     step = await s.traversal.press("Tab")
                     a.unsettled = a.unsettled or step.unsettled
                 a.reads.append(await _read(s, f"tab:{f.n}", fields))
+                a.reads[-1].at = len(s.traversal.steps)
+                # Kept as each state is read: an attempt that cannot go on (focus
+                # held by an error popup) still says how to reach that state.
+                a.replay = [st.key for st in s.traversal.steps]
             typed = list(
                 dict.fromkeys(
                     v.removeprefix('typed "').removesuffix('"')
@@ -559,6 +571,11 @@ async def attempt(
         else:
             steps.append("press Enter in the last text field")
         await _press_submit(ctx, s, a, form, fields)
+        # The submit press itself is not a recorded step: the replay ends with
+        # an Enter, and the submit read is the state after it.
+        a.replay = [st.key for st in s.traversal.steps] + ["Enter"]
+        if a.reads:
+            a.reads[-1].at = len(a.replay)
         lead = f"Tab {start + 1} times" if start else "Tab"
         a.keys = ", ".join([lead, *steps])
     except Exception as exc:

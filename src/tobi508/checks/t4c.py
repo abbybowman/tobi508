@@ -189,6 +189,36 @@ def _members_at_end(steps: list[Step], end: str) -> list[str]:
     return []
 
 
+# Error states (spec section 2, pass E; 1.13.0): at most this many states the
+# error pass found are replayed, and Tab is pressed this many times from each
+# (enough for a loop to repeat; a page that is not trapped ends in the cap).
+ERROR_STATES_MAX = 6
+ERROR_WALK = 24
+
+
+def error_states(attempts) -> list[tuple[str, list[str]]]:
+    """(plain label, key presses) for each state of 5.F's error pass in which
+    the page showed something new (text, a live region or a dialog): the first
+    `Read.at` presses of an attempt reach it. Distinct key lists only."""
+    out: list[tuple[str, list[str]]] = []
+    seen: set[tuple[str, ...]] = set()
+    for a in attempts:
+        # An attempt that could not go on (focus held by an error popup) still
+        # reached the states it read: those are the ones to Tab from.
+        if not a.replay:
+            continue
+        for r in a.reads:
+            if not r.at or r.failed or not (r.texts or r.live or r.dialogs):
+                continue
+            keys = a.replay[: r.at]
+            if tuple(keys) in seen:
+                continue
+            seen.add(tuple(keys))
+            what = "typing a wrong value" if a.kind == 2 else "pressing the button"
+            out.append((f"after {what} in {a.form}", keys))
+    return out[:ERROR_STATES_MAX]
+
+
 class Collector:
     def __init__(
         self,
@@ -250,7 +280,8 @@ class Collector:
             await self._via(s, via["outer"])
         for k in via["keys"]:
             await s.traversal.press(k)
-        await bypass(s.page, via["paths"])
+        if via["paths"]:  # an error state (E) is reached by keys alone
+            await bypass(s.page, via["paths"])
 
     async def keep_revealed(self, page, source: str) -> None:
         """Keep text that a key press revealed, for J1 (spec section 4)."""
@@ -581,6 +612,41 @@ class Collector:
                 if s is not None:
                     await s.close()
 
+    async def p7(self, states: list[tuple[str, list[str]]]) -> None:
+        """Error states (spec section 2, pass E): replay the keys that make
+        the page show an error, press Tab from there, and take a trap that
+        forms (an error popup that holds focus) as an event like any other;
+        the exit probes then replay it by the same keys (`via`)."""
+        for label, keys in states:
+            if self.out_of_time():
+                return
+            s = None
+            try:
+                s = await self.session_at(None, keys)
+                end, _, own = await drive(
+                    s, "Tab", ERROR_WALK, detect_continuation, self.deadline
+                )
+                if end in ("stuck", "loop"):
+                    await s.traversal.shoot(f"E{len(self.state.instances) + 1}")
+                    new = self.add_event(
+                        end, "Tab", f"E {label}", ["Tab"] * len(own), own
+                    )
+                    if new is not None:
+                        new.via = {"outer": None, "keys": keys, "paths": []}
+                elif end in ("time", "error", "navigation"):
+                    if end == "time" and self.mark:
+                        self.mark()
+                    self.state.incomplete.append(
+                        f"Tabbing from an error state ({label}) did not finish ({end})."
+                    )
+            except Exception as exc:
+                self.state.incomplete.append(
+                    f"Tabbing from an error state ({label}) failed to run: {exc!r}"
+                )
+            finally:
+                if s is not None:
+                    await s.close()
+
     async def p6(self, inst: Inst) -> None:
         """Bypass P1's trap with the mouse, then resume Tab (spec section 6)."""
         top_paths = sorted(
@@ -748,6 +814,20 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
     await work()
     await c.p4(p1.steps)
     await work()  # instances found by P4
+    # Error states: the error pass is 5.F's, run here too when 5.F is not
+    # selected (it is cached for the call). A failure to run it is a note, not
+    # a PASS: the states were not looked at.
+    if not ctx.out_of_time():
+        try:
+            from tobi508.checks import t5f
+
+            ps = await t5f.error_pass(ctx, walk)
+            states = error_states(ps.attempts)
+            if states:
+                await c.p7(states)
+                await work()  # instances found by pass E
+        except Exception as exc:
+            st.incomplete.append(f"The error states were not checked: {exc!r}")
     return st
 
 
@@ -1129,7 +1209,7 @@ def evaluate(st: State4C, evidence_refs: list[str]) -> Finding:
                     f"{inst.id} [{rid} {outcome.value}] {inst.kind} "
                     f"({'forward' if inst.key == 'Tab' else 'backward'}, found by {inst.source}"
                     f"{', modal dialog' if inst.modal else ''}): {names}. Reproduce from a fresh "
-                    f"load: {_steps_text(inst.prefix)}."
+                    f"load: {_steps_text(_reach_keys(inst))}."
                 ),
                 evidence_refs=[
                     v["screenshot"]
@@ -1267,7 +1347,7 @@ def _instance_sentence(inst: Inst, rid: str, outcome: Outcome) -> str:
         )
     if outcome is Outcome.PASS:
         return f"At one point {where}, but {_how_left(inst)}, so it is not a trap."
-    repro = f"To see it, load the page and press {_steps_text(inst.prefix)}."
+    repro = f"To see it, load the page and press {_steps_text(_reach_keys(inst))}."
     if outcome is Outcome.FAIL:
         tried = (
             "none of the usual keys (Tab, Shift+Tab, the arrow keys, Escape, or Enter "
@@ -1360,16 +1440,32 @@ _KEY_NAMES = {
 }
 
 
+def _reach_keys(inst: Inst) -> list[str]:
+    """The keys from a fresh load to the trap: for one found in an error state
+    (reached by keys alone), the keys that show the error come first."""
+    if inst.via and not inst.via.get("paths"):
+        return [*inst.via["keys"], *inst.prefix]
+    return inst.prefix
+
+
 def _steps_text(keys: list[str]) -> str:
     """Keys in plain words: "Tab 14 times, then Enter"."""
     if not keys:
         return "Tab after clicking just past the earlier trap"
+
+    def word(k: str) -> str:
+        if k.startswith("Type:"):
+            return f'type "{k.removeprefix("Type:")}"'
+        if k.startswith("Insert:"):
+            return f'enter "{k.removeprefix("Insert:")}"'
+        return k
+
     out, prev, n = [], keys[0], 0
     for k in keys + [None]:
         if k == prev:
             n += 1
             continue
-        out.append(f"{prev} {n} times" if n > 1 else prev)
+        out.append(f"{word(prev)} {n} times" if n > 1 else word(prev))
         prev, n = k, 1
     return ", then ".join(out)
 
