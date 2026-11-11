@@ -9,7 +9,7 @@ elements and the mechanism probe for the batch;
 [2d-change-notify-auto.md](../../specs/rules/2d-change-notify-auto.md);
 [2b-blinking-moving-scrolling.md](../../specs/rules/2b-blinking-moving-scrolling.md);
 and [2a-audio-control.md](../../specs/rules/2a-audio-control.md). What is left is in the
-ROADMAP ("Per-test leftovers") and
+ROADMAP ("Known limits, per test") and
 [_browser-checks.md](../../specs/rules/_browser-checks.md#2c). The text below is as
 approved and built; it is not updated.
 
@@ -54,9 +54,8 @@ runs in its own autoplay browser beside the walk (Q1, Q2).
 Nothing is left open in this plan. Questions that come up while building
 go in the specs as OPEN marks.
 
-The experiments behind every "verified" below are in
-[research/2026-11-03-2x-experiments/](../research/2026-11-03-2x-experiments/README.md).
-They are scratch scripts that can be rerun, not tests.
+The experiments behind every "verified" below were scratch scripts, not
+tests; they were removed at 1.0.0 and are in git history at 9efe907.
 
 ## Sources read
 

@@ -4,7 +4,7 @@ Agent A (a model with this MCP server) and Agent B (the same model with
 Playwright MCP) test the same frozen pages with the same prompt. Their
 results are scored against a tester's SCRT files by commit and reveal.
 Plan: [docs/plans/2026-10-31-agent-eval.md](../../docs/plans/2026-10-31-agent-eval.md).
-Lessons: [docs/solutions/agent-eval-harness.md](../../docs/solutions/agent-eval-harness.md).
+Lessons: [docs/solutions/agent-eval.md](../../docs/solutions/agent-eval.md).
 
 Results are agent-assisted, not certified Trusted Tester results.
 
@@ -71,14 +71,14 @@ Any run, either arm (CLI route):
   given (`summary.json`).
 
 Run them in their own folder, because a locked round refuses new runs
-(`docs/solutions/agent-eval-scoring.md`). On the CLI route, MCP calls stay
+(`docs/solutions/agent-eval.md`). On the CLI route, MCP calls stay
 in the foreground for up to an hour, so a long call is not lost when the
-agent ends its turn (`docs/solutions/agent-eval-harness.md`).
+agent ends its turn (`docs/solutions/agent-eval.md`).
 
 In a cloud session, set `UPSTREAM_PROXY="$HTTPS_PROXY"` for the freeze and
 both arms. The container re-signs direct connections with a certificate
 Chromium does not trust, so live pages would load without their CSS and
-scripts (`docs/solutions/agent-eval-harness.md`). On a laptop, leave it unset.
+scripts (`docs/solutions/agent-eval.md`). On a laptop, leave it unset.
 
 ## A round, in commit order
 

@@ -1,5 +1,5 @@
 """Agent A's tool runs against a round's keys, per TT test: development
-analysis outside the locked scorer (docs/solutions/agent-eval-scoring.md).
+analysis outside the locked scorer (docs/solutions/agent-eval.md).
 Verdicts come from evals/scoring.py; nothing here decides an outcome.
 
     uv run python -m evals.agent.per_test --keys evals/judging/round1 \\

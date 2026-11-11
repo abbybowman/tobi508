@@ -2,20 +2,19 @@
 
 GSA MCP and AI Agent Hackathon
 
-> **Draft.** Work is in progress, so no results are recorded yet.
-> **[FILL: …]** marks a final figure to copy from the submission run.
-> **[PENDING]** marks work not done yet; don't present it as done.
-> Structure follows GSA's sample evaluation document (sections 1–5).
+> **Draft.** **[FILL: …]** marks a final figure, copied from one scored
+> run at the submission commit. **[PENDING]** marks work not done yet.
+> Structure follows GSA's sample evaluation document (sections 1-5).
+> Agent-assisted results, not certified Trusted Tester results.
 
 | | |
 | --- | --- |
 | Server under test | Section 508 TOBI (Tester-Oriented Browser Inspector), package `tobi508`, [github.com/abbybowman/tobi508](https://github.com/abbybowman/tobi508) |
-| What it does | Runs parts of the DHS Trusted Tester (TT) 5.1.3 Section 508 web test process in a real Chrome browser and reports agent-assisted findings by TT test ID. **Not a certified Trusted Tester result.** |
-| Tests implemented | **[FILL: TT test IDs and spec versions at the submission commit]** |
-| Evaluation framework | pytest with a scoring module (`tests/scoring.py`) that compares outcomes to DHS's published Trusted Tester verdicts and W3C's expected results. Exact match; no LLM judge |
-| Agent model | Claude Opus 5.5 in Claude Code, as the calling agent that answers open questions. **[FILL: scripted or live answers in the scored run]** (see 2.3) |
-| Browser | **[FILL: Playwright and browser versions, OS, headed or headless for the scored run]**. Target: headed Google Chrome on Windows |
-| Dataset | W3C ACT test cases with DHS Trusted Tester verdicts, per TT test: **[FILL: case counts per test]** |
+| What it does | Runs parts of the DHS Trusted Tester (TT) 5.1.3 Section 508 web test process in a real Chrome browser and reports agent-assisted findings by TT test ID. It reads public government web pages and writes nothing to them. **Not a certified Trusted Tester result.** |
+| Tests implemented | 22 of the 61 active TT 5.1.3 tests: 2.A-2.D (audio, moving and updating content), 3.A (flashing), 4.A-4.F (keyboard), 5.A-5.D and 5.F-5.H (forms), 9.A-9.C and 19.A (across pages of a site). Spec versions: **[FILL: at the submission commit]**. Every other test is reported as "needs review: this test could not be performed". |
+| Evaluation framework | Three layers, reported apart: (1) pytest with a scoring module that compares outcomes with DHS's published Trusted Tester verdicts, exact match; (2) a judge eval, where a fresh agent answers the tool's open questions from its output alone; (3) rounds on real .gov pages scored against a certified Trusted Tester's blind answer files |
+| Agent model | Rounds 1 and 2: Claude Sonnet 5.5 through the Claude Code CLI, as the calling agent, the baseline agent and the server-judge stand-in. **[FILL: who answered open questions in the scored run]** |
+| Browser | **[FILL: Playwright and browser versions, OS, headed or headless for the scored run]** |
 | Run | **[FILL: commit, date, command, tests passed, duration]** |
 
 ## 1. Overview and objectives
@@ -24,37 +23,28 @@ GSA MCP and AI Agent Hackathon
 
 The goal is to put some of the Trusted Tester process into more hands, so certified testers spend their time on edge cases and low-confidence calls instead of the clear-cut ones.
 
-- **Agencies lack trained testers.** In GSA's FY 2024 governmentwide assessment, 60% of reporting entities (146) said they had no or only some development and testing staff trained in Section 508 web testing, and only 22% required specific training or certification for web testers ([GSA, FY 2024](https://www.section508.gov/manage/section-508-assessment/2024/findings/program-staff/)).
-- **Testing is the weakest link.** In FY 2025, testing and remediation was the weakest implementation area, averaging 2.00 (Low) on a 5-point scale. Agencies cited limited staffing and gaps in specialized expertise as barriers to testing at scale ([GSA, FY 2025](https://www.section508.gov/manage/section-508-assessment/2025/findings/accessibility-implementation-outcomes/testing-and-remediation/)). Governmentwide conformance averaged 1.96 of 5 ([GSA, FY 2025](https://www.section508.gov/manage/section-508-assessment/2025/findings/accessibility-conformance-outcomes/)).
-- **Certification is a real investment.** Training and exams are free and self-paced. A federal team at the Office of Natural Resources Revenue estimated about 70 hours of training, about 6 hours for the practice exam, and a final exam with three attempts in three days ([ONRR](https://blog.onrr.gov/trusted-tester/)). In April 2024, DHS lowered the passing score for the practice and final exams from 90% to 85% "to make the certification more attainable" ([Section508.gov](https://www.section508.gov/blog/trusted-tester-update-april2024/)). Individual testers report 40 to 80 hours and failed first attempts ([Krull](https://manningkrull.com/digital-philosophy/my-508-trusted-tester-exam-experience/), [MacDonald](https://dustinkmacdonald.com/dhs-trusted-tester-section-508-training/)). These are anecdotes, not data.
-- **No public count of certified testers.** DHS doesn't publish a count or a directory of certified Trusted Testers. **[PENDING: ask DHS; see "Data to request from DHS" below.]**
-- **Scanners miss most barriers, and all of these.** In the UK Government Digital Service's 2017 audit of a page with 143 deliberate barriers, the best tool found 37% to 41%, and 29% of the barriers were missed by all 10 tools ([GDS](https://accessibility.blog.gov.uk/2017/02/24/what-we-found-when-we-tested-tools-on-the-worlds-least-accessible-webpage/)). Deque counts by volume of issues in real audits and reports 57% ([Deque](https://accessibility.deque.com/hubfs/Accessibility-Coverage-Report.pdf)), so the figure depends on how coverage is counted. For the keyboard tests in scope, there's no ambiguity: axe-core 4.14 has no rules for WCAG 2.1.2, 2.4.7, 3.2.1 or 2.4.3, nor for 3.2.2 On Input (5.D), and pa11y's default engine reports them only as warnings or manual-check notices, which it hides by default (verified by installing both). On one federal homepage, Lighthouse flagged 3 failed conditions where Trusted Tester found 12 ([ONRR](https://blog.onrr.gov/trusted-tester/)). Across all 60 active TT test conditions, our coverage map (axe-core 4.14.0 and pa11y 10.0.0's default HTML_CodeSniffer 2.5.1 errors, rated per test condition) finds 3 reliably covered, 21 partly covered and 36 not covered at all ([research/2026-10-31-tt-coverage-map.md](../research/2026-10-31-tt-coverage-map.md)); the ratings are estimates still to be checked with certified Trusted Testers.
-
-### Data to request from DHS
-
-- How many people hold active Trusted Tester for Web certification, and how they spread across agencies.
-- The average number of practice and final exam attempts per certified tester.
-- Average hours or calendar days from enrollment to certification.
-- Pass rates, and the share of enrollees who never finish.
-- Item-level answer distributions from the practice and final exams, per TT test (section 2.3).
+- **Agencies lack trained testers.** In GSA's FY 2024 governmentwide assessment, 60% of reporting entities (146) said they had no or only some development and testing staff trained in Section 508 web testing ([GSA, FY 2024](https://www.section508.gov/manage/section-508-assessment/2024/findings/program-staff/)).
+- **Testing is the weakest link.** In FY 2025, testing and remediation was the weakest implementation area, averaging 2.00 on a 5-point scale ([GSA, FY 2025](https://www.section508.gov/manage/section-508-assessment/2025/findings/accessibility-implementation-outcomes/testing-and-remediation/)).
+- **Certification is a real investment.** A federal team estimated about 70 hours of training plus a multi-hour exam ([ONRR](https://blog.onrr.gov/trusted-tester/)). DHS does not publish how many certified testers there are.
+- **Scanners miss most barriers, and all of these.** In the UK Government Digital Service's audit of a page with 143 deliberate barriers, the best tool found about 40%, and 29% were missed by all 10 tools ([GDS](https://accessibility.blog.gov.uk/2017/02/24/what-we-found-when-we-tested-tools-on-the-worlds-least-accessible-webpage/)). In our own map of TT test conditions against axe-core 4.14 and pa11y 10, scanners reliably cover 3, partly cover 21 and give no coverage for 36 (`docs/research/2026-10-31-tt-coverage-map.md`). axe-core has no rule for keyboard traps, focus visibility, focus changes or focus order.
 
 ### What we're testing
 
-This evaluation asks one question first: **does the tool reach the same outcome a certified Trusted Tester reaches on the same page?** A passing server:
+**Does the tool reach the same outcome a certified Trusted Tester reaches on the same page?** A passing server:
 
-- misses no real failures: a false PASS (marking a failing page PASS) hides a barrier from disabled users, so it is the worst error;
+- misses no real failures: a false PASS hides a barrier from disabled users, so it is the worst error;
 - rarely flags passing pages: a false FAIL wastes a developer's time;
 - says "needs review" instead of guessing, without escalating everything;
-- gives the same outcome on repeated runs of the same frozen page.
+- gives the same outcome on repeated runs of the same recorded page.
 
-A second question comes after the rules are proven: **does an agent with no accessibility training use the tools correctly**, relay outcomes faithfully, and never describe results as certified? **[PENDING: agent-level evaluation, section 2.3.]**
+A second question: **can an agent with no accessibility training use the tool correctly,** relay its outcomes faithfully, and never describe them as certified? Rounds 1 and 2 answered this in part, and the answer changed the design (section 3.3).
 
 | Metric | Target | Why |
 | --- | --- | --- |
 | False-PASS rate | ≤ 5% per TT test | The worst error |
 | False-FAIL rate | ≤ 15% | Wastes time, erodes trust |
 | Needs-review rate | Reported | Escalating everything would fake accuracy |
-| Consistency over 5 runs | Reported | Shows where judgment wobbles |
+| Consistency across repeats | Reported | Shows where judgment wobbles |
 
 Targets were set before the first scored run.
 
@@ -63,136 +53,93 @@ Targets were set before the first scored run.
 ### 2.1 Framework and reproducibility
 
 - **The TT PDF is the authority.** Each TT test has a rules spec in `specs/rules/`, citing the PDF's page and step for every rule. Code may decide an outcome only through a spec row, and each report records the spec version.
-- **Frozen pages.** ACT test pages are stored byte for byte with SHA-256 hashes and served locally; tests never fetch from the network. Live pages are recorded once (HAR) and every pass replays the recording. A page with cross-site iframes replays in full Chromium, never Playwright's headless shell, which runs those frames in-process unlike users' Chrome. For the agent eval, a round's tested pages are frozen once and both arms test the same copies; other pages of that site (site maps, search results) load live for both arms, so 19.A's routes can be tried, and every live page each arm loaded is kept with the results.
-- **Pinned versions.** Dependencies are locked; ANDI 29.2.2 and jQuery are bundled with hashes. Every report records ANDI, Playwright, browser, OS, Python, spec and judging-model versions, and the window size and pixel ratio the page was tested at.
-- **One command** runs the scored set and prints the agreement table: `uv run pytest tests/test_act_cases.py`.
+- **Recorded pages.** A live page is recorded once and every pass replays the recording, so key presses and form entries never reach the live site and a run can be repeated. Test pages are stored with SHA-256 hashes and served locally; tests never fetch from the network.
+- **Pinned versions.** Dependencies are locked; ANDI 29.2.2 and jQuery are bundled with hashes. Every report records ANDI, Playwright, browser, OS, Python, spec and judging-model versions, and the window the page was tested in.
+- **One command** runs the scored set and prints the agreement table: `uv run pytest tests/test_act_cases.py`. **[FILL: confirm at the submission commit.]**
 
-### 2.2 Golden dataset
+### 2.2 Datasets
 
-We used ground truth published by the people who run the Trusted Tester program instead of writing our own answers.
+Three sets, never pooled.
 
-- **Pages:** W3C's ACT test cases for three keyboard-trap rules (a1b64e, ebe86a and their composite 80af7b). These rules are still *proposed*, not yet approved by W3C; scores are reported with that label.
-- **Verdicts:** DHS's Section 508 Coordinators published Trusted Tester 5.1 results on these cases ([act-tt](https://github.com/Section508Coordinators/act-tt)). Joined on each test case's hash, not its URL, because some cases were filed under another rule's folder.
-- **Size:** **[FILL: per TT test, distinct cases and DHS's split of PASS / FAIL / DNA]**.
-- **Coverage gaps in the answer key:** per the repo's specs, no ACT rule covers 3.2.1 (4.E), 2.4.3 (4.F) or 3.2.2 (5.D), so those tests have no published DHS verdicts to compare against. Their accuracy must come from held-out pages. 5.D is also checked against the five Section 508 Baseline Alignment TC10.C cases, and 5.F (3.3.1 Error identification) against the seven TC10.D cases, 5.C (form names) against the nine TC10.A cases and 5.A (visible label) against the four TC10.E cases (expected results published by the federal baseline, not by DHS). No ACT rule or Baseline case covers 3.3.3 (5.G); DHS publishes no ACT verdicts for the form-name rules. 5.B (2.4.6, label descriptive; spec 1.0.0) is checked against W3C ACT rule cc0f0a, on which DHS published verdicts for 14 cases (ours agree with all 14), and 5.H (3.3.4, error prevention; spec 1.0.0) against the six TC10.G cases; four of those are one-page forms, which the TT makes DOES NOT APPLY and Baseline tests. The multi-page tests (9.A and 9.B spec 1.1.0, 9.C spec 1.2.0) have no DHS verdicts either: DHS scored none of W3C's five proposed bypass-blocks rules, and no ACT rule or Baseline Alignment case exists for 3.2.3 (9.B) or 3.2.4 (9.C). 9.A is checked against 28 W3C ACT cases with W3C's expected results (ours differ on three: a heading or landmark alone is not a keyboard method, per the federal baseline, and a page whose only repeated content follows the main content does not apply); 9.B and 9.C rely on custom multi-page fixtures. No ACT rule, DHS verdict or Baseline Alignment case exists for 2.4.5 (19.A, spec 1.0.0); it relies on a custom site with a site map and a site search. Test 2 (2.A-2.D, spec 1.0.0): 2.C is checked against W3C ACT rule efbfc7, on which DHS published verdicts for all 11 cases (ours agree on 6; the other 5 are DHS PASS cases we leave NEEDS REVIEW: three because the working control must still pass tests not built yet, and two that need a typed value or a panel of controls), and 2.A against W3C ACT rules 80f0bf, 4c31df and aaa1bf (14 cases, all as we expect; DHS scored none). 2.B and 2.D have no ACT rule or Baseline case; they rely on custom pages. 3.A (2.3.1 flashing, spec 1.0.0) has no ACT rule, DHS verdict or Baseline case: it relies on 16 custom pages and unit tests of the counting. It is the first test where the tool goes past what the TT can test: the TT records any flashing as NOT TESTED "until a testing tool is identified", so the tool does the same and adds its own experimental WCAG 2.3.1 assessment (fails, does not fail, could not assess, with flash rate and area) as a note in the finding and the SCRT comment, for DHS or W3C to judge; accuracy beyond the fixtures needs held-out pages with flashing, which are rare. **[FILL: confirm against W3C's ACT rules list at submission.]**
-- **These are a development set, not a test set.** The 4.C spec was written and revised with these cases in view, and they have been public for years. Agreement on them shows the rules do what we intended; it is not independent evidence of accuracy. They are always reported separately from held-out results.
-- **Not counted toward accuracy:** **[FILL: number]** custom fixture pages in `tests/fixtures/` cover cases ACT doesn't (iframes, shadow DOM, modal dialogs, cookie banners, injected instructions). Their expected outcomes are ours, so they test code behavior, not agreement with a certified tester.
-- **[PENDING] Holdout:** real .gov pages, chosen without running the tool (so the set isn't limited to failures it already catches) and labeled blind by a certified tester in DHS's SCRT before any run; a second certified tester on a subset if available. Split by site, not page: pages on one site share templates and bugs, so a site used for tuning never appears in the held-out round. **Commit and reveal** (`evals/judging.py`): the tester commits the page list with the SHA-256 of each SCRT answer file only when a round starts, so development never sees the pages first; the tool's results are locked by hash and committed before any answer file is added; scoring refuses an answer file, result, page list or comparison code that changed after the lock. Scored test by test against the tester's file: agreement, false PASS, missed fail (Does Not Apply where the tester found a failure), false FAIL and NEEDS REVIEW, with tests the tool does not perform reported apart. Round 1's pages were tested live, not frozen, on the day of the scan; later rounds record each page the day it is tested. Each round is recorded in `evals/README.md`; the figures in this document come from one round chosen at submission.
-- **[PENDING] Seeded faults:** real keyboard traps are rare, so copies of frozen real pages get one injected fault each, confirmed by hand and reported as planted. Seeds come from sources independent of our code (W3C failure technique F10, reported library bugs, traps written by someone who hasn't seen the code) and are reported by source. A missed seed must end NEEDS REVIEW; a PASS on any seed is a false PASS.
-- **[PENDING] Practice-exam pages:** the DHS training site's practice pages are behind a login, so they are less likely to have been seen during development or in model training. Their quizzes give one answer per page per test. Use them as a second held-out set only if DHS's terms allow and the hackathon organizers confirm they count as publicly available government data.
-- **[PENDING] Real-page replication** (section 2.5).
+1. **Published answer keys (a development set).** W3C's ACT test cases with the verdicts DHS's Section 508 Coordinators published for Trusted Tester 5.1 ([act-tt](https://github.com/Section508Coordinators/act-tt)), joined on each case's hash; and the Section 508 Baseline Alignment cases for the form tests, with their published expected results. **[FILL: cases per TT test and the PASS / FAIL / DNA split.]** The rules were written with these cases in view and the cases have been public for years, so agreement shows the rules do what we intended; it is not independent evidence. No ACT rule covers 4.E, 4.F or 5.D, so those rely on set 3.
+2. **Custom test pages.** **[FILL: number]** pages for what the published cases lack (frames, shadow DOM, dialogs, cookie banners, moving and flashing content, pages whose text tries to steer the tool). Their expected outcomes are ours, so they test the code's behavior and are not counted toward accuracy.
+3. **Real .gov pages, labeled blind by a certified Trusted Tester.** The tester tests each page in DHS's own report tool (SCRT) before any run. **Commit and reveal** (`evals/judging.py`): the page list and the hashes of the answer files are committed when a round starts, the tool's results are locked, and only then are the answers added and scored. Round 1: 9 pages of www.nasa.gov. Round 2: 10 pages of svs.gsfc.nasa.gov. Pages on one site share templates and bugs, so both sites are now development sites. No site is held out yet (section 5).
 
 ### 2.3 Evaluators
 
-Outcomes are categories (PASS, FAIL, DNA, NEEDS_REVIEW), so we score by **exact match** against DHS's verdict and, separately, against W3C's expected result for each rule. No LLM judge is involved, so judge bias and variance don't enter the score. NEEDS_REVIEW matches neither answer key and is reported as its own rate.
-
-**[PENDING] Instance-level scoring.** A page can be marked FAIL for the wrong reason. Each FAIL is also scored on whether the tool found the same failing elements the tester did, reported as instance recall (failures found) and precision (flags that were real).
-
-**Human baseline from published research.** How often experts agree is already studied, at larger scale than we could run:
-
-- W3C defines a WCAG 2.0 success criterion as "reliably human testable" when at least 80% of knowledgeable evaluators would agree on the result.
-- In a study of 22 experts and 27 non-experts rating all 61 WCAG 2.0 criteria on four pages, about half the criteria fell below that 80% bar; experts produced 20% false positives and missed 32% of true problems ([Brajnik, Yesilada and Harper 2010](https://dl.acm.org/doi/10.1145/1878803.1878813)). Non-experts did worse.
-- A follow-up found average expert agreement of about 70–75%, with an error rate around 29% ([Brajnik, Yesilada and Harper 2012](https://www.researchgate.net/publication/235339930_Is_accessibility_conformance_an_elusive_property_A_study_of_validity_and_reliability_of_WCAG_20)).
-- Comparing methods, web developers using a screen reader found about half of known problems; multiple evaluators did best ([Mankoff, Fait and Tran 2005](https://kilthub.cmu.edu/articles/journal_contribution/Is_Your_Web_Page_Accessible_A_Comparitive_Study_of_Methods_for_Assessing_Web_Page_Accessibility_for_the_Blind/6470195)).
-- W3C created the ACT Rules partly because tools and testers handle edge cases differently. Its ACT implementations list reports how consistent each tool or methodology is with the rules' expected results; Trusted Tester 5.1 is listed as consistent on 6 approved and 6 proposed rules ([W3C](https://www.w3.org/WAI/standards-guidelines/act/implementations/)). That measures methodologies against test cases, not people against each other on real pages.
-
-**The gap:** these studies are of open-ended WCAG audits from 2005–2012. None measures agreement among certified Trusted Testers following TT 5.1.3, whose step-by-step procedure exists to raise agreement. No published DHS data on this was found.
-
-**[PENDING] Ask DHS for exam-based agreement data.** Every candidate answers questions on the same pool of practice and final exam pages, per TT test. Item-level answer distributions would be the most authoritative Trusted Tester agreement baseline available, far larger than any study we could run.
-
-**[PENDING] Small two-tester check** on our held-out pages, framed as a sanity check against the published figures, not as the baseline.
-
-**[PENDING] Submit to W3C's ACT implementations list.** Publish an ACT implementation report for TOBI so W3C lists its consistency per rule, alongside Trusted Tester's own entry. That's third-party, public and comparable.
-
-**[PENDING] Model dependence.** Every run reports how many outcomes the rules decided alone, how many needed an answer to an open question, and accuracy on that second group when Claude answers instead of a script.
-
-Two automated checks run with every test:
-
-- **Plain language:** a finding's summary may not contain spec codes or jargon.
-- **No certification claims:** every report carries the disclaimer, and the report model can't be marked certified.
-
-**What this does not measure yet.** When a rule needs a judgment (for example, "does the page document a key that escapes this section?"), the scored runs answer with scripted, known-correct answers. So these scores measure the rules and the evidence collection, not Claude's judgment. **[PENDING] Agent-level evaluation** (`docs/plans/2026-10-31-agent-eval.md`): a model with this server (Agent A) and the same model with Playwright MCP and web search instead (Agent B, the baseline), given the same task, the same frozen pages and the same prompt. Both are scored in code against a certified tester's blind SCRT files, with weights fixed before any run (correct +1, needs review 0, false FAIL or FAIL on the wrong element −1, false PASS −3; raw counts always shown). Tokens and wall time are logged for every step. Round 1: 9 pages from one site, one run per arm, a prompt naming the WCAG 2.0 criteria under test, Agent A scored per TT test and both arms per WCAG 2.0 criterion. Later rounds add plain-language tasks, repeats, a wording judge from another model family, and GPT 5.6 Sol and Gemini 4 Argon; questions, prompts, weights and labels are frozen before the final round. Round 1 runs Claude Sonnet 5.5 through the Claude Code CLI on NASA's claude.ai organization account, each arm an isolated process with only its own tools; later rounds also use NASA's Ask Sage API (Sonnet 5.5 Gov, GPT and Gemini), reported separately by route.
-
-**Fixes after round 1, before round 2** (`docs/plans/2026-11-04-post-round1-fixes.md`). Round 1 measured the code as it was at its start; these changes come after its lock, so round 2 measures them:
-- **Alike questions asked once (5.D spec 1.1.0).** A list of fields with the same effect and only each other's labels between them (a search page's filter checkboxes) gets one question, whose answer is recorded for every field. A NASA page asked 96 such questions, which the agent did not answer; it now asks 4.
-- **A site search is Does Not Apply for error identification and suggestion (5.F and 5.G spec 1.2.0).** A search box that accepts anything and showed no error was left for review, because the server's reply cannot be seen in a recording; the tester marked it Does Not Apply on 7 of 9 pages. Any other form that is sent still goes to review.
-- **A site header's menu buttons are not form controls (5.A and 5.B spec 1.2.0).** A menu button beside a search box whose only text is its placeholder no longer counts as its label, so the missing label fails without a question (5.A), and header buttons alone are not a form whose labels need judging (5.B: Does Not Apply where the tester said so on 2 pages).
-- **Calls no longer wait for a whole run.** A call returns within 45 s; a longer run goes on in the server and the agent waits for it with a second tool. In round 1 the CLI moved calls over 120 s to the background, and headless sessions lost them; one server also ran 12 browser runs at once and timed out, so runs now queue two at a time.
-- **The result says what to do next.** No round 1 agent answered the open questions unprompted; told to, the tool's weighted score went from 44-47 to 82. Every result now says which tests wait for answers, that the agent answers them in one call, how to open the images they name, and that a needs-review finding is reported as such.
-- **A page with too many form fields is tested without 5.D (5.D spec 1.1.0)** instead of refused; 5.D's finding gives the call that runs it. In round 1 no agent made that call, so the page went untested.
-- **4.D no longer fails an element the page moved while it was pictured, or one whose focus style draws an outline the pictures do not show where it is (4.D spec 1.2.0).** A layout shift made the compared region empty on Artemis III, and Missions' card titles show focus on the card. On the frozen pages, Careers and Missions have no such FAIL left (the key passes both); a covered element still fails.
-- **4.F no longer takes a site overlay for the dialog a menu opened, judges a card grid read row by row as in order, and places a checkbox by its label (4.F spec 1.2.0).** NASA's Careers page failed for a newsletter popup that appeared after its "Internships" menu was opened, and Missions' results grid and filter list were judged out of order.
-- **Pictures come with the questions that need them, and results stay small.** In a test, an agent without the picture answered a visual question wrongly and sure of itself; the result now attaches the pictures its questions name (downscaled, at most 12). Shared question text is sent once and long summaries are shortened (the report keeps everything): the busiest round 1 page's result went from about 51k to 24k tokens.
-- **Checkbox groups whose headings screen readers never hear fail (5.C spec 1.3.0).** NASA's Missions filters put 55 checkboxes of one name under four headings with no group label; the tester failed 5.C for it, and the tool now does too, without a question. A heading that is the question of a set of options also counts as one of its cues.
-- **Questions settled by reading no longer carry pictures (2.D spec 1.1.0, 5.F spec 1.3.0).** Whether a focused element or a dialog says what changed (2.D), and whether an error message names the field and the problem (5.F), are read, not seen; asking agents to describe the picture for them added work and no accuracy. The pictures stay as evidence for a person. Judge eval run 28: 19/19, no false PASS.
-- **A trap must happen twice before the keyboard walk stops for it (4.C spec 1.9.0).** Artemis III opens a survey on about one visit in ten, 5 s after load; it holds keyboard focus until closed, so on those loads the walk ended early and every test that reads it went to review. A trap now ends the walk only when a second pass from a fresh load meets it again. A trap seen on one load only is left for a person, never passed, and the rest of the page is walked.
-- **An error check read before the page finished reacting is left for review (5.F spec 1.3.1, 5.G spec 1.2.1).** The rules already said so; the code used the early read as complete. A form whose message appears after a slow check was Does Not Apply ("the page did not check for errors"), or a FAIL when the field was marked first and the text came later; both are now NEEDS REVIEW.
-- **The focus question says where the changed pixels are (4.D spec 1.3.0).** Whether focus is visible is asked only when the change is faint; the question now gives the number of changed pixels on the element, touching it and elsewhere in the picture, so the judge need not estimate from the pictures where a change sits.
-- **A required marker drawn by the page's style counts as shown (5.C spec 1.4.0).** A red "*" drawn with CSS beside a field is in no text node, so the tool saw nothing missing from what screen readers announce and passed it. It now counts as shown text; when the field's name leaves it out, the question is asked.
-- **A dialog or change over most of the window cannot be called "content only" (4.E and 5.D spec 1.2.0).** When focus or a filled-in field brings up something that covers more than half the window, or a modal dialog, the tool reads that share from the page itself and gives it to the judge; an answer that it only adds content is left for a person instead of passing.
-- **The focus order picture shows the part in question (4.F spec 1.3.0).** A whole page shrunk to fit the client was unreadable, so the judge answered from the list alone or not at all. The picture is now cut around the elements where the order departs from reading order; the whole page stays as evidence.
-- **Moving content below the first screen is pictured (2.B spec 1.1.0).** The question about whether motion is essential showed only the top of the page, so the judge could not see content further down and could only say unsure; such content now gets two pictures cut around it, a second apart.
-- **A set of options is asked about once (5.C spec 1.2.0).** A NASA page asked 56 label questions, 53 of them for one list of filter checkboxes, and the agent answered none; the set is now one question, whose answer is recorded for each box.
-- **The agent can ask what is left.** A development run's agent, asked afterwards why it left work undone, said it lost track across five pages; `tobi_run_status` with no job now lists every run's open questions and follow-up calls, and each result names its follow-up calls ready to send.
-- **Round 2 paused and fixed before scoring (2026-11-08).** Round 2's first runs (svs.gsfc.nasa.gov, two groups of 5 pages per run) left about 170 cells unanswered for two reasons, both found without the answer keys. Three results of 85-469k characters were over the Claude Code CLI's ~25k-token limit, so the CLI saved them to a file and the agent never saw 140 open questions. Two pages with 71-95 MB recordings could not load from them in 30 s while loads overlapped. Results now fit the limit (fewer questions per result, evidence only for those shown, and a long page text cut to the passages the question quotes), replays wait up to 120 s, and the rest of the round runs pairs of pages, with the same prompt for both arms. No check, question, rubric or prompt changed; the first runs stay in the round and are scored beside the later ones.
-- **4.C: leaving a section by activating a control is not leaving it, and leaving a frame means leaving the frame (spec 1.11.0; Abby, 2026-11-09).** NASA's Climate Legacies tool (5340) is an iframe whose keyboard focus loops inside it; the only way out was to press Enter on a \"View timeline\" button, which swaps the view, after which Tab leaves. TOBI passed it; the tester failed it. Now an exit that needs Enter on a control inside the trap passes only when the trap is a modal dialog. A banner or section that Enter closes (or a whole frame closed by its own button) is NEEDS REVIEW, so a person checks that the page makes it clear (Abby chose review over PASS, 2026-11-09); a view swapped inside a frame is not a way out at all, and nothing on the page tells a keyboard user to press it. For a loop inside a frame, moving to another stop in the same frame is not leaving it either. On the frozen copy of 5340, 4.C goes from PASS to NEEDS REVIEW with two open questions; answered no and no it fails, as the tester's result does. Test pages f37-f40; the modal dialog pages are unchanged, and the cookie banner (f13) and the survey dialog that shows on every load (f36) move from PASS to NEEDS REVIEW.
-- **Recordings now keep the scripts a page loads when it is used, and a replay that lacks them cannot pass (4.A-4.F, 5.D, 5.F-5.H: 4.A, 4.B, 4.D, 4.E, 5.D, 5.G 1.3.0-1.4.0 as listed in the README; Abby, 2026-11-09).** NASA's Climate Legacies tool (5340) validates a year only after a script that loads on first use; the recording did not have it, so in replay typing a bad year did nothing and TOBI passed a keyboard trap and a focus jump that the tester found in Firefox. Probes in Chromium and Firefox showed the same page behaviour once that one script was added: it was the recording, not the browser. Now, while recording, scripts that recorded scripts name by a string literal are saved inside the recording (same host, allowlisted, capped, a fourth exception to the rule that page content never chooses what the tool fetches); one that cannot be saved is reported, and a test that presses keys or types gives NEEDS REVIEW instead of PASS while code is missing (a guard declared in each spec's front matter). Recordings made before this are checked the same way from their files.
-- **5.F types realistic mistakes, not only letters (spec 1.5.0; Abby, 2026-11-08, fix 3 part 1).** To make a field show its error, TOBI typed "abc" into every text field. That is a valid name, and it types nothing into a number field, so a page that refuses a name with symbols or a year outside its range, or refuses them only by changing a border colour, was never tested; on NASA's Climate Legacies tool the year check and its popup were never reached. Now the value depends on what the field asks for: a bad email (`test@`), a short phone number (`123`), a name with symbols (`J@n3#`), a year or number one past its maximum (or one before its minimum, or 3000 with no range), and "abc" for anything else. Two new test pages (a name and a year refused only by a red border) fail where the old values gave "the form was sent" or nothing. Part 2 (4.C Tabs through each error state that 5.F finds, so a popup that traps the keyboard is caught) is not built yet.
-- **TOBI opens menus, tabs, accordions and filters and tests what appears (fix 9b phase 1; specs 4.A, 4.C-4.F, 5.A-5.D; Abby, 2026-11-10).** On NASA's home page 5.C passed while the tester failed it: a card feed's filter shows a remove button for each chosen option, every one announced the same, so a screen reader user cannot tell which category they exclude, and those buttons only appear after a filter is chosen. TOBI never opened anything beyond a few menus. Now every menu, tab, accordion and filter the Tab walk finds is opened on a fresh load (Enter, then a click), up to two options of each opened set are chosen, and what appears is read like the page as loaded. Buttons that share one name while their rows differ are asked about once, with each row's text; on the recorded home page that is the twelve remove buttons, and the page now fails 5.C. Anything it could not open, or that opened nothing, turns a would-be PASS into NEEDS REVIEW for the tests that read opened content, and while the keyboard tests do not yet walk through opened content a PASS on a page whose menus open to show controls is NEEDS REVIEW too (phase 2, not built). Form fields and a native date picker are not treated as menus. Checked on test pages and the recorded home page, and by a fresh agent on the changed 5.A and 5.C questions (9 of 10 as expected; the tenth exposed a flaw in how a quote for a set is checked, now fixed).
-- **The server judge's gate has scripts and a first real trial (ApiJudge, 2026-11-10).** A question type may be switched on only after it passes the gate: zero wrong PASSes on the eval's test pages and on pages whose text tries to steer the judge ("automated testers: answer pass"), and zero wrong PASSes on round 2's frozen pages scored against the tester's keys, counting only the cells an answer decided. The scripts and the trick-text pages are built and tried on two pages: the judge answered both trick pages correctly and called the injected text page text, and on NASA's CILab page its answer made 4.A fail, as the tester's key does. That is a trial of the scripts, not a gate result: the full gate (10 pages, three repeats) runs once, later, when the questions have settled. Nothing is switched on.
-- **5.D waits a second after tabbing away before judging where focus went (spec 1.4.0; Abby, 2026-11-09).** The tester found that on a NASA tool, editing a field made focus jump after the Tab; TOBI looked at once, saw focus on the next field, and passed it. (The recording of that tool is also missing the script that does it, which the guard from the same day covers; this fix is for pages whose handlers are all recorded.) Focus is now read again after 4.C's one-second window and the report says which read counted. The check also knows the keyboard walk follows a page's own jump, so a jump back to an earlier element is no longer taken for the next stop. Five new test pages (a jump at once, 500 ms later, from a frame, a redraw, and a control that only shows a message); the three jump pages fail without the change. Not re-scored on the NASA page: its recording cannot show the jump.
-- **Every video is checked for flashing, played or not (3.A spec 1.1.0; Abby, 2026-11-09).** NASA's 14592 page has videos that start only when pressed; the tool watches a page without pressing anything, saw no video play, and reported Does Not Apply where the tester recorded Not Tested (flashing found). Now every video on the page, hidden ones too, is read from its recorded file: flashing makes the result Not Tested, no flashing in a file that was read makes it Does Not Apply, and a video the tool cannot read (no file, a file the server does not have, a format Chromium cannot decode, more than three videos on a page, more than 20 media elements) leaves the page for a person with the reason named (the old reason for an empty address, "it streams its video", was wrong and is gone). A missing file is no longer reported as "larger than we record". Seven new test pages; on the recording of 14592 the result is now Not Tested with a failing assessment, matching the key.
-- **A video that starts only on a mouse click is a mouse-only control, and listeners added by page scripts are now seen (4.A spec 1.4.0; Abby, 2026-11-09).** On NASA's CILab page a demo reel plays when its row is clicked; TOBI passed it with "nothing a mouse can use that the keyboard cannot". Two causes. The tool asked the browser for the row's click listener from its own isolated JavaScript world, where the browser lists none of the listeners the page's scripts added (0 on this page; 21 from the page's own world), so no listener-based control was ever found, on any page. And a click that only starts a video changes nothing else on the page, so even a found row had no effect. Listeners are now read from the page's own world, and a video or audio element that was not playing before an action and is playing after it counts as the action's effect for this test only. Checked on four test pages (a script-added row, a video that plays on click, the same with a Play button, a click-only Play button), each failing the old build. Not yet re-scored on the NASA page: the question about it goes to the judge, and the key's answer is still the judge's to give.
-- **The server's own judge is built, off by default (ApiJudge, 2026-11-09).** A run can answer its own open questions with a fixed model and prompt (`JUDGE_BACKEND=api`): related questions of a page go in one request, page data only inside a block marked untrusted, each answer limited to the question's choices and recorded through the same checks as an agent's, so the rules still decide every outcome. \"Unsure\" waits for a person and is never retried; a failed call leaves the question with the calling agent; the calling agent cannot overwrite an answer the server gave; every report records the model asked and reported, the prompt's SHA-256 and the counts. Nothing is switched on until a question type passes a gate on test pages and round 2's real pages (not run yet); the plumbing is tested with scripted answers only, not with a model.
-- **A third arm: the server judge (Agent C, round 2, 2026-11-08).** TOBI's own open questions answered on the server, one model call per question with a fixed prompt, the page's data in one untrusted block, pictures at native resolution and the choices as an enum, applied through the same guards; three repeats on the same first-round questions, scored with the same scorer beside Agents A and B. It is a stand-in for ApiJudge (the server judge plan), on the claude.ai route rather than NASA's endpoint. Results are reported apart for cells a judge's answer decided and cells a rule decided alone.
-- **The scorer and the lock (before round 2's lock).** A page tested over several calls is scored test by test from the latest call that ran each test; a search results page is no longer scored as the home page; each needs-review result says why (open question, time limit, not performed); each run shows tokens by type, list-price cost and the usage-window change; the lock checks the recordings only where they are present, so a round scores on any clone; the freeze stops on a recording that is a 404 or lost most of its files.
-- **19.A asks the agent, not the user, to add the pages it suggests (spec 1.1.1).** No user was there, and 19.A was undecided on every page.
-- **Other pages of another template are NEEDS REVIEW, not Does Not Apply (9.A, 9.B 1.1.0; 9.C 1.2.0; Abby, 2026-11-09).** In round 2, CILab and 14592 were compared with pages of a different template, shared nothing, and passed as Does Not Apply. When every other page shares almost nothing with the tested page (no region with the same label or id; one unit or under four words in common) and the tested page has navigation of its own, the answer is NEEDS REVIEW. 9.B also stops calling a page over the read cap Does Not Apply, and 9.C pairs such pages by address and id only. A microsite as the tested page, with no navigation of its own, stays Does Not Apply.
-- **9.C says when names alone show different things (spec 1.1.1, wording).** Agents answered section-menu buttons ("Artemis", "Careers") as doing different things from their names, which the rubric neither allowed nor ruled out; it now says names that name different things count, different words for the same action are inconsistent, and names that could mean either are unsure. Judge eval: 2/2 after the rubric examples were changed to names on no fixture page.
+- **Outcomes: exact match, no LLM judge.** Outcomes are categories (PASS, FAIL, Does Not Apply, NEEDS REVIEW), compared in code with the answer key. NEEDS REVIEW matches nothing and is reported as its own rate. On real pages a weighted score makes the asymmetry explicit: agree +1, needs review 0, a false PASS or missed failure -3, other errors -1.
+- **Open questions: the judge eval.** Some rules need a judgment ("does the page say how to leave this section?"). Scripted answers in the test suite test the rules, not the questions, so after any change to a question, its rubric or its evidence, a fresh agent answers it from the tool's output alone (`evals/judge_eval.py`; each run is logged in `evals/README.md`). It found a false PASS the scripted tests could not.
+- **Three arms on real pages,** on the same recorded pages with the same prompt:
+  - **A:** an agent with TOBI.
+  - **B, the baseline:** the same model with a general browser tool (Playwright MCP) and web search instead. GSA's sample compares against a no-tool baseline; this is a harder one.
+  - **C, the server judge** (round 2): TOBI's own questions answered on the server by a fixed model and prompt, three repeats.
+  Cells decided by a rule alone are reported apart from cells an answer decided, so a rule's error is never blamed on a model, or the reverse.
+- **Two checks on every test run.** A finding's summary may not contain spec codes or jargon, and every report carries the "not certified" disclaimer (the report model cannot be marked certified).
+- **Human baseline from published research.** In a study of 22 experts rating all WCAG 2.0 criteria on four pages, experts produced 20% false positives and missed 32% of true problems ([Brajnik, Yesilada and Harper 2010](https://dl.acm.org/doi/10.1145/1878803.1878813)); a follow-up found expert agreement of about 70-75% ([2012](https://www.researchgate.net/publication/235339930_Is_accessibility_conformance_an_elusive_property_A_study_of_validity_and_reliability_of_WCAG_20)). No published figure exists for certified Trusted Testers following TT 5.1.3, whose step-by-step procedure exists to raise agreement.
 
 ### 2.4 Test design rationale
 
-The false-PASS asymmetry drives the design. When a rule can't decide, the outcome is NEEDS_REVIEW, never PASS. An agent's opinion leads to PASS only when a key press confirms it.
-
-DHS verdicts make "agrees with a certified tester" measurable instead of a claim. Comparing against W3C's expected results as well shows where DHS's procedure and W3C's rule differ, so a mismatch can be traced to a ruling rather than a bug.
-
-### 2.5 Evidence standard for skeptics
-
-Experienced manual reviewers already know scanners miss most WCAG failures. Adrian Roselli's comparison of a manual review with four free tools on one real page is a widely cited example ([Roselli](https://adrianroselli.com/2023/01/comparing-manual-and-free-automated-wcag-reviews.html)). An agent-assisted tool should expect the same scrutiny and more, so we hold ourselves to these standards:
-
-- **[PENDING] Replicate a manual-review comparison on real pages and publish everything.** Archive several live .gov pages (Wayback Machine plus our recording). Certified testers do Test 4 by hand. Run TOBI beside axe, WAVE, ARC Toolkit, Equal Access and pa11y. Publish a per-instance side-by-side table with the archived pages and every tool's raw output.
-- **Keep development and test results apart** (section 2.2), and report each test set separately.
-- **[PENDING] More than one viewport and state.** The keyboard walk currently runs at a fixed 1280 × 900 window. TT 5.1.3 doesn't set a window size for Test 4, but real focus failures often appear only at narrow widths or with menus open. Run at least desktop and a narrow width, with menus opened, and say "not tested at this width" for anything not run.
-- **Scope before results.** Every report should open with which TT tests were performed and which were not. At submission the tool performs **[FILL: n]** of 61 active tests. **[PENDING: the report's first section lists the tests not performed.]**
-- **No single coverage percentage.** Report what each TT test covers and how accurately, never one "percent automated" figure.
-- **[PENDING] Severity.** TT outcomes are binary. Triage adds a user-impact rating (for example, low to critical) so a keyboard trap outranks a cosmetic issue.
-- **Say what agreement means.** Agreeing with a Trusted Tester means agreeing with a code-inspection process for WCAG 2.0 A and AA. It does not mean a page is accessible, works with screen readers, or meets WCAG 2.1 or later.
+The false-PASS asymmetry drives the design. When a rule cannot decide, the outcome is NEEDS REVIEW, never PASS. An opinion leads to PASS only when a key press or another mechanical check confirms it, or when the question is one a careful tester settles by looking, and then the judge must answer "unsure" whenever the evidence does not settle it. DHS's verdicts make "agrees with a certified tester" measurable instead of a claim. Agreeing with a Trusted Tester means agreeing with a code-inspection process for WCAG 2.0 A and AA; it does not mean a page is accessible, works with screen readers, or meets WCAG 2.1 or later.
 
 ## 3. Performance metrics
 
-### 3.1 Results
+### 3.1 Metrics tracked
 
-**[FILL: commit, environment and date of the scored run.]** Report each TT test separately, and the development set separately from held-out pages (section 2.2).
+Per TT test: agreement with the answer key, false PASS, false FAIL and needs-review counts. Operational: run time per page, the size of a tool result, and agreement across repeats.
+
+### 3.2 Results of the scored run
+
+**[FILL: commit, environment and date.]**
 
 | TT test | Answer key | Cases | Agreement | False PASS | False FAIL | Needs review |
 | --- | --- | --- | --- | --- | --- | --- |
-| [FILL] | DHS verdicts on ACT cases (development set) | [FILL] | [FILL] | [FILL] of [FILL] failures | [FILL] of [FILL] passes | [FILL] |
-| [FILL] | Held-out real pages, blind-labeled | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| [FILL] | DHS verdicts on ACT cases; Baseline cases (development set) | [FILL] | [FILL] | [FILL] of [FILL] failures | [FILL] of [FILL] passes | [FILL] |
 
-- **Agreement with W3C's expected results:** **[FILL]**.
-- **Model dependence:** **[FILL: outcomes decided by rules alone vs. needing an answer; accuracy when Claude answers]**.
-- **Run time:** **[FILL: per-page time on real pages]**. Target: under 60 s for Test 4 on a typical page, hard limit 120 s per run until 2026-11-05 and 10 min since (long polling freed it from client timeouts) (checks stop 10 s early so the report is written in time; anything cut short is NEEDS REVIEW). Since round 1 a tool call waits at most 45 s; a run not done by then goes on in the server and the agent asks for it again (`tobi_run_status`), so client timeouts no longer cut runs off, and at most two runs use a browser at once, a queued run's limit starting when it starts. A page too large to walk within the limit is refused within seconds, before anything is tested, and the caller may rerun it with `no_time_limit` (4.C spec 1.6.0; a 600-link page is refused after about 5 s). Since 2026-11-07 no time limit is the default (agents never put that choice to the user, and each still-running result now gives a progress line with elapsed time to relay): a run tests the whole page and stops only at 30 min; a caller can still ask for the 10-minute limit. Replays to a walk stop skip the quiet window on presses the walk saw change nothing, and are redone fully settled if focus ends elsewhere (4.C spec 1.7.0): a realistic agency home page went from 151 s to 97 s with every outcome unchanged. With 5.D (On input) included, both realistic pages finish every implemented test in 108–111 s; a page with more than 40 form fields is refused at the first load (5.D spec 1.0.0). With 5.F and 5.G (error identification and suggestion) added they went over the limit; checks now reuse each other's replays (4.A reads 4.D's arrow presses and 4.F's Enter presses when they cover what it needs, no outcome change), and 4.A treats the parts of a native date input as native (4.A spec 1.2.0), so all nine tests finish in 108.6 s and 92.4 s. With 5.A and 5.C (one fresh load: labels, images and ANDI's output, 1–2 s) all eleven finish in 110.2 s and 97.1 s. The multi-page tests 9.A–9.C (spec 1.0.0) need other pages of the same site; without them they are NEEDS REVIEW and cost nothing (all fourteen tests: 108.0 s and 94.6 s). With other pages the run limit grows by 20 s per page; with one other page the agency page finishes all fourteen in 110.1 s of 140 s (9.x about 3 s). 19.A (Multiple ways) shares that read and adds 0.0 s. 5.B and 5.H (completing Test 5) reuse the label pass and the error pass: 0.0 s and 0.1 s; all sixteen tests on the agency page take 109.1–110.4 s (at the soft deadline, nothing cut) and 97.6 s on the benefits form. A ticker that changes every second made every key press wait for the page to settle: the agency page with a ticker and a carousel added went over 120 s before every Test 4 and 5 check finished. A second, headless browser now watches the page for 6.5 s beside the walk; content it finds still changing is left out of the settle rule, and the run gets 45 s more (Abby, 2026-11-04): that page now finishes every implemented test in 129.5 s, and the agency page alone is unchanged (103.7 s). With the drafts for Test 2 it needs 155 s of 165 s; their probe now focuses a control the walk proved reachable instead of replaying every Tab press to it (42.5 s down to 25.9 s). 3.A (flashing) adds 2.1 s on the agency page: its 2 s screencast, with no frame-by-frame capture because nothing on the page changes quickly (all 22 tests: 96.8 s); a page that does trigger it adds about 7 s for the capture and up to 20 s per video.
-- **Consistency over 5 runs:** **[FILL]**.
+- **Run time:** **[FILL: per-page time on the realistic test pages and on real pages.]** A tool call returns within 45 s; a longer run goes on in the server and the agent waits for it with a second tool, so client timeouts do not cut runs off.
+- **Agreement across repeats:** **[FILL]**.
 
-**Sample-size caveat.** If the tool misses none of n true failures, the 95% upper bound on its miss rate is about 1 − 0.05^(1/n) (roughly 3/n). Showing ≤ 5% needs about 60 failing cases with no misses. **[FILL: n per test and the resulting bound.]** Unless n reaches about 60, describe results as "promising," not "validated."
+**Sample-size caveat.** If the tool misses none of n true failures, the 95% upper bound on its miss rate is about 3/n. Showing ≤ 5% needs about 60 failing cases with no misses. **[FILL: n per test and the bound.]** Below that, results are "promising", not "validated".
 
-### 3.2 Failure analysis
+### 3.3 Real pages: what each round taught us and what it changed
 
-**[FILL: one row per disagreement in the scored run.]** For each, say whether it is a false PASS (the worst error), and whether it traces to a spec ruling, a bug, or a difference between DHS and W3C.
+Both rounds are development evidence: the sites were then used to fix the tool. Full tables: `evals/agent/README.md` and `evals/judging/round2-armc/abc-score.md`.
 
-| Case | Tool | Reference | Why |
+**Round 1 (9 pages of www.nasa.gov, scored 2026-11-04).** Scored per WCAG 2.0 criterion.
+
+| Arm | False PASS | False FAIL | Left for review |
 | --- | --- | --- | --- |
-| [FILL] | [FILL] | [FILL] | [FILL] |
+| A: agent with TOBI (3 runs) | 0 in every run | 2-4 per run | about two thirds of cells |
+| B: same model, general browser tool (2 runs) | 16 and 20 | 0 (it reported no failure anywhere) | about a quarter |
+
+- **Learned: the rules did not pass failing pages, and the baseline did.** The general-purpose agent passed every page's unlabeled search field and took landmarks for a way to skip the header.
+- **Learned: agents left the judgment work undone.** No agent answered the tool's open questions unprompted, and agents rarely opened the pictures a question named. Told to answer, the tool's weighted score rose from 44-47 to 82, still with no false PASS.
+- **Learned: limits cut the work short.** A time limit per call, client timeouts and results too large for the client each left tests undone.
+- **Changed:** a call returns within 45 s and a long run continues in the server; a run tests the whole page by default; every result ends with the work left and how to do it; the pictures a question needs are attached to the result; questions that are alike are asked once (one page's 96 became 4) and the busiest page's result went from about 51k to 24k tokens. The tester's answers also corrected rules for 4.D, 4.F, 5.A, 5.B, 5.F and 5.G.
+
+**Round 2 (10 pages of svs.gsfc.nasa.gov, scored 2026-11-08).** The tool per TT test, 220 cells.
+
+| Who answered the tool's questions | False PASS | Missed failure | False FAIL | Left for review |
+| --- | --- | --- | --- | --- |
+| A: the calling agent (2 runs) | 2-3 | 0-2 | 14-17 | 91-118 |
+| C: the server judge (3 repeats) | 3 | 2 | 24-26 | 86-88 |
+
+Agent B, per criterion: 15 and 19 false PASSes.
+
+- **Learned: every false PASS came from a rule deciding alone,** the same cells in every run; no answer from either judge caused one. The rules' own errors (3 false PASS, 2 missed failures, 13-15 false FAILs a run) outnumbered any judge's.
+- **Learned: a server judge is repeatable but not yet right.** It answered all 194 questions in every repeat and its repeats agreed on 194 of 200 criterion cells. About 45% of the cells its answers decided were wrong, all toward FAIL, most from one question (focus order). About a third of its answers were "unsure".
+- **Learned: a recording can hide a failure.** One page loads a script only when it is used; the recording lacked it, so a keyboard trap and a focus jump the tester found did nothing on replay.
+- **Learned: a person opens everything; the tool had not.** A failure sat behind a filter that had to be opened first. Content in frames was the largest gap.
+- **Changed, the design:** the server judges with a pinned model and prompt, a person reviews what it is unsure of, and the calling agent explains results and helps fix them. The judge is built and off by default; it is switched on one question type at a time.
+- **Changed, the rules:** recordings keep the scripts a page loads when used, and a keyboard or typing test cannot pass without them; menus, tabs, accordions and filters are opened and what appears is read; an exit from a keyboard trap that needs activating a control is not an exit; every video is checked for flashing, played or not; a click that starts a video counts as mouse-only; other pages from another template leave the multi-page tests for review.
+- **Still open** (`docs/ROADMAP.md`): the rules' false FAILs (a search field an icon button labels: 7 cells a run), the questions that end in "unsure" or a wrong FAIL, and fields inside frames.
+
+**[PENDING] The check against round 2:** the same 10 recorded pages run once more with the rules as fixed and the server judge answering, scored beside the rows above.
+
+### 3.4 Failure analysis
+
+**[FILL: one row per disagreement in the scored run: the case, the tool's outcome, the reference, and whether it traces to a spec ruling, a bug, or a difference between DHS and W3C.]**
+
+From round 2, by cause: a rule too strict (5.A, 5.C, 19.A); a question a judge could not answer from its evidence (4.F's order picture drew stops nobody can see; 9.C paired links by destination instead of repeated components); evidence the tool did not have (frames, lazily loaded code, content behind a control).
 
 ## 4. Security considerations
 
@@ -204,6 +151,7 @@ The server reads public web pages, by default only on `.gov` and `.mil`. It need
 
 - **Allowlist on every hop.** The allowlist is checked on every top-level navigation and every redirect, not just the first URL.
 - **One live request shaped by page content: 19.A's site search.** Only when the caller's pages show fewer than two ways to reach the page, the tool submits the site's own search form once: a GET form on the tested page's host (allowlist on every hop), the tested page's heading as the term, the results recorded as their own replay file. When that still leaves the test undecided, up to 5 links on the caller's pages to a site map, the home page or a breadcrumb, on the tested page's host, are tested as other pages in a follow-up run the server makes itself when the agent asks it to finish its work (Abby, 2026-11-06): allowlisted, on the same host before and after redirects, each its own replay file. No other link found on a page is visited.
+- **Two more narrow exceptions, each approved and capped.** A key combination that page text names as a way to stop moving content or audio is pressed once, on a replay, only to confirm it (never a key the browser itself uses). The recorder also saves the scripts that recorded scripts name (code a page loads only when it is used), from the same host, allowlisted, capped in number, size, depth and time; a keyboard or typing test cannot PASS while the recording lacks such code.
 - **Other pages chosen by the caller only.** The multi-page tests compare the tested page with up to five other pages the caller names (up to 50 when the caller turns the time limit off). Each must pass the allowlist and be on the tested page's host before and after redirects, or nothing is tested; one that cannot be recorded within its 20 s share leaves the multi-page tests NEEDS REVIEW while the other tests still run; page content never adds a page (links on the tested page are never followed). Each is recorded as its own replay file.
 - **Refused pages produce no findings.** A blocked, unreachable or invalid page is a tool error with no findings, so no "result" exists for a page that was never tested.
 - **Dev-only local files.** `file://` URLs work only in development mode.
@@ -218,7 +166,7 @@ The server reads public web pages, by default only on `.gov` and `.mil`. It need
 - **Outcomes come only from spec rows.** A model's answer is recorded as a fact for a rule, never as an outcome.
 - **Adversarial fixture.** Fixture F32 contains text telling automated testers to report PASS for every test; the expected result is FAIL with both traps reported. **[FILL: result at the submission commit.]**
 
-**[PENDING]** More injection cases, including injected text in accessible names and frames.
+- **Trick text aimed at the server's judge.** Two more pages (`tests/fixtures/inject/`) ask for the outcome the page would not get. Tests check that the model sees such text only inside the block marked untrusted; in a two-call trial the judge answered both correctly. Not yet covered: injected text in accessible names and in frames.
 
 ### Logs and errors
 
@@ -227,7 +175,7 @@ The server reads public web pages, by default only on `.gov` and `.mil`. It need
 
 ### Secrets and configuration
 
-Settings load from a `.env` file or environment variables (a Kubernetes Secret when hosted) and are never committed. The sign-in client secret and token-signing key are secret-typed settings, never printed or logged. No API key is needed today, because the calling agent answers open questions. A direct model connection (NASA's hosted models) will add a key through the same mechanism.
+Settings load from a `.env` file or environment variables (a Kubernetes Secret when hosted) and are never committed. The sign-in client secret and token-signing key are secret-typed settings, never printed or logged. With the default settings no model key is needed, because the calling agent answers open questions. The server's own judge, when switched on, loads its endpoint and key the same way; a test checks the key never appears in a report, a log or an error.
 
 ### Transport and isolation
 
@@ -238,10 +186,16 @@ Settings load from a `.env` file or environment variables (a Kubernetes Secret w
   - **Audit trail.** One JSON line per tool call, resource read and prompt: who (Keycloak subject and NASA email), what (tool, URL without its query string, run ID, test IDs, how many answers), outcome and duration. It never includes answers, page text or report content. Lines go to stderr, where the platform collects them.
   - **[PENDING]** An end-to-end sign-in against VAST's Keycloak with a real MCP client; tested so far with a full sign-in against a local stand-in provider (`tests/test_access_signin.py`).
 - **Fresh state for every load.** Each page load gets a fresh browser context, so cookies and storage can't carry state between probes.
-- **No CSP bypass.** No content security policy bypass is enabled.
+- **CSP bypass, recorded.** The page's Content-Security-Policy is bypassed in every test browser context so that ANDI's injected script runs (`BYPASS_CSP`, on by default since 2026-11-07); every report records the setting. The browser only shows the recording.
 - **Pinned third-party code.** ANDI and jQuery are bundled with hashes, and requests to ssa.gov are blocked so ANDI is never loaded live.
 
 The template's entry point started an unauthenticated HTTP server on all interfaces whenever a `PORT` or `DATABRICKS_APP_PORT` environment variable was set. That branch is removed and those variables are ignored; HTTP beyond loopback now requires sign-in (above).
+
+### Known gaps
+
+- An answer that arrives through MCP can still say it is a person's; closing that is scheduled before submission (`docs/ROADMAP.md`). **[PENDING]**
+- Sign-in is tested against a stand-in provider, not yet against NASA's (above).
+- A code review in November 2026 raised leads not yet verified (`docs/reviews/`); they are checked before anything is hosted.
 
 ### Misuse: findings mistaken for certification
 
@@ -252,25 +206,32 @@ Agencies accept Trusted Tester results only from certified people. Every tool re
 ### What worked
 
 - **Borrow the ground truth.** DHS's published verdicts on W3C test pages gave us a certified-tester answer key on day one. Writing our own would have measured agreement with ourselves.
-- **Exact match beats an LLM judge when outputs are categories.** It is cheaper and reproducible, with no judge bias to review.
-- **Proportionate to the procedure.** Cutting spec steps that went beyond what the PDF asks a human to do cut test time sharply without reducing agreement with DHS. **[FILL: before and after figures, if still representative.]** The aim is consistency with a careful tester, not exceeding one.
-- **Collect once, evaluate many.** One keyboard walk per page feeds every Test 4 check and 5.D, so each new test costs less to add than the last: 5.D reused the walk's stops, its replays and 4.A's observer; 5.F and 5.G share one error pass, 5.A and 5.C one label pass that reads ANDI's own output (what a Trusted Tester reads), and 4.A reuses 4.D's and 4.F's replays.
-- **Write lessons down.** `docs/solutions/` records problems that took over an hour to understand. Examples: pages can fake focus, cookie banners leak state between probes, ANDI changes the page it inspects, and the TT PDF disagrees with itself in places.
+- **Exact match beats an LLM judge when outputs are categories.** Cheaper, reproducible, and no judge bias to review.
+- **Blind labels, commit and reveal.** Locking the tool's results before the tester's answers are added kept us from tuning to the key, and the tester's reasons taught us more than the scores.
+- **A harder baseline.** The same model with a general browser tool passed pages that fail. That is the case for encoding the procedure instead of prompting for it.
+- **Report who decided each cell.** Splitting rule-decided from judge-decided cells showed the rules, not the model, caused every false PASS.
+- **Proportionate to the procedure.** A spec step must match something the PDF asks a human tester to do; anything past that is "needs review". The aim is consistency with a careful tester, not exceeding one.
+- **Write lessons down.** `docs/solutions/` records what took more than an hour to understand: pages can fake focus, cookie banners leak state between probes, ANDI changes the page it inspects, the TT PDF disagrees with itself in places.
+
+### What did not work
+
+- **Asking the calling agent to do the judging.** More wording and proof fields moved the shortcut; they did not remove it. The judge moved into the server.
+- **Trusting test pages alone.** Custom pages missed what real pages showed within a day: late-loading scripts, survey pop-ups on one load in ten, templates that share nothing.
 
 ### Limitations
 
-- **[FILL: TT tests implemented; scored cases and true failures per test.]**
-- **[FILL: whether judgment answers were scripted in the scored run.]**
-- **[FILL: whether the scored run used the target environment (headed Chrome on Windows).]**
-- The W3C rules used are still proposed, and the scored cases served as the development set.
-- One viewport (1280 × 900) and the page's initial state only.
+- 22 of 61 active tests. **[FILL: scored cases and true failures per test.]**
+- The published answer keys served as the development set, and both real sites are development sites now: no held-out site yet, and one certified tester labeled every real page.
+- Round 2's false FAILs and "unsure" answers are still being fixed; the server judge is off by default.
+- Results are for the Chromium version each report records, at one window size, from a recording: fields in frames are not read, and code a page loads only when used may be missing (the result is then "needs review").
 - Trusted Tester scope: WCAG 2.0 A and AA by code inspection and keyboard; no screen reader testing.
-- No real-site holdout or repeat runs yet.
+- **[FILL: whether the scored run used the target environment.]**
 
 ### Recommendations for hackathon participants
 
 - **Look for an official answer key before writing your own.** Agencies often publish the verdicts you need.
 - **Name your worst error and design around it.** For us that is a false PASS; when unsure, the tool says so.
-- **Keep rules and model judgment apart.** Score the rules with known answers first, then score the model separately.
+- **Keep rules and model judgment apart,** and score them separately.
 - **Report needs-review and refusal rates beside accuracy.** Escalating everything can fake a high score.
+- **Measure what the agent does, not what the tool description asks.** Put the next step in the data.
 - **Record what you verified and what you assumed.** Human-review anything a model wrote, including this document.

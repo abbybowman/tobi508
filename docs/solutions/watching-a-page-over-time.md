@@ -83,6 +83,9 @@ other test see the page as before. Without the flag, a recorded
 
 ## Time: content that keeps changing slows everything
 
+(Measured against the 120 s limit of the time; the extra 45 s is
+`MOVING_ALLOWANCE_S` and applies only when a run is held to a limit.)
+
 A ticker changes the DOM every second, so every key press waited for the
 settle rule and no replay prefix was quick: the agency page with a ticker and
 a carousel went from 102 s to over 120 s for the existing tests alone. The

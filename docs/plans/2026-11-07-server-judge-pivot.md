@@ -1,4 +1,4 @@
-# Plan: the server judges, a person reviews, the client agent explains (2026-11-07, proposed; human review added 2026-11-08)
+# Plan: the server judges, a person reviews, the client agent explains (2026-11-07; human review added 2026-11-08; status 2026-11-11)
 
 Decision record for moving judgment questions from the calling agent to
 TOBI's own model on VAST, and reshaping TOBI into a hosted NASA service.
@@ -172,7 +172,7 @@ TT-test results and states, not element properties:
   that would mean submitting real forms.
 
 **ANDI and TOBI's layer one at a time.** ANDI changes the page it runs on
-(`docs/solutions/scanners-after-the-walk.md`), so the two are not stacked.
+(`docs/solutions/andi-output.md`), so the two are not stacked.
 TOBI's layer changes nothing in the page: a small script in the review
 copy reports element positions to the review app, which draws the layer
 in its own frame above the page.
@@ -201,44 +201,6 @@ checked in.
 **Either UI must itself conform to Section 508** (keyboard, screen reader,
 contrast), and be tested with TOBI and by a Trusted Tester, since its users
 include people with disabilities.
-
-## What we already have
-
-| Need | Exists | Where |
-| --- | --- | --- |
-| HTTP MCP transport | Yes | `app.py`, `MCP_TRANSPORT=streamable-http` |
-| NASA sign-in, group gate, per-user runs, audit lines | Yes, tested with stand-ins; not yet on VAST's Keycloak | `access.py`, `docs/plans/2026-11-06-hosted-auth.md` |
-| Container for VAST (FIPS-safe, headless Chromium) | Yes | `Dockerfile`, `container.yml` |
-| Long runs past client timeouts | Yes | `jobs.py`, `tobi_run_status` |
-| Public-address-only browsing | Yes | `egress.py`, `policy.py` |
-| ApiJudge contract and design | Stub plus design | `judgment.py`, `research/2026-11-07-visual-judgment-and-apijudge.md` sec. 5 |
-| Judge eval with isolated packets | Yes | `evals/judge_eval.py` |
-| Scoring against blind TT SCRT files | Yes | `evals/judging.py` |
-| Explain, read and compare reports | Yes | `tobi_explain`, `tobi_read_report` |
-| Persistent storage | Yes, while `vastdev down` is never run; about 20 GB | VAST |
-
-## What is new
-
-| Work | Size (rough) | Needed for Nov 20 |
-| --- | --- | --- |
-| **ApiJudge:** model call, structured output (choices as enum), untrusted-data block, crops at full resolution, retries, `answered_by`, `judging_model` record | 1-2 days | Yes |
-| **Judge-eval backend for ApiJudge** (same packets, three repeats, injection pages) | 1 day | Yes |
-| **Config:** `judge_backend` gains `"api"`; endpoint, model and token from the environment | hours | Yes |
-| **Store (SQLite on the persistent volume):** jobs that survive a restart, run index per site and page, answers keyed by content hash and spec version | 1-2 days | Partly (run index, answers) |
-| **Retention:** what is kept how long (below) | hours | Yes |
-| **Cross-page from the store:** 9.A-9.C and 19.A reuse a recent read of the site's other pages instead of loading them every run | 1 day | No |
-| **Tool reshape:** answers from the client agent are recorded as a person's answer only when it relays one; a `fix` path that gives the agent the failing code, the spec rule and the W3C technique | 1-2 days | Fix path: maybe |
-| **Agent eval rework:** measure relay fidelity, no "certified" claims, fix guidance; drop the follow-through counts | 1 day | Yes, smaller |
-| **Deploy and verify on VAST:** real Keycloak, `sub` and groups claims, one page end to end | 1 day plus admin wait | Yes |
-| **Human answers only from TOBI's UI:** MCP `decided_by` treated as the model's; Trusted Tester and reviewer roles; WebAuthn on submit; signed answer records | 1-2 days | Yes |
-| **Review UI, option A** (evidence page, plain-language and TT views) | 2-3 days | Plain-language view: maybe |
-| **Review UI, option B** (browser extension overlay on the live page, beside ANDI) | 1-2 weeks | No |
-| **Review UI, option C: the TT workspace** (pre-SCRT grid beside the recorded page; Page, Page + ANDI, Page + TOBI and Live views; row links; review copy per page's latest scan) | 2-3 weeks plus security review | No |
-
-B (ApiJudge on picture questions, client keeps text questions) is the
-first three rows. C adds the store, retention and tool reshape: roughly a
-week more, most of it plumbing, not new judgment logic. The hosted
-groundwork was done for the results-service plan.
 
 ## Storage budget (20 GB)
 
@@ -320,45 +282,28 @@ means for this plan:
   retried once and then left open, unsure never retried, gate questions
   (J0) answered before the rest of a page.
 
-## Sequencing to Nov 20 (2026-11-08)
+## Bundles and status (2026-11-11)
 
-Three plans meet here: this one, the post-round 2 fixes
-([2026-11-08-post-round2-fixes.md](2026-11-08-post-round2-fixes.md)) and
-the [roadmap](../ROADMAP.md). Bundled by the files they touch, in order:
+Fix numbers are those of the
+[post-round 2 fixes](2026-11-08-post-round2-fixes.md). What is scheduled
+for the Nov 20 demo and what comes after is in
+[the roadmap](../ROADMAP.md), the one status of record.
 
-| # | Branch | Contents | Why together |
+| # | Bundle | Contents | Status |
 | --- | --- | --- | --- |
-| 1 | `apijudge` | ApiJudge in `judgment.py` from `judge_c.py` (endpoint, model and token from the environment; `judge_backend: "api"`; per question type switch; `judging_model` record); the judge-eval backend for it, with round 2's real-page packets | The Nov 20 core; Agent C already proved the request, the schema and the guards path |
-| 2 | `rules-principle3` | Post-round 2 fixes 1-6 (3.A unplayed video, 4.C exit and error states, 4.A click-to-play video, 5.D tab-away, 9.A-9.C other templates) and 9b (a reveal pass: test what interaction reveals, as a person does) | Accuracy before scale; each is one spec and one fixture |
-| 3 | `frames` | Fix 7: 5.x reads fields in frames (cross-origin frames as their own page with ANDI); the roadmap's per-test frame leftovers (5.A, 5.C, 5.F, 5.G; 4.D and 4.F's f19) | One shared reader for every test that skips frames today |
-| 4 | `questions-for-judges` | Fixes 12-14 (4.F rubric and order picture, 9.C pairing) and 24-27 (4.A carousel arrows and destinations, 4.D pictures, 2.B still regions), with the cropping review; then the gate for 4.F and 9.C | They gate ApiJudge on those types, and cut the unsure answers people get by about half |
-| 5 | `rules-false-fail` | Fixes 8-11 (5.A icon label, 5.C hidden controls, 19.A search page and quoted search) and 9c (an option's visible text is its own row) | Small; label pass and 19.A only |
-| 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | The person's side of the pivot |
-| 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Needs 1 and 6 |
-| 8 | `scorer-round3` | Fixes 15-17 (keys give Pass reasons; adjudications per criterion; judge-decided cells apart) and 29 (CI skips docs-only changes, runs in parallel) | Before round 3's lock; CI first, as it speeds every other branch |
+| 1 | `apijudge` | ApiJudge in the server; the judge-eval backend; the gate | Built, off by default; the gate has run as a 2-page trial only ([plan](2026-11-08-apijudge-build.md)) |
+| 2 | `rules-principle3` | Fixes 1-6, 9b phase 1, the chunk store and guard GU | Built, except fix 3 (error values) |
+| 3 | `frames` | Fix 7: 5.x reads fields in frames; the per-test frame leftovers | Not started |
+| 4 | `questions-for-judges` | Fixes 12-14 and 24-27; then the gate for 4.F and 9.C | Not started |
+| 5 | `rules-false-fail` | Fixes 8-11 and 9c | Not started |
+| 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | Not started |
+| 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Not started (sign-in built against a stand-in: [plan](2026-11-06-hosted-auth.md)) |
+| 8 | `scorer-round3` | Fixes 15-17 and 29 | 29 built; 17 partly |
 
-Bundles 1 and 2 can run side by side (different files); 3 before 4's
-5.x parts; 5 any time. If time runs short before Nov 20, keep 1, 2, 6
-(the MCP closure only) and 7, and switch ApiJudge on only for the types
-that pass the gate.
-
-## Nov 20 cut
-
-1. ApiJudge on Sonnet, every question type that passes the judge-eval
-   gate (real pages included); 4.F and 9.C after fixes 12-14.
-2. The judge-eval backend and its scores.
-3. Deploy on VAST: sign in from Claude Code, one page end to end.
-4. Store: run index and answers by content hash; retention and disk check.
-5. Round 2 scored with the server judge and the client judge: done
-   2026-11-08 (Agent C, `abc-score.md`); principle-3 rule fixes 1-6 built.
-6. Human answers only from TOBI's UI: the MCP path closed, roles, WebAuthn
-   on submit; the evidence page (option A) for plain-language questions.
-7. Pitch: the agency controls the judge, a verified person has the last
-   word, and any MCP agent is the front end.
-
-Later: cross-page from the store, the fix path, the local runner, the
-dashboard (`2026-11-04-results-service.md`), internal pages after the
-security review.
+Later: cross-page tests from the store, the fix path, the local runner,
+internal pages after the security review. A separate results service and
+dashboard on Databricks (proposed 2026-11-04) was dropped on 2026-11-11:
+the store on VAST replaces it.
 
 ## Open questions
 

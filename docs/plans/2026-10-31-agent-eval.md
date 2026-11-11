@@ -1,11 +1,17 @@
-# Plan: agent-level evaluation
+# Agent-level evaluation: the design
 
-Status: **round 1 ran on 9 nasa.gov pages (CLI route, Sonnet 5.5) and was
-scored on 2026-11-04** ([results](../../evals/agent/README.md#results)).
-Next is round 2, on a new site, after the fixes in
-[2026-11-04-post-round1-fixes.md](2026-11-04-post-round1-fixes.md).
-Runbook: `evals/agent/README.md`. Section 12 lists what is built and what
-is not; sections 4.2, 9, 10 and 14 are the work for later rounds.
+The design behind `evals/agent/` (how to run a round and the results of
+rounds 1 and 2: [evals/agent/README.md](../../evals/agent/README.md)).
+Round 1 (9 nasa.gov pages) was scored on 2026-11-04 and round 2 (10 pages
+of svs.gsfc.nasa.gov, with a third arm, Agent C, the server judge
+stand-in) on 2026-11-08. Both ran on the Claude Code CLI route.
+
+Dropped on 2026-11-11 (Abby): the wording judge, seeded faults, the GPT,
+Gemini and Ask Sage routes and DHS training pages. The server now judges
+([pivot plan](2026-11-07-server-judge-pivot.md)), so later rounds measure
+the server judge against the tester's keys; what the scorer needs before
+round 3 is fixes 15-17 of the
+[post-round 2 fixes](2026-11-08-post-round2-fixes.md).
 
 ## 1. What it measures
 
@@ -30,9 +36,6 @@ Words used in this plan:
 
 - **Scoring:** code (`evals/scoring.py`) that compares results with the
   tester's SCRT files. No model takes part.
-- **Wording judge:** a model from another family that grades how an agent's
-  final message reports its findings (section 9). It never sees the answer
-  keys and never scores outcomes.
 - This eval is neither of the two existing evals. A **judging round**
   (`evals/judging.py`) drives the tool with a script while one agent fills
   in question packets: it measures the tool without an agent driving it. The
@@ -95,36 +98,9 @@ Words used in this plan:
 - **Split by site, not page.** Pages on one site share templates, and so
   share bugs. Once a site has been used in a round, it is a development
   site: its pages can be used to fix the code, and rows they never triggered
-  can be exercised on a doctored copy (a seed, 3.2). Only untouched sites go
+  can be exercised on a doctored copy. Only untouched sites go
   in the final round.
 - A second certified tester labels a subset, if one is available.
-
-### 3.2 Seeded faults on real pages
-
-Real keyboard traps are rare, so real pages alone cannot show "no false
-PASS" for 4.C. Seeds fill that gap: a copy of a frozen real page with one
-fault injected, confirmed by Abby by hand and reported as planted. Seeds
-chosen by the people who wrote the detector share its blind spots, so:
-
-- **Seeds come from sources independent of this code:** W3C failure
-  technique F10, focus-trap bugs reported against widely used libraries, and
-  seeds written by a different model family that is given only the TT text
-  and asked for traps an automated tester would miss.
-- **Each seed records its source**, and results are reported by source. The
-  independent group is the one that counts.
-- **A missed seed must end NEEDS_REVIEW.** A PASS on any seed is a false
-  PASS.
-
-### 3.3 Other sources, reported separately and never pooled
-
-- **W3C ACT cases** with DHS's verdicts (`tests/fixtures/act/manifest.json`)
-  are a warm-up only. They have been public with their answers for years, so
-  they may be in models' training data, and the specs were written with
-  them in view. No claim rests on them.
-- **DHS training-course pages**, only if both of these hold: DHS's terms
-  allow saving copies, and the hackathon organizers confirm the pages count
-  as "government data that are already publicly available." Nothing else
-  waits on them.
 
 ## 4. Rounds
 
@@ -141,30 +117,7 @@ far along the tests are and where accuracy needs work most.
 - **The task prompt** is in 4.3.
 - **Scored per TT test** (Agent A only) **and per WCAG 2.0 criterion**
   (both arms; section 8).
-- **No wording judge.** Both arms' transcripts and final messages are kept
-  in full, so the wording judge can run on them later.
-
-### 4.2 Later rounds
-
-- **Plain-language tasks:** the way a non-tester asks ("can a keyboard user
-  get stuck anywhere on this page?"), phrased without words from a page's
-  file name, scored the same way. These need a question set with known
-  answers, drawn from the fixture tables already asserted in `tests/` (so
-  no answer key is written twice) and from new real sites.
-- **Behavior questions** that no answer key covers, reported separately:
-  answering an open question, saying "unsure," ignoring instructions
-  injected in a page, never saying "compliant," and reporting a refused URL
-  instead of inventing findings.
-- **Repeats** (up to 5 per arm) to measure consistency, if the budget allows.
-- **Wording judge** (section 9) and **other model families** (section 10).
-- **Freeze before the final round:** questions, prompts, weights, scoring
-  code and labels, recorded with a commit in `docs/hackathon/evaluation.md`.
-  The final round is the latest round before the code freezes for hackathon
-  judging. It uses sites never used before, and nothing is changed after
-  seeing its results. The headline figures come from that round only.
-- **Every round's results stay in the repo** under `evals/judging/<round>/`,
-  including the early ones, to show progress. Testing is to improve, not
-  only to prove.
+- Both arms' transcripts and final messages are kept in full.
 
 ### 4.3 Round 1's task prompt
 
@@ -395,109 +348,3 @@ other test is reported as not performed, never scored.
 missed, the 95% upper bound on the miss rate is about 3/n. That bound is
 stated beside every result. Under about 60 true failures, results are
 "promising, not proven." Repeats measure consistency, not accuracy.
-
-## 9. Wording judge (later rounds)
-
-A judge model (temperature 0) **from a different model family than the
-agent it grades** answers three yes/no questions about each run, each with a
-one-line reason:
-
-1. **Faithful report:** does the final message say what each finding's
-   `summary` says, with no invented or dropped failures?
-2. **Rubric followed** (Agent A): does each answer to an open question follow
-   that question's rubric and evidence?
-3. **No certification claims:** does the message avoid calling a page
-   certified, compliant or Section 508 conformant? A regex runs first, in
-   code; the judge only decides the context ("this is not a certified
-   result" is fine).
-
-## 10. Models
-
-| | Agent (both arms) | Wording judge |
-| --- | --- | --- |
-| Round 1 | Claude Sonnet 5.5 on the CLI route (Ask Sage tokens ran out) | none |
-| Later scored rounds | Claude Sonnet 5.5 Gov, GPT 5.6 Sol and Gemini 4 Argon | cross-family: Claude Opus 5.5 Gov grades GPT and Gemini runs; GPT 5.6 Sol grades Claude runs |
-
-Ask Sage's Anthropic route lists only Claude models. GPT and Gemini need its
-OpenAI-style and Google-style routes, which haven't been checked yet. The
-harness has one provider interface with an adapter per route, so every model
-is run, logged and scored the same way.
-
-**Keys never enter the repository.** The harness reads the Ask Sage token
-and the Tavily key from the environment or the root `.env` (git-ignored).
-The server itself needs no key: open questions go back to the calling agent
-(`JUDGE_BACKEND=client`).
-
-## 11. Cost
-
-- **Agent A:** estimated (not measured) at 20,000 to 60,000 tokens per page,
-  so round 1 is roughly 0.2 to 0.6 million tokens. One conversation for all
-  pages grows its context, so the true figure may be higher. Browser time is
-  estimated at 5 to 8 minutes per page with all 8 other pages compared.
-- **Agent B:** not measured, and likely larger: Playwright MCP returns a
-  page snapshot after each action.
-- Check the Ask Sage token balance before each run. If round 1's cost is
-  too high, later rounds use smaller sets rather than skipping the baseline.
-
-## 12. Build order
-
-Built and tested (1-5 on the 19.A fixture site with a scripted model):
-(`tests/test_frozen.py`, `test_agent_freeze.py`, `test_agent_run.py`,
-`test_agent_score.py`, `test_agent_cli.py`, `test_full_chromium.py`):
-
-1. **Frozen tested pages, live rest of the site** (section 6): the freeze
-   step; the server's "tested_frozen" mode; Agent B's init-page file, live
-   log and egress proxy; full Chromium for pages with cross-site iframes.
-2. **The task prompt** (4.3), generated from `checks.REGISTRY`.
-3. **The agent loop and step log** (section 7): the Anthropic-style API
-   adapter (Ask Sage), checked against a local stand-in for the API, and
-   the Claude Code CLI adapter, checked against a fake CLI.
-4. **The helper and resource tools**, the same for both arms.
-5. **Scoring:** the roll-up, the weights and the "no answer" verdict in
-   `evals/scoring.py`; the `RESULT` reader and the arm scores in
-   `evals/agent/score.py`; a `lock` that covers both arms and `frozen/`.
-6. **A smoke run on the CLI route** (2026-11-04, Sonnet 5.5, on the 19.A
-   fixture site, before section 6's live rule): Agent A on two pages (58 s,
-   $0.12 at list price), Agent B on one page (27 s, $0.07). Both leak
-   checks were clean and both result lines parsed. It checks the plumbing,
-   not accuracy.
-7. **Real pages**: round 1 (2026-11-04), the first run with live pages
-   during the arms.
-
-Not built or not checked:
-
-8. **The Ask Sage route** with a real model, and **Tavily MCP**, needed only
-   there (its models have no web search). Agent B never gets Playwright
-   MCP's `browser_run_code_unsafe`: it runs any code in Playwright's
-   process, outside the frozen copies and the egress proxy.
-
-## 13. Layout
-
-```
-src/tobi508/frozen.py   the frozen pages setting (replay, tested_frozen, or record into the folder)
-evals/agent/
-  freeze.py      record a round's tested pages once (python -m evals.agent.freeze <round>)
-  prompt.py      the task prompt, from checks.REGISTRY
-  arms.py        each arm's MCP servers and their environment
-  run.py         run one arm (python -m evals.agent.run --arm a|b <round>)
-  providers.py   one adapter per route
-  score.py       score both arms (python -m evals.agent.score <round>)
-  node/          Playwright MCP, pinned (package.json, package-lock.json); frozen-init.cjs
-  README.md      how to run a round, and the results of each run
-evals/judging/<round>/
-  pages.txt, frozen/, keys/,
-  results/arm-a/, results/arm-b/ (steps.jsonl, transcript.json, final.md,
-  summary.json; Agent A's tool runs in runs/, with their live pages;
-  Agent B's live.jsonl), results/lock.json,
-  agent-score.md and agent-score.json
-```
-
-## 14. Open questions
-
-1. How a failing element that Agent B names in its own words is matched to
-   the key's element.
-2. The header Ask Sage takes the token in (`AGENT_API_AUTH_HEADER`), as the
-   2026-11-01 check used it.
-3. Whether the DHS training pages may be used (3.3).
-4. Whether a second certified tester can label a subset (3.1).
-5. The Ask Sage routes for GPT 5.6 Sol and Gemini 4 Argon (section 10).

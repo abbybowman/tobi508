@@ -32,3 +32,15 @@ rule: the fixtures had none of this.
 4.F's pass R and 5.D's fill pass, which run earlier, can read fields they
 reveal at the end of their own replays (`labels.read_revealed`), only when
 5.A or 5.C runs (`RunContext.selected`).
+
+## ANDI changes the page; run scanners on their own load
+
+**Problem.** It is tempting to inject ANDI, axe-core and HTML_CodeSniffer into
+the page used for the keyboard walk. ANDI adds its toolbar, shifts layout and
+moves focus, which would corrupt the walk's evidence.
+
+**What we do.** The keyboard walk runs on a clean replay. ANDI runs
+afterwards on a separate fresh load of the same recording, and so would any
+scanner (none is vendored yet). ANDI is served
+from `third_party/` only (`andi.install_andi_routes`), never from ssa.gov.
+Scanner output is evidence for spec rows; a clean scan never means PASS.

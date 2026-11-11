@@ -1,342 +1,258 @@
 # Roadmap
 
-What is left to build, newest priorities first. A living list, not a log:
-delete an item once it is built, and put any decision it needed into the
-spec, CLAUDE.md or `docs/solutions/` where it belongs.
+What is left to build, and the one place that says what is scheduled when.
+A living list, not a log: delete an item once it is built, and put any
+decision it needed into the spec, CLAUDE.md or `docs/solutions/` where it
+belongs. Plans in `docs/plans/` hold the detail of an item; they do not
+keep their own schedule.
 
-## Now: Tests 2, 3, 4 and 5, the multi-page batch and 19.A are built
+## Where things stand (2026-11-11)
 
-Built (spec 1.0.0+, check registered, fixtures green): 4.A, 4.B, 4.C, 4.D,
-4.E, 4.F, 5.A (Label provided), 5.B (Label descriptive), 5.C
-(Programmatic label, from ANDI's output), 5.D (On input), 5.F (Error
-identification), 5.G (Error suggestion), 5.H (Error prevention; 5.E is
-obsolete in TT 5.1.3), 9.A (Bypass), 9.B (Consistent navigation), 9.C
-(Consistent identification) and 19.A (Multiple ways). Judge eval (fresh agents, no scripted
-answers): 43/44 Test 4 fixtures and every 5.x, 9.x and 19.A packet, no
-false PASS after fixes (5.A 1.1.0's rubric change gave two, fixed: runs 12
-and 13; [evals/README.md](../evals/README.md)). Those agents had every
-screenshot as a file. A real agent gets `run://` links and rarely opens
-them, so these figures hold for answers with the evidence in hand (fix 19
-in the post-round 1 plan). Every implemented test fits
-one 120 s call on the realistic pages in `tests/fixtures/budget/` (the
-agency page has no margin left, so the next single-page test must find
-time elsewhere); pages too large to walk, or with more than 40 form
-fields, are refused at once with a `no_time_limit` option
-([solutions/time-budget.md](solutions/time-budget.md)). 9.A–9.C compare
-the page with 1–5 other pages of the same site the caller names (up to 50 with `no_time_limit`)
-(`other_pages`, the run limit +20 s each); without them they are NEEDS
-REVIEW at no cost ([solutions/multi-page.md](solutions/multi-page.md));
-19.A uses the same pages, then runs the site's own search live once if it
-must (the one approved exception to principle 5).
+- **22 TT tests are built** (spec 1.0.0 or later, check registered,
+  fixtures passing): 2.A-2.D, 3.A, 4.A-4.F, 5.A-5.D, 5.F-5.H, 9.A-9.C and
+  19.A. Each spec's `spec_version` is its version of record; the
+  [README](../README.md) has a status line per test.
+- **Direction** (Abby, 2026-11-07;
+  [plan](plans/2026-11-07-server-judge-pivot.md)): the server judges, a
+  person reviews, the client agent explains. TOBI becomes a hosted service
+  on VAST with its own pinned judge model (ApiJudge), because calling
+  agents skipped or guessed at open questions whatever the wording.
+- **Evals.** Judge eval runs are in [evals/README.md](../evals/README.md).
+  Agent eval rounds 1 (nasa.gov) and 2 (svs.gsfc.nasa.gov) are scored
+  against Abby's blind SCRT files
+  ([evals/agent/README.md](../evals/agent/README.md),
+  [round 2 scores](../evals/judging/round2-armc/abc-score.md)). Round 2:
+  no false PASS came from a judge's answer; the rules alone gave 3 false
+  PASS, 2 missed fails and 13-15 false FAILs per run, which is what the
+  [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md) are for.
+  Both sites are development sites now.
+- **Time.** A run tests the whole page by default and stops only at
+  `MAX_RUN_S` (1800 s); `no_time_limit=false` holds it to `RUN_LIMIT_S`
+  (600 s). Lessons and measurements:
+  [solutions/time-budget.md](solutions/time-budget.md).
 
-Agent eval ([plan](plans/2026-10-31-agent-eval.md), [runbook](../evals/agent/README.md)):
-round 1 ran on 9 nasa.gov pages (CLI route, Sonnet 5.5) and was scored
-on 2026-11-04 against Abby's blind SCRT files
-([results](../evals/agent/README.md#results)).
-- **Agent A:** no false PASS. It left about two thirds of the cells for
-  review, because of the time limit and its unanswered questions.
-- **Agent B:** 16-20 false PASSes per run, and no Fail reported.
-- **Answering runs (unscored):** Agent A was told to answer the
-  questions and to use `no_time_limit`. The tool's weighted score rose
-  from 44-47 to 82, still with no false PASS
-  ([round1-answers](../evals/judging/round1-answers/README.md)).
+## Now: to the Nov 20 demo
 
-nasa.gov is now a development site. Pages with cross-site iframes replay
-in full Chromium
-([solutions/full-chromium-iframes.md](solutions/full-chromium-iframes.md)).
+Scope (Abby, 2026-11-11): a middle path between the small core and the
+full pivot. Reliability comes first: the rules' false FAILs and the
+"unsure" answers that are answerable. Then a check of how far results
+have moved since round 2, then as much of the pivot core as steady
+progress allows. TOBI is a prototype whose tests keep improving, with
+each test's status in the [README](../README.md); the check measures our
+work and is not a formal gate.
 
-Next (Abby, 2026-11-05):
-1. **The 2.x tests** (2.A-2.D, specs 1.0.0) are merged (PR #12), with pass T, the
-   mechanism probe and the media store
-   ([solutions/watching-a-page-over-time.md](solutions/watching-a-page-over-time.md));
-   their leftovers are under "Per-test leftovers" below.
-   Not yet in a judging round. 3.A (flashing) is built too (spec 1.0.0,
-   2026-11-07; [solutions/flashing-needs-stepped-frames.md](solutions/flashing-needs-stepped-frames.md)).
-2. **The post-round 1 fixes, in the plan's order**
-   ([plans/2026-11-04-post-round1-fixes.md](plans/2026-11-04-post-round1-fixes.md)),
-   while Abby labels the next judging round blind:
-   - answers without a special prompt;
-   - time and concurrency;
-   - 4.D row M8;
-   - the 5.F/5.G, 5.A/5.B, 19.A and 4.F fixes.
-3. **The agent finishes the work, whatever prompt started it** (built
-   2026-11-07, PR for `agent-follow-through`; outcome and next steps in
-   the plan: the Artemis III walk bug, then ApiJudge research)
-   ([plans/2026-11-06-agent-follow-through.md](plans/2026-11-06-agent-follow-through.md);
-   Abby, 2026-11-06): one call finishes outstanding work, an "incomplete"
-   status in the data, answers that show the picture was seen, and
-   development rounds with several prompts to measure consistency.
-4. **Then the visual-versus-code cluster.** Choose with the coverage map
-   and CLAUDE.md's research rule.
+**Committed, in this order**
 
-Browser checks still to run for the built tests (mostly Windows headed
-Chrome, which a Linux container cannot run) are in
-[rules/_browser-checks.md](../specs/rules/_browser-checks.md); the rest of each
-test's leftovers are under "Per-test leftovers" below.
+1. **False FAILs by rule** (bundle 5), largest first: fix 8 (5.A, an icon
+   button labels the search field: 7 cells a run), 9c and 9 (5.C option
+   rows and hidden controls), 10 and 11 (19.A's search page and quoted
+   search). Each is one spec change (MINOR), one fixture, the suite.
+2. **"Unsure" answers that are answerable** (bundle 4), largest first:
+   fix 12 and 13 (4.F: the rubric and the order picture; the server
+   judge's wrong FAILs on 5-6 pages), 14 (9.C pairs repeated components),
+   then 24-27 (4.A carousel arrows and destinations, 4.D pictures, 2.B
+   still regions). Judge eval for each changed question.
+3. **The check against round 2.** Rerun round 2's 10 frozen pages once,
+   after 1 and 2, with today's rules and the server judge answering (CLI
+   route; count the requests with `--dry` first), and score with the same
+   scorer beside round 2's locked rows. It gives the before-and-after
+   figures for the pitch (a development site, said so) and shows which
+   question types are sound enough for Abby to switch on (`JUDGE_TYPES`).
+   Plan: [plans/2026-11-08-apijudge-build.md](plans/2026-11-08-apijudge-build.md).
+4. **Close the MCP path for a person's answer:** `decided_by: "human"`
+   arriving through MCP is recorded as the client agent's (fix 21, first
+   step; `judgment.py`). Hours, not days.
+5. **The pitch,** with the last two days kept for it: one scored run at
+   the submission commit for the [FILL] figures, a rehearsal and a
+   fallback video ([docs/hackathon/](hackathon/README.md)).
 
-## Soon
+**If the days allow, in this order**
 
-- **Toward Nov 20 (2026-11-08):** the bundled order of the server judge
-  (ApiJudge), the post-round 2 fixes and this list is in the pivot plan's
-  "Sequencing to Nov 20"
-  ([plans/2026-11-07-server-judge-pivot.md](plans/2026-11-07-server-judge-pivot.md));
-  the fixes, with evidence and decisions, in
-  [plans/2026-11-08-post-round2-fixes.md](plans/2026-11-08-post-round2-fixes.md).
-  Round 2 is scored ([evals/judging/round2-armc/abc-score.md](../evals/judging/round2-armc/abc-score.md)).
+6. **Fix 3: error values** (5.F types likely-wrong values by field type;
+   4.C Tabs through each error state; top-level forms only; about three
+   days). Builder note in the
+   [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md).
+7. **VAST: sign in from Claude Code and run one page end to end**
+   ([plan](plans/2026-11-06-hosted-auth.md)), when the admin's answers
+   arrive. Verify the code review's security leads first. Fallback: a
+   recorded demo from a local server.
 
-- **2.B: content whose changes are random can be DOES NOT APPLY (found 2026-11-07; needs a rules decision).** A region that changed at a steady pace until 4 s but whose changes after 5 s all repeated what was shown (random colours, about 1 load in 16 for four colours) is "not still moving", so 2.B is DOES NOT APPLY. Option: a region with at least `MIN_CHANGES` changes at a steady pace whose last change is within about one period of the 5 s mark is NEEDS REVIEW, not DOES NOT APPLY (it moves outcomes only toward NEEDS REVIEW). [solutions/parallel-tests.md](solutions/parallel-tests.md).
-- **The settle rule can call a page settled before it reacts (found 2026-11-07).** It waits two animation frames (about 35 ms), then for 150 ms with no DOM change. A page whose first change comes later (a submit handler that starts a 50 ms timer, a reply to a request) is read as settled and quiet. 5.F then reads its attempt about 150 ms after the press: an error shown later is missed, and a page with no other indicator would be DOES NOT APPLY (A3). Fixture F20 starts its "checking" bar at once so that it tests M1; a variant whose bar starts on the first timer tick reproduces the gap. Options: a minimum wait after a submit press, or reading again after a second window when an attempt shows nothing. It needs a 4.C settle-rule decision, since every test uses the rule.
-- **Fixes found in agent eval round 1:** 20 fixes, all built, in
-  [plans/2026-11-04-post-round1-fixes.md](plans/2026-11-04-post-round1-fixes.md)
-  (PR #14), including MCP clients' tool timeouts as long polling (fix 2: a
-  call waits 45 s, then `tobi_run_status`; at most 2 runs at once) and
-  pages over the time limit (fix 5). Left: shared job state for a hosted,
-  multi-worker server; the agent's follow-through is the next plan.
-- **`tt.json` steps for 7.C and 16.B.** Each repeats the previous
-  test's "How to Test" (the same PDF heading trap that scrambled 9.B, fixed
-  2026-11-02; `tests/test_tt_source.py`). Fix each from its printed pages
-  before building those tests, and the tt:// resource with it.
-- **9.x rows no fixture triggers (optional; do with the real-page eval).**
-  A coverage run (2026-11-02) reached about 91% of the 9.x check code; never
-  triggered: 9.A M6 (focus did not really move), M2, the 8-candidate cap,
-  a frame in the block, J1 `not_documented`/`unsure` and a documented key
-  that does not work; 9.B N1, N5 and visual order reversed the other way;
-  9.C C2 (a name on one page only), C5 and the all-dropped DNA; A2 (a page
-  or ANDI that cannot be read) end to end; `other_pages` through the MCP
-  tool, an other page that redirects off the host or fails to load, and the
-  "other pages not used" note. Real .gov templates matter more than these:
-  wait for the agent-eval pages, then add fixtures for whatever they show.
-- **Multi-page testing, one page per call (open; Abby, 2026-11-02).**
-  Current: one call records the tested page plus up to 5 other pages (50 with
-  `no_time_limit`; more pages make 9.A–9.C and 19.A more reliable); only
-  the tested page gets the single-page tests, the others are comparison
-  pages for 9.A–9.C and 19.A, and a page too slow for its 20 s share leaves those
-  NEEDS REVIEW. Proposed: test each page of a batch in full, in its own
-  call, then run the multi-page tests once at the end and add their results
-  to every page's report. Open: where the recordings live between calls
-  (runs are kept 24 h; the comparison needs several runs at once, or the
-  user's saved reports). Plan it with the next work on 9.A–9.C and 19.A
-  (Multiple ways), not on its own. Part of it: **add pages to an existing
-  run** (Abby, 2026-11-02). Today a second call with the suggested site map
-  or other pages is a new run; 19.A's summary tells the agent to run 19.A
-  alone and replace its result in the saved report. Later: append 9.A-9.C
-  and 19.A to the first run's report from its kept recordings.
-- **Progress on long calls.** Multi-page runs take up to 120 s + 20 s per
-  other page. The tool sends MCP progress per phase and page; a consumer
-  agent that hands the run to a subagent sees none of it. Find a way for a
-  subagent to relay progress to the main thread (Abby, 2026-11-02), or say
-  in the tool description how long to expect.
-- **More shared replays (deferred).** 4.A now reuses 4.D's pass W arrows
-  and 4.F's pass R Enter presses when they cover what it needs
-  (docs/solutions/time-budget.md). Left: 4.C's widget check (P4) and pass W
-  at the same stops; 4.C reading pass R (traps inside revealed content);
-  5.D and 5.F both filling fields. Build when a realistic page is over the
-  limit again; the agency page is at 108 s of 110.
-- **Merge fixture pages (only if suite time matters again).** CI's test step
-  is 8 min 48 s (was 10 min 28 s before PR #5). Next saving: a simplify
-  review of `tests/` lists pages worth merging; a merged page keeps every
-  FAIL tied to its own instance and row, never only the page outcome (Abby,
-  2026-11-02).
-- **Large pages.** Pages over roughly 300 stops cannot be walked in one
-  120 s call (F34, 600 links, is refused after ~5 s). Options if this
-  matters for real sites: resumable runs (walk in one call, checks in the
-  next), or walking P1 and P2 in parallel (headed Chrome focus in a
-  background window needs checking on Windows first).
-- **Hosted sign-in on VAST** (`docs/plans/2026-11-06-hosted-auth.md`).
-  Built and tested against a local stand-in provider (AUTH=oidc, group gate,
-  runs private to their maker, audit lines); next, deploy to
-  the VAST prototype (host in VAMS) and sign in from Claude Code.
-- **Tidy the checks** (from the PR #3 review, a 2026-11-02 cleanup draft
-  that was never approved, and the unbuilt half of the 2026-11-01
-  spring-cleaning plan, removed 2026-11-05 and in git history; recheck each
-  item against the code first; the principle gaps were fixed in PR #6).
-  Large enough for its own plan. Rules from that plan: every outcome stays
-  the same (wording may change; rerun the judge eval when question text
-  does); share only what means the same thing, and keep each check's spec
-  constants and the conditions that feed its page rows in the check; a
-  `checks/common.py` for findings, plain text and questions, a
-  `checks/js.py` for snippets, `RunContext.shot` and `replay_to` for
-  screenshots and replays. Sharing: the "could not be
-  performed" note is typed by hand in 19 places (use
-  `models.TEST_NOT_PERFORMED_NOTE`; the harness guards it). The checks also
-  put it on findings that only wait for an answer, so scoring cannot tell
-  "not performed" from "needs review" (post-round 1 fix 13); 5.G imports 5.F's private
-  helpers (`t5f._errors_of`, `_field_input`, `_label`), so error pass E
-  could be its own module like `labels.py`; `forms.py` exports underscore
-  names; `RunContext.cache` keys are bare strings (a typo silently redoes
-  work); the checks repeat findings, plain-text, question and replay code,
-  and base.py's "add a check" steps say to copy a check. Last: CLAUDE.md
-  says `verify_fix` where this list says `compare_to`; `_KEY_WORDS` (4.C) and
-  `NO_INSTANCE` (4.E) look unused. Keep `traverse.py` and `pipeline.py`
-  frozen; aim at the current tests, not future ones (Abby, 2026-11-02).
-- **"Test a page" prompt** for operators who are not Trusted Testers: run,
-  answer questions (one subagent for all of them), summarize, read
-  `report_uri` and offer to save it.
-- **Agent-level eval: round 1 and after** (plan: [plans/2026-10-31-agent-eval.md](plans/2026-10-31-agent-eval.md);
-  runbook: `evals/agent/README.md`). Next, in order (weights and forms wording
-  approved 2026-11-04): round 1 is scored. Next is round 2, on a new site,
-  after the post-round 1 fixes and fix 13's changes to the scorer. Keep its
-  recordings outside git from the start (runbook step 4). Later: the Ask Sage route
-  (set `AGENT_API_AUTH_HEADER`; install Tavily MCP for Agent B's search),
-  reported apart from CLI-route rounds; matching a failing element
-  Agent B names to the key's element, plain-language rounds, repeats, the
-  wording judge, the GPT and Gemini routes, DHS training pages. Also still
-  to cover: a check that fails when a judge-eval agent opens files outside
-  its packet (agent-eval agents get no file tools).
-- **Network-level egress rules** on any host that runs the server, as a
-  second layer behind the egress proxy (GSA template). Deployment work.
-- **Untimed browser waits.** Headed test runs stalled for 25 to 50 minutes,
-  apparently when the screen locked, waiting on a browser call with no time
-  limit (a CDP command or `page.evaluate`, e.g. the settle rule's animation
-  frames). A real run on such a machine would break the 120 s promise
-  (`RUN_LIMIT_S`). Hosted runs are headless, so this is low priority until
-  someone runs the server headed
-  ([solutions/windows-chrome-results.md](solutions/windows-chrome-results.md)).
-- **Egress tests in installed Chrome.** In headed Chrome 156 on Windows,
-  `test_iframe_and_subresources_pointing_inside_are_refused` and
-  `test_rebinding_mid_run_is_refused` fail because Chrome never makes the
-  frame, subresource or later `fetch` requests, so the guard is not
-  exercised. Nothing leaked: the sentinel got no hits. The default headless
-  run still exercises the guard and passes. Find why Chrome skips them, so
-  both browsers test the guard
-  ([solutions/windows-chrome-results.md](solutions/windows-chrome-results.md)).
+**Alongside, in its own thread:** the code review
+([reviews/2026-11-11-code-review-notes/](reviews/2026-11-11-code-review-notes/README.md)),
+in phases, security and false-PASS leads first.
 
-## Per-test leftovers
+**Not before the demo:** frames (fix 7), the store, the review UI and
+WebAuthn, opening everything phases 2 and 3.
 
-From the build-tasks files, removed at 1.0.0 (2026-11-05; in git history).
-None blocks an outcome: each is NEEDS REVIEW-safe today.
+## Next: after the demo
 
-- **Real government pages** (with the agent-eval pages): calibrate 4.A's
-  `HOVER_MAX`, `CLICK_MAX` and `EXECUTE_MAX` and 5.D's `FIELD_MAX` (40) and
-  `FIELD_SECONDS` (1.1 s); how often nearby text sends a 5.A/5.C field to
-  J1; 5.H's consequence words and the error words for "checked" (known
-  over-match: "order" in "tab order" or "in order to" asks J1; narrowing
-  is a MINOR change); 9.B's region match and 9.C's same-place pairing;
-  19.A's site search on real .gov sites (W2-W4); timing of 2.x on agency
-  pages with motion (one budget page measured: 153.6 s of 165 s).
-- **Dialogs that open on some loads only (4.C 1.9.0):** the walk now confirms a trap on a second load ([solutions/trap-seen-once.md](solutions/trap-seen-once.md)), but a check's own replay can still meet such a dialog (Artemis III's survey: about 1 load in 10, 5 s after load). A check that verifies where focus arrived goes to NEEDS REVIEW then; one that does not may read the dialog. Not measured.
+In this order unless a judging round says otherwise. Fix numbers are the
+[post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md); bundles are
+the [pivot plan's](plans/2026-11-07-server-judge-pivot.md).
+
+1. **Frames** (fix 7; bundle 3): every 5.x test reads fields in frames,
+   and the frame leftovers under "Known limits" below.
+2. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
+   guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
+   first six triggers) walk the keyboard through opened content, which
+   removes guard RC. Phase 3: 5.D fills fields in opened content. Also
+   nested triggers, a combobox's list, buttons that need a key other than
+   Enter, and phase 1's caps (20 triggers, 3 sets).
+3. **A person's answer only from TOBI's own UI** (the rest of bundle 6):
+   Trusted Tester and reviewer roles, WebAuthn on submit, the evidence
+   page. Design and options in the pivot plan; decide the review view
+   there before building one.
+4. **The store** (bundle 7): run index, answers kept by content hash and
+   spec version so a question about the same image or media is answered
+   once per site, retention and the disk check; job state that survives a
+   restart and works with several workers. Plan first: what is stored, for
+   how long, and who may see answers from another user's runs.
+5. **Round 3** on a site not used before, after the scorer fixes (15-17).
+6. **SCRT files, phases 2 and 3**
+   ([plan](plans/2026-11-02-scrt-io.md)): TT review, merging a partial
+   file (which is also how to verify a fix: `verify_fix` on
+   `tobi_run_tt_tests`, taking a saved report), export to the real SCRT,
+   site roll-up. Fix advice for a read report is a separate, optional
+   tool.
+7. **Tidy the checks,** with the code review. Every outcome stays the
+   same (rerun the judge eval when question text changes); share only
+   what means the same thing; each check keeps its spec constants and the
+   conditions that feed its rows. Known items: the "could not be
+   performed" note typed by hand in many checks
+   (`models.TEST_NOT_PERFORMED_NOTE`); 5.G imports 5.F's private helpers
+   (error pass E could be its own module, like `labels.py`); `forms.py`
+   exports underscore names; `RunContext.cache` keys are bare strings;
+   findings, plain text, question and replay code repeated per check;
+   base.py's steps say to copy a check.
+
+## Decisions waiting for Abby
+
+- **`JUDGE_TYPES`:** the question types to switch on, after the check against
+  round 2 (Now, 3).
+- **4.F has guard RV but not RC** (its pass R already Tabs through what
+  its first six triggers open): confirm, or put RC back.
+- **9.A as a candidate for guard GU** (it presses Enter on skip links).
+- **2.B: content whose changes are random can be DOES NOT APPLY.** A
+  region that changed at a steady pace until 4 s, and after 5 s only
+  repeated what it had shown (random colours: about 1 load in 16), is
+  "not still moving". Option: such a region whose last change is within
+  about one period of the 5 s mark is NEEDS REVIEW
+  ([solutions/environment.md](solutions/environment.md), "A test that
+  fails only on a busy machine").
+- **The settle rule can call a page settled before it reacts.** It waits
+  two animation frames, then 150 ms with no DOM change. A page whose
+  first change comes later (a submit handler on a timer, a reply to a
+  request) reads as quiet: 5.F can miss an error shown late, and with no
+  other indicator the page would be DOES NOT APPLY. Options: a minimum
+  wait after a submit press, or a second read when an attempt shows
+  nothing. Every test uses the rule, so it is a 4.C spec decision.
+- **Publishing the repository.** GSA asks for a GitHub repository;
+  SECURITY.md says NASA's release review comes before the code is
+  public. Which comes first for the submission.
+- **Windows headed Chrome** was last run on 2026-11-02, before most of
+  today's specs. Run it again before the scored submission run, or state
+  the limit ([browser checks](../specs/rules/_browser-checks.md)).
+- **A second browser.** Whether a Firefox replay matters for the pitch,
+  or the documented limit is enough (the report records its browser).
+- The pivot plan's and the ApiJudge plan's own open questions (Keycloak
+  and WebAuthn, who confirms a Trusted Tester, a recorded copy for a
+  final SCRT, the gateway and its token quota, reviewers' access).
+- SECURITY.md's two [TO CONFIRM] items (the reporting route; how long
+  `runs/` is kept on NASA machines).
+
+## Known limits, per test
+
+None blocks an outcome: each is NEEDS REVIEW-safe today. Browser checks
+still to run (mostly Windows headed Chrome) are in
+[specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
+
+- **Real government pages:** calibrate 4.A's `HOVER_MAX`, `CLICK_MAX`
+  and `EXECUTE_MAX` and 5.D's `FIELD_MAX` (40) and `FIELD_SECONDS`
+  (1.1 s); how often nearby text sends a 5.A/5.C field to J1; 5.H's
+  consequence words and the error words for "checked" (known over-match:
+  "order" in "tab order" or "in order to"; narrowing is a MINOR change);
+  9.B's region match and 9.C's same-place pairing; 19.A's site search on
+  real .gov sites.
+- **Dialogs that open on some loads only:** the walk confirms a trap on a
+  second load ([solutions/trap-seen-once.md](solutions/trap-seen-once.md)),
+  but a check's own replay can still meet such a dialog. A check that
+  verifies where focus arrived goes to NEEDS REVIEW; one that does not
+  may read the dialog. Not measured.
 - **4.A:** controls inside content that opens only on click or Enter are
-  not scanned (ER Note 1 covers them); reading 4.F's pass R would add them.
-- **4.B (known limits):** timing the page does not describe in words is not
-  found (a tester finds it while operating; 4.A's Enter and Space presses
-  cover custom controls); the timing words are English only.
+  not scanned (phase 2 above). Handlers delegated to an ancestor are not
+  tied to the child they serve.
+- **4.B:** timing the page does not describe in words is not found; the
+  timing words are English only.
 - **4.C:** a late-refocus fixture (refocus 600 ms after blur, no DOM
-  change) once the xfail in `tests/test_traverse.py` is settled.
+  change) once the xfail in `tests/test_traverse.py` is settled; traps
+  past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
-  root) and f32 (two traps) for 4.D, and f32 for 4.F (expected NEEDS
-  REVIEW: the forward order past a trap is unknown). Shared replays
-  (4.D's pass W with 4.C's P4; 4.C reading 4.F's pass R) are under "More
-  shared replays".
-- **5.A, 5.C:** fields in frames and shadow roots are not read (frames: a
-  NEEDS REVIEW note); a field revealed by 5.D's fill pass is wired but has
-  no fixture.
+  root) and f32 (two traps) for 4.D, and f32 for 4.F.
+- **5.A, 5.C, 5.F, 5.G:** fields in frames and shadow roots are not read
+  (a NEEDS REVIEW note; fix 7). 5.F and 5.G leave `time`,
+  `datetime-local`, `month` and `week` fields as loaded in attempt 2.
 - **5.B:** icon-only buttons are left out (pass L has no picture of
-  buttons); add one if real pages show icon buttons with misleading names.
+  buttons).
 - **5.D:** after a retry, a submission that navigates away reads as
-  navigation (both M4; only the wording differs).
-- **5.F, 5.G:** fields in frames are not checked (a NEEDS REVIEW note);
-  `time`, `datetime-local`, `month` and `week` fields are left as loaded in
-  attempt 2.
-- **2.A-2.D:** ER 3's shortlist (6.A, 7.A, 7.E, 12.D, 13.A, 13.B, 13.C,
-  18.A): until each is built, a working mechanism is NEEDS REVIEW (E3),
-  never PASS. 2.C J1's wording when the mechanism is page text naming a
-  key (judge eval run 15; rerun it after). 2.B J1's crop for content below
-  the first screen is built (1.1.0). A large media file fetched in
-  several byte ranges is not reproduced in a test; real YouTube and Vimeo
-  embeds on a normal network are NEEDS REVIEW (2.A A2).
-- **3.A:** real pages with flashing for a held-out set (rare; no answer key
-  exists). CSS background animated images are not decoded (only `<img>`);
-  the screencast's extra NEEDS REVIEW is the net for them. H.264 video
-  cannot be decoded in Chromium (NEEDS REVIEW). Not measured: that Chrome
-  shows a GIF frame of 10 ms or less for 100 ms (assumed from Chromium's
-  decoder). Optional: the IRIS cross-check
-  ([research section 7](research/2026-11-03-3a-flashing.md)).
+  navigation (both M4; only the wording differs). A jump forward past a
+  field after Tab-away is not detected.
+- **9.x:** rows no fixture triggers (9.A M2, M6 and the 8-candidate cap;
+  9.B N1, N5; 9.C C2, C5; a page or ANDI that cannot be read, end to
+  end; an other page that redirects off the host). Add fixtures for
+  whatever real templates show.
+- **2.A-2.D:** a working mechanism is NEEDS REVIEW (E3), never PASS,
+  until ER 3's shortlist is built (6.A, 7.A, 7.E, 12.D, 13.A, 13.B, 13.C,
+  18.A). 2.C J1's wording when the mechanism is page text naming a key.
+  Real YouTube and Vimeo embeds are NEEDS REVIEW (2.A A2).
+- **3.A:** CSS background animated images are not decoded (only `<img>`);
+  H.264 video cannot be decoded in Chromium (NEEDS REVIEW). No held-out
+  pages with flashing exist. Optional: the IRIS cross-check
+  ([research](research/2026-11-03-3a-flashing.md), section 7).
+- **Recordings:** a page that loads code only when used may lack it in
+  the recording; guard GU then holds a PASS at NEEDS REVIEW
+  ([solutions/recordings-miss-lazy-scripts.md](solutions/recordings-miss-lazy-scripts.md)).
+- **Browsers:** results are for the Chromium the report records. Firefox
+  needs its own focus reader (no CDP) and every fixture rerun; not
+  planned.
 
 ## Later
 
-- **Section 508 Baseline Alignment cases for the next tests.** The
-  framework (baselinealignment.section508.gov, 148 cases) has pages with
-  expected results for images and CAPTCHAs (1.1.1), images of text, sensory
-  characteristics, contrast (including on hover and focus), form names, on
-  input (3.2.2: form submitted, new window, focus moved), error
-  identification and prevention, labels, page titles, data tables,
-  headings, lists, link purpose, language of page and parts, audio-only,
-  media player controls, captions and audio description. Vendor each with
-  `tests/fixtures/baseline/sync_baseline.py` when its TT test is built, and
-  load it in Chrome first (TC01.A-2's behaviour is broken there).
+- **The next tests: the visual-versus-code cluster** (10.x, 14.x, 15.A,
+  18.A, 13.C; ANDI is the core evidence for most). Research, with two
+  decisions to make in the specs (13.C: ANDI compares contrast after
+  rounding, so 4.495 passes; 18.A: which windows, real browser zoom
+  through our own extension, a second walk's time):
+  [per test](research/2026-11-07-visual-cluster-per-test.md),
+  [visual judgment](research/2026-11-07-visual-judgment-and-apijudge.md),
+  [coverage map](research/2026-10-31-tt-coverage-map.md). Before 7.C and
+  16.B, fix their `tt.json` steps from the printed pages (each repeats
+  the previous test's "How to Test").
+- **ANDI output beyond forms, and scanners.** Only ANDI's
+  focusable-elements module runs today; contrast and image output are
+  next (7.x, 13.C). axe-core or HTML_CodeSniffer, if used, are vendored
+  with hashes and run on their own fresh load; a clean scan never means
+  PASS ([solutions/andi-output.md](solutions/andi-output.md)).
+- **Section 508 Baseline Alignment cases** for each new test: vendor with
+  `tests/fixtures/baseline/sync_baseline.py` and load each in Chrome
+  first.
+- **Testing a batch of pages:** each page tested in full in its own call,
+  the multi-page tests run once at the end, pages added to an existing
+  run. Plan it with the store (Next, 4).
+- **A "test a page" prompt** for operators who are not Trusted Testers.
+- **Deployment:** network-level egress rules behind the egress proxy;
+  browser calls with no time limit of their own (headed runs stalled
+  when the screen locked); two egress tests that installed Chrome on
+  Windows never exercises
+  ([solutions/windows-chrome-results.md](solutions/windows-chrome-results.md)).
+- **Only if time matters again:** more shared replays (4.C's widget check
+  with 4.D's pass W; 4.C reading 4.F's pass R; 5.D and 5.F both filling
+  fields); merging fixture pages (a merged page keeps every FAIL tied to
+  its own instance and row).
 
-- **Scanners** (axe-core, HTML_CodeSniffer; which tests they cover:
-  [research/2026-10-31-tt-coverage-map.md](research/2026-10-31-tt-coverage-map.md)) vendored with hashes and run on
-  their own fresh load after the walk ([solutions/scanners-after-the-walk.md](solutions/scanners-after-the-walk.md)).
-  Licenses: axe-core MPL 2.0 (unmodified files, keep notice), HTML_CodeSniffer
-  BSD 3-Clause (keep notice); NASA release review before open sourcing.
-  Scanner output is evidence for spec rows; a clean scan never means PASS.
-- **ANDI per-element data, beyond forms.** Names, descriptions and group
-  labels are read for 5.C (`andi.andi_output`; ANDI does not report table
-  headers). Next to try: contrast and image output for 7.x and 13.C. TT prescribes ANDI for
-  about 20 tests, so matching its output matters there. Not needed for Test 4
-  (4.F's note: use keyboard order, not ANDI's). What each vendored module gives, and what we read (only the focusable-elements module runs today): [research/2026-10-31-tt-coverage-map.md](research/2026-10-31-tt-coverage-map.md), "ANDI modules as vendored".
-- **SCRT report files** (read, write, compare, TT review, export; plan:
-  [plans/2026-11-02-scrt-io.md](plans/2026-11-02-scrt-io.md)). Fix advice for
-  a read report is a separate, optional tool, reusing `explain.py`. ACRs and
-  OpenACR are out of scope (product level, not page level).
-- **Hosted results service and dashboard** (proposed; plan:
-  [plans/2026-11-04-results-service.md](plans/2026-11-04-results-service.md)):
-  a second, hosted MCP server that keeps results inside NASA, with a
-  dashboard for site owners, Trusted Testers and web governance. Its MVP
-  was cut for the GSA hackathon demo (Nov 20).
-- **`compare_to` on `tobi_run_tt_tests`** (verify a fix) taking a saved report, not
-  a server-side run ID (runs expire after `RUN_TTL_HOURS`).
-- **OpenACR export**, as a draft labelled agent-assisted; NEEDS_REVIEW maps
-  to "not evaluated". TT tests map to WCAG criteria through `tt.json`
-  (Appendix A); 4.A and 4.B share 2.1.1.
-- **The visual-versus-code cluster** (10.x, 14.x, 15.A, 18.A; ANDI is the
-  core evidence for most of it). Research on what the browser, ANDI,
-  scanners and image libraries can settle, and on ApiJudge (built off by default, 2026-11-09; gate scripts and trick-text pages built and tried on two pages, 2026-11-10; the full gate runs once after bundles 2, 4 and 5, when Abby says: `docs/plans/2026-11-08-apijudge-build.md`):
-  [research/2026-11-07-visual-judgment-and-apijudge.md](research/2026-11-07-visual-judgment-and-apijudge.md).
-- **Opening everything, phases 2 and 3 (fix 9b; 2026-11-10).** Phase 1 is built
-  (`reveal.py`: every menu, tab, accordion and filter the walk finds is opened on
-  a fresh load; 5.A-5.C read what appears; guards RV and RC keep a PASS from
-  standing while something that opens was not opened or is not checked yet).
-  Phase 2: 4.A, 4.C, 4.D, 4.E (and 4.F beyond its first six triggers) walk the
-  keyboard through opened content, which removes guard RC from their specs.
-  Phase 3: 5.D fills fields in opened content. Also: nested triggers (a menu
-  inside a menu), a combobox's list (5.D), `aria-haspopup` buttons that need a
-  key other than Enter (tabs that move with the arrow keys are opened by Enter or
-  a click here, not by an arrow), and phase 1's cap of 20 triggers and 3 sets.
-- **Answer once per site (Abby, 2026-11-07).** A judgment about the same thing on several pages of a site is made once and reused until something differs, as 9.A-9.C already do with repeated content. It covers per-image questions (7.E, 7.A, 13.C text in images), and media: videos, GIFs and other moving content in 2.A-2.D and 3.A. Key it by content (the image or media bytes' hash, and the question's spec version), never by URL alone. A new scan reuses an answer only when the hash and spec version match, and says so in the finding. A person's answer beats a reused model answer. Hosted, this can outlive one server session (a store beside run state, with an expiry); stdio keeps it in memory (`pagecache.keep_read`). Plan first: what is stored, for how long, and who may see answers from another user's runs.
-- **A review view for people: parked (Abby, 2026-11-07).** Before building one, decide what is most usable and accessible for people who review results, answer open questions and add what the tool missed. One idea: open the recorded page (the HAR replay) beside the pre-SCRT file, so the reviewer can mark it up and answer comments in place. Whether that works outside Claude's artifacts is unknown. Not near term: reliability of the tool itself comes first.
-- **13.C: ANDI's rounding (found 2026-11-07).** ANDI's contrast ratios equal exact WCAG maths rounded to 2 decimals (444 pairs checked), but ANDI compares after rounding, so 4.495-4.499 counts as 4.5 and PASS. WCAG Understanding 1.4.3 and the ICT Baseline say ratios are not rounded; the TT says to use ANDI's number. Decide in the 13.C spec; principle 3 suggests NEEDS REVIEW for that band. axe-core 4.14 compares unrounded. Details: research/2026-11-07-visual-cluster-per-test.md (13.C).
-- **18.A Resize text: decide before its spec (found 2026-11-06).** The TT
-  says only "use built-in browser zoom functions to resize the text to at
-  least 200%" (pp. 74-75, HtT 1) and names no window size; its environment is
-  desktop only (Test Environment, pp. 3-5: Windows "desktop mode"; About,
-  pp. 1-3: mobile platforms "must be evaluated using other testing
-  procedures"). Zoom halves the layout
-  width, so our 1280 px window at 200% lays out at 640 CSS px (often the
-  site's tablet or mobile layout), and a page can pass in a 1920 px window
-  and fail in ours. Open:
-  - **Which windows.** Proposed: the default 1280 px (a 1920x1080 laptop at
-    150% Windows scaling) and a smaller desktop window near 1024 px (512
-    CSS px at 200%).
-  - **A failure only in the smaller window:** FAIL, or NEEDS REVIEW with a
-    note, since the TT names no size.
-  - **How to zoom: real browser zoom, checked 2026-11-07.** A two-file Chrome extension of our own (no content script, `tabs` permission only), driven through its service worker with `chrome.tabs.setZoom`, gives real 200% zoom in headless Chromium (`channel="chromium"`) on Linux. The half-width, DPR 2 stand-in matches it on layout width, DPR, media queries and most boxes, but not native form controls (text inputs 180×22 vs 185×21 CSS px), which F80 is about. So use real zoom. Per-tab zoom resets on navigation: set it after each load. Still to check: HAR replay in a persistent context (extensions need one), and Windows Chrome. The extension approach is the one the `playwright-zoom` npm package uses (credit it in the code and the 18.A spec); do not use the package itself: its content script lets any page script change the zoom. Details: [research/2026-11-07-visual-cluster-per-test.md](research/2026-11-07-visual-cluster-per-test.md) (18.A).
-  - **Functionality and time.** ER 3 ("all functionality is available"):
-    compare the keyboard stops at 100% and 200% (a control gone or
-    unreachable, such as a menu behind a hamburger button). A second walk
-    costs about 46 s on the agency page, which the 120 s budget does not
-    have: an allowance like `OTHER_PAGE_S`, or a lighter walk.
-  - **Not in scope:** a phone-width check (320 CSS px) is WCAG 2.1's 1.4.10
-    Reflow, not Section 508; at most a separate, clearly labelled extra.
-  The report records the window (`Versions.display`: viewport, inner size
-  and device pixel ratio), so results at different sizes can be told apart.
-  3.A's spec names its window (done in 0.2.0): its capture loads the page
-  at 1024 x 768 and records the window measured (`State3A.window`).
-- **Firefox as an optional browser.** TT 5.1.3 validates Chrome and Firefox
-  (Test Environment). Results are reported for the browser the report
-  records and never claimed for others (e.g. Chrome 130+ tabs to scroll
-  containers; ACT 0ssw9k). Not a setting change: focus reading
-  (`traverse.FocusReader`) and listener lookup use Chrome's DevTools
-  protocol, so Firefox needs its own reader (Playwright's Firefox has no
-  CDP or isolated-world API) and every fixture rerun on it.
+## Dropped
+
+- A separate results service and dashboard on Databricks (2026-11-11:
+  the store on VAST replaces it).
+- OpenACR export (2026-11-11: ACRs are product level, not page level).
+- The agent eval's wording judge, seeded faults, GPT, Gemini and Ask Sage
+  routes and DHS training pages (2026-11-11: the server is the judge).

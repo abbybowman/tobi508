@@ -1,5 +1,5 @@
-"""Opening everything, phase 1 (post-round 2 fix 9b; plan
-docs/plans/2026-11-08-rules-principle3-build.md): open the menus, tabs,
+"""Opening everything, phase 1 (post-round 2 fix 9b; phases 2 and 3 are in
+docs/ROADMAP.md): open the menus, tabs,
 accordions and filters a page has and record what each one shows, so the
 tests that read the page can read what appears. Facts only; no outcome is
 decided here (CLAUDE.md principle 2): the guard rows are in the specs.
