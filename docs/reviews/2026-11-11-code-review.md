@@ -320,6 +320,23 @@ turns on.
   rule to all of them.
 - **Checked:** verified (read).
 
+#### S-05 Hosted mode: a sign-in token with no `sub` claim opens every run
+
+- **What is wrong:** the owner check asks "who is calling" and treats
+  "nobody" as a local server with one user, where every run is open. A
+  signed-in caller whose token has no `sub` claim also comes back as
+  "nobody".
+- **Why it matters:** under `AUTH=oidc` such a caller can read and change
+  every user's runs, and the runs it starts get no owner. It needs a
+  token without `sub`; whether VAST's Keycloak always sends one is a
+  thing to confirm with the admin, since nothing at startup requires it.
+- **Where:** `src/tobi508/access.py:44-55` (`caller`), `76-86`
+  (`may_open`).
+- **Smallest fix:** under `AUTH=oidc`, a token with no `sub` is refused;
+  "nobody" stays open only when sign-in is off. One test in
+  `tests/test_access.py`.
+- **Checked:** verified (read). Not exercised with a real token.
+
 #### B-04 Server judge: judging holds a browser slot and sits outside every time limit
 
 - **What is wrong:** the judge phase runs inside the same slot as the
@@ -510,6 +527,48 @@ not checked.
   the agent reads, with "you need not ask the user first".
   `checks/t19a.py:171-193, 403-413`. Fix: suggest scheme, host and path
   only.
+- **S-02, S-03** The store for scripts a page loads later (principle 5's
+  fourth exception) does not hold every limit CLAUDE.md states. The host
+  and allowlist checks apply to the named address only, and the fetch
+  then follows up to 20 redirects to any public host (the reviewer saw
+  this with a counting proxy). The 40 s limit is checked before a round
+  of fetches, not during it (150 files at 10 s each, 8 at a time, is
+  about 190 s). The 3 MB limit is checked after the whole file is read.
+  "A script" cannot fail, because the address always ends in `.js`.
+  "Same host" ignores the port. The 150-file, 12 MB and 3-level limits
+  hold. `src/tobi508/capture.py:326-328, 342-409`. Fix: no redirects for
+  these fetches; check the deadline inside each fetch; require a
+  JavaScript content type. Verified (read).
+- **S-04** The media store downloads up to 20 addresses taken from the
+  page's `<video>` and `<audio>` elements, with no allowlist check and
+  redirects followed. This is not one of the four approved exceptions,
+  though the browser has already loaded the same files as part of the
+  page. With `no_time_limit=true` the size and time caps are lifted
+  and each file is read whole into memory. `capture.py:118-208`. Fix:
+  keep a hard ceiling even when the caps are lifted; decide whether the
+  allowlist applies and write the rule into CLAUDE.md. Verified (read).
+- **S-01** A script that names very many other scripts stalls the whole
+  server: the scan keeps a list and searches it for each name. 40,000
+  names (750 KB of script) took 6.2 s here, and the time grows with the
+  square, so a 3 MB script is over a minute with every other run and
+  the proxy stopped. `capture.py:331-339, 386-409, 515-518`. Fix: a set
+  beside the list; stop listing after the 150-file limit. Verified
+  (run): timed `script_refs` at 5,000, 20,000 and 40,000 names. Honest
+  pages do not look like this; it takes a crafted script on an allowed
+  site.
+- **S-08** A redirect chosen by the tested site (`Location: data:text/
+  plain,<any text>`) is quoted in the tool error the agent reads, up to
+  200 characters and unmarked. Redaction also leaves `ftp://user:pass@`
+  whole and stops at `)`. `src/tobi508/redact.py:23-36`,
+  `src/tobi508/browser.py:244-269`. Fix: errors name the scheme and host
+  of a blocked target only. The reviewer ran `safe_url` and `scrub`.
+- **S-06, S-07** `tobi_read_report` returns the page and product names
+  of an untrusted file at any length (comments are clipped, these are
+  not), has no cap on rows (a 40 MB file is about 2 million rows), and a
+  malformed file raises a generic error where "not an SCRT file" is
+  meant. `src/tobi508/tools/read_report.py:122-195`,
+  `src/tobi508/scrt.py:222-290`. Fix: clip the four fields; refuse more
+  than a few thousand rows; turn parse errors into `NotAReport`.
 - **B-05** The judge's time cap is checked once per round only; one bad
   round can run far past it and fire dozens of extra calls. Requests are
   not split by text size. Retries repeat errors that cannot succeed.
@@ -593,6 +652,16 @@ Cleanup. All reviewers' claims unless marked.
   search form is taken even when a later one is on the host (K-14);
   eval packets copy evidence files without scrubbing fixture names
   (L-15); smaller scoring table gaps (L-18).
+- **Security edges:** the early allowlist check accepts four address
+  forms Chrome reads differently (`https://evil.com\.gov/` and three
+  more); the second check on Chrome's own form of the address blocks
+  them, so the browser is safe, but any use of `check_url` that does not
+  go through a navigation inherits the gap (S-09; the reviewer ran 23
+  trick addresses). Nothing caps the size of a recording or the number
+  of "refused" log lines a page can cause (S-10). The ANDI rule covers
+  `https://www.ssa.gov/` exactly, not `http://` or `ssa.gov`, and a
+  tested page on www.ssa.gov loses its own requests (S-11). The egress
+  proxy accepts any process on the machine (S-12).
 - **Core:** the same small rules (what is a field, what is visible, what
   is tabbable, how to walk shadow roots) are written out in five files
   and have drifted: reveal's field list lacks slider, searchbox and
@@ -606,6 +675,32 @@ Cleanup. All reviewers' claims unless marked.
   cache-or-read pattern are copied in 9.B, 9.C and 19.A (K-13).
 
 ---
+
+## Checked, and it holds
+
+So nobody reviews these again without a reason. From the security
+reviewer (phase 1); I read the summary, not every line behind it.
+
+- **The allowlist** is enforced on every top-level navigation and every
+  redirect hop, with a second check on Chrome's own form of the address.
+  Userinfo, trailing dots, upper case, `.gov.evil.com`, IP literals,
+  `data:`, `javascript:`, `blob:` and `file://` outside dev mode are all
+  refused; popups and meta refresh take the same route; service workers
+  are blocked. Frames and subresources are checked by the egress proxy
+  only, not the allowlist. That matches the code's own notes, but
+  CLAUDE.md does not say it.
+- **The egress proxy** resolves a name once, checks every address and
+  connects to the address it checked, which defeats DNS rebinding.
+  Metadata, link-local, IPv4-mapped, NAT64, 6to4 and Teredo addresses
+  are refused. Every error path closes the connection. WebRTC is held to
+  the proxy.
+- **Replay never goes live:** a request not in the recording is aborted.
+  File names inside a recording are never chosen by the page.
+- **Run ownership** is checked by the tools and by `run://` resources
+  alike (but see A-01 for jobs and S-05 for a token with no `sub`).
+- **Report files:** JSON only, so no zip or XML tricks; a hosted server
+  never reads its own disk for `tobi_read_report`.
+- **ANDI** is never loaded from ssa.gov.
 
 ## Refuted
 
@@ -637,6 +732,13 @@ above.
 - A second walk pass after a trap doubles the walk time on a long page.
 - 9.C's place pairing uses `regions[-1]`, which may be `main`.
 - No test covers a live search that goes off host or off port.
+- With the default settings, sign-in checks no audience and requires no
+  group, so any user of the realm can sign in: confirm the deployment
+  sets `OIDC_AUDIENCE` and `REQUIRED_GROUPS`.
+- A stored media file whose address has a query string may not be found
+  on replay (exact match on the address).
+- The audit log records the caller's email on every call: intended, but
+  confirm it fits the retention policy.
 
 ## If we started over
 
