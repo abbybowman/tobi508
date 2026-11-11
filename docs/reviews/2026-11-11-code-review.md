@@ -4,14 +4,14 @@ A triaged list from a line-by-line review of `tobi508`, for Abby to review
 and hand to other threads. Nothing here has been fixed; this thread changes
 no code.
 
-**Progress.** Phase 0 is done (the first attempt's leads, checked). Phases
-1 to 4 add the files nobody has reviewed yet; phase 5 adds the "if we
+**Progress.** Phases 0 and 1 are done. Phases
+2 to 4 add the files nobody has reviewed yet; phase 5 adds the "if we
 started over" section. Each phase is committed when it is checked.
 
 | Phase | Covers | State |
 | --- | --- | --- |
 | 0 | Leads from the first attempt (tools, pipeline, traverse, 9.B/9.C/19.A, evals) | done |
-| 1 | Security files; what an agent receives, measured; the rest of tools and pipeline | not started |
+| 1 | Security files; what an agent receives, measured; the rest of tools and pipeline | done |
 | 2 | 4.A-4.F and 5.A-5.D against their specs | not started |
 | 3 | 5.F-5.H, 9.A, 2.A-2.D, 3.A and the watchers | not started |
 | 4 | The rest of the core; tests, CI, Dockerfile, packaging | not started |
@@ -35,7 +35,8 @@ demo or what a calling agent sees (tokens, time) comes first.
 
 IDs (A-01, D-03 and so on) are handles for other threads to cite. The
 letter is the review group: A tools and models, B pipeline and judge,
-D the keyboard core, K 9.B/9.C/19.A, L evals.
+D the keyboard core, K 9.B/9.C/19.A, L evals, S security, T token
+measurement, G the rest of tools and pipeline.
 
 ---
 
@@ -177,43 +178,102 @@ turns on.
 
 ### What a calling agent pays
 
-#### A-02 Every session pays about 12,000 tokens for the tool list, most of it output schemas
+Measured in phase 1 on `tests/fixtures/budget/agency-home.html` (default
+tests: 22 findings, 10 open questions, 2 answer rounds), through an
+in-process MCP client. Tokens are characters divided by 4.
+
+| Step | Tokens |
+| --- | --- |
+| Tool list and server instructions, before any call | 12,700 |
+| Run result (8,500 text, about 2,100 for 8 pictures) | 10,600 |
+| Two answer results | 5,500 |
+| `tobi_run_status` | 150 |
+| `tobi_explain` for the whole run | 9,500 |
+| Reading `report.json` to save it | 37,100 |
+| Reading `pre-scrt.json` to save it | 17,400 |
+| **What the agent reads** | **about 93,000** |
+| Writing both files into the user's repository, if the model copies them | 54,500 more, as output |
+| If the client also passes on `structured_content` | 21,800 more |
+
+A one-control page (`no_trap.html`) reads about 50,000, so roughly
+30,000 of every session is fixed cost.
+
+#### T-01, T-02, T-03, G-01 Saving the two report files is more than half the session
+
+- **What is wrong:** every result tells the agent to read `report_uri`
+  and `pre_scrt_uri` and save them. An MCP client has no "save this
+  resource" step, so both files pass through the model, in and then out.
+  `pre-scrt.json` is 62,000 to 70,000 characters for any page, even a
+  one-test run: 61 rows of fixed catalogue text, with the page's own part
+  under 5,000. `report.json` is written indented (148,000 characters
+  where 97,000 would do) and stores every answered question twice, once
+  in `questions` and again inside each answer.
+- **Why it matters:** about 55,000 tokens to read and the same again to
+  write, on a page that costs 28,000 for everything else. The output
+  half is the slow and costly kind. On real pages it cannot be done at
+  all: the 27 saved runs of round 2 (svs.gsfc.nasa.gov, an earlier
+  version of the code) have reports averaging 169,000 characters (the
+  largest 619,000) and pre-SCRT files averaging 720,000 (the largest
+  5.6 million). A client cuts a file that size, and the agent saves a
+  cut file without knowing.
+- **Where:** `src/tobi508/models.py:709-712` (`SAVE_HINT`) and the `todo`
+  line; `src/tobi508/runlog.py:56-63` (indent 2);
+  `src/tobi508/models.py` (`RecordedAnswer` holds the whole question);
+  `src/tobi508/scrt.py` (`write_for_run`).
+- **Smallest fix:** ask the agent to save `report.json` only, and offer
+  the pre-SCRT file when the user wants it; write `report.json` compact
+  and keep only the question id in each answer (check the readers in
+  `scrt.py` and `compare.py` first). Expected: about 18,000 tokens to
+  read where it is 54,500 now. A way to save without the model (a
+  download link when hosted) is the larger fix.
+- **Checked:** verified (run) for the sizes, against the run folders of
+  my own test runs: `report.json` 148,364 characters indented and 97,466
+  compact on agency-home; `pre-scrt.json` 62,557 for a one-test run.
+  The round 2 sizes are from `evals/judging/round2/results/` (G-01).
+  That the model copies the files out is likely, not measured with a
+  real client.
+
+#### A-02, T-04 The tool list costs 12,700 tokens, most of it output schemas, and every result is sent twice
 
 - **What is wrong:** the five tools cost 48,400 characters before any
   call. Output schemas are 31,600 of that (`tobi_run_status` 11,200,
   `tobi_run_tt_tests` 9,300, `tobi_answer_questions` 7,800). They repeat
   every field description, and an agent cannot use them. Each result is
-  also sent twice: as JSON text and again as `structured_content`.
-- **Why it matters:** about 8,000 tokens per session bought nothing, and
-  a client that forwards both copies doubles every result.
+  also sent as JSON text and again, identical, as `structured_content`
+  (32,045 and 32,056 characters on the run above).
+- **Why it matters:** about 8,000 tokens per session buy nothing, and a
+  client that passes on both copies pays for every result twice
+  (21,800 tokens on this page).
 - **Where:** return annotations in `src/tobi508/tools/run_status.py:36`,
   `run_tt_tests.py:196`, `answer_questions.py`, `read_report.py`;
   `src/tobi508/inline.py:222-251`.
 - **Smallest fix:** register the tools with no output schema and return
   text content only. Check how `tests/test_tools.py` reads results first.
-- **Checked:** verified (run): sizes measured from `mcp.list_tools()`.
-  Whether a given client shows the model both copies of a result is not
-  checked (phase 1 measures it).
+- **Checked:** verified (run): schema sizes from `mcp.list_tools()`; the
+  two copies compared by the phase 1 reviewer. Whether a given client
+  shows the model both copies is not measured.
 
-#### A-03 Every result gives the same instructions three or four times
+#### A-03, T-07 Every result gives the same instructions three times
 
 - **What is wrong:** "answer the open questions", "call `tobi_run_status`
   with finish=true", "save `report_uri`" and "report NEEDS REVIEW as
-  needs review" each appear in `next_step`, in `todo`, in `todo` again as
-  the closing "TO DO" block, and in the tool description. `work`,
-  `remaining` and `waiting_on` describe the same state again. Some text
-  is project history an agent cannot act on ("the fourth development
-  run's agent...").
-- **Why it matters:** about 2,200 characters of fixed text on every run,
-  answer and status result, on top of the result itself.
+  needs review" each appear in `next_step`, in `todo`, and in `todo`
+  again as the closing "TO DO" block (four of its five lines are exact
+  repeats), as well as in the tool description. Some of the text is
+  project history an agent cannot act on ("the fourth development run's
+  agent..."). When nothing is left, `next_step` still explains what to
+  do while work is incomplete.
+- **Why it matters:** 3,049 characters of instructions on the run result
+  (`next_step` 1,553, `todo` 741, the block 755) and about as much on
+  each answer result: some 1,900 tokens over a three-call session, of
+  which 1,200 are repeats.
 - **Where:** `src/tobi508/pipeline.py:1316-1440` (`next_step`, `FINISH`,
-  `_calls_text`, `todo`); `src/tobi508/inline.py:211-237`;
-  `src/tobi508/models.py:631-697`.
+  `_calls_text`, `todo`); `src/tobi508/inline.py:211-237`.
 - **Smallest fix:** keep one channel (the closing checklist), leave
-  `todo` out of the JSON, and remove the history from the wording.
+  `todo` out of the JSON, cut `next_step` to one sentence on the state,
+  and remove the history.
 - **Checked:** verified (read) that `todo` is in the JSON and in the
-  closing block; the sizes are the reviewers' measurement (phase 1
-  repeats it on a real page).
+  closing block; sizes measured by the phase 1 reviewer.
 
 ### Wrong outcomes
 
@@ -285,6 +345,46 @@ turns on.
 - **Checked:** verified (read). The reviewer ran `evaluate_top("throw
   new Error('x')")` and got `None`; I did not repeat it. No real page is
   known to trigger it.
+
+### Hangs and waste
+
+#### G-03 `tobi_answer_questions` is the one tool with no time limit
+
+- **What is wrong:** CLAUDE.md says a tool call returns within
+  `CALL_WAIT_S` (45 s) and longer work goes on as a job. A run does
+  that. An answer call does not: it waits for the whole answer step,
+  which replays the page for each answer that names a key or a field
+  (4.A, 4.B, 4.C, 5.F), one check after another, with no hard stop.
+- **Why it matters:** a client that gives up at 60 s drops the call; the
+  work goes on in the server, its result is lost, and the agent sends
+  the same answers again while the first call is still writing the
+  report (the lost-update race, B-03). The server judge uses the same
+  path.
+- **Where:** `src/tobi508/tools/answer_questions.py:88-95`;
+  `src/tobi508/pipeline.py:1450-1474`.
+- **Smallest fix:** run the answer step as a job, as a run is, and give
+  each check's resume a hard limit that records "not finished".
+- **Checked:** verified (read). How long a resume takes on a large page
+  is not measured.
+
+#### G-02 Server judge: one screenshot is attached once for every question that names it
+
+- **What is wrong:** pictures are gathered per question and joined with
+  no check for repeats. Several questions of one test name the same
+  screenshot, so one request carries it many times. Cutting and
+  encoding them runs on the event loop, and again for each question
+  asked a second time.
+- **Why it matters:** every copy is paid for as picture tokens and
+  counts against the 40-picture limit, which splits the work into more
+  requests. In round 2's saved reports one picture is named by up to 19
+  questions.
+- **Where:** `src/tobi508/apijudge.py:403-416` (`pictures_of`),
+  `567-597` (`build_requests`).
+- **Smallest fix:** one attachment per link in a request; cut each
+  picture once per run; build requests in a thread.
+- **Checked:** verified (read): `build_requests` joins each question's
+  pictures as they come. The reviewer built a request for 19 questions
+  naming one picture and got 19 copies.
 
 ### Security and the server judge
 
@@ -395,21 +495,40 @@ not checked.
   `tools/answer_questions.py:40-69`, `models.py:322-424`. Fix: keep
   server fields off the wire model; drop one of the two texts. Size
   verified (run).
-- **A-11** Results serialize empty and default fields (`note: null`,
-  `unconfirmed: 0`, `errors: []`, `shared_inputs: {}` ...) and fields
-  that restate others (`confirmed`, `tests`, `evidence`, the seconds in
-  `RunPending`). `Finding.confidence` is never set. `models.py:559-715`.
-  Fix: dump with `exclude_none` and `exclude_defaults`, keeping the
-  disclaimer.
-- **A-10** `tobi_explain` with a run id has no size cap: every instance
-  of every finding. A FAIL on a large page can pass the size where
-  Claude Code moves a result to a file. `explain.py:106-132, 177-237`.
-  Fix: cap instances ("N more in the report").
-- **A-08** Pictures already sent are sent again whenever their question
-  comes back (a rejected answer, the next page of questions), up to
-  about 20,000 tokens. Encoding them blocks the event loop while other
-  runs share it. `inline.py:99-196`. Fix: skip pictures already
-  attached; encode in a thread.
+- **A-11, T-08** Results serialize empty and default fields (108 of
+  them in the run result above: `note: null`, `unconfirmed: 0`,
+  `errors: []` ...) and fields that restate others: `confirmed`,
+  `tests`, the 25 `evidence` links (1,228 characters), `final_url` equal
+  to `target`, and the TT name and WCAG text on every finding (1,362
+  characters). About 900 tokens on a run result and 500 on each answer
+  result. `Finding.confidence` is never set. `models.py:559-715`. Fix:
+  dump with `exclude_none` and `exclude_defaults`, keeping the
+  disclaimer; drop the restating fields.
+- **A-10, T-05, T-10** `tobi_explain` for a whole run is 9,500 tokens
+  on the page above and has no cap. More than half is text that is the
+  same on every run (what the tool does for each test, the TT condition
+  and requirements) or that an agent cannot use: 5,500 characters are
+  rule codes ("x1:M8; x2:M9", "[M15 NEEDS_REVIEW]") and "technical
+  reasoning, for your reference only", which principle 8 says stay in
+  the evidence trace. One test (4.D) lists 81 places.
+  `explain.py:106-132, 177-237`. Fix: per finding, the places and one
+  link; cap the places ("N more in the report"); keep the codes in
+  `report.json`.
+- **A-08, T-06** An answer result sends again what the agent already
+  has: the questions still open, in full; their shared texts; and their
+  pictures. On the page above the first answer result was 42% repeats
+  and re-attached all 7 of its pictures. About 2,500 tokens per answer
+  round with questions open. Encoding the pictures also blocks the
+  event loop while other runs share it. `inline.py:99-196`;
+  `pipeline.py:1494-1522`. Fix: list an unchanged question by id only;
+  skip pictures already attached; encode in a thread.
+- **T-09** One 4.F question is 7,900 characters, 45% of all question
+  text on the page above: its `order` list carries every item, each
+  with an empty `page_box`. Five 4.A questions are the same question
+  with a different element (574 characters each).
+  `checks/t4f.py`, `checks/t4a.py`. Fix: list only the items whose
+  order differs, with a count; ask the five as one question with a
+  list.
 - **B-08** Other pages are recorded one after another before the walk
   starts: 5 pages can add 100 s, 50 pages 1,000 s. `pipeline.py:939-1032`.
   Fix: record them beside the walk, two or three at a time.
@@ -508,6 +627,40 @@ not checked.
 - **B-07** On refusal the run folder is deleted while the motion watcher
   is still writing into it, which can recreate it; a browser that fails
   to start leaves the folder. `pipeline.py:894-895, 1104-1108, 1193-1203`.
+- **G-04** A run stopped at the default limit (1,800 s) is told it
+  "reached its time limit (600 s)" and to "run again with
+  no_time_limit=true", which it already was; an agent that obeys
+  repeats a 30-minute run. `pipeline.py:86-92, 1187-1192`. Fix: word the
+  note for the limit that applied.
+- **G-06** A follow-up run the server starts itself (19.A's suggested
+  pages) can fail without anyone hearing: the call is already removed
+  from the report and marked made, the failed job is skipped in the
+  list, and the next `tobi_run_status` says "Nothing is left".
+  `pipeline.py:1553-1560, 1586-1587`. Fix: list failed follow-ups and
+  put the call back.
+- **G-07** A follow-up call that needs the user's choice (run again with
+  no time limit) can never clear: it stays in the report whatever the
+  user says, and every result tells the agent to repeat "until nothing
+  is left". `pipeline.py:1477-1483, 1594`. Fix: let the caller mark it
+  declined.
+- **G-08** A long summary is cut to its first sentence. For NEEDS REVIEW
+  that sentence is the fixed opening ("We could not finish this test,
+  so a person needs to check it."), so the reason is lost: 46 of 82
+  long NEEDS REVIEW summaries in round 2's reports (the reviewer's
+  count). The agent relays no reason, or calls `tobi_explain` for each.
+  `models.py:614-624, 664-688`. Fix: keep the opening and the first
+  reason.
+- **G-05** The answer step builds its own run context and leaves out
+  what the run sets (`selected`, `requested_url`, `record_live`, the
+  cache). 5.F takes no pictures when it re-runs after an answer, so the
+  5.F to 5.H questions that follow have none. `pipeline.py:1453-1466`
+  against `1047-1057`; `checks/t5f.py:413`. Fix: one function builds
+  the context for both.
+- **G-09** Any number of runs can be queued by one caller, and the
+  whole run has no single stop: `MAX_RUN_S` bounds the record, walk,
+  reveal and collect steps one by one, not browser start, evaluation or
+  the judge. `jobs.py:68-92`. Fix: a per-caller limit (needs A-01's
+  owner); one outer timeout.
 - **A-09** `tobi_run_status` is marked read-only and idempotent, but
   with `finish=true` it starts runs and rewrites reports. A client may
   auto-approve or retry it. `tools/run_status.py:30-34`. Verified (read).
@@ -624,6 +777,9 @@ Cleanup. All reviewers' claims unless marked.
   explain prompt is advertised to agents that cannot call it (A-19);
   `time_budget.py` says the limit is 120 s, `prompt_dev.py` and
   `arms.py` still say "a11y" (L-17).
+- **`tobi_run_status` with nothing left** says `status: "outstanding"`
+  beside "Nothing is left"; an agent that reads the status word may
+  poll again (T-11).
 - **Fixed text in every result:** the untrusted-data notice and the save
   hint repeat in each result; `ReadResult` has two flags no agent uses
   (A-12).
@@ -643,6 +799,16 @@ Cleanup. All reviewers' claims unless marked.
 - **`run://` resource:** serves any file in the run folder whole, with
   no size cap: a HAR of tens of MB, the `owner` file (A-18). The owner
   check does apply.
+- **More small gaps (phase 1):** a request for tests that are not built
+  still starts Chrome and loads the page before saying so (G-10); a
+  result still too long after every cut is returned with no flag, and
+  the note on page-text excerpts can be untrue (G-11); the judge asks
+  missed questions again one at a time (G-12); `jobs.running()` is used
+  only by a test, and `finish=true` with a `job_id` is silently ignored
+  (G-13); `rationale`, quotes and the number of answers have no upper
+  size and go into the report (G-15); the wheel holds `src/tobi508`
+  only, with no `specs/` or `third_party/`, so the package works from a
+  checkout or the image and nowhere else (G-14).
 - **Small gaps:** a follow-up call with no tests vanishes (A-14);
   progress callbacks are awaited with no timeout (A-15); guards read
   cached global settings, and a check with no spec file gets no guards
@@ -701,6 +867,18 @@ reviewer (phase 1); I read the summary, not every line behind it.
 - **Report files:** JSON only, so no zip or XML tricks; a hosted server
   never reads its own disk for `tobi_read_report`.
 - **ANDI** is never loaded from ssa.gov.
+- **No time limit, failed walk or failed check turns into PASS or DOES
+  NOT APPLY** in `pipeline.py`: each ends as NEEDS REVIEW with "This
+  test could not be performed", and `Finding` defaults to NEEDS REVIEW
+  (the reviewer read all of `pipeline.py` and `models.py`).
+- **Answers are checked** against their question: id, kind, the choice
+  list and the picture rule; element numbers are re-checked by the
+  checks. A later agent answer cannot replace a person's or the server
+  judge's.
+- **The judge prompt** tells the judge to answer "unsure" when the
+  evidence does not settle a question.
+- **Config defaults** match CLAUDE.md (45 s, 1,800 s, 600 s, 20 s, 45 s,
+  2 runs, `.gov` and `.mil`).
 
 ## Refuted
 
@@ -711,6 +889,12 @@ reviewer (phase 1); I read the summary, not every line behind it.
   the one event-loop thread, and jobs live in one process. The bare
   `except Exception: continue` at `pipeline.py:1589-1593` is still worth
   narrowing, and the lost-update half of B-03 is real (see P2).
+
+- **A-16, the container half.** The claim: `headless` and the browser
+  channel default to values a container cannot use. The Dockerfile sets
+  `HEADLESS=true` and `BROWSER_CHANNEL=chromium`, and the server refuses
+  to start on a public host without sign-in (G-14). The wording half of
+  A-16 stands (P3).
 
 ## Leads nobody has checked
 
@@ -732,6 +916,14 @@ above.
 - A second walk pass after a trap doubles the walk time on a long page.
 - 9.C's place pairing uses `regions[-1]`, which may be `main`.
 - No test covers a live search that goes off host or off port.
+- In the judge's request a Tab stop is written as one line with the
+  element's name unescaped; a name holding a line break could forge a
+  stop line. Chrome usually collapses such names; not tried.
+- An error while applying an answer is returned once and never saved in
+  the report.
+- Whether Claude Code and other clients pass `structured_content` to
+  the model as well as the text is not measured; picture token figures
+  are estimates from pixel counts.
 - With the default settings, sign-in checks no audience and requires no
   group, so any user of the realm can sign in: confirm the deployment
   sets `OIDC_AUDIENCE` and `REQUIRED_GROUPS`.
