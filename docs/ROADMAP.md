@@ -33,29 +33,56 @@ keep their own schedule.
 
 ## Now: to the Nov 20 demo
 
-Scope set on 2026-11-11: the small core of the pivot. The store, the
-review UI, frames and the question fixes move to "Next".
+Scope (Abby, 2026-11-11): a middle path between the small core and the
+full pivot. Reliability comes first: the rules' false FAILs and the
+"unsure" answers that are answerable. Then a check of how far results
+have moved since round 2, then as much of the pivot core as steady
+progress allows. TOBI is a prototype whose tests keep improving, with
+each test's status in the [README](../README.md); the check measures our
+work and is not a formal gate.
 
-1. **Fix 3: error values** (5.F types likely-wrong values by field type;
-   4.C Tabs through each error state; top-level forms only). The last
-   piece of bundle 2. Builder note in the
-   [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md); judge eval
-   for 5.F and 4.C.
-2. **The ApiJudge gate, on today's questions:** round 2's 10 frozen pages,
-   3 repeats, every question type except 4.F and 9.C
-   ([plan](plans/2026-11-08-apijudge-build.md)). Abby approves the list of
-   passing types (`JUDGE_TYPES`); nothing is switched on before that.
-3. **Close the MCP path for a person's answer:** `decided_by: "human"`
+**Committed, in this order**
+
+1. **False FAILs by rule** (bundle 5), largest first: fix 8 (5.A, an icon
+   button labels the search field: 7 cells a run), 9c and 9 (5.C option
+   rows and hidden controls), 10 and 11 (19.A's search page and quoted
+   search). Each is one spec change (MINOR), one fixture, the suite.
+2. **"Unsure" answers that are answerable** (bundle 4), largest first:
+   fix 12 and 13 (4.F: the rubric and the order picture; the server
+   judge's wrong FAILs on 5-6 pages), 14 (9.C pairs repeated components),
+   then 24-27 (4.A carousel arrows and destinations, 4.D pictures, 2.B
+   still regions). Judge eval for each changed question.
+3. **The check against round 2.** Rerun round 2's 10 frozen pages once,
+   after 1 and 2, with today's rules and the server judge answering (CLI
+   route; count the requests with `--dry` first), and score with the same
+   scorer beside round 2's locked rows. It gives the before-and-after
+   figures for the pitch (a development site, said so) and shows which
+   question types are sound enough for Abby to switch on (`JUDGE_TYPES`).
+   Plan: [plans/2026-11-08-apijudge-build.md](plans/2026-11-08-apijudge-build.md).
+4. **Close the MCP path for a person's answer:** `decided_by: "human"`
    arriving through MCP is recorded as the client agent's (fix 21, first
-   step; `judgment.py`).
-4. **VAST: sign in from Claude Code and run one page end to end**
+   step; `judgment.py`). Hours, not days.
+5. **The pitch,** with the last two days kept for it: one scored run at
+   the submission commit for the [FILL] figures, a rehearsal and a
+   fallback video ([docs/hackathon/](hackathon/README.md)).
+
+**If the days allow, in this order**
+
+6. **Fix 3: error values** (5.F types likely-wrong values by field type;
+   4.C Tabs through each error state; top-level forms only; about three
+   days). Builder note in the
+   [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md).
+7. **VAST: sign in from Claude Code and run one page end to end**
    ([plan](plans/2026-11-06-hosted-auth.md)), when the admin's answers
-   arrive. Fallback: a recorded demo from a local server.
-5. **The pitch:** one scored run at the submission commit for the [FILL]
-   figures, a rehearsal and a fallback video
-   ([docs/hackathon/](hackathon/README.md)).
-6. **Code review fixes** (its own thread): start from
-   [reviews/2026-11-11-code-review-notes/](reviews/2026-11-11-code-review-notes/README.md).
+   arrive. Verify the code review's security leads first. Fallback: a
+   recorded demo from a local server.
+
+**Alongside, in its own thread:** the code review
+([reviews/2026-11-11-code-review-notes/](reviews/2026-11-11-code-review-notes/README.md)),
+in phases, security and false-PASS leads first.
+
+**Not before the demo:** frames (fix 7), the store, the review UI and
+WebAuthn, opening everything phases 2 and 3.
 
 ## Next: after the demo
 
@@ -63,37 +90,31 @@ In this order unless a judging round says otherwise. Fix numbers are the
 [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md); bundles are
 the [pivot plan's](plans/2026-11-07-server-judge-pivot.md).
 
-1. **False FAILs by rule** (fixes 8-11 and 9c; bundle 5): 5.A icon label,
-   5.C hidden controls and option rows, 19.A's search page and quoted
-   search. 5.A alone is 7 cells a run.
-2. **Questions a judge can answer** (fixes 12-14 and 24-27; bundle 4),
-   then the gate for 4.F and 9.C. These cause about half the "unsure"
-   answers that go to a person.
-3. **Frames** (fix 7; bundle 3): every 5.x test reads fields in frames,
+1. **Frames** (fix 7; bundle 3): every 5.x test reads fields in frames,
    and the frame leftovers under "Known limits" below.
-4. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
+2. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
    guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
    first six triggers) walk the keyboard through opened content, which
    removes guard RC. Phase 3: 5.D fills fields in opened content. Also
    nested triggers, a combobox's list, buttons that need a key other than
    Enter, and phase 1's caps (20 triggers, 3 sets).
-5. **A person's answer only from TOBI's own UI** (the rest of bundle 6):
+3. **A person's answer only from TOBI's own UI** (the rest of bundle 6):
    Trusted Tester and reviewer roles, WebAuthn on submit, the evidence
    page. Design and options in the pivot plan; decide the review view
    there before building one.
-6. **The store** (bundle 7): run index, answers kept by content hash and
+4. **The store** (bundle 7): run index, answers kept by content hash and
    spec version so a question about the same image or media is answered
    once per site, retention and the disk check; job state that survives a
    restart and works with several workers. Plan first: what is stored, for
    how long, and who may see answers from another user's runs.
-7. **Round 3** on a site not used before, after the scorer fixes (15-17).
-8. **SCRT files, phases 2 and 3**
+5. **Round 3** on a site not used before, after the scorer fixes (15-17).
+6. **SCRT files, phases 2 and 3**
    ([plan](plans/2026-11-02-scrt-io.md)): TT review, merging a partial
    file (which is also how to verify a fix: `verify_fix` on
    `tobi_run_tt_tests`, taking a saved report), export to the real SCRT,
    site roll-up. Fix advice for a read report is a separate, optional
    tool.
-9. **Tidy the checks,** with the code review. Every outcome stays the
+7. **Tidy the checks,** with the code review. Every outcome stays the
    same (rerun the judge eval when question text changes); share only
    what means the same thing; each check keeps its spec constants and the
    conditions that feed its rows. Known items: the "could not be
@@ -106,7 +127,8 @@ the [pivot plan's](plans/2026-11-07-server-judge-pivot.md).
 
 ## Decisions waiting for Abby
 
-- **`JUDGE_TYPES`:** the list to switch on, after the gate (Now, 2).
+- **`JUDGE_TYPES`:** the question types to switch on, after the check against
+  round 2 (Now, 3).
 - **4.F has guard RV but not RC** (its pass R already Tabs through what
   its first six triggers open): confirm, or put RC back.
 - **9.A as a candidate for guard GU** (it presses Enter on skip links).
@@ -124,12 +146,9 @@ the [pivot plan's](plans/2026-11-07-server-judge-pivot.md).
   other indicator the page would be DOES NOT APPLY. Options: a minimum
   wait after a submit press, or a second read when an attempt shows
   nothing. Every test uses the rule, so it is a 4.C spec decision.
-- **Hackathon documents.** The deck says "Open source at
-  github.com/abbybowman/tobi508" while SECURITY.md says NASA's release
-  review comes first. The [PENDING] markers for seeded faults, the
-  wording judge and other model families describe work dropped on
-  2026-11-11: reword or remove them (a marker is not removed without
-  you). Whether rounds 1 and 2 appear as development evidence.
+- **Publishing the repository.** GSA asks for a GitHub repository;
+  SECURITY.md says NASA's release review comes before the code is
+  public. Which comes first for the submission.
 - **Windows headed Chrome** was last run on 2026-11-02, before most of
   today's specs. Run it again before the scored submission run, or state
   the limit ([browser checks](../specs/rules/_browser-checks.md)).
@@ -218,7 +237,7 @@ still to run (mostly Windows headed Chrome) are in
   first.
 - **Testing a batch of pages:** each page tested in full in its own call,
   the multi-page tests run once at the end, pages added to an existing
-  run. Plan it with the store (Next, 6).
+  run. Plan it with the store (Next, 4).
 - **A "test a page" prompt** for operators who are not Trusted Testers.
 - **Deployment:** network-level egress rules behind the egress proxy;
   browser calls with no time limit of their own (headed runs stalled

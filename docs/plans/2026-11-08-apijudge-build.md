@@ -113,13 +113,14 @@ Bundles 4 and 5 remove many questions outright, for about 0.2-0.3M.
 
 ## What is left
 
-1. **The gate, run on today's questions** (changed 2026-11-11; the first
-   plan waited for bundles 4 and 5, which will not be built before the
-   Nov 20 demo): round 2's 10 frozen pages, 3 repeats, every question
-   type except 4.F and 9.C, which stay off until fixes 12-14 change their
-   questions. Count the requests with `--dry` first. A type whose
-   questions change later is gated again.
-2. **The list of passing question types,** approved by Abby, as
+1. **The check against round 2** (Abby, 2026-11-11: a measure of our work,
+   not a formal gate, while TOBI is a prototype): round 2's 10 frozen
+   pages, once, after the false-FAIL and question fixes on the roadmap,
+   with the server judge answering; scored with the same scorer beside
+   round 2's locked rows, judge-decided cells apart from rule-decided
+   ones. Count the requests with `--dry` first. The thresholds under "The
+   gate" above are what to read the result against, not a bar that blocks.
+2. **The question types to switch on,** chosen by Abby from that check, as
    `JUDGE_TYPES` (the default stays empty until then).
 3. A gateway connection for production (untested until a gateway exists).
 

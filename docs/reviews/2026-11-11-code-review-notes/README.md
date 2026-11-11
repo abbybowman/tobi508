@@ -6,6 +6,9 @@ list: **nothing here has been verified by a second reader**, and reviewers
 that were interrupted wrote down only what they had found so far. Delete
 this folder once that thread has produced the triaged list.
 
+**To continue:** [HANDOFF.md](HANDOFF.md) is the prompt for a fresh session,
+in phases.
+
 ## What was covered
 
 | File | Scope | State |
