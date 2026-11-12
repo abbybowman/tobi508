@@ -75,6 +75,7 @@ def row(cells=10, **kw):
         "wrong_pass": 0,
         "wrong_dna": 0,
         "wrong_fail": 0,
+        "pass_vs_dna": 0,
         "unsure": 0,
         "other": 0,
     } | kw
@@ -101,6 +102,46 @@ def test_the_gate_rule():
     # the test pages decide too: a wrong PASS there, or no eval at all
     assert not passes(cells, fails, {**eval_ok, "4.A": False})["4.A"]["passes"]
     assert not passes(cells, fails, None)["4.A"]["passes"]
+
+
+def test_too_few_decided_cells_or_any_wrong_dna_fails_a_type():
+    """L-02, L-03: one clean cell, or a type mostly left unsure, is too few to
+    judge; one wrong DOES NOT APPLY fails a type; a PASS against a DOES NOT
+    APPLY key is counted apart and is not a reason by itself."""
+    eval_ok = dict.fromkeys(("4.A", "5.B", "4.D", "5.D", "2.D"), True)
+    cells = {
+        "4.A": row(cells=1),
+        "5.B": row(cells=10, unsure=5),  # 5 decided
+        "4.D": row(cells=10, wrong_dna=1),
+        "5.D": row(cells=10, pass_vs_dna=2),
+        "2.D": row(cells=12, unsure=6, wrong_fail=2),  # 2 of 6 decided: 33%
+    }
+    got = passes(cells, {}, eval_ok)
+    assert not got["4.A"]["passes"]
+    assert got["4.A"]["why_not"] == ["too few cells to judge: 1 decided, 6 needed"]
+    assert not got["5.B"]["passes"] and got["5.B"]["decided"] == 5
+    assert "too few cells to judge" in got["5.B"]["why_not"][0]
+    assert got["4.D"]["why_not"] == ["1 wrong DOES NOT APPLY on the real pages"]
+    assert got["5.D"]["passes"] and got["5.D"]["pass_vs_dna"] == 2
+    # the 20% share is of decided cells, not of cells left unsure
+    assert got["2.D"]["why_not"] == ["wrong FAILs over 20% of the type's decided cells"]
+
+
+def test_split_cells_counts_a_pass_against_a_dna_key_apart():
+    from tobi508.scrt import ScrtResult as R
+
+    def cell(key, tool):
+        return NS(
+            test=NS(test_id="4.A", first=NS(result=key), second=NS(result=tool)),
+            verdict=Verdict.OTHER,
+        )
+
+    scores = {
+        "p": NS(tests=[cell(R.DNA, R.PASS)]),
+        "q": NS(tests=[cell(R.PASS, R.DNA)]),
+    }
+    got = split_cells(scores, {"p": {"4.A": 1}, "q": {"4.A": 1}})["4.A"]
+    assert (got["pass_vs_dna"], got["other"], got["cells"]) == (1, 1, 2)
 
 
 def test_eval_results_with_a_wrong_pass_or_the_bait_fail_the_type(tmp_path):
