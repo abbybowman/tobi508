@@ -44,99 +44,65 @@ flash watchers.
 
 ## P0
 
-Four give a wrong outcome on any page built with web components
-(D-03, D-01, K-01, K-02). Phase 2 added wrong outcomes in single checks
-(F-02, F-11 and those after them). Two are security holes that open only
-in a mode that is off by default (hosted sign-in, the server judge) but
-that the demo plan turns on (A-01, B-01).
+A false PASS or a wrong DOES NOT APPLY on real pages, or a security
+hole. Every item was reproduced by a test run or a script unless its
+"Checked" line says otherwise. The table lists them in the order
+below; "run" means I ran a page and got the outcome shown.
 
-### D-03 4.A passes a page whose mouse-only control is in a shadow root
+| ID | Test | What the tool says | On what | Checked |
+| --- | --- | --- | --- | --- |
+| E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run |
+| E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run |
+| N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run |
+| H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
+| M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
+| H-01 | 5.A | PASS | a label whose words are hidden | run |
+| N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
+| W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
+| D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
+| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run |
+| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run |
+| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run |
+| M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
+| E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
+| H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run |
+| F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run |
+| F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run |
+| W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
+| W-07 | 2.B | DOES NOT APPLY | motion that fills most of the screen | run |
+| N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
+| N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run |
+| E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run |
+| E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
+| M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run |
+| M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
+| M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
+| H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
+| K-01 | 9.A, 9.B, 9.C | PASS | the tested page named again as the other page | run |
+| B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script |
+| A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read |
 
-- **What is wrong:** 4.A finds mouse-only controls by asking Chrome for
-  the click handlers in the document. The request does not look inside
-  shadow roots, so a control with a click handler inside a web component
-  is never seen.
-- **Why it matters:** a false PASS. The same control in the ordinary DOM
-  raises a question; inside a shadow root the test says "we found nothing
-  a keyboard user would miss". Design systems built on web components
-  put every control in a shadow root.
-- **Where:** `src/tobi508/traverse.py:515-518` (`getEventListeners` with
-  `pierce: False`); used by `src/tobi508/checks/t4a.py:391-401`.
-- **Smallest fix:** also read listeners from each open shadow root (or
-  `pierce: True`, keeping only this frame's nodes). Until then, when the
-  page has any shadow root, add a coverage note so 4.A cannot PASS.
-  Fixture: one clickable `<span>` in a shadow root.
-- **Checked:** verified (run). Two one-control pages, same handler: in
-  the ordinary DOM, 4.A is NEEDS REVIEW with question `4.A-k1-J1`; in a
-  shadow root, 4.A is PASS (rows A3, G4).
+Three causes account for most of the table. They are the first three
+items of "If we started over" at the end.
 
-### D-01 5.A, 5.B and 5.C say "no form fields" when the form is in a shadow root
+1. **"I saw nothing" and "I could not look" are the same value.** A
+   reader returns an empty list or `None` either way, and the check
+   reads empty as DOES NOT APPLY or PASS.
+2. **Limits are recorded in several ways, and only one of them holds
+   back an outcome.** A cap, a time limit or a trap is sometimes an
+   "incomplete" reason (NEEDS REVIEW), sometimes a note (still PASS),
+   sometimes nothing.
+3. **The specs define what counts in terms of what the tool can
+   see.** Row tables match the specs in every check; the gaps are in
+   the specs' "Terms" (what is a form, an error, a label, a moving
+   region), so several fixes are spec changes for Abby.
 
-- **What is wrong:** the label pass lists form fields with a plain
-  `document.querySelectorAll`, which does not enter shadow roots. Fields
-  in frames get a "not checked" note; fields in shadow roots get nothing.
-  With no fields and no note, the three tests return DOES NOT APPLY.
-- **Why it matters:** a wrong DOES NOT APPLY on any page whose inputs are
-  web components. `docs/ROADMAP.md` ("Known limits") says this case is a
-  NEEDS REVIEW note; for shadow roots it is not.
-- **Where:** `src/tobi508/labels.py:53` (`comps()`), `labels.py:361-380`
-  (only frames add a note); `src/tobi508/checks/t5a.py:238-243` and the
-  same branch in `t5b.py` and `t5c.py`.
-- **Smallest fix:** in `read_session`, count fields inside open shadow
-  roots (the walk's inventory already does) and add an "N form fields
-  inside web components were not checked" note, as for frames. Reading
-  them properly is the second step.
-- **Checked:** verified (run). A page with a text field, an email field
-  and a button in an open shadow root: 5.A, 5.B and 5.C all DOES NOT APPLY
-  ("This page has no form fields"). On the same page 5.D sees the two
-  fields, and 5.F, 5.G and 5.H are NEEDS REVIEW ("2 form field(s) could
-  not be read"), which is the safe answer.
+### Reaches most real pages
 
-### K-01 An "other page" that is the tested page under another spelling gives 9.B and 9.C a PASS
+These need nothing unusual: a long page, a link with `href="#"`, a
+gallery, a form behind a button, a script-checked form.
 
-- **What is wrong:** the tool refuses an other page only when its text
-  equals the tested page's text. A query string, a trailing slash, http
-  for https, or a URL that redirects to the tested page all get through.
-  After loading, only the host is compared.
-- **Why it matters:** the page is compared with itself. Everything
-  matches in the same order with the same names, so 9.B and 9.C PASS on
-  no evidence. An agent that passes `https://x.gov` and `https://x.gov/`
-  gets there without meaning to.
-- **Where:** `src/tobi508/pipeline.py:319` (text comparison) and about
-  line 1000 (after recording, host only).
-- **Smallest fix:** after recording, refuse an other page whose final URL
-  (fragment dropped, trailing slash and scheme ignored) equals the tested
-  page's final URL, and drop duplicates among the other pages the same
-  way. One fixture.
-- **Checked:** verified (run). Tested page `site-a.html`, other page
-  `site-a.html?x=1`: 9.B PASS (row N6), 9.C PASS (eight pairs, all C1).
-- **Also 9.A (M-11):** the same input makes 9.A treat everything as
-  repeated; the reviewer's runs gave FAIL with a `main` landmark and
-  DOES NOT APPLY without one. One fix covers all three tests.
-
-### K-02 Navigation inside a shadow root or a frame is invisible to 9.B, 9.C and 19.A
-
-- **What is wrong:** the site read walks `el.children` only. A header or
-  menu built as a web component, or placed in a frame, yields nothing.
-- **Why it matters:** 9.B and 9.C answer DOES NOT APPLY ("no navigation
-  on this page appears on the other pages") and 19.A answers FAIL ("no
-  way to reach this page") for a site whose shared header is plainly
-  there. Nothing in the result says content was skipped. 9.A has a frame
-  guard; these three have none.
-- **Where:** `src/tobi508/site.py:124-162` (`walk`); the DNA and FAIL
-  branches at `checks/t9b.py:200-214`, `checks/t9c.py:471-477`,
-  `checks/t19a.py:422-438`.
-- **Smallest fix:** count shadow roots and frames while reading each page
-  and, when there are any, make these DNA and FAIL branches NEEDS REVIEW
-  with the count (the way the cap rule N1 works). Walking open shadow
-  roots is the second step.
-- **Checked:** verified (run) for shadow roots: two pages sharing a
-  `<site-header>` web component with a three-link menu gave 9.B DNA,
-  9.C DNA and 19.A FAIL. Frames: verified (read) only.
-- **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
-  shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
-
-### E-01 4.A passes without looking for hover menus past the 40th element
+#### E-01 4.A passes without looking for hover menus past the 40th element
 
 - **What is wrong:** the scan for menus that open when the mouse rests
   on something stops after 40 Tab stops. Every other cap in 4.A makes
@@ -155,7 +121,7 @@ that the demo plan turns on (A-01, B-01).
 - **Checked:** verified (run). 45 links, a mouse-only menu shown by
   hovering the 45th: 4.A PASS, rows A3, G4.
 
-### E-02 4.A passes a mouse-only `<a href="#">` because another link also has `href="#"`
+#### E-02 4.A passes a mouse-only `<a href="#">` because another link also has `href="#"`
 
 - **What is wrong:** row M3 passes a control the keyboard cannot reach
   when a reached link "goes to the same place". The test is that the
@@ -173,158 +139,28 @@ that the demo plan turns on (A-01, B-01).
   `<a href="#" tabindex="-1" onclick=...>Open settings</a>`: 4.A PASS,
   row k1:M3 ("Home goes to the same place").
 
-### E-07 4.C passes after skipping its error-state pass for lack of time
+#### N-06 A flashing GIF after the 30th image is invisible to 3.A and 2.B
 
-- **What is wrong:** there are two "out of time" helpers. The one inside
-  4.C's collector also records "the run time limit was reached", which
-  makes the page NEEDS REVIEW. The one on the run context only sets a
-  flag. The gate before 4.C's error-state pass uses the second, with no
-  `else`.
-- **Why it matters:** the run's error line says "what was not finished
-  is NEEDS REVIEW" while the finding says PASS. It happens whenever the
-  deadline falls after the walk and before that pass: with
-  `no_time_limit=false`, or at `MAX_RUN_S` on a large page.
-- **Where:** `src/tobi508/checks/t4c.py:820`;
-  `src/tobi508/checks/base.py:116-123`; `t4c.py:242-250`.
-- **Smallest fix:** use the recording helper at line 820. Better: one
-  helper for every check, and a pipeline rule that a test whose
-  collector ran out of time cannot PASS.
-- **Checked:** verified (run). A small form page with the run limit set
-  to 17 s: the run reported the time-limit error and 4.C PASS (rows A3,
-  G4). At 22 s and 28 s the same page passes with no error.
+- **What is wrong:** the watcher decodes animated images from the first
+  30 `<img>` addresses only, and silently skips any file it cannot
+  decode (over 5 MB, an unknown type, not in the recording). Nothing
+  records what was skipped. Below the first screen the screen capture
+  cannot see it either.
+- **Why it matters:** a wrong DOES NOT APPLY for flashing, the one test
+  where a miss can hurt someone. A gallery or news page easily has more
+  than 30 images.
+- **Where:** `src/tobi508/motion.py:470-471, 1412-1415`;
+  `src/tobi508/checks/t3a.py:113-118`.
+- **Smallest fix:** when there are more than 30 images or one was
+  skipped, record it as "not measured" (3.A's A3, NEEDS REVIEW) and as
+  a hint for 2.B. Better: decode every image file in the recording
+  that has an animated-format signature.
+- **Checked:** verified (run). A strobing GIF below a spacer with 31
+  small images before it: 3.A DOES NOT APPLY and 2.B DOES NOT APPLY.
+  The reviewer's control with one image before it gave 3.A NOT TESTED
+  (8.5 flashes a second).
 
-### E-03 4.A says "nothing can be used with a mouse or keyboard" on a canvas or drag-only page
-
-- **What is wrong:** 4.A records canvases, draggable elements and
-  mouse-move handlers as "could not be tested, a person must look".
-  The DOES NOT APPLY row is tested first and does not look at them.
-- **Why it matters:** a wrong DOES NOT APPLY on a page that is a map, a
-  drawing or a drag-and-drop board, which is the content 4.A matters
-  most for. Spec row A1 says the same as the code, against the spec's
-  own "never a reason to PASS" for these.
-- **Where:** `src/tobi508/checks/t4a.py:965-969, 1184-1201`.
-- **Smallest fix:** A1 also requires that nothing of that kind was
-  recorded; otherwise NEEDS REVIEW. A spec change in the safe direction.
-- **Checked:** verified (run). A canvas with a mouse-move handler and a
-  draggable box, nothing focusable: 4.A DOES NOT APPLY.
-
-### E-08 4.A passes a button that only answers `mousedown` (needs Abby)
-
-- **What is wrong:** a native `<button>` or link is reached by Tab, so
-  it is not a mouse-only candidate, and native controls are never
-  pressed. One that acts on `mousedown` or `pointerdown` alone does
-  nothing on Enter or Space.
-- **Why it matters:** a false PASS on WCAG failure F54, the thing 4.A
-  exists to find. The spec says native controls are not executed; the
-  listener types are already read and then thrown away for them.
-- **Where:** `src/tobi508/checks/t4a.py:615-620, 262-265`.
-- **Smallest fix:** a native stop with a mouse-down listener and no
-  click listener gets the Enter-and-Space check, or NEEDS REVIEW. It
-  turns a PASS into a FAIL or a review, so it needs Abby and a spec row.
-- **Checked:** verified (run). `<button onmousedown=...>Open panel
-  </button>`: 4.A PASS, rows A3, G4.
-
-### F-02 4.D passes an element with no focus indicator when the page shifts under it
-
-- **What is wrong:** 4.D compares a picture of each element with focus
-  and without. Row M6 passes when there is a "style signal" and at
-  least 12 strongly changed pixels. The element's box having moved
-  between the two pictures counts as a style signal. If anything shifts
-  the page between them (a banner, a spacer, late content), the box
-  moves, the two pictures show different things, and the pixels differ.
-- **Why it matters:** a false PASS: "every one showed where focus was"
-  for a link with `outline: none`. The spec means the moving box for
-  skip links that appear on focus; the code applies it to any move.
-- **Where:** `src/tobi508/checks/t4d.py:826-827` (`_style_signal`),
-  `929-934` (M6), `325-326` (`moved`).
-- **Smallest fix:** count a move as a signal only when the element is
-  shown only on focus (its unfocused box is empty, hidden or off
-  screen); otherwise a moved element with changed pixels is "no clear
-  view" (M4, NEEDS REVIEW). This turns a PASS into NEEDS REVIEW, so it
-  needs Abby and a MINOR spec change. One fixture.
-- **Checked:** verified (run). Three links, the first with
-  `outline: none`; focusing the second grows a spacer above them. 4.D
-  PASS, rows d1:M6, d2:M6, d3:M6, G4.
-
-### F-11 4.F says "only one element takes focus" when the first element traps Tab
-
-- **What is wrong:** 4.F's DOES NOT APPLY row counts the distinct stops
-  the walk reached. When the first element traps Tab, the walk reaches
-  one. The row is tested before the row that says "the forward pass
-  did not finish, so the order is unknown".
-- **Why it matters:** a wrong DOES NOT APPLY, with a sentence that is
-  untrue of the page. 4.C does catch the trap on the same page, so the
-  page is not clean overall, but 4.F's own line is wrong.
-- **Where:** `src/tobi508/checks/t4f.py:597-600` (`distinct`),
-  `744-749` (A3), `843-858` (A3 returns before the G3 check).
-- **Smallest fix:** A3 applies only when both passes ended in a wrap (or
-  the same trap); otherwise fall through to NEEDS REVIEW.
-- **Checked:** verified (run). Four links, the first swallowing Tab:
-  4.F DOES NOT APPLY ("The page has only one element that takes
-  keyboard focus"); 4.C on the same run asked its trap question.
-
-### H-01 5.A passes a label whose words nobody can see
-
-- **What is wrong:** row M2 ("a visible label with text") is true when
-  the label element has a box near the field and any text. The text is
-  read with `innerText`, which includes words hidden with the usual
-  screen-reader-only CSS, words pushed off screen with `text-indent`,
-  and the options of a `<select>` that the label wraps.
-- **Why it matters:** a false PASS with no question asked. A label that
-  shows only "*" while its words are in a hidden span is a common
-  pattern. The spec says a visible label is text "rendered and readable
-  while the field has focus".
-- **Where:** `src/tobi508/labels.py:40` (`txt`), `188-189`;
-  `src/tobi508/checks/t5a.py:40-46`.
-- **Smallest fix:** take a label's text from its text nodes that pass
-  the visibility test (as the nearby-text reader already does at
-  `labels.py:212-225`), leaving out `select` and `option`; a label with
-  no visible text goes to the question.
-- **Checked:** verified (run). Three fields: a label of a hidden span
-  plus "*", an empty label wrapping a select, a label with
-  `text-indent: -9999px`. 5.A PASS, all three on row M2.
-
-### H-02 5.C passes any field whose visible text is not in Latin letters
-
-- **What is wrong:** 5.C compares the words people see with the words
-  a screen reader announces. Its word splitter keeps only `a-z` and
-  `0-9`. Cyrillic, Greek, Arabic, Hebrew, Chinese, Japanese and Korean
-  text yields no words, and "every visible word is announced" is then
-  true of nothing.
-- **Why it matters:** a false PASS on translated pages, whatever the
-  field announces. The same splitter makes 5.A's row M2o treat
-  non-Latin text beside an option as no text (a wrong FAIL; not run).
-- **Where:** `src/tobi508/checks/t5c.py:34-35` (`words`), `153-163`
-  (M5), `107-110`; `src/tobi508/checks/t5a.py:55, 70-71`.
-- **Smallest fix:** split on Unicode word characters, and never let M5
-  pass when there is visible text that yields no words.
-- **Checked:** verified (run). Fields labelled "Имя пользователя" and
-  "必須の住所を入力してください" with `aria-label="f1"` and `"x1"`:
-  both on row M5 (pass), not asked.
-
-### H-03, M-05 5.D and 5.F pass a form they stopped testing at a keyboard trap
-
-- **What is wrong:** the spec says NEEDS REVIEW when the walk "ended in
-  a trap before the last field". The code counts the two trap endings
-  as a complete walk. Fields after the trap were never reached, so they
-  are not in the list of fields to complete, and nothing compares that
-  list with the number of fields on the page.
-- **Why it matters:** a false PASS: "We filled in each of the 1 form
-  fields" on a form with two, the second of which navigates away on
-  blur.
-- **Where:** `src/tobi508/checks/t5d.py:1086, 1090-1094`; spec 5.D
-  section 3b, G3.
-- **Smallest fix:** treat a trap ending like any other unfinished walk,
-  and add "N form fields the keyboard walk did not reach" whenever the
-  page has more fields than were completed.
-- **Checked:** verified (run). A field, a link that swallows Tab, a
-  second field with `onblur` navigation: 5.D PASS, rows A3, G4.
-- **Also in 5.F (M-05):** the same list of "complete" endings is at
-  `src/tobi508/checks/t5f.py:1233`. Verified (run): a form, a trap,
-  then a second form with a broken error message: 5.F PASS. Without
-  the trap the same page is FAIL. 5.G and 5.H read the same pass.
-
-### H-08, M-07 A form behind a plain button is "no form fields" (needs Abby)
+#### H-08, M-07 A form behind a plain button is "no form fields" (needs Abby)
 
 - **What is wrong:** the tests list form fields that are rendered when
   the page loads. A form that a button or link shows is found only if
@@ -350,141 +186,48 @@ that the demo plan turns on (A-01, B-01).
   reveal guard at all. The reviewer's run of a "Pay your bill" button
   that unhides a payment form gave DOES NOT APPLY for all three.
 
-### W-02 3.A says nothing flashes when the flashing is below the first screen
+#### M-01 5.F and 5.G say "the page did not check for errors" when the form's button is `type="button"`
 
-- **What is wrong:** the frame-by-frame capture photographs the top
-  1024 x 768 of the page. When the watcher has seen a fast timer
-  changing the page (a "trigger") and the capture then sees a still
-  picture, the source is recorded as "not flashing" and as measured.
-- **Why it matters:** a wrong DOES NOT APPLY for flashing on a page
-  where the tool itself recorded "8 changes in one second". The safety
-  net (a 2 s screen recording) also sees only the first screen.
-- **Where:** `src/tobi508/flashcap.py:249, 296`;
-  `src/tobi508/checks/t3a.py:237-300, 587-597`; spec 3.A, row A4
-  ("every trigger was measured").
-- **Smallest fix:** a trigger counts as measured only when the capture
-  saw it change; otherwise add "something changed quickly that the
-  capture did not show", which is row A3, NEEDS REVIEW. Then scroll the
-  changed element into view for the capture.
-- **Checked:** verified (run). A 1000 x 400 block switching black and
-  white every 125 ms, 2,500 px down the page: 3.A DOES NOT APPLY.
+- **What is wrong:** only submit-type buttons count as the control that
+  sends a form. A form checked by script usually has
+  `<button type="button" onclick="validate()">`. That button is never
+  pressed; with two or more fields, Enter does not submit either; and
+  the question that lets the agent name the right button is never
+  asked, because the list of buttons is empty.
+- **Why it matters:** a wrong DOES NOT APPLY on a very common way to
+  build a form, with a sentence that is untrue. Spec and code agree,
+  so the spec has the gap.
+- **Where:** `src/tobi508/checks/t5f.py:160-161` (`isSubmit`), `173`,
+  `641`, `946-951`.
+- **Smallest fix:** offer every visible button inside the form, submit
+  words first; a form whose press could not have sent it (no submit
+  button, more than one field) is NEEDS REVIEW, never DOES NOT APPLY.
+- **Checked:** verified (run). Two fields and a `type="button"` whose
+  handler writes "Email: enter a valid email address" into a
+  `role="alert"`: 5.F and 5.G DOES NOT APPLY, no question.
 
-### W-09 2.B misses a blink or jump at 2.5 times a second
+#### H-01 5.A passes a label whose words nobody can see
 
-- **What is wrong:** the watch compares about 17 screenshots taken at
-  gaps of 0.35 s and 0.45 s in turn. That pattern repeats every 0.8 s,
-  so content with a period of 0.4 s is caught in the same state in
-  both pictures for three starts in four (the reviewer's simulation;
-  one in two at 0.2 s).
-- **Why it matters:** a wrong DOES NOT APPLY on fast blinking, which is
-  below 3.A's threshold, so 2.B is the only test that covers it.
-- **Where:** `src/tobi508/motion.py:51-54` (`FRAME_STEPS`),
-  `1149-1167`.
-- **Smallest fix:** vary the gaps (a seeded 0.30 to 0.50 s), or take
-  change from a screen recording of the whole watch. Add 1 to 3 Hz
-  blinks to `tests/test_motion_browser.py`.
-- **Checked:** verified (run). A box that jumps 200 px sideways every
-  200 ms, forever: 2.B DOES NOT APPLY in 2 of 2 runs. (The reviewer's
-  own page blinked by `visibility`, which N-03 also explains; mine
-  does not.)
+- **What is wrong:** row M2 ("a visible label with text") is true when
+  the label element has a box near the field and any text. The text is
+  read with `innerText`, which includes words hidden with the usual
+  screen-reader-only CSS, words pushed off screen with `text-indent`,
+  and the options of a `<select>` that the label wraps.
+- **Why it matters:** a false PASS with no question asked. A label that
+  shows only "*" while its words are in a hidden span is a common
+  pattern. The spec says a visible label is text "rendered and readable
+  while the field has focus".
+- **Where:** `src/tobi508/labels.py:40` (`txt`), `188-189`;
+  `src/tobi508/checks/t5a.py:40-46`.
+- **Smallest fix:** take a label's text from its text nodes that pass
+  the visibility test (as the nearby-text reader already does at
+  `labels.py:212-225`), leaving out `select` and `option`; a label with
+  no visible text goes to the question.
+- **Checked:** verified (run). Three fields: a label of a hidden span
+  plus "*", an empty label wrapping a select, a label with
+  `text-indent: -9999px`. 5.A PASS, all three on row M2.
 
-### W-07 2.B says nothing moved when most of the screen moves
-
-- **What is wrong:** a pair of frames in which more than half the
-  screen changed is set aside as a "page-wide change" (meant for a
-  dialog backdrop or a scroll) and not mapped to any region. No check
-  reads the set-aside list. A full-width slider, a colour-cycling
-  background or a full-screen canvas changes most of the screen in
-  every pair.
-- **Why it matters:** a wrong DOES NOT APPLY on the largest moving
-  content a page can have.
-- **Where:** `src/tobi508/motion.py:64` (`PAGE_CHANGE = 0.5`),
-  `1501-1504`.
-- **Smallest fix:** when a third or more of the frame pairs are
-  page-wide changes, treat the viewport as one moving region, or at
-  least add "the whole screen changed in N frames" as a NEEDS REVIEW
-  hint in 2.B and 2.C.
-- **Checked:** verified (run). A fixed full-viewport canvas drawing a
-  slowly cycling gradient: 2.B DOES NOT APPLY.
-
-### N-01 2.A does not hear audio from `new Audio()` or from a shadow root
-
-- **What is wrong:** the watcher finds media with
-  `document.querySelectorAll('video, audio')`. Audio a script starts
-  with `new Audio(url).play()`, the usual way to play background sound,
-  is never in the document. Audio inside a web component is in a
-  shadow root. Neither is seen, and nothing else records that
-  something played.
-- **Why it matters:** a wrong DOES NOT APPLY ("No audio played by
-  itself") on a page that plays sound at load with no control, which
-  is a FAIL in the TT.
-- **Where:** `src/tobi508/motion.py:392` (`M.media`);
-  `src/tobi508/checks/t2a.py:94-129, 190`.
-- **Smallest fix:** in the watcher's start-up script, hook
-  `HTMLMediaElement.prototype.play` and keep every element that
-  played; walk open shadow roots. An element that played and could not
-  be read is NEEDS REVIEW.
-- **Checked:** verified (run). The same tone file three ways: a plain
-  `<audio autoplay>` is 2.A FAIL; `new Audio('tone.wav').play()` is
-  DOES NOT APPLY; `<audio autoplay>` in a shadow root is DOES NOT
-  APPLY. The watchers reviewer found the same independently (W-03)
-  and adds that `speechSynthesis.speak()` is not hooked either.
-
-### N-03 2.B says nothing blinked when text blinks by `visibility`
-
-- **What is wrong:** text switched between `visibility: hidden` and
-  `visible` (the usual stand-in for `<blink>`) changes the region's
-  visible text, so the watcher files it as "updating", never "moving".
-  2.B looks only at moving regions.
-- **Why it matters:** a wrong DOES NOT APPLY ("Nothing on it moved,
-  blinked or scrolled") on blinking text. 2.C does report the same
-  content, so the page is not clean overall.
-- **Where:** `src/tobi508/checks/t2b.py:77-85` (`moving`);
-  `src/tobi508/motion.py:215, 976-987`.
-- **Smallest fix:** count an updating region as blinking when it keeps
-  returning to an earlier state (few distinct states, still changing
-  after 5 s). Fixtures for `visibility` and `opacity`.
-- **Checked:** verified (run). A span toggled every 500 ms: 2.B DOES NOT
-  APPLY, rows A2, G1.
-
-### N-06 A flashing GIF after the 30th image is invisible to 3.A and 2.B
-
-- **What is wrong:** the watcher decodes animated images from the first
-  30 `<img>` addresses only, and silently skips any file it cannot
-  decode (over 5 MB, an unknown type, not in the recording). Nothing
-  records what was skipped. Below the first screen the screen capture
-  cannot see it either.
-- **Why it matters:** a wrong DOES NOT APPLY for flashing, the one test
-  where a miss can hurt someone. A gallery or news page easily has more
-  than 30 images.
-- **Where:** `src/tobi508/motion.py:470-471, 1412-1415`;
-  `src/tobi508/checks/t3a.py:113-118`.
-- **Smallest fix:** when there are more than 30 images or one was
-  skipped, record it as "not measured" (3.A's A3, NEEDS REVIEW) and as
-  a hint for 2.B. Better: decode every image file in the recording
-  that has an animated-format signature.
-- **Checked:** verified (run). A strobing GIF below a spacer with 31
-  small images before it: 3.A DOES NOT APPLY and 2.B DOES NOT APPLY.
-  The reviewer's control with one image before it gave 3.A NOT TESTED
-  (8.5 flashes a second).
-
-### N-08 2.B says nothing moved on a page with an autoplaying YouTube embed
-
-- **What is wrong:** 2.B's spec row A1 names three ways a video "could
-  not play from the recording": an error, a streaming player, a file
-  over the cap. The code has the first only. 2.A and 3.A do have all
-  three, each with its own pattern.
-- **Why it matters:** on one page 2.A and 3.A say NEEDS REVIEW ("a
-  streaming video player that we cannot play from a recording") and
-  2.B says DOES NOT APPLY ("Nothing on it moved").
-- **Where:** `src/tobi508/checks/t2b.py:114-115, 170-175`; spec 2.B,
-  A1; compare `t2a.py:92-112`, `t3a.py:149-157`.
-- **Smallest fix:** one shared "media we could not play" helper, used
-  by 2.A, 2.B and 3.A.
-- **Checked:** verified (run). A `youtube-nocookie.com/embed/...
-  ?autoplay=1` frame: 2.A NEEDS REVIEW, 2.B DOES NOT APPLY.
-
-### N-02, N-04, N-07, N-09 What starts after the 6.5-second watch is "does not apply"
+#### N-02, N-04, N-07, N-09 What starts after the 6.5-second watch is "does not apply"
 
 - **What is wrong:** the page is watched for 6.5 s. 2.C treats "a timer
   longer than the watch" as a hint and answers NEEDS REVIEW. 2.A, 2.B
@@ -521,27 +264,120 @@ that the demo plan turns on (A-01, B-01).
   7 s"); a strobe started at 9 s, 3.A DOES NOT APPLY; a counter started
   by the second observed element, 2.C DOES NOT APPLY.
 
-### M-01 5.F and 5.G say "the page did not check for errors" when the form's button is `type="button"`
+#### W-09 2.B misses a blink or jump at 2.5 times a second
 
-- **What is wrong:** only submit-type buttons count as the control that
-  sends a form. A form checked by script usually has
-  `<button type="button" onclick="validate()">`. That button is never
-  pressed; with two or more fields, Enter does not submit either; and
-  the question that lets the agent name the right button is never
-  asked, because the list of buttons is empty.
-- **Why it matters:** a wrong DOES NOT APPLY on a very common way to
-  build a form, with a sentence that is untrue. Spec and code agree,
-  so the spec has the gap.
-- **Where:** `src/tobi508/checks/t5f.py:160-161` (`isSubmit`), `173`,
-  `641`, `946-951`.
-- **Smallest fix:** offer every visible button inside the form, submit
-  words first; a form whose press could not have sent it (no submit
-  button, more than one field) is NEEDS REVIEW, never DOES NOT APPLY.
-- **Checked:** verified (run). Two fields and a `type="button"` whose
-  handler writes "Email: enter a valid email address" into a
-  `role="alert"`: 5.F and 5.G DOES NOT APPLY, no question.
+- **What is wrong:** the watch compares about 17 screenshots taken at
+  gaps of 0.35 s and 0.45 s in turn. That pattern repeats every 0.8 s,
+  so content with a period of 0.4 s is caught in the same state in
+  both pictures for three starts in four (the reviewer's simulation;
+  one in two at 0.2 s).
+- **Why it matters:** a wrong DOES NOT APPLY on fast blinking, which is
+  below 3.A's threshold, so 2.B is the only test that covers it.
+- **Where:** `src/tobi508/motion.py:51-54` (`FRAME_STEPS`),
+  `1149-1167`.
+- **Smallest fix:** vary the gaps (a seeded 0.30 to 0.50 s), or take
+  change from a screen recording of the whole watch. Add 1 to 3 Hz
+  blinks to `tests/test_motion_browser.py`.
+- **Checked:** verified (run). A box that jumps 200 px sideways every
+  200 ms, forever: 2.B DOES NOT APPLY in 2 of 2 runs. (The reviewer's
+  own page blinked by `visibility`, which N-03 also explains; mine
+  does not.)
 
-### M-06 5.F and 5.G read "no error seen" as "the page did not check"
+### Pages built with web components
+
+One cause: most readers use `document.querySelectorAll` or
+`el.children`, which do not enter shadow roots. The keyboard walk
+does enter them, so the tool reaches these controls and then loses
+them.
+
+#### D-03 4.A passes a page whose mouse-only control is in a shadow root
+
+- **What is wrong:** 4.A finds mouse-only controls by asking Chrome for
+  the click handlers in the document. The request does not look inside
+  shadow roots, so a control with a click handler inside a web component
+  is never seen.
+- **Why it matters:** a false PASS. The same control in the ordinary DOM
+  raises a question; inside a shadow root the test says "we found nothing
+  a keyboard user would miss". Design systems built on web components
+  put every control in a shadow root.
+- **Where:** `src/tobi508/traverse.py:515-518` (`getEventListeners` with
+  `pierce: False`); used by `src/tobi508/checks/t4a.py:391-401`.
+- **Smallest fix:** also read listeners from each open shadow root (or
+  `pierce: True`, keeping only this frame's nodes). Until then, when the
+  page has any shadow root, add a coverage note so 4.A cannot PASS.
+  Fixture: one clickable `<span>` in a shadow root.
+- **Checked:** verified (run). Two one-control pages, same handler: in
+  the ordinary DOM, 4.A is NEEDS REVIEW with question `4.A-k1-J1`; in a
+  shadow root, 4.A is PASS (rows A3, G4).
+
+#### D-01 5.A, 5.B and 5.C say "no form fields" when the form is in a shadow root
+
+- **What is wrong:** the label pass lists form fields with a plain
+  `document.querySelectorAll`, which does not enter shadow roots. Fields
+  in frames get a "not checked" note; fields in shadow roots get nothing.
+  With no fields and no note, the three tests return DOES NOT APPLY.
+- **Why it matters:** a wrong DOES NOT APPLY on any page whose inputs are
+  web components. `docs/ROADMAP.md` ("Known limits") says this case is a
+  NEEDS REVIEW note; for shadow roots it is not.
+- **Where:** `src/tobi508/labels.py:53` (`comps()`), `labels.py:361-380`
+  (only frames add a note); `src/tobi508/checks/t5a.py:238-243` and the
+  same branch in `t5b.py` and `t5c.py`.
+- **Smallest fix:** in `read_session`, count fields inside open shadow
+  roots (the walk's inventory already does) and add an "N form fields
+  inside web components were not checked" note, as for frames. Reading
+  them properly is the second step.
+- **Checked:** verified (run). A page with a text field, an email field
+  and a button in an open shadow root: 5.A, 5.B and 5.C all DOES NOT APPLY
+  ("This page has no form fields"). On the same page 5.D sees the two
+  fields, and 5.F, 5.G and 5.H are NEEDS REVIEW ("2 form field(s) could
+  not be read"), which is the safe answer.
+
+#### K-02 Navigation inside a shadow root or a frame is invisible to 9.B, 9.C and 19.A
+
+- **What is wrong:** the site read walks `el.children` only. A header or
+  menu built as a web component, or placed in a frame, yields nothing.
+- **Why it matters:** 9.B and 9.C answer DOES NOT APPLY ("no navigation
+  on this page appears on the other pages") and 19.A answers FAIL ("no
+  way to reach this page") for a site whose shared header is plainly
+  there. Nothing in the result says content was skipped. 9.A has a frame
+  guard; these three have none.
+- **Where:** `src/tobi508/site.py:124-162` (`walk`); the DNA and FAIL
+  branches at `checks/t9b.py:200-214`, `checks/t9c.py:471-477`,
+  `checks/t19a.py:422-438`.
+- **Smallest fix:** count shadow roots and frames while reading each page
+  and, when there are any, make these DNA and FAIL branches NEEDS REVIEW
+  with the count (the way the cap rule N1 works). Walking open shadow
+  roots is the second step.
+- **Checked:** verified (run) for shadow roots: two pages sharing a
+  `<site-header>` web component with a three-link menu gave 9.B DNA,
+  9.C DNA and 19.A FAIL. Frames: verified (read) only.
+- **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
+  shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
+
+#### N-01 2.A does not hear audio from `new Audio()` or from a shadow root
+
+- **What is wrong:** the watcher finds media with
+  `document.querySelectorAll('video, audio')`. Audio a script starts
+  with `new Audio(url).play()`, the usual way to play background sound,
+  is never in the document. Audio inside a web component is in a
+  shadow root. Neither is seen, and nothing else records that
+  something played.
+- **Why it matters:** a wrong DOES NOT APPLY ("No audio played by
+  itself") on a page that plays sound at load with no control, which
+  is a FAIL in the TT.
+- **Where:** `src/tobi508/motion.py:392` (`M.media`);
+  `src/tobi508/checks/t2a.py:94-129, 190`.
+- **Smallest fix:** in the watcher's start-up script, hook
+  `HTMLMediaElement.prototype.play` and keep every element that
+  played; walk open shadow roots. An element that played and could not
+  be read is NEEDS REVIEW.
+- **Checked:** verified (run). The same tone file three ways: a plain
+  `<audio autoplay>` is 2.A FAIL; `new Audio('tone.wav').play()` is
+  DOES NOT APPLY; `<audio autoplay>` in a shadow root is DOES NOT
+  APPLY. The watchers reviewer found the same independently (W-03)
+  and adds that `speechSynthesis.speak()` is not hooked either.
+
+#### M-06 5.F and 5.G read "no error seen" as "the page did not check"
 
 - **What is wrong:** an error counts when the tool sees new text,
   `aria-invalid`, a browser message or a change in the field's own
@@ -560,7 +396,197 @@ that the demo plan turns on (A-01, B-01).
   shadow root, and a red border on a wrapper, both 5.F DOES NOT APPLY.
   The 60 ms message is the reviewer's run.
 
-### M-02 5.H cannot see a form that is only a button
+### A walk cut short by a trap or the clock
+
+One cause: "did not finish" is recorded in different ways by
+different checks, and some of those ways do not hold back an outcome.
+
+#### E-07 4.C passes after skipping its error-state pass for lack of time
+
+- **What is wrong:** there are two "out of time" helpers. The one inside
+  4.C's collector also records "the run time limit was reached", which
+  makes the page NEEDS REVIEW. The one on the run context only sets a
+  flag. The gate before 4.C's error-state pass uses the second, with no
+  `else`.
+- **Why it matters:** the run's error line says "what was not finished
+  is NEEDS REVIEW" while the finding says PASS. It happens whenever the
+  deadline falls after the walk and before that pass: with
+  `no_time_limit=false`, or at `MAX_RUN_S` on a large page.
+- **Where:** `src/tobi508/checks/t4c.py:820`;
+  `src/tobi508/checks/base.py:116-123`; `t4c.py:242-250`.
+- **Smallest fix:** use the recording helper at line 820. Better: one
+  helper for every check, and a pipeline rule that a test whose
+  collector ran out of time cannot PASS.
+- **Checked:** verified (run). A small form page with the run limit set
+  to 17 s: the run reported the time-limit error and 4.C PASS (rows A3,
+  G4). At 22 s and 28 s the same page passes with no error.
+
+#### H-03, M-05 5.D and 5.F pass a form they stopped testing at a keyboard trap
+
+- **What is wrong:** the spec says NEEDS REVIEW when the walk "ended in
+  a trap before the last field". The code counts the two trap endings
+  as a complete walk. Fields after the trap were never reached, so they
+  are not in the list of fields to complete, and nothing compares that
+  list with the number of fields on the page.
+- **Why it matters:** a false PASS: "We filled in each of the 1 form
+  fields" on a form with two, the second of which navigates away on
+  blur.
+- **Where:** `src/tobi508/checks/t5d.py:1086, 1090-1094`; spec 5.D
+  section 3b, G3.
+- **Smallest fix:** treat a trap ending like any other unfinished walk,
+  and add "N form fields the keyboard walk did not reach" whenever the
+  page has more fields than were completed.
+- **Checked:** verified (run). A field, a link that swallows Tab, a
+  second field with `onblur` navigation: 5.D PASS, rows A3, G4.
+- **Also in 5.F (M-05):** the same list of "complete" endings is at
+  `src/tobi508/checks/t5f.py:1233`. Verified (run): a form, a trap,
+  then a second form with a broken error message: 5.F PASS. Without
+  the trap the same page is FAIL. 5.G and 5.H read the same pass.
+
+#### F-11 4.F says "only one element takes focus" when the first element traps Tab
+
+- **What is wrong:** 4.F's DOES NOT APPLY row counts the distinct stops
+  the walk reached. When the first element traps Tab, the walk reaches
+  one. The row is tested before the row that says "the forward pass
+  did not finish, so the order is unknown".
+- **Why it matters:** a wrong DOES NOT APPLY, with a sentence that is
+  untrue of the page. 4.C does catch the trap on the same page, so the
+  page is not clean overall, but 4.F's own line is wrong.
+- **Where:** `src/tobi508/checks/t4f.py:597-600` (`distinct`),
+  `744-749` (A3), `843-858` (A3 returns before the G3 check).
+- **Smallest fix:** A3 applies only when both passes ended in a wrap (or
+  the same trap); otherwise fall through to NEEDS REVIEW.
+- **Checked:** verified (run). Four links, the first swallowing Tab:
+  4.F DOES NOT APPLY ("The page has only one element that takes
+  keyboard focus"); 4.C on the same run asked its trap question.
+
+### Particular content
+
+#### F-02 4.D passes an element with no focus indicator when the page shifts under it
+
+- **What is wrong:** 4.D compares a picture of each element with focus
+  and without. Row M6 passes when there is a "style signal" and at
+  least 12 strongly changed pixels. The element's box having moved
+  between the two pictures counts as a style signal. If anything shifts
+  the page between them (a banner, a spacer, late content), the box
+  moves, the two pictures show different things, and the pixels differ.
+- **Why it matters:** a false PASS: "every one showed where focus was"
+  for a link with `outline: none`. The spec means the moving box for
+  skip links that appear on focus; the code applies it to any move.
+- **Where:** `src/tobi508/checks/t4d.py:826-827` (`_style_signal`),
+  `929-934` (M6), `325-326` (`moved`).
+- **Smallest fix:** count a move as a signal only when the element is
+  shown only on focus (its unfocused box is empty, hidden or off
+  screen); otherwise a moved element with changed pixels is "no clear
+  view" (M4, NEEDS REVIEW). This turns a PASS into NEEDS REVIEW, so it
+  needs Abby and a MINOR spec change. One fixture.
+- **Checked:** verified (run). Three links, the first with
+  `outline: none`; focusing the second grows a spacer above them. 4.D
+  PASS, rows d1:M6, d2:M6, d3:M6, G4.
+
+#### W-02 3.A says nothing flashes when the flashing is below the first screen
+
+- **What is wrong:** the frame-by-frame capture photographs the top
+  1024 x 768 of the page. When the watcher has seen a fast timer
+  changing the page (a "trigger") and the capture then sees a still
+  picture, the source is recorded as "not flashing" and as measured.
+- **Why it matters:** a wrong DOES NOT APPLY for flashing on a page
+  where the tool itself recorded "8 changes in one second". The safety
+  net (a 2 s screen recording) also sees only the first screen.
+- **Where:** `src/tobi508/flashcap.py:249, 296`;
+  `src/tobi508/checks/t3a.py:237-300, 587-597`; spec 3.A, row A4
+  ("every trigger was measured").
+- **Smallest fix:** a trigger counts as measured only when the capture
+  saw it change; otherwise add "something changed quickly that the
+  capture did not show", which is row A3, NEEDS REVIEW. Then scroll the
+  changed element into view for the capture.
+- **Checked:** verified (run). A 1000 x 400 block switching black and
+  white every 125 ms, 2,500 px down the page: 3.A DOES NOT APPLY.
+
+#### W-07 2.B says nothing moved when most of the screen moves
+
+- **What is wrong:** a pair of frames in which more than half the
+  screen changed is set aside as a "page-wide change" (meant for a
+  dialog backdrop or a scroll) and not mapped to any region. No check
+  reads the set-aside list. A full-width slider, a colour-cycling
+  background or a full-screen canvas changes most of the screen in
+  every pair.
+- **Why it matters:** a wrong DOES NOT APPLY on the largest moving
+  content a page can have.
+- **Where:** `src/tobi508/motion.py:64` (`PAGE_CHANGE = 0.5`),
+  `1501-1504`.
+- **Smallest fix:** when a third or more of the frame pairs are
+  page-wide changes, treat the viewport as one moving region, or at
+  least add "the whole screen changed in N frames" as a NEEDS REVIEW
+  hint in 2.B and 2.C.
+- **Checked:** verified (run). A fixed full-viewport canvas drawing a
+  slowly cycling gradient: 2.B DOES NOT APPLY.
+
+#### N-03 2.B says nothing blinked when text blinks by `visibility`
+
+- **What is wrong:** text switched between `visibility: hidden` and
+  `visible` (the usual stand-in for `<blink>`) changes the region's
+  visible text, so the watcher files it as "updating", never "moving".
+  2.B looks only at moving regions.
+- **Why it matters:** a wrong DOES NOT APPLY ("Nothing on it moved,
+  blinked or scrolled") on blinking text. 2.C does report the same
+  content, so the page is not clean overall.
+- **Where:** `src/tobi508/checks/t2b.py:77-85` (`moving`);
+  `src/tobi508/motion.py:215, 976-987`.
+- **Smallest fix:** count an updating region as blinking when it keeps
+  returning to an earlier state (few distinct states, still changing
+  after 5 s). Fixtures for `visibility` and `opacity`.
+- **Checked:** verified (run). A span toggled every 500 ms: 2.B DOES NOT
+  APPLY, rows A2, G1.
+
+#### N-08 2.B says nothing moved on a page with an autoplaying YouTube embed
+
+- **What is wrong:** 2.B's spec row A1 names three ways a video "could
+  not play from the recording": an error, a streaming player, a file
+  over the cap. The code has the first only. 2.A and 3.A do have all
+  three, each with its own pattern.
+- **Why it matters:** on one page 2.A and 3.A say NEEDS REVIEW ("a
+  streaming video player that we cannot play from a recording") and
+  2.B says DOES NOT APPLY ("Nothing on it moved").
+- **Where:** `src/tobi508/checks/t2b.py:114-115, 170-175`; spec 2.B,
+  A1; compare `t2a.py:92-112`, `t3a.py:149-157`.
+- **Smallest fix:** one shared "media we could not play" helper, used
+  by 2.A, 2.B and 3.A.
+- **Checked:** verified (run). A `youtube-nocookie.com/embed/...
+  ?autoplay=1` frame: 2.A NEEDS REVIEW, 2.B DOES NOT APPLY.
+
+#### E-03 4.A says "nothing can be used with a mouse or keyboard" on a canvas or drag-only page
+
+- **What is wrong:** 4.A records canvases, draggable elements and
+  mouse-move handlers as "could not be tested, a person must look".
+  The DOES NOT APPLY row is tested first and does not look at them.
+- **Why it matters:** a wrong DOES NOT APPLY on a page that is a map, a
+  drawing or a drag-and-drop board, which is the content 4.A matters
+  most for. Spec row A1 says the same as the code, against the spec's
+  own "never a reason to PASS" for these.
+- **Where:** `src/tobi508/checks/t4a.py:965-969, 1184-1201`.
+- **Smallest fix:** A1 also requires that nothing of that kind was
+  recorded; otherwise NEEDS REVIEW. A spec change in the safe direction.
+- **Checked:** verified (run). A canvas with a mouse-move handler and a
+  draggable box, nothing focusable: 4.A DOES NOT APPLY.
+
+#### E-08 4.A passes a button that only answers `mousedown` (needs Abby)
+
+- **What is wrong:** a native `<button>` or link is reached by Tab, so
+  it is not a mouse-only candidate, and native controls are never
+  pressed. One that acts on `mousedown` or `pointerdown` alone does
+  nothing on Enter or Space.
+- **Why it matters:** a false PASS on WCAG failure F54, the thing 4.A
+  exists to find. The spec says native controls are not executed; the
+  listener types are already read and then thrown away for them.
+- **Where:** `src/tobi508/checks/t4a.py:615-620, 262-265`.
+- **Smallest fix:** a native stop with a mouse-down listener and no
+  click listener gets the Enter-and-Space check, or NEEDS REVIEW. It
+  turns a PASS into a FAIL or a review, so it needs Abby and a spec row.
+- **Checked:** verified (run). `<button onmousedown=...>Open panel
+  </button>`: 4.A PASS, rows A3, G4.
+
+#### M-02 5.H cannot see a form that is only a button
 
 - **What is wrong:** forms are built from the form fields the walk
   reached. `<form method="post" action="/delete-account"><button>Delete
@@ -575,7 +601,7 @@ that the demo plan turns on (A-01, B-01).
   a visible form that was not taken.
 - **Checked:** verified (run): 5.H DOES NOT APPLY, rows A1, G1.
 
-### M-08 5.H passes a multi-step form when the next step contains the word "required"
+#### M-08 5.H passes a multi-step form when the next step contains the word "required"
 
 - **What is wrong:** row M1 passes a form that "checked" the entry.
   "Checked" is true when the form was not sent, its fields still exist
@@ -594,7 +620,7 @@ that the demo plan turns on (A-01, B-01).
   ran a two-step page, saw `checked: true` in the evidence, and got
   PASS from `evaluate` on the saved state.
 
-### M-03 English word lists decide DOES NOT APPLY in 5.H and PASS in 4.B
+#### M-03 English word lists decide DOES NOT APPLY in 5.H and PASS in 4.B
 
 - **What is wrong:** 5.H asks about a form only if the page has an
   English word such as pay, order, agree or delete. 4.B asks about
@@ -613,27 +639,54 @@ that the demo plan turns on (A-01, B-01).
   de tarjeta" and "Pagar ahora" is DOES NOT APPLY. The 4.B half follows
   from row M1 and is not run.
 
-### A-01 Hosted mode: one signed-in user can list and collect another user's run
+#### H-02 5.C passes any field whose visible text is not in Latin letters
 
-- **What is wrong:** jobs are kept in one list for the whole server, with
-  no owner. `tobi_run_status` with no `job_id` lists every job still
-  running, for every user, with its job id and URL. Anyone can then wait
-  on that job id and receive the finished result. Run folders are
-  protected by an owner check; the job's result is not.
-- **Why it matters:** with `AUTH=oidc` this leaks which pages another
-  person is testing and their findings and page text. It is the first
-  thing to close before the VAST step of the demo plan.
-- **Where:** `src/tobi508/jobs.py:57-58, 98-99`;
-  `src/tobi508/tools/run_status.py:75-96`;
-  `src/tobi508/pipeline.py:1572-1585` (`outstanding`).
-- **Smallest fix:** store `access.caller()` on the job when it starts;
-  `get`, `all_jobs` and `running` return only the caller's jobs. A test
-  beside `tests/test_access.py`.
-- **Checked:** verified (read). `Job` has no owner field; `outstanding`
-  adds running jobs to its list before any owner check. Not exercised
-  with two real tokens.
+- **What is wrong:** 5.C compares the words people see with the words
+  a screen reader announces. Its word splitter keeps only `a-z` and
+  `0-9`. Cyrillic, Greek, Arabic, Hebrew, Chinese, Japanese and Korean
+  text yields no words, and "every visible word is announced" is then
+  true of nothing.
+- **Why it matters:** a false PASS on translated pages, whatever the
+  field announces. The same splitter makes 5.A's row M2o treat
+  non-Latin text beside an option as no text (a wrong FAIL; not run).
+- **Where:** `src/tobi508/checks/t5c.py:34-35` (`words`), `153-163`
+  (M5), `107-110`; `src/tobi508/checks/t5a.py:55, 70-71`.
+- **Smallest fix:** split on Unicode word characters, and never let M5
+  pass when there is visible text that yields no words.
+- **Checked:** verified (run). Fields labelled "Имя пользователя" and
+  "必須の住所を入力してください" with `aria-label="f1"` and `"x1"`:
+  both on row M5 (pass), not asked.
 
-### B-01 Server judge: a page can make the server read picture files outside the run
+### What the caller passes in
+
+#### K-01 An "other page" that is the tested page under another spelling gives 9.B and 9.C a PASS
+
+- **What is wrong:** the tool refuses an other page only when its text
+  equals the tested page's text. A query string, a trailing slash, http
+  for https, or a URL that redirects to the tested page all get through.
+  After loading, only the host is compared.
+- **Why it matters:** the page is compared with itself. Everything
+  matches in the same order with the same names, so 9.B and 9.C PASS on
+  no evidence. An agent that passes `https://x.gov` and `https://x.gov/`
+  gets there without meaning to.
+- **Where:** `src/tobi508/pipeline.py:319` (text comparison) and about
+  line 1000 (after recording, host only).
+- **Smallest fix:** after recording, refuse an other page whose final URL
+  (fragment dropped, trailing slash and scheme ignored) equals the tested
+  page's final URL, and drop duplicates among the other pages the same
+  way. One fixture.
+- **Checked:** verified (run). Tested page `site-a.html`, other page
+  `site-a.html?x=1`: 9.B PASS (row N6), 9.C PASS (eight pairs, all C1).
+- **Also 9.A (M-11):** the same input makes 9.A treat everything as
+  repeated; the reviewer's runs gave FAIL with a `main` landmark and
+  DOES NOT APPLY without one. One fix covers all three tests.
+
+### Security, in modes the demo plan turns on
+
+Both are off by default (`AUTH=none`, `JUDGE_BACKEND=client`).
+The round 2 check uses the server judge; the VAST step uses sign-in.
+
+#### B-01 Server judge: a page can make the server read picture files outside the run
 
 - **What is wrong:** the server judge collects every `run://...png` it
   finds anywhere in a question's input and opens it as a path under the
@@ -656,6 +709,28 @@ that the demo plan turns on (A-01, B-01).
 - **Checked:** verified (run). `pictures_of` with input
   `run://r1/../r2/evidence/other.png` returned run r2's picture;
   `run://r1/../../secret.png` returned a file two folders up.
+
+---
+
+#### A-01 Hosted mode: one signed-in user can list and collect another user's run
+
+- **What is wrong:** jobs are kept in one list for the whole server, with
+  no owner. `tobi_run_status` with no `job_id` lists every job still
+  running, for every user, with its job id and URL. Anyone can then wait
+  on that job id and receive the finished result. Run folders are
+  protected by an owner check; the job's result is not.
+- **Why it matters:** with `AUTH=oidc` this leaks which pages another
+  person is testing and their findings and page text. It is the first
+  thing to close before the VAST step of the demo plan.
+- **Where:** `src/tobi508/jobs.py:57-58, 98-99`;
+  `src/tobi508/tools/run_status.py:75-96`;
+  `src/tobi508/pipeline.py:1572-1585` (`outstanding`).
+- **Smallest fix:** store `access.caller()` on the job when it starts;
+  `get`, `all_jobs` and `running` return only the caller's jobs. A test
+  beside `tests/test_access.py`.
+- **Checked:** verified (read). `Job` has no owner field; `outstanding`
+  adds running jobs to its list before any owner check. Not exercised
+  with two real tokens.
 
 ---
 
