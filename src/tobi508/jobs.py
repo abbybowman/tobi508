@@ -10,7 +10,9 @@ loses it.
 
 At most `max_concurrent_runs` runs use a browser at once. A job waiting for
 a slot has not started its run yet, so the wait does not use its time limit
-(the pipeline starts the clock when it is called).
+(the pipeline starts the clock when it is called). A run gives its slot back
+when its browsers close (`release_browser_slot`), so the server's judge,
+which needs no browser, never holds one (code review B-04).
 
 Jobs live in this process's memory: a server restart loses running jobs
 and the record of finished ones (a finished run's folder and report stay
@@ -24,6 +26,7 @@ import asyncio
 import secrets
 import time
 from collections.abc import Awaitable, Callable
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -59,6 +62,19 @@ class Job:
 
 _JOBS: dict[str, Job] = {}
 _SLOTS: dict[tuple[int, int], asyncio.Semaphore] = {}
+# The running job's way to give its browser slot back early (B-04).
+_RELEASE: ContextVar[Callable[[], None] | None] = ContextVar(
+    "tobi508_slot_release", default=None
+)
+
+
+def release_browser_slot() -> None:
+    """Called by the pipeline once its browsers are closed: the work after
+    that (evaluating, the server's judge) does not hold a browser slot, so a
+    queued run can start. Outside a job, nothing to do."""
+    fn = _RELEASE.get()
+    if fn is not None:
+        fn()
 
 
 def _slots(n: int) -> asyncio.Semaphore:
@@ -86,12 +102,23 @@ def start(
     slots = _slots(settings.max_concurrent_runs)
 
     async def go() -> RunResult:
+        held = False
+
+        def release() -> None:
+            nonlocal held
+            if held:
+                held = False
+                slots.release()
+
+        _RELEASE.set(release)  # this task's own context
         try:
-            async with slots:
-                job.started = time.monotonic()
-                await job.progress(0, 4, "Starting")
-                return await run(job.progress)
+            await slots.acquire()
+            held = True
+            job.started = time.monotonic()
+            await job.progress(0, 4, "Starting")
+            return await run(job.progress)
         finally:
+            release()
             job.finished = time.monotonic()
             job.waiters.clear()
 

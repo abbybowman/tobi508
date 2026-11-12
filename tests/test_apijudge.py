@@ -532,3 +532,26 @@ async def test_the_key_never_appears_in_a_report_a_log_or_an_error(
     )
     assert not res.ok and key not in res.error
     assert isinstance(res, CallResult)
+
+
+async def test_judging_does_not_hold_a_browser_slot(settings, server, monkeypatch):
+    """B-04: with one browser slot, a run being judged has given its slot
+    back, so a queued run can start meanwhile."""
+    from tobi508 import jobs
+
+    s = api(settings).model_copy(update={"max_concurrent_runs": 1})
+    slot = jobs._slots(1)
+    held: list[bool] = []
+
+    def fn(req):
+        held.append(slot.locked())
+        return answer_all(lambda qid, ch: "no")(req)
+
+    judge_with(monkeypatch, fn)
+    url = f"{server.base}/4d/f09-faint-outline.html"
+    job = jobs.start(s, url, lambda p: run_tt_tests(s, url, [TestId.T4D], p))
+    out = await job.task
+    assert held and not any(held), "the judge ran inside the browser slot"
+    assert out.report.findings[0].outcome.value == "FAIL"  # no outcome moves
+    assert not slot.locked()  # given back once, not twice
+    assert slot._value == 1
