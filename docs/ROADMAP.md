@@ -77,7 +77,8 @@ work and is not a formal gate.
 ([reviews/2026-11-11-code-review.md](reviews/2026-11-11-code-review.md)):
 a triaged list, P0 first, with the pages that reproduce each item. It
 found limits under "Known limits" below that are not NEEDS REVIEW-safe
-today (its P0 table); nothing in it is fixed yet.
+today (its P0 table); nothing in it is fixed yet. To fix items, start a
+thread from [reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md).
 
 **Not before the demo:** frames (fix 7), the store, the review UI and
 WebAuthn, opening everything phases 2 and 3.

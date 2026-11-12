@@ -5,8 +5,10 @@ list is [../2026-11-11-code-review.md](../2026-11-11-code-review.md)**;
 read that, not these. What these still hold that the list does not: the
 row-by-row spec tables (files E, F, H, M, N), the measurement tables
 (T, W) and the test-coverage tables (Q). Severities here are the
-reviewers' own and were changed in the triage. Delete this folder when
-those tables are no longer wanted.
+reviewers' own and were changed in the triage. Kept on purpose (Abby,
+2026-11-12): the threads that fix items read these tables
+([../2026-11-11-code-review-fixing.md](../2026-11-11-code-review-fixing.md)).
+Delete the folder when the items that cite it are fixed.
 
 ## What was covered
 

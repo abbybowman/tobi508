@@ -4,6 +4,10 @@ A triaged list from a line-by-line review of `tobi508`, for Abby to review
 and hand to other threads. Nothing here has been fixed; this thread changes
 no code.
 
+**To fix items:** [2026-11-11-code-review-fixing.md](2026-11-11-code-review-fixing.md)
+is the prompt for a fresh thread (what to read, how to fix one item, which
+model suits which bundle).
+
 **Progress.** All five phases are done. Every file under `src/tobi508/`
 was read line by line by a reviewer, and the test suite, CI and image
 were reviewed for what they cover. Not read a second time: the small
