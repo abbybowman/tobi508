@@ -2117,7 +2117,10 @@ Cleanup. All reviewers' claims unless marked.
 - **4.D-4.F cleanup:** 4.D's "why it could not be compared" reasons
   are written to a dict after Pydantic has copied it, so the summary
   always says "the images could not be compared" (F-04, confirmed by a
-  snippet). 4.E's instance identity leaves out the frame, so the same
+  snippet; **fixed**, commit "4.D and 5.A-5.C: two small fixes (F-04,
+  H-15)": the "never moved on" reason is set before the `Attempt` is
+  built, the compare error is written to `a.extras`; test
+  `test_the_reason_a_last_step_has_no_after_picture_is_kept`). 4.E's instance identity leaves out the frame, so the same
   path in two frames merges (F-10). 4.F scans every node of the page
   once per stop (F-18), and 4.D reads a whole computed style, about
   350 properties, twice per stop (F-21). About 100 lines of
@@ -2152,7 +2155,10 @@ Cleanup. All reviewers' claims unless marked.
   each, twice), three contents about 12 minutes.
 - **5.A-5.D cleanup:** a field inside `<fieldset disabled>` is counted
   as enabled, and the four tests then disagree about one page (H-15,
-  confirmed by a run; fix: `el.matches(':disabled')`). `_finding` is
+  confirmed by a run; **fixed** in `labels.py` with `el.matches(':disabled')`,
+  fixture `5a/f26-field-in-disabled-fieldset`: 5.A and 5.C DOES NOT APPLY
+  like 5.B and 5.D. `traverse.py` and `site.py` still read `.disabled`
+  alone). `_finding` is
   copied in 13 check files and the words "This test could not be
   performed" are typed 27 times though a constant exists; 5.A and 5.C
   share one skeleton; each of 5.A, 5.B and 5.C saves its own copy of

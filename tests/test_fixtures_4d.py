@@ -133,3 +133,26 @@ def test_a_link_moved_by_the_page_while_pictured_is_not_failed():
     assert "moved on the page" in stuck.attempts[0].extras["incomplete"]
     slid_in = inst(3600.0)
     assert _best(slid_in) is slid_in.attempts[0]
+
+
+def test_the_reason_a_last_step_has_no_after_picture_is_kept(monkeypatch, tmp_path):
+    """F-04: `Attempt` copies its `extras`, so a reason written to the dict
+    afterwards was lost and the sentence said "the images could not be
+    compared". The walk's last step has no step after it: no "after" read."""
+    from types import SimpleNamespace as NS
+
+    from tobi508.checks import t4d
+
+    monkeypatch.setattr(t4d.t4e, "classify", lambda *a, **k: (None, False))
+    e = {"subject": "#x", "role": "link", "name": "X", "on": "a.png"}
+    step = NS(
+        extras={t4d.HOOK: e},
+        stop=NS(unresolved=False, css_path="#x", frame_chain=[], kind="element"),
+        rerun=False,
+    )
+    p = NS(steps=[step], name="P1", start_url="", start_pages=1)
+    by_subject: dict = {}
+    st = t4d.State4D(p1={}, p2={}, stops=1, inventory=1)
+    t4d._attempts_from(p, st, by_subject, tmp_path)
+    [inst] = by_subject.values()
+    assert t4d._reason(inst).startswith("focus never moved on"), t4d._reason(inst)

@@ -87,6 +87,72 @@ match, as a MINOR change, and show Abby.
 Done when: each page in the index prints the new outcome, each has a
 fixture, and each check's fixture file and ACT or Baseline cases pass.
 
+### Draft for Abby: "destination" (K-04 and E-02; not built)
+
+Written 2026-11-12 by the part A thread. Nothing below is in `specs/`
+or the code yet; both items wait for your word.
+
+**Why.** 4.A row M3 and 9.C pairing step 1 both treat two links as
+"going to the same place" when their `href` text is equal. An address
+that goes nowhere (`#`, `javascript:void(0)`, empty) is equal on every
+page that uses it, so:
+
+- 4.A PASSes a mouse-only `<a href="#" onclick=...>` because some reached
+  link also has `href="#"` (E-02; the page prints PASS, row k1:M3).
+- 9.C pairs an unnamed `javascript:void(0)` icon with an unrelated
+  "Close alert" on another page, and FAILs it (C2) (K-04).
+
+**Sources read.** TT 5.1.3 4.A HtT 2.b (p. 19): a control with no keyboard
+access passes when "another keyboard method" has "the same function"; the
+function is what has to match, not the text of the `href`. TT 9.C
+Identify Content (p. 44): "components that have the same functionality";
+W3C Understanding 3.2.4: same functionality is the "same result when
+used". A placeholder address has no result of its own, so equal
+placeholders do not say two controls do the same thing. Not read for this
+draft (not fetched in this session): the ACT rules and DHS verdicts for
+2.1.1, and the Baseline 4.A and 3.1 cases; I checked only that no fixture
+of ours contains `javascript:` and that no round's key under
+`evals/judging/` mentions it.
+
+**Wording, one Term shared by 4.A and 9.C** (put in `9a-bypass.md` Terms
+with the other site terms; 4.A cites it):
+
+> *Destination.* A link has a destination when its address, made
+> absolute, is an `http`, `https` or (dev mode) `file` address, or a
+> `mailto:` or `tel:` address, and is not the page's own address.
+> Fragments: a link to `#name` on its own page has the destination
+> `#name` only when `name` is an `id` or `name` on that page; `#` alone,
+> an empty address, `javascript:` and a link to the page itself without a
+> fragment have no destination. Two links have the *same destination*
+> when both have one and the addresses agree after dropping the fragment
+> (except own-page places), the scheme's case and a trailing slash.
+
+**4.A, row M3** (MINOR bump, 1.6.0): "K: a link, or a click that navigates,
+whose destination is the destination of a reached link". A candidate with
+no destination never matches M3 and goes to M4 (J1). Section 4 text
+unchanged otherwise. Effect: a control that was PASS by M3 on a
+placeholder now asks J1, so the page is NEEDS REVIEW until answered, and
+FAIL if J1 says no alternative (this is the E-02 fix; it moves PASS to
+NEEDS REVIEW or FAIL, never the other way).
+
+**9.C, Terms step 1** (MINOR bump, 1.3.0): "*Same destination*: links
+with the same destination (Terms, 9.A)." Links with none fall through to
+step 2 (same id), 3 (same name) and 4 (same place). Effect: the K-04 page
+no longer pairs the icon with "Close alert"; they pair only if id, name
+or place says so. This removes a FAIL, but it is a FAIL from a pairing the
+spec did not intend. **Check before building:** I found no answer key that
+confirms such a FAIL; please confirm, because CLAUDE.md asks you first.
+
+**Code to follow** (after your word): one `destination()` in
+`site.py` (replacing `norm_href`'s use for pairing), used by
+`checks/t9c.py`, `checks/t4a.py` `_same_link`, and 9.B and 19.A where
+they compare `norm_href`; a fixture each: `4a/f19-placeholder-link-twin`
+(E-02) and a `9x` pair (K-04: `v/js-a`, `v/js-b`).
+
+**Open for you:** is `mailto:`/`tel:` a destination (I say yes: the
+address is the function), and does a link to `#name` with no such target
+count as no destination (I say yes: it goes nowhere)?
+
 ## Part B: a count of what exists, and a guard on DOES NOT APPLY
 
 The cheapest way to stop "nothing here" when something is there.
