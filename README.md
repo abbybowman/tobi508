@@ -85,7 +85,7 @@ A fix removes its line here in the same commit.
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
 | 4.F | Does Not Apply | a page whose first element traps Tab |
-| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu opened by `<a href="#">`, or on a page that keeps changing |
+| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu on a page that keeps changing |
 | 5.A, 5.B, 5.C | Does Not Apply | a form inside a web component |
 | 5.A, 5.D | Does Not Apply | a form that a plain button opens (5.C may PASS without its field) |
 | 5.C | PASS | a field whose visible label is not in Latin letters |

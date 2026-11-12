@@ -1,0 +1,10 @@
+<!doctype html><html lang=en><head><title>Fragment changes on focus</title></head><body>
+<a href="#1">First link</a>
+<a href="#2" id=a2>Second link</a>
+<a href="#3">Third link</a>
+<script>
+// Focus on the second link only changes the #fragment (a tab list or section
+// menu keeping the address in step), by pushState instead of location.hash.
+document.getElementById('a2').addEventListener('focus', () => { history.pushState(null, '', '#focused'); });
+</script>
+</body></html>

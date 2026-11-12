@@ -775,11 +775,15 @@ async def _read_logs(page: Page) -> tuple[int, int, float, float, int]:
 async def _focus_events(page: Page, before: dict[str, int]) -> list[dict[str, Any]]:
     out = []
     for frame in page.frames:
+        # Counted by address without its #fragment: a frame whose fragment
+        # changes is the same document, and a new key would read every
+        # earlier event again (F-06).
+        key = frame.url.split("#", 1)[0]
         try:
-            events = await frame.evaluate(_EVENTS_JS, before.get(frame.url, 0))
+            events = await frame.evaluate(_EVENTS_JS, before.get(key, 0))
         except Exception:
             continue
-        before[frame.url] = before.get(frame.url, 0) + len(events)
+        before[key] = before.get(key, 0) + len(events)
         out.extend({**e, "frame": frame.url} for e in events)
     return sorted(out, key=lambda e: e["t"])
 

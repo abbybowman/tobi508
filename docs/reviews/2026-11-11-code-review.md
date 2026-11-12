@@ -102,7 +102,7 @@ below; "run" means I ran a page and got the outcome shown.
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
 | H-01 | 5.A | PASS | a label whose words are hidden | run |
-| C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run |
+| C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
@@ -299,6 +299,13 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). A link trigger with a hidden, unlabelled
   field in its menu: 5.A PASS. The reviewer's control with a
   `<button>` trigger: NEEDS REVIEW, field found.
+- **Fixed:** commit "Fragment-only address changes are not navigations
+  (C-03, F-06, H-11)", no spec change (the 4.E and 5.D Terms already
+  say the fragment is ignored). `observe.without_fragment` is used by
+  `observe()`; 4.E's navigation hook skips a fragment-only change.
+  Fixtures `5a/f25-hash-link-opens-menu` (5.A FAIL M2 M5, as the
+  accordion page f23), `4e/f11-hash-change-on-focus`,
+  `4e/f12-pushstate-on-focus`, `5d/f22-hash-change-on-blur`.
 
 #### N-02, N-04, N-07, N-09 What starts after the 6.5-second watch is "does not apply"
 
@@ -1166,6 +1173,11 @@ a narrower page or an agent's wrong answer than the P0 items do.
   its fragment changed, or the document reloaded.
 - **Checked:** verified (run). A link whose focus handler sets
   `location.hash`: 4.E FAIL, rows e1:M4, G2.
+- **Fixed:** with C-03 above. A second cause was behind it:
+  `traverse._focus_events` counted focus events per frame address
+  including the fragment, so after a fragment change every earlier event
+  was read again and 4.E said "focus jumps" (M6). It now counts by the
+  address without its fragment. The review's page prints 4.E PASS.
 
 #### F-01 4.D is NEEDS REVIEW for any menu with seven or more items
 

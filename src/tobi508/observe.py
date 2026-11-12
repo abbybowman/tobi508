@@ -16,6 +16,13 @@ from pydantic import BaseModel, Field
 
 from tobi508.traverse import PATH_JS, Session, _read_logs, settle, submissions
 
+
+def without_fragment(url: str) -> str:
+    """An address without its #fragment. A change of fragment only is the same
+    page (spec 4.E and 5.D Terms), so no check compares addresses with it."""
+    return url.split("#", 1)[0]
+
+
 # Paths of every element rendered in the top document, shadow roots included,
 # with 4.A's own path builder and visibility test, so 4.A can match its keys
 # (4.F's Enter presses: what they show, for 4.A's hover check).
@@ -299,10 +306,12 @@ async def observe(
         m2, *_ = await _read_logs(page)
         new_windows = opened.ids - earlier if opened.ok else set()
     e = Effect(mutations=max(0, m2 - m1), noise=max(0, m1 - m0))
-    if after["url"] != before["url"]:
+    if without_fragment(after["url"]) != without_fragment(before["url"]):
         e.kinds.append("navigation")
         e.url = after["url"]
-    elif after["frames"] != before["frames"]:
+    elif [without_fragment(u) for u in after["frames"]] != [
+        without_fragment(u) for u in before["frames"]
+    ]:
         e.kinds.append("frame_navigation")
     if sub1 > sub0:
         e.kinds.append("submit")

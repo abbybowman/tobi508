@@ -26,7 +26,7 @@ from tobi508.models import (
     Step,
     TestId,
 )
-from tobi508.observe import COVER_MOST, DIALOGS_JS, cover
+from tobi508.observe import COVER_MOST, DIALOGS_JS, cover, without_fragment
 from tobi508.traverse import Traversal, open_session, screenshot
 from tobi508.walk import KeyboardWalk
 
@@ -74,9 +74,19 @@ class ContextHook:
         self.dialogs: dict[str, dict[str, Any]] = {}
 
     async def on_start(self, t: Traversal) -> None:
+        self.last_url = t.page.url
+
         def on_nav(frame):
-            if frame == t.page.main_frame:
-                self.navs += 1
+            if frame != t.page.main_frame:
+                return
+            # Chrome also reports a change of #fragment (a script setting
+            # location.hash, a pushState) as a navigation. Spec: that is not
+            # a change of context. A reload (same address) still counts.
+            url, last = frame.url, self.last_url
+            self.last_url = url
+            if url != last and without_fragment(url) == without_fragment(last):
+                return
+            self.navs += 1
 
         t.page.on("framenavigated", on_nav)
         self.dialogs = await self._dialogs(t)

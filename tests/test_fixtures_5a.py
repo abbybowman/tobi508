@@ -166,6 +166,13 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
         "5.C": {"outcome": "NEEDS_REVIEW", "rows": ["M5", "M5"]},
     },
+    # C-03: a menu trigger written as <a href="#"> adds "#" to the address.
+    # That is not a navigation, so the menu is read and its unlabeled field
+    # is found, as in f23 (before: dropped unread, PASS).
+    "f25-hash-link-opens-menu": {
+        "5.A": {"outcome": "FAIL", "rows": ["M2", "M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M5"]},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
