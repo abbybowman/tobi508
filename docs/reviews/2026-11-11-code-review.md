@@ -329,6 +329,12 @@ gallery, a form behind a button, a script-checked form.
   reading the element appears in, which is the same one, and concludes
   it is not advancing. Verified (run). Fix: compare with the last
   reading (`t2a.py`, `find_audio`).
+- **W-05 Fixed:** commit "2.A: audio a script adds after load is compared
+  with its last reading (W-05)", no spec change. `find_audio` counts an
+  element as advancing when its nearest-to-3.5 s reading or its last one
+  is later than its first. Fixture `2x/t-audio-late`: FAIL (K6), it was
+  DOES NOT APPLY (A3). Not fixed: audio that first appears after the 3.5 s
+  reading (the watch is still 6.5 s: part J).
 - **Smallest fix:** share 2.C's hints: when there is a hint and nothing
   was found, 2.A, 2.B and 3.A answer NEEDS REVIEW too; add "N more
   elements wait to be scrolled into view" as a hint. Spec changes in
