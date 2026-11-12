@@ -64,6 +64,13 @@ EXPECTED: dict[str, dict] = {
     # E-01: 45 links, a mouse-only menu on the 45th. The hover scan stops at
     # 40 stops, which is a cap reached: never PASS (spec G3).
     "f18-hover-menu-past-the-cap": {"outcome": "NEEDS_REVIEW", "rows": []},
+    # E-02: a mouse-only <a href="#"> beside another <a href="#">. "#" goes
+    # nowhere, so the two do not "go to the same place" (M3): J1 is asked.
+    "f19-placeholder-link-twin": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
 }
 
 ACT = {

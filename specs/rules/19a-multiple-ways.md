@@ -1,7 +1,7 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.1.1
+spec_version: 1.2.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -33,7 +33,7 @@ The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS R
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site; give the home page and, if the site has one, its site map" | p. 75 Identify Content; Abby, 2026-11-02 |
-| A2 | A page could not be read | NEEDS REVIEW, not performed, naming the page | Spec rule |
+| A2 | A page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
 | J1? | A process hint, J1 not answered | NEEDS REVIEW | Open question |
 | A3 | J1 = process | DOES NOT APPLY | p. 75 Applicability; Understanding 2.4.5 (process) |
 | A4 | J1 = unsure | NEEDS REVIEW | Spec rule |

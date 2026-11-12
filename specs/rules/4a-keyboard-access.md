@@ -1,7 +1,7 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.5.0
+spec_version: 1.6.0
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -69,7 +69,7 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 | C? | A cap or the time limit left the instance unchecked | NEEDS REVIEW | Spec rule |
 | M1 | The element could not be found again or focused, or an effect is unreliable (section 2, effect) | NEEDS REVIEW | Spec rule |
 | M2 | K: a non-native candidate whose click has no effect | No instance (nothing for a mouse to operate) | p. 19 HtT 1 |
-| M3 | K: a link, or a click that navigates, whose address is the address of a reached link | PASS (another keyboard method with the same function) | p. 19 HtT 2.b |
+| M3 | K: a link, or a click that navigates, whose *destination* ([9a-bypass.md](9a-bypass.md) Terms) is the destination of a reached link; a control with no destination (`#`, `javascript:`, empty, the page itself) never matches, so it goes to M4 (1.6.0, Abby 2026-11-12) | PASS (another keyboard method with the same function) | p. 19 HtT 2.b |
 | M4 | K: otherwise | Ask J1 (M5–M7) | p. 19 HtT 2.b |
 | M4n | K, and keyboard focus reaches nothing on the page (no stops) | FAIL: no keyboard alternative can exist, so J1 is not asked (judge eval, 2026-10-31) | p. 19 ER 1; HtT 2.b |
 | J1? | J1 not answered yet | NEEDS REVIEW | Open question |

@@ -71,6 +71,8 @@ class PageRef:
     final_url: str
     new_page: NewPage
     har_sha: str | None = None  # its recording's SHA-256 (pagecache reads)
+    # Its document is the tested page's, byte for byte (K-01): not compared.
+    same_content_as_tested: bool = False
 
 
 # What a check records when the run's time limit cut work short (one wording

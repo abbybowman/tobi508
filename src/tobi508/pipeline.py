@@ -42,7 +42,7 @@ from tobi508.browser import (
     replay_browser_name,
     replay_in_full_chromium,
 )
-from tobi508.capture import Capture, replay_context, unrecorded_code
+from tobi508.capture import Capture, document_sha, replay_context, unrecorded_code
 from tobi508.checks import REGISTRY, RunContext
 from tobi508.checks.base import PageRef
 from tobi508.config import Settings
@@ -400,6 +400,7 @@ def _page_refs(get_browser, settings: Settings, run, report: Report) -> list[Pag
             n=p.n,
             url=p.url,
             final_url=p.final_url or p.url,
+            same_content_as_tested=p.same_content_as_tested,
             har_sha=pagecache.sha256(run.dir / p.har)
             if (run.dir / p.har).is_file()
             else None,
@@ -1044,11 +1045,19 @@ async def run_tt_tests(
                         f"Other page {i} ends on the same page as {same_as} after "
                         "redirects. Give pages that differ."
                     )
+                # A query string can make another page, so the address was not
+                # refused; the same document bytes under another address is the
+                # tested page again (K-01, Abby 2026-11-12).
+                tested_sha = document_sha(har, cap.final_url)
+                same_content = tested_sha is not None and (
+                    tested_sha == document_sha(run.dir / rel, oc.final_url)
+                )
                 report.other_pages.append(
                     OtherPage(
                         n=i,
                         url=other,
                         final_url=oc.final_url,
+                        same_content_as_tested=same_content,
                         har=rel,
                         cross_site_frames=oc.cross_site_frames,
                         frozen=oc.frozen if settings.frozen_pages_dir else None,

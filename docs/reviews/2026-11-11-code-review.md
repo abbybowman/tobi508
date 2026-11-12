@@ -97,7 +97,7 @@ below; "run" means I ran a page and got the outcome shown.
 | ID | Test | What the tool says | On what | Checked |
 | --- | --- | --- | --- | --- |
 | E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run. **Fixed** |
-| E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run |
+| E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run. **Fixed** |
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
@@ -125,7 +125,7 @@ below; "run" means I ran a page and got the outcome shown.
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
-| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run |
+| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script |
 | A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read |
 
@@ -188,6 +188,9 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). `<a href="#">Home</a>` and
   `<a href="#" tabindex="-1" onclick=...>Open settings</a>`: 4.A PASS,
   row k1:M3 ("Home goes to the same place").
+- **Fixed:** with K-04, spec 4.A 1.6.0 (row M3 uses the destination).
+  Fixture `4a/f19-placeholder-link-twin`: J1 is asked; with "no
+  alternative", FAIL M6 (was PASS M3).
 
 #### N-06 A flashing GIF after the 30th image is invisible to 3.A and 2.B
 
@@ -804,10 +807,15 @@ different checks, and some of those ways do not hold back an outcome.
   and an empty query; used before recording (the caller's list, duplicates
   among the other pages too) and after redirects (final address equal to
   the tested page's or an earlier other page's: a tool error, no run
-  folder). Tests in `tests/test_site.py`. **Not fixed:** `?x=1` on a static
-  page: the query string can make a different page, so the address does not
-  tell. Telling by content would refuse a single-page app whose routes all
-  serve one HTML shell; left for Abby to decide (README row kept, reworded).
+  folder). Tests in `tests/test_site.py`. A query string can make a
+  different page, so it is not refused by address. **Then (Abby approved
+  2026-11-12, commit "K-01 safety net..."):** when an other page's
+  recorded document is byte-for-byte the tested page's under another
+  address, 9.A, 9.B, 9.C and 19.A are NEEDS REVIEW, not performed, and say
+  why (`OtherPage.same_content_as_tested`, `capture.document_sha`; A2 rows,
+  spec 9.A 1.2.0, 9.B 1.2.0, 9.C 1.3.0, 19.A 1.2.0). A single-page app whose
+  routes serve one shell is warned, never refused outright. Not caught: a
+  page whose bytes change on each request.
 
 ### Security, in modes the demo plan turns on
 
@@ -1311,6 +1319,13 @@ a narrower page or an agent's wrong answer than the P0 items do.
   on the tested page and a "Close alert" link on the other: 9.C FAIL
   ("has a name screen readers announce on one page and none on other
   page 1").
+- **Fixed:** commit "E-02 and K-04: a link that goes nowhere has no
+  destination", spec 9.A 1.2.0 (Term "Destination"), 9.C 1.3.0. Abby
+  approved the wording on 2026-11-12 (`mailto:` and `tel:` are
+  destinations; `#name` with no matching element is none; a link to the
+  page itself is none). `traverse.DEST_JS` computes it in the page; 9.C
+  pairs by `dest`. Fixtures `9x/f1-js-icon-header` with `f2-js-close-alert`:
+  9.C PASS (was FAIL C2).
 
 #### K-03 9.C reads "ANDI named nothing" as "nothing to compare"
 

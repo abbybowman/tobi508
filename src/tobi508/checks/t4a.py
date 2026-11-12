@@ -30,6 +30,7 @@ from tobi508.models import (
 )
 from tobi508.observe import Effect, observe
 from tobi508.traverse import (
+    DEST_JS,
     PATH_JS,
     Session,
     Traversal,
@@ -64,6 +65,7 @@ ODD_TYPES = {
 
 _COMMON_JS = (
     PATH_JS
+    + DEST_JS
     + """
   const NATIVE = 'a[href], area[href], button, input:not([type="hidden"]), select, textarea, ' +
     'summary, [contenteditable]:not([contenteditable="false"]), audio[controls], video[controls]';
@@ -160,6 +162,7 @@ SCAN_FN = (
     const w = el.closest(COMPOSITE);
     unreached.push({ css: path(el), tag: el.tagName.toLowerCase(), role: el.getAttribute('role'),
       reason, name: nameOf(el), href: el.href && typeof el.href === 'string' ? el.href : null,
+      dest: destHref(el),
       widget: w ? [...chain, path(w)].join(' >> ') : null });
     if (unreached.length >= 200) break;
   }
@@ -196,7 +199,7 @@ STOP_FN = (
     + """
   const el = this;
   return { title: (el.getAttribute('title') || '').trim(), native: native(el), reason: reasonOf(el),
-    href: el.href && typeof el.href === 'string' ? el.href : null };
+    href: el.href && typeof el.href === 'string' ? el.href : null, dest: destHref(el) };
 }"""
 )
 
@@ -316,6 +319,7 @@ class StopRef(BaseModel):
     role: str | None = None
     name: str | None = None
     href: str | None = None
+    dest: str | None = None  # where it goes; None when nowhere (DEST_JS)
     widget: str | None = None
     index: int  # P1 step index
 
@@ -353,6 +357,7 @@ def _stop_list(p1: PassResult) -> list[StopRef]:
                 role=s.stop.role,
                 name=s.stop.name,
                 href=info.get("href"),
+                dest=info.get("dest") or None,
                 widget=s.stop.widget,
                 index=i,
             )
@@ -713,19 +718,24 @@ def _k(st: State4A, t: dict, revealed_by: int | None, checked: bool = True) -> I
             "name": t.get("name"),
             "tag": t.get("tag"),
             "href": t.get("href"),
+            "dest": t.get("dest"),
             "reason": t.get("reason"),
         },
         revealed_by=revealed_by,
         checked=checked,
-        same_link=_same_link(st, t.get("href")),
+        same_link=_same_link(st, t.get("dest")),
     )
 
 
 def _same_link(st: State4A, url: str | None) -> int | None:
+    """The reached link whose destination is `url` (row M3). Only a link
+    with a destination counts: "#", an empty address, javascript: and the
+    page itself go nowhere, so equal text does not make two controls do the
+    same thing (E-02; spec 4.A M3, 9.A Terms "Destination")."""
     if not url:
         return None
     for sr in st.stop_list:
-        if sr.href and sr.href == url:
+        if sr.dest and sr.dest == url:
             return sr.n
     return None
 

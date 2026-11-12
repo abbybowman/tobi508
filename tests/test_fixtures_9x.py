@@ -28,6 +28,15 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {},
     ),
     "nav-css-order": ("a1-home", ["a4-nav-css-order"], {"9.B": "FAIL"}, {}),
+    # K-04: an unnamed javascript:void(0) icon here and a "Close alert"
+    # javascript:void(0) link there are not "the same destination": they do
+    # not pair, so no FAIL. (The nav links pair and agree.)
+    "javascript-links": (
+        "f1-js-icon-header",
+        ["f2-js-close-alert"],
+        {"9.C": "PASS"},
+        {},
+    ),
     "two-pages-one-reordered": (
         "a1-home",
         ["a2-benefits", "a3-nav-reordered"],

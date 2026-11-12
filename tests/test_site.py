@@ -145,3 +145,28 @@ async def test_an_other_page_that_redirects_to_the_tested_page_is_refused(
             [TestId.T9B],
             other_pages=[f"{server.base}/redir-ok"],
         )
+
+
+async def test_an_other_page_with_the_tested_pages_own_content_is_not_compared(
+    settings, server
+):
+    """K-01 (Abby, 2026-11-12): `?x=1` can be another page, so the address is
+    not refused; but when the recorded document is byte-for-byte the tested
+    page's, 9.A to 9.C would compare a page with itself and PASS on no
+    evidence. They are NEEDS REVIEW, not performed, and say why."""
+    from tobi508.models import TestId
+    from tobi508.pipeline import run_tt_tests
+
+    url = f"{server.base}/9x/a1-home.html"
+    out = await run_tt_tests(
+        settings,
+        url,
+        [TestId.T9A, TestId.T9B, TestId.T9C],
+        other_pages=[url + "?x=1"],
+    )
+    assert out.errors == [], out.errors
+    assert out.report.other_pages[0].same_content_as_tested is True
+    for f in out.report.findings:
+        assert f.outcome.value == "NEEDS_REVIEW", (f.test_id, f.rows, f.summary)
+        assert f.note == "This test could not be performed", f.test_id
+        assert "same content as the tested page" in f.summary, (f.test_id, f.summary)

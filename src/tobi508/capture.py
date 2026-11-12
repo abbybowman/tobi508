@@ -250,6 +250,16 @@ def media_body(har_path: Path, url: str) -> bytes | None:
     return None
 
 
+def document_sha(har_path: Path, final_url: str) -> str | None:
+    """SHA-256 of the main document's bytes in a recording (None when it
+    cannot be read). Two recordings of the same page have the same hash;
+    used to tell an other page that is the tested page again (K-01)."""
+    import hashlib
+
+    body = media_body(har_path, final_url)
+    return hashlib.sha256(body).hexdigest() if body else None
+
+
 # ── Chunk store (Abby, 2026-11-09: a fourth exception to principle 5) ──────
 # A page may load code only when it is used (`import("./chunk.js")`, code
 # splitting), so a recording made from a load never holds it, and on replay

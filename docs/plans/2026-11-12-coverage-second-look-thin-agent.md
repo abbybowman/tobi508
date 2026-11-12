@@ -87,10 +87,18 @@ match, as a MINOR change, and show Abby.
 Done when: each page in the index prints the new outcome, each has a
 fixture, and each check's fixture file and ACT or Baseline cases pass.
 
-### Draft for Abby: "destination" (K-04 and E-02; not built)
+### Decided and built: "destination" (K-04 and E-02)
 
-Written 2026-11-12 by the part A thread. Nothing below is in `specs/`
-or the code yet; both items wait for your word.
+Drafted by the part A thread; **approved by Abby on 2026-11-12** with her
+answers to the open questions below (`mailto:` and `tel:` are destinations;
+`#name` with no matching element is none; a link to the page itself is
+none) and built in the same session: spec 9.A 1.2.0 (the Term), 4.A
+1.6.0, 9.C 1.3.0. The intent of 9.C is unchanged: this only decides which
+components count as doing the same thing; what must then agree (name and
+description) is as before, and shared header and footer controls are
+still paired by id, name and place. K-01 (same page under another
+spelling): refused by address; a byte-identical copy under another address
+is NEEDS REVIEW in 9.A to 9.C and 19.A (Abby, 2026-11-12).
 
 **Why.** 4.A row M3 and 9.C pairing step 1 both treat two links as
 "going to the same place" when their `href` text is equal. An address
