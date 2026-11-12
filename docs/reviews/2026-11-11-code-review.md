@@ -337,6 +337,108 @@ that the demo plan turns on (A-01, B-01).
   unhides a form with an email field: 5.A DOES NOT APPLY ("only form
   controls are buttons"), 5.D DOES NOT APPLY, 5.C PASS.
 
+### N-01 2.A does not hear audio from `new Audio()` or from a shadow root
+
+- **What is wrong:** the watcher finds media with
+  `document.querySelectorAll('video, audio')`. Audio a script starts
+  with `new Audio(url).play()`, the usual way to play background sound,
+  is never in the document. Audio inside a web component is in a
+  shadow root. Neither is seen, and nothing else records that
+  something played.
+- **Why it matters:** a wrong DOES NOT APPLY ("No audio played by
+  itself") on a page that plays sound at load with no control, which
+  is a FAIL in the TT.
+- **Where:** `src/tobi508/motion.py:392` (`M.media`);
+  `src/tobi508/checks/t2a.py:94-129, 190`.
+- **Smallest fix:** in the watcher's start-up script, hook
+  `HTMLMediaElement.prototype.play` and keep every element that
+  played; walk open shadow roots. An element that played and could not
+  be read is NEEDS REVIEW.
+- **Checked:** verified (run). The same tone file three ways: a plain
+  `<audio autoplay>` is 2.A FAIL; `new Audio('tone.wav').play()` is
+  DOES NOT APPLY; `<audio autoplay>` in a shadow root is DOES NOT
+  APPLY.
+
+### N-03 2.B says nothing blinked when text blinks by `visibility`
+
+- **What is wrong:** text switched between `visibility: hidden` and
+  `visible` (the usual stand-in for `<blink>`) changes the region's
+  visible text, so the watcher files it as "updating", never "moving".
+  2.B looks only at moving regions.
+- **Why it matters:** a wrong DOES NOT APPLY ("Nothing on it moved,
+  blinked or scrolled") on blinking text. 2.C does report the same
+  content, so the page is not clean overall.
+- **Where:** `src/tobi508/checks/t2b.py:77-85` (`moving`);
+  `src/tobi508/motion.py:215, 976-987`.
+- **Smallest fix:** count an updating region as blinking when it keeps
+  returning to an earlier state (few distinct states, still changing
+  after 5 s). Fixtures for `visibility` and `opacity`.
+- **Checked:** verified (run). A span toggled every 500 ms: 2.B DOES NOT
+  APPLY, rows A2, G1.
+
+### N-06 A flashing GIF after the 30th image is invisible to 3.A and 2.B
+
+- **What is wrong:** the watcher decodes animated images from the first
+  30 `<img>` addresses only, and silently skips any file it cannot
+  decode (over 5 MB, an unknown type, not in the recording). Nothing
+  records what was skipped. Below the first screen the screen capture
+  cannot see it either.
+- **Why it matters:** a wrong DOES NOT APPLY for flashing, the one test
+  where a miss can hurt someone. A gallery or news page easily has more
+  than 30 images.
+- **Where:** `src/tobi508/motion.py:470-471, 1412-1415`;
+  `src/tobi508/checks/t3a.py:113-118`.
+- **Smallest fix:** when there are more than 30 images or one was
+  skipped, record it as "not measured" (3.A's A3, NEEDS REVIEW) and as
+  a hint for 2.B. Better: decode every image file in the recording
+  that has an animated-format signature.
+- **Checked:** verified (run). A strobing GIF below a spacer with 31
+  small images before it: 3.A DOES NOT APPLY and 2.B DOES NOT APPLY.
+  The reviewer's control with one image before it gave 3.A NOT TESTED
+  (8.5 flashes a second).
+
+### N-08 2.B says nothing moved on a page with an autoplaying YouTube embed
+
+- **What is wrong:** 2.B's spec row A1 names three ways a video "could
+  not play from the recording": an error, a streaming player, a file
+  over the cap. The code has the first only. 2.A and 3.A do have all
+  three, each with its own pattern.
+- **Why it matters:** on one page 2.A and 3.A say NEEDS REVIEW ("a
+  streaming video player that we cannot play from a recording") and
+  2.B says DOES NOT APPLY ("Nothing on it moved").
+- **Where:** `src/tobi508/checks/t2b.py:114-115, 170-175`; spec 2.B,
+  A1; compare `t2a.py:92-112`, `t3a.py:149-157`.
+- **Smallest fix:** one shared "media we could not play" helper, used
+  by 2.A, 2.B and 3.A.
+- **Checked:** verified (run). A `youtube-nocookie.com/embed/...
+  ?autoplay=1` frame: 2.A NEEDS REVIEW, 2.B DOES NOT APPLY.
+
+### N-02, N-04, N-07, N-09 What starts after the 6.5-second watch is "does not apply"
+
+- **What is wrong:** the page is watched for 6.5 s. 2.C treats "a timer
+  longer than the watch" as a hint and answers NEEDS REVIEW. 2.A, 2.B
+  and 3.A have no such path, though the same timers are in the
+  evidence. 2.A decides from the one reading at 3.5 s. For content
+  that starts when scrolled into view, only the first such element is
+  scrolled to, and 2.C says nothing about the rest.
+- **Why it matters:** audio that a script starts at 4.5 s, an animation
+  that starts at 7 s, a strobe that starts at 9 s, and a counter on
+  the second scroll-in element each give DOES NOT APPLY with a
+  sentence that claims nothing happened.
+- **Where:** `src/tobi508/checks/t2a.py:94-129`;
+  `src/tobi508/checks/t2b.py:177`; `src/tobi508/checks/t3a.py:213-238`;
+  `src/tobi508/motion.py:1591-1611, 1655`; 2.C's `hints` at
+  `src/tobi508/checks/t2c.py:73-100`.
+- **Smallest fix:** share 2.C's hints: when there is a hint and nothing
+  was found, 2.A, 2.B and 3.A answer NEEDS REVIEW too; add "N more
+  elements wait to be scrolled into view" as a hint. Spec changes in
+  the safe direction for 2.A, 2.B and 3.A.
+- **Checked:** verified (run), four pages: audio started by a 4.5 s
+  timer, 2.A DOES NOT APPLY; an animation class added at 7 s, 2.B DOES
+  NOT APPLY while 2.C on the same run is NEEDS REVIEW ("a timer of
+  7 s"); a strobe started at 9 s, 3.A DOES NOT APPLY; a counter started
+  by the second observed element, 2.C DOES NOT APPLY.
+
 ### A-01 Hosted mode: one signed-in user can list and collect another user's run
 
 - **What is wrong:** jobs are kept in one list for the whole server, with
@@ -1044,6 +1146,27 @@ not checked.
 - **B-07** On refusal the run folder is deleted while the motion watcher
   is still writing into it, which can recreate it; a browser that fails
   to start leaves the folder. `pipeline.py:894-895, 1104-1108, 1193-1203`.
+- **2.x and 3.A gaps (N-05, N-10, N-14)** The watcher records its own
+  limits and no check reads them: frames it could not read, the change
+  log stopping at 1,500 records, 40 regions, unmapped tiles. 2.D can
+  PASS on the changes that were recorded (`motion.py:166-181, 933-940`;
+  `t2d.py:62-72`). 2.A ignores media past the 20th element and treats
+  an embedded player as audio only when its address has `autoplay=1`
+  (`motion.py:392`, `t2a.py:44-47`). In 2.D, any dialog or any focus
+  move during the watch counts as "with the change", so an unrelated
+  cookie dialog sends a silent ticker to a question where FAIL was due
+  (`t2d.py:53-76`).
+- **2.x, English only (N-12, N-15)** A text is offered to the agent as
+  a possible "how to pause" instruction only if it contains an English
+  word such as pause, stop or mute; a Spanish page's instruction counts
+  as "no", and the result can be FAIL "no way to pause"
+  (`t2c.py:38-46, 191-198`). 2.B's check that "essential" is not just
+  "loading" searches the agent's reason for the word "load".
+- **2.x, no guard on FAIL (N-13)** PASS cannot be reached in 2.A-2.C
+  today, because row E2 needs test 13.A, which is not built; that is
+  what keeps "a working mechanism is NEEDS REVIEW" true. The guard for
+  recordings that lack code holds back a PASS only, so a pause button
+  that needs code the recording lacks gives FAIL "no way to pause".
 - **4.A-4.C gaps (E-12, E-14, E-15, E-16)** In 4.A a frame whose scan
   throws counts as scanned, a stop that cannot be located is not
   hovered, and targets past 200 in a frame are dropped, all without a
@@ -1134,6 +1257,13 @@ not checked.
   ("Control+W", "F5"). CLAUDE.md allows page-named keys only for
   2.A-2.C under limits. `checks/t4b.py:121-129`, `apijudge.py:622-639`.
   Verified (read) that `_key` passes any string through.
+- **N-11** The approved key press for 2.A-2.C is for "a key combination
+  that page text names". The code holds the other limits (modifiers
+  plus one key, never a browser key, one per run, a fresh replay) but
+  never checks that the key, or a quote, is in the page text; the spec
+  has that guard. The key is whatever the agent's answer says.
+  `src/tobi508/mechanism.py:499-539`. Fix: require the combination to
+  appear in the element's text.
 - **H-10** 5.D types the agent's suggested value as given: a line
   break in it presses Enter and submits the form, which 5.D then
   records as "sent the form". The value comes from an agent that read
@@ -1324,6 +1454,15 @@ Cleanup. All reviewers' claims unless marked.
   by calling 4.E's whole classifier (F-23). Worst case per run: 4.D up
   to 20 widget replays, 4.E up to 20 loads and 20 s of fixed waits,
   4.F up to 19 loads.
+- **2.x and 3.A cleanup:** `_finding`, `apply_answers`, the "not
+  performed" blocks, three sentences and the five-method check classes
+  are copied in `t2a.py` to `t2d.py`, about 250 lines (N-05's cost
+  section). A clip of 3.0 to 3.5 s has ended by the 3.5 s reading and
+  is not counted (N-16). Module docstrings of 2.B, 2.D and 3.A give an
+  older spec version than the spec files. Worst-case time: the watch
+  is 6.5 s (13 s with the scrolled watch); the mechanism probe is up
+  to about 250 s per moving content (8 controls, a load and up to 15 s
+  each, twice), three contents about 12 minutes.
 - **5.A-5.D cleanup:** a field inside `<fieldset disabled>` is counted
   as enabled, and the four tests then disagree about one page (H-15,
   confirmed by a run; fix: `el.matches(':disabled')`). `_finding` is
@@ -1379,6 +1518,12 @@ reviewer (phase 1); I read the summary, not every line behind it.
   The problems found are in the evidence fed to the tables (F-02,
   F-11, F-12), not in the tables. The questions that may settle a PASS
   by looking do so only as principle 8 allows.
+- **2.A-2.D and 3.A follow their specs' tables** in rows and order.
+  NOT TESTED comes only from 3.A's row A2, and 3.A's WCAG assessment
+  appears only as text in the summary, as principle 2 requires. 3.A
+  never returns PASS or FAIL. For the page-named key press the code
+  enforces modifiers plus one key, the browser-key list, one
+  combination per run and a fresh replay (the missing limit is N-11).
 - **5.A-5.D follow their specs' tables** row for row and in order (one
   harmless swap in 5.C). As with 4.D-4.F, the problems are in what the
   readers feed the tables.
@@ -1442,6 +1587,13 @@ above.
   one step is not seen.
 - 4.D passes any text field with a caret colour that is not
   "transparent", including one equal to the background.
+- 2.B: a video over the recording cap that raises no error is DOES NOT
+  APPLY (no code for that part of row A1; needs a file over 50 MB to
+  try). 3.A: a screen capture that fails or is skipped for time leaves
+  no "not measured" entry.
+- A `<video>` in a shadow root is missed by 2.B and 3.A the same way
+  audio is (read only). Animated AVIF and APNG files whose type is not
+  recognised are skipped.
 - 5.C adds "required" to the announced words whenever the field is
   required, without checking ANDI announces it.
 - 5.A: a real label more than 240 px left of its field (wide tables)
