@@ -88,7 +88,12 @@ def instance_rows(st: State5A) -> list[Row]:
         ),
         Row(
             "M3",
-            lambda c: c.placeholder_shown and not c.nearby and not c.nearby_buttons,
+            lambda c: (
+                c.placeholder_shown
+                and not c.nearby
+                and not c.nearby_buttons
+                and not c.icon_buttons
+            ),
             Outcome.FAIL,
             "p. 25 Note 1; W3C forms tutorial; w3c/wcag#4918",
         ),

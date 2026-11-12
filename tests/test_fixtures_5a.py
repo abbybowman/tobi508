@@ -180,6 +180,25 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "DNA", "rows": []},
         "5.C": {"outcome": "DNA", "rows": []},
     },
+    # Post-round 2 fix 8 (5.A 1.4.0; svs.gsfc.nasa.gov's site search, key
+    # Pass on 7 pages): a placeholder-only box whose input group holds icon
+    # buttons (a magnifier submit, a clear button) is not failed by M3; a
+    # person looks at the picture (J1, the graphic case).
+    "f27-icon-buttons-in-search-group": {
+        "5.A": {
+            "outcome": "PASS",
+            "rows": ["M4"],
+            "answers": {"J1": {"choice": "graphic", "reasons": "a magnifier"}},
+        },
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    # The nearest case that must still FAIL: the icon button in the box's
+    # group opens a menu, so it says nothing about the field (M3 as f18;
+    # round 1's key failed nasa.gov's box with "no magnifier glass icon").
+    "f28-menu-icon-in-search-group": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
@@ -339,3 +358,16 @@ async def test_a_quote_for_a_button_set_may_hold_words_of_several_rows(
     assert out == "NEEDS_REVIEW" and last == ["M9", "M9"]
     # the button's own announced word is not a missing word
     assert (await rows("X"))[0] == "NEEDS_REVIEW"
+
+
+async def test_icon_buttons_do_not_pass_the_box_by_themselves(settings, server, drafts):  # noqa: F811
+    """Fix 8 (5.A 1.4.0) only moves the box from M3 to J1: when the person
+    looking says the icons do not label it, it still fails (M5)."""
+    got = await run_both(
+        settings,
+        f"{server.base}/5a/f27-icon-buttons-in-search-group.html",
+        {"5.A": NOT_LABELED, "5.C": {}},
+        [],
+    )
+    f = got["5.A"]
+    assert (f.outcome.value, instance_rows(f)) == ("FAIL", ["M5"]), f.rationale
