@@ -109,6 +109,9 @@ that the demo plan turns on (A-01, B-01).
   way. One fixture.
 - **Checked:** verified (run). Tested page `site-a.html`, other page
   `site-a.html?x=1`: 9.B PASS (row N6), 9.C PASS (eight pairs, all C1).
+- **Also 9.A (M-11):** the same input makes 9.A treat everything as
+  repeated; the reviewer's runs gave FAIL with a `main` landmark and
+  DOES NOT APPLY without one. One fix covers all three tests.
 
 ### K-02 Navigation inside a shadow root or a frame is invisible to 9.B, 9.C and 19.A
 
@@ -129,6 +132,8 @@ that the demo plan turns on (A-01, B-01).
 - **Checked:** verified (run) for shadow roots: two pages sharing a
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
+- **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
+  shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
 
 ### E-01 4.A passes without looking for hover menus past the 40th element
 
@@ -296,7 +301,7 @@ that the demo plan turns on (A-01, B-01).
   "必須の住所を入力してください" with `aria-label="f1"` and `"x1"`:
   both on row M5 (pass), not asked.
 
-### H-03 5.D passes a form it stopped filling at a keyboard trap
+### H-03, M-05 5.D and 5.F pass a form they stopped testing at a keyboard trap
 
 - **What is wrong:** the spec says NEEDS REVIEW when the walk "ended in
   a trap before the last field". The code counts the two trap endings
@@ -313,8 +318,12 @@ that the demo plan turns on (A-01, B-01).
   page has more fields than were completed.
 - **Checked:** verified (run). A field, a link that swallows Tab, a
   second field with `onblur` navigation: 5.D PASS, rows A3, G4.
+- **Also in 5.F (M-05):** the same list of "complete" endings is at
+  `src/tobi508/checks/t5f.py:1233`. Verified (run): a form, a trap,
+  then a second form with a broken error message: 5.F PASS. Without
+  the trap the same page is FAIL. 5.G and 5.H read the same pass.
 
-### H-08 A form behind a plain button is "no form fields" (needs Abby)
+### H-08, M-07 A form behind a plain button is "no form fields" (needs Abby)
 
 - **What is wrong:** the tests list form fields that are rendered when
   the page loads. A form that a button or link shows is found only if
@@ -336,6 +345,9 @@ that the demo plan turns on (A-01, B-01).
 - **Checked:** verified (run). A button with a click handler that
   unhides a form with an email field: 5.A DOES NOT APPLY ("only form
   controls are buttons"), 5.D DOES NOT APPLY, 5.C PASS.
+- **Also in 5.F, 5.G and 5.H (M-07):** their specs do not list the
+  reveal guard at all. The reviewer's run of a "Pay your bill" button
+  that unhides a payment form gave DOES NOT APPLY for all three.
 
 ### N-01 2.A does not hear audio from `new Audio()` or from a shadow root
 
@@ -438,6 +450,98 @@ that the demo plan turns on (A-01, B-01).
   NOT APPLY while 2.C on the same run is NEEDS REVIEW ("a timer of
   7 s"); a strobe started at 9 s, 3.A DOES NOT APPLY; a counter started
   by the second observed element, 2.C DOES NOT APPLY.
+
+### M-01 5.F and 5.G say "the page did not check for errors" when the form's button is `type="button"`
+
+- **What is wrong:** only submit-type buttons count as the control that
+  sends a form. A form checked by script usually has
+  `<button type="button" onclick="validate()">`. That button is never
+  pressed; with two or more fields, Enter does not submit either; and
+  the question that lets the agent name the right button is never
+  asked, because the list of buttons is empty.
+- **Why it matters:** a wrong DOES NOT APPLY on a very common way to
+  build a form, with a sentence that is untrue. Spec and code agree,
+  so the spec has the gap.
+- **Where:** `src/tobi508/checks/t5f.py:160-161` (`isSubmit`), `173`,
+  `641`, `946-951`.
+- **Smallest fix:** offer every visible button inside the form, submit
+  words first; a form whose press could not have sent it (no submit
+  button, more than one field) is NEEDS REVIEW, never DOES NOT APPLY.
+- **Checked:** verified (run). Two fields and a `type="button"` whose
+  handler writes "Email: enter a valid email address" into a
+  `role="alert"`: 5.F and 5.G DOES NOT APPLY, no question.
+
+### M-06 5.F and 5.G read "no error seen" as "the page did not check"
+
+- **What is wrong:** an error counts when the tool sees new text,
+  `aria-invalid`, a browser message or a change in the field's own
+  look. It does not see error text inside a shadow root, a red border
+  on a wrapper around the field, or a message that is gone within about
+  150 ms (there is one reading, after the page settles).
+- **Why it matters:** each of those is DOES NOT APPLY, "the page did
+  not check for errors", with no question to the agent.
+- **Where:** `src/tobi508/checks/t5f.py:93-115, 124-136, 437-450,
+  1376-1382`; `src/tobi508/checks/t5g.py:293-299`.
+- **Smallest fix:** if anything in the page changed during the press
+  that was not read as an error (the change counter already exists),
+  the answer is NEEDS REVIEW. Then read shadow roots and the field's
+  nearest bordered ancestor.
+- **Checked:** verified (run) for two of the three: error text in a
+  shadow root, and a red border on a wrapper, both 5.F DOES NOT APPLY.
+  The 60 ms message is the reviewer's run.
+
+### M-02 5.H cannot see a form that is only a button
+
+- **What is wrong:** forms are built from the form fields the walk
+  reached. `<form method="post" action="/delete-account"><button>Delete
+  my account</button></form>` has none.
+- **Why it matters:** "This page has no form to submit" for a delete,
+  pay or submit-exam button, which is what 5.H exists for. Spec row A1
+  says "no form with a submit control", which this page has.
+- **Where:** `src/tobi508/checks/t5h.py:311-325`;
+  `src/tobi508/forms.py:141-177`.
+- **Smallest fix:** 5.H lists every `form` element with a submit
+  control, whatever its fields; at least NEEDS REVIEW when the page has
+  a visible form that was not taken.
+- **Checked:** verified (run): 5.H DOES NOT APPLY, rows A1, G1.
+
+### M-08 5.H passes a multi-step form when the next step contains the word "required"
+
+- **What is wrong:** row M1 passes a form that "checked" the entry.
+  "Checked" is true when the form was not sent, its fields still exist
+  in the DOM (hidden counts), and any new text matches error, invalid,
+  required, must, incorrect or missing.
+- **Why it matters:** a wizard whose step 2 says "Card number is
+  required to pay" passes 5.H with no review step and no question. The
+  spec says a next step's "required" text is not a check; the code's
+  test for "still on the form" does not hold that.
+- **Where:** `src/tobi508/checks/t5h.py:36-39` (`ERROR`), `105-116`,
+  `148` (M1 before the question).
+- **Smallest fix:** "stayed" needs the same fields to be visible, not
+  merely present; text that is not tied to a field goes to the
+  question.
+- **Checked:** verified (read): the rule is as described. The reviewer
+  ran a two-step page, saw `checked: true` in the evidence, and got
+  PASS from `evaluate` on the saved state.
+
+### M-03 English word lists decide DOES NOT APPLY in 5.H and PASS in 4.B
+
+- **What is wrong:** 5.H asks about a form only if the page has an
+  English word such as pay, order, agree or delete. 4.B asks about
+  timing only if the page has an English timing phrase, and no match is
+  PASS. A page in Spanish matches neither.
+- **Why it matters:** a Spanish payment page is DOES NOT APPLY for 5.H,
+  and a Spanish page that requires a held key passes 4.B. Federal
+  sites publish Spanish pages. The roadmap lists "English only" as a
+  known limit and calls it NEEDS REVIEW-safe; it is not.
+- **Where:** `src/tobi508/checks/t5h.py:29-35, 118-127`;
+  `src/tobi508/checks/t4b.py:30-35`.
+- **Smallest fix:** when the page's language is not English, the
+  word-list rows give NEEDS REVIEW (or ask the question for every
+  form). A spec change in the safe direction.
+- **Checked:** verified (run) for 5.H: a `lang="es"` page with "Numero
+  de tarjeta" and "Pagar ahora" is DOES NOT APPLY. The 4.B half follows
+  from row M1 and is not run.
 
 ### A-01 Hosted mode: one signed-in user can list and collect another user's run
 
@@ -780,6 +884,55 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
 - **Checked:** verified (read): four places cut at `BADGE_MAX` and the
   spec line is there. No fixture has more than 60 stops.
 
+#### M-10 9.A passes a button that does nothing when the tested address has a `#fragment`
+
+- **What is wrong:** after pressing a possible skip control, 9.A takes
+  where focus went. If focus did not move, it takes the element the
+  address's fragment points to. When the tested address already ends in
+  `#main`, that element is there before any press.
+- **Why it matters:** any button before the content (a menu toggle, a
+  cookie "OK") then "skips to main" and 9.A passes.
+- **Where:** `src/tobi508/checks/t9a.py:62-67` (`LANDING_JS`), `395`.
+- **Smallest fix:** count the fragment's target only if it changed with
+  the press, or load the page without its fragment.
+- **Checked:** verified (run). A do-nothing button, a header, then
+  `<main id="main">`: with `#main` on the address 9.A PASS ("the noop
+  button lets keyboard users skip it"); without it, FAIL.
+
+#### M-04, M-09 5.H forgets the forms it could not test
+
+- **What is wrong:** 5.F answers NEEDS REVIEW when the page has form
+  fields the walk reached none of; 5.H, reading the same pass, says
+  "no form to submit". And the list of what was not tested (a form in
+  a frame, forms past the fifth, a cut walk) is read only when no form
+  has a consequence word. Most pages have "terms" or "order" somewhere,
+  so the list is ignored and the agent is asked about the tested forms
+  only.
+- **Why it matters:** DOES NOT APPLY or PASS for 5.H while a payment
+  form in a frame was never looked at.
+- **Where:** `src/tobi508/checks/t5h.py:70, 311-335, 343-379`.
+- **Smallest fix:** anything in the "not tested" list turns DOES NOT
+  APPLY and PASS into NEEDS REVIEW, and the question names the forms
+  that were not tested.
+- **Checked:** M-04 verified by the reviewer's run (a `tabindex="-1"`
+  card field: 5.F NEEDS REVIEW, 5.H DOES NOT APPLY). M-09 verified
+  (read); the reviewer called `evaluate` on a built state.
+
+#### M-13 5.G shows the agent every new text on the page, not the text for the field
+
+- **What is wrong:** the spec says 5.G's question gets "the error text
+  tied to the field by 5.F". The code sends all new text of the
+  attempt, and accepts a quote found anywhere in it.
+- **Why it matters:** in a form with an error summary, field B (whose
+  own error is just "Invalid") passes on a quote of field A's helpful
+  message.
+- **Where:** `src/tobi508/checks/t5g.py:71-78, 152-156`; spec 5.G
+  section 4.
+- **Smallest fix:** when 5.F's answer for the same field has a quote,
+  send that text only and require 5.G's quote to be inside it.
+- **Checked:** verified (read) by the reviewer; not run (it needs
+  agent answers).
+
 #### H-04 5.D: the page's own `aria-controls` can hide a change of content (needs Abby)
 
 - **What is wrong:** 5.D ignores changes inside a field's "own widget",
@@ -1034,6 +1187,12 @@ not checked.
   event loop while other runs share it. `inline.py:99-196`;
   `pipeline.py:1494-1522`. Fix: list an unchanged question by id only;
   skip pictures already attached; encode in a thread.
+- **M-19** 5.F and 5.G ask one question per field and per attempt,
+  each carrying the same list of error texts (up to 200 pieces of 300
+  characters): a 5-field form with one page-level message gives 10
+  questions in 5.F and 10 in 5.G. `checks/t5f.py:959-1026`,
+  `checks/t5g.py:144-174`. Fix: one question per attempt with a list
+  of fields, the error list sent once.
 - **T-09** One 4.F question is 7,900 characters, 45% of all question
   text on the page above: its `order` list carries every item, each
   with an empty `page_box`. Five 4.A questions are the same question
@@ -1208,6 +1367,17 @@ not checked.
 - **5.A-5.C silent caps (H-12)** Nearby text is cut at 400 characters,
   neighbours at 6, the scan at 3,000 elements, none reported; 5.C then
   compares only what was kept. `labels.py:24, 234-268`.
+- **5.F-5.H and 9.A gaps (M-14, M-16, M-17, M-18)** 9.A FAILs a
+  repeated block that holds nothing to tab through (two static
+  sentences) with "add a skip link", ignores toggles that are not a
+  link or button, and presses Enter only (`t9a.py:152-163, 336-337`;
+  the first is the reviewer's run). 5.H's "there is a review step"
+  answer passes even when the form left the page and nothing could be
+  seen (`t5h.py:152-153`). A failed reading after the submit press is
+  not an "unfinished" reason, so it ends as "the page did not check"
+  (`t5f.py:217-221, 1229-1256`). 5.F presses Enter on a `role="button"`
+  where its spec says Space, and its word lists differ from the spec's
+  (`t5f.py:50-59, 436`).
 - **4.F, for Abby:** the answer "order does not matter" on the page
   question makes the whole test DOES NOT APPLY on the agent's word,
   even when a split form group was the reason for asking. That is what
@@ -1257,6 +1427,13 @@ not checked.
   ("Control+W", "F5"). CLAUDE.md allows page-named keys only for
   2.A-2.C under limits. `checks/t4b.py:121-129`, `apijudge.py:622-639`.
   Verified (read) that `_key` passes any string through.
+- **M-15** 9.A presses a key the page "documents", named by the
+  agent. This key press is not among CLAUDE.md's four approved
+  exceptions. The key need not appear in the quote or the page, and
+  browser keys are not refused (`Tab`, `Enter`, `F5` pass); `Tab` can
+  make the skip "work". `src/tobi508/checks/t9a.py:248-260, 584-598`.
+  Fix: require the key in the quote, refuse browser keys, and either
+  list the exception in principle 5 or drop it.
 - **N-11** The approved key press for 2.A-2.C is for "a key combination
   that page text names". The code holds the other limits (modifiers
   plus one key, never a browser key, one per run, a fresh replay) but
@@ -1454,6 +1631,12 @@ Cleanup. All reviewers' claims unless marked.
   by calling 4.E's whole classifier (F-23). Worst case per run: 4.D up
   to 20 widget replays, 4.E up to 20 loads and 20 s of fixed waits,
   4.F up to 19 loads.
+- **5.F-5.H cleanup:** `PassE.notes` is read and never written;
+  `FIELD_MAX = 40` is defined in `t5f.py` and `t5d.py`; there are three
+  walkers for visible text (M-20). A quote of one character satisfies
+  the "quote found in the error text" check in 5.F and 5.G; 9.A asks
+  for three (M-21). No time is wasted beyond the spec's budget; the
+  error pass is shared by 5.F, 5.G and 5.H.
 - **2.x and 3.A cleanup:** `_finding`, `apply_answers`, the "not
   performed" blocks, three sentences and the five-method check classes
   are copied in `t2a.py` to `t2d.py`, about 250 lines (N-05's cost
@@ -1524,7 +1707,7 @@ reviewer (phase 1); I read the summary, not every line behind it.
   never returns PASS or FAIL. For the page-named key press the code
   enforces modifiers plus one key, the browser-key list, one
   combination per run and a fresh replay (the missing limit is N-11).
-- **5.A-5.D follow their specs' tables** row for row and in order (one
+- **5.A-5.H and 9.A follow their specs' tables** row for row and in order (one
   harmless swap in 5.C). As with 4.D-4.F, the problems are in what the
   readers feed the tables.
 - **The judge prompt** tells the judge to answer "unsure" when the
