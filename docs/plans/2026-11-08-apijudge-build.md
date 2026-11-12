@@ -14,7 +14,7 @@ unable to close the untrusted block, with a trick page for it (B-02); a
 minimum number of decided cells and a fail on any wrong DOES NOT APPLY in
 `evals/apijudge_gate.py` (L-02, L-03); one picture attached once a request
 (G-02); judging outside the browser slot (B-04). The roadmap has them under
-"Order of work", step 3.
+"Order of work", step 3. Built 2026-11-12 (step 3's pull request).
 
 ## Status
 
