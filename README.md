@@ -90,7 +90,7 @@ A fix removes its line here in the same commit.
 | 5.H | Does Not Apply | a payment form not in English |
 | 5.H | PASS | a multi-step form whose next step says "required" (read) |
 | 9.A | PASS | a do-nothing button before the content, when the tested address ends in `#main` |
-| 19.A | FAIL | a site header built as a web component (9.A-9.C now say NEEDS REVIEW; a guard never moves a FAIL) |
+| 19.A | FAIL | a site header built as a web component (9.A-9.C now say NEEDS REVIEW; 19.A waits for part D) |
 | 9.A, 9.B, 9.C | PASS | the tested page given again with a query string added when the server changes the page on every request (a timestamp or a token), so the two recordings differ; byte-identical copies are NEEDS REVIEW |
 | 9.C | PASS | controls that have no name on either page (a spec decision) |
 

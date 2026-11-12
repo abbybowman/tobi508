@@ -443,7 +443,7 @@ them.
 - **Checked:** verified (run) for shadow roots: two pages sharing a
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
-- **Partly fixed:** 76b8f24 (guard CN, part B), specs 9.A 1.3.0, 9.B 1.3.0, 9.C 1.4.0, 19.A 1.3.0: 9.A, 9.B and 9.C are NEEDS REVIEW on the shared web-component header (M-12 too). 19.A still FAILs it: a guard never moves a FAIL; a 19.A row is proposed (thread B report). Frames are not counted for these tests (a player's own links would hold every page with an embed).
+- **Partly fixed:** 76b8f24 (guard CN, part B), specs 9.A 1.3.0, 9.B 1.3.0, 9.C 1.4.0, 19.A 1.3.0: 9.A, 9.B and 9.C are NEEDS REVIEW on the shared web-component header (M-12 too). 19.A still FAILs it: a guard never moves a FAIL; accepted as a known limit until part D reads web components (Abby, 2026-11-12). Frames are not counted for these tests (a player's own links would hold every page with an embed).
 - **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
   shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
 

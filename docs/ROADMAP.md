@@ -99,11 +99,13 @@ merges `main` at its next pause.
    principle 3 change with it. **Built, 2026-11-12, waiting for Abby's
    review of the spec changes:** `count.py`, the play hook, guard CN,
    and `count:` in 16 specs; the review's pages are fixtures in
-   `tests/test_fixtures_count.py`. Left open: DHS's Baseline cases
-   TC10.A-ic-dna-1 and -2 (a field hidden with nothing that opens it),
-   19.A's FAIL on a header in a web component (a guard never moves a
-   FAIL), and the keys for 2.B's players, canvases and web-component
-   media and for 2.C.
+   `tests/test_fixtures_count.py`. Decided with Abby: hidden fields hold
+   an outcome only when something could show them (DHS's Baseline
+   TC10.A-ic-dna-1 and -2 stay DOES NOT APPLY); 2.B lists only images,
+   2.C nothing, and 9.A-19.A web components only, not frames; 19.A's
+   FAIL on a header in a web component waits for part D (Known limits).
+   Spec versions are locked (`specs/rules/versions.lock`) and checked in
+   CI.
 3. **Server judge, gate, sign-in.** Before step 6's figures are used:
    the gate asks for a minimum number of decided cells and counts a
    wrong DOES NOT APPLY; picture links only through the guarded reader;
@@ -312,13 +314,18 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   in 5.A-5.H, 9.A-9.C and 2.A, not DOES NOT APPLY (D-01, K-02, M-12,
   N-01). Still open: 4.A can PASS with a mouse-only control inside one
   (D-03), 5.F and 5.G miss an error shown in one (M-06), and 19.A fails
-  a page whose shared header is one (K-02; a guard never moves a FAIL).
-  Part D reads them.
+  a page whose shared header is one (K-02; a guard never moves a FAIL;
+  accepted until part D, Abby 2026-11-12). Part D reads them.
 - **Content that opens:** a form behind a button with no ARIA marker is
   never opened; since guard CN its hidden fields make 5.A-5.H NEEDS
   REVIEW, not DOES NOT APPLY (H-08, M-07), and so does an editable text
   area (`contenteditable`). Then "Opening everything". (A menu whose
   trigger is `<a href="#">` is read now: C-03, fixed.)
+- **Guard CN matches hidden fields by their place in the page:** a page
+  that rebuilds its elements when a section opens can make a field that
+  was read look unread, so a test is NEEDS REVIEW when it need not be
+  (never PASS). Accepted until part D's shared reader gives elements a
+  stable identity (Abby, 2026-11-12).
 - **The watch is 6.5 seconds:** what starts later is DOES NOT APPLY in
   2.A, 2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second
   can be missed; flashing below the first screen and an animated image
