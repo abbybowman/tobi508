@@ -98,30 +98,30 @@ below; "run" means I ran a page and got the outcome shown.
 | --- | --- | --- | --- | --- |
 | E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run. **Fixed** |
 | E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run. **Fixed** |
-| N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run |
-| H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
+| N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run · fixed (part B) |
+| H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run · fixed (part B) |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
 | H-01 | 5.A | PASS | a label whose words are hidden | run |
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
-| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run |
-| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run |
-| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run |
+| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B) |
+| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · 9.x fixed; 19.A open |
+| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
 | H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run |
-| F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run |
+| F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run · fixed (part B) |
 | F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run |
 | W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
 | W-07 | 2.B | DOES NOT APPLY | motion that fills most of the screen | run |
 | N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
 | N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run. **Fixed** |
-| E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run |
+| E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run · fixed |
 | E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
 | C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run |
-| M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run |
+| M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run · fixed (part B) |
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
@@ -212,6 +212,7 @@ gallery, a form behind a button, a script-checked form.
   small images before it: 3.A DOES NOT APPLY and 2.B DOES NOT APPLY.
   The reviewer's control with one image before it gave 3.A NOT TESTED
   (8.5 flashes a second).
+- **Fixed:** 76b8f24 (guard CN, part B), specs 2.B 1.2.0, 3.A 1.2.0: "32 images: only the first 30 were checked for animation", NEEDS REVIEW. Decoding every image is still open.
 
 #### H-08, M-07 A form behind a plain button is "no form fields" (needs Abby)
 
@@ -235,6 +236,7 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). A button with a click handler that
   unhides a form with an email field: 5.A DOES NOT APPLY ("only form
   controls are buttons"), 5.D DOES NOT APPLY, 5.C PASS.
+- **Fixed:** 76b8f24 and 6c16bec (guard CN, part B), specs 5.A 1.4.0, 5.B 1.4.0, 5.C 1.6.0, 5.D 1.6.0, 5.F 1.6.0, 5.G 1.4.0, 5.H 1.3.0: hidden fields make these NEEDS REVIEW when the page has something that could show them (Abby, 2026-11-12, so DHS's TC10.A-ic-dna-1 and -2 stay DOES NOT APPLY). Opening the form is "Opening everything".
 - **Also in 5.F, 5.G and 5.H (M-07):** their specs do not list the
   reveal guard at all. The reviewer's run of a "Pay your bill" button
   that unhides a payment form gave DOES NOT APPLY for all three.
@@ -420,6 +422,7 @@ them.
   ("This page has no form fields"). On the same page 5.D sees the two
   fields, and 5.F, 5.G and 5.H are NEEDS REVIEW ("2 form field(s) could
   not be read"), which is the safe answer.
+- **Fixed:** 76b8f24 and 6c16bec (guard CN, part B), specs 5.A 1.4.0, 5.B 1.4.0, 5.C 1.6.0: NEEDS REVIEW, "2 form fields inside web components were not checked". Reading them is part D.
 
 #### K-02 Navigation inside a shadow root or a frame is invisible to 9.B, 9.C and 19.A
 
@@ -440,6 +443,7 @@ them.
 - **Checked:** verified (run) for shadow roots: two pages sharing a
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
+- **Partly fixed:** 76b8f24 (guard CN, part B), specs 9.A 1.3.0, 9.B 1.3.0, 9.C 1.4.0, 19.A 1.3.0: 9.A, 9.B and 9.C are NEEDS REVIEW on the shared web-component header (M-12 too). 19.A still FAILs it: a guard never moves a FAIL; a 19.A row is proposed (thread B report). Frames are not counted for these tests (a player's own links would hold every page with an embed).
 - **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
   shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
 
@@ -465,6 +469,7 @@ them.
   DOES NOT APPLY; `<audio autoplay>` in a shadow root is DOES NOT
   APPLY. The watchers reviewer found the same independently (W-03)
   and adds that `speechSynthesis.speak()` is not hooked either.
+- **Fixed:** 76b8f24 (play hook and guard CN, part B), spec 2.A 1.1.0: `new Audio()` and autoplay inside a web component are NEEDS REVIEW ("1 sound or video played from a script, and was not checked").
 
 #### M-06 5.F and 5.G read "no error seen" as "the page did not check"
 
@@ -555,6 +560,7 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). Four links, the first swallowing Tab:
   4.F DOES NOT APPLY ("The page has only one element that takes
   keyboard focus"); 4.C on the same run asked its trap question.
+- **Fixed:** 76b8f24 (guard CN, `focusable@dna`), spec 4.F 1.6.0: "The page has 4 elements that take focus, and the keyboard reached 1", NEEDS REVIEW.
 
 ### Particular content
 
@@ -672,6 +678,7 @@ different checks, and some of those ways do not hold back an outcome.
   recorded; otherwise NEEDS REVIEW. A spec change in the safe direction.
 - **Checked:** verified (run). A canvas with a mouse-move handler and a
   draggable box, nothing focusable: 4.A DOES NOT APPLY.
+- **Fixed:** 76b8f24, spec 4.A 1.7.0: row A1 no longer matches when something was recorded for a person; guard CN counts canvases and dragged items as a backstop.
 
 #### E-08 4.A passes a button that only answers `mousedown` (needs Abby)
 
@@ -721,6 +728,7 @@ different checks, and some of those ways do not hold back an outcome.
   control, whatever its fields; at least NEEDS REVIEW when the page has
   a visible form that was not taken.
 - **Checked:** verified (run): 5.H DOES NOT APPLY, rows A1, G1.
+- **Fixed:** 76b8f24 (guard CN, part B), spec 5.H 1.3.0: "1 form with a button was not tested", NEEDS REVIEW.
 
 #### M-08 5.H passes a multi-step form when the next step contains the word "required"
 
