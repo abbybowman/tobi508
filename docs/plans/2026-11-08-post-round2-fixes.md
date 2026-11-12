@@ -23,7 +23,7 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 12-14 | 4.F rubric and order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
 | 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
 | 18-20, 22, 23 | Harness and process notes | Open, low priority |
-| 21 | A person's answer only from TOBI's own UI | Not started; the MCP closure is the first step ([pivot plan](2026-11-07-server-judge-pivot.md)); part G of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) adds what the review page must show |
+| 21 | A person's answer only from TOBI's own UI | First step built (2026-11-12, code review A-05): every answer through MCP is recorded as the calling agent's; the page is not started ([pivot plan](2026-11-07-server-judge-pivot.md)); part G of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) adds what the review page must show |
 | 24-27 | Questions that end in "unsure" (4.A, 4.D, 2.B) | Not started |
 | 28 | Judge requests: the page's shared inputs once | Built (`apijudge.py`) |
 | 29 | CI skips docs-only changes and runs in parallel | Built (`.github/workflows/ci.yml`) |
@@ -269,7 +269,9 @@ of a page set's unsure answers, the people's queue the pivot plan counts
 
 #### 21. A person's answer only from TOBI's own UI
 - Close MCP's `decided_by: "human"` path (an agent can claim it today);
-  see the pivot plan's "Human answers".
+  see the pivot plan's "Human answers". Built 2026-11-12 (A-05):
+  `tobi_answer_questions` records every answer as `decided_by: model`,
+  so the picture rule applies and none outranks another agent answer.
 
 #### 22. 4.D OVERVIEW tab on 5340 (unconfirmed)
 - TOBI: FAIL, 0 px change with focus (its pictures are identical); key:

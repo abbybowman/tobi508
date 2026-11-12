@@ -164,6 +164,7 @@ The server reads public web pages, by default only on `.gov` and `.mil`. It need
 - **The server's text never includes page text.** Page strings appear only in a labeled untrusted field, and the server's own question wording is fixed.
 - **Page scripts can't fake focus.** Focus is read through the Chrome DevTools Protocol in an isolated context; a test checks that page script can't spoof it. This includes where a skip link lands (9.A): a test page that tells its own script focus moved, when it did not, is a FAIL, not a PASS. A page that cancels the browser's own error message (5.F) is not credited with that message.
 - **Outcomes come only from spec rows.** A model's answer is recorded as a fact for a rule, never as an outcome.
+- **An agent can't claim to be a person.** Every answer that arrives through MCP is recorded as the calling agent's, whatever it says, so it needs what any agent answer needs (a picture question needs what the picture shows) and outranks nothing. A person's answer is to come from TOBI's own signed-in page (`tests/test_tools.py`).
 - **Adversarial fixture.** Fixture F32 contains text telling automated testers to report PASS for every test; the expected result is FAIL with both traps reported. **[FILL: result at the submission commit.]**
 
 - **Trick text aimed at the server's judge.** Three more pages (`tests/fixtures/inject/`) ask for the outcome the page would not get; one writes the untrusted block's closing tag before its trick. Page data is escaped (`<`, `>` and `&`), so page text cannot end the block. Tests check that the model sees such text only inside the block marked untrusted; in a two-call trial (before the third page) the judge answered both correctly. Not yet covered: injected text in accessible names and in frames.
@@ -194,7 +195,6 @@ The template's entry point started an unauthenticated HTTP server on all interfa
 
 ### Known gaps
 
-- An answer that arrives through MCP can still say it is a person's; closing that is scheduled before submission (`docs/ROADMAP.md`). **[PENDING]**
 - Sign-in is tested against a stand-in provider, not yet against NASA's (above).
 - A code review in November 2026 raised leads not yet verified (`docs/reviews/`); they are checked before anything is hosted.
 

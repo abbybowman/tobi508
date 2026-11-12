@@ -328,7 +328,7 @@ async def test_runs_beyond_the_cap_wait_without_using_their_time(settings):
     assert started == ["a", "b"]
 
 
-def _seed_run_with_question(settings) -> tuple[str, str]:
+def _seed_run_with_question(settings, input=None) -> tuple[str, str]:
     run = RunRecorder(settings.runs_dir)
     from tobi508.models import utcnow
     from tobi508.versions import collect_versions
@@ -340,7 +340,7 @@ def _seed_run_with_question(settings) -> tuple[str, str]:
         instance="i1",
         question="Does this text document an exit key?",
         rubric="test rubric",
-        input={"text": []},
+        input=input if input is not None else {"text": []},
     )
     report = Report(
         run_id=run.run_id,
@@ -372,7 +372,8 @@ async def test_answer_questions_records_and_rejects_invalid(settings):
     assert out["accepted"] == ["q1"] and len(out["rejected"]) == 2
     assert out["open_questions"] == []  # one answer closes a question
 
-    # A person's answer overrides the model's.
+    # A "human" answer sent through MCP is the calling agent's (A-05): it is
+    # recorded as the model's, and as the later answer it replaces the first.
     yes = {"documented": "yes", "keys": ["Escape"], "quote": "Press Esc"}
     out = await _call(
         "tobi_answer_questions",
@@ -390,7 +391,7 @@ async def test_answer_questions_records_and_rejects_invalid(settings):
     )
     assert out["accepted"] == ["q1"]
     report = Report.model_validate_json(Path(report_path).read_text())
-    assert [a.answer.decided_by.value for a in report.answers] == ["model", "human"]
+    assert [a.answer.decided_by.value for a in report.answers] == ["model", "model"]
     assert report.findings == []  # recording an answer never sets an outcome
 
 
@@ -415,6 +416,38 @@ async def test_an_agent_cannot_claim_to_be_the_server_judge(settings):
     assert out["accepted"] == ["q1"]
     report = Report.model_validate_json(Path(report_path).read_text())
     assert [a.answer.answered_by for a in report.answers] == ["client"]
+
+
+async def test_an_agent_cannot_claim_to_be_a_person(settings):
+    """A-05: `decided_by: "human"` through MCP is the calling agent's own
+    claim. It is recorded as the model's, so a picture question still needs
+    `seen`, and it does not outrank the agent's other answers."""
+    run_id, report_path = _seed_run_with_question(
+        settings, {"shot": f"run://{'x' * 8}/evidence/shots/a.png"}
+    )
+    human = {
+        "question_id": "q1",
+        "rationale": "r",
+        "j1": {"documented": "no"},
+        "decided_by": "human",
+    }
+    out = await _call("tobi_answer_questions", {"run_id": run_id, "answers": [human]})
+    assert out["accepted"] == [] and "names a picture" in str(out["rejected"])
+    seen = {**human, "seen": "a page header"}
+    out = await _call("tobi_answer_questions", {"run_id": run_id, "answers": [seen]})
+    assert out["accepted"] == ["q1"]
+    model = {
+        **seen,
+        "decided_by": "model",
+        "j1": {"documented": "yes", "keys": ["Escape"], "quote": "Press Esc"},
+    }
+    await _call("tobi_answer_questions", {"run_id": run_id, "answers": [model]})
+    report = Report.model_validate_json(Path(report_path).read_text())
+    assert [a.answer.decided_by.value for a in report.answers] == ["model", "model"]
+    from tobi508.judgment import current_answer
+
+    # the later answer is in force: the first did not outrank it as a person's
+    assert current_answer(report, "q1").j1.documented == "yes"
 
 
 _ANSWER = {
