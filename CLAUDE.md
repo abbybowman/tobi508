@@ -18,7 +18,11 @@ by TT test ID. Package: `tobi508`.
      (`<id>-<short-name>.md`). Each spec's `spec_version` is recorded in
      every report: 0.y.z is a draft with no outcome, 1.0.0 is approved and
      built, then MINOR for rule changes and PATCH for wording
-     (`specs/rules/_template.md`).
+     (`specs/rules/_template.md`). One version is one text: after a
+     change, take a number `main` has not used and run
+     `uv run python -m tobi508.rules lock` (`specs/rules/versions.lock`;
+     `tests/test_spec_versions.py` locally, `scripts/check_spec_versions.py`
+     in CI against `main`).
    - A test the tool cannot perform, or has no implemented spec for, is
      `NEEDS_REVIEW` with the note "This test could not be performed" and the
      reason (`Finding.not_performed`).
@@ -31,7 +35,9 @@ by TT test ID. Package: `tobi508`.
 3. **A false PASS is the worst error.** When a rule cannot decide, the
    outcome is `NEEDS_REVIEW` (the `Finding` default). Never default to PASS,
    never infer PASS from missing evidence, and prefer NEEDS_REVIEW over a
-   low-confidence answer.
+   low-confidence answer. Never PASS or DOES NOT APPLY on a reading that is
+   not complete: a shared guard may move either to NEEDS_REVIEW, never the
+   other way (Abby, 2026-11-12; guard CN in `specs/rules/_template.md`).
 4. **Pin and record all versions.** Dependencies are locked in `uv.lock`;
    Playwright is pinned exactly in `pyproject.toml`. ANDI and jQuery are
    vendored with SHA-256 hashes in `third_party/PROVENANCE.json` (checked by
@@ -234,6 +240,7 @@ src/tobi508/
   config.py     Settings (env / .env)
   models.py     Pydantic models
   policy.py     URL allowlist decision (pure)
+  count.py      the page's inventory (what exists, shadow roots and frames apart) and the play hook; guard CN
   egress.py     the proxy every browser connection goes through: address checks at connection time
   access.py     hosted sign-in (AUTH=oidc): OIDC proxy, group gate, run owners, audit lines
   redact.py     redaction for tool errors and logs

@@ -196,6 +196,11 @@ class State4F(BaseModel):
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """Guard CN (count.py): the distinct elements the walk reached."""
+        return {"page": {"focusable": self.distinct}}
+
 
 def _distinct(p: PassResult) -> list[tuple[int, Step]]:
     seen, out = set(), []

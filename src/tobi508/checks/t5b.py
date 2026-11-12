@@ -52,6 +52,11 @@ class State5B(BaseModel):
     no_label: int = 0  # fields with no visual label (5.A's)
     j: dict[str, dict[str, Any]] = Field(default_factory=dict)  # "f<n>" -> answer
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass L read, for guard CN (count.py)."""
+        return self.lp.read
+
 
 def _shown(c: Comp) -> str:
     """5.A's visible label: an option in a set does not take the legend (it

@@ -66,6 +66,8 @@ class State9B(BaseModel):
     read_errors: list[str] = Field(default_factory=list)
     cmps: list[Cmp] = Field(default_factory=list)
     kinship: Kinship | None = None
+    # What the site read covered, per page (site.SiteRead.read; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
 def _has_main(p: PageRead) -> bool:
@@ -134,7 +136,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9B:
     if not ctx.pages:
         return State9B(no_pages=True)
     site = await site_read(ctx)
-    st = State9B(read_errors=site.errors)
+    st = State9B(read_errors=site.errors, read=site.read)
     if st.read_errors:
         return st
     st.cmps = [compare(site.main, p) for p in site.others]

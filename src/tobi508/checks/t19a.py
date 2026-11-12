@@ -65,6 +65,8 @@ class State19A(BaseModel):
     pages: list[dict[str, Any]] = Field(default_factory=list)
     t_url: str = ""
     t_requested: str = ""  # the caller's URL before redirects, when it differs
+    # What the site read covered, per page (site.SiteRead.read; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
     links: list[LinkTo] = Field(default_factory=list)
     search_forms: int = 0
     search: Search = Field(default_factory=Search)
@@ -200,6 +202,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     st = State19A(
         pages=[{"n": p.n, "url": p.final_url} for p in ctx.pages],
         read_errors=site.errors,
+        read=site.read,
     )
     if st.read_errors:
         return st

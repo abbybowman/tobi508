@@ -20,6 +20,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from tobi508 import count as inventory
+from tobi508.models import Count
 from tobi508.traverse import DEST_JS, PATH_JS, NewPage
 
 UNIT_CAP = 600  # units read per page (9.A spec section 2)
@@ -223,6 +225,8 @@ class PageRead(BaseModel):
     title: str = ""
     forms: list[dict[str, Any]] = Field(default_factory=list)  # search forms
     error: str = ""
+    # The page's inventory, on this same load (count.py; guard CN).
+    count: Count | None = None
     # The same document as the tested page, under another address (K-01).
     identical: bool = False
 
@@ -237,6 +241,23 @@ class SiteRead(BaseModel):
     @property
     def others(self) -> list[PageRead]:
         return self.pages[1:]
+
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What the site read covered on each page it read, for guard CN
+        (count.py): `walk` follows element children in the page's own
+        document, so no landmark or link inside a web component or frame."""
+        none = {
+            "landmarks.shadow": 0,
+            "links.shadow": 0,
+            "landmarks.frames": 0,
+            "links.frames": 0,
+        }
+        return {
+            ("page" if p.n == 0 else f"p{p.n}"): dict(none)
+            for p in self.pages
+            if not p.error
+        }
 
     @property
     def errors(self) -> list[str]:
@@ -267,7 +288,12 @@ async def read_page(n: int, url: str, new_page: NewPage) -> PageRead:
     try:
         await page.wait_for_load_state("load")
         data = await page.evaluate(READ_JS, UNIT_CAP)
+        try:
+            count = await inventory.take(page, "site read")
+        except Exception as exc:
+            count = Count(where="site read", error=type(exc).__name__)
         return PageRead(
+            count=count,
             n=n,
             url=data["url"],
             units=[Unit(**u) for u in data["units"]],

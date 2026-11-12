@@ -151,6 +151,13 @@ def _fixture_file(path: str) -> Path | None:
     return _FIXTURE_FILES.get(key)
 
 
+# A 1 x 1 PNG: guard CN's many-images page needs 31 distinct image addresses.
+_DOT_PNG = bytes.fromhex(
+    "89504e470d0a1a0a0000000d4948445200000001000000010806000000"
+    "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082"
+)
+
+
 class _Handler(http.server.BaseHTTPRequestHandler):
     hits: Counter  # set per server
 
@@ -218,6 +225,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             return self._send(
                 200, _tone(secs, loud=tone.group(1) == "tone"), "audio/wav"
             )
+        if self.path.split("?")[0] == "/dot.png":  # one tiny PNG, any query (count)
+            return self._send(200, _DOT_PNG, "image/png")
         if self.path == "/data.json":
             return self._send(
                 200, json.dumps({"n": nonce}).encode(), "application/json"

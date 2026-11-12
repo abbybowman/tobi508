@@ -1,7 +1,8 @@
 ---
 tt_test: 2.A
 tt_name: 1.4.2-audio-control
-spec_version: 1.0.0
+spec_version: 1.1.0
+count: media_played.light, media_played.shadow, media_played.frames, media_played.detached, media.shadow, media.frames
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -119,6 +120,8 @@ Each auto-playing audio (a media element or an `AudioContext`) is an *instance*;
 | K6 | "Audio plays by itself for more than 3 seconds, and nothing among the first three items on the page stops it or turns it down. Screen reader users hear it over their screen reader. Put a pause or mute button first on the page, or do not start the audio until the user asks." |
 | A2 | "This page has media we could not play from our recording (<why>). A person should load the page and listen." |
 | A3 | "No audio played by itself for more than 3 seconds, so this test does not apply." |
+
+**Guard CN: sound the media read could not see** (1.1.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-01). Every replay has a play hook before page scripts (`count.PLAY_HOOK_JS`): it keeps each audio or video element that played or was asked to play (by `play()` or by `autoplay`), whether it is in the page, inside a web component, inside a frame or in no document at all (`new Audio(url).play()`), and counts speech (`speechSynthesis.speak`) and Web Audio sources as played from a script. Pass T reads it at the end of its watch, where autoplay is allowed (`Report.counts`, `played_from: "pass T"`). Pass T's media read lists the first 20 `video` and `audio` elements of each document and frame, and nothing inside web components (`State2A.read`). When more played than it lists, or the page has media inside web components or frames it did not list, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("1 sound or video played from a script, and was not checked"). Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

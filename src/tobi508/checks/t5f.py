@@ -301,6 +301,23 @@ class PassE(BaseModel):
     looks: dict[str, str] = Field(default_factory=dict)  # n -> look, unfocused, at load
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
+    # What pass E read, by the page inventory's keys (count.py; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
+
+
+def what_was_read(ps: PassE, count) -> dict[str, int]:
+    """Pass E's reading: the forms it took, matched to the inventory's forms
+    with a button by path (a form with no field it reached is not taken);
+    fields the walk reached only, so no hidden field; and nothing inside web
+    components or frames (FORMS_JS reads the page's own document)."""
+    forms = set(count.form_paths) if count is not None else set()
+    hidden = set(count.hidden_field_paths) if count is not None else set()
+    return {
+        "forms_with_button": len(forms & {f.key for f in ps.forms if f.key}),
+        "fields_hidden": len(hidden & {f.css_path for f in ps.fields if f.css_path}),
+        "fields.shadow": 0,
+        "fields.frames": 0,
+    }
 
 
 _NAME_AC = {"name", "given-name", "additional-name", "family-name", "nickname"}
@@ -703,6 +720,7 @@ async def error_pass(ctx: RunContext, walk: KeyboardWalk) -> PassE:
         await _forms(ctx, ps, walk)
         for form in ps.forms:
             await run_attempts(ctx, ps, form, form.submit)
+    ps.read = {"page": what_was_read(ps, ctx.cache.get("count"))}
     ctx.cache["5f-pass"] = ps
     return ps.model_copy(deep=True)
 
@@ -1100,6 +1118,11 @@ def quote_in(quote: str, texts: list[str]) -> bool:
 class State5F(BaseModel):
     ps: PassE
     j: dict[str, dict] = Field(default_factory=dict)  # "<id>-J1" -> answer
+
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass E read, for guard CN (count.py)."""
+        return self.ps.read
 
 
 SEARCH_DNA = (

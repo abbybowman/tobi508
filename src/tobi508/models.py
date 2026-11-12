@@ -517,6 +517,79 @@ class OtherPage(BaseModel):
     )
 
 
+class Part(BaseModel):
+    """How many of one thing a page has, by where it is (count.py): the
+    page's own document, inside open shadow roots (web components), inside
+    frames, and (played media only) never in any document."""
+
+    light: int = 0
+    shadow: int = 0
+    frames: int = 0
+    detached: int = 0
+
+    @property
+    def total(self) -> int:
+        return self.light + self.shadow + self.frames + self.detached
+
+
+class Count(BaseModel):
+    """The page's inventory: what exists on it, whether or not a test reads
+    it (count.py; plan 2026-11-12 part B). Facts only; guard CN compares it
+    with what each test read (`engine.apply_guards`)."""
+
+    where: str = Field(default="", description="The load it was taken on.")
+    error: str = Field(
+        default="", description="Set when the inventory could not be taken."
+    )
+    fields: Part = Field(default_factory=Part)
+    fields_hidden: Part = Field(default_factory=Part)
+    contenteditable: Part = Field(default_factory=Part)
+    forms_with_button: Part = Field(default_factory=Part)
+    media: Part = Field(default_factory=Part)
+    media_played: Part = Field(default_factory=Part)
+    played_from: str = ""
+    speech: int = 0
+    canvases: Part = Field(default_factory=Part)
+    draggable: Part = Field(default_factory=Part)
+    images: Part = Field(default_factory=Part)
+    focusable: Part = Field(default_factory=Part)
+    landmarks: Part = Field(default_factory=Part)
+    links: Part = Field(default_factory=Part)
+    frames: int = 0
+    frames_unread: int = 0
+    players: int = 0
+    shadow_roots: int = 0
+    closed_hosts: int = 0
+    # Rendered controls that could show hidden content (a button, a
+    # disclosure, a same-page or script link, an inline click handler).
+    # Guard CN: with none, hidden fields hold no outcome.
+    openers: int = 0
+    # Paths (light DOM of the page's own document, first 200 of each), so a
+    # check can say which of these it read.
+    hidden_field_paths: list[str] = Field(default_factory=list)
+    form_paths: list[str] = Field(default_factory=list)
+
+    def get(self, key: str) -> int:
+        """A spec's count key: `fields` (all of them) or `fields.shadow`."""
+        name, _, part = key.partition(".")
+        v = getattr(self, name)
+        if isinstance(v, Part):
+            return v.total if not part else getattr(v, part)
+        return int(v)
+
+
+COUNT_KEYS = tuple(
+    k
+    for name, f in Count.model_fields.items()
+    if f.annotation in (Part, int) and name not in ("speech",)
+    for k in (
+        [name, *(f"{name}.{p}" for p in Part.model_fields)]
+        if f.annotation is Part
+        else [name]
+    )
+)
+
+
 class Report(BaseModel):
     disclaimer: str = NOT_CERTIFIED_DISCLAIMER
     certified: Literal[False] = False
@@ -570,6 +643,12 @@ class Report(BaseModel):
         "not and why, and how many opened content a keyboard user could reach. "
         "Empty when no selected test reads opened content. Guards `reveal` "
         "and `reveal-content` read it.",
+    )
+    counts: dict[str, Count] = Field(
+        default_factory=dict,
+        description="Each page's inventory, keyed 'page' (the tested page) and "
+        "'p1'... (other pages): what exists on it, whether or not a test read "
+        "it (count.py). Guard CN reads it. Empty in runs made before it.",
     )
     judge: dict[str, Any] | None = Field(
         default=None,

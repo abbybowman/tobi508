@@ -17,7 +17,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from tobi508.models import TestId
+from tobi508.models import COUNT_KEYS, TestId
 
 REQUIRED_KEYS = ("tt_test", "tt_name", "spec_version")
 KNOWN_GUARDS = ("unrecorded-code", "reveal", "reveal-content")
@@ -38,6 +38,9 @@ class RuleSpec:
     # Shared page guards the spec declares in its front matter (`guards:`),
     # each defined in specs/rules/_template.md; engine.apply_guards runs them.
     guards: tuple[str, ...] = ()
+    # Inventory keys guard CN compares with what the test read (`count:`,
+    # e.g. `fields.shadow, focusable@dna`); `@dna` holds DOES NOT APPLY only.
+    count: tuple[str, ...] = ()
 
     def version_label(self) -> str:
         return f"{self.spec_version} (sha256:{self.sha256[:12]})"
@@ -106,12 +109,17 @@ def load_spec(path: Path) -> RuleSpec:
     unknown = [g for g in guards if g not in KNOWN_GUARDS]
     if unknown:
         raise RuleSpecError(f"{path.name}: unknown guard {unknown[0]!r}")
+    count = tuple(k.strip() for k in meta.get("count", "").split(",") if k.strip())
+    bad = [k for k in count if k.removesuffix("@dna") not in COUNT_KEYS]
+    if bad:
+        raise RuleSpecError(f"{path.name}: unknown count key {bad[0]!r}")
     return RuleSpec(
         test_id=test_id,
         spec_version=meta["spec_version"],
         path=path,
         sha256=digest,
         guards=guards,
+        count=count,
     )
 
 
@@ -135,3 +143,45 @@ def load_specs(rules_dir: Path) -> dict[TestId, RuleSpec]:
 def spec_versions(rules_dir: Path) -> dict[str, str]:
     """TT test ID -> 'spec_version (sha256:...)' for every spec present."""
     return {t.value: s.version_label() for t, s in load_specs(rules_dir).items()}
+
+
+# One line per spec: file, spec_version, SHA-256 of its text. Changing a
+# spec's text without a new version fails tests/test_spec_versions.py, and
+# two branches that bump the same spec both edit its one line here, so git
+# raises a conflict instead of merging two rule sets under one version.
+LOCK_NAME = "versions.lock"
+LOCK_HEAD = (
+    "# spec_version and SHA-256 of each rules spec (tests/test_spec_versions.py).\n"
+    "# After a spec change and its version bump: uv run python -m tobi508.rules lock\n"
+)
+
+
+def lock_text(rules_dir: Path) -> str:
+    specs = sorted(load_specs(rules_dir).values(), key=lambda s: s.path.name)
+    rows = [f"{s.path.name} {s.spec_version} {s.sha256}\n" for s in specs]
+    return LOCK_HEAD + "".join(rows)
+
+
+def read_lock(rules_dir: Path) -> dict[str, tuple[str, str]]:
+    """file name -> (spec_version, sha256), from versions.lock."""
+    out: dict[str, tuple[str, str]] = {}
+    path = rules_dir / LOCK_NAME
+    if not path.exists():
+        return out
+    for line in path.read_text("utf-8").splitlines():
+        if line.strip() and not line.startswith("#"):
+            name, ver, sha = line.split()
+            out[name] = (ver, sha)
+    return out
+
+
+if __name__ == "__main__":
+    import sys
+
+    from tobi508.config import settings
+
+    if sys.argv[1:] != ["lock"]:
+        sys.exit("usage: python -m tobi508.rules lock")
+    rules_dir = Path(settings.rules_dir)
+    (rules_dir / LOCK_NAME).write_text(lock_text(rules_dir), "utf-8", newline="\n")
+    print(f"wrote {rules_dir / LOCK_NAME}")

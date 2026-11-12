@@ -345,6 +345,10 @@ class LabelsPass(BaseModel):
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
     revealed_from: list[str] = Field(default_factory=list)
+    # What this pass read, by the page inventory's keys (count.py; guard CN):
+    # documents only, so nothing inside web components or frames, and no
+    # editable areas; hidden fields only those an opened section showed.
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
 def _norm(t: str) -> str:
@@ -531,5 +535,19 @@ async def labels_pass(ctx, walk) -> LabelsPass:
         }
         for c in lp.components:
             c.tab_index = idx.get(c.css)
+    lp.read = {"page": what_was_read(lp, ctx.cache.get("count"))}
     ctx.cache["labels-pass"] = lp
     return lp.model_copy(deep=True)
+
+
+def what_was_read(lp: LabelsPass, count) -> dict[str, int]:
+    """Pass L's reading by the inventory's keys. Hidden fields are matched by
+    path: one is read when an opened section showed it and it was read."""
+    opened = {c.css for c in lp.components if c.origin != "load"}
+    hidden = set(count.hidden_field_paths) if count is not None else set()
+    return {
+        "fields.shadow": 0,
+        "fields.frames": 0,
+        "contenteditable": 0,
+        "fields_hidden": len(hidden & opened),
+    }

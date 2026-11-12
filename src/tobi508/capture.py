@@ -23,6 +23,7 @@ from playwright.async_api import Browser, BrowserContext
 from tobi508.andi import install_andi_routes
 from tobi508.browser import LogFn, NavigationGuard, new_context
 from tobi508.config import Settings
+from tobi508.count import PLAY_HOOK_JS
 from tobi508.egress import EgressProxy
 from tobi508.policy import check_url
 from tobi508.redact import safe_url
@@ -628,6 +629,8 @@ async def replay_context(
     # Loads from the recording wait longer than live loads (config).
     ctx.set_default_navigation_timeout(settings.replay_navigation_timeout_ms)
     await ctx.add_init_script(INIT_JS)  # focus and mutation log (settle rule)
+    # Media that played, in the document or not (count.py; guard CN, N-01).
+    await ctx.add_init_script(PLAY_HOOK_JS)
     for script in init_scripts:
         await ctx.add_init_script(script)
     await ctx.route_from_har(str(har_path), not_found="abort")

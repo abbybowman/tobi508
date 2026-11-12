@@ -96,7 +96,16 @@ merges `main` at its next pause.
    more than 30 images, a canvas page) become NEEDS REVIEW with a
    sentence that says what was not checked. Abby agreed on 2026-11-12
    that a guard may move DOES NOT APPLY; the template and CLAUDE.md
-   principle 3 change with it.
+   principle 3 change with it. **Built, 2026-11-12, waiting for Abby's
+   review of the spec changes:** `count.py`, the play hook, guard CN,
+   and `count:` in 16 specs; the review's pages are fixtures in
+   `tests/test_fixtures_count.py`. Decided with Abby: hidden fields hold
+   an outcome only when something could show them (DHS's Baseline
+   TC10.A-ic-dna-1 and -2 stay DOES NOT APPLY); 2.B lists only images,
+   2.C nothing, and 9.A-19.A web components only, not frames; 19.A's
+   FAIL on a header in a web component waits for part D (Known limits).
+   Spec versions are locked (`specs/rules/versions.lock`) and checked in
+   CI.
 3. **Server judge, gate, sign-in.** Before step 6's figures are used:
    the gate asks for a minimum number of decided cells and counts a
    wrong DOES NOT APPLY; picture links only through the guarded reader;
@@ -123,6 +132,9 @@ merges `main` at its next pause.
    judge-decided cells apart from rule-decided ones. It gives the
    before-and-after figures for the pitch (a development site, said so)
    and shows which question types Abby can switch on (`JUDGE_TYPES`).
+   It is also part B's measurement (Abby, 2026-11-12): list the NEEDS
+   REVIEW cells that guard CN made (row `CN`) apart from the rest, so the
+   thread that lowers NEEDS REVIEW can tell a true gap from noise.
    A new round folder; the locked rounds are never rewritten.
 7. **The pitch,** with the last two days kept for it: the [FILL]
    figures from one scored run at the submission commit, a rehearsal
@@ -297,17 +309,29 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 
 - **Web components (shadow roots):** the keyboard walk enters them; the
   label pass, the site read, the media read, 4.A's handler scan and
-  5.F's error read do not. 5.A-5.C, 9.B, 9.C and 2.A then say DOES NOT
-  APPLY and 4.A can PASS (D-01, D-03, K-02, N-01, M-06). Parts B and D.
+  5.F's error read do not. Since part B's inventory and guard CN
+  (2026-11-12), a form, navigation or sound inside one is NEEDS REVIEW
+  in 5.A-5.H, 9.A-9.C and 2.A, not DOES NOT APPLY (D-01, K-02, M-12,
+  N-01). Still open: 4.A can PASS with a mouse-only control inside one
+  (D-03), 5.F and 5.G miss an error shown in one (M-06), and 19.A fails
+  a page whose shared header is one (K-02; a guard never moves a FAIL;
+  accepted until part D, Abby 2026-11-12). Part D reads them.
 - **Content that opens:** a form behind a button with no ARIA marker is
-  never opened, and the 5.x tests say DOES NOT APPLY (H-08). Parts B,
-  then "Opening everything". (A menu whose trigger is `<a href="#">`
-  is read now: C-03, fixed.)
+  never opened; since guard CN its hidden fields make 5.A-5.H NEEDS
+  REVIEW, not DOES NOT APPLY (H-08, M-07), and so does an editable text
+  area (`contenteditable`). Then "Opening everything". (A menu whose
+  trigger is `<a href="#">` is read now: C-03, fixed.)
+- **Guard CN matches hidden fields by their place in the page:** a page
+  that rebuilds its elements when a section opens can make a field that
+  was read look unread, so a test is NEEDS REVIEW when it need not be
+  (never PASS). Accepted until part D's shared reader gives elements a
+  stable identity (Abby, 2026-11-12).
 - **The watch is 6.5 seconds:** what starts later is DOES NOT APPLY in
   2.A, 2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second
   can be missed; flashing below the first screen and an animated image
-  past the 30th are not measured (N-02 to N-09, W-02, W-09). Parts B,
-  C and J.
+  past the 30th are not measured (N-02 to N-09, W-02, W-09); an
+  animated image past the 30th now makes 2.B and 3.A NEEDS REVIEW
+  (N-06, guard CN). Parts C and J.
 - **A walk that stops at a trap, or runs out of time,** can still PASS
   in 5.D, 5.F and 4.C (H-03, M-05, E-07). Parts A and C.
 
