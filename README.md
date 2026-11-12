@@ -80,7 +80,7 @@ A fix removes its line here in the same commit.
 | 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; an autoplaying YouTube embed; motion that starts after 6.5 s; an animated image after the 30th image |
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; a flashing GIF after the 30th image; flashing that starts after 6.5 s |
-| 4.A | PASS | a hover menu past the 40th Tab stop; a mouse-only `<a href="#">` when another link also has `href="#"`; a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
+| 4.A | PASS | a mouse-only `<a href="#">` when another link also has `href="#"`; a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
 | 4.A | Does Not Apply | a page that is only a canvas or drag-and-drop content |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.C | PASS | a run that ran out of time before the error-state pass |

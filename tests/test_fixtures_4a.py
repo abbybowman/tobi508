@@ -61,6 +61,9 @@ EXPECTED: dict[str, dict] = {
         "choice": {"J1": {"choice": "alternative", "element": 1}},
     },
     "f17-click-only-play-button": {"outcome": "FAIL", "rows": ["M10"]},
+    # E-01: 45 links, a mouse-only menu on the 45th. The hover scan stops at
+    # 40 stops, which is a cap reached: never PASS (spec G3).
+    "f18-hover-menu-past-the-cap": {"outcome": "NEEDS_REVIEW", "rows": []},
 }
 
 ACT = {

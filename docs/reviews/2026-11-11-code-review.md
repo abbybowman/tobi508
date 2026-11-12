@@ -96,7 +96,7 @@ below; "run" means I ran a page and got the outcome shown.
 
 | ID | Test | What the tool says | On what | Checked |
 | --- | --- | --- | --- | --- |
-| E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run |
+| E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run. **Fixed** |
 | E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run |
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
@@ -167,6 +167,9 @@ gallery, a form behind a button, a script-checked form.
   say so.
 - **Checked:** verified (run). 45 links, a mouse-only menu shown by
   hovering the 45th: 4.A PASS, rows A3, G4.
+- **Fixed:** commit "4.A: the hover cap holds the page back (E-01)",
+  no spec change (spec 4.A already says G3). Fixture
+  `4a/f18-hover-menu-past-the-cap`: NEEDS REVIEW.
 
 #### E-02 4.A passes a mouse-only `<a href="#">` because another link also has `href="#"`
 

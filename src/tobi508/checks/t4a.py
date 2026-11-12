@@ -500,7 +500,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
         hovered = 0
         for sr in st.stop_list:
             if hovered >= HOVER_MAX:
-                st.notes.append(
+                st.incomplete.append(
                     f"Only the first {HOVER_MAX} elements were checked for menus "
                     "that open when the mouse rests on them."
                 )
