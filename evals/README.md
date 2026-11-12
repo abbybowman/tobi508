@@ -99,6 +99,15 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Run 31, 2026-11-12: post-round 2 fixes 12, 13, 14, 24, 25, 26, 27 (the CLI route)
+
+The server judge's own route (`answer --backend api`, `claude -p`, Sonnet), two repeats each, on the cases `prepare` found to ask questions, before and after each change. Judge eval only: it hands pictures over as the judge's own requests do, not as links a client agent must open. The baseline before any fix (4.F, 9.C, 4.A, 4.D, 2.B: 32 cases): **31/32 in both repeats**, no wrong PASS; the miss is 4.F f05 (main content before a left-hand list of links), a false FAIL in repeat 1 and an unsure in repeat 2. Unsure answers in the baseline: 4.D f09 and f16 (faint changes; both expect NEEDS REVIEW), 2.B t-below-fold in repeat 2.
+
+**Fix 12, 4.F 1.6.0 (rubric: meaning and operation, not the drawn order).** Cases: the 11 existing plus F20 (tiles reached right to left), F21 (a tile's buttons in another order than drawn) and F22 (numbered steps out of sequence: must still FAIL), 14 cases.
+- **Before (rubric 1.5.0):** 12/14 and 11/14. F20 answered does_not_preserve (FAIL, key PASS) in both repeats; F21 and F05 unsure in some.
+- **After (1.6.0):** **14/14 and 14/14.** F22 is still does_not_preserve; no wrong PASS; the rubric's examples are on no fixture page's words except main content before side navigation, which is also F05's shape (Understanding 2.4.3 states it that way).
+- **Limit:** the judge eval cannot show how an agent that never opens the order picture answers (see "The judge eval hands images over as files" in docs/solutions/judge-eval.md).
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.

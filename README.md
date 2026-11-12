@@ -49,7 +49,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Does not yet Tab through a form's error states (fix planned); a trap in code the recording lacks is NEEDS REVIEW |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.5.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
 | 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
-| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.5.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question needs a clearer rubric before a server judge answers it (fix planned) |
+| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.6.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question's rubric now says order is judged by meaning, not by matching the drawn order (judge eval clean on 14 cases); its order picture still draws stops nobody can see (fix planned) |
 | 5.A | 3.3.2-label-provided | 3.3.2 | [1.3.0](specs/rules/5a-label-provided.md) | ⚠️ Fails search fields that an icon button labels (fix planned) |
 | 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.3.0](specs/rules/5b-label-descriptive.md) | ⚠️ Does Not Apply where it should pass, following 5.A (fix planned) |
 | 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.5.0](specs/rules/5c-programmatic-label.md) | ⚠️ Fails hidden carousel buttons; misses controls that appear only after interaction (fixes planned) |

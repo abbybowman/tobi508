@@ -42,6 +42,25 @@ EXPECTED: dict[str, dict] = {
         "signals": {"S3"},
     },
     "f07-one-link": {"outcome": "DNA", "rows": []},
+    # Fix 12 (4.F 1.6.0): a different order from the one drawn is not
+    # "does not preserve" by itself. Cards reached right to left, a card's
+    # buttons reached in the other order than drawn: meaning and operation
+    # hold. The same layout with numbered steps out of sequence must FAIL.
+    "f20-cards-reached-right-to-left": {
+        "outcome": "PASS",
+        "choice": "preserves",
+        "signals": {"S3"},
+    },
+    "f21-card-buttons-in-other-order": {
+        "outcome": "PASS",
+        "choice": "preserves",
+        "signals": {"S3"},
+    },
+    "f22-steps-out-of-sequence": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S3"},
+    },
     "f08-menu-not-adjacent": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",
