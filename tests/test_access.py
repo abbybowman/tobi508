@@ -119,6 +119,29 @@ async def test_no_required_groups_admits_any_valid_token():
     assert await _verifier([]).verify_token(_token()) is not None
 
 
+async def test_a_token_with_no_subject_is_refused(caplog, monkeypatch):
+    """S-05: without `sub` a caller would read as "nobody", who opens every
+    run. The verifier refuses such a token, with or without the group gate,
+    and `caller()` refuses one that reaches it all the same."""
+    from types import SimpleNamespace
+
+    no_sub = KEYS.create_token(subject="", issuer=ISSUER)
+    with caplog.at_level(logging.INFO, logger="tobi508.audit"):
+        assert await _verifier([]).verify_token(no_sub) is None
+        assert await _verifier(["g"]).verify_token(no_sub) is None
+    actions = [json.loads(r.message)["action"] for r in caplog.records]
+    assert actions == ["authn.no_subject"] * 2
+    assert await _verifier([]).verify_token(_token()) is not None  # sub "u1"
+
+    monkeypatch.setattr(
+        access, "get_access_token", lambda: SimpleNamespace(claims={"email": "x"})
+    )
+    with pytest.raises(access.NoSubject):
+        access.caller()
+    monkeypatch.setattr(access, "get_access_token", lambda: None)
+    assert access.caller() is None  # sign-in off: one user, every run open
+
+
 async def test_group_gate_still_refuses_a_bad_signature():
     other = RSAKeyPair.generate().create_token(subject="u1", issuer=ISSUER)
     assert await _verifier([]).verify_token(other) is None
