@@ -184,7 +184,9 @@ async def test_the_inventory_counts_the_page_its_shadow_roots_and_frames(browser
         1,
         1,
     )
-    assert (c.canvases.light, c.draggable.light, c.images.light) == (1, 1, 1)
+    # Images are distinct http(s) addresses, as pass T's image read takes them:
+    # the page's one image is a data: address.
+    assert (c.canvases.light, c.draggable.light, c.images.light) == (1, 1, 0)
     assert (c.links.light, c.links.shadow, c.links.frames) == (1, 1, 1)
     assert c.landmarks.light == 1  # nav
     assert (c.frames, c.frames_unread, c.shadow_roots) == (1, 0, 1)
