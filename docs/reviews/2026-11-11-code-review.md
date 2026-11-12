@@ -121,7 +121,7 @@ below; "run" means I ran a page and got the outcome shown.
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
-| K-01 | 9.A, 9.B, 9.C | PASS | the tested page named again as the other page | run |
+| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script |
 | A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read |
 
