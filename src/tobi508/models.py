@@ -560,6 +560,10 @@ class Count(BaseModel):
     players: int = 0
     shadow_roots: int = 0
     closed_hosts: int = 0
+    # Rendered controls that could show hidden content (a button, a
+    # disclosure, a same-page or script link, an inline click handler).
+    # Guard CN: with none, hidden fields hold no outcome.
+    openers: int = 0
     # Paths (light DOM of the page's own document, first 200 of each), so a
     # check can say which of these it read.
     hidden_field_paths: list[str] = Field(default_factory=list)

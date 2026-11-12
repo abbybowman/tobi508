@@ -82,6 +82,11 @@ COUNT_JS = (
     'iframe, frame, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"])';
   const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
     '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
+  // What could show hidden content: a button, a disclosure, a same-page or
+  // script link, an element with an inline click handler (Abby, 2026-11-12:
+  // hidden fields with nothing that can open them do not hold an outcome).
+  const OPENER = 'button, [role=button], input[type=button], summary, a[href^="#"], ' +
+    'a[href^="javascript:" i], [onclick], [aria-expanded], [aria-controls]';
   const BUTTON = 'button, input[type=submit], input[type=button], input[type=image], [role=button]';
   const inert = (el) => {
     for (let n = el; n; n = n.parentNode || n.host || null) if (n.nodeType === 1 && n.hasAttribute('inert')) return true;
@@ -106,7 +111,7 @@ COUNT_JS = (
   const part = () => ({ light: 0, shadow: 0 });
   const out = { fields: part(), fields_hidden: part(), contenteditable: part(), forms_with_button: part(),
     media: part(), canvases: part(), draggable: part(), images: part(), focusable: part(),
-    landmarks: part(), links: part(), shadow_roots: 0, closed_hosts: 0,
+    landmarks: part(), links: part(), shadow_roots: 0, closed_hosts: 0, openers: 0,
     hidden_field_paths: [], form_paths: [], played: { light: 0, shadow: 0, detached: 0 },
     speech: 0, audio: 0 };
   const radios = { light: new Set(), shadow: new Set() };
@@ -130,6 +135,7 @@ COUNT_JS = (
         add('forms_with_button');
         if (where === 'light' && out.form_paths.length < pathsMax) out.form_paths.push(path(el));
       }
+      if (el.matches(OPENER) && rendered(el) && !el.matches(':disabled')) out.openers += 1;
       if (el.tagName === 'VIDEO' || el.tagName === 'AUDIO') add('media');
       if (el.tagName === 'CANVAS') {
         const r = el.getBoundingClientRect();
@@ -208,6 +214,7 @@ def _merge(count: Count, got: dict[str, Any], main: bool) -> None:
         )
     count.speech += got["speech"]
     count.shadow_roots += got["shadow_roots"]
+    count.openers += got["openers"]
     count.closed_hosts += got["closed_hosts"]
 
 

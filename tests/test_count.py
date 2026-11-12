@@ -190,6 +190,7 @@ async def test_the_inventory_counts_the_page_its_shadow_roots_and_frames(browser
     assert (c.links.light, c.links.shadow, c.links.frames) == (1, 1, 1)
     assert c.landmarks.light == 1  # nav
     assert (c.frames, c.frames_unread, c.shadow_roots) == (1, 0, 1)
+    assert c.openers >= 1  # the form's Send button
     assert c.get("fields") == 3 and c.get("fields.shadow") == 1
 
 
@@ -204,3 +205,15 @@ async def test_the_page_cannot_replace_the_play_hook(browser):
     c = await inventory.take(page, "test")
     await ctx.close()
     assert c.media_played.detached == 1
+
+
+def test_hidden_fields_hold_nothing_when_nothing_could_open_them():
+    """DHS's Baseline TC10.A-ic-dna-1 and -2: a field hidden by CSS on a page
+    with no control stays DOES NOT APPLY (Abby, 2026-11-12, option A)."""
+    keys = ("fields_hidden",)
+    closed = Count(fields_hidden=Part(light=1), openers=0)
+    f = apply_guards(finding(Outcome.DNA), (), report(page=closed), State(), keys)
+    assert f.outcome is Outcome.DNA and "CN" not in f.rows
+    openable = Count(fields_hidden=Part(light=1), openers=1)
+    f = apply_guards(finding(Outcome.DNA), (), report(page=openable), State(), keys)
+    assert f.outcome is Outcome.NEEDS_REVIEW and "CN" in f.rows

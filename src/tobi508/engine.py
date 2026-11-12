@@ -269,6 +269,10 @@ def _count_guard(f: Finding, report: Any, state: Any, keys: tuple[str, ...]) -> 
             if dna_only and f.outcome is not Outcome.DNA:
                 continue
             there, done = c.get(key), int(got.get(key, 0))
+            if key.startswith("fields_hidden") and c.openers == 0:
+                # Nothing on the page could show them: hidden for everyone,
+                # as DHS's Baseline TC10.A-ic-dna-1 and -2 (Abby, 2026-11-12).
+                there = 0
             if there > done:
                 s = count_sentence(key, there, done)
                 if page != "page":
