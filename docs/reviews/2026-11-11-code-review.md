@@ -4,8 +4,8 @@ A triaged list from a line-by-line review of `tobi508`, for Abby to review
 and hand to other threads. Nothing here has been fixed; this thread changes
 no code.
 
-**Progress.** Phases 0 to 2 are done. Phases
-3 and 4 add the files nobody has reviewed yet; phase 5 adds the "if we
+**Progress.** Phases 0 to 3 are done. Phase
+4 adds the files nobody has reviewed yet; phase 5 adds the "if we
 started over" section. Each phase is committed when it is checked.
 
 | Phase | Covers | State |
@@ -13,7 +13,7 @@ started over" section. Each phase is committed when it is checked.
 | 0 | Leads from the first attempt (tools, pipeline, traverse, 9.B/9.C/19.A, evals) | done |
 | 1 | Security files; what an agent receives, measured; the rest of tools and pipeline | done |
 | 2 | 4.A-4.F and 5.A-5.D against their specs | done |
-| 3 | 5.F-5.H, 9.A, 2.A-2.D, 3.A and the watchers | not started |
+| 3 | 5.F-5.H, 9.A, 2.A-2.D, 3.A and the watchers | done |
 | 4 | The rest of the core; tests, CI, Dockerfile, packaging | not started |
 | 5 | "If we started over"; final ordering | not started |
 
@@ -37,7 +37,8 @@ IDs (A-01, D-03 and so on) are handles for other threads to cite. The
 letter is the review group: A tools and models, B pipeline and judge,
 D the keyboard core, K 9.B/9.C/19.A, L evals, S security, T token
 measurement, G the rest of tools and pipeline, E 4.A-4.C, F 4.D-4.F,
-H 5.A-5.D.
+H 5.A-5.D, M 5.F-5.H and 9.A, N 2.A-2.D and 3.A, W the motion and
+flash watchers.
 
 ---
 
@@ -349,6 +350,63 @@ that the demo plan turns on (A-01, B-01).
   reveal guard at all. The reviewer's run of a "Pay your bill" button
   that unhides a payment form gave DOES NOT APPLY for all three.
 
+### W-02 3.A says nothing flashes when the flashing is below the first screen
+
+- **What is wrong:** the frame-by-frame capture photographs the top
+  1024 x 768 of the page. When the watcher has seen a fast timer
+  changing the page (a "trigger") and the capture then sees a still
+  picture, the source is recorded as "not flashing" and as measured.
+- **Why it matters:** a wrong DOES NOT APPLY for flashing on a page
+  where the tool itself recorded "8 changes in one second". The safety
+  net (a 2 s screen recording) also sees only the first screen.
+- **Where:** `src/tobi508/flashcap.py:249, 296`;
+  `src/tobi508/checks/t3a.py:237-300, 587-597`; spec 3.A, row A4
+  ("every trigger was measured").
+- **Smallest fix:** a trigger counts as measured only when the capture
+  saw it change; otherwise add "something changed quickly that the
+  capture did not show", which is row A3, NEEDS REVIEW. Then scroll the
+  changed element into view for the capture.
+- **Checked:** verified (run). A 1000 x 400 block switching black and
+  white every 125 ms, 2,500 px down the page: 3.A DOES NOT APPLY.
+
+### W-09 2.B misses a blink or jump at 2.5 times a second
+
+- **What is wrong:** the watch compares about 17 screenshots taken at
+  gaps of 0.35 s and 0.45 s in turn. That pattern repeats every 0.8 s,
+  so content with a period of 0.4 s is caught in the same state in
+  both pictures for three starts in four (the reviewer's simulation;
+  one in two at 0.2 s).
+- **Why it matters:** a wrong DOES NOT APPLY on fast blinking, which is
+  below 3.A's threshold, so 2.B is the only test that covers it.
+- **Where:** `src/tobi508/motion.py:51-54` (`FRAME_STEPS`),
+  `1149-1167`.
+- **Smallest fix:** vary the gaps (a seeded 0.30 to 0.50 s), or take
+  change from a screen recording of the whole watch. Add 1 to 3 Hz
+  blinks to `tests/test_motion_browser.py`.
+- **Checked:** verified (run). A box that jumps 200 px sideways every
+  200 ms, forever: 2.B DOES NOT APPLY in 2 of 2 runs. (The reviewer's
+  own page blinked by `visibility`, which N-03 also explains; mine
+  does not.)
+
+### W-07 2.B says nothing moved when most of the screen moves
+
+- **What is wrong:** a pair of frames in which more than half the
+  screen changed is set aside as a "page-wide change" (meant for a
+  dialog backdrop or a scroll) and not mapped to any region. No check
+  reads the set-aside list. A full-width slider, a colour-cycling
+  background or a full-screen canvas changes most of the screen in
+  every pair.
+- **Why it matters:** a wrong DOES NOT APPLY on the largest moving
+  content a page can have.
+- **Where:** `src/tobi508/motion.py:64` (`PAGE_CHANGE = 0.5`),
+  `1501-1504`.
+- **Smallest fix:** when a third or more of the frame pairs are
+  page-wide changes, treat the viewport as one moving region, or at
+  least add "the whole screen changed in N frames" as a NEEDS REVIEW
+  hint in 2.B and 2.C.
+- **Checked:** verified (run). A fixed full-viewport canvas drawing a
+  slowly cycling gradient: 2.B DOES NOT APPLY.
+
 ### N-01 2.A does not hear audio from `new Audio()` or from a shadow root
 
 - **What is wrong:** the watcher finds media with
@@ -369,7 +427,8 @@ that the demo plan turns on (A-01, B-01).
 - **Checked:** verified (run). The same tone file three ways: a plain
   `<audio autoplay>` is 2.A FAIL; `new Audio('tone.wav').play()` is
   DOES NOT APPLY; `<audio autoplay>` in a shadow root is DOES NOT
-  APPLY.
+  APPLY. The watchers reviewer found the same independently (W-03)
+  and adds that `speechSynthesis.speak()` is not hooked either.
 
 ### N-03 2.B says nothing blinked when text blinks by `visibility`
 
@@ -441,10 +500,21 @@ that the demo plan turns on (A-01, B-01).
   `src/tobi508/checks/t2b.py:177`; `src/tobi508/checks/t3a.py:213-238`;
   `src/tobi508/motion.py:1591-1611, 1655`; 2.C's `hints` at
   `src/tobi508/checks/t2c.py:73-100`.
+- **Also (W-05):** an `<audio autoplay loop>` that a script inserts
+  1.5 s after load is DOES NOT APPLY too. The watcher has it playing at
+  3.5 s and at 6.5 s; 2.A compares the 3.5 s reading with the first
+  reading the element appears in, which is the same one, and concludes
+  it is not advancing. Verified (run). Fix: compare with the last
+  reading (`t2a.py`, `find_audio`).
 - **Smallest fix:** share 2.C's hints: when there is a hint and nothing
   was found, 2.A, 2.B and 3.A answer NEEDS REVIEW too; add "N more
   elements wait to be scrolled into view" as a hint. Spec changes in
-  the safe direction for 2.A, 2.B and 3.A.
+  the safe direction for 2.A, 2.B and 3.A. One caution from the
+  watchers reviewer: 2.C's hint fires on any timer of a second or
+  more, including a 60 s analytics heartbeat (W-10, below), so shared
+  as it is it would send most real pages to NEEDS REVIEW. Weigh the
+  hint first (a period of 7 to 20 s looks like a carousel; 60 s does
+  not), or run the page forward 30 to 60 s on 3.A's paused clock.
 - **Checked:** verified (run), four pages: audio started by a 4.5 s
   timer, 2.A DOES NOT APPLY; an animation class added at 7 s, 2.B DOES
   NOT APPLY while 2.C on the same run is NEEDS REVIEW ("a timer of
@@ -1029,6 +1099,22 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
   sentences with a little context.
 - **Checked:** verified (read) by the reviewer; not measured on a page.
 
+#### W-01 Counting flashes stops the whole server for 15 to 19 seconds
+
+- **What is wrong:** 3.A decodes and counts its 181 captured frames
+  with numpy on the event loop.
+- **Why it matters:** while it runs, the other run in the server, its
+  progress line and every client connection stand still. With two runs
+  at once on a hosted server this is a visible stall.
+- **Where:** `src/tobi508/checks/t3a.py:291`;
+  `src/tobi508/flash.py:56` (`linear`), `522` (`analyze`).
+- **Smallest fix:** call the three `analyze_*` functions through
+  `asyncio.to_thread`; replace the per-pixel power in `linear` with a
+  256-entry table (about ten times faster).
+- **Checked:** the reviewer timed `flash.analyze` on 181 frames of
+  1024 x 768: 14.6 s to 19.0 s. Verified (read) that the call is made
+  directly from the async function; I did not repeat the timing.
+
 #### G-02 Server judge: one screenshot is attached once for every question that names it
 
 - **What is wrong:** pictures are gathered per question and joined with
@@ -1239,6 +1325,14 @@ not checked.
   change uses it, and after each change of context refills every
   earlier field. `labels.py:160-277, 423-445`; `checks/t5d.py:301-302,
   374, 515-535`.
+- **W-08, W-15** Any `IntersectionObserver` below the first screen
+  (lazy images, analytics) triggers a second full 6.5 s watch: 18.7 s
+  against 11.0 s on a static page (the reviewer's run). For a run of
+  4.x tests only, the watcher still decodes audio and animated images
+  and makes crops that nothing reads, and the walk does not get its
+  "stop waiting on this content" list until both watches end.
+  `motion.py:1591-1659`, `pipeline.py:1058-1075`. Fix: scroll inside
+  the first watch; a light mode when no 2.x test is selected.
 - **D-14** The reveal pass computes a path for every element three or
   more times per trigger, and once more only to read the frame chain.
   Its cap of 6,000 elements is silent. `reveal.py:81-91, 267-330`.
@@ -1315,6 +1409,18 @@ not checked.
   move during the watch counts as "with the change", so an unrelated
   cookie dialog sends a silent ticker to a question where FAIL was due
   (`t2d.py:53-76`).
+- **Watchers (W-06, W-10, W-12, W-16)** The capture's start time is
+  counted from a different zero than the watcher's, and is ignored when
+  the screen recording also saw something, so a flash on a slow page
+  is found but not measured (NEEDS REVIEW where NOT TESTED with an
+  assessment was due; `t3a.py:278-283`). Every timer of a second or
+  more is a 2.C hint, so a static page with a 60 s heartbeat is 2.C
+  NEEDS REVIEW ("a timer of 60 s, longer than we watched"; the
+  reviewer's run; `motion.py:131-143`, `t2c.py:86-88`). A screen
+  recording that fails leaves no "not measured" entry
+  (`t3a.py:221-229`). In the mechanism probe, content whose CSS path no
+  longer matches after a control re-renders it counts as "stopped",
+  which credits the control (`mechanism.py:228-241`; not reproduced).
 - **2.x, English only (N-12, N-15)** A text is offered to the agent as
   a possible "how to pause" instruction only if it contains an English
   word such as pause, stop or mute; a Spanish page's instruction counts
@@ -1434,13 +1540,18 @@ not checked.
   make the skip "work". `src/tobi508/checks/t9a.py:248-260, 584-598`.
   Fix: require the key in the quote, refuse browser keys, and either
   list the exception in principle 5 or drop it.
-- **N-11** The approved key press for 2.A-2.C is for "a key combination
-  that page text names". The code holds the other limits (modifiers
-  plus one key, never a browser key, one per run, a fresh replay) but
-  never checks that the key, or a quote, is in the page text; the spec
-  has that guard. The key is whatever the agent's answer says.
-  `src/tobi508/mechanism.py:499-539`. Fix: require the combination to
-  appear in the element's text.
+- **N-11, W-14** The approved key press for 2.A-2.C is for "a key
+  combination that page text names". The code holds the other limits
+  (modifiers plus one key, one per run, a fresh replay) but never
+  checks that the key, or a quote, is in the page text; the spec has
+  that guard. The key is whatever the agent's answer says. "Never a
+  key the browser uses" is a list of 12: `Ctrl+Shift+W`, `Ctrl+R`,
+  `Ctrl+P`, `Ctrl+S` and full-width letters all parse and are pressed
+  (the reviewer ran the parser on 54 strings; in headless Chromium
+  none of them did anything; headed Chrome is not tried).
+  `src/tobi508/mechanism.py:48-98, 499-539`. Fix: require the
+  combination to appear in the element's text; ASCII only; widen the
+  refused list.
 - **H-10** 5.D types the agent's suggested value as given: a line
   break in it presses Enter and submits the form, which 5.D then
   records as "sent the form". The value comes from an agent that read
@@ -1631,6 +1742,14 @@ Cleanup. All reviewers' claims unless marked.
   by calling 4.E's whole classifier (F-23). Worst case per run: 4.D up
   to 20 widget replays, 4.E up to 20 loads and 20 s of fixed waits,
   4.F up to 19 loads.
+- **Watchers cleanup (W-13, W-17):** the probe presses only Home on a
+  slider where the spec says Home, End, then arrows; frames are 0.35
+  and 0.45 s apart where the spec says 0.5 s. `FRAME_S` is unused;
+  `IMAGE_MAX_BYTES` is defined twice; `t3a.py` calls three private
+  names of `motion.py` and `flashcap.py`; an animated image is cut at
+  500 frames with no note. `motion.py` is 1,659 lines doing nine jobs,
+  one of them a 450-line browser script held in a Python string and
+  patched with `.replace`.
 - **5.F-5.H cleanup:** `PassE.notes` is read and never written;
   `FIELD_MAX = 40` is defined in `t5f.py` and `t5d.py`; there are three
   walkers for visible text (M-20). A quote of one character satisfies
@@ -1701,6 +1820,18 @@ reviewer (phase 1); I read the summary, not every line behind it.
   The problems found are in the evidence fed to the tables (F-02,
   F-11, F-12), not in the tables. The questions that may settle a PASS
   by looking do so only as principle 8 allows.
+- **The flash arithmetic matches WCAG 2.3.1.** The reviewer ran
+  `flash.py` on 28 built frame sequences (black and white at 2, 3,
+  3.5, 4 and 10 Hz; small and large boxes around the 341 x 256 limit;
+  red flashes; fades; irregular timestamps; exactly three flashes in a
+  second) and every result agreed: the luminance formula, pairs of
+  opposing changes, the sliding one-second window, the area limit and
+  the red rule. The misses in 3.A are in what gets captured (W-02,
+  N-06), not in the counting.
+- **Failures that raise end in NEEDS REVIEW** in the watchers: a failed
+  load, a failed screenshot, a video that cannot be decoded (H.264),
+  a cut capture. The wrong outcomes come from observations that
+  succeed and see nothing.
 - **2.A-2.D and 3.A follow their specs' tables** in rows and order.
   NOT TESTED comes only from 3.A's row A2, and 3.A's WCAG assessment
   appears only as text in the summary, as principle 2 requires. 3.A
@@ -1770,6 +1901,11 @@ above.
   one step is not seen.
 - 4.D passes any text field with a caret colour that is not
   "transparent", including one equal to the background.
+- 3.A: a frame whose step script fails is skipped, so an animation in
+  it runs on the wall clock and is mis-timed; video frames may be
+  skipped under CPU load and under-count.
+- A finite CSS animation that starts between 2 s and 6.5 s and ends
+  before the watch does is missed by all three of 3.A's sources.
 - 2.B: a video over the recording cap that raises no error is DOES NOT
   APPLY (no code for that part of row A1; needs a file over 50 MB to
   try). 3.A: a screen capture that fails or is skipped for time leaves
