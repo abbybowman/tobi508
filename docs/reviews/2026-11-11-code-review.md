@@ -4,15 +4,15 @@ A triaged list from a line-by-line review of `tobi508`, for Abby to review
 and hand to other threads. Nothing here has been fixed; this thread changes
 no code.
 
-**Progress.** Phases 0 and 1 are done. Phases
-2 to 4 add the files nobody has reviewed yet; phase 5 adds the "if we
+**Progress.** Phases 0 to 2 are done. Phases
+3 and 4 add the files nobody has reviewed yet; phase 5 adds the "if we
 started over" section. Each phase is committed when it is checked.
 
 | Phase | Covers | State |
 | --- | --- | --- |
 | 0 | Leads from the first attempt (tools, pipeline, traverse, 9.B/9.C/19.A, evals) | done |
 | 1 | Security files; what an agent receives, measured; the rest of tools and pipeline | done |
-| 2 | 4.A-4.F and 5.A-5.D against their specs | not started |
+| 2 | 4.A-4.F and 5.A-5.D against their specs | done |
 | 3 | 5.F-5.H, 9.A, 2.A-2.D, 3.A and the watchers | not started |
 | 4 | The rest of the core; tests, CI, Dockerfile, packaging | not started |
 | 5 | "If we started over"; final ordering | not started |
@@ -36,7 +36,8 @@ demo or what a calling agent sees (tokens, time) comes first.
 IDs (A-01, D-03 and so on) are handles for other threads to cite. The
 letter is the review group: A tools and models, B pipeline and judge,
 D the keyboard core, K 9.B/9.C/19.A, L evals, S security, T token
-measurement, G the rest of tools and pipeline.
+measurement, G the rest of tools and pipeline, E 4.A-4.C, F 4.D-4.F,
+H 5.A-5.D.
 
 ---
 
@@ -128,6 +129,94 @@ that the demo plan turns on (A-01, B-01).
 - **Checked:** verified (run) for shadow roots: two pages sharing a
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
+
+### E-01 4.A passes without looking for hover menus past the 40th element
+
+- **What is wrong:** the scan for menus that open when the mouse rests
+  on something stops after 40 Tab stops. Every other cap in 4.A makes
+  the page NEEDS REVIEW. This one only adds a sentence to the summary,
+  and the page still passes.
+- **Why it matters:** most agency pages have more than 40 Tab stops. A
+  mouse-only menu on stop 41 or later (a footer, a side menu) is never
+  looked at, and the result reads "we found nothing a keyboard user
+  would miss. Only the first 40 elements were checked...". The spec's
+  G3 says an unfinished cap is NEEDS REVIEW.
+- **Where:** `src/tobi508/checks/t4a.py:501-507` (the cap writes to
+  `st.notes`), `1222-1227, 1253` (only `st.incomplete` holds back G4).
+- **Smallest fix:** write the cap to `st.incomplete`. One line; one
+  fixture with 45 links. If a note-only cap is wanted, the spec has to
+  say so.
+- **Checked:** verified (run). 45 links, a mouse-only menu shown by
+  hovering the 45th: 4.A PASS, rows A3, G4.
+
+### E-02 4.A passes a mouse-only `<a href="#">` because another link also has `href="#"`
+
+- **What is wrong:** row M3 passes a control the keyboard cannot reach
+  when a reached link "goes to the same place". The test is that the
+  two `href` texts are equal. Mouse-only controls are very often
+  `<a href="#" onclick=...>` or `href="javascript:void(0)"`, and most
+  pages have a reached link with the same placeholder.
+- **Why it matters:** a false PASS on the commonest way to build a
+  mouse-only control. The same mistake as K-04 in 9.C.
+- **Where:** `src/tobi508/checks/t4a.py:701-728` (`_same_link`),
+  `1023-1028` (M3).
+- **Smallest fix:** for M3, ignore addresses that are empty, `#` alone,
+  `javascript:` or the page itself with a fragment; those go to the
+  question. The spec row needs the same words.
+- **Checked:** verified (run). `<a href="#">Home</a>` and
+  `<a href="#" tabindex="-1" onclick=...>Open settings</a>`: 4.A PASS,
+  row k1:M3 ("Home goes to the same place").
+
+### E-07 4.C passes after skipping its error-state pass for lack of time
+
+- **What is wrong:** there are two "out of time" helpers. The one inside
+  4.C's collector also records "the run time limit was reached", which
+  makes the page NEEDS REVIEW. The one on the run context only sets a
+  flag. The gate before 4.C's error-state pass uses the second, with no
+  `else`.
+- **Why it matters:** the run's error line says "what was not finished
+  is NEEDS REVIEW" while the finding says PASS. It happens whenever the
+  deadline falls after the walk and before that pass: with
+  `no_time_limit=false`, or at `MAX_RUN_S` on a large page.
+- **Where:** `src/tobi508/checks/t4c.py:820`;
+  `src/tobi508/checks/base.py:116-123`; `t4c.py:242-250`.
+- **Smallest fix:** use the recording helper at line 820. Better: one
+  helper for every check, and a pipeline rule that a test whose
+  collector ran out of time cannot PASS.
+- **Checked:** verified (run). A small form page with the run limit set
+  to 17 s: the run reported the time-limit error and 4.C PASS (rows A3,
+  G4). At 22 s and 28 s the same page passes with no error.
+
+### E-03 4.A says "nothing can be used with a mouse or keyboard" on a canvas or drag-only page
+
+- **What is wrong:** 4.A records canvases, draggable elements and
+  mouse-move handlers as "could not be tested, a person must look".
+  The DOES NOT APPLY row is tested first and does not look at them.
+- **Why it matters:** a wrong DOES NOT APPLY on a page that is a map, a
+  drawing or a drag-and-drop board, which is the content 4.A matters
+  most for. Spec row A1 says the same as the code, against the spec's
+  own "never a reason to PASS" for these.
+- **Where:** `src/tobi508/checks/t4a.py:965-969, 1184-1201`.
+- **Smallest fix:** A1 also requires that nothing of that kind was
+  recorded; otherwise NEEDS REVIEW. A spec change in the safe direction.
+- **Checked:** verified (run). A canvas with a mouse-move handler and a
+  draggable box, nothing focusable: 4.A DOES NOT APPLY.
+
+### E-08 4.A passes a button that only answers `mousedown` (needs Abby)
+
+- **What is wrong:** a native `<button>` or link is reached by Tab, so
+  it is not a mouse-only candidate, and native controls are never
+  pressed. One that acts on `mousedown` or `pointerdown` alone does
+  nothing on Enter or Space.
+- **Why it matters:** a false PASS on WCAG failure F54, the thing 4.A
+  exists to find. The spec says native controls are not executed; the
+  listener types are already read and then thrown away for them.
+- **Where:** `src/tobi508/checks/t4a.py:615-620, 262-265`.
+- **Smallest fix:** a native stop with a mouse-down listener and no
+  click listener gets the Enter-and-Space check, or NEEDS REVIEW. It
+  turns a PASS into a FAIL or a review, so it needs Abby and a spec row.
+- **Checked:** verified (run). `<button onmousedown=...>Open panel
+  </button>`: 4.A PASS, rows A3, G4.
 
 ### F-02 4.D passes an element with no focus indicator when the page shifts under it
 
@@ -466,6 +555,64 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
   new Error('x')")` and got `None`; I did not repeat it. No real page is
   known to trigger it.
 
+#### E-06 Three questions settle a PASS on the agent's word and are not on principle 8's list (needs Abby)
+
+- **What is wrong:** principle 8 lists the questions a careful tester
+  settles by looking. 4.A's "is there another way to do this" (PASS,
+  row M5), 4.A's "is this tooltip essential" (PASS, M13) and 4.B's "is
+  timing required" (PASS, M3) each pass on one answer with no key press
+  to confirm, and none is on the list. The 4.A and 4.B specs say
+  principle 8 covers them.
+- **Why it matters:** one agent answer turns a mouse-only control or a
+  real timing instruction into PASS. Either CLAUDE.md or the checks are
+  out of date.
+- **Where:** `src/tobi508/checks/t4a.py:1042-1047, 1075-1080`;
+  `src/tobi508/checks/t4b.py:376`; CLAUDE.md principle 8.
+- **Smallest fix:** your call: add the three to the list, or add a
+  check for 4.A's M5 (press Enter on the stop the agent names and
+  compare what it does with the mouse-only control).
+- **Checked:** verified (read) against CLAUDE.md's list.
+
+#### E-05, E-09 4.B shows the agent 20 sentences at most, and misses "press Enter twice"
+
+- **What is wrong:** 4.B finds sentences with timing words and asks the
+  agent about them. Only the first 20 are sent, each cut at 300
+  characters, with no note. And the word list is narrow: "press twice"
+  matches; "Press Enter twice", "within 2 secs", "double-click" and
+  "tap twice" do not. No match at all is PASS (row M1).
+- **Why it matters:** a page that says "quickly" 20 times before "press
+  and hold Space for 3 seconds" gives the agent 20 harmless sentences,
+  and "no timing" is PASS. A page that says "Press Enter twice to
+  confirm" passes with no question.
+- **Where:** `src/tobi508/checks/t4b.py:25, 30-35, 117`; spec 4.B
+  section 2 (the word list).
+- **Smallest fix:** when the cut applies, add "N more sentences were
+  not shown" as an unfinished reason; put sentences with the stronger
+  words first. Widening the list is a spec change.
+- **Checked:** E-05 verified (read): line 117 cuts to 300 characters
+  and 20 entries; the reviewer's run showed 20 matches, none with
+  "hold". E-09: the reviewer ran the pattern on seven sentences.
+
+#### E-04, E-13 4.A's "the tooltip's text is also on the page" is too easy to meet
+
+- **What is wrong:** a `title` passes without a question when its text
+  is "available elsewhere". Two tests do that. One is a plain substring
+  of the whole page text: the title "Open" is found in "Opening
+  hours". The other is equality with the control's accessible name:
+  for an icon button whose only label is its `title`, the name comes
+  from the title, so they are always equal.
+- **Why it matters:** the question "is this tooltip essential" is never
+  asked for the case its own rubric gives as essential ("the only
+  label of an icon-only control").
+- **Where:** `src/tobi508/checks/t4a.py:659`; spec 4.A, row M11 and the
+  J2 rubric.
+- **Smallest fix:** match whole words with a minimum length, and
+  compare the title with the visible text or `aria-label` only. Spec
+  wording to match.
+- **Checked:** verified (run). A link with `title="Open"` beside
+  "Opening hours": row t2:M11, no question. A button with only an icon
+  and `title="Delete all records"`: 4.A PASS, row t1:M11.
+
 #### F-06 4.E fails a page that only changes the `#fragment` on focus
 
 - **What is wrong:** 4.E counts every "frame navigated" event as the
@@ -599,6 +746,33 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
   each check's resume a hard limit that records "not finished".
 - **Checked:** verified (read). How long a resume takes on a large page
   is not measured.
+
+#### E-10 4.A loads the page once for every item a hover reveals
+
+- **What is wrong:** the spec budgets one replay for each stop whose
+  hover revealed something, at most 10. The code then loads the page
+  again for each revealed item, to read its name and address, with no
+  cap and no time check.
+- **Why it matters:** a menu of 30 items behind one stop costs 30 more
+  loads, about 3 s each, to fetch what one load would give.
+- **Where:** `src/tobi508/checks/t4a.py:559-563, 731-750`.
+- **Smallest fix:** one load per stop that describes every item; check
+  the deadline before each.
+- **Checked:** verified (read) by the reviewer; not timed.
+
+#### E-11 4.B and 4.C each send the whole page text, with no cap
+
+- **What is wrong:** when both have open questions, the full text of
+  every frame goes out twice (two loads of the same page), unbounded.
+  4.B's 20 sentences are in it a third time.
+- **Why it matters:** tens of thousands of characters on a long page,
+  in every result that still has those questions.
+- **Where:** `src/tobi508/checks/t4b.py:498-499`;
+  `src/tobi508/checks/t4c.py:1505-1506`;
+  `src/tobi508/pipeline.py:727-736`.
+- **Smallest fix:** send one copy; cap it and say so; for 4.B send the
+  sentences with a little context.
+- **Checked:** verified (read) by the reviewer; not measured on a page.
 
 #### G-02 Server judge: one screenshot is attached once for every question that names it
 
@@ -870,6 +1044,16 @@ not checked.
 - **B-07** On refusal the run folder is deleted while the motion watcher
   is still writing into it, which can recreate it; a browser that fails
   to start leaves the folder. `pipeline.py:894-895, 1104-1108, 1193-1203`.
+- **4.A-4.C gaps (E-12, E-14, E-15, E-16)** In 4.A a frame whose scan
+  throws counts as scanned, a stop that cannot be located is not
+  hovered, and targets past 200 in a frame are dropped, all without a
+  note (`t4a.py:164, 409-414, 513-515`). In 4.C, `aria-modal="true"` on
+  any ancestor turns "Enter gets out" into PASS, so page markup picks
+  the row (`traverse.py:269`, `t4c.py:977-981`); and a page whose focus
+  cycles forever passes once the agent answers "no" (row M10). 4.B's
+  key-press proof never checks the deadline (up to 30 s past the
+  limit) and a frame whose text cannot be read leaves no trace
+  (`t4b.py:156-257`).
 - **4.D gaps (F-03, F-05, F-20)** A dropped-focus FAIL skips the
   "unreliable step" check that 4.E applies to the same step, so 4.D can
   FAIL where 4.E says NEEDS REVIEW (`t4d.py:565-586`). The second pass
@@ -1120,6 +1304,13 @@ Cleanup. All reviewers' claims unless marked.
   page is counted as a link (D-22). The 300 ms noise window and a Chrome
   session are repeated per action (D-23, D-24). Past 20 nested frames
   focus reads as "body" instead of "unknown" (D-25).
+- **4.A-4.C cleanup:** the specs give "exact wording" for the questions
+  and the code words them differently; 4.C's rows J1? and J2? are not
+  in its spec table (E-17). `_label`, `_norm` and the key-text helper
+  are copied between `t4a.py` and `t4c.py`; `t4b.py` imports seven
+  private names from `t4a.py`; `keys_of` is unused (E-18). Worst case
+  per run: 4.A about 70 loads, 4.C about 340 replays; the same page
+  text is loaded three times (4.A, 4.B, 4.C) (E-19).
 - **4.D-4.F cleanup:** 4.D's "why it could not be compared" reasons
   are written to a dict after Pydantic has copied it, so the summary
   always says "the images could not be compared" (F-04, confirmed by a
@@ -1173,15 +1364,17 @@ reviewer (phase 1); I read the summary, not every line behind it.
 - **Report files:** JSON only, so no zip or XML tricks; a hosted server
   never reads its own disk for `tobi_read_report`.
 - **ANDI** is never loaded from ssa.gov.
-- **No time limit, failed walk or failed check turns into PASS or DOES
-  NOT APPLY** in `pipeline.py`: each ends as NEEDS REVIEW with "This
-  test could not be performed", and `Finding` defaults to NEEDS REVIEW
-  (the reviewer read all of `pipeline.py` and `models.py`).
+- **In `pipeline.py`, no time limit, failed walk or failed check turns
+  into PASS or DOES NOT APPLY:** a test that did not run ends as NEEDS
+  REVIEW with "This test could not be performed", and `Finding`
+  defaults to NEEDS REVIEW (the reviewer read all of `pipeline.py` and
+  `models.py`). This does not hold inside the checks: a check that ran
+  but skipped part of its work can still PASS (E-01, E-07).
 - **Answers are checked** against their question: id, kind, the choice
   list and the picture rule; element numbers are re-checked by the
   checks. A later agent answer cannot replace a person's or the server
   judge's.
-- **4.D, 4.E and 4.F follow their specs' tables** row for row, in
+- **4.A to 4.F follow their specs' tables** row for row, in
   order and in thresholds; the constants in `t4d.py` equal the spec's.
   The problems found are in the evidence fed to the tables (F-02,
   F-11, F-12), not in the tables. The questions that may settle a PASS
@@ -1235,6 +1428,13 @@ above.
 - A second walk pass after a trap doubles the walk time on a long page.
 - 9.C's place pairing uses `regions[-1]`, which may be `main`.
 - No test covers a live search that goes off host or off port.
+- 4.B and 4.C: a page whose only content is in a frame the inventory
+  cannot read may be DOES NOT APPLY.
+- 4.C: a focus loop of more than about 12 stops inside an error popup
+  is not detected in 24 presses; any failed request during the walk
+  (one analytics call) makes the "page loads more content" rule apply.
+- 4.A: a hover menu opened by something that is not a Tab stop is not
+  hovered (the spec says stops only).
 - 4.D and 4.E accept "stuck going forward, wrapped going back" as a
   complete walk; the spec says "wrap or the same trap".
 - 4.F: a dialog open at load whose focus escapes to a stop seen

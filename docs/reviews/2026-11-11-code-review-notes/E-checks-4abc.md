@@ -1,6 +1,14 @@
 # E: checks 4.A, 4.B, 4.C review (base.py, t4a.py, t4b.py, t4c.py)
 
-(overview at top is filled in at the end)
+## Overview
+
+- Health: the row tables match their specs closely (outcome rows and first-match order are the same in all three; no outcome is decided outside a spec row). The problems are in what feeds the rows: caps and time limits that are not recorded as incomplete, and shortcuts in the evidence.
+- Confirmed false PASS on a real page, by running pages: 4.A with more than 40 stops (hover cap only a note, E-01), 4.A mouse-only link with `href="#"` (E-02), 4.A page of only canvas/drag content gives DOES NOT APPLY (E-03), 4.A title found by substring (E-04), 4.A native button with only mousedown (E-08), 4.A icon button labelled only by title (E-13).
+- 4.B: only 20 matches (cut to 300 characters) reach J1 with no note (E-05); the timing regex misses "Press Enter twice" (E-09).
+- 4.C: pass E skipped for time with no note, and the page PASSes (E-07).
+- Principle 8: 4.A J1/J2 and 4.B J1 can settle PASS by an agent's answer alone, and are not on CLAUDE.md's list (E-06).
+- Time and tokens: 4.A loads the page once per hover-revealed target (E-10); 4.B and 4.C page text goes out twice and unbounded (E-11).
+- Counts: P0 5 (E-01, E-02, E-03, E-05, E-07), P1 7, P2 5, P3 2.
 
 ## Findings
 
@@ -52,7 +60,7 @@
 ### E-06 Principle 8 list does not allow 4.A J1/J2 or 4.B J1 to settle a PASS by looking, yet they do (M5, M13, M3)
 - Severity: P1
 - Kind: false-pass-risk
-- Where: t4a.py:1042-1047 (M5), :1075-1080 (M13); t4b.py:376 (M3); CLAUDE.md principle 8 list ("4.E J1, 4.F J1, ... 19.A J1" — no 4.A, no 4.B, 4.C see E-?); specs 4a:92 and 4b:88 claim the principle covers them
+- Where: t4a.py:1042-1047 (M5), :1075-1080 (M13); t4b.py:376 (M3); CLAUDE.md principle 8 list ("4.E J1, 4.F J1, ... 19.A J1": no 4.A, 4.B or 4.C entry; 4.C J1/J2 are safe because a key press confirms J1 and J2 only gives NEEDS REVIEW); specs 4a:92 and 4b:88 claim the principle covers them
 - What: Principle 8 says an opinion leads to PASS only with a key press or mechanical check, or when the question is on the list. 4.A J1 (alternative -> PASS), 4.A J2 (not_essential -> PASS) and 4.B J1 (no_timing -> PASS) are not on the list and have no mechanical check besides "the named number is a stop" (4.A M5). One agent answer therefore turns a mouse-only control, an essential tooltip, or a real timing instruction into PASS. 4.B J2 and 4.B J1->FAIL do have key-press proofs; 4.B J1 no_timing has none. The spec text of 4.A says J1/J2 "are look-and-decide questions (CLAUDE.md principle 8)" but the CLAUDE.md list does not name them.
 - Evidence: Read: instance rows above; CLAUDE.md principle 8 list. No test run (the answer path needs an agent).
 - Fix: Either add 4.A J1, 4.A J2 and 4.B J1 to the principle's list (Abby's call, with the "unsure whenever not settled" duty) or add a mechanical check (4.A: press Enter on the named stop and compare its effect with the candidate's click effect, as 4.B's alternative press does; 4.B: none possible, so it is a list entry).
@@ -173,3 +181,112 @@
 - Fix: Share page text through `ctx.cache`; skip the second settle and re-scan unless the first scan found something new; store `keyboard_unreachable` on `PassResult`.
 - Confidence: likely
 
+## Spec versus code tables
+
+"Order" is the first-match order. All line numbers are in the check file named in the heading.
+
+### 4.A (spec 1.5.0) versus src/tobi508/checks/t4a.py
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 (zero stops, inventory 0, targets 0: DNA) | :966-971 | yes, but U signals are ignored (E-03) | yes |
+| A2 (zero stops, inventory > 0: NEEDS REVIEW) | :972-977 | yes | yes |
+| A3 | :978 | yes (outcome value unused) | yes |
+| C? (cap or time: NEEDS REVIEW) | :996-1001 (`not checked`) | yes; but HOVER_MAX is not a C? (E-01), 200-target cap unreported (E-12) | yes (first) |
+| M1 (unreliable) | :1002-1012 | yes | yes |
+| M2 (non-native, click no effect: no instance) | :1013-1022 | yes | yes |
+| M3 (same address as reached link: PASS) | :1023-1028, `_same_link` :722 | looser: raw href string, includes "#" and `javascript:` (E-02) | yes |
+| M4 / J1 asked | `questions_for` :897 | yes | n/a |
+| M4n (no stops: FAIL) | :1029-1035 | yes (`_mouse_only` restates M2) | yes |
+| J1? | :1036-1041 | yes | yes |
+| M5 (alternative naming a stop: PASS) | :1042-1047 | yes; no mechanical check besides "is a stop" (E-06) | yes |
+| M6 (no_alternative: FAIL) | :1048-1053 | yes | yes |
+| M7 (unsure or no stop: NEEDS REVIEW) | :1054 | yes | yes |
+| M8 (X: Enter or Space has effect: PASS) | :1055-1060 | yes | yes |
+| M9 (X: no effect either: no instance) | :1061-1066 | yes | yes |
+| M10 (X: click only: FAIL) | :1067 | yes | yes |
+| M11 (T: elsewhere: PASS) | :1068, :659 | looser: substring, name derived from title (E-04, E-13) | yes |
+| J2? | :1069-1074 | yes | yes |
+| M13 (not essential: PASS) | :1075-1080 | yes; no mechanical check (E-06) | yes |
+| M14 (essential: FAIL) | :1081 | yes | yes |
+| M15 (unsure: NEEDS REVIEW) | :1082 | yes | yes |
+| M16 (U: NEEDS REVIEW) | :1083 | yes, but never reached when A1 applies (E-03) | yes |
+| G1 | :1186-1201 (early return) | yes | yes |
+| G2, G3, G4, G5 | :1089-1101, :1222-1228 | G3 "cap or scan not finished": hover cap is only a note (E-01); scan exceptions not counted (E-12). G4 `complete` also needs `p1.end == wrap or stops == 0` as in the spec | yes |
+| J1, J2 questions | :206-241 | wording differs from spec (E-17) | n/a |
+| Guards GU, RV, RC | base.py:93-175 via pipeline.py:790 | yes: only move PASS to NEEDS REVIEW | n/a |
+| Constants HOVER_MAX 40, CLICK_MAX 10, EXECUTE_MAX 10, REVEAL_REPLAYS 10, ARROW_MAX 5, NOISE_MS | :43-48 (NOISE_MS in observe.py, not read) | yes | n/a |
+| Click check, Execute check, Title check, Arrow probe, Hover scan, Pointer scan | :429-666 | as spec; unlisted: `_describe_hidden` per target (E-10) | n/a |
+
+Code outcome with no spec row: none found. Spec row with no code: none (the "Plain-language" table is in `_sentence`).
+
+### 4.B (spec 1.3.0) versus src/tobi508/checks/t4b.py
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 | :336-340 | yes | yes |
+| A2 | :341 | yes | yes |
+| A3 | :342 | yes | yes |
+| M1 (no match: PASS) | :374 | yes; the match list is truncated to 20 and 300 characters (E-05) and the regex is narrow (E-09) | yes |
+| M2 (matches: ask J1) | `questions_for` :261 | yes | n/a |
+| M3 (no_timing: PASS) | :376 | yes; no mechanical check (E-06) | J1? (:375) then M3, spec M3 then J1?: equivalent |
+| J1? | :375 | yes | yes |
+| M4 (unsure, or timing_required without stop, key, duration/count) | :377 | yes | yes |
+| P? | :378 | yes | yes |
+| M5 (proof not confirmed) | :379, `_confirmed` :245 | stricter or equal; `n.unreliable` unchecked (E-16) | yes |
+| J2? | :380 | yes | yes |
+| A? | :381-386 | yes | yes |
+| M7 (alternative confirmed: PASS) | :387-392, `_alt_confirmed` :362 | yes | yes |
+| M10 | :393 | yes | yes |
+| M8 (no_alternative: FAIL) | :394 | yes | yes |
+| M9 | :395 | yes | yes |
+| G1 | :430-444 | yes | yes |
+| G2 | :453 | yes | yes |
+| G3 (P NEEDS REVIEW, P1 not wrap, text unreadable) | :446-452, :455 | yes (a swallowed per-frame error is not "unreadable", E-16) | yes |
+| G4 / G5 | :457-460 | yes | yes |
+| Guard GU | pipeline via front matter | yes | n/a |
+| J1 / J2 inputs | :37-67, :260-303 | wording differs (E-17); key name from the answer is not allowlisted (known) | n/a |
+
+Code outcome with no spec row: none. Spec row with no code: none.
+
+### 4.C (spec 1.13.0) versus src/tobi508/checks/t4c.py
+
+| Spec row | Code | Same condition? | Same order? |
+| --- | --- | --- | --- |
+| A1 (zero stops and inventory 0: DNA; O4 open) | :1122-1127 | yes; `unreachable_frames` of the inventory is ignored everywhere (see Unverified leads) | yes |
+| A2 | :1128-1133 | yes | yes |
+| A3 | :1134 | yes | yes |
+| A4 (mouse content only: DNA for 4.C) | none | covered by A1 (same effect) | n/a |
+| M1 (unresolved, unsettled, seen once) | :1021-1026 | yes; `unresolved`/`unsettled` look at `steps[-6:]` for a stuck element, wider than the trap (more reviews, safe) | yes |
+| M2 (stuck: opposite, arrow, Escape then Tab) | :1027-1032 | yes | yes |
+| M3 (loop: opposite, Escape then Tab) | :1033-1038 | yes | yes |
+| M4 (Enter exit, modal) | :1039-1044, :977 | yes, with modal from markup only (E-14) | yes |
+| M4d (not modal, Enter exit dismisses container: NEEDS REVIEW) | :1048-1053 | yes | yes |
+| M4o (other Enter exit: not an exit) | :1056-1061 | yes | yes |
+| M5 (navigation: not an exit) | :1062-1067 | yes | yes |
+| (J1?) not in spec table | :1068 | extra row, NEEDS REVIEW (safe) | between M5 and M6 |
+| M6 (J1 key exits: PASS) | :1069-1074 | yes (guard: verbatim quote, parsed keys; key press confirms) | yes |
+| M7 (J1 key does not exit) | :1075 | yes | yes |
+| (J2?) not in spec table | :1076-1081 | extra row, NEEDS REVIEW (safe) | before M8 |
+| M8 (fields, J2 yes: NEEDS REVIEW) | :1082-1087 | yes | yes |
+| M9 (fields, J2 unsure) | :1088-1095 | yes | yes |
+| M10 (whole-page cycle: PASS) | :1096-1107 | "never reaches OUT" is tested as "P1 and P2 did not wrap"; stricter than spec because J1? comes first; PASS risk E-15 | yes |
+| M11 (stuck: FAIL) | :1108 | yes | yes |
+| M12 (loop: FAIL) | :1109-1117 | yes | yes |
+| G1-G5 | engine.py PAGE_ROWS; `complete` :1223-1232 | `done` treated like `wrap` (spec section 5: "A sign never produces PASS by itself"); late deadline before P7 not recorded (E-07) | yes |
+| P1, P2, P3, P4, P6, P7 | walk.py; :527-693 | P4 reads only P1's widgets (spec: "each composite widget stop P1 reached": same) | n/a |
+| Caps (3x inventory+50, 10 members, 20 widgets, 20 instances, 6 error states) | :313-317, :551-554, :564-568, :195 | the first four are reported; the 6-state cap (`error_states`) and `ERROR_WALK` 24 end silently (a loop of more than 12 stops in an error popup is not detected) | n/a |
+| J1/J2 questions and rubrics | :80-105 | wording differs from spec (E-17) | n/a |
+| Guards GU, RV, RC | pipeline via front matter | yes | n/a |
+
+Code outcome with no spec row: `J1?` and `J2?` (both NEEDS REVIEW, safe). Spec row with no code: A4, V-checks only.
+
+## Unverified leads
+
+- 4.C `inventory` ignores `unreachable_frames` (traverse.py:357, 372): a page whose only content sits in a frame the inventory cannot read gives A1/DNA in 4.B and 4.C. Not run (needs a crashing or detached frame).
+- 4.C pass E: a focus loop of more than about 12 stops in an error popup is not detected in 24 presses (`ERROR_WALK`), and the walk ends "cap" with no note (t4c.py:626-641).
+- 4.C `is_outside` compares path keys; a trap whose members get new CSS paths after a re-render would look "outside" and could count as an exit (t4c.py:398-406).
+- 4.C infinite-scroll "done" rule (t4c.py:721-735): the trigger is any failed request during the walks (common on real pages), and P1 `cap` becomes "done" with no check that P2 reached the content after the feed. I could not construct a page where this alone gives a wrong PASS (a P1-only trap with P2 wrapping is M3 PASS anyway), but the note text "the page seems to load more content" will appear on pages with one failed analytics request.
+- 4.A cross-origin frames: `chainOf` returns `[]` where `frameElement` is null, which would collide with the top frame's key; I saw only the "frame we could not read" U instance on a cross-origin frame, so the collision looks unreachable, but I did not trace `reader.frames()`.
+- 4.A hover scan does not hover non-stop elements (spec says stops only); a hover menu opened by a non-focusable trigger is missed.
+- 4.A J1 `evidence`: the click effect that decides M2 ("no effect") does not see effects that are not DOM, URL, focus or ARIA (download, clipboard, `window.open` blocked, a network call); spec-accepted.
