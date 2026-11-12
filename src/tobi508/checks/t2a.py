@@ -10,7 +10,6 @@ tables decide outcomes.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -41,10 +40,6 @@ from tobi508.walk import KeyboardWalk
 AUDIBLE_DB = -40.0  # spec Terms: samples above -40 dBFS
 MORE_THAN_S = 3.0  # TT: "for more than 3 seconds"
 READ_AT = 3.5  # the read that decides "auto-playing" (spec Terms)
-STREAMING = re.compile(
-    r"^https?://(www\.)?(youtube(-nocookie)?\.com/embed|player\.vimeo\.com)/.*autoplay=1",
-    re.IGNORECASE,
-)
 
 TAB_MUTE_NOTE = (
     "Chrome can mute a tab, but the test asks for a control within the first "
@@ -127,18 +122,16 @@ def find_audio(mp: MotionPass) -> list[Audio]:
             elif a.loudness <= AUDIBLE_DB:
                 continue  # silent (ACT 80f0bf inapplicable 2)
         out.append(a)
-    for src in mp.iframes:
-        if STREAMING.match(src):
-            out.append(
-                Audio(
-                    id="",
-                    kind="media",
-                    src=src[:200],
-                    measured=False,
-                    why="it is a streaming video player that we cannot play "
-                    "from a recording",
-                )
+    for src in motion.streaming_players(mp):
+        out.append(
+            Audio(
+                id="",
+                kind="media",
+                src=src[:200],
+                measured=False,
+                why=motion.STREAMING_WHY,
             )
+        )
     if "running" in mp.audio_states:
         out.append(
             Audio(

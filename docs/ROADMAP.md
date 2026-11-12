@@ -328,8 +328,8 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 - **2.A-2.D:** a working mechanism is NEEDS REVIEW (E3), never PASS,
   until ER 3's shortlist is built (6.A, 7.A, 7.E, 12.D, 13.A, 13.B, 13.C,
   18.A). 2.C J1's wording when the mechanism is page text naming a key.
-  Real YouTube and Vimeo embeds are NEEDS REVIEW in 2.A (A2) and 3.A;
-  2.B says DOES NOT APPLY until part A (N-08).
+  Real YouTube and Vimeo embeds are NEEDS REVIEW in 2.A (A2), 2.B (A1)
+  and 3.A.
 - **3.A:** CSS background animated images are not decoded (only `<img>`);
   H.264 video cannot be decoded in Chromium (NEEDS REVIEW). No held-out
   pages with flashing exist. Optional: the IRIS cross-check

@@ -117,7 +117,7 @@ below; "run" means I ran a page and got the outcome shown.
 | W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
 | W-07 | 2.B | DOES NOT APPLY | motion that fills most of the screen | run |
 | N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
-| N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run |
+| N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run. **Fixed** |
 | E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run |
 | E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
 | C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run |
@@ -641,6 +641,13 @@ different checks, and some of those ways do not hold back an outcome.
   by 2.A, 2.B and 3.A.
 - **Checked:** verified (run). A `youtube-nocookie.com/embed/...
   ?autoplay=1` frame: 2.A NEEDS REVIEW, 2.B DOES NOT APPLY.
+- **Fixed:** commit "2.B: a streaming player, a blob-streamed video and a file
+  over the cap are NEEDS REVIEW (N-08)", no spec change (A1 already says it).
+  `motion.streaming_players` and `STREAMING_WHY` are shared by 2.A, 2.B and
+  3.A (one pattern, with or without `autoplay=1`); 2.B's `video_failed` adds
+  the blob and over-the-cap cases as 2.A has them. 2.A and 3.A still have
+  their own blob and over-cap code: moving it to one helper is part C's
+  shared base. Fixture `2x/t-streaming-embed`: 2.B NEEDS REVIEW (A1).
 
 #### E-03 4.A says "nothing can be used with a mouse or keyboard" on a canvas or drag-only page
 
