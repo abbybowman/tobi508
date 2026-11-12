@@ -54,7 +54,7 @@ _SHARED_JS = """
     if (el.closest('#ANDI508')) return false;
     const t = (el.type || '').toLowerCase();
     if (el.tagName === 'INPUT' && ['hidden', 'image'].includes(t)) return false;
-    if (el.disabled || el.getAttribute('aria-disabled') === 'true') return false;
+    if (el.matches(':disabled') || el.getAttribute('aria-disabled') === 'true') return false;
     return vis(el);
   });
   const ids = (el, a) => (el.getAttribute(a) || '').split(/\\s+/).filter(Boolean)

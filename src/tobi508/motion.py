@@ -27,6 +27,7 @@ from __future__ import annotations
 import asyncio
 import io
 import json
+import re
 import statistics
 import time
 import zipfile
@@ -794,6 +795,27 @@ _DIALOG_FACTS_JS = """(css) => {
     text: (d.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 300),
     keyboard: d.contains(document.activeElement) || !!d.querySelector(f) };
 }"""
+
+
+# A video player from another site that streams its video: no recording can
+# play it (2.A, 2.B and 3.A all say NEEDS REVIEW, spec A1, A2 or A3). One
+# pattern for all three so one test cannot say "nothing moved" while another
+# says "could not play". `STREAMING_AUTOPLAY` is the player told to start on
+# its own (2.A and 2.B ask about what plays by itself); 3.A looks at any.
+STREAMING_PLAYER = re.compile(
+    r"^https?://(www\.)?(youtube(-nocookie)?\.com/embed|player\.vimeo\.com)/",
+    re.IGNORECASE,
+)
+STREAMING_AUTOPLAY = re.compile(
+    STREAMING_PLAYER.pattern + r".*autoplay=1", re.IGNORECASE
+)
+STREAMING_WHY = "it is a streaming video player that we cannot play from a recording"
+
+
+def streaming_players(mp: "MotionPass", autoplay_only: bool = True) -> list[str]:
+    """Sources of the page's streaming video players (iframes, every frame)."""
+    pat = STREAMING_AUTOPLAY if autoplay_only else STREAMING_PLAYER
+    return [src for src in mp.iframes if pat.match(src)]
 
 
 class MotionPass(BaseModel):

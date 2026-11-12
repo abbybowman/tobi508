@@ -52,7 +52,7 @@ MARK_JS = (
   r.units.forEach((u, k) => {
     if (u.kind !== 'control') return;
     r.els[k].setAttribute('data-a11y-c', String(out.length));
-    out.push({ mark: String(out.length), css: u.css, role: u.role, href: u.href, id: u.id,
+    out.push({ mark: String(out.length), css: u.css, role: u.role, href: u.dest, id: u.id,
                region_role: u.region_role, regions: u.regions, name: u.name });
   });
   return { comps: out, url: location.href, truncated: r.truncated };
@@ -265,7 +265,18 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
         andi_page(0, ctx.new_page, ctx.third_party),
         *(_cached_andi(p, ctx.third_party) for p in ctx.pages),
     )
-    st = State9C(pages=list(pages))
+    pages = list(pages)
+    # The tested page again under another address (K-01): not compared. A
+    # copy: the read may be the one pagecache keeps for other runs.
+    for i, ref in enumerate(ctx.pages, 1):
+        if getattr(ref, "same_content_as_tested", False) and not pages[i].error:
+            pages[i] = pages[i].model_copy(
+                update={
+                    "error": "it has the same content as the tested page, so "
+                    "comparing them would compare the page with itself"
+                }
+            )
+    st = State9C(pages=pages)
     if any(p.error for p in st.pages):
         return st
     site = await site_read(ctx)

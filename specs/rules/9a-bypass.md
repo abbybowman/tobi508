@@ -1,7 +1,7 @@
 ---
 tt_test: 9.A
 tt_name: 2.4.1-bypass-function
-spec_version: 1.2.0
+spec_version: 1.3.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -17,6 +17,7 @@ The tool gives each page one 9.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 **Terms.**
 - *Other pages*: 1–5 pages of the same site the caller names (`other_pages`), each allowlisted and on the tested page's host, recorded as its own HAR. Page content never chooses them (CLAUDE.md principle 5). How they are read: `site.py` (section 2).
+- *Destination* (shared with 4.A row M3 and 9.C pairing; Abby, 2026-11-12): where a link goes, or *none*. A link has a destination when its address, made absolute, is an `http`, `https` or (dev mode) `file` address, or a `mailto:` or `tel:` address, and is not the page's own address. A link to `#name` on its own page has the destination `#name` only when an element of the page has `id` or `name` equal to `name` (`#top` always has one); `#` alone, an empty address, `javascript:` (or any other scheme) and a link to the page itself without a fragment have none. Two links have the *same destination* when both have one and the addresses agree after dropping the fragment (own-page places keep it), the case of the scheme and host, and a trailing slash. Equal text is not enough: `#` and `javascript:void(0)` are the same text on almost every page and do nothing, so they say nothing about what a control is for. The test reads the page, never its scripts: a link a script sends somewhere has the destination its `href` gives.
 - *Unit*: one piece of the page's rendered content in reading (DOM) order: a control (link, button, form field, any element with a widget role or `tabindex` ≥ 0; its text is not read again), a heading, an image with alt text, or an element's own text. Each has a *text key*: its visible text or name, lower case, spaces collapsed.
 - *Region*: a banner, navigation, search, complementary or contentinfo landmark (elements or roles; `header` and `footer` only outside `article`, `aside`, `main`, `nav` and `section`), identified by role and its label or id, else by role and order among its role.
 - *Repeated unit*: a unit whose text key appears on any other page, or that sits in a region that some other page also has (same role and label or id, else same role and order). Blocks "do not have to be exactly the same" (p. 42): a region match covers a navigation whose items differ.
@@ -30,7 +31,7 @@ The tool gives each page one 9.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to know which content repeats" | Abby, 2026-11-02 (Q1: other pages required); p. 42 Identify Content |
-| A2 | A page could not be read (load, units) | NEEDS REVIEW, not performed, naming the page | Spec rule |
+| A2 | A page could not be read (load, units), or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
 | A3o | Every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template, so what repeats cannot be told (1.1.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No unit of the tested page is repeated | DOES NOT APPLY | p. 42 Applicability |
 | A4 | Repeated units exist but B is empty (they all come after the main content, such as a footer), or B is small: one control, or fewer than 4 words in all | DOES NOT APPLY, naming what repeats and where: there is nothing before the main content to bypass, as forms tests do not apply to a page with no form | p. 42 Identify Content (EXCLUDE: small sections "are not considered repetitive blocks"; Note: a bypass for navigation "at the bottom of a web page may be unnecessary"); Baseline 4.A (the same limitations); ACT ye5d6e and 3e12e1 look only at repeated content before non-repeated content; Abby, 2026-11-02 (DNA: users who reach the footer have had the page's content and can stop) |
@@ -105,7 +106,7 @@ Each candidate is an *instance*. A candidate's *jump* is the set of units strict
 | M8, M10 | "<method> skips past the start of the main content." |
 | M5, M6 | "<method> did not move the keyboard past the repeated content." |
 
-**Guard CN: navigation inside web components** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
+**Guard CN: navigation inside web components** (1.3.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

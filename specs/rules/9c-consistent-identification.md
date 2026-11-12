@@ -1,7 +1,7 @@
 ---
 tt_test: 9.C
 tt_name: 3.2.4-consistent-identification
-spec_version: 1.3.0
+spec_version: 1.4.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -16,7 +16,7 @@ The tool gives each page one 9.C outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 **Other sources.** [Understanding 3.2.4](https://www.w3.org/WAI/WCAG22/Understanding/consistent-identification.html): same functionality is the "same result when used"; "Consistent identification does not require identical labels"; failures: "Search" on some pages and "Find" on others, or visually "Search" with accessible names "Search" and "Find". Sufficient [G197](https://www.w3.org/WAI/WCAG22/Techniques/general/G197) (its step 2 says "identical"); failure [F31](https://www.w3.org/WAI/WCAG22/Techniques/failures/F31) ("check that the naming is consistent"; "Save page" and "Save"). No ACT rule; no DHS ACT data. ICT Testing Baseline 3.1 4.C-ConsistentIdentification ("identical for each instance"). The TT's consistent-format note governs: identical is decided mechanically, anything else is J1 (Abby, 2026-11-02). No Baseline Alignment cases.
 
 **Terms.** *Other pages*, *unit*, *region* and the site read: [9a-bypass.md](9a-bypass.md). *ANDI read*: one fresh load per page with ANDI injected (`andi.inject_andi`, focusable elements module, its default), each focusable element marked first and then read with `andi.andi_output` (name, description). A *pair* is a component on the tested page and one on another page with the same functionality, matched in this order, each component used once:
-1. *Same destination*: links to the same address (absolute, fragment dropped unless the link is to the same page).
+1. *Same destination*: links with the same *destination* ([9a-bypass.md](9a-bypass.md) Terms; 1.3.0, Abby 2026-11-12). A link that goes nowhere (`#`, `javascript:`, empty) has none and falls through to steps 2 to 4: it is paired by its id, its name or its place, never by equal placeholder text. Pairing is only about which components do the same thing; what must then agree (name and description) is unchanged, so two controls of the same shared header or footer are still compared by id, name and place.
 2. *Same id*: same role and the same non-empty `id`.
 3. *Same name*: same role, same region role and the same ANDI name.
 4. *Same place*: the same role at the same position among that role's components in the same innermost region (not `main`) on both pages, when both regions have the same number of them (a search button named "Search" here and "Go" there).
@@ -28,7 +28,7 @@ Names and descriptions *agree* when they are equal after collapsing spaces and i
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to compare" | Abby, 2026-11-02 (Q1) |
-| A2 | ANDI did not run, or a page could not be read | NEEDS REVIEW, not performed, naming the page | p. 44 HtT 1; Spec rule |
+| A2 | ANDI did not run, or a page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.3.0; Abby, 2026-11-12) | p. 44 HtT 1; Spec rule |
 | A3o | No pair, every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template (1.2.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No pair, and every page was read in full (with a page over the read cap: G3, 1.1.0) | DOES NOT APPLY | p. 44 Identify Content, Note |
 | A4 | Otherwise | Applies; go to section 3 | |
@@ -76,7 +76,7 @@ Each pair is an *instance*.
 | A3 | "No link or control on this page also appears on the other pages you gave, so this test does not apply." |
 | C2 | "<component> has a name screen readers announce on one page and none on <page>." |
 
-**Guard CN: navigation inside web components** (1.3.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
+**Guard CN: navigation inside web components** (1.4.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

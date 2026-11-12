@@ -61,6 +61,26 @@ recorded only by the review UI, from a signed-in session, with the person's
 identity (`sub`), their role, the time, and what they were shown (the
 finding, the picture hashes, the page version).
 
+**Who answers what (Abby, 2026-11-12).** Anyone signed in may answer
+any open question, and each answer saves an updated pre-SCRT. Every
+outcome and note in a pre-SCRT is traceable to a time and to who gave
+the answer behind it: a signed-in person with their role, the server
+judge, or the calling agent. Answers rank: a Trusted Tester's over a
+reviewer's, a reviewer's over the server judge's, the server judge's
+over the calling agent's. A person's answer, trained or not, is assumed
+better than a model's, which is why the plain-language explanation of
+each test and question matters most for reviewers. A pre-SCRT carries a
+"Not certified by a Trusted Tester" banner until a Trusted Tester has
+certified every row; only then can they save it as a permanent SCRT
+record, which drops the banner. That SCRT is the Trusted Tester's
+record, not TOBI's (principle 1).
+
+**Accounts.** NASA users only. Trusted Testers at other agencies get no
+accounts here: an agency forks the repository and hosts it in its own
+infrastructure with its own sign-in. So nothing NASA-specific may be
+hard-coded (sign-in is already generic OIDC), and the deployment notes
+must be enough for another agency to stand it up.
+
 **Who.** Two roles from Keycloak groups:
 - **Trusted Tester:** a person an admin has added after seeing their DHS
   certificate (no public registry to check against). Sees TT test IDs, WCAG
@@ -68,16 +88,23 @@ finding, the picture hashes, the page version).
   override any outcome (with a comment), and add an issue the tool missed.
   Their result can be exported as an SCRT file.
 - **Reviewer (anyone else signed in):** sees plain-language questions and
-  failure explanations, no spec codes. Answers judgment questions only
-  ("is there a visible outline on the highlighted link?"); cannot override
-  a rule's outcome. Whether a reviewer's answer can settle a question type,
-  or only a Trusted Tester's, is decided per question type (open question).
+  failure explanations, no spec codes. Answers any open question ("is
+  there a visible outline on the highlighted link?"), and the answer
+  settles it until a Trusted Tester answers; cannot override a rule's
+  outcome or certify.
+- **Adding a Trusted Tester:** Abby or another approved admin confirms
+  the person's DHS certificate (with DHS where needed) and adds them to
+  the group; the store records who added them and when. Certification
+  does not expire, so it is not rechecked.
 
 **Proving it is a person.** Signing in proves an account, not a person: an
 agent driving the user's own browser (computer use, Playwright MCP) could
 click through a signed-in UI. Defences:
 - submitting answers needs a fresh user-presence check (WebAuthn: a touch
-  of a PIV card or security key) per batch, which no agent can perform;
+  of a PIV card or security key) per batch, which no agent can perform.
+  Whether NASA's Keycloak can ask for it on one action rather than at
+  sign-in is unknown: to try on VAST; if it cannot, the review UI asks
+  for it itself;
 - answers are signed server-side with the session's identity; the report
   records "person, verified by WebAuthn", never only "human";
 - the MCP tools have no way to submit to the review UI's endpoint.
@@ -90,7 +117,7 @@ JS and fonts are 7 MB, full-size images 199 MB and video 95 MB.
 | Option | What the person sees | Person's UX | VAST cost and risk |
 | --- | --- | --- | --- |
 | **A. Evidence page** (web app on VAST: screenshots, crops, element and question) | Pictures TOBI took, not the page | Fine for a reviewer's one-off questions; a TT cannot check context, scroll, or try the keyboard | Cheapest: the pictures already kept for FAIL and NEEDS REVIEW (storage table); no page code served |
-| **B. Overlay on the live page** (a browser extension, "ANDI with TOBI's layer") | The real page, with markers on each finding's element, a panel per TT test, focus moved to the element on request | Closest to how TTs work today; can sit beside ANDI; keyboard and screen reader testable in place. Install needed (managed Chrome/Edge policy, or an unlisted store listing) | No page storage, little compute (findings API only). Risks: the live page may have changed since the scan (element moved, text edited); states the scan reached (menu open, form errors) must be re-created on the live site, and submitting forms there has side effects |
+| **B. Overlay on the live page** (a browser extension, "ANDI with TOBI's layer") | The real page, with markers on each finding's element, a panel per TT test, focus moved to the element on request | Closest to how TTs work today; can sit beside ANDI; keyboard and screen reader testable in place. Install needed: published open source for anyone to download, as ANDI is (Abby, 2026-11-12; a managed policy on NASA machines is not likely) | No page storage, little compute (findings API only). Risks: the live page may have changed since the scan (element moved, text edited); states the scan reached (menu open, form errors) must be re-created on the live site, and submitting forms there has side effects |
 | **C. Overlay on the recorded page** (VAST serves the scanned version with the layer) | Exactly what was tested, states replayable (TOBI already replays focus and key presses) | No install; matches the evidence; same view for TT and reviewer | Storage: about 1 MB per page if images are stored at their displayed size and video as a poster frame (estimate from the numbers above, not measured), much more if not. Security: serving third-party page scripts from a NASA host needs a separate cookieless origin with a sandbox CSP, and a security review. Some pages do not replay (cross-site frames) |
 | **E. MCP App** (TOBI's view rendered inside the person's chat: Claude, ChatGPT, VS Code and Microsoft 365 Copilot, others; MCP Apps spec 2026-01-26) | Evidence and comments pinned to elements, in the chat the person already uses; the agent can read what the person did (`ui/update-model-context`) and explain it | No storage beyond A. **Cannot prove a person did it:** a click in the app reaches the server as an ordinary `tools/call` forwarded by the host, with no field saying it came from the app; app-only tools are enforced by the host (the user's client), not by TOBI; no WebAuthn inside the app. So answers given there are drafts, made a person's only by "Sign on VAST" (`ui/open-link`) in the review UI |
 | **D. Remote browser** (VAST runs Chromium; the person drives it in a stream) | Live or recorded page in a real browser, overlay drawn server side | No install; laggy; assistive technology on the person's own machine cannot read a video stream | Heaviest: one browser per reviewer (hundreds of MB of RAM each); not accessible to a screen reader user, so it fails 508 itself |
@@ -193,10 +220,13 @@ copy cannot show what the test is about:
 | 19.A | Live site | Other ways to the page (site map, search) are on the live site |
 
 Media tests TOBI does not perform yet (16.A-17.G: transcripts, captions,
-audio description and their controls) also go to the live page. Whether
-DHS accepts a final SCRT row validated on a recorded copy at all is still
-DHS's call; until then the workspace records, per row, which view it was
-checked in.
+audio description and their controls) also go to the live page. **For a
+final SCRT** (Abby, 2026-11-12): the agency, not DHS, accepts it. A
+Trusted Tester confirms on the live page where possible, since a
+recording can be out of date. A pre-SCRT and an SCRT are each valid for
+their moment only: both carry the time of the scan and of each answer,
+and the workspace records per row which view (live or recorded) it was
+checked in. Sites change between scans; that is an accepted risk.
 
 **Either UI must itself conform to Section 508** (keyboard, screen reader,
 contrast), and be tested with TOBI and by a Trusted Tester, since its users
@@ -329,22 +359,16 @@ the store on VAST replaces it.
 
 ## Open questions
 
-- Which question types may a reviewer (not a Trusted Tester) settle, and
-  which need a Trusted Tester's answer?
 - Can NASA's Keycloak require WebAuthn (PIV or security key) for one
-  action rather than the whole sign-in, and do Trusted Testers outside
-  NASA get accounts?
-- Extension distribution: a managed policy on NASA machines, or an
-  unlisted store listing for other agencies' testers?
-- Who confirms a Trusted Tester's certificate before adding them to the
-  group, and how often is it rechecked (certification expires)?
-- Does DHS accept a final SCRT validated on a recorded copy, or must the
-  TT confirm on the live page?
+  action rather than the whole sign-in? Unknown: try it on VAST.
+- The judge's endpoint: Luna (an alternative provider with tokens for
+  the demo, since Ask Sage has none this month) or the in-house Sonnet.
+  Vision input size, structured output, rate limits, token quota per
+  day. Until then, development runs use the CLI route.
 
-- Sonnet endpoint details: vision input size limits, structured output
-  support, rate limits and the token quota per day.
-- Does sending public-page screenshots to the in-house model need any
-  data-handling note? (Internal pages are out of scope until the security
-  POC review.)
-- Reviewers' access for the hackathon: recorded demo only, or a guest
-  account on VAST?
+Answered on 2026-11-12 (Abby) and written into the sections above: who
+may answer which question; accounts outside NASA; the extension's
+distribution; who confirms a Trusted Tester and how often; live page or
+recorded copy for a final SCRT. Also: sending screenshots of public
+pages to the in-house model needs no data-handling note, and the
+hackathon's reviewers see a recorded demo, not a guest account.

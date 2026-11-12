@@ -35,6 +35,11 @@ CASES = {
     "t-audio-frame": ({}, "NEEDS_REVIEW", "K3/E3"),
     # A volume slider first on the page: Home turns it to 0 (V9).
     "t-audio-volume": ({}, "NEEDS_REVIEW", "K3/E3"),
+    # W-05: audio a script adds 1.5 s after load is first read already playing;
+    # it plays on at the last read, so it counts (no stop control: K6). It was
+    # DOES NOT APPLY (A3) when the read it first appeared in was compared with
+    # itself.
+    "t-audio-late": ({}, "FAIL", "K6"),
     # Web Audio: no bytes to measure (A2).
     "t-webaudio": ({}, "NEEDS_REVIEW", "A2"),
 }

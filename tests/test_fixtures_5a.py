@@ -166,6 +166,20 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
         "5.C": {"outcome": "NEEDS_REVIEW", "rows": ["M5", "M5"]},
     },
+    # C-03: a menu trigger written as <a href="#"> adds "#" to the address.
+    # That is not a navigation, so the menu is read and its unlabeled field
+    # is found, as in f23 (before: dropped unread, PASS).
+    "f25-hash-link-opens-menu": {
+        "5.A": {"outcome": "FAIL", "rows": ["M2", "M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M5"]},
+    },
+    # H-15: the only field is in a <fieldset disabled>: disabled, so no field
+    # for either test (5.A and 5.C said NEEDS REVIEW while 5.B and 5.D said
+    # DOES NOT APPLY on the same page).
+    "f26-field-in-disabled-fieldset": {
+        "5.A": {"outcome": "DNA", "rows": []},
+        "5.C": {"outcome": "DNA", "rows": []},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},

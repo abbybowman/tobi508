@@ -71,6 +71,13 @@ class PageRef:
     final_url: str
     new_page: NewPage
     har_sha: str | None = None  # its recording's SHA-256 (pagecache reads)
+    # Its document is the tested page's, byte for byte (K-01): not compared.
+    same_content_as_tested: bool = False
+
+
+# What a check records when the run's time limit cut work short (one wording
+# for every check; RunContext.out_of_time).
+OUT_OF_TIME_MSG = "The run time limit was reached before every check finished."
 
 
 @dataclass
@@ -113,12 +120,16 @@ class RunContext:
     # waiting on once pass T ends (pipeline.SettleIgnore; T1 (b)).
     settle_ignore: Any = None
 
-    def out_of_time(self) -> bool:
+    def out_of_time(self, record: list[str] | None = None) -> bool:
         """Past the checks' deadline (4.C spec section 2, Run limits). Use it
         before every replay; a True answer is recorded, so the result says
-        the run limit cut something short."""
+        the run limit cut something short. Pass the check's own `incomplete`
+        list as `record` and the reason is added to it too (E-07): a check
+        that skips work for lack of time must not PASS (spec G3)."""
         if time.monotonic() > self.deadline:
             self.timed_out = True
+            if record is not None and OUT_OF_TIME_MSG not in record:
+                record.append(OUT_OF_TIME_MSG)
             return True
         return False
 

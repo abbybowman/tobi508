@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 
 from tobi508 import count as inventory
 from tobi508.models import Count
-from tobi508.traverse import PATH_JS, NewPage
+from tobi508.traverse import DEST_JS, PATH_JS, NewPage
 
 UNIT_CAP = 600  # units read per page (9.A spec section 2)
 
@@ -30,6 +30,7 @@ UNIT_CAP = 600  # units read per page (9.A spec section 2)
 # the site read and 9.A's landing read, so both number units the same way.
 UNITS_FN = (
     PATH_JS
+    + DEST_JS
     + r"""
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim();
   const shown = (el) => {
@@ -139,6 +140,7 @@ UNITS_FN = (
         const raw = el.getAttribute('href');
         push(el, { kind: 'control', role: controlRole(el), name, text: name.toLowerCase().slice(0, 200),
           href: t === 'A' && raw !== null ? el.href : '', href_attr: raw === null ? null : raw,
+          dest: t === 'A' && raw !== null ? destHref(el) : '',
           submit: !!el.form && (el.type || '').toLowerCase() === 'submit', stop: tabbable(el),
           id: el.id || '' }, chain);
         return;
@@ -197,6 +199,8 @@ class Unit(BaseModel):
     in_main: bool = False
     box: list[int] = Field(default_factory=list)  # page x, y, width, height
     href: str = ""
+    # Where the link goes, '' when nowhere (DEST_JS): the pairing key of 9.C.
+    dest: str = ""
     href_attr: str | None = None
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
@@ -223,6 +227,8 @@ class PageRead(BaseModel):
     error: str = ""
     # The page's inventory, on this same load (count.py; guard CN).
     count: Count | None = None
+    # The same document as the tested page, under another address (K-01).
+    identical: bool = False
 
 
 class SiteRead(BaseModel):
@@ -255,11 +261,18 @@ class SiteRead(BaseModel):
 
     @property
     def errors(self) -> list[str]:
-        return [
+        out = [
             f"{page_label(p)} could not be read: {p.error}"
             for p in self.pages
             if p.error
         ]
+        out += [
+            f"{page_label(p)} has the same content as the tested page, so "
+            "comparing them would compare the page with itself"
+            for p in self.others
+            if p.identical
+        ]
+        return out
 
 
 def page_label(p: PageRead) -> str:
@@ -315,7 +328,12 @@ async def site_read(ctx: Any) -> SiteRead:
             read_page(0, "", ctx.new_page),
             *(_cached_read(p) for p in ctx.pages),
         )
-        ctx.cache["site"] = SiteRead(pages=list(reads))
+        pages = list(reads)
+        # A copy: the read may be the one pagecache keeps for other runs.
+        for i, ref in enumerate(ctx.pages, 1):
+            if getattr(ref, "same_content_as_tested", False):
+                pages[i] = pages[i].model_copy(update={"identical": True})
+        ctx.cache["site"] = SiteRead(pages=pages)
     return ctx.cache["site"]
 
 

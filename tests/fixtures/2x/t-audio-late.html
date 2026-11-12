@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><title>Welcome</title></head>
+<body>
+<main>
+<h1>Welcome</h1>
+<p>Some text.</p>
+</main>
+<audio id="a1" src="/tone20.wav" preload="auto"></audio>
+<script>
+// A looping audio element a script adds 1.5 s after load: not in the page at
+// the first watch reading, so it is first seen already playing (W-05).
+setTimeout(() => {
+  const a = document.createElement("audio");
+  a.id = "a2";
+  a.src = "/tone20.wav";
+  a.autoplay = true;
+  a.loop = true;
+  document.body.appendChild(a);
+}, 1500);
+</script>
+</body>
+</html>
