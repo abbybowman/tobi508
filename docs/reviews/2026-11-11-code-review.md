@@ -127,7 +127,7 @@ below; "run" means I ran a page and got the outcome shown.
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
 | K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script. **Fixed** |
-| A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read |
+| A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read. **Fixed** |
 
 Three causes account for most of the table. They are the first three
 items of "If we started over" at the end.
@@ -868,6 +868,7 @@ The round 2 check uses the server judge; the VAST step uses sign-in.
 - **Checked:** verified (read). `Job` has no owner field; `outstanding`
   adds running jobs to its list before any owner check. Not exercised
   with two real tokens.
+- **Fixed:** 0c0f90b. A job records `access.caller()`; `get`, `all_jobs` and `running` return only the caller's (all, without sign-in). Test: `tests/test_access.py::test_jobs_belong_to_their_maker`. Still not exercised with two real tokens.
 
 ---
 
@@ -1032,6 +1033,7 @@ its figures are used. B-01 (P0) belongs with them.
   through MCP as the agent's (`decided_by` model), and apply the picture
   rule to all of them.
 - **Checked:** verified (read).
+- **Fixed:** c7bb392 (no spec change). `tobi_answer_questions` records every answer as `decided_by: model`; the picture rule applies and none outranks another agent answer. Test: `tests/test_tools.py::test_an_agent_cannot_claim_to_be_a_person`.
 
 #### G-02 Server judge: one screenshot is attached once for every question that names it
 
@@ -1582,6 +1584,7 @@ A-01 (P0) belongs here too.
   "nobody" stays open only when sign-in is off. One test in
   `tests/test_access.py`.
 - **Checked:** verified (read). Not exercised with a real token.
+- **Fixed:** 7bd8327. The verifier refuses a token with no `sub` (audited `authn.no_subject`), and `caller()` raises `NoSubject` if one reaches it. Test: `tests/test_access.py::test_a_token_with_no_subject_is_refused`. Whether VAST's Keycloak always sends `sub` is still to confirm with the admin.
 
 ---
 
