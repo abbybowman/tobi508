@@ -112,12 +112,14 @@ def test_groups_follow_the_table_and_j0_goes_first_and_alone():
 
 
 def test_a_request_is_cut_at_20_questions_40_pictures_and_24_mb():
-    pic = [("run://x/a.png", b"x")]
     many = [(q(str(i), "4.D"), []) for i in range(45)]
     assert [len(g) for g in split(many)] == [20, 20, 5]
-    pics = [(q(str(i), "4.D"), pic * 15) for i in range(5)]  # 75 pictures
+    pics = [
+        (q(str(i), "4.D"), [(f"run://x/{i}-{k}.png", b"x") for k in range(15)])
+        for i in range(5)
+    ]  # 75 different pictures
     assert [len(g) for g in split(pics)] == [2, 2, 1]
-    big = [(q(str(i), "4.D"), [("p", b"x" * (10 * 1024 * 1024))]) for i in range(5)]
+    big = [(q(str(i), "4.D"), [(f"p{i}", b"x" * (10 * 1024 * 1024))]) for i in range(5)]
     assert [len(g) for g in split(big)] == [2, 2, 1]
 
 
@@ -145,11 +147,11 @@ def test_tall_pictures_go_in_slices_and_tab_stops_as_lines(tmp_path):
 
     buf = io.BytesIO()
     Image.new("RGB", (200, 3000), "white").save(buf, "PNG")
-    f = tmp_path / "evidence" / "tall.png"
-    f.parent.mkdir()
+    f = tmp_path / "r" / "evidence" / "tall.png"
+    f.parent.mkdir(parents=True)
     f.write_bytes(buf.getvalue())
     pics = apijudge.pictures_of(
-        q("a", "4.D", inp={"p": "run://r/evidence/tall.png"}), tmp_path
+        q("a", "4.D", inp={"p": "run://r/evidence/tall.png"}), tmp_path / "r"
     )
     assert [p[0] for p in pics] == [
         "run://r/evidence/tall.png (part 1 of 3, top to bottom)",
@@ -158,6 +160,72 @@ def test_tall_pictures_go_in_slices_and_tab_stops_as_lines(tmp_path):
     ]
     stops = [{"n": 12, "role": "link", "name": "Home", "href": "/h"}]
     assert apijudge._lines({"stops": stops}) == {"stops": '12 link "Home" /h'}
+
+
+def test_picture_links_are_whole_input_values_read_only_from_this_run(tmp_path):
+    """B-01: a link written into page text, a `..` path or another run's id
+    never makes the judge read a file; only a value that is exactly a link to
+    this run's picture does, through the guarded reader."""
+    from PIL import Image
+
+    def png(path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        Image.new("RGB", (20, 20), "white").save(path, "PNG")
+
+    png(tmp_path / "r1" / "evidence" / "ok.png")
+    png(tmp_path / "r2" / "evidence" / "other.png")
+    png(tmp_path / "secret.png")
+    crafted = [
+        "run://r1/../r2/evidence/other.png",  # out of the run by `..`
+        "run://r1/../secret.png",
+        "run://r2/evidence/other.png",  # another run's own link
+        "Home run://r1/evidence/ok.png",  # a link inside page text
+    ]
+    for link in crafted:
+        got = apijudge.pictures_of(q("a", "4.D", inp={"name": link}), tmp_path / "r1")
+        assert got == [], link
+    got = apijudge.pictures_of(
+        q("a", "4.D", inp={"shot": "run://r1/evidence/ok.png", "x": crafted}),
+        tmp_path / "r1",
+    )
+    assert [label for label, _ in got] == ["run://r1/evidence/ok.png"]
+
+
+def test_a_picture_many_questions_name_is_attached_once_a_request(
+    tmp_path, monkeypatch
+):
+    """G-02: 19 questions naming one screenshot send it once, count once
+    toward the picture cap, and cut it once."""
+    from PIL import Image
+
+    shot = tmp_path / "r" / "evidence" / "page.png"
+    shot.parent.mkdir(parents=True)
+    Image.new("RGB", (20, 20), "white").save(shot, "PNG")
+    other = tmp_path / "r" / "evidence" / "b.png"
+    Image.new("RGB", (20, 20), "black").save(other, "PNG")
+    cuts: list[str] = []
+    real = apijudge._slices
+    monkeypatch.setattr(
+        apijudge, "_slices", lambda path: cuts.append(path.name) or real(path)
+    )
+    qs = [
+        q(f"q{i}", "4.D", inp={"shot": "run://r/evidence/page.png"}) for i in range(19)
+    ] + [q("q19", "4.D", inp={"shot": "run://r/evidence/b.png"})]
+    reqs = apijudge.build_requests(None, {}, tmp_path / "r", "keyboard", qs)
+    assert len(reqs) == 1 and len(reqs[0].questions) == 20
+    assert [label for label, _ in reqs[0].pictures] == [
+        "run://r/evidence/page.png",
+        "run://r/evidence/b.png",
+    ]
+    assert "2 picture(s) are attached" in reqs[0].blocks[-1].text
+    assert sorted(cuts) == ["b.png", "page.png"]
+    # 45 questions with one picture each and the same picture: one request's
+    # cap is reached by questions (20), never by repeats of the picture
+    many = [
+        q(f"m{i}", "4.D", inp={"s": "run://r/evidence/page.png"}) for i in range(45)
+    ]
+    prepared = [(x, apijudge.pictures_of(x, tmp_path / "r")) for x in many]
+    assert [len(g) for g in apijudge.split(prepared)] == [20, 20, 5]
 
 
 def test_page_text_and_input_stay_in_untrusted_blocks_and_the_shared_block_repeats():
@@ -464,3 +532,26 @@ async def test_the_key_never_appears_in_a_report_a_log_or_an_error(
     )
     assert not res.ok and key not in res.error
     assert isinstance(res, CallResult)
+
+
+async def test_judging_does_not_hold_a_browser_slot(settings, server, monkeypatch):
+    """B-04: with one browser slot, a run being judged has given its slot
+    back, so a queued run can start meanwhile."""
+    from tobi508 import jobs
+
+    s = api(settings).model_copy(update={"max_concurrent_runs": 1})
+    slot = jobs._slots(1)
+    held: list[bool] = []
+
+    def fn(req):
+        held.append(slot.locked())
+        return answer_all(lambda qid, ch: "no")(req)
+
+    judge_with(monkeypatch, fn)
+    url = f"{server.base}/4d/f09-faint-outline.html"
+    job = jobs.start(s, url, lambda p: run_tt_tests(s, url, [TestId.T4D], p))
+    out = await job.task
+    assert held and not any(held), "the judge ran inside the browser slot"
+    assert out.report.findings[0].outcome.value == "FAIL"  # no outcome moves
+    assert not slot.locked()  # given back once, not twice
+    assert slot._value == 1

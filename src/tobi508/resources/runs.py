@@ -30,12 +30,15 @@ def run_uri(run_id: str, rel_path: str) -> str:
     return f"{SCHEME}{run_id}/{rel_path}"
 
 
-def run_file(run_id: str, path: str) -> Path:
+def run_file(run_id: str, path: str, runs_dir: Path | None = None) -> Path:
     """A file inside a kept run, confined to its folder; ValueError if the
-    run id is malformed or there is no such file (it may have expired)."""
+    run id is malformed or there is no such file (it may have expired).
+    `runs_dir`: the runs folder of the settings a run was made with, when
+    that is not the server's (the eval scripts'); the default is the
+    server's."""
     if not RUN_ID.match(run_id):
         raise ValueError("Invalid run id")
-    base = (config.settings.runs_dir / run_id).resolve()
+    base = ((runs_dir or config.settings.runs_dir) / run_id).resolve()
     target = (base / path).resolve()
     missing = not target.is_relative_to(base) or not target.is_file()
     if missing or not may_open(base):  # another person's run reads as missing

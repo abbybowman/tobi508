@@ -7,9 +7,12 @@ A type passes only when both hold:
   server's judge: zero wrong PASSes in every repeat, the trick text never
   taken (`judge_eval.py answer OUT --backend api --repeat 3`);
 * round 2's frozen pages, answered by the server's judge and scored against
-  the tester's keys on the cells an answer decided: zero wrong PASSes, at
-  most 1 wrong FAIL per repeat for the type and no more than 20% of its
-  cells.
+  the tester's keys on the cells an answer decided: at least
+  MIN_DECIDED_CELLS decided cells (agree or wrong; "unsure" does not count),
+  zero wrong PASSes, zero wrong DOES NOT APPLY, at most 1 wrong FAIL per
+  repeat for the type and no more than 20% of its decided cells. A tool PASS
+  where the key says DOES NOT APPLY is counted apart (`pass_vs_dna`) and
+  reported, not a reason on its own (code review L-02, L-03).
 
     uv run python evals/apijudge_gate.py run   --date D [--repeat N]
         [--types 4.A,5.B] [--pages cilab,14592] [--dry]
@@ -44,7 +47,12 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from evals import judging  # noqa: E402
-from evals.scoring import adjudications, decided_tests, split_cells  # noqa: E402
+from evals.scoring import (  # noqa: E402
+    adjudications,
+    decided_cells,
+    decided_tests,
+    split_cells,
+)
 from evals.scoring import score as score_page  # noqa: E402
 from tobi508 import scrt  # noqa: E402
 from tobi508.compare import compare, page_key  # noqa: E402
@@ -53,6 +61,9 @@ SRC = REPO / "evals" / "judging" / "round2"
 KEYS = REPO / "evals" / "judging" / "round2-armc"
 MAX_WRONG_FAIL_PER_REPEAT = 1
 MAX_WRONG_FAIL_SHARE = 0.20
+# Fewer decided cells than this over all repeats and a type is "too few cells
+# to judge": one clean page proves little (L-02; the plan, "The gate").
+MIN_DECIDED_CELLS = 6
 
 
 def gate_dir(date: str) -> Path:
@@ -71,17 +82,24 @@ def passes(
     out: dict[str, dict] = {}
     for test, row in sorted(cells.items()):
         why: list[str] = []
+        decided = decided_cells(row)
+        if decided < MIN_DECIDED_CELLS:
+            why.append(
+                f"too few cells to judge: {decided} decided, {MIN_DECIDED_CELLS} needed"
+            )
         if row["wrong_pass"]:
             why.append(f"{row['wrong_pass']} wrong PASS on the real pages")
+        if row["wrong_dna"]:
+            why.append(f"{row['wrong_dna']} wrong DOES NOT APPLY on the real pages")
         if any(n > MAX_WRONG_FAIL_PER_REPEAT for n in per_repeat_fails.get(test, [])):
             why.append("more than 1 wrong FAIL in a repeat")
-        if row["cells"] and row["wrong_fail"] / row["cells"] > MAX_WRONG_FAIL_SHARE:
-            why.append("wrong FAILs over 20% of the type's cells")
+        if decided and row["wrong_fail"] / decided > MAX_WRONG_FAIL_SHARE:
+            why.append("wrong FAILs over 20% of the type's decided cells")
         if eval_ok is None or test not in eval_ok:
             why.append("the test pages were not run")
         elif not eval_ok[test]:
             why.append("a wrong PASS or the trick text taken on the test pages")
-        out[test] = {**row, "passes": not why, "why_not": why}
+        out[test] = {**row, "decided": decided, "passes": not why, "why_not": why}
     return out
 
 
@@ -277,9 +295,10 @@ def score(date: str, eval_dir: Path | None) -> dict:
     (gd / "gate.json").write_text(json.dumps(out, indent=1) + "\n")
     for t, v in verdicts.items():
         print(
-            f"{t}: {v['cells']} cells decided; agree {v['agree']}, wrong PASS "
-            f"{v['wrong_pass']}, wrong DNA {v['wrong_dna']}, wrong FAIL "
-            f"{v['wrong_fail']}, unsure {v['unsure']} -> "
+            f"{t}: {v['cells']} cells, {v['decided']} decided; agree "
+            f"{v['agree']}, wrong PASS {v['wrong_pass']}, wrong DNA "
+            f"{v['wrong_dna']}, wrong FAIL {v['wrong_fail']}, PASS vs key DNA "
+            f"{v['pass_vs_dna']}, unsure {v['unsure']} -> "
             f"{'passes' if v['passes'] else 'not yet: ' + '; '.join(v['why_not'])}"
         )
     return out

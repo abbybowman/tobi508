@@ -40,9 +40,16 @@ NAME_CLAIMS = ("nasaPrimaryEmail", "email", "preferred_username", "AgencyUID")
 # ── The caller ────────────────────────────────────────────────────────────────
 
 
+class NoSubject(PermissionError):
+    """A signed-in token without a `sub` claim (code review S-05)."""
+
+
 def caller() -> str | None:
     """The signed-in caller's stable subject (`sub`), or None without
-    sign-in (stdio, loopback HTTP, or outside a request)."""
+    sign-in (stdio, loopback HTTP, or outside a request). A token with no
+    `sub` is refused (NoSubject), never read as "nobody": "nobody" opens
+    every run, which is right only when sign-in is off (code review S-05).
+    The verifier refuses such a token first; this is the second check."""
     try:
         token = get_access_token()
     except RuntimeError:
@@ -50,7 +57,9 @@ def caller() -> str | None:
     if token is None:
         return None
     sub = (token.claims or {}).get("sub")
-    return str(sub) if sub else None
+    if not sub:
+        raise NoSubject("The sign-in token names no subject (sub); refused.")
+    return str(sub)
 
 
 def _caller_fields() -> dict[str, Any]:
@@ -101,7 +110,14 @@ class GroupGatedVerifier(JWTVerifier):
 
     async def verify_token(self, token: str):
         result = await super().verify_token(token)
-        if result is None or not self.required_groups:
+        if result is None:
+            return None
+        if not (result.claims or {}).get("sub"):
+            # Without a subject the caller would own nothing and open every
+            # run (code review S-05): refused like an invalid token.
+            audit("authn.no_subject")
+            return None
+        if not self.required_groups:
             return result
         if self.required_groups & groups_in(result.claims, self.group_claim):
             return result

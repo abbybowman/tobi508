@@ -14,7 +14,7 @@ unable to close the untrusted block, with a trick page for it (B-02); a
 minimum number of decided cells and a fail on any wrong DOES NOT APPLY in
 `evals/apijudge_gate.py` (L-02, L-03); one picture attached once a request
 (G-02); judging outside the browser slot (B-04). The roadmap has them under
-"Order of work", step 3.
+"Order of work", step 3. Built 2026-11-12 (step 3's pull request).
 
 ## Status
 
@@ -99,8 +99,16 @@ wrong 4.F answers came from real pages). So a type must pass both:
 - **Round 2's real pages:** round 2's frozen copies of the 10 pages
   (Abby's `round2-frozen` archive set, the exact pages her keys
   describe), answered by ApiJudge, scored against Abby's keys on
-  the cells its answers decide. Zero wrong PASSes; at most 1 wrong FAIL
-  per repeat for the type, and no more than 20% of its cells.
+  the cells its answers decide. Zero wrong PASSes; zero wrong DOES NOT
+  APPLY; at most 1 wrong FAIL per repeat for the type, and no more than
+  20% of its decided cells.
+- **Enough cells to judge** (code review L-02, L-03; 2026-11-12): at
+  least 6 decided cells over all repeats (agree or wrong; a cell left
+  "unsure" for a person is not decided), so at least two a repeat in a
+  full gate of three repeats. Fewer is "too few cells to judge", not a
+  pass. A tool PASS where the key says DOES NOT APPLY is counted apart
+  (`pass_vs_dna`) and reported beside the rest; it is not a reason on
+  its own, since neither side found a failure.
 
 The real-page check is a development check: its scores and the list of
 passing types go in git, the recordings do not. Agent C's old runs are
