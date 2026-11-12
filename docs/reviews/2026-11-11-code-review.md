@@ -736,6 +736,8 @@ The round 2 check uses the server judge; the VAST step uses sign-in.
 
 ## P1
 
+A wrong result, crash or hang in plausible conditions, or large waste.
+
 ### What a calling agent pays
 
 Measured in phase 1 on `tests/fixtures/budget/agency-home.html` (default
@@ -835,76 +837,164 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
 - **Checked:** verified (read) that `todo` is in the JSON and in the
   closing block; sizes measured by the phase 1 reviewer.
 
+### The server judge and its gate (demo plan, steps 3 and 4)
+
+The round 2 check runs with the server judge answering and decides
+which question types to switch on. These are what to settle before
+its figures are used. B-01 (P0) belongs with them.
+
+#### L-02 and L-03 A question type passes the gate on one clean cell, and wrong DOES NOT APPLY never counts
+
+- **What is wrong:** the gate passes a type that has no wrong PASS and
+  few wrong FAILs. It asks for no minimum number of cells, counts
+  "unsure" as a cell, never reads the wrong DOES NOT APPLY count, and
+  puts "tool PASS where the key says DOES NOT APPLY" in a bucket it
+  never reads.
+- **Why it matters:** the gate's output is the list of types Abby would
+  switch on. A type judged on one page, or one that turns failures into
+  DOES NOT APPLY, shows as passing.
+- **Where:** `evals/apijudge_gate.py:62-85` (`passes`);
+  `evals/scoring.py:104, 206-217`.
+- **Smallest fix:** a minimum of decided cells (agree plus wrong, not
+  unsure) with "too few cells to judge" as a reason; fail a type on any
+  wrong DOES NOT APPLY; count PASS against a DOES NOT APPLY key
+  separately. Decide the numbers in the plan.
+- **Checked:** verified (run). `passes()` returned "passes" for a type
+  with one cell, and for a type with 6 wrong DOES NOT APPLY in 10 cells.
+
+#### B-02 Server judge: page text can close the "untrusted data" block
+
+- **What is wrong:** page data goes to the judging model as JSON between
+  `<untrusted_page_data>` tags. JSON leaves `<`, `>` and `/` as they are,
+  so page text containing `</untrusted_page_data>` ends the block, and
+  whatever follows reads as instructions.
+- **Why it matters:** the judge can only pick one of a question's
+  choices, but principle 8 lets some answers lead to PASS on the judge's
+  word. No test page tries this.
+- **Where:** `src/tobi508/apijudge.py:478-484` (`_tag`).
+- **Smallest fix:** escape `<`, `>` and `&` in the JSON (`<` and so
+  on), and add a page to `tests/fixtures/inject/` that contains the
+  closing tag.
+- **Checked:** verified (run) for the mechanism: `_tag` leaves the
+  closing tag intact inside the data. Whether the model then obeys is
+  not tested.
+
+#### A-05 "A person decided this" is the calling agent's own claim (roadmap Now, item 4)
+
+- **What is wrong:** an agent may send `decided_by: "human"`. Nothing
+  checks it. Such an answer skips the rule that a picture question needs
+  `seen`, and outranks every other agent answer.
+- **Why it matters:** the picture rule exists because agents answered
+  without looking; this is the way round it. No check turns "human" into
+  a PASS by itself.
+- **Where:** `src/tobi508/tools/answer_questions.py:48-52`;
+  `src/tobi508/judgment.py:103-105, 175-180, 191-195`.
+- **Smallest fix:** as the roadmap says: record every answer arriving
+  through MCP as the agent's (`decided_by` model), and apply the picture
+  rule to all of them.
+- **Checked:** verified (read).
+
+#### G-02 Server judge: one screenshot is attached once for every question that names it
+
+- **What is wrong:** pictures are gathered per question and joined with
+  no check for repeats. Several questions of one test name the same
+  screenshot, so one request carries it many times. Cutting and
+  encoding them runs on the event loop, and again for each question
+  asked a second time.
+- **Why it matters:** every copy is paid for as picture tokens and
+  counts against the 40-picture limit, which splits the work into more
+  requests. In round 2's saved reports one picture is named by up to 19
+  questions.
+- **Where:** `src/tobi508/apijudge.py:403-416` (`pictures_of`),
+  `567-597` (`build_requests`).
+- **Smallest fix:** one attachment per link in a request; cut each
+  picture once per run; build requests in a thread.
+- **Checked:** verified (read): `build_requests` joins each question's
+  pictures as they come. The reviewer built a request for 19 questions
+  naming one picture and got 19 copies.
+
+#### B-04 Server judge: judging holds a browser slot and sits outside every time limit
+
+- **What is wrong:** the judge phase runs inside the same slot as the
+  browser work, after the browsers have closed, for up to `JUDGE_CAP_S`
+  (900 s).
+- **Why it matters:** with the default of two slots, two runs being
+  judged block every other run for up to 15 minutes while no browser is
+  in use, and a job can run past `MAX_RUN_S`.
+- **Where:** `src/tobi508/pipeline.py:1214-1215`;
+  `src/tobi508/jobs.py:78-83`.
+- **Smallest fix:** release the slot before judging (run the judge from
+  the job wrapper, after the browser part returns).
+- **Checked:** verified (read).
+
+### Hangs and waste
+
+#### G-03 `tobi_answer_questions` is the one tool with no time limit
+
+- **What is wrong:** CLAUDE.md says a tool call returns within
+  `CALL_WAIT_S` (45 s) and longer work goes on as a job. A run does
+  that. An answer call does not: it waits for the whole answer step,
+  which replays the page for each answer that names a key or a field
+  (4.A, 4.B, 4.C, 5.F), one check after another, with no hard stop.
+- **Why it matters:** a client that gives up at 60 s drops the call; the
+  work goes on in the server, its result is lost, and the agent sends
+  the same answers again while the first call is still writing the
+  report (the lost-update race, B-03). The server judge uses the same
+  path.
+- **Where:** `src/tobi508/tools/answer_questions.py:88-95`;
+  `src/tobi508/pipeline.py:1450-1474`.
+- **Smallest fix:** run the answer step as a job, as a run is, and give
+  each check's resume a hard limit that records "not finished".
+- **Checked:** verified (read). How long a resume takes on a large page
+  is not measured.
+
+#### W-01 Counting flashes stops the whole server for 15 to 19 seconds
+
+- **What is wrong:** 3.A decodes and counts its 181 captured frames
+  with numpy on the event loop.
+- **Why it matters:** while it runs, the other run in the server, its
+  progress line and every client connection stand still. With two runs
+  at once on a hosted server this is a visible stall.
+- **Where:** `src/tobi508/checks/t3a.py:291`;
+  `src/tobi508/flash.py:56` (`linear`), `522` (`analyze`).
+- **Smallest fix:** call the three `analyze_*` functions through
+  `asyncio.to_thread`; replace the per-pixel power in `linear` with a
+  256-entry table (about ten times faster).
+- **Checked:** the reviewer timed `flash.analyze` on 181 frames of
+  1024 x 768: 14.6 s to 19.0 s. Verified (read) that the call is made
+  directly from the async function; I did not repeat the timing.
+
+#### E-10 4.A loads the page once for every item a hover reveals
+
+- **What is wrong:** the spec budgets one replay for each stop whose
+  hover revealed something, at most 10. The code then loads the page
+  again for each revealed item, to read its name and address, with no
+  cap and no time check.
+- **Why it matters:** a menu of 30 items behind one stop costs 30 more
+  loads, about 3 s each, to fetch what one load would give.
+- **Where:** `src/tobi508/checks/t4a.py:559-563, 731-750`.
+- **Smallest fix:** one load per stop that describes every item; check
+  the deadline before each.
+- **Checked:** verified (read) by the reviewer; not timed.
+
+#### E-11 4.B and 4.C each send the whole page text, with no cap
+
+- **What is wrong:** when both have open questions, the full text of
+  every frame goes out twice (two loads of the same page), unbounded.
+  4.B's 20 sentences are in it a third time.
+- **Why it matters:** tens of thousands of characters on a long page,
+  in every result that still has those questions.
+- **Where:** `src/tobi508/checks/t4b.py:498-499`;
+  `src/tobi508/checks/t4c.py:1505-1506`;
+  `src/tobi508/pipeline.py:727-736`.
+- **Smallest fix:** send one copy; cap it and say so; for 4.B send the
+  sentences with a little context.
+- **Checked:** verified (read) by the reviewer; not measured on a page.
+
 ### Wrong outcomes
 
-#### K-05 9.C passes pairs where neither side has a name (needs Abby)
-
-- **What is wrong:** row C1 is "names agree". Two controls with no name
-  at all agree, so a pair of unnamed icon buttons is a PASS, and the
-  summary says they "have the same names for screen reader users".
-- **Why it matters:** a PASS resting on no names. Whether an unnamed pair
-  is a 9.C matter or only a 4.1.2 one is a spec decision; today the code
-  decides it silently.
-- **Where:** `src/tobi508/checks/t9c.py:285-298`; spec 9.C section 3a,
-  rows C1 and C2.
-- **Smallest fix:** a row before C1: both names empty is NEEDS REVIEW (or
-  the pair is left out with a note). A MINOR spec change.
-- **Checked:** verified (run). Two pages, each with the same nameless
-  icon button and nameless icon link in the header: 9.C PASS, four pairs,
-  all C1.
-
-#### K-04 9.C pairs every `javascript:` link with every other, and FAILs unrelated controls
-
-- **What is wrong:** links are paired "by destination" on their href
-  text. `javascript:void(0)` on two pages is the same text, so two
-  unrelated controls pair, and a name on one side only is a FAIL.
-- **Why it matters:** a wrong FAIL on a common pattern, in a test where
-  the roadmap is already cutting false FAILs.
-- **Where:** `src/tobi508/checks/t9c.py:131, 203`;
-  `src/tobi508/site.py:314-323` (`norm_href`).
-- **Smallest fix:** give a link a destination only when it is http, https
-  or file; the rest fall through to id, name and place.
-- **Checked:** verified (run). An unnamed `javascript:void(0)` icon link
-  on the tested page and a "Close alert" link on the other: 9.C FAIL
-  ("has a name screen readers announce on one page and none on other
-  page 1").
-
-#### K-03 9.C reads "ANDI named nothing" as "nothing to compare"
-
-- **What is wrong:** after injecting ANDI the code waits a fixed half
-  second and reads its output. An empty list counts as "ANDI ran". Every
-  control then has no ANDI name, all are dropped, and the result is DOES
-  NOT APPLY. Controls ANDI skips one by one (not focusable) vanish
-  without a count.
-- **Why it matters:** a wrong DOES NOT APPLY if ANDI is slow on a heavy
-  page, and silent loss of controls otherwise.
-- **Where:** `src/tobi508/checks/t9c.py:141-153, 173-174, 471-477`;
-  `src/tobi508/andi.py:126-136`.
-- **Smallest fix:** if a page has marked controls and ANDI named none of
-  them, return the existing "ANDI did not run" NEEDS REVIEW; say in the
-  summary how many controls ANDI left out.
-- **Checked:** verified (read). Not reproduced: I did not find a page
-  where ANDI is still working after 500 ms, so how often this happens is
-  unknown.
-
-#### D-02 A script error while reading the page looks like "nothing found"
-
-- **What is wrong:** `evaluate_top` returns the value of a script and
-  never looks at whether it threw. An error comes back as `None`, and
-  callers treat `None` as an empty result. For the label pass that is
-  "no form fields", the DOES NOT APPLY branch of D-01. `reader.call`
-  does the same for "could not reach the element".
-- **Why it matters:** any bug in one of these scripts, or a page that
-  breaks one, turns into DOES NOT APPLY or an empty label with no error
-  anywhere. The sister helper `call_in` does raise.
-- **Where:** `src/tobi508/traverse.py:539-546`; callers
-  `src/tobi508/labels.py:362, 403`, `src/tobi508/observe.py:42` and nine
-  more.
-- **Smallest fix:** raise on `exceptionDetails`, as `call_in` does. The
-  label pass already turns an exception into a "could not be read" note.
-- **Checked:** verified (read). The reviewer ran `evaluate_top("throw
-  new Error('x')")` and got `None`; I did not repeat it. No real page is
-  known to trigger it.
+A wrong FAIL or NEEDS REVIEW, or a PASS or DOES NOT APPLY that needs
+a narrower page or an agent's wrong answer than the P0 items do.
 
 #### E-06 Three questions settle a PASS on the agent's word and are not on principle 8's list (needs Abby)
 
@@ -1029,6 +1119,75 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
 - **Checked:** verified (read): four places cut at `BADGE_MAX` and the
   spec line is there. No fixture has more than 60 stops.
 
+#### K-05 9.C passes pairs where neither side has a name (needs Abby)
+
+- **What is wrong:** row C1 is "names agree". Two controls with no name
+  at all agree, so a pair of unnamed icon buttons is a PASS, and the
+  summary says they "have the same names for screen reader users".
+- **Why it matters:** a PASS resting on no names. Whether an unnamed pair
+  is a 9.C matter or only a 4.1.2 one is a spec decision; today the code
+  decides it silently.
+- **Where:** `src/tobi508/checks/t9c.py:285-298`; spec 9.C section 3a,
+  rows C1 and C2.
+- **Smallest fix:** a row before C1: both names empty is NEEDS REVIEW (or
+  the pair is left out with a note). A MINOR spec change.
+- **Checked:** verified (run). Two pages, each with the same nameless
+  icon button and nameless icon link in the header: 9.C PASS, four pairs,
+  all C1.
+
+#### K-04 9.C pairs every `javascript:` link with every other, and FAILs unrelated controls
+
+- **What is wrong:** links are paired "by destination" on their href
+  text. `javascript:void(0)` on two pages is the same text, so two
+  unrelated controls pair, and a name on one side only is a FAIL.
+- **Why it matters:** a wrong FAIL on a common pattern, in a test where
+  the roadmap is already cutting false FAILs.
+- **Where:** `src/tobi508/checks/t9c.py:131, 203`;
+  `src/tobi508/site.py:314-323` (`norm_href`).
+- **Smallest fix:** give a link a destination only when it is http, https
+  or file; the rest fall through to id, name and place.
+- **Checked:** verified (run). An unnamed `javascript:void(0)` icon link
+  on the tested page and a "Close alert" link on the other: 9.C FAIL
+  ("has a name screen readers announce on one page and none on other
+  page 1").
+
+#### K-03 9.C reads "ANDI named nothing" as "nothing to compare"
+
+- **What is wrong:** after injecting ANDI the code waits a fixed half
+  second and reads its output. An empty list counts as "ANDI ran". Every
+  control then has no ANDI name, all are dropped, and the result is DOES
+  NOT APPLY. Controls ANDI skips one by one (not focusable) vanish
+  without a count.
+- **Why it matters:** a wrong DOES NOT APPLY if ANDI is slow on a heavy
+  page, and silent loss of controls otherwise.
+- **Where:** `src/tobi508/checks/t9c.py:141-153, 173-174, 471-477`;
+  `src/tobi508/andi.py:126-136`.
+- **Smallest fix:** if a page has marked controls and ANDI named none of
+  them, return the existing "ANDI did not run" NEEDS REVIEW; say in the
+  summary how many controls ANDI left out.
+- **Checked:** verified (read). Not reproduced: I did not find a page
+  where ANDI is still working after 500 ms, so how often this happens is
+  unknown.
+
+#### D-02 A script error while reading the page looks like "nothing found"
+
+- **What is wrong:** `evaluate_top` returns the value of a script and
+  never looks at whether it threw. An error comes back as `None`, and
+  callers treat `None` as an empty result. For the label pass that is
+  "no form fields", the DOES NOT APPLY branch of D-01. `reader.call`
+  does the same for "could not reach the element".
+- **Why it matters:** any bug in one of these scripts, or a page that
+  breaks one, turns into DOES NOT APPLY or an empty label with no error
+  anywhere. The sister helper `call_in` does raise.
+- **Where:** `src/tobi508/traverse.py:539-546`; callers
+  `src/tobi508/labels.py:362, 403`, `src/tobi508/observe.py:42` and nine
+  more.
+- **Smallest fix:** raise on `exceptionDetails`, as `call_in` does. The
+  label pass already turns an exception into a "could not be read" note.
+- **Checked:** verified (read). The reviewer ran `evaluate_top("throw
+  new Error('x')")` and got `None`; I did not repeat it. No real page is
+  known to trigger it.
+
 #### M-10 9.A passes a button that does nothing when the tested address has a `#fragment`
 
 - **What is wrong:** after pressing a possible skip control, 9.A takes
@@ -1126,122 +1285,9 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
   count a large number of DOM changes outside the widget as a change.
 - **Checked:** verified (read) by the reviewer; I did not run it.
 
-### Hangs and waste
+### Hosted sign-in (demo plan, step 6)
 
-#### G-03 `tobi_answer_questions` is the one tool with no time limit
-
-- **What is wrong:** CLAUDE.md says a tool call returns within
-  `CALL_WAIT_S` (45 s) and longer work goes on as a job. A run does
-  that. An answer call does not: it waits for the whole answer step,
-  which replays the page for each answer that names a key or a field
-  (4.A, 4.B, 4.C, 5.F), one check after another, with no hard stop.
-- **Why it matters:** a client that gives up at 60 s drops the call; the
-  work goes on in the server, its result is lost, and the agent sends
-  the same answers again while the first call is still writing the
-  report (the lost-update race, B-03). The server judge uses the same
-  path.
-- **Where:** `src/tobi508/tools/answer_questions.py:88-95`;
-  `src/tobi508/pipeline.py:1450-1474`.
-- **Smallest fix:** run the answer step as a job, as a run is, and give
-  each check's resume a hard limit that records "not finished".
-- **Checked:** verified (read). How long a resume takes on a large page
-  is not measured.
-
-#### E-10 4.A loads the page once for every item a hover reveals
-
-- **What is wrong:** the spec budgets one replay for each stop whose
-  hover revealed something, at most 10. The code then loads the page
-  again for each revealed item, to read its name and address, with no
-  cap and no time check.
-- **Why it matters:** a menu of 30 items behind one stop costs 30 more
-  loads, about 3 s each, to fetch what one load would give.
-- **Where:** `src/tobi508/checks/t4a.py:559-563, 731-750`.
-- **Smallest fix:** one load per stop that describes every item; check
-  the deadline before each.
-- **Checked:** verified (read) by the reviewer; not timed.
-
-#### E-11 4.B and 4.C each send the whole page text, with no cap
-
-- **What is wrong:** when both have open questions, the full text of
-  every frame goes out twice (two loads of the same page), unbounded.
-  4.B's 20 sentences are in it a third time.
-- **Why it matters:** tens of thousands of characters on a long page,
-  in every result that still has those questions.
-- **Where:** `src/tobi508/checks/t4b.py:498-499`;
-  `src/tobi508/checks/t4c.py:1505-1506`;
-  `src/tobi508/pipeline.py:727-736`.
-- **Smallest fix:** send one copy; cap it and say so; for 4.B send the
-  sentences with a little context.
-- **Checked:** verified (read) by the reviewer; not measured on a page.
-
-#### W-01 Counting flashes stops the whole server for 15 to 19 seconds
-
-- **What is wrong:** 3.A decodes and counts its 181 captured frames
-  with numpy on the event loop.
-- **Why it matters:** while it runs, the other run in the server, its
-  progress line and every client connection stand still. With two runs
-  at once on a hosted server this is a visible stall.
-- **Where:** `src/tobi508/checks/t3a.py:291`;
-  `src/tobi508/flash.py:56` (`linear`), `522` (`analyze`).
-- **Smallest fix:** call the three `analyze_*` functions through
-  `asyncio.to_thread`; replace the per-pixel power in `linear` with a
-  256-entry table (about ten times faster).
-- **Checked:** the reviewer timed `flash.analyze` on 181 frames of
-  1024 x 768: 14.6 s to 19.0 s. Verified (read) that the call is made
-  directly from the async function; I did not repeat the timing.
-
-#### G-02 Server judge: one screenshot is attached once for every question that names it
-
-- **What is wrong:** pictures are gathered per question and joined with
-  no check for repeats. Several questions of one test name the same
-  screenshot, so one request carries it many times. Cutting and
-  encoding them runs on the event loop, and again for each question
-  asked a second time.
-- **Why it matters:** every copy is paid for as picture tokens and
-  counts against the 40-picture limit, which splits the work into more
-  requests. In round 2's saved reports one picture is named by up to 19
-  questions.
-- **Where:** `src/tobi508/apijudge.py:403-416` (`pictures_of`),
-  `567-597` (`build_requests`).
-- **Smallest fix:** one attachment per link in a request; cut each
-  picture once per run; build requests in a thread.
-- **Checked:** verified (read): `build_requests` joins each question's
-  pictures as they come. The reviewer built a request for 19 questions
-  naming one picture and got 19 copies.
-
-### Security and the server judge
-
-#### B-02 Server judge: page text can close the "untrusted data" block
-
-- **What is wrong:** page data goes to the judging model as JSON between
-  `<untrusted_page_data>` tags. JSON leaves `<`, `>` and `/` as they are,
-  so page text containing `</untrusted_page_data>` ends the block, and
-  whatever follows reads as instructions.
-- **Why it matters:** the judge can only pick one of a question's
-  choices, but principle 8 lets some answers lead to PASS on the judge's
-  word. No test page tries this.
-- **Where:** `src/tobi508/apijudge.py:478-484` (`_tag`).
-- **Smallest fix:** escape `<`, `>` and `&` in the JSON (`<` and so
-  on), and add a page to `tests/fixtures/inject/` that contains the
-  closing tag.
-- **Checked:** verified (run) for the mechanism: `_tag` leaves the
-  closing tag intact inside the data. Whether the model then obeys is
-  not tested.
-
-#### A-05 "A person decided this" is the calling agent's own claim (roadmap Now, item 4)
-
-- **What is wrong:** an agent may send `decided_by: "human"`. Nothing
-  checks it. Such an answer skips the rule that a picture question needs
-  `seen`, and outranks every other agent answer.
-- **Why it matters:** the picture rule exists because agents answered
-  without looking; this is the way round it. No check turns "human" into
-  a PASS by itself.
-- **Where:** `src/tobi508/tools/answer_questions.py:48-52`;
-  `src/tobi508/judgment.py:103-105, 175-180, 191-195`.
-- **Smallest fix:** as the roadmap says: record every answer arriving
-  through MCP as the agent's (`decided_by` model), and apply the picture
-  rule to all of them.
-- **Checked:** verified (read).
+A-01 (P0) belongs here too.
 
 #### S-05 Hosted mode: a sign-in token with no `sub` claim opens every run
 
@@ -1259,41 +1305,6 @@ A one-control page (`no_trap.html`) reads about 50,000, so roughly
   "nobody" stays open only when sign-in is off. One test in
   `tests/test_access.py`.
 - **Checked:** verified (read). Not exercised with a real token.
-
-#### B-04 Server judge: judging holds a browser slot and sits outside every time limit
-
-- **What is wrong:** the judge phase runs inside the same slot as the
-  browser work, after the browsers have closed, for up to `JUDGE_CAP_S`
-  (900 s).
-- **Why it matters:** with the default of two slots, two runs being
-  judged block every other run for up to 15 minutes while no browser is
-  in use, and a job can run past `MAX_RUN_S`.
-- **Where:** `src/tobi508/pipeline.py:1214-1215`;
-  `src/tobi508/jobs.py:78-83`.
-- **Smallest fix:** release the slot before judging (run the judge from
-  the job wrapper, after the browser part returns).
-- **Checked:** verified (read).
-
-### The gate that decides `JUDGE_TYPES`
-
-#### L-02 and L-03 A question type passes the gate on one clean cell, and wrong DOES NOT APPLY never counts
-
-- **What is wrong:** the gate passes a type that has no wrong PASS and
-  few wrong FAILs. It asks for no minimum number of cells, counts
-  "unsure" as a cell, never reads the wrong DOES NOT APPLY count, and
-  puts "tool PASS where the key says DOES NOT APPLY" in a bucket it
-  never reads.
-- **Why it matters:** the gate's output is the list of types Abby would
-  switch on. A type judged on one page, or one that turns failures into
-  DOES NOT APPLY, shows as passing.
-- **Where:** `evals/apijudge_gate.py:62-85` (`passes`);
-  `evals/scoring.py:104, 206-217`.
-- **Smallest fix:** a minimum of decided cells (agree plus wrong, not
-  unsure) with "too few cells to judge" as a reason; fail a type on any
-  wrong DOES NOT APPLY; count PASS against a DOES NOT APPLY key
-  separately. Decide the numbers in the plan.
-- **Checked:** verified (run). `passes()` returned "passes" for a type
-  with one cell, and for a type with 6 wrong DOES NOT APPLY in 10 cells.
 
 ---
 
