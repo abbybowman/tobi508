@@ -56,6 +56,11 @@ class State2B(BaseModel):
     j3: dict[str, dict[str, Any]] = Field(default_factory=dict)  # text, "m1-e3"
     selected: list[str] = Field(default_factory=list)
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """Image addresses pass T examined for animation, for guard CN."""
+        return {"page": {"images": self.mp.images_read}}
+
 
 # ── Terms ─────────────────────────────────────────────────────────────────
 

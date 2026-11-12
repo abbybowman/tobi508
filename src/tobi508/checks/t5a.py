@@ -30,6 +30,11 @@ class State5A(BaseModel):
     lp: LabelsPass
     j: dict[str, dict] = Field(default_factory=dict)  # "c<n>-J1" -> answer
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass L read, for guard CN (count.py)."""
+        return self.lp.read
+
 
 def in_set(c: Comp) -> bool:
     """A radio button or checkbox with others under one legend: the legend

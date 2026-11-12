@@ -65,6 +65,9 @@ class State3A(BaseModel):
     places: dict[str, Place] = Field(default_factory=dict)  # by source index
     unmeasured: list[flashcap.Unmeasured] = Field(default_factory=list)
     window: list[int] = Field(default_factory=lambda: list(flashcap.VIEWPORT))
+    # What pass T read, for guard CN (count.py): image addresses examined for
+    # animation; nothing inside a video player from another site.
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
 # ── Triggers (spec section 2) ─────────────────────────────────────────────
@@ -212,7 +215,7 @@ def _pictures(ctx, src: flashcap.Source, n: int, frames, scale: float = 1.0) -> 
 
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
     mp = await motion.collect(ctx, keep_shots=False)
-    st = State3A()
+    st = State3A(read={"page": {"images": mp.images_read, "players": 0}})
     if not mp.ok:
         st.motion_ok, st.error = False, mp.error or "the page could not be watched"
         return st

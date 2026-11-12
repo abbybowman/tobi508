@@ -103,7 +103,13 @@ items 1 and 2 above change some of the same specs. Prompts:
   that is only a button, a header in a web component, audio from a
   script, more than 30 images, a canvas page) become NEEDS REVIEW with a
   sentence that says what was not checked. Abby agreed on 2026-11-12
-  that a guard may move DOES NOT APPLY.
+  that a guard may move DOES NOT APPLY. **Built, 2026-11-12, waiting for
+  Abby's review of the spec changes:** `count.py`, the play hook, guard
+  CN, and `count:` in 16 specs; the review's pages are fixtures in
+  `tests/test_fixtures_count.py`. Left open: 19.A's FAIL on a header in
+  a web component (a guard never moves a FAIL), and the keys for 2.B's
+  players, canvases and web-component media and for 2.C (the thread's
+  report says why).
 - **Thread C (Opus): the server judge and sign-in, then the second
   look's trial** (2 to 3 days). Before item 3's figures are used: the
   gate's minimum and its count of wrong DOES NOT APPLY (L-02, L-03),
@@ -269,17 +275,24 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 
 - **Web components (shadow roots):** the keyboard walk enters them; the
   label pass, the site read, the media read, 4.A's handler scan and
-  5.F's error read do not. 5.A-5.C, 9.B, 9.C and 2.A then say DOES NOT
-  APPLY and 4.A can PASS (D-01, D-03, K-02, N-01, M-06). Parts B and D.
+  5.F's error read do not. Since part B's inventory and guard CN
+  (2026-11-12), a form, navigation or sound inside one is NEEDS REVIEW
+  in 5.A-5.H, 9.A-9.C and 2.A, not DOES NOT APPLY (D-01, K-02, M-12,
+  N-01). Still open: 4.A can PASS with a mouse-only control inside one
+  (D-03), 5.F and 5.G miss an error shown in one (M-06), and 19.A fails
+  a page whose shared header is one (K-02; a guard never moves a FAIL).
+  Part D reads them.
 - **Content that opens:** a form behind a button with no ARIA marker is
-  never opened, and the 5.x tests say DOES NOT APPLY (H-08). A menu
-  whose trigger is `<a href="#">` is dropped unread (C-03). Parts A
-  and B, then "Opening everything".
+  never opened; since guard CN its hidden fields make 5.A-5.H NEEDS
+  REVIEW, not DOES NOT APPLY (H-08, M-07), and so does an editable text
+  area (`contenteditable`). A menu whose trigger is `<a href="#">` is
+  dropped unread (C-03). Part A, then "Opening everything".
 - **The watch is 6.5 seconds:** what starts later is DOES NOT APPLY in
   2.A, 2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second
   can be missed; flashing below the first screen and an animated image
-  past the 30th are not measured (N-02 to N-09, W-02, W-09). Parts B,
-  C and J.
+  past the 30th are not measured (N-02 to N-09, W-02, W-09); an
+  animated image past the 30th now makes 2.B and 3.A NEEDS REVIEW
+  (N-06, guard CN). Parts C and J.
 - **A walk that stops at a trap, or runs out of time,** can still PASS
   in 5.D, 5.F and 4.C (H-03, M-05, E-07). Parts A and C.
 

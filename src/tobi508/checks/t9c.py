@@ -95,6 +95,8 @@ class State9C(BaseModel):
     pages: list[AndiPage] = Field(default_factory=list)  # [0] is the tested page
     pairs: list[Pair] = Field(default_factory=list)
     kinship: Kinship | None = None
+    # What the site read covered, per page (site.SiteRead.read; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
 async def _cached_andi(p, third_party) -> AndiPage:
@@ -266,7 +268,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
     st = State9C(pages=list(pages))
     if any(p.error for p in st.pages):
         return st
-    st.kinship = kinship(await site_read(ctx))
+    site = await site_read(ctx)
+    st.kinship = kinship(site)
+    st.read = site.read
     for other in st.pages[1:]:
         st.pairs += make_pairs(
             st.pages[0], other, not st.kinship.almost_nothing(other.n)

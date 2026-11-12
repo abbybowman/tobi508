@@ -75,6 +75,23 @@ class State2A(BaseModel):
     j2: dict[str, dict[str, Any]] = Field(default_factory=dict)  # "a1-e0"
     selected: list[str] = Field(default_factory=list)
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass T's media read covered, for guard CN (count.py): the
+        played elements it lists, and media in frames; nothing inside web
+        components or played from a script with no element on the page."""
+        listed = self.mp.played_listed
+        return {
+            "page": {
+                "media_played.light": listed.light,
+                "media_played.frames": listed.frames,
+                "media_played.shadow": 0,
+                "media_played.detached": 0,
+                "media.shadow": 0,
+                "media.frames": sum(f != 0 for f, _ in _reads(self.mp)),
+            }
+        }
+
 
 # ── Terms: what plays by itself ───────────────────────────────────────────
 

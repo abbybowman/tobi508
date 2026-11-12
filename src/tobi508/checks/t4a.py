@@ -333,6 +333,12 @@ class State4A(BaseModel):
     shot: str | None = None
     browser: str | None = None
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """Guard CN (count.py): drawing areas and dragged items are recorded
+        for a person (kind U), never tested, so none counts as read."""
+        return {"page": {"canvases": 0, "draggable": 0}}
+
 
 def _norm(s: str | None) -> str:
     return re.sub(r"\s+", " ", (s or "")).strip().lower()
@@ -965,7 +971,12 @@ def apply_answers(st: State4A, report) -> None:
 APPLICABILITY = [
     Row(
         "A1",
-        lambda st: st.stops == 0 and st.inventory == 0 and st.targets == 0,
+        lambda st: (
+            st.stops == 0
+            and st.inventory == 0
+            and st.targets == 0
+            and not any(i.kind == "U" for i in st.instances)
+        ),
         Outcome.DNA,
         "p. 19 Applicability",
     ),

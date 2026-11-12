@@ -54,6 +54,11 @@ class State5G(BaseModel):
     standalone: bool = False  # 5.F did not run in the same call: 5.G asks J0
     j: dict[str, dict] = Field(default_factory=dict)
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass E read, for guard CN (count.py)."""
+        return self.ps.read
+
 
 def _j(st: State5G, i: Inst5F, q: str) -> str | None:
     return (st.j.get(f"{i.id}-{q}") or {}).get("choice")

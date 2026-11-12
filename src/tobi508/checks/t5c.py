@@ -167,6 +167,11 @@ class State5C(BaseModel):
     lp: LabelsPass
     j: dict[str, dict] = Field(default_factory=dict)  # "c<n>-J1" -> answer
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass L read, for guard CN (count.py)."""
+        return self.lp.read
+
 
 # ── Rules ────────────────────────────────────────────────────────────────────
 

@@ -1,8 +1,9 @@
 ---
 tt_test: 5.D
 tt_name: 3.2.2-on-input
-spec_version: 1.5.0
+spec_version: 1.6.0
 guards: unrecorded-code, reveal, reveal-content
+count: fields, fields_hidden, contenteditable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -131,6 +132,8 @@ Each completed field is an *instance*. After the Tab that leaves a field, focus 
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 **Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test does not fill in fields in opened content (phase 3). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 3 is built (ROADMAP).
+
+**Guard CN: form fields the walk did not reach** (1.6.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review H-08, H-03). The page's inventory (`count.py`, `Report.counts`) counts the rendered form fields of every document, frame and web component (the walk's own field selector, radio groups once), the form fields hidden when the page loads, and editable text areas (`contenteditable`). Pass F reads the fields P1 reached, the hidden fields a fill showed (matched by path; `t5d.what_was_read`), and no editable area. When the inventory has more of any of these than pass F read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("1 form field is hidden until something opens it, and was not checked"). Trace row `CN`. FAIL is unchanged. So a form behind a plain button, and fields past a point where the walk stopped (a keyboard trap), are left for a person. Until phase 3 of fix 9b fills fields in opened content, every page with a hidden field ends NEEDS REVIEW here (Abby, 2026-11-12).
 
 ## 4. Judgment questions
 

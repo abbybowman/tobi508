@@ -1,8 +1,9 @@
 ---
 tt_test: 5.F
 tt_name: 3.3.1-error-identification
-spec_version: 1.5.0
+spec_version: 1.6.0
 guards: unrecorded-code
+count: fields_hidden, fields.shadow, fields.frames
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -113,6 +114,8 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 | M9, M5 | "An error appeared for <field>, and we could not tell whether its message names the field and explains the problem. Please look: load the page and press <keys>." |
 
 **Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
+
+**Guard CN: forms and fields pass E could not read** (1.6.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review M-07, D-01). The page's inventory (`count.py`, `Report.counts`) counts form fields hidden when the page loads, and form fields inside web components (open shadow roots) and frames. Pass E reads only fields the walk reached, so no hidden field, and nothing inside web components or frames (`t5f.what_was_read`). When the inventory has more of any of these than pass E read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ( "2 form fields are hidden until something opens them, and were not checked"). Trace row `CN`. FAIL is unchanged. So a form a plain button shows is left for a person, not DOES NOT APPLY.
 
 ## 4. Judgment questions
 
