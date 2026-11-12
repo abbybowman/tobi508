@@ -130,6 +130,9 @@ merges `main` at its next pause.
    judge-decided cells apart from rule-decided ones. It gives the
    before-and-after figures for the pitch (a development site, said so)
    and shows which question types Abby can switch on (`JUDGE_TYPES`).
+   It is also part B's measurement (Abby, 2026-11-12): list the NEEDS
+   REVIEW cells that guard CN made (row `CN`) apart from the rest, so the
+   thread that lowers NEEDS REVIEW can tell a true gap from noise.
    A new round folder; the locked rounds are never rewritten.
 7. **The pitch,** with the last two days kept for it: the [FILL]
    figures from one scored run at the submission commit, a rehearsal

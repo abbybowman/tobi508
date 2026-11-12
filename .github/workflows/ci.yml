@@ -159,11 +159,37 @@ jobs:
       - name: Every test is in a group
         run: uv run python scripts/ci_groups_check.py
 
+  # Every rules spec whose text changed has a higher spec_version than the
+  # base has (Abby, 2026-11-12): two branches that each take the same next
+  # version merge with no conflict. A pull request's checks run on it merged
+  # into main, so this also catches a number main has since used. Runs for
+  # every change, docs-only included (specs/ is never docs-only anyway).
+  spec-versions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Changed specs have a new version
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_PR: ${{ github.event.pull_request.base.sha }}
+          BASE_PUSH: ${{ github.event.before }}
+        run: |
+          base="$BASE_PR"
+          [ "$EVENT" = "push" ] && base="$BASE_PUSH"
+          if [ -z "$base" ] || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            base=$(git rev-parse HEAD~1)
+          fi
+          python3 scripts/check_spec_versions.py "$base"
+
   # The one check to require: passes when the heavy jobs passed or were
   # skipped for a docs-only change, fails when any failed or was cancelled.
   ci:
     name: CI
-    needs: [changes, lint, test, groups]
+    needs: [changes, lint, test, groups, spec-versions]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

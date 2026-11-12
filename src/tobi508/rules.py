@@ -143,3 +143,45 @@ def load_specs(rules_dir: Path) -> dict[TestId, RuleSpec]:
 def spec_versions(rules_dir: Path) -> dict[str, str]:
     """TT test ID -> 'spec_version (sha256:...)' for every spec present."""
     return {t.value: s.version_label() for t, s in load_specs(rules_dir).items()}
+
+
+# One line per spec: file, spec_version, SHA-256 of its text. Changing a
+# spec's text without a new version fails tests/test_spec_versions.py, and
+# two branches that bump the same spec both edit its one line here, so git
+# raises a conflict instead of merging two rule sets under one version.
+LOCK_NAME = "versions.lock"
+LOCK_HEAD = (
+    "# spec_version and SHA-256 of each rules spec (tests/test_spec_versions.py).\n"
+    "# After a spec change and its version bump: uv run python -m tobi508.rules lock\n"
+)
+
+
+def lock_text(rules_dir: Path) -> str:
+    specs = sorted(load_specs(rules_dir).values(), key=lambda s: s.path.name)
+    rows = [f"{s.path.name} {s.spec_version} {s.sha256}\n" for s in specs]
+    return LOCK_HEAD + "".join(rows)
+
+
+def read_lock(rules_dir: Path) -> dict[str, tuple[str, str]]:
+    """file name -> (spec_version, sha256), from versions.lock."""
+    out: dict[str, tuple[str, str]] = {}
+    path = rules_dir / LOCK_NAME
+    if not path.exists():
+        return out
+    for line in path.read_text("utf-8").splitlines():
+        if line.strip() and not line.startswith("#"):
+            name, ver, sha = line.split()
+            out[name] = (ver, sha)
+    return out
+
+
+if __name__ == "__main__":
+    import sys
+
+    from tobi508.config import settings
+
+    if sys.argv[1:] != ["lock"]:
+        sys.exit("usage: python -m tobi508.rules lock")
+    rules_dir = Path(settings.rules_dir)
+    (rules_dir / LOCK_NAME).write_text(lock_text(rules_dir), "utf-8", newline="\n")
+    print(f"wrote {rules_dir / LOCK_NAME}")

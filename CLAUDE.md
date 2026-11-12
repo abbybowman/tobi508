@@ -18,7 +18,11 @@ by TT test ID. Package: `tobi508`.
      (`<id>-<short-name>.md`). Each spec's `spec_version` is recorded in
      every report: 0.y.z is a draft with no outcome, 1.0.0 is approved and
      built, then MINOR for rule changes and PATCH for wording
-     (`specs/rules/_template.md`).
+     (`specs/rules/_template.md`). One version is one text: after a
+     change, take a number `main` has not used and run
+     `uv run python -m tobi508.rules lock` (`specs/rules/versions.lock`;
+     `tests/test_spec_versions.py` locally, `scripts/check_spec_versions.py`
+     in CI against `main`).
    - A test the tool cannot perform, or has no implemented spec for, is
      `NEEDS_REVIEW` with the note "This test could not be performed" and the
      reason (`Finding.not_performed`).
