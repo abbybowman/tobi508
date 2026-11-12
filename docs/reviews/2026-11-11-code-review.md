@@ -1216,6 +1216,11 @@ a narrower page or an agent's wrong answer than the P0 items do.
   judge only the first five items.
 - **Checked:** verified (run). A menubar of 8 items, each with a clear
   outline: 4.D NEEDS REVIEW, naming "Item 7".
+- **Fixed:** commit "4.D: a menu of seven or more items is read to the
+  cap and stepped back once (F-01)". Abby approved it on 2026-11-12 (it
+  turns NEEDS REVIEW into PASS on a clean menu). No spec change: the spec
+  already says the first `WIDGET_ITEMS_MAX` items stand for the rest.
+  Fixture `4d/f17-menubar-of-eight-items`: PASS, every item row M6.
 
 #### F-12 4.F treats an element it could not measure as "no order problem"
 

@@ -687,6 +687,12 @@ async def _widget_pass(
                         p.steps.append(await s.traversal.press(back))
                         break
                     subjects.append(cur)
+                else:
+                    # The cap, not the end: the widget has more items than the
+                    # first WIDGET_ITEMS_MAX that stand for the rest (spec).
+                    # Step back once so the last item reached gets its off
+                    # read too (F-01).
+                    p.steps.append(await s.traversal.press(back))
                 moved = len(set(subjects)) > 1
                 # The stops these arrows reached, for 4.A's arrow probe (it
                 # skips its own replay when every item it needs is here).

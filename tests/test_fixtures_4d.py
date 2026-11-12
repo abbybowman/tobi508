@@ -54,6 +54,12 @@ EXPECTED: dict[str, dict] = {
     # where the changed pixels sit.
     "f16-faint-color-and-counter": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
     "f08-focusable-iframe": {"outcome": "PASS"},
+    # F-01 (Abby approved, 2026-11-12): a menubar of 8 items with a clear
+    # outline on each. The loop stopped on item 7 with no "after" picture, so
+    # it was NEEDS REVIEW for any menu of 7 or more; the first five items
+    # stand for the rest (spec, widget pass W), and the cap now steps back
+    # once so the last item reached has its picture too.
+    "f17-menubar-of-eight-items": {"outcome": "PASS", "rows": ["M6"]},
     "f09-faint-outline": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
     # ~59-62 s alone on the 2026-11-01 container (was ~55 s when the guard was
     # set), and over 65 s now and then under -n 8 with the full suite: 75 s
