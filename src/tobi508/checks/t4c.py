@@ -16,7 +16,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import OUT_OF_TIME_MSG, RunContext
 from tobi508.engine import PageEvidence, Row, first_match, page_outcome
 from tobi508.models import (
     REVIEW_HEAD,
@@ -243,9 +243,8 @@ class Collector:
         if time.monotonic() > self.deadline:
             if self.mark:
                 self.mark()
-            msg = "The run time limit was reached before every check finished."
-            if msg not in self.state.incomplete:
-                self.state.incomplete.append(msg)
+            if OUT_OF_TIME_MSG not in self.state.incomplete:
+                self.state.incomplete.append(OUT_OF_TIME_MSG)
             return True
         return False
 
@@ -817,7 +816,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
     # Error states: the error pass is 5.F's, run here too when 5.F is not
     # selected (it is cached for the call). A failure to run it is a note, not
     # a PASS: the states were not looked at.
-    if not ctx.out_of_time():
+    if not ctx.out_of_time(st.incomplete):
         try:
             from tobi508.checks import t5f
 

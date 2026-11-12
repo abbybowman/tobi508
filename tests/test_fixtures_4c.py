@@ -15,6 +15,7 @@ added to cover M4, which F10 cannot: a native modal lets Tab leave the page.
 from __future__ import annotations
 
 import re
+import sys
 
 import pytest
 
@@ -127,6 +128,7 @@ HELPERS = {
     "f20-player-frame-trap",
     "f21-player-frame-ok",
     "f31-other-page",
+    "f44-form-with-error-popup",
     "f37-frame",
     "f38-frame",
     "f39-frame",
@@ -691,3 +693,31 @@ def test_an_enter_that_did_the_action_and_met_the_trap_again_is_no_gate():
     again = Probe(name="Enter on x", outside=True, exit=False, end="returned")
     assert row(_inst(False, [], fields=["a"], j2=gate)) == ("M8", "NEEDS_REVIEW")
     assert row(_inst(False, [again], fields=["a"], j2=gate)) == ("M12", "FAIL")
+
+
+async def test_f44_out_of_time_before_the_error_pass_is_never_pass(
+    settings, server, monkeypatch
+):
+    """E-07: the deadline falls after the walk and before the error-state
+    pass. The time is forced here (a real limit is machine-dependent): the
+    gate in front of that pass sees it past, and the page must not PASS."""
+    import tobi508.checks.t4c as t4c
+
+    real = t4c.RunContext.out_of_time
+
+    def late(self, *args, **kw):
+        # The gate in front of the error-state pass is the call made from
+        # 4.C's `collect` itself (the collector's own helper is a method).
+        if sys._getframe(1).f_code.co_name == "collect":
+            self.deadline = 0
+        return real(self, *args, **kw)
+
+    monkeypatch.setattr(t4c.RunContext, "out_of_time", late)
+    out = await run_tt_tests(
+        settings, f"{server.base}/4c/f44-form-with-error-popup.html", [TestId.T4C]
+    )
+    # The run says it hit its limit; the finding must agree (not PASS).
+    assert any("time limit" in e for e in out.errors), out.errors
+    [f] = [x for x in out.report.findings if x.test_id is TestId.T4C]
+    assert f.outcome.value == "NEEDS_REVIEW", f.rationale
+    assert "run time limit" in f.rationale, f.rationale

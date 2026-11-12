@@ -83,7 +83,6 @@ A fix removes its line here in the same commit.
 | 4.A | PASS | a mouse-only `<a href="#">` when another link also has `href="#"`; a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
 | 4.A | Does Not Apply | a page that is only a canvas or drag-and-drop content |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
-| 4.C | PASS | a run that ran out of time before the error-state pass |
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
 | 4.F | Does Not Apply | a page whose first element traps Tab |
 | 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu opened by `<a href="#">`, or on a page that keeps changing |

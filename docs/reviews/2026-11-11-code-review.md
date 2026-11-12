@@ -493,6 +493,13 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). A small form page with the run limit set
   to 17 s: the run reported the time-limit error and 4.C PASS (rows A3,
   G4). At 22 s and 28 s the same page passes with no error.
+- **Fixed:** commit "4.C: out of time before the error pass is never PASS (E-07)",
+  no spec change. `RunContext.out_of_time(record)` adds the one shared
+  reason to the check's `incomplete`; the gate uses it. Test
+  `test_f44_out_of_time_before_the_error_pass_is_never_pass` forces the
+  time (a real limit is machine-dependent): PASS before, NEEDS REVIEW
+  after. Other checks still call `out_of_time()` with no record: moving
+  them onto it is part C's "one out of time helper".
 
 #### H-03, M-05 5.D and 5.F pass a form they stopped testing at a keyboard trap
 
