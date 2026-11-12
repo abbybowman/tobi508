@@ -145,11 +145,11 @@ def test_tall_pictures_go_in_slices_and_tab_stops_as_lines(tmp_path):
 
     buf = io.BytesIO()
     Image.new("RGB", (200, 3000), "white").save(buf, "PNG")
-    f = tmp_path / "evidence" / "tall.png"
-    f.parent.mkdir()
+    f = tmp_path / "r" / "evidence" / "tall.png"
+    f.parent.mkdir(parents=True)
     f.write_bytes(buf.getvalue())
     pics = apijudge.pictures_of(
-        q("a", "4.D", inp={"p": "run://r/evidence/tall.png"}), tmp_path
+        q("a", "4.D", inp={"p": "run://r/evidence/tall.png"}), tmp_path / "r"
     )
     assert [p[0] for p in pics] == [
         "run://r/evidence/tall.png (part 1 of 3, top to bottom)",
@@ -158,6 +158,35 @@ def test_tall_pictures_go_in_slices_and_tab_stops_as_lines(tmp_path):
     ]
     stops = [{"n": 12, "role": "link", "name": "Home", "href": "/h"}]
     assert apijudge._lines({"stops": stops}) == {"stops": '12 link "Home" /h'}
+
+
+def test_picture_links_are_whole_input_values_read_only_from_this_run(tmp_path):
+    """B-01: a link written into page text, a `..` path or another run's id
+    never makes the judge read a file; only a value that is exactly a link to
+    this run's picture does, through the guarded reader."""
+    from PIL import Image
+
+    def png(path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        Image.new("RGB", (20, 20), "white").save(path, "PNG")
+
+    png(tmp_path / "r1" / "evidence" / "ok.png")
+    png(tmp_path / "r2" / "evidence" / "other.png")
+    png(tmp_path / "secret.png")
+    crafted = [
+        "run://r1/../r2/evidence/other.png",  # out of the run by `..`
+        "run://r1/../secret.png",
+        "run://r2/evidence/other.png",  # another run's own link
+        "Home run://r1/evidence/ok.png",  # a link inside page text
+    ]
+    for link in crafted:
+        got = apijudge.pictures_of(q("a", "4.D", inp={"name": link}), tmp_path / "r1")
+        assert got == [], link
+    got = apijudge.pictures_of(
+        q("a", "4.D", inp={"shot": "run://r1/evidence/ok.png", "x": crafted}),
+        tmp_path / "r1",
+    )
+    assert [label for label, _ in got] == ["run://r1/evidence/ok.png"]
 
 
 def test_page_text_and_input_stay_in_untrusted_blocks_and_the_shared_block_repeats():

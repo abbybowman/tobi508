@@ -28,7 +28,6 @@ import hashlib
 import io
 import json
 import os
-import re
 import shutil
 import tempfile
 import time
@@ -378,10 +377,15 @@ def connection_for(settings: Any) -> Connection:
 
 
 def _links(value: Any) -> list[str]:
+    """The picture links of a question's input: only values that are a whole
+    `run://...png` link (as `inline._links`), never a link found inside a
+    longer text, which page content could write (code review B-01)."""
+    from tobi508.inline import _links as whole_links
+
     seen: list[str] = []
-    for m in re.findall(r"run://[^\"\s]+\.png", json.dumps(value)):
-        if m not in seen:
-            seen.append(m)
+    for _, link in whole_links(value):
+        if link not in seen:
+            seen.append(link)
     return seen
 
 
@@ -401,11 +405,18 @@ def _slices(path: Path) -> list[bytes]:
 
 
 def pictures_of(q: OpenQuestion, run_dir: Path) -> list[Picture]:
+    """The question's pictures, each read through the guarded reader
+    (`resources.runs.run_file`: no `..`, no other run, no other owner) and
+    only from this run (code review B-01)."""
+    from tobi508.resources.runs import SCHEME, run_file
+
     out: list[Picture] = []
     for link in _links(q.input):
-        rel = link.split("/", 3)[3]
+        run_id, _, rel = link[len(SCHEME) :].partition("/")
+        if run_id != run_dir.name:
+            continue  # another run's picture is never this question's
         try:
-            parts = _slices(run_dir / rel)
+            parts = _slices(run_file(run_id, rel, runs_dir=run_dir.parent))
         except Exception:
             continue  # a missing picture: the question's `seen` cannot be filled
         for i, b in enumerate(parts, 1):
