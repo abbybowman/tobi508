@@ -604,7 +604,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
             continue
         clicks += 1
         inst.click = await _click_check(ctx, st, inst)
-        if inst.click is not None and "navigation" in inst.click.kinds:
+        if inst.click is not None and {"navigation", "fragment"} & set(
+            inst.click.kinds
+        ):
             inst.same_link = _same_link(st, inst.click.url)
     if any(i.kind == "K" and not i.checked for i in st.instances):
         st.incomplete.append(

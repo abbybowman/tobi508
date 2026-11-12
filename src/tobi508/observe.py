@@ -188,7 +188,7 @@ class Effect(BaseModel):
     kinds: list[str] = Field(default_factory=list)
     mutations: int = 0
     noise: int = 0
-    url: str | None = None  # where a navigation went
+    url: str | None = None  # where a navigation (or a fragment change) went
 
     @property
     def any(self) -> bool:
@@ -308,6 +308,12 @@ async def observe(
     e = Effect(mutations=max(0, m2 - m1), noise=max(0, m1 - m0))
     if without_fragment(after["url"]) != without_fragment(before["url"]):
         e.kinds.append("navigation")
+        e.url = after["url"]
+    elif after["url"] != before["url"]:
+        # Only the #fragment changed: the same page (4.E, 5.D, reveal ignore
+        # it), but it is something a click did (4.A: a card that jumps to a
+        # section is functional, C-03 regression found by 4a/f07).
+        e.kinds.append("fragment")
         e.url = after["url"]
     elif [without_fragment(u) for u in after["frames"]] != [
         without_fragment(u) for u in before["frames"]

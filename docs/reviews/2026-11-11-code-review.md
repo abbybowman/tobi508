@@ -1201,6 +1201,12 @@ a narrower page or an agent's wrong answer than the P0 items do.
   including the fragment, so after a fragment change every earlier event
   was read again and 4.E said "focus jumps" (M6). It now counts by the
   address without its fragment. The review's page prints 4.E PASS.
+- **Regression found and repaired (same day):** ignoring the fragment in
+  `observe()` made a click that only sets `location.hash` look like "no
+  effect" to 4.A (`4a/f07-same-address-link` went from row M3 to M2, no
+  question). A fragment-only change is now its own effect kind,
+  `fragment`: reveal, 4.E and 5.D ignore it, 4.A counts it as what the
+  click did.
 
 #### F-01 4.D is NEEDS REVIEW for any menu with seven or more items
 
