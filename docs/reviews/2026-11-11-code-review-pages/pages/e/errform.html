@@ -1,0 +1,4 @@
+<!doctype html><html lang=en><head><title>Err</title></head><body><main>
+<a href="#a">a</a><a href="#b">b</a><a href="#c">c</a>
+<form onsubmit="return false"><label for=y>Year</label><input id=y name=y type=number>
+<button id=go type=button onclick="var v=document.getElementById('y').value;if(v&&v<1900){var d=document.createElement('div');d.setAttribute('role','alertdialog');d.innerHTML='<p>Bad year</p><button id=x1>One</button><button id=x2>Two</button>';document.body.append(d);d.querySelector('button').focus();d.addEventListener('keydown',function(e){if(e.key==='Tab'||e.key==='Escape'){e.preventDefault();var b=d.querySelectorAll('button');(document.activeElement===b[0]?b[1]:b[0]).focus();}})}">Go</button></form></main></body></html>

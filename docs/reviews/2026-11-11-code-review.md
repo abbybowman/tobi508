@@ -4,9 +4,12 @@ A triaged list from a line-by-line review of `tobi508`, for Abby to review
 and hand to other threads. Nothing here has been fixed; this thread changes
 no code.
 
-**Progress.** Phases 0 to 3 are done. Phase
-4 adds the files nobody has reviewed yet; phase 5 adds the "if we
-started over" section. Each phase is committed when it is checked.
+**Progress.** All five phases are done. Every file under `src/tobi508/`
+was read line by line by a reviewer, and the test suite, CI and image
+were reviewed for what they cover. Not read a second time: the small
+files the first attempt's interrupted reviewers reported on
+(`inline.py`, `explain.py`, the resources, `engine.py`, `rules.py`,
+`catalog.py`, `runlog.py`, `versions.py`, `pagecache.py`) and `evals/`.
 
 | Phase | Covers | State |
 | --- | --- | --- |
@@ -14,8 +17,42 @@ started over" section. Each phase is committed when it is checked.
 | 1 | Security files; what an agent receives, measured; the rest of tools and pipeline | done |
 | 2 | 4.A-4.F and 5.A-5.D against their specs | done |
 | 3 | 5.F-5.H, 9.A, 2.A-2.D, 3.A and the watchers | done |
-| 4 | The rest of the core; tests, CI, Dockerfile, packaging | not started |
-| 5 | "If we started over"; final ordering | not started |
+| 4 | The rest of the core; tests, CI, Dockerfile, packaging | done |
+| 5 | "If we started over"; final ordering | done |
+
+## The short version
+
+- **32 P0 items.** 30 are a false PASS or a wrong DOES NOT APPLY that a
+  ten-line page reproduces; 29 of them I reproduced by running the
+  page, and one by reading. 2 are security holes in modes that are off
+  by default and that the demo plan turns on. The table under "P0"
+  lists them one per line.
+- **The row tables are right.** In all 22 checks the rows and their
+  order match the specs, with small exceptions in 5.C and 9.C (K-06).
+  The wrong outcomes come from what the rows
+  are fed, and three causes cover most of them: an empty reading and a
+  failed reading are the same value; a limit reached is recorded in
+  ways that do not hold back an outcome; and the specs define "a
+  form", "an error", "a label", "moving" by what the tool can see.
+- **The roadmap's "Known limits" line is not true today.** It says
+  each limit is NEEDS REVIEW-safe. Shadow roots, forms behind a
+  button, English-only word lists and late-starting content each give
+  PASS or DOES NOT APPLY.
+- **The suite could not have caught these.** It has no shadow-root
+  page outside 4.C, no non-Latin text anywhere, and no check but 4.C
+  is run on a page with a trap or a time limit (Q-03).
+- **One page costs a calling agent about 93,000 tokens to read,** more
+  than half of it the two report files it is told to save. On round
+  2's real pages those files are too large to save through a client.
+- **Security holds where it was designed in.** The allowlist, the
+  egress proxy, replay and the owner check on run files were checked
+  and hold. The holes are in newer paths: jobs, the server judge's
+  picture links, and the stores that fetch what a page names.
+- **Decisions only Abby can make** are marked "(needs Abby)" in their
+  titles, or say "spec change" in the fix. The main ones: DOES NOT
+  APPLY behind the reveal guard (H-08), principle 8's list (E-06),
+  native controls in 4.A (E-08), `aria-controls` in 5.D (H-04),
+  unnamed pairs in 9.C (K-05), and the word lists (M-03, E-09).
 
 **How each item was checked**
 
@@ -38,7 +75,11 @@ letter is the review group: A tools and models, B pipeline and judge,
 D the keyboard core, K 9.B/9.C/19.A, L evals, S security, T token
 measurement, G the rest of tools and pipeline, E 4.A-4.C, F 4.D-4.F,
 H 5.A-5.D, M 5.F-5.H and 9.A, N 2.A-2.D and 3.A, W the motion and
-flash watchers.
+flash watchers, C the rest of the core, Q tests and CI.
+
+The small pages behind the "verified (run)" lines, with the command
+for each and what it printed, are in
+[2026-11-11-code-review-pages/](2026-11-11-code-review-pages/README.md).
 
 ---
 
@@ -57,6 +98,7 @@ below; "run" means I ran a page and got the outcome shown.
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
 | H-01 | 5.A | PASS | a label whose words are hidden | run |
+| C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
@@ -74,6 +116,7 @@ below; "run" means I ran a page and got the outcome shown.
 | N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run |
 | E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run |
 | E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
+| C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run |
 | M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run |
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
@@ -226,6 +269,29 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). Three fields: a label of a hidden span
   plus "*", an empty label wrapping a select, a label with
   `text-indent: -9999px`. 5.A PASS, all three on row M2.
+
+#### C-03 A menu opened by `<a href="#">` is dropped unread, and the page still passes
+
+- **What is wrong:** the reveal pass presses Enter on each menu trigger
+  and reads what opens. A trigger written as `<a href="#"
+  aria-haspopup="true">` also adds `#` to the address. The observer
+  compares whole addresses, calls that "navigation", and the reveal
+  pass stops without reading the menu. A "navigated" trigger is not in
+  the list the reveal guard reads, so nothing holds the PASS back.
+- **Why it matters:** `<a href="#">` is one of the commonest ways to
+  write a menu trigger. Whatever is inside that menu is unchecked, with
+  no note, in every test that relies on the reveal pass (5.A to 5.D,
+  4.A, 4.D, 4.E).
+- **Where:** `src/tobi508/observe.py:302`;
+  `src/tobi508/reveal.py:316, 328-330, 169, 183`. The walk's own
+  navigation test ignores the fragment (`traverse.py:980`); this one
+  does not. F-06 and H-11 are the same mistake in 4.E and 5.D.
+- **Smallest fix:** compare addresses without their fragment in
+  `observe` (one function, used by 4.E, 5.D and reveal); a trigger is
+  "navigated" only on a real navigation or a new page.
+- **Checked:** verified (run). A link trigger with a hidden, unlabelled
+  field in its menu: 5.A PASS. The reviewer's control with a
+  `<button>` trigger: NEEDS REVIEW, field found.
 
 #### N-02, N-04, N-07, N-09 What starts after the 6.5-second watch is "does not apply"
 
@@ -585,6 +651,24 @@ different checks, and some of those ways do not hold back an outcome.
   turns a PASS into a FAIL or a review, so it needs Abby and a spec row.
 - **Checked:** verified (run). `<button onmousedown=...>Open panel
   </button>`: 4.A PASS, rows A3, G4.
+
+#### C-01 4.A passes a mouse-only control whose only effect is `alert()`
+
+- **What is wrong:** to decide whether a click does anything, the
+  observer compares the page before and after. It does not listen for
+  JavaScript dialogs, which the browser closes at once when nobody
+  listens. A control whose click shows `alert()` or `confirm()` reads
+  as "no effect", so it is not counted as mouse-only. A download reads
+  the same way.
+- **Why it matters:** a false PASS for help text, confirmations and
+  downloads that only a mouse can get.
+- **Where:** `src/tobi508/observe.py:266-320`. Only `checks/t5f.py:463`
+  listens for dialogs.
+- **Smallest fix:** in `observe`, listen for `dialog` (and `download`)
+  during the action and record it as an effect. One fixture.
+- **Checked:** verified (run). A `<div onclick="alert('Help text')">`
+  beside one link: 4.A PASS, row k1:M2. The reviewer's control, where
+  the click unhides a paragraph, is NEEDS REVIEW.
 
 #### M-02 5.H cannot see a form that is only a button
 
@@ -1119,6 +1203,23 @@ a narrower page or an agent's wrong answer than the P0 items do.
 - **Checked:** verified (read): four places cut at `BADGE_MAX` and the
   spec line is there. No fixture has more than 60 stops.
 
+#### C-02 The reveal pass credits a trigger with whatever appeared meanwhile
+
+- **What is wrong:** "opened" means any element visible after the press
+  that was not visible before, anywhere on the page. On a page with a
+  live feed, a ticker or a late banner, a trigger that does nothing is
+  recorded as opened; its real content is never read, and the reveal
+  guard sees nothing wrong. The pass also never checks that the
+  trigger took focus before pressing Enter (C-04).
+- **Why it matters:** a PASS with unread content on any self-updating
+  page.
+- **Where:** `src/tobi508/reveal.py:312-331, 400-403, 306-312`.
+- **Smallest fix:** count only what is new inside the region the
+  trigger controls, or after `aria-expanded` flipped; a trigger that
+  did not take focus is "not found".
+- **Checked:** verified (run). A do-nothing trigger, a hidden
+  unlabelled field, and a list growing every 300 ms: 5.A PASS.
+
 #### K-05 9.C passes pairs where neither side has a name (needs Abby)
 
 - **What is wrong:** row C1 is "names agree". Two controls with no name
@@ -1284,6 +1385,96 @@ a narrower page or an agent's wrong answer than the P0 items do.
 - **Smallest fix:** a failed reading makes the field unreliable (M1);
   count a large number of DOM changes outside the widget as a change.
 - **Checked:** verified (read) by the reviewer; I did not run it.
+
+### The tests and CI
+
+None of the wrong outcomes in this review was caught by the suite of
+1,204 tests. These five say why, and what the suite costs.
+
+#### Q-01 CI never runs the tests for page text that tries to steer the judge
+
+- **What is wrong:** CI splits the suite into four groups by file name.
+  Three name `test_fixtures_4*`, `5*`, `9*`, `19a`, `2*` and `3a`; the
+  fourth takes "the rest" but ignores every `test_fixtures_*` file.
+  `tests/test_fixtures_inject.py` is in none of them.
+- **Why it matters:** its 7 tests are the only ones for principle 5
+  (page text as instructions). They can break without CI noticing. The
+  comment in the workflow says a new test file is never left out; any
+  new `test_fixtures_<name>.py` would be.
+- **Where:** `.github/workflows/ci.yml:86-102`.
+- **Smallest fix:** add the file to a group; make "the rest" ignore
+  only `test_fixtures_[0-9]*`; add a step that fails when the groups
+  together collect fewer tests than the whole suite.
+- **Checked:** verified (read) in the workflow. The reviewer collected
+  each group and found 1,196 of 1,204: the 7 inject tests and the one
+  slow test are missing.
+
+#### Q-02 A change to the judge's prompt skips CI altogether
+
+- **What is wrong:** the "docs only" filter treats any `*.md` outside
+  `README.md` and `specs/` as documentation. `src/tobi508/
+  judge_prompt.md` (the server judge's fixed prompt, hashed into every
+  report) and `third_party/andi/LICENSE.md` (a hashed vendored file)
+  are Markdown.
+- **Why it matters:** a pull request that changes only the judge's
+  prompt runs no lint and no tests, and the required check passes.
+- **Where:** `.github/workflows/ci.yml:43-49`.
+- **Smallest fix:** skip only `docs/*`; everything else is code.
+- **Checked:** verified (read): the `case` puts `docs/*|*.md` after
+  `README.md|specs/*`, and `*` matches a path with slashes.
+
+#### Q-03 The hard cases have no fixtures
+
+- **What is wrong:** shadow roots appear in two fixtures, both for 4.C.
+  No fixture anywhere has non-Latin text. Frames are missing for 4.A,
+  4.B, 4.E, 4.F, 5.A, 5.C, 5.F, 5.G, 9.x and 19.A. Caps and time limits
+  are tested end to end only in 4.C. No check other than 4.C is ever
+  run on a page with a trap. A form behind a button is missing for
+  5.A-5.C and 5.F-5.H.
+- **Why it matters:** this is the map of the P0 table. Each class with
+  no fixture is a class where the review found wrong outcomes.
+- **Where:** `tests/fixtures/`; the reviewer's table of class against
+  check is carried into "If we started over", item 3.
+- **Smallest fix:** one shared page per class, run against every check,
+  asserting "never PASS, never DOES NOT APPLY". The pages in
+  [2026-11-11-code-review-pages/](2026-11-11-code-review-pages/README.md)
+  are a start.
+- **Checked:** the reviewer's greps over `tests/fixtures`; I did not
+  repeat them.
+
+#### Q-07 Each end-to-end test costs 5 to 11 seconds, and there are about 590
+
+- **What is wrong:** nearly every rule test calls the whole pipeline,
+  which starts its own Chromium, records the page and walks it twice.
+  Tests of one page with different answers record and walk it again
+  each time.
+- **Why it matters:** about 70 CPU-minutes for the suite; four CI jobs
+  of 15 to 20 minutes with no timeout set.
+- **Where:** `tests/harness.py`, `tests/conftest.py`,
+  `src/tobi508/pipeline.py`.
+- **Smallest fix:** keep one recording and one walk per fixture page
+  (keyed by the file's hash) and let tests that only change answers
+  reuse them; move rows that need no page to `evaluate()` on stored
+  evidence, as some 4.A, 5.D and 5.H tests already do (10 ms each).
+- **Checked:** the reviewer timed four files one at a time: 5.H 8 tests
+  in 53 s, inject 7 in 33 s, browser 8 in 12 s, 2.B 15 in 161 s. The
+  suite total is an estimate from those.
+
+#### Q-04 Nothing makes anyone rerun the judge eval after a question changes
+
+- **What is wrong:** tests answer every open question with a scripted
+  answer, so they test what the rules do with an answer, never whether
+  the question and its evidence let a reader answer correctly.
+  Principle 6 says to rerun the judge eval after changing a question,
+  rubric or input. Nothing checks that it was done.
+- **Why it matters:** the items above where the agent is shown the
+  wrong evidence (E-05, F-15, M-13) are invisible to the suite by
+  design.
+- **Where:** `tests/harness.py:40-70`; `evals/judge_eval.py`.
+- **Smallest fix:** the eval writes a hash of each question and rubric
+  it ran; a fast test fails when the live hash differs.
+- **Checked:** verified (read) for the harness; the rest is the
+  reviewer's reading.
 
 ### Hosted sign-in (demo plan, step 6)
 
@@ -1574,6 +1765,17 @@ not checked.
   question makes the whole test DOES NOT APPLY on the agent's word,
   even when a split form group was the reason for asking. That is what
   rows M8 and G4 say today.
+- **Core gaps (C-05, C-06, C-07)** The reveal summary lists triggers
+  that did not open but not options that could not be chosen or read,
+  so the guard cannot see them (`reveal.py:177-200, 442-462`). A replay
+  does not say when it landed on a different element than the walk
+  did; 4.A, 4.B, 5.D and 9.A check for themselves, 4.E's control replay
+  and "before" picture do not (`traverse.py:1166-1206`). When a script
+  moves focus off an element the moment it arrives, that element is
+  never a stop and 4.D passes the rest: 10 of 11 links, verified (run),
+  while 4.E and 4.A on the same page do object (`traverse.py:906-962`).
+  Whether an element Tab can never rest on belongs in 4.D is a spec
+  question.
 - **G-04** A run stopped at the default limit (1,800 s) is told it
   "reached its time limit (600 s)" and to "run again with
   no_time_limit=true", which it already was; an agent that obeys
@@ -1697,6 +1899,44 @@ not checked.
   round can run far past it and fire dozens of extra calls. Requests are
   not split by text size. Retries repeat errors that cannot succeed.
   `apijudge.py:547-564, 675-727`.
+
+### Tests, CI and the image
+
+- **Q-06** Baseline cases and ACT cases for 4.A, 4.C, 4.D, 5.B and 9.A
+  compare the outcome only, not the rows, so a PASS reached by the
+  wrong row passes the test (K-01's self-comparison would). 9.B and
+  9.C's row table is optional and has 8 entries for 14 cases. ACT
+  cases for 2.x never expect PASS, so 2.A-2.C have no positive
+  control. `tests/test_baseline_cases.py:119-130`,
+  `tests/test_act_cases.py:100-110`, `tests/test_fixtures_9x.py:145-149`.
+- **Q-05** No test would fail for: the `MAX_RUN_S` stop; a
+  "certified" or "compliant" claim in output text; `trusted_tester`
+  in a tool name; Playwright pinned with `==`; a page link being
+  followed outside the approved exceptions; the tested page given
+  again as an other page (the existing test even uses `?0` to `?5` as
+  distinct pages).
+- **Q-08** CI jobs have no `timeout-minutes` (the default is six
+  hours), no cancel of superseded runs and no cache; `uv sync` is not
+  `--locked`; actions are pinned to moving tags.
+  `.github/workflows/*.yml`.
+- **Q-09** On a push to main the image is published without waiting
+  for the tests, so a commit that fails tests still ships as
+  `:latest`. The smoke test runs one 4.C run in dev mode and never
+  goes through sign-in or the proxy to a real host.
+  `.github/workflows/container.yml`.
+- **Q-10** The image copies everything tracked: 247 MB of
+  `evals/judging`, plus tests and docs, and `chown -R` then doubles it
+  in a second layer. No `HEALTHCHECK`, though `/health` exists. Base
+  images are tags, not digests. `Dockerfile:27, 43`, `.dockerignore`.
+  What is right: non-root, Playwright pinned exactly, container
+  defaults set, and a public host without sign-in is refused.
+- **Q-12** CODEOWNERS covers `specs/`, `.github/` and `evals/judging/`
+  but not `src/tobi508/checks/`, the fixture manifests that hold
+  expected outcomes, `third_party/`, the Dockerfile or the lock file.
+- **Q-13** One `xfail(strict)` test records a trap the tool misses (a
+  page that takes focus back 600 ms after it leaves reads as a loop of
+  two, not a stuck element). It is on the roadmap's list for 4.C.
+  `tests/test_traverse.py:139-152`.
 
 ### Evals
 
@@ -1861,6 +2101,20 @@ Cleanup. All reviewers' claims unless marked.
   1,278 characters, 5.C 580 and 972, with one 5.A question and picture
   per field, up to 60 (H-17). 5.C tests M3o before M3s where the spec
   lists M3s first; both are FAIL.
+- **Core cleanup (C-08, C-09, C-10):** a page with nothing focusable
+  is walked 50 presses each way before it is called empty (about 3 s).
+  The inventory that sets the walk's cap is read before the page
+  settles. A frame that cannot be evaluated is not counted among
+  "fields in frames not checked".
+- **Tests cleanup (Q-11, Q-14, Q-15, Q-16):** `tests/test_server.py`
+  is mostly template leftovers and one test fails if `MCP_TRANSPORT`
+  is set in the developer's environment. The Baseline manifest pins no
+  upstream version, and expected outcomes sit in the same file as the
+  page hashes. Fixture titles and file names name the defect, which
+  matters only where an agent sees them. There is no socket-level
+  network guard; two tests launch their own browser outside the
+  proxy. One test compares every default setting and fails on any new
+  one.
 - **9.x duplication:** `_finding`, the "not performed" block and the
   cache-or-read pattern are copied in 9.B, 9.C and 19.A (K-13).
 
@@ -1906,6 +2160,14 @@ reviewer (phase 1); I read the summary, not every line behind it.
   The problems found are in the evidence fed to the tables (F-02,
   F-11, F-12), not in the tables. The questions that may settle a PASS
   by looking do so only as principle 8 allows.
+- **The walk itself held up:** wrap, a loop confirmed on a second load,
+  a cross-origin frame and a page with nothing focusable all behaved
+  in the core reviewer's runs.
+- **What the suite does well:** every fixture folder has an expected
+  table and a "every fixture is listed" guard; expected outcomes are
+  in tests, never in pages; the hash checks on ACT, Baseline and
+  vendored files compare whole sets; the allowlist, egress, redirects,
+  leakage, sign-in and frozen pages each have direct tests.
 - **The flash arithmetic matches WCAG 2.3.1.** The reviewer ran
   `flash.py` on 28 built frame sequences (black and white at 2, 3,
   3.5, 4 and 10 Hz; small and large boxes around the 341 x 256 limit;
@@ -1987,6 +2249,12 @@ above.
   one step is not seen.
 - 4.D passes any text field with a caret colour that is not
   "transparent", including one equal to the background.
+- A page that shows a dialog on every second load (a survey, a cookie
+  banner) could send a replay to a different element (C-06); not run.
+- A download, the clipboard and `window.print()` are effects the
+  observer cannot see, like `alert()` (C-01); not run.
+- Whether "Require review from Code Owners" is switched on cannot be
+  seen from the repository.
 - 3.A: a frame whose step script fails is skipped, so an animation in
   it runs on the wall clock and is mis-timed; video frames may be
   skipped under CPU load and under-count.
@@ -2021,6 +2289,192 @@ above.
 - The audit log records the caller's email on every call: intended, but
   confirm it fits the retention policy.
 
+## How this could be handed out
+
+Bundles that one thread can take without stepping on another. Each
+names the items and the files it would touch.
+
+1. **One-line and one-function fixes, no spec change:** E-01 (hover
+   cap to `incomplete`), E-07 (the recording "out of time" helper),
+   C-03 with F-06 and H-11 (ignore the fragment in `observe`), F-01
+   (4.D's arrow loop), N-08 (2.B's missing A1 cases), W-05 (2.A's
+   pairing of readings), K-04 and E-02 (placeholder addresses), K-01
+   with M-11 (final address equal to the tested page), F-04, H-15.
+   Files: `observe.py`, `t4a.py`, `t4c.py`, `t4d.py`, `t2a.py`,
+   `t2b.py`, `t9c.py`, `pipeline.py`. Each with a fixture from the
+   pages folder.
+2. **Shadow roots:** D-03, D-01, K-02 with M-12, N-01, M-06, D-04,
+   F-08. First the notes that turn DOES NOT APPLY and PASS into NEEDS
+   REVIEW (small), then the shared reader ("If we started over",
+   item 2). Files: `traverse.py`, `labels.py`, `site.py`, `motion.py`,
+   `t5f.py`.
+3. **Spec decisions for Abby, then their code:** H-08 with M-07, E-03,
+   E-06, E-08, E-13, H-04, K-05, M-01, M-02, M-03 with E-09, M-08,
+   F-02, N-02 to N-09, C-07. One MINOR spec change each.
+4. **Traps and limits:** H-03 with M-05, F-11, F-13, M-04, M-09, E-12,
+   N-05 with W-11, H-05, H-07, F-12, F-15, E-05. This is "If we
+   started over", item 1, done check by check.
+5. **The watchers:** W-02, W-07, W-09, N-03, N-06, W-01, W-06, W-08,
+   W-10, W-12. Files: `motion.py`, `flashcap.py`, `t3a.py`.
+6. **What the agent receives:** T-01 to T-03 with G-01, A-02 with
+   T-04, A-03 with T-07, then the P2 token items. Files: `models.py`,
+   `inline.py`, `pipeline.py` (the text builders), `explain.py`,
+   `runlog.py`, `scrt.py`, the tools.
+7. **Before the server judge's figures are used (roadmap Now, 3 and
+   4):** B-01, B-02, L-02 with L-03, A-05, G-02, B-04, then B-05,
+   B-10, B-18. Files: `apijudge.py`, `judgment.py`,
+   `evals/apijudge_gate.py`, `evals/scoring.py`.
+8. **Before VAST (roadmap, 6):** A-01, S-05, G-09, G-03, B-03, then
+   S-02 to S-04, S-08, Q-09, Q-10. Files: `jobs.py`, `access.py`,
+   `tools/`, `capture.py`, `Dockerfile`.
+9. **CI and tests:** Q-01 and Q-02 first (minutes each), then Q-03
+   (the grid of hard pages), Q-06, Q-07, Q-08.
+
 ## If we started over
 
-Written in phase 5, from the design notes of every phase.
+Seven changes, in the order I would make them. The first three would
+have prevented most of the P0 table. Costs are my estimates for one
+thread with the suite as its safety net; none is measured.
+
+### 1. Every reading says what it covered
+
+- **Today:** a reader returns a list, a dict or `None`. Whether it
+  entered the shadow roots and frames, hit a cap, ran out of time or
+  failed is in a note, a flag on the run, a counter nobody reads, or
+  nowhere. Each check decides for itself what "nothing" means, and 22
+  checks have decided it 22 ways.
+- **Instead:** every reading (the walk, the label pass, the site read,
+  the watcher, the form pass, the reveal pass) returns its data with
+  one small record of coverage: what it did not enter and how much was
+  there, which caps it reached, whether time cut it, which reads
+  failed. The engine, not the check, refuses DOES NOT APPLY and PASS
+  when coverage is incomplete and gives NEEDS REVIEW with the reason.
+  The spec template gains one sentence: an A row or a PASS needs a
+  complete reading.
+- **Would have prevented:** D-01, D-02, D-03, K-02, K-03, E-01, E-03,
+  E-07, E-12, F-11, F-12, F-15, H-03, H-05, H-07, M-04, M-05, M-06,
+  M-09, N-05, N-06, W-02, W-07, W-11, C-05.
+- **Cost:** the record and the engine rule, 1 day. Filling it in the
+  readers (`traverse.py`, `labels.py`, `site.py`, `motion.py`,
+  `forms.py`, `reveal.py`, `flashcap.py`), 3 to 4 days. Passing it
+  through 22 checks in place of their own `incomplete` lists,
+  mechanical, 3 days. A MINOR bump of every spec. About two weeks in
+  all, and it can be done reader by reader, the walk and the label
+  pass first.
+
+### 2. One library for reading the page
+
+- **Today:** what is a field, what is visible, what is tabbable, how
+  to walk into shadow roots and how to name an element are written out
+  in `traverse.py`, `observe.py`, `reveal.py`, `labels.py`, `forms.py`,
+  `site.py`, `motion.py`, `t4a.py` and `t5f.py`, as JavaScript in
+  Python strings, and the copies disagree (D-19). Most use
+  `document.querySelectorAll`, which is why shadow roots are missed in
+  some places and not others.
+- **Instead:** one `jslib` string put in front of every script, as
+  `PATH_JS` already is: a walk that enters open shadow roots and
+  same-origin frames, visible text, the field and tabbable tests, the
+  path. One `evaluate` helper that raises when the script throws.
+- **Would have prevented:** D-01, D-03, K-02, N-01, M-06, H-01, D-04,
+  D-19, D-21, F-08, and it makes the next test cheaper.
+- **Cost:** one new module of about 400 lines moved, not written; nine
+  files edited; 4 to 5 days including a rerun of every fixture.
+
+### 3. A grid of hard pages that every check must survive
+
+- **Today:** each check has fixtures for its own rules. No fixture
+  asks "what does this check do on a page it cannot fully see". The
+  review found the P0 items by writing about a hundred small pages,
+  one suspicion each.
+- **Instead:** nine shared pages (a shadow root, a frame, more items
+  than the cap, a trap in mid-page, something that starts late,
+  non-English text, hidden text, a form behind a button, a reading
+  that fails) run against all 22 checks, with one assertion: never
+  PASS, and DOES NOT APPLY only where the table says the page truly
+  has nothing for that test. A cell is a fixture or a written reason.
+- **Cost:** the pages mostly exist in the pages folder; the table and
+  the parametrised test, 2 to 3 days. With shared recordings (below)
+  about 200 short runs.
+- **With it:** share one recording and one walk per fixture page
+  across tests (Q-07), which is where most of the suite's 70
+  CPU-minutes go.
+
+### 4. One base for the checks
+
+- **Today:** `_finding` is copied in 13 check files; "This test could
+  not be performed" is typed 27 times; the A1 and A2 blocks, labels,
+  key text and trap bookkeeping are copied per family and have
+  drifted; there are two "out of time" helpers and E-07 is the
+  difference between them.
+- **Instead:** `checks/common.py` with the finding builder, the
+  not-performed finding, the page outcome, the text helpers and one
+  "out of time" that always records.
+- **Cost:** 2 to 3 days, mechanical; several hundred lines removed.
+
+### 5. A smaller surface for the agent
+
+- **Today:** about 93,000 tokens to read for one page (measured);
+  instructions in three channels; every result sent twice; the report
+  saved by passing it through the model.
+- **Instead:** tools with no output schema and text results only; one
+  short instruction block; an unchanged question listed by id; the
+  report written compact with each question stored once; the server
+  saves the report (a download link when hosted) and builds the
+  pre-SCRT file on request.
+- **Expected:** about 30,000 to 35,000 tokens for the same page (tool
+  list 5,000, run result 8,000, answers 3,000, explain 4,000, report
+  not through the model or 18,000 if it is). An estimate from the
+  measured parts.
+- **Cost:** 3 days and the changes to `tests/test_tools.py`.
+
+### 6. Run state with one owner and one writer
+
+- **Today:** `pipeline.py` is 1,662 lines and five jobs; `run_tt_tests`
+  is one function of 420 lines; `report.json` is read, changed and
+  rewritten by answer calls, follow-ups and the judge with no lock;
+  jobs have no owner; the answer tool is the one call with no limit;
+  the judge runs inside a browser slot.
+- **Instead:** a small `runs` module that owns a run's files (one lock
+  per run, write to a temporary file and rename); jobs that carry
+  their caller; answers applied as a job like a run; the judge after
+  the slot is released; the run's phases as functions over one state
+  object.
+- **Covers:** A-01, B-03, B-04, B-06, B-07, B-11, G-03, G-05, G-06,
+  G-07, G-09.
+- **Cost:** 4 to 5 days.
+
+### 7. One gate for what an answer makes the tool do
+
+- **Today:** an answer can name a key to press or a value to type in
+  five places, each with its own filter: 4.B none (B-10), 2.A-2.C a
+  list of twelve keys (W-14), 9.A syntax only (M-15), 5.D's typed
+  value raw (H-10), 4.C a quote check. Page text reaches the judge
+  through a hand-built tag (B-02) and picture links through a search
+  of the text (B-01).
+- **Instead:** one `actions` module: parse a key, refuse browser keys,
+  require it in the page text, strip control characters from typed
+  values; one serialiser for untrusted text; picture links only
+  through the guarded reader. CLAUDE.md's principle 5 then lists 9.A's
+  key beside the others, and principle 8's list is brought in line
+  with the checks (E-06).
+- **Cost:** 1 to 2 days.
+
+### What I would keep as it is
+
+- The specs as the only source of outcomes: the row tables matched in
+  every check.
+- Replay from a recording, the allowlist with its second check on
+  Chrome's own address, and the egress proxy.
+- The flash arithmetic, and the walk's settle-and-confirm design.
+- Expected outcomes in tests and never in pages, and the hash checks
+  on vendored cases.
+
+### Worth a trial, not before the demo
+
+- **One watch on a paused clock** for 2.A-2.D and 3.A. Today the page
+  is watched for 6.5 real seconds, then loaded again for a 2 s
+  recording, then again for a stepped capture. Running the page
+  forward 30 to 60 s of its own time on 3.A's paused clock would see
+  what starts late (N-02 to N-09), remove the sampling problem (W-09)
+  and cost less wall time. It is a larger change to `motion.py`, one
+  to two weeks, and video and audio do not follow the paused clock.

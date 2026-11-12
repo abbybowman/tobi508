@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><title>Help</title></head><body><main><h1>Help center</h1>
+<button type="button" id="b" onclick="document.getElementById('d').hidden=false">Pay your bill</button>
+<div id="d" hidden><form onsubmit="event.preventDefault();this.querySelector('output').textContent='Error.'"><label>Card number <input name="c"></label><label>Amount <input name="a"></label><button type="submit">Pay</button><output></output></form></div>
+</main></body></html>

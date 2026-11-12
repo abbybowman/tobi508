@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><title>Agency - page a</title></head><body>
+<site-header></site-header>
+<main><h1>Page a of the agency</h1><p>Text about a. <a href="more-a.html">More about a</a></p></main>
+<script>
+class H extends HTMLElement { connectedCallback(){ const r=this.attachShadow({mode:'open'}); r.innerHTML='<header><nav aria-label="Main"><ul><li><a href="sh-a.html">About</a></li><li><a href="sh-b.html">Services</a></li><li><a href="contact.html">Contact</a></li></ul></nav></header>'; } }
+customElements.define('site-header', H);
+</script>
+</body></html>

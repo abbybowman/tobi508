@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><title>Full viewport canvas</title><style>
+html,body{margin:0}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:0}
+main{position:relative;z-index:1;color:#fff;padding:20px}
+</style></head><body><canvas id="c" width="1280" height="720"></canvas><main><h1>Welcome</h1><p>Static text over an animated hero canvas.</p><button>Learn more</button></main>
+<script>const c=document.getElementById('c'),x=c.getContext('2d');let t=0;
+function f(){t+=4;for(let i=0;i<30;i++){x.fillStyle=((i+Math.floor(t/50))%2)?'#235':'#58a';x.fillRect(i*50-(t%100),0,50,720)}requestAnimationFrame(f)}f();</script>
+</body></html>

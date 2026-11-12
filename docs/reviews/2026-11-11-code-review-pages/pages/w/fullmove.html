@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><title>Full viewport animation</title><style>
+html,body{margin:0}
+@keyframes sh{from{background-position:0 0}to{background-position:200px 0}}
+#hero{position:fixed;inset:0;background:repeating-linear-gradient(90deg,#235,#235 50px,#58a 50px,#58a 100px);animation:sh 1s linear infinite;z-index:0}
+main{position:relative;z-index:1;color:#fff;padding:20px}
+</style></head><body><div id="hero"></div><main><h1>Welcome</h1><p>Static text over an animated hero.</p><button>Learn more</button></main></body></html>

@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><title>Checkout</title></head><body><main><h1>Checkout</h1>
+<form id="f" onsubmit="event.preventDefault();s2()"><div id="s1"><p>Step 1 of 2: your details</p><label>Name <input name="n"></label><label>Email <input name="e"></label>
+<button type="submit">Next</button></div><div id="s2" hidden><p>Step 2 of 2: payment</p><label>Card <input name="c"></label><p>Card number is required to pay.</p><button type="submit">Pay now</button></div></form>
+<script>function s2(){document.getElementById('s1').hidden=true;document.getElementById('s2').hidden=false;}</script>
+</main></body></html>

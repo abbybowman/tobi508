@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><title>Late audio element 3</title></head><body>
+<h1>Welcome</h1><p>Some text.</p>
+<audio id="a1" src="tone.wav" preload="auto"></audio>
+<script>setTimeout(()=>{const a=document.createElement('audio');a.id='a2';a.src='tone.wav';a.autoplay=true;a.loop=true;document.body.appendChild(a)},1500);</script>
+</body></html>

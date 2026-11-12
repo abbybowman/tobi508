@@ -73,9 +73,11 @@ work and is not a formal gate.
    arrive. Verify the code review's security leads first. Fallback: a
    recorded demo from a local server.
 
-**Alongside, in its own thread:** the code review
-([reviews/2026-11-11-code-review-notes/](reviews/2026-11-11-code-review-notes/README.md)),
-in phases, security and false-PASS leads first.
+**Alongside, in its own thread:** the code review is done
+([reviews/2026-11-11-code-review.md](reviews/2026-11-11-code-review.md)):
+a triaged list, P0 first, with the pages that reproduce each item. It
+found limits under "Known limits" below that are not NEEDS REVIEW-safe
+today (its P0 table); nothing in it is fixed yet.
 
 **Not before the demo:** frames (fix 7), the store, the review UI and
 WebAuthn, opening everything phases 2 and 3.

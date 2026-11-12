@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><title>Shadow ticker</title></head><body><h1>Agency news</h1><p>Welcome to our agency home page. Read the latest updates below.</p><a href="#a">About</a> <a href="#b">Contact</a>
+<p>More static content here so the ticker is not the only content on the page.</p>
+<div id="h"></div>
+<script>const r=document.getElementById('h').attachShadow({mode:'open'});r.innerHTML='<div id="t" style="font-size:30px;padding:20px;border:1px solid #000">Count 0</div>';let n=0;setInterval(()=>{n++;r.getElementById('t').textContent='Count '+n},1000);</script></body></html>

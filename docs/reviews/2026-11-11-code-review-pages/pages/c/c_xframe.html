@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><title>XFrame</title></head><body><main><h1>Frames</h1>
+<a href="/m1" id="m1">Main one</a> <a href="/m2" id="m2">Main two</a>
+<div id="slot"></div>
+<a href="/m3" id="m3">Main three</a> <a href="/m4" id="m4">Main four</a></main>
+<script>var f=document.createElement('iframe');f.title='Embed';f.src=location.href.replace('127.0.0.1','localhost').replace('c_xframe','c_inner');f.width=300;f.height=60;document.getElementById('slot').appendChild(f);</script></body></html>
