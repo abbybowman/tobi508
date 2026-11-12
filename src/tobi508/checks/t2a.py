@@ -110,12 +110,7 @@ def find_audio(mp: MotionPass) -> list[Audio]:
         elif at.src.split("#", 1)[0] in over and (at.paused or not advanced):
             a.measured, a.why = False, "its file is larger than we record"
         if a.measured:
-            playing = (
-                not at.paused
-                and not at.muted
-                and at.volume > 0
-                and advanced
-            )
+            playing = not at.paused and not at.muted and at.volume > 0 and advanced
             if not playing:
                 continue
             left = None if at.duration is None else at.duration - first.time
