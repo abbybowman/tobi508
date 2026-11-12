@@ -162,6 +162,39 @@ def test_without_sign_in_runs_are_open_and_unowned(as_caller, settings):
         RunRecorder.open(settings.runs_dir, run.run_id)
 
 
+async def test_jobs_belong_to_their_maker(as_caller, settings):
+    """A-01: a job carries the caller who started it; another caller cannot
+    list it, wait on it by id, or see it running."""
+    import asyncio
+
+    from tobi508 import jobs
+
+    jobs._JOBS.clear()
+    gate = asyncio.Event()
+
+    async def run(progress):
+        await gate.wait()
+        return "result"
+
+    as_caller("alice")
+    a = jobs.start(settings, "https://a.gov", run)
+    assert a.owner == "alice"
+    assert jobs.get(a.id) is a and jobs.all_jobs(settings) == [a]
+    assert [r["id"] for r in jobs.running()] == [a.id]
+
+    as_caller("bob")  # the same as an unknown job id
+    assert jobs.get(a.id) is None
+    assert jobs.all_jobs(settings) == [] and jobs.running() == []
+    b = jobs.start(settings, "https://b.gov", run)
+    assert jobs.all_jobs(settings) == [b]
+
+    as_caller(None)  # without sign-in a local server has one user
+    assert {j.id for j in jobs.all_jobs(settings)} == {a.id, b.id}
+    gate.set()
+    await asyncio.gather(a.task, b.task)
+    jobs._JOBS.clear()
+
+
 # ── Audit line ───────────────────────────────────────────────────────────────
 
 

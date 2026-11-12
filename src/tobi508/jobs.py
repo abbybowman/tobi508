@@ -14,6 +14,10 @@ a slot has not started its run yet, so the wait does not use its time limit
 when its browsers close (`release_browser_slot`), so the server's judge,
 which needs no browser, never holds one (code review B-04).
 
+A job carries the signed-in caller who started it, and only that caller
+sees it (`get`, `all_jobs`, `running`), as run folders do (code review
+A-01). Without sign-in every job is open: a local server has one user.
+
 Jobs live in this process's memory: a server restart loses running jobs
 and the record of finished ones (a finished run's folder and report stay
 until `run_ttl_hours`; an unfinished one's folder is pruned with them). No
@@ -30,6 +34,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any
 
+from tobi508 import access
 from tobi508.config import Settings
 from tobi508.models import RunPending, RunResult
 
@@ -48,6 +53,7 @@ class Job:
     message: str = "Waiting for a free browser slot"
     task: asyncio.Task | None = None
     waiters: list[ProgressFn] = field(default_factory=list)
+    owner: str | None = None  # the signed-in caller who started it (A-01)
 
     async def progress(self, step: float, total: float | None, message: str) -> None:
         self.step, self.message = step, message
@@ -98,7 +104,7 @@ def start(
 ) -> Job:
     """Start `run` (the pipeline call, given a progress function) as a job."""
     _prune(settings)
-    job = Job(id="job-" + secrets.token_hex(6), url=url)
+    job = Job(id="job-" + secrets.token_hex(6), url=url, owner=access.caller())
     slots = _slots(settings.max_concurrent_runs)
 
     async def go() -> RunResult:
@@ -127,8 +133,16 @@ def start(
     return job
 
 
+def _mine(job: Job) -> bool:
+    """Whether the caller may see this job: its owner, or anyone without
+    sign-in. As with runs, another caller's job reads as unknown."""
+    sub = access.caller()
+    return sub is None or job.owner == sub
+
+
 def get(job_id: str) -> Job | None:
-    return _JOBS.get(job_id)
+    job = _JOBS.get(job_id)
+    return job if job is not None and _mine(job) else None
 
 
 async def wait(
@@ -181,11 +195,15 @@ def pending(job: Job, wait_s: float) -> RunPending:
 
 
 def all_jobs(settings: Settings) -> list[Job]:
-    """This session's jobs still kept, oldest first."""
+    """The caller's jobs still kept, oldest first."""
     _prune(settings)
-    return sorted(_JOBS.values(), key=lambda j: j.created)
+    return sorted((j for j in _JOBS.values() if _mine(j)), key=lambda j: j.created)
 
 
 def running() -> list[dict[str, Any]]:
     """Jobs not finished yet (for tests and diagnostics)."""
-    return [{"id": j.id, "url": j.url} for j in _JOBS.values() if j.finished is None]
+    return [
+        {"id": j.id, "url": j.url}
+        for j in _JOBS.values()
+        if j.finished is None and _mine(j)
+    ]
