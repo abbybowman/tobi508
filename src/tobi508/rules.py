@@ -17,7 +17,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from tobi508.models import TestId
+from tobi508.models import COUNT_KEYS, TestId
 
 REQUIRED_KEYS = ("tt_test", "tt_name", "spec_version")
 KNOWN_GUARDS = ("unrecorded-code", "reveal", "reveal-content")
@@ -38,6 +38,9 @@ class RuleSpec:
     # Shared page guards the spec declares in its front matter (`guards:`),
     # each defined in specs/rules/_template.md; engine.apply_guards runs them.
     guards: tuple[str, ...] = ()
+    # Inventory keys guard CN compares with what the test read (`count:`,
+    # e.g. `fields.shadow, focusable@dna`); `@dna` holds DOES NOT APPLY only.
+    count: tuple[str, ...] = ()
 
     def version_label(self) -> str:
         return f"{self.spec_version} (sha256:{self.sha256[:12]})"
@@ -106,12 +109,17 @@ def load_spec(path: Path) -> RuleSpec:
     unknown = [g for g in guards if g not in KNOWN_GUARDS]
     if unknown:
         raise RuleSpecError(f"{path.name}: unknown guard {unknown[0]!r}")
+    count = tuple(k.strip() for k in meta.get("count", "").split(",") if k.strip())
+    bad = [k for k in count if k.removesuffix("@dna") not in COUNT_KEYS]
+    if bad:
+        raise RuleSpecError(f"{path.name}: unknown count key {bad[0]!r}")
     return RuleSpec(
         test_id=test_id,
         spec_version=meta["spec_version"],
         path=path,
         sha256=digest,
         guards=guards,
+        count=count,
     )
 
 

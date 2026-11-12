@@ -244,14 +244,17 @@ after GU, RV and RC; it gets the check's state as a new argument):
   them in the rationale with their numbers. FAIL and NOT TESTED are
   unchanged.
 - The count is missing or has `error` while the spec lists keys: the
-  same move, "The page's contents could not be counted, so ...".
+  same move, "This page's contents could not be inventoried, so this
+  test's result could not be confirmed." (Abby, 2026-11-12: "inventoried",
+  not "counted". The inventory is taken once, so this means it could not
+  be taken, not that two readings disagreed.)
   An old run with no `counts` is left as it was.
 - A key may be marked `@dna` (`count: focusable@dna`): it holds DOES
   NOT APPLY only. Proposed for 4.F, where a page often has more
   focusable elements than the walk reaches and the walk's own rows
   already decide PASS (F-11 is the DOES NOT APPLY case).
 - Sentences, one per key and part, plain, with the number:
-  - "2 form fields inside a web component were not checked."
+  - "2 form fields inside web components were not checked."
   - "1 form field inside a frame was not checked."
   - "1 form field is hidden until something opens it, and was not checked."
   - "1 editable text area was not checked."
@@ -287,16 +290,9 @@ template and principle 3, no spec listing a key yet (nothing moves);
 to `tests/fixtures/count/` with one test file; the quiet page is a
 light-DOM form, a played `<audio>` with controls, and a light header.
 
-**Open for Abby:**
-
-1. `@dna` for 4.F (otherwise the guard turns many 4.F PASSes into
-   NEEDS REVIEW on ordinary pages).
-2. `fields_hidden` in 5.D: 5.D's spec fills fields the walk reaches,
-   so a hidden form is always a gap until phase 3 of fix 9b. Proposed:
-   list it (NEEDS REVIEW on every page with a hidden form, e.g. a
-   closed "Search" panel), as for 5.A-5.C.
-3. The count runs on every run (one script, about 50 ms; one extra
-   load only when no walk runs).
+**Decided (Abby, 2026-11-12):** 4.F's `focusable` holds DOES NOT APPLY
+only (`@dna`); 5.D lists `fields_hidden` (NEEDS REVIEW on a page with a
+hidden form until phase 3 of fix 9b); the count runs on every run.
 
 ## Part C: every reading reports what it covered
 

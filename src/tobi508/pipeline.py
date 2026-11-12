@@ -34,6 +34,7 @@ from urllib.parse import urlsplit
 from playwright.async_api import Browser, async_playwright
 
 from tobi508 import config, flashcap, motion, pagecache, reveal, rules, scrt
+from tobi508 import count as inventory
 from tobi508.browser import (
     MOTION_BROWSER,
     NavigationBlocked,
@@ -54,6 +55,7 @@ from tobi508.models import (
     REVIEW_HEAD,
     Answer,
     AnswerResult,
+    Count,
     Finding,
     FindingView,
     OpenQuestion,
@@ -74,7 +76,14 @@ from tobi508.policy import check_url
 from tobi508.redact import safe_error, safe_url
 from tobi508.resources.runs import run_uri
 from tobi508.runlog import RunRecorder, expires_at, prune_runs
-from tobi508.traverse import Pace, ReplayPlan, TooManyItems, WalkTooLong, metered
+from tobi508.traverse import (
+    Pace,
+    ReplayPlan,
+    TooManyItems,
+    WalkTooLong,
+    metered,
+    settle,
+)
 from tobi508.versions import collect_versions, measure_display
 from tobi508.walk import KeyboardWalk, walk_page
 
@@ -756,6 +765,27 @@ def _guards(test_id: TestId) -> tuple[str, ...]:
     return spec.guards if spec else ()
 
 
+def _count_keys(test_id: TestId) -> tuple[str, ...]:
+    """The inventory keys guard CN compares for a test (front matter `count:`)."""
+    spec = _specs(str(config.settings.rules_dir)).get(test_id)
+    return spec.count if spec else ()
+
+
+async def _own_count(ctx: RunContext) -> Count:
+    """The inventory on a load of its own, when no walk took it (count.py)."""
+    try:
+        context, page = await ctx.new_page()
+    except Exception as exc:
+        return Count(where="own load", error=safe_error(exc))
+    try:
+        await settle(page, ctx.quiet_ms)
+        return await inventory.take(page, "own load")
+    except Exception as exc:
+        return Count(where="own load", error=safe_error(exc))
+    finally:
+        await context.close()
+
+
 def _evaluate(
     run: RunRecorder,
     report: Report,
@@ -787,7 +817,13 @@ def _evaluate(
             q for q in check.questions(states[t], [uri]) if q.question_id not in asked
         ]
         findings.append(
-            apply_guards(check.evaluate(states[t], [rel]), _guards(t), report)
+            apply_guards(
+                check.evaluate(states[t], [rel]),
+                _guards(t),
+                report,
+                states[t],
+                _count_keys(t),
+            )
         )
     report.findings = findings
     answered = {r.answer.question_id for r in report.answers}
@@ -1086,7 +1122,10 @@ async def run_tt_tests(
                                 ctx.deadline,
                                 ctx.shots,
                                 ctx.rel,
-                                _walk_extras(checks),
+                                [
+                                    *_walk_extras(checks),
+                                    inventory.walk_extra(ctx.cache),
+                                ],
                                 pace,
                             ),
                             hard,
@@ -1158,6 +1197,16 @@ async def run_tt_tests(
                     report.reveal = {"failed": True, "triggers": 0, "opened": 0}
                     report.errors.append(f"Opening menus and sections failed: {err}")
                     run.log("reveal", "error", error=err)
+            # The page's inventory (count.py): taken at the walk's first load,
+            # else on a load of its own, before the checks read it.
+            if "count" not in ctx.cache:
+                await say(1.8, "Taking an inventory of the page")
+                try:
+                    ctx.cache["count"] = await _bounded(_own_count(ctx), hard)
+                except TimeoutError:
+                    ctx.cache["count"] = Count(where="own load", error="time limit")
+            report.counts["page"] = ctx.cache["count"]
+            run.write_json(run.evidence_dir / "count.json", ctx.cache["count"])
             for c in checks:
                 if pages_cut and uses_pages(c):
                     continue  # NEEDS REVIEW, not performed: pages_cut says why
@@ -1182,6 +1231,18 @@ async def run_tt_tests(
                 states[c.test_id] = state
                 run.write_json(run.evidence_dir / evidence_name(c.test_id), state)
                 run.log("collected", test=c.test_id.value, cost=asdict(cost))
+            # Other pages' inventories, taken on the site read's loads.
+            site = ctx.cache.get("site")
+            for pr in site.others if site is not None else []:
+                if pr.count is not None:
+                    report.counts[f"p{pr.n}"] = pr.count
+            # Media that played, from pass T's load (autoplay allowed there),
+            # in place of the count's load where it is not (count.py).
+            mp = ctx.cache.get("motion")
+            if mp is not None and getattr(mp, "played", None) is not None:
+                c = report.counts["page"]
+                c.media_played, c.played_from = mp.played, "pass T"
+                run.write_json(run.evidence_dir / "count.json", c)
             # Only when something was cut short: work that finished inside the
             # reserve needs no note.
             walk_cut = walk is not None and "time" in (walk.p1.end, walk.p2.end)
