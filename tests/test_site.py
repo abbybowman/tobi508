@@ -97,3 +97,51 @@ def test_other_pages_are_checked_before_anything_runs(settings):
         check_other_pages(
             settings, url, [f"{same}?{i}" for i in range(51)], no_time_limit=True
         )
+
+
+def test_the_tested_page_under_another_spelling_is_refused_before_anything_runs(
+    settings,
+):
+    """K-01: the same address with a trailing slash, another scheme, a
+    different case in the host or a fragment is the tested page itself.
+    (A query string can make a different page, so it is not equated.)"""
+    import pytest
+
+    from tobi508.pipeline import RunRefused, check_other_pages, same_address
+
+    url = "http://127.0.0.1:8000/a/"
+    for spelling in (
+        "http://127.0.0.1:8000/a",
+        "http://127.0.0.1:8000/a/#top",
+        "https://127.0.0.1:8000/a/",
+        "http://127.0.0.1:8000/a/?",
+    ):
+        assert same_address(url, spelling), spelling
+        with pytest.raises(RunRefused, match="itself"):
+            check_other_pages(settings, url, [spelling])
+    assert not same_address(url, "http://127.0.0.1:8000/a/?x=1")
+    assert not same_address(url, "http://127.0.0.1:8000/b/")
+    # Two spellings of one other page are one page.
+    other = "http://127.0.0.1:8000/b"
+    assert check_other_pages(settings, url, [other, other + "/", other + "#x"]) == [
+        other
+    ]
+
+
+async def test_an_other_page_that_redirects_to_the_tested_page_is_refused(
+    settings, server
+):
+    """K-01: after recording, the final addresses are compared: the tested
+    page is not compared with itself (9.B and 9.C would PASS on no evidence)."""
+    import pytest
+
+    from tobi508.models import TestId
+    from tobi508.pipeline import RunRefused, run_tt_tests
+
+    with pytest.raises(RunRefused, match="same page as the tested page"):
+        await run_tt_tests(
+            settings,
+            f"{server.base}/dyn",
+            [TestId.T9B],
+            other_pages=[f"{server.base}/redir-ok"],
+        )

@@ -798,6 +798,16 @@ different checks, and some of those ways do not hold back an outcome.
 - **Also 9.A (M-11):** the same input makes 9.A treat everything as
   repeated; the reviewer's runs gave FAIL with a `main` landmark and
   DOES NOT APPLY without one. One fix covers all three tests.
+- **Fixed (partly):** commit "Other pages: the tested page under another
+  spelling is refused (K-01, M-11)", no spec change. `pipeline.same_address`
+  ignores the fragment, scheme, host case, default port, a trailing slash
+  and an empty query; used before recording (the caller's list, duplicates
+  among the other pages too) and after redirects (final address equal to
+  the tested page's or an earlier other page's: a tool error, no run
+  folder). Tests in `tests/test_site.py`. **Not fixed:** `?x=1` on a static
+  page: the query string can make a different page, so the address does not
+  tell. Telling by content would refuse a single-page app whose routes all
+  serve one HTML shell; left for Abby to decide (README row kept, reworded).
 
 ### Security, in modes the demo plan turns on
 

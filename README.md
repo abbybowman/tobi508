@@ -95,7 +95,7 @@ A fix removes its line here in the same commit.
 | 5.H | PASS | a multi-step form whose next step says "required" (read) |
 | 9.A | PASS | a do-nothing button before the content, when the tested address ends in `#main` |
 | 9.A, 9.B, 9.C | Does Not Apply | a site header built as a web component (19.A then fails the page) |
-| 9.B, 9.C | PASS | the tested page given again as the other page (with `?x=1` or a trailing slash) |
+| 9.B, 9.C | PASS | the tested page given again as the other page with a query string added (`?x=1`: a query can be another page, so the address alone does not tell) |
 | 9.C | PASS | controls that have no name on either page (a spec decision) |
 
 ## Tools
