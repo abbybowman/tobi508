@@ -1,7 +1,52 @@
 # Handoff: fixing what the code review found
 
-Paste everything below the line into a fresh session on this repository,
-and name the bundle it should take.
+Start a thread with one of the prompts under "Starting a thread"; each
+sends the thread to the part below the line. For a bundle with no prompt
+of its own, paste everything below the line and name the bundle.
+
+## Starting a thread
+
+Open a new session on this repository and paste one of these. Each
+thread reads the rest of this file itself.
+
+**Thread A, Sonnet: quick fixes and CI**
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is part A of
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (the quick
+> fixes) and then the first step of its part I (CI: Q-01, Q-02, Q-08).
+> Do CI first: it takes an hour and protects everything else. Then the
+> part A items in the plan's table, in its order, one commit and one
+> fixture each. Two of them (E-02, K-04) change which row a control
+> lands on: draft the spec wording and stop for me before building
+> those two. Ask me before anything that turns a NEEDS REVIEW into a
+> PASS.
+
+**Thread B, Opus: the count of what exists, and the guard on DOES NOT APPLY**
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is part B of
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`. I agreed on
+> 2026-11-12 that a guard may move DOES NOT APPLY to NEEDS REVIEW: write
+> that into `specs/rules/_template.md` and CLAUDE.md principle 3 in the
+> commit that builds the guard. Start with a short design note in the
+> plan's part B (the `Count` fields, where it is read, how a check
+> reports what it read, the guard's sentences) and show it to me before
+> code. Then the count, the play hook, the guard, and the specs' `count:`
+> keys one test family at a time, with the eleven pages the plan lists
+> as fixtures. Stop and report before part C; it is not yours.
+
+**Thread C, Opus: the server judge and sign-in, then the second look's trial**
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is the review's bundle 7 (the server judge and
+> its gate: B-01, B-02, L-02 with L-03, G-02, B-04; and A-05 if
+> `docs/ROADMAP.md` "Now", item 4, is not done yet), then A-01 and S-05
+> from bundle 8, then the trial in part F of
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`. The gate
+> and judge fixes come first: the roadmap's round 2 rerun waits on them.
+> The trial is a measurement, not a gate: write down what it caught,
+> missed and wrongly flagged, and stop before building the guard.
 
 ---
 
@@ -66,8 +111,11 @@ move: find the function by name.
 6. **If a question, its rubric or its input changed,** run the judge eval
    for it (`docs/solutions/judge-eval.md`). Scripted answers in `tests/`
    test the rules, not the questions.
-7. **Update with the fix, in the same commit:** the spec's `spec_version`
-   and the README's status line for the test; `docs/hackathon/evaluation.md`
+7. **Update with the fix, in the same commit:** the spec's `spec_version`;
+   the README's status line for the test and its row in the README's
+   "Known wrong outcomes" table (remove the case you fixed; add any new
+   one you find), so the README says what the test can and cannot do
+   today (Abby, 2026-11-12); `docs/hackathon/evaluation.md`
    and the matching slide when a spec version, evaluation method or
    security control changes; `docs/ROADMAP.md` "Known limits" when a limit
    is removed or newly stated.
@@ -79,7 +127,13 @@ move: find the function by name.
 
 ## Working rules
 
-- One bundle, one branch, one pull request. Do not start a second bundle.
+- One bundle or part per thread, on its own branch from `main`. Open a
+  pull request every few items rather than one at the end, so other
+  threads see the changes; do not start a second bundle.
+- Several threads run at once and some change the same checks and
+  specs. Before you bump a spec version, rebase on `main` and take the
+  next free version. Keep each commit to one item so a conflict is
+  small.
 - Commit after each item, so a session that is cut off loses nothing.
 - At most 3 subagents at a time, and only for separable work (writing
   fixtures from the pages, running fixture files). The first review hit

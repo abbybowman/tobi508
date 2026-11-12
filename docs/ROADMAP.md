@@ -81,46 +81,58 @@ work and is not a formal gate.
    the submission commit for the [FILL] figures, a rehearsal and a
    fallback video ([docs/hackathon/](hackathon/README.md)).
 
-**Alongside, in a second thread** (Sonnet; it does not wait on the list
-above, and a false PASS is the worst error). Merge it before item 3's
-rerun if it is ready, so the before-and-after figures include it:
+**Alongside, from 2026-11-12, three threads** (a false PASS is the worst
+error, so these do not wait for the list above). Each opens small pull
+requests and rebases on `main` before it bumps a spec version, since
+items 1 and 2 above change some of the same specs. Prompts:
+[reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md),
+"Starting a thread".
 
-- **Part A, the quick fixes** (1 to 2 days): the wrong PASS and DOES NOT
-  APPLY results that need one line or one function and no spec
-  decision (two need a row reworded): 4.A's hover cap, 4.C passing after it ran out of time, a
-  `#fragment` read as navigation (4.E, 5.D and menus opened by
-  `<a href="#">`), 4.D's arrow loop, 2.B's missing row for players, 2.A's
-  late audio, placeholder addresses in 4.A and 9.C, the tested page
-  given again as an other page. Each with a fixture from
-  [reviews/2026-11-11-code-review-pages/](reviews/2026-11-11-code-review-pages/README.md).
-- **CI** (an hour): the inject tests run nowhere in CI, and a change to
-  only `judge_prompt.md` skips CI (part I, first step).
+- **Thread A (Sonnet): part A, the quick fixes, then CI** (2 to 3
+  days). The wrong PASS and DOES NOT APPLY results that need one line or
+  one function: 4.A's hover cap, 4.C passing after it ran out of time,
+  a `#fragment` read as navigation (4.E, 5.D and menus opened by
+  `<a href="#">`), 4.D's arrow loop, 2.B's missing row for players,
+  2.A's late audio, placeholder addresses in 4.A and 9.C, the tested
+  page given again as an other page. CI first (an hour): the inject
+  tests run nowhere in CI, and a change to only `judge_prompt.md` skips
+  it.
+- **Thread B (Opus): part B, a count of what exists and the guard that
+  holds DOES NOT APPLY** (3 to 4 days). About ten of the wrong DOES NOT
+  APPLY results (forms in web components or behind a button, a form
+  that is only a button, a header in a web component, audio from a
+  script, more than 30 images, a canvas page) become NEEDS REVIEW with a
+  sentence that says what was not checked. Abby agreed on 2026-11-12
+  that a guard may move DOES NOT APPLY.
+- **Thread C (Opus): the server judge and sign-in, then the second
+  look's trial** (2 to 3 days). Before item 3's figures are used: the
+  gate's minimum and its count of wrong DOES NOT APPLY (L-02, L-03),
+  picture links through the guarded reader (B-01), page text unable to
+  close the untrusted block (B-02), one picture once a request (G-02),
+  judging outside the browser slot (B-04). Item 4 above (A-05) if no one
+  has taken it. Before VAST: jobs carry their caller (A-01), a token
+  with no `sub` is refused (S-05). Then part F's trial on round 2's
+  frozen pages.
 
-**If the days allow, in this order**
+Merge what is ready before item 3's rerun, so the before-and-after
+figures include it.
 
-6. **Part B: a count of what exists, and a guard that holds DOES NOT
-   APPLY** (2 to 3 days, Opus). The one architectural piece small
-   enough for the demo: it turns about ten of the wrong DOES NOT APPLY
-   results (forms in shadow roots or behind a button, a form that is
-   only a button, a header in a shadow root, audio from a script, more
-   than 30 images, a canvas page) into NEEDS REVIEW with a sentence
-   that says what was not checked. It needs Abby's yes first: a guard
-   would move DOES NOT APPLY, which the template rules out today
-   ("Decisions" below).
-7. **Part F's trial** (half a day, after 3): one request per frozen
-   round 2 page asking the server's model to look again at the rules'
-   PASS and DOES NOT APPLY results. It decides whether the second look
-   is worth building; it changes no outcome.
-8. **VAST: sign in from Claude Code and run one page end to end**
+**If the days allow**
+
+6. **VAST: sign in from Claude Code and run one page end to end**
    ([plan](plans/2026-11-06-hosted-auth.md)), when the admin's answers
-   arrive. First: jobs carry their caller (A-01) and a token with no
-   `sub` is refused (S-05). Fallback: a recorded demo from a local
-   server.
+   arrive and thread C's A-01 and S-05 are in. Fallback: a recorded demo
+   from a local server.
 
 **Not before the demo:** parts C, D, E, G and H below, the review UI and
-WebAuthn, opening everything phases 2 and 3. For the pitch, say what the
-review found and what is planned; the README's status lines and "Known
-limits" below must not claim more than is true on the day.
+WebAuthn, opening everything phases 2 and 3.
+
+**Say what each test can do on the day** (Abby, 2026-11-12). This
+direction is not a formal gate; what matters is that every step states
+each test's capabilities, reliability and limits as they are. Every
+change to a test updates its README status line and the README's
+"Known wrong outcomes" table in the same commit, and the pitch says
+what the review found and what is planned.
 
 ## Next: after the demo
 
@@ -179,8 +191,9 @@ the [pivot plan's](plans/2026-11-07-server-judge-pivot.md). Whatever of
    every crop, the list of what was not looked at, a sample of PASS and
    DOES NOT APPLY results for a Trusted Tester to confirm, and every
    dispute turned into a fixture.
-8. **The second look as a guard** (part F), only if its trial met the
-   bar Abby set.
+8. **The second look as a guard** (part F), shaped by its trial (not a
+   gate: Abby, 2026-11-12). Its README line says what the trial caught
+   and missed.
 9. **Round 3** on a site not used before, after the scorer fixes (15-17)
    and the gate fixes (L-02 to L-04, L-13).
 10. **SCRT files, phases 2 and 3**
@@ -196,16 +209,6 @@ itself, one bundle a thread; they are not repeated here.
 
 ## Decisions waiting for Abby
 
-- **May a guard move DOES NOT APPLY to NEEDS REVIEW?** The template
-  says guards leave it unchanged (2026-11-09). Parts B, C and F need
-  it to change: a form in a shadow root or behind a button is DOES NOT
-  APPLY today. CLAUDE.md's principle 3 would then say: never PASS or
-  DOES NOT APPLY on a reading that is not complete.
-- **Whether the quick fixes (part A) go ahead of the false FAILs** in
-  the main thread, if there is no second thread.
-- **The bar for the second look's trial** (part F), set before it runs.
-  Suggested: it raises doubt on at least 3 of round 2's known wrong
-  cells and on no more than 15% of the right ones.
 - **Spec decisions from the review:** a form behind a plain button
   (H-08), a page that is only a canvas (E-03), native controls that
   answer only `mousedown` (E-08), a title that is a control's only

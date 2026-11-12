@@ -2,7 +2,10 @@
 
 Detail for the roadmap items that came out of the code review
 ([reviews/2026-11-11-code-review.md](../reviews/2026-11-11-code-review.md)).
-Agreed in outline by Abby, 2026-11-12. What is scheduled when is in
+Agreed in outline by Abby, 2026-11-12, with two decisions: a guard may
+move DOES NOT APPLY to NEEDS REVIEW, and none of this is a formal gate;
+each step says plainly what each test can and cannot do at that point.
+What is scheduled when is in
 [the roadmap](../ROADMAP.md); this file keeps no schedule. Nothing here
 changes who decides an outcome: outcomes still come only from
 `specs/rules/`. Agent-assisted results, not certified Trusted Tester
@@ -136,10 +139,13 @@ NEEDS REVIEW, with a plain sentence that names the number and the thing
 hidden until something opens it", "31 images: only the first 30 were
 checked for animation"). Trace row `CN`. FAIL is unchanged.
 
-- This changes a rule Abby set on 2026-11-09: guards leave DOES NOT
-  APPLY unchanged (`specs/rules/_template.md`, "Guards"). It needs her
-  approval before any code. The case for it: H-08 and D-01 are DOES NOT
-  APPLY on pages that plainly have a form.
+- This changes a rule Abby set on 2026-11-09 (guards left DOES NOT
+  APPLY unchanged). **Approved by Abby, 2026-11-12.** In the same
+  commit as the guard: `specs/rules/_template.md` ("Guards": a guard
+  moves a would-be PASS or DOES NOT APPLY to NEEDS REVIEW, never the
+  other way) and CLAUDE.md principle 3 (never PASS or DOES NOT APPLY
+  on a reading that is not complete). The case: H-08 and D-01 are DOES
+  NOT APPLY on pages that plainly have a form.
 - The keys per test live in the specs (principle 2): front matter
   `count:` beside `guards:`, and one paragraph in section 3. Draft, for
   the spec author to settle:
@@ -269,7 +275,9 @@ E-09) and report when more than 20 sentences were found (E-05).
 The idea: the server's model looks at a picture of the whole page and
 at the tool's own PASS and DOES NOT APPLY claims, and may only add
 doubt. It is the one layer that can find a gap nobody wrote a test page
-for. It has no measurement behind it yet, so it starts as a trial.
+for. It has no measurement behind it yet, so it starts with a trial.
+The trial measures and shapes the guard; it is not a gate (Abby,
+2026-11-12).
 
 **Trial** (`evals/second_look.py`, not part of the server):
 
@@ -294,17 +302,20 @@ for. It has no measurement behind it yet, so it starts as a trial.
   raised doubt on; of the cells the key agrees with, how many it
   raised doubt on (false alarms); tokens and seconds per page; three
   repeats for sameness.
-- Abby sets the bar before the run. Suggested: it catches at least 3
-  of the known wrong cells and raises doubt on no more than 15% of the
-  right ones. Below that, drop it and say so here.
+- Write the result here and in `evals/README.md`: what it caught, what
+  it missed, what it flagged that the key says is right, and which
+  questions earned their place. Drop or reword the questions that only
+  add noise.
 
-**If it passes, the guard** (`SL`, beside `CN`): a "yes" that
+**Then the guard** (`SL`, beside `CN`): a "yes" that
 contradicts a DOES NOT APPLY or a PASS moves it to NEEDS REVIEW with
 the model's sentence, marked as the model's. Never the other way; never
 used to skip a test. The prompt is fixed and hashed into the report as
 the judge's is. The picture is untrusted: page text in it that says
 "there is no form" can at worst remove a doubt, which leaves today's
-result. Switched on per test, behind the same gate as `JUDGE_TYPES`.
+result. Switched on per test like `JUDGE_TYPES`. The README says for
+each test whether the second look runs and what the trial showed it
+can and cannot catch.
 
 Not in this part: a model reading the page's source. It is large, it is
 untrusted text, and part B's count answers the same questions exactly.
@@ -427,10 +438,13 @@ hosted server with the judge on, or only locally.
 
 For Abby to approve before the part that needs it is built.
 
-- **Guards may move DOES NOT APPLY to NEEDS REVIEW** (parts B, C, F).
-  Today the template says they leave it unchanged.
-- **CLAUDE.md, principle 3** then reads: never PASS or DOES NOT APPLY
-  on a reading that is not complete.
+- **Decided (Abby, 2026-11-12):** guards may move DOES NOT APPLY to
+  NEEDS REVIEW (parts B, C, F); CLAUDE.md principle 3 then reads: never
+  PASS or DOES NOT APPLY on a reading that is not complete. Thread B
+  writes both, with the template, in the commit that builds the guard.
+- **Decided (Abby, 2026-11-12):** no formal bar for any part. Each
+  change states what the test can and cannot do now (the README's
+  status line and its "Known wrong outcomes" table).
 - **Principle 5's exceptions:** 9.A presses a key an answer names and
   is not on the list (M-15); the media store fetches addresses the
   page names (S-04). List them with their limits, or remove them.
