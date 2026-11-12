@@ -112,12 +112,14 @@ def test_groups_follow_the_table_and_j0_goes_first_and_alone():
 
 
 def test_a_request_is_cut_at_20_questions_40_pictures_and_24_mb():
-    pic = [("run://x/a.png", b"x")]
     many = [(q(str(i), "4.D"), []) for i in range(45)]
     assert [len(g) for g in split(many)] == [20, 20, 5]
-    pics = [(q(str(i), "4.D"), pic * 15) for i in range(5)]  # 75 pictures
+    pics = [
+        (q(str(i), "4.D"), [(f"run://x/{i}-{k}.png", b"x") for k in range(15)])
+        for i in range(5)
+    ]  # 75 different pictures
     assert [len(g) for g in split(pics)] == [2, 2, 1]
-    big = [(q(str(i), "4.D"), [("p", b"x" * (10 * 1024 * 1024))]) for i in range(5)]
+    big = [(q(str(i), "4.D"), [(f"p{i}", b"x" * (10 * 1024 * 1024))]) for i in range(5)]
     assert [len(g) for g in split(big)] == [2, 2, 1]
 
 
@@ -187,6 +189,43 @@ def test_picture_links_are_whole_input_values_read_only_from_this_run(tmp_path):
         tmp_path / "r1",
     )
     assert [label for label, _ in got] == ["run://r1/evidence/ok.png"]
+
+
+def test_a_picture_many_questions_name_is_attached_once_a_request(
+    tmp_path, monkeypatch
+):
+    """G-02: 19 questions naming one screenshot send it once, count once
+    toward the picture cap, and cut it once."""
+    from PIL import Image
+
+    shot = tmp_path / "r" / "evidence" / "page.png"
+    shot.parent.mkdir(parents=True)
+    Image.new("RGB", (20, 20), "white").save(shot, "PNG")
+    other = tmp_path / "r" / "evidence" / "b.png"
+    Image.new("RGB", (20, 20), "black").save(other, "PNG")
+    cuts: list[str] = []
+    real = apijudge._slices
+    monkeypatch.setattr(
+        apijudge, "_slices", lambda path: cuts.append(path.name) or real(path)
+    )
+    qs = [
+        q(f"q{i}", "4.D", inp={"shot": "run://r/evidence/page.png"}) for i in range(19)
+    ] + [q("q19", "4.D", inp={"shot": "run://r/evidence/b.png"})]
+    reqs = apijudge.build_requests(None, {}, tmp_path / "r", "keyboard", qs)
+    assert len(reqs) == 1 and len(reqs[0].questions) == 20
+    assert [label for label, _ in reqs[0].pictures] == [
+        "run://r/evidence/page.png",
+        "run://r/evidence/b.png",
+    ]
+    assert "2 picture(s) are attached" in reqs[0].blocks[-1].text
+    assert sorted(cuts) == ["b.png", "page.png"]
+    # 45 questions with one picture each and the same picture: one request's
+    # cap is reached by questions (20), never by repeats of the picture
+    many = [
+        q(f"m{i}", "4.D", inp={"s": "run://r/evidence/page.png"}) for i in range(45)
+    ]
+    prepared = [(x, apijudge.pictures_of(x, tmp_path / "r")) for x in many]
+    assert [len(g) for g in apijudge.split(prepared)] == [20, 20, 5]
 
 
 def test_page_text_and_input_stay_in_untrusted_blocks_and_the_shared_block_repeats():

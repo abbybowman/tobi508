@@ -404,21 +404,27 @@ def _slices(path: Path) -> list[bytes]:
     return out
 
 
-def pictures_of(q: OpenQuestion, run_dir: Path) -> list[Picture]:
+def pictures_of(
+    q: OpenQuestion, run_dir: Path, cache: dict[str, list[bytes]] | None = None
+) -> list[Picture]:
     """The question's pictures, each read through the guarded reader
     (`resources.runs.run_file`: no `..`, no other run, no other owner) and
-    only from this run (code review B-01)."""
+    only from this run (code review B-01). `cache`: link -> its slices, so
+    a picture several questions name is cut once a run (G-02)."""
     from tobi508.resources.runs import SCHEME, run_file
 
     out: list[Picture] = []
+    cache = {} if cache is None else cache
     for link in _links(q.input):
         run_id, _, rel = link[len(SCHEME) :].partition("/")
         if run_id != run_dir.name:
             continue  # another run's picture is never this question's
-        try:
-            parts = _slices(run_file(run_id, rel, runs_dir=run_dir.parent))
-        except Exception:
-            continue  # a missing picture: the question's `seen` cannot be filled
+        if link not in cache:
+            try:
+                cache[link] = _slices(run_file(run_id, rel, runs_dir=run_dir.parent))
+            except Exception:
+                cache[link] = []  # missing: the question's `seen` cannot be filled
+        parts = cache[link]
         for i, b in enumerate(parts, 1):
             more = (
                 f" (part {i} of {len(parts)}, top to bottom)" if len(parts) > 1 else ""
@@ -562,33 +568,58 @@ class Request:
 
 def split(prepared: list[tuple[OpenQuestion, list[Picture]]]) -> list[list[int]]:
     """Indexes of `prepared` in report order, cut so a request has at most
-    MAX_QUESTIONS questions, MAX_PICTURES pictures and MAX_BYTES of pictures."""
+    MAX_QUESTIONS questions, MAX_PICTURES pictures and MAX_BYTES of pictures.
+    A picture already in the request is attached once, so it counts once
+    (code review G-02)."""
     out: list[list[int]] = [[]]
+    have: set[str] = set()
     n_pic = n_bytes = 0
     for i, (_, pics) in enumerate(prepared):
-        b = sum(len(x) for _, x in pics)
+        new = _unique([p for p in pics if p[0] not in have])
+        b = sum(len(x) for _, x in new)
         if out[-1] and (
             len(out[-1]) >= MAX_QUESTIONS
-            or n_pic + len(pics) > MAX_PICTURES
+            or n_pic + len(new) > MAX_PICTURES
             or n_bytes + b > MAX_BYTES
         ):
             out.append([])
+            have = set()
+            new = _unique(pics)
+            b = sum(len(x) for _, x in new)
             n_pic = n_bytes = 0
         out[-1].append(i)
-        n_pic += len(pics)
+        have |= {label for label, _ in new}
+        n_pic += len(new)
         n_bytes += b
     return [g for g in out if g]
 
 
+def _unique(pics: list[Picture]) -> list[Picture]:
+    """Each picture once, by its label (a link, or a link and its part)."""
+    seen: set[str] = set()
+    out = []
+    for p in pics:
+        if p[0] not in seen:
+            seen.add(p[0])
+            out.append(p)
+    return out
+
+
 def build_requests(
-    report: Any, states: dict, run_dir: Path, family: str, qs: list[OpenQuestion]
+    report: Any,
+    states: dict,
+    run_dir: Path,
+    family: str,
+    qs: list[OpenQuestion],
+    cache: dict[str, list[bytes]] | None = None,
 ) -> list[Request]:
     shared = shared_block(report, states, qs)
-    prepared = [(q, pictures_of(q, run_dir)) for q in qs]
+    cache = {} if cache is None else cache
+    prepared = [(q, pictures_of(q, run_dir, cache)) for q in qs]
     reqs = []
     for idx in split(prepared):
         group = [prepared[i] for i in idx]
-        pics = [p for _, ps in group for p in ps]
+        pics = _unique([p for _, ps in group for p in ps])
         blocks = [Block(shared, cache=True)] + [
             Block(question_block(q, ps)) for q, ps in group
         ]
@@ -764,6 +795,7 @@ async def judge_run(
     sem = asyncio.Semaphore(settings.judge_concurrency)
     deadline = time.monotonic() + settings.judge_cap_s
     tried: set[str] = set()
+    cut: dict[str, list[bytes]] = {}  # each picture cut once a run (G-02)
     run = RunRecorder.open(settings.runs_dir, run_id)
 
     def log(req: Request, r: CallResult, attempt: int) -> None:
@@ -807,13 +839,17 @@ async def judge_run(
             q: OpenQuestion, report=report, states=states, run_dir=run_dir
         ) -> Request:
             fam = FAMILY_OF[q.test_id.value]
-            return build_requests(report, states, run_dir, fam, [q])[0]
+            return build_requests(report, states, run_dir, fam, [q], cut)[0]
 
-        reqs = [
-            r
-            for fam, qs in groups
-            for r in build_requests(report, states, run_dir, fam, qs)
-        ]
+        def build(report=report, states=states, groups=groups, run_dir=run_dir):
+            return [
+                r
+                for fam, qs in groups
+                for r in build_requests(report, states, run_dir, fam, qs, cut)
+            ]
+
+        # Cutting and encoding pictures is CPU work: off the event loop (G-02).
+        reqs = await asyncio.to_thread(build)
         stats.requests += len(reqs)
         got = await asyncio.gather(
             *[answer_request(conn, system, r, stats, sem, log, again) for r in reqs]
