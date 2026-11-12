@@ -1412,6 +1412,11 @@ None of the wrong outcomes in this review was caught by the suite of
 - **Checked:** verified (read) in the workflow. The reviewer collected
   each group and found 1,196 of 1,204: the 7 inject tests and the one
   slow test are missing.
+- **Fixed:** CI commit below ("CI: every test file in a group"):
+  "rest" ignores only `test_fixtures_[0-9]*`, and a `groups` job
+  (`scripts/ci_groups_check.py`) fails when the groups collect fewer
+  tests than the suite. Run against the old glob it lists the 7 inject
+  tests as missing; now 1,203 of 1,203.
 
 #### Q-02 A change to the judge's prompt skips CI altogether
 
@@ -1426,6 +1431,7 @@ None of the wrong outcomes in this review was caught by the suite of
 - **Smallest fix:** skip only `docs/*`; everything else is code.
 - **Checked:** verified (read): the `case` puts `docs/*|*.md` after
   `README.md|specs/*`, and `*` matches a path with slashes.
+- **Fixed:** CI commit below: only `docs/*` is docs-only.
 
 #### Q-03 The hard cases have no fixtures
 
@@ -1923,6 +1929,10 @@ not checked.
   hours), no cancel of superseded runs and no cache; `uv sync` is not
   `--locked`; actions are pinned to moving tags.
   `.github/workflows/*.yml`.
+  **Partly fixed:** timeouts, cancel of superseded runs and
+  `uv sync --locked` are in. Not fixed: caching and pinning actions to
+  commit hashes (the hashes need a network lookup; left for a later
+  change).
 - **Q-09** On a push to main the image is published without waiting
   for the tests, so a commit that fails tests still ships as
   `:latest`. The smoke test runs one 4.C run in dev mode and never

@@ -10,15 +10,21 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same branch or pull request replaces the run in progress.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Decides whether the heavy jobs run (post-round 2 fix 29, Abby 2026-11-08).
-  # A change is docs-only when every changed file is under docs/ or is a
-  # Markdown file, except what the tests read: README.md (test_readme),
-  # specs/ (the rules are the only source of outcome logic; sources is the
-  # TT text). A skipped job counts as passed for a
-  # required check; "CI" below is the one check to require.
+  # A change is docs-only when every changed file is under docs/ and nothing
+  # else (Q-02): README.md, specs/ and Markdown the code reads or hashes
+  # (src/tobi508/judge_prompt.md, third_party/**) are code. A skipped job
+  # counts as passed for a required check; "CI" below is the one check to
+  # require.
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
       code: ${{ steps.diff.outputs.code }}
     steps:
@@ -42,8 +48,7 @@ jobs:
           code=false
           while IFS= read -r f; do
             case "$f" in
-              README.md|specs/*) code=true ;;
-              docs/*|*.md) ;;
+              docs/*) ;;
               *) code=true ;;
             esac
           done < <(git diff --name-only "$base" HEAD)
@@ -53,6 +58,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -65,7 +71,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --locked --group dev
 
       - name: Lint
         run: uv run ruff check .
@@ -93,7 +99,7 @@ jobs:
           - group: rest
             args: >-
               tests/
-              --ignore-glob=tests/test_fixtures_*.py
+              --ignore-glob=tests/test_fixtures_[0-9]*.py
               --ignore-glob=tests/test_act_*.py
               --ignore=tests/test_baseline_cases.py
               --ignore-glob=tests/test_motion*.py
@@ -101,6 +107,7 @@ jobs:
               --ignore-glob=tests/test_rows_*.py
               --ignore=tests/test_site.py
     name: test (${{ matrix.group }})
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
@@ -113,7 +120,7 @@ jobs:
         run: uv python install 3.11
 
       - name: Install dependencies
-        run: uv sync --group dev
+        run: uv sync --locked --group dev
 
       # CI has no installed Chrome; tests default to Playwright's Chromium.
       - name: Install Playwright Chromium
@@ -128,13 +135,38 @@ jobs:
       - name: Run tests (${{ matrix.group }})
         run: uv run pytest ${{ matrix.args }} -v
 
+  # Fails when the groups above together collect fewer tests than the whole
+  # suite, so a new test file no group names is noticed (Q-01).
+  groups:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "0.11.32"
+
+      - name: Install Python
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --locked --group dev
+
+      - name: Every test is in a group
+        run: uv run python scripts/ci_groups_check.py
+
   # The one check to require: passes when the heavy jobs passed or were
   # skipped for a docs-only change, fails when any failed or was cancelled.
   ci:
     name: CI
-    needs: [changes, lint, test]
+    needs: [changes, lint, test, groups]
     if: always()
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check the jobs
         env:
