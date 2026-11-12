@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><title>Feed</title></head><body><main><h1>Feed</h1>
+<label for="q">Search</label> <input id="q" type="text">
+<button type="button" id="t" aria-expanded="false" aria-controls="m">Filters</button>
+<div id="m" hidden><input type="text" id="f"></div>
+<ul id="feed"></ul></main>
+<script>var n=0;setInterval(function(){var li=document.createElement('li');li.textContent='Update '+(++n);document.getElementById('feed').appendChild(li);},300);</script></body></html>

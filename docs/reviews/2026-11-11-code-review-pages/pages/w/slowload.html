@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><title>Slow load then flash</title>
+<script>setTimeout(()=>{let on=0;setInterval(()=>{on^=1;document.getElementById('f').style.background=on?'#fff':'#000'},125)},5000);</script></head>
+<body style="margin:0"><h1>Heavy page</h1>
+<div id="f" style="width:1000px;height:600px;background:#000"></div>
+<script>let s=0;for(let i=0;i<1.8e9;i++){s+=i%7}</script>
+</body></html>

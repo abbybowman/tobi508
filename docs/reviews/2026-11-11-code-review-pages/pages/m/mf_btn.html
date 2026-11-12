@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><title>Sign up</title></head><body><main><h1>Sign up</h1>
+<form id="f"><label>Email <input name="email" id="e"></label><label>Zip <input name="zip" id="z"></label>
+<button type="button" onclick="v()">Submit</button><div id="err" role="alert"></div></form>
+<script>function v(){var e=document.getElementById('e').value;if(!/@/.test(e)){document.getElementById('err').textContent='Email: enter a valid email address';}}</script>
+</main></body></html>

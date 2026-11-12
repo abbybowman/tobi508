@@ -1,0 +1,20 @@
+<!doctype html><html lang=en><head><title>w8</title><style>a:focus,[role=menuitem]:focus{outline:3px solid #c00}</style></head><body>
+<a href="#top">Top</a>
+<div role="menubar" aria-label="Main">
+<a role=menuitem href="#m1" tabindex=0>Item 1</a>
+<a role=menuitem href="#m2" tabindex=-1>Item 2</a>
+<a role=menuitem href="#m3" tabindex=-1>Item 3</a>
+<a role=menuitem href="#m4" tabindex=-1>Item 4</a>
+<a role=menuitem href="#m5" tabindex=-1>Item 5</a>
+<a role=menuitem href="#m6" tabindex=-1>Item 6</a>
+<a role=menuitem href="#m7" tabindex=-1>Item 7</a>
+<a role=menuitem href="#m8" tabindex=-1>Item 8</a>
+</div>
+<a href="#end">End</a>
+<script>
+const items=[...document.querySelectorAll('[role=menuitem]')];
+document.querySelector('[role=menubar]').addEventListener('keydown',e=>{
+ const i=items.indexOf(document.activeElement); if(i<0)return;
+ let n=i; if(e.key==='ArrowRight')n=Math.min(items.length-1,i+1); else if(e.key==='ArrowLeft')n=Math.max(0,i-1); else return;
+ e.preventDefault(); items[i].tabIndex=-1; items[n].tabIndex=0; items[n].focus();});
+</script></body></html>

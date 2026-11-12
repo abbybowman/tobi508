@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><title>Late flash</title></head><body style="margin:0">
+<h1>Static page</h1><p>Plain text at the top.</p>
+<div id="f" style="width:1000px;height:600px;background:#000"></div>
+<script>setTimeout(()=>{let on=false;setInterval(()=>{on=!on;document.getElementById('f').style.background=on?'#fff':'#000'},125);},9000);</script>
+</body></html>

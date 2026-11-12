@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><title>Shadow click</title></head><body>
+<h1>Widgets</h1>
+<p><a href="#x">A link</a></p>
+<div id="host"></div>
+<p id="out"></p>
+<script>
+const r = document.getElementById('host').attachShadow({mode:'open'});
+r.innerHTML = '<span id="go" style="display:inline-block;padding:8px;border:1px solid">Show details</span>';
+r.getElementById('go').addEventListener('click', () => { document.getElementById('out').textContent = 'Details shown: 42'; });
+</script>
+</body></html>

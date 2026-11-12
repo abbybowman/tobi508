@@ -1,0 +1,5 @@
+<!doctype html><html lang=en><head><title>Kiosk</title></head><body><main><h1>Sign in</h1>
+<form onsubmit="return false"><button type=button>One</button><button type=button>Two</button><button type=button>Three</button></form></main>
+<script>
+document.addEventListener('keydown',function(e){if(e.key==='Tab'){e.preventDefault();var b=[].slice.call(document.querySelectorAll('button'));var i=b.indexOf(document.activeElement);i=e.shiftKey?(i<=0?b.length-1:i-1):(i+1)%b.length;b[i].focus();}});
+</script></body></html>

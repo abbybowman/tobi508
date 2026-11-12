@@ -1,13 +1,14 @@
-# Code review notes, 2026-11-11 (partial, unverified)
+# Code review notes, 2026-11-11 (raw, superseded)
 
-Raw output of a line-by-line review that was cut short by a usage limit.
-It is the starting point for a dedicated review thread, not a finished
-list: **nothing here has been verified by a second reader**, and reviewers
-that were interrupted wrote down only what they had found so far. Delete
-this folder once that thread has produced the triaged list.
-
-**To continue:** [HANDOFF.md](HANDOFF.md) is the prompt for a fresh session,
-in phases.
+The reviewers' raw notes, one file per group. **The checked and triaged
+list is [../2026-11-11-code-review.md](../2026-11-11-code-review.md)**;
+read that, not these. What these still hold that the list does not: the
+row-by-row spec tables (files E, F, H, M, N), the measurement tables
+(T, W) and the test-coverage tables (Q). Severities here are the
+reviewers' own and were changed in the triage. Kept on purpose (Abby,
+2026-11-12): the threads that fix items read these tables
+([../2026-11-11-code-review-fixing.md](../2026-11-11-code-review-fixing.md)).
+Delete the folder when the items that cite it are fixed.
 
 ## What was covered
 
@@ -18,16 +19,24 @@ in phases.
 | [D-traverse.md](D-traverse.md) | `traverse.py`, `walk.py`, `observe.py`, `reveal.py`, `forms.py`, `labels.py` | interrupted; 25 findings |
 | [K-checks-9bc-19a.md](K-checks-9bc-19a.md) | `site.py`, 9.B, 9.C, 19.A against their specs | complete; 15 findings |
 | [L-evals.md](L-evals.md) | `evals/*.py`, `evals/agent/*.py` | interrupted; 18 findings |
+| [S-security.md](S-security.md) | `browser.py`, `capture.py`, `egress.py`, `policy.py`, `redact.py`, `access.py`, `frozen.py`, `andi.py`, `scrt.py`, `compare.py` | complete; 12 findings |
+| [T-tokens.md](T-tokens.md) | what a calling agent receives, measured on `agency-home.html` | complete; 11 findings |
+| [G-gaps-AB.md](G-gaps-AB.md) | what A and B left in the tools, `models.py`, `jobs.py`, `config.py`, `pipeline.py`, `judgment.py`, `apijudge.py` | complete; 15 findings |
+| [E-checks-4abc.md](E-checks-4abc.md) | `checks/base.py`, 4.A, 4.B, 4.C against their specs | complete; 19 findings |
+| [F-checks-4def.md](F-checks-4def.md) | 4.D, 4.E, 4.F against their specs | complete; 23 findings |
+| [H-checks-5abcd.md](H-checks-5abcd.md) | 5.A to 5.D against their specs | complete; 17 findings |
+| [M-checks-5fgh-9a.md](M-checks-5fgh-9a.md) | 5.F, 5.G, 5.H, 9.A against their specs | complete; 22 findings |
+| [N-checks-2x-3a.md](N-checks-2x-3a.md) | 2.A to 2.D, 3.A against their specs | complete; 16 findings |
+| [W-watchers.md](W-watchers.md) | `motion.py`, `mechanism.py`, `flash.py`, `flashcap.py` | complete; 17 findings |
+| [C-core-rest.md](C-core-rest.md) | what D left in the keyboard core | complete; 11 findings |
+| [Q-tests-ci.md](Q-tests-ci.md) | tests, CI, Dockerfile, packaging | complete; 16 findings |
 
-Not reviewed at all: `browser.py`, `capture.py`, `egress.py`, `policy.py`,
-`redact.py`, `access.py`, `frozen.py`, `andi.py`, `scrt.py`, `compare.py`;
-`motion.py`, `mechanism.py`, `flash.py`, `flashcap.py`; the checks for
-2.A-2.D, 3.A, 4.A-4.F, 5.A-5.H and 9.A; the test suite, CI, Dockerfile and
-packaging. [BRIEF.md](BRIEF.md) is the brief every reviewer worked from.
+[BRIEF.md](BRIEF.md) is the brief every reviewer worked from;
+[HANDOFF.md](HANDOFF.md) is the prompt the phases followed.
 
-## Leads to verify first
+## Leads of the first attempt
 
-Reported as P1 by a reviewer; each needs a second look before any fix.
+All checked in phase 0; the triaged list has what became of each.
 
 - **B-01** picture links taken from page text are read as file paths
   (path traversal, another run's files).

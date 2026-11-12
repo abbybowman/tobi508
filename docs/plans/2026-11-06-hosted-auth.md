@@ -6,6 +6,14 @@ signed-in NASA users can run it, each sees only their own runs, and every
 call is audited. GSA requires a hosted server; the loopback-only rule stays
 for HTTP without sign-in.
 
+**Before a second person signs in** (code review, 2026-11-12;
+[reviews/2026-11-11-code-review.md](../reviews/2026-11-11-code-review.md)):
+jobs carry the caller who started them, so `tobi_run_status` cannot list
+or return another person's run (A-01); a token with no `sub` claim is
+refused, not treated as "no sign-in" (S-05); set `OIDC_AUDIENCE` and
+`REQUIRED_GROUPS`, which are empty by default. The fuller change is part H
+of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md).
+
 ## What VAST gives every prototype
 
 From VAST's documentation and its app boilerplate (`py_auth_boilerplate`):

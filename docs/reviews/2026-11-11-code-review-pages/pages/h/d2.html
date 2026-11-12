@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><title>t</title></head><body>
+<h1>Trap</h1>
+<form onsubmit="return false">
+<label for="a">First</label> <input id="a" type="text"><br>
+<a id="t" href="#top">trap link</a><br>
+<label for="b">Second</label> <input id="b" type="text" onblur="location.href='data:text/html,gone'">
+</form>
+<script>document.getElementById('t').addEventListener('keydown',function(e){if(e.key==='Tab'){e.preventDefault();}});</script>
+</body></html>

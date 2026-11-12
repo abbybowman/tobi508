@@ -282,6 +282,28 @@ means for this plan:
   retried once and then left open, unsure never retried, gate questions
   (J0) answered before the rest of a page.
 
+## What the code review changed (2026-11-12)
+
+The review ([reviews/2026-11-11-code-review.md](../reviews/2026-11-11-code-review.md))
+supports this plan's division of work and adds to it
+([the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md)):
+
+- **The judge and the person only see NEEDS REVIEW.** All 30 wrong PASS
+  and DOES NOT APPLY results the review found went straight to the
+  report. So readings must say what they covered (parts B and C), and
+  a second look at confident results is worth a trial (part F).
+- **The gate** needs a minimum number of decided cells and must count a
+  wrong DOES NOT APPLY (L-02, L-03), and it reuses pages the prompt was
+  tuned on (L-13). "How the evals change" above stands with those
+  added.
+- **The calling agent** should carry nothing: no raw page text, no
+  report files (part H). It is the party that holds the user's
+  repository, and the tested page is untrusted.
+- **The review page** (option A) must show the whole page beside each
+  crop, or a reviewer inherits the tool's blind spots (part G).
+- **Decision 6, the local runner,** is where the agent's own value is
+  (the user's unreleased pages); it stays later (part J).
+
 ## Bundles and status (2026-11-11)
 
 Fix numbers are those of the
@@ -293,11 +315,11 @@ for the Nov 20 demo and what comes after is in
 | --- | --- | --- | --- |
 | 1 | `apijudge` | ApiJudge in the server; the judge-eval backend; the gate | Built, off by default; the gate has run as a 2-page trial only ([plan](2026-11-08-apijudge-build.md)) |
 | 2 | `rules-principle3` | Fixes 1-6, 9b phase 1, the chunk store and guard GU | Built, except fix 3 (error values) |
-| 3 | `frames` | Fix 7: 5.x reads fields in frames; the per-test frame leftovers | Not started |
+| 3 | `frames` | Fix 7: 5.x reads fields in frames; the per-test frame leftovers | Not started; built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) |
 | 4 | `questions-for-judges` | Fixes 12-14 and 24-27; then the gate for 4.F and 9.C | Not started |
 | 5 | `rules-false-fail` | Fixes 8-11 and 9c | Not started |
-| 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | Not started |
-| 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Not started (sign-in built against a stand-in: [plan](2026-11-06-hosted-auth.md)) |
+| 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | Not started; part G of that plan adds the whole page beside each crop, the list of what was not looked at, and a sample of PASS and DOES NOT APPLY |
+| 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Not started (sign-in built against a stand-in: [plan](2026-11-06-hosted-auth.md)); the store now comes before bundle 6 and carries the thin MCP surface (part H of that plan) |
 | 8 | `scorer-round3` | Fixes 15-17 and 29 | 29 built; 17 partly |
 
 Later: cross-page tests from the store, the fix path, the local runner,

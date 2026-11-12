@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><title>Lazy counters</title></head><body><h1>Agency news</h1><p>Welcome to our agency home page.</p><a href="#a">About</a>
+<div style="height:1500px"></div><div id="a" style="height:100px">Lazy image slot</div>
+<div style="height:3000px"></div><div id="b" style="font-size:30px;height:100px">Visitors 0</div>
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&e.target.id==='b'&&!window.s){window.s=1;let n=0;setInterval(()=>{n++;e.target.textContent='Visitors '+n},1000)}}));
+io.observe(document.getElementById('a'));io.observe(document.getElementById('b'));
+</script></body></html>
