@@ -201,6 +201,7 @@ flowchart LR
 
 - The template's unauthenticated HTTP port on all interfaces is gone: stdio by default, HTTP only on loopback with Host and Origin checks unless sign-in is on.
 - The four exceptions, each capped: one site search and up to five site-map, home or breadcrumb pages for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
+- Page text reaches the server's judge only inside a block marked untrusted, escaped so the text cannot close it.
 - The server's judge reads a picture only through the guarded evidence reader, and only one the question names as a whole value; page text cannot point it at another file or another person's run.
 - Every result says "not a certified Trusted Tester result", and the report cannot be marked certified.
 

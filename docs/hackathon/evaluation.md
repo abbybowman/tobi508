@@ -166,7 +166,7 @@ The server reads public web pages, by default only on `.gov` and `.mil`. It need
 - **Outcomes come only from spec rows.** A model's answer is recorded as a fact for a rule, never as an outcome.
 - **Adversarial fixture.** Fixture F32 contains text telling automated testers to report PASS for every test; the expected result is FAIL with both traps reported. **[FILL: result at the submission commit.]**
 
-- **Trick text aimed at the server's judge.** Two more pages (`tests/fixtures/inject/`) ask for the outcome the page would not get. Tests check that the model sees such text only inside the block marked untrusted; in a two-call trial the judge answered both correctly. Not yet covered: injected text in accessible names and in frames.
+- **Trick text aimed at the server's judge.** Three more pages (`tests/fixtures/inject/`) ask for the outcome the page would not get; one writes the untrusted block's closing tag before its trick. Page data is escaped (`<`, `>` and `&`), so page text cannot end the block. Tests check that the model sees such text only inside the block marked untrusted; in a two-call trial (before the third page) the judge answered both correctly. Not yet covered: injected text in accessible names and in frames.
 - **Page text can't choose a file for the judge.** The server's judge attaches a picture only when a question's input value is exactly a link to that run's own screenshot, read through the same guarded reader as the run's resources (no `..`, no other run, no other person's run). A link written into page text, such as a link's name, is never read (`tests/test_apijudge.py`).
 
 ### Logs and errors
