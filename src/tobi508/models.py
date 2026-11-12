@@ -490,6 +490,12 @@ class OtherPage(BaseModel):
     url: str
     final_url: str | None = None
     har: str = Field(description="HAR path relative to the run folder.")
+    same_content_as_tested: bool = Field(
+        default=False,
+        description="The recorded document is byte-for-byte the tested "
+        "page's, under another address (a query string). 9.A to 9.C and 19.A "
+        "then do not compare the two (they would compare a page with itself).",
+    )
     reused_from: str | None = Field(
         default=None,
         description="When the recording was reused from an earlier call in "

@@ -97,3 +97,76 @@ def test_other_pages_are_checked_before_anything_runs(settings):
         check_other_pages(
             settings, url, [f"{same}?{i}" for i in range(51)], no_time_limit=True
         )
+
+
+def test_the_tested_page_under_another_spelling_is_refused_before_anything_runs(
+    settings,
+):
+    """K-01: the same address with a trailing slash, another scheme, a
+    different case in the host or a fragment is the tested page itself.
+    (A query string can make a different page, so it is not equated.)"""
+    import pytest
+
+    from tobi508.pipeline import RunRefused, check_other_pages, same_address
+
+    url = "http://127.0.0.1:8000/a/"
+    for spelling in (
+        "http://127.0.0.1:8000/a",
+        "http://127.0.0.1:8000/a/#top",
+        "https://127.0.0.1:8000/a/",
+        "http://127.0.0.1:8000/a/?",
+    ):
+        assert same_address(url, spelling), spelling
+        with pytest.raises(RunRefused, match="itself"):
+            check_other_pages(settings, url, [spelling])
+    assert not same_address(url, "http://127.0.0.1:8000/a/?x=1")
+    assert not same_address(url, "http://127.0.0.1:8000/b/")
+    # Two spellings of one other page are one page.
+    other = "http://127.0.0.1:8000/b"
+    assert check_other_pages(settings, url, [other, other + "/", other + "#x"]) == [
+        other
+    ]
+
+
+async def test_an_other_page_that_redirects_to_the_tested_page_is_refused(
+    settings, server
+):
+    """K-01: after recording, the final addresses are compared: the tested
+    page is not compared with itself (9.B and 9.C would PASS on no evidence)."""
+    import pytest
+
+    from tobi508.models import TestId
+    from tobi508.pipeline import RunRefused, run_tt_tests
+
+    with pytest.raises(RunRefused, match="same page as the tested page"):
+        await run_tt_tests(
+            settings,
+            f"{server.base}/dyn",
+            [TestId.T9B],
+            other_pages=[f"{server.base}/redir-ok"],
+        )
+
+
+async def test_an_other_page_with_the_tested_pages_own_content_is_not_compared(
+    settings, server
+):
+    """K-01 (Abby, 2026-11-12): `?x=1` can be another page, so the address is
+    not refused; but when the recorded document is byte-for-byte the tested
+    page's, 9.A to 9.C would compare a page with itself and PASS on no
+    evidence. They are NEEDS REVIEW, not performed, and say why."""
+    from tobi508.models import TestId
+    from tobi508.pipeline import run_tt_tests
+
+    url = f"{server.base}/9x/a1-home.html"
+    out = await run_tt_tests(
+        settings,
+        url,
+        [TestId.T9A, TestId.T9B, TestId.T9C],
+        other_pages=[url + "?x=1"],
+    )
+    assert out.errors == [], out.errors
+    assert out.report.other_pages[0].same_content_as_tested is True
+    for f in out.report.findings:
+        assert f.outcome.value == "NEEDS_REVIEW", (f.test_id, f.rows, f.summary)
+        assert f.note == "This test could not be performed", f.test_id
+        assert "same content as the tested page" in f.summary, (f.test_id, f.summary)

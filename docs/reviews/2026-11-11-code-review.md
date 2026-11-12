@@ -96,13 +96,13 @@ below; "run" means I ran a page and got the outcome shown.
 
 | ID | Test | What the tool says | On what | Checked |
 | --- | --- | --- | --- | --- |
-| E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run |
-| E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run |
+| E-01 | 4.A | PASS | a mouse-only hover menu past the 40th Tab stop | run. **Fixed** |
+| E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run. **Fixed** |
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
 | H-01 | 5.A | PASS | a label whose words are hidden | run |
-| C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run |
+| C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
@@ -117,7 +117,7 @@ below; "run" means I ran a page and got the outcome shown.
 | W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
 | W-07 | 2.B | DOES NOT APPLY | motion that fills most of the screen | run |
 | N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
-| N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run |
+| N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run. **Fixed** |
 | E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run |
 | E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
 | C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run |
@@ -125,7 +125,7 @@ below; "run" means I ran a page and got the outcome shown.
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
-| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run |
+| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script |
 | A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read |
 
@@ -167,6 +167,9 @@ gallery, a form behind a button, a script-checked form.
   say so.
 - **Checked:** verified (run). 45 links, a mouse-only menu shown by
   hovering the 45th: 4.A PASS, rows A3, G4.
+- **Fixed:** commit "4.A: the hover cap holds the page back (E-01)",
+  no spec change (spec 4.A already says G3). Fixture
+  `4a/f18-hover-menu-past-the-cap`: NEEDS REVIEW.
 
 #### E-02 4.A passes a mouse-only `<a href="#">` because another link also has `href="#"`
 
@@ -185,6 +188,9 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). `<a href="#">Home</a>` and
   `<a href="#" tabindex="-1" onclick=...>Open settings</a>`: 4.A PASS,
   row k1:M3 ("Home goes to the same place").
+- **Fixed:** with K-04, spec 4.A 1.6.0 (row M3 uses the destination).
+  Fixture `4a/f19-placeholder-link-twin`: J1 is asked; with "no
+  alternative", FAIL M6 (was PASS M3).
 
 #### N-06 A flashing GIF after the 30th image is invisible to 3.A and 2.B
 
@@ -296,6 +302,13 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). A link trigger with a hidden, unlabelled
   field in its menu: 5.A PASS. The reviewer's control with a
   `<button>` trigger: NEEDS REVIEW, field found.
+- **Fixed:** commit "Fragment-only address changes are not navigations
+  (C-03, F-06, H-11)", no spec change (the 4.E and 5.D Terms already
+  say the fragment is ignored). `observe.without_fragment` is used by
+  `observe()`; 4.E's navigation hook skips a fragment-only change.
+  Fixtures `5a/f25-hash-link-opens-menu` (5.A FAIL M2 M5, as the
+  accordion page f23), `4e/f11-hash-change-on-focus`,
+  `4e/f12-pushstate-on-focus`, `5d/f22-hash-change-on-blur`.
 
 #### N-02, N-04, N-07, N-09 What starts after the 6.5-second watch is "does not apply"
 
@@ -319,6 +332,12 @@ gallery, a form behind a button, a script-checked form.
   reading the element appears in, which is the same one, and concludes
   it is not advancing. Verified (run). Fix: compare with the last
   reading (`t2a.py`, `find_audio`).
+- **W-05 Fixed:** commit "2.A: audio a script adds after load is compared
+  with its last reading (W-05)", no spec change. `find_audio` counts an
+  element as advancing when its nearest-to-3.5 s reading or its last one
+  is later than its first. Fixture `2x/t-audio-late`: FAIL (K6), it was
+  DOES NOT APPLY (A3). Not fixed: audio that first appears after the 3.5 s
+  reading (the watch is still 6.5 s: part J).
 - **Smallest fix:** share 2.C's hints: when there is a hint and nothing
   was found, 2.A, 2.B and 3.A answer NEEDS REVIEW too; add "N more
   elements wait to be scrolled into view" as a hint. Spec changes in
@@ -490,6 +509,13 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). A small form page with the run limit set
   to 17 s: the run reported the time-limit error and 4.C PASS (rows A3,
   G4). At 22 s and 28 s the same page passes with no error.
+- **Fixed:** commit "4.C: out of time before the error pass is never PASS (E-07)",
+  no spec change. `RunContext.out_of_time(record)` adds the one shared
+  reason to the check's `incomplete`; the gate uses it. Test
+  `test_f44_out_of_time_before_the_error_pass_is_never_pass` forces the
+  time (a real limit is machine-dependent): PASS before, NEEDS REVIEW
+  after. Other checks still call `out_of_time()` with no record: moving
+  them onto it is part C's "one out of time helper".
 
 #### H-03, M-05 5.D and 5.F pass a form they stopped testing at a keyboard trap
 
@@ -624,6 +650,13 @@ different checks, and some of those ways do not hold back an outcome.
   by 2.A, 2.B and 3.A.
 - **Checked:** verified (run). A `youtube-nocookie.com/embed/...
   ?autoplay=1` frame: 2.A NEEDS REVIEW, 2.B DOES NOT APPLY.
+- **Fixed:** commit "2.B: a streaming player, a blob-streamed video and a file
+  over the cap are NEEDS REVIEW (N-08)", no spec change (A1 already says it).
+  `motion.streaming_players` and `STREAMING_WHY` are shared by 2.A, 2.B and
+  3.A (one pattern, with or without `autoplay=1`); 2.B's `video_failed` adds
+  the blob and over-the-cap cases as 2.A has them. 2.A and 3.A still have
+  their own blob and over-cap code: moving it to one helper is part C's
+  shared base. Fixture `2x/t-streaming-embed`: 2.B NEEDS REVIEW (A1).
 
 #### E-03 4.A says "nothing can be used with a mouse or keyboard" on a canvas or drag-only page
 
@@ -768,6 +801,21 @@ different checks, and some of those ways do not hold back an outcome.
 - **Also 9.A (M-11):** the same input makes 9.A treat everything as
   repeated; the reviewer's runs gave FAIL with a `main` landmark and
   DOES NOT APPLY without one. One fix covers all three tests.
+- **Fixed (partly):** commit "Other pages: the tested page under another
+  spelling is refused (K-01, M-11)", no spec change. `pipeline.same_address`
+  ignores the fragment, scheme, host case, default port, a trailing slash
+  and an empty query; used before recording (the caller's list, duplicates
+  among the other pages too) and after redirects (final address equal to
+  the tested page's or an earlier other page's: a tool error, no run
+  folder). Tests in `tests/test_site.py`. A query string can make a
+  different page, so it is not refused by address. **Then (Abby approved
+  2026-11-12, commit "K-01 safety net..."):** when an other page's
+  recorded document is byte-for-byte the tested page's under another
+  address, 9.A, 9.B, 9.C and 19.A are NEEDS REVIEW, not performed, and say
+  why (`OtherPage.same_content_as_tested`, `capture.document_sha`; A2 rows,
+  spec 9.A 1.2.0, 9.B 1.2.0, 9.C 1.3.0, 19.A 1.2.0). A single-page app whose
+  routes serve one shell is warned, never refused outright. Not caught: a
+  page whose bytes change on each request.
 
 ### Security, in modes the demo plan turns on
 
@@ -1156,6 +1204,17 @@ a narrower page or an agent's wrong answer than the P0 items do.
   its fragment changed, or the document reloaded.
 - **Checked:** verified (run). A link whose focus handler sets
   `location.hash`: 4.E FAIL, rows e1:M4, G2.
+- **Fixed:** with C-03 above. A second cause was behind it:
+  `traverse._focus_events` counted focus events per frame address
+  including the fragment, so after a fragment change every earlier event
+  was read again and 4.E said "focus jumps" (M6). It now counts by the
+  address without its fragment. The review's page prints 4.E PASS.
+- **Regression found and repaired (same day):** ignoring the fragment in
+  `observe()` made a click that only sets `location.hash` look like "no
+  effect" to 4.A (`4a/f07-same-address-link` went from row M3 to M2, no
+  question). A fragment-only change is now its own effect kind,
+  `fragment`: reveal, 4.E and 5.D ignore it, 4.A counts it as what the
+  click did.
 
 #### F-01 4.D is NEEDS REVIEW for any menu with seven or more items
 
@@ -1171,6 +1230,11 @@ a narrower page or an agent's wrong answer than the P0 items do.
   judge only the first five items.
 - **Checked:** verified (run). A menubar of 8 items, each with a clear
   outline: 4.D NEEDS REVIEW, naming "Item 7".
+- **Fixed:** commit "4.D: a menu of seven or more items is read to the
+  cap and stepped back once (F-01)". Abby approved it on 2026-11-12 (it
+  turns NEEDS REVIEW into PASS on a clean menu). No spec change: the spec
+  already says the first `WIDGET_ITEMS_MAX` items stand for the rest.
+  Fixture `4d/f17-menubar-of-eight-items`: PASS, every item row M6.
 
 #### F-12 4.F treats an element it could not measure as "no order problem"
 
@@ -1255,6 +1319,13 @@ a narrower page or an agent's wrong answer than the P0 items do.
   on the tested page and a "Close alert" link on the other: 9.C FAIL
   ("has a name screen readers announce on one page and none on other
   page 1").
+- **Fixed:** commit "E-02 and K-04: a link that goes nowhere has no
+  destination", spec 9.A 1.2.0 (Term "Destination"), 9.C 1.3.0. Abby
+  approved the wording on 2026-11-12 (`mailto:` and `tel:` are
+  destinations; `#name` with no matching element is none; a link to the
+  page itself is none). `traverse.DEST_JS` computes it in the page; 9.C
+  pairs by `dest`. Fixtures `9x/f1-js-icon-header` with `f2-js-close-alert`:
+  9.C PASS (was FAIL C2).
 
 #### K-03 9.C reads "ANDI named nothing" as "nothing to compare"
 
@@ -1412,6 +1483,11 @@ None of the wrong outcomes in this review was caught by the suite of
 - **Checked:** verified (read) in the workflow. The reviewer collected
   each group and found 1,196 of 1,204: the 7 inject tests and the one
   slow test are missing.
+- **Fixed:** CI commit below ("CI: every test file in a group"):
+  "rest" ignores only `test_fixtures_[0-9]*`, and a `groups` job
+  (`scripts/ci_groups_check.py`) fails when the groups collect fewer
+  tests than the suite. Run against the old glob it lists the 7 inject
+  tests as missing; now 1,203 of 1,203.
 
 #### Q-02 A change to the judge's prompt skips CI altogether
 
@@ -1426,6 +1502,7 @@ None of the wrong outcomes in this review was caught by the suite of
 - **Smallest fix:** skip only `docs/*`; everything else is code.
 - **Checked:** verified (read): the `case` puts `docs/*|*.md` after
   `README.md|specs/*`, and `*` matches a path with slashes.
+- **Fixed:** CI commit below: only `docs/*` is docs-only.
 
 #### Q-03 The hard cases have no fixtures
 
@@ -1923,6 +2000,10 @@ not checked.
   hours), no cancel of superseded runs and no cache; `uv sync` is not
   `--locked`; actions are pinned to moving tags.
   `.github/workflows/*.yml`.
+  **Partly fixed:** timeouts, cancel of superseded runs and
+  `uv sync --locked` are in. Not fixed: caching and pinning actions to
+  commit hashes (the hashes need a network lookup; left for a later
+  change).
 - **Q-09** On a push to main the image is published without waiting
   for the tests, so a commit that fails tests still ships as
   `:latest`. The smoke test runs one 4.C run in dev mode and never
@@ -2062,7 +2143,10 @@ Cleanup. All reviewers' claims unless marked.
 - **4.D-4.F cleanup:** 4.D's "why it could not be compared" reasons
   are written to a dict after Pydantic has copied it, so the summary
   always says "the images could not be compared" (F-04, confirmed by a
-  snippet). 4.E's instance identity leaves out the frame, so the same
+  snippet; **fixed**, commit "4.D and 5.A-5.C: two small fixes (F-04,
+  H-15)": the "never moved on" reason is set before the `Attempt` is
+  built, the compare error is written to `a.extras`; test
+  `test_the_reason_a_last_step_has_no_after_picture_is_kept`). 4.E's instance identity leaves out the frame, so the same
   path in two frames merges (F-10). 4.F scans every node of the page
   once per stop (F-18), and 4.D reads a whole computed style, about
   350 properties, twice per stop (F-21). About 100 lines of
@@ -2097,7 +2181,10 @@ Cleanup. All reviewers' claims unless marked.
   each, twice), three contents about 12 minutes.
 - **5.A-5.D cleanup:** a field inside `<fieldset disabled>` is counted
   as enabled, and the four tests then disagree about one page (H-15,
-  confirmed by a run; fix: `el.matches(':disabled')`). `_finding` is
+  confirmed by a run; **fixed** in `labels.py` with `el.matches(':disabled')`,
+  fixture `5a/f26-field-in-disabled-fieldset`: 5.A and 5.C DOES NOT APPLY
+  like 5.B and 5.D. `traverse.py` and `site.py` still read `.disabled`
+  alone). `_finding` is
   copied in 13 check files and the words "This test could not be
   performed" are typed 27 times though a constant exists; 5.A and 5.C
   share one skeleton; each of 5.A, 5.B and 5.C saves its own copy of

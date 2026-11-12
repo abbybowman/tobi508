@@ -600,6 +600,10 @@ def _attempts_from(
                 },
             )
         nxt = p.steps[i + 1] if i + 1 < len(p.steps) else None
+        # Set before the Attempt is built: it validates `extras` into a copy,
+        # so a reason written to `e` afterwards is lost (F-04).
+        if nxt is None and not e.get("incomplete"):
+            e["incomplete"] = "focus never moved on (the walk ended on it)"
         a = Attempt(
             pass_name=p.name,
             step=i + 1,
@@ -616,8 +620,6 @@ def _attempts_from(
                 == step.stop.css_path
             ),
         )
-        if nxt is None and not e.get("incomplete"):
-            e["incomplete"] = "focus never moved on (the walk ended on it)"
         if e.get("on") and e.get("off") and not e.get("incomplete"):
             try:
                 a.changed_px, a.strong_px, a.mask_fraction, diff = compare(rel, e)
@@ -627,7 +629,9 @@ def _attempts_from(
                     diff.save(path)
                     inst.diff_image = path.relative_to(rel).as_posix()
             except Exception as exc:
-                e["incomplete"] = f"images could not be compared ({type(exc).__name__})"
+                a.extras["incomplete"] = (
+                    f"images could not be compared ({type(exc).__name__})"
+                )
         inst.attempts.append(a)
 
 
@@ -683,6 +687,12 @@ async def _widget_pass(
                         p.steps.append(await s.traversal.press(back))
                         break
                     subjects.append(cur)
+                else:
+                    # The cap, not the end: the widget has more items than the
+                    # first WIDGET_ITEMS_MAX that stand for the rest (spec).
+                    # Step back once so the last item reached gets its off
+                    # read too (F-01).
+                    p.steps.append(await s.traversal.press(back))
                 moved = len(set(subjects)) > 1
                 # The stops these arrows reached, for 4.A's arrow probe (it
                 # skips its own replay when every item it needs is here).

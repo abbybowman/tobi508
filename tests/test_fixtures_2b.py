@@ -44,6 +44,9 @@ CASES = {
         "DNA",
         "A4",
     ),
+    # N-08: an autoplaying streaming player cannot be played from the
+    # recording (spec A1, as 2.A and 3.A already say): never DOES NOT APPLY.
+    "t-streaming-embed": ({}, "NEEDS_REVIEW", "A1"),
     # The guard: still moving at the end, on a page with a link, cannot be a
     # loading animation, so "essential, it is loading" counts as unsure.
     "t-css-infinite-loading": (

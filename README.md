@@ -44,7 +44,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 Accurate on real pages |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 Accurate on real pages |
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.1.0](specs/rules/3a-flashing.md) | Videos that do not play on load are read from their files (checked on test pages and NASA 14592); at most 3 videos and the first 10 s of each; a video it cannot read is left for a person |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.5.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.6.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Does not yet Tab through a form's error states (fix planned); a trap in code the recording lacks is NEEDS REVIEW |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.5.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
@@ -57,10 +57,10 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 5.F | 3.3.1-error-identification | 3.3.1 | [1.5.0](specs/rules/5f-error-identification.md) | ⚠️ Does not check fields inside frames yet (fix planned) |
 | 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.3.0](specs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; often undecided |
 | 5.H | 3.3.4-error-prevention | 3.3.4 | [1.2.0](specs/rules/5h-error-prevention.md) | 🟢 Sure and accurate once answered |
-| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.1.0](specs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; pages of another template are NEEDS REVIEW, not Does Not Apply |
-| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.1.0](specs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.2.0](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; pairs only by address and id with pages of another template |
-| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.1.1](specs/rules/19a-multiple-ways.md) | ⚠️ Can fail a page that site search reaches (fixes planned) |
+| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.2.0](specs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; pages of another template are NEEDS REVIEW, not Does Not Apply |
+| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.2.0](specs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.3.0](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; pairs only by address and id with pages of another template |
+| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.2.0](specs/rules/19a-multiple-ways.md) | ⚠️ Can fail a page that site search reaches (fixes planned) |
 
 ## Known wrong outcomes
 
@@ -77,16 +77,15 @@ A fix removes its line here in the same commit.
 | Test | Gives | On a page with |
 | --- | --- | --- |
 | 2.A | Does Not Apply | audio a script starts (`new Audio()`) or inside a web component; audio that starts after about 3.5 s |
-| 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; an autoplaying YouTube embed; motion that starts after 6.5 s; an animated image after the 30th image |
+| 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; motion that starts after 6.5 s; an animated image after the 30th image |
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; a flashing GIF after the 30th image; flashing that starts after 6.5 s |
-| 4.A | PASS | a hover menu past the 40th Tab stop; a mouse-only `<a href="#">` when another link also has `href="#"`; a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
+| 4.A | PASS | a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
 | 4.A | Does Not Apply | a page that is only a canvas or drag-and-drop content |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
-| 4.C | PASS | a run that ran out of time before the error-state pass |
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
 | 4.F | Does Not Apply | a page whose first element traps Tab |
-| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu opened by `<a href="#">`, or on a page that keeps changing |
+| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu on a page that keeps changing |
 | 5.A, 5.B, 5.C | Does Not Apply | a form inside a web component |
 | 5.A, 5.D | Does Not Apply | a form that a plain button opens (5.C may PASS without its field) |
 | 5.C | PASS | a field whose visible label is not in Latin letters |
@@ -96,7 +95,7 @@ A fix removes its line here in the same commit.
 | 5.H | PASS | a multi-step form whose next step says "required" (read) |
 | 9.A | PASS | a do-nothing button before the content, when the tested address ends in `#main` |
 | 9.A, 9.B, 9.C | Does Not Apply | a site header built as a web component (19.A then fails the page) |
-| 9.B, 9.C | PASS | the tested page given again as the other page (with `?x=1` or a trailing slash) |
+| 9.A, 9.B, 9.C | PASS | the tested page given again with a query string added when the server changes the page on every request (a timestamp or a token), so the two recordings differ; byte-identical copies are NEEDS REVIEW |
 | 9.C | PASS | controls that have no name on either page (a spec decision) |
 
 ## Tools

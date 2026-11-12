@@ -120,6 +120,9 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M9", "M9", "M9", "M9"],
         "answers": NOT_TOLD,
     },
+    # H-11: leaving the field only changes the #fragment: not a change of
+    # context (before: reported as a navigation, J1 asked, FAIL on "not told").
+    "f22-hash-change-on-blur": {"outcome": "PASS", "rows": []},
 }
 HELPERS = {"f01-other", "f09-frame", "f20-frame"}
 # Pages from other tests: no form fields at all. A small page: row A1 does

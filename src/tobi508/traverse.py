@@ -182,6 +182,33 @@ _EVENTS_JS = "(from) => (window.__a11yLog ? window.__a11yLog.f.slice(from) : [])
 
 # Element paths, shared by the walk and the scans (4.A) so their paths match.
 # Defines seg(n) and path(n); a shadow boundary is a lone space.
+# A link's destination (spec 9.A Terms, "Destination"; Abby, 2026-11-12): the
+# address it goes to, or '' when it goes nowhere: not http, https, file,
+# mailto or tel (javascript:, data:), an empty address or "#", the page
+# itself, or a #name no element of the page has (#top always scrolls).
+# Used by 4.A's "same place" row (M3) and 9.C's pairing by destination.
+DEST_JS = """
+  const destHref = (el) => {
+    const h = el && el.href && typeof el.href === 'string' ? el.href : '';
+    let u;
+    try { u = new URL(h); } catch (e) { return ''; }
+    if (!['http:', 'https:', 'file:', 'mailto:', 'tel:'].includes(u.protocol)) return '';
+    const strip = (x) => x.split('#')[0].replace(/\\/$/, '');
+    if (u.protocol.startsWith('http') || u.protocol === 'file:') {
+      if (strip(u.href) === strip(location.href)) {
+        let f = u.hash.slice(1);
+        try { f = decodeURIComponent(f); } catch (e) {}
+        if (!f) return '';
+        const root = el.getRootNode();
+        const has = (root.getElementById ? root.getElementById(f) : null) ||
+          document.getElementById(f) || document.getElementsByName(f).length > 0;
+        return has || f.toLowerCase() === 'top' ? h : '';
+      }
+    }
+    return h;
+  };
+"""
+
 PATH_JS = """
   const seg = (n) => {
     const root = n.getRootNode();
@@ -775,11 +802,15 @@ async def _read_logs(page: Page) -> tuple[int, int, float, float, int]:
 async def _focus_events(page: Page, before: dict[str, int]) -> list[dict[str, Any]]:
     out = []
     for frame in page.frames:
+        # Counted by address without its #fragment: a frame whose fragment
+        # changes is the same document, and a new key would read every
+        # earlier event again (F-06).
+        key = frame.url.split("#", 1)[0]
         try:
-            events = await frame.evaluate(_EVENTS_JS, before.get(frame.url, 0))
+            events = await frame.evaluate(_EVENTS_JS, before.get(key, 0))
         except Exception:
             continue
-        before[frame.url] = before.get(frame.url, 0) + len(events)
+        before[key] = before.get(key, 0) + len(events)
         out.extend({**e, "frame": frame.url} for e in events)
     return sorted(out, key=lambda e: e["t"])
 

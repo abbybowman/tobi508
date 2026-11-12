@@ -11,7 +11,6 @@ WCAG 2.0 assessment is a note in the summary, never an outcome.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -30,11 +29,6 @@ FAST_MS = 334  # faster than every 334 ms: more than 3 changes a second
 # Spec 1.1.0, A3: at most this many videos are decoded; the rest are named.
 VIDEO_MAX = 3
 MEDIA_MAX = 20
-
-STREAMING = re.compile(
-    r"^https?://(www\.)?(youtube(-nocookie)?\.com/embed|player\.vimeo\.com)/",
-    re.IGNORECASE,
-)
 
 
 class Trigger(BaseModel):
@@ -146,15 +140,14 @@ def triggers(mp: motion.MotionPass) -> tuple[list[Trigger], list[flashcap.Unmeas
                 why=f"the page has {max(per_frame.values())} and we look at 20",
             )
         )
-    for src in mp.iframes:
-        if STREAMING.match(src):
-            gone.append(
-                flashcap.Unmeasured(
-                    what="a video player from another site",
-                    why="it streams its video, which we cannot play from our recording",
-                    src=src[:200],
-                )
+    for src in motion.streaming_players(mp, autoplay_only=False):
+        gone.append(
+            flashcap.Unmeasured(
+                what="a video player from another site",
+                why="it streams its video, which we cannot play from our recording",
+                src=src[:200],
             )
+        )
     for r in mp.regions:
         if r.source == "marquee" or r.tag == "marquee":
             gone.append(

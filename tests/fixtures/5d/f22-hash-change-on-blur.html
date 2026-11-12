@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F22 Blur changes only the fragment</title></head><body>
+<p><a id="top" href="#top">Back to top</a></p>
+<h1>Your details</h1>
+<form onsubmit="return false">
+<p><label for="n">Name</label> <input id="n" name="n" type="text"></p>
+<p><label for="e">Email</label> <input id="e" name="e" type="text"></p>
+<p><button type="submit">Save</button></p>
+</form>
+<script>
+// Leaving the name field only changes the #fragment (a section marker): the
+// page is the same page, so it is not a change of context.
+document.getElementById("n").addEventListener("change", () => { location.hash = "#name-done"; });
+document.getElementById("n").addEventListener("blur", () => { location.hash = "#name-done"; });
+</script>
+</body></html>

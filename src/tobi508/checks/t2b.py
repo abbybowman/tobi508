@@ -112,7 +112,26 @@ def color_only(r: Region) -> bool:
 
 
 def video_failed(mp: MotionPass) -> list[str]:
-    return sorted({m.css for m in mp.media if m.tag == "video" and m.error})
+    """Videos that could not play from the recording (spec A1): one that
+    reported an error, a streaming player (as 2.A and 3.A), a video that
+    streams through a blob, or a file over the recording cap that never
+    played."""
+    over = {m["url"] for m in mp.media_store if m.get("over_cap")}
+    bad = {m.css for m in mp.media if m.tag == "video" and m.error}
+    reads: dict[tuple[int, str], list[motion.Media]] = {}
+    for m in mp.media:
+        if m.tag == "video":
+            reads.setdefault((m.frame, m.css), []).append(m)
+    for (_, css), rs in reads.items():
+        last = rs[-1]
+        if last.src.startswith("blob:") and not last.paused:
+            bad.add(css)
+        elif last.src.split("#", 1)[0] in over and (
+            last.paused or last.time <= rs[0].time
+        ):
+            bad.add(css)
+    bad.update(motion.streaming_players(mp)[:5])
+    return sorted(bad)
 
 
 # ── Section 1 ─────────────────────────────────────────────────────────────

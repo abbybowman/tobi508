@@ -10,7 +10,6 @@ tables decide outcomes.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -41,10 +40,6 @@ from tobi508.walk import KeyboardWalk
 AUDIBLE_DB = -40.0  # spec Terms: samples above -40 dBFS
 MORE_THAN_S = 3.0  # TT: "for more than 3 seconds"
 READ_AT = 3.5  # the read that decides "auto-playing" (spec Terms)
-STREAMING = re.compile(
-    r"^https?://(www\.)?(youtube(-nocookie)?\.com/embed|player\.vimeo\.com)/.*autoplay=1",
-    re.IGNORECASE,
-)
 
 TAB_MUTE_NOTE = (
     "Chrome can mute a tab, but the test asks for a control within the first "
@@ -93,6 +88,10 @@ def find_audio(mp: MotionPass) -> list[Audio]:
     out: list[Audio] = []
     for (frame, css), reads in _reads(mp).items():
         first, at = reads[0], min(reads, key=lambda m: abs(m.at - READ_AT))
+        # An element a script adds after the first reading first appears in
+        # the very reading nearest 3.5 s: it has not advanced from itself.
+        # Its last reading says whether it kept playing (W-05).
+        advanced = at.time > first.time or reads[-1].time > first.time
         a = Audio(
             id="",
             kind="media",
@@ -108,15 +107,10 @@ def find_audio(mp: MotionPass) -> list[Audio]:
             a.measured, a.why = False, "it reported an error while playing"
         elif at.src.startswith("blob:") and not at.paused:
             a.measured, a.why = False, "it streams its media"
-        elif at.src.split("#", 1)[0] in over and (at.paused or at.time <= first.time):
+        elif at.src.split("#", 1)[0] in over and (at.paused or not advanced):
             a.measured, a.why = False, "its file is larger than we record"
         if a.measured:
-            playing = (
-                not at.paused
-                and not at.muted
-                and at.volume > 0
-                and at.time > first.time
-            )
+            playing = not at.paused and not at.muted and at.volume > 0 and advanced
             if not playing:
                 continue
             left = None if at.duration is None else at.duration - first.time
@@ -127,18 +121,16 @@ def find_audio(mp: MotionPass) -> list[Audio]:
             elif a.loudness <= AUDIBLE_DB:
                 continue  # silent (ACT 80f0bf inapplicable 2)
         out.append(a)
-    for src in mp.iframes:
-        if STREAMING.match(src):
-            out.append(
-                Audio(
-                    id="",
-                    kind="media",
-                    src=src[:200],
-                    measured=False,
-                    why="it is a streaming video player that we cannot play "
-                    "from a recording",
-                )
+    for src in motion.streaming_players(mp):
+        out.append(
+            Audio(
+                id="",
+                kind="media",
+                src=src[:200],
+                measured=False,
+                why=motion.STREAMING_WHY,
             )
+        )
     if "running" in mp.audio_states:
         out.append(
             Audio(

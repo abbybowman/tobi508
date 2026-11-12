@@ -45,6 +45,12 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M9"],
         "choice": "changes_context",
     },
+    # F-06: only the #fragment changes on focus: not a change of context.
+    # The first page is the review's (location.hash). Before the fix the
+    # fragment change was a "navigation" (M4), and the walk read old focus
+    # events again because it counted them per address with the fragment (M6).
+    "f11-hash-change-on-focus": {"outcome": "PASS", "rows": []},
+    "f12-pushstate-on-focus": {"outcome": "PASS", "rows": []},
 }
 HELPERS = {"f02-other"}
 # Pages from other tests that prove a "not an instance" rule for 4.E.

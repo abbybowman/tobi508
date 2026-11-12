@@ -42,7 +42,7 @@ from tobi508.browser import (
     replay_browser_name,
     replay_in_full_chromium,
 )
-from tobi508.capture import Capture, replay_context, unrecorded_code
+from tobi508.capture import Capture, document_sha, replay_context, unrecorded_code
 from tobi508.checks import REGISTRY, RunContext
 from tobi508.checks.base import PageRef
 from tobi508.config import Settings
@@ -286,6 +286,30 @@ def _same_site(a: str, b: str) -> bool:
     return sa[1] == sb[1] and sa[1] != ""
 
 
+def same_address(a: str, b: str) -> bool:
+    """The same page address: the fragment, the scheme, the case of the host
+    and a trailing slash or empty query do not tell pages apart (K-01). A
+    query string can (page.html?id=2), so it does. Used so a page is never
+    compared with itself under another spelling."""
+
+    def key(u: str) -> tuple[str, int | None, str, str]:
+        p = urlsplit(u)
+        try:
+            port = p.port
+        except ValueError:
+            port = None
+        if port in (80, 443):
+            port = None
+        return (
+            (p.hostname or "").lower().rstrip("."),
+            port,
+            p.path.rstrip("/") or "/",
+            p.query,
+        )
+
+    return key(a) == key(b)
+
+
 def check_other_pages(
     settings: Settings, url: str, other: list[str], no_time_limit: bool = False
 ) -> list[str]:
@@ -294,7 +318,7 @@ def check_other_pages(
     Page content never adds to this list (CLAUDE.md principle 5)."""
     out: list[str] = []
     for u in other:
-        if u not in out:
+        if not any(same_address(u, o) for o in out):
             out.append(u)
     if len(out) > OTHER_PAGES_NO_LIMIT_MAX:
         raise RunRefused(
@@ -316,7 +340,7 @@ def check_other_pages(
                 f"Other page {i} is not on the tested page's host; other pages "
                 "must be pages of the same site."
             )
-        if u.split("#")[0] == url.split("#")[0]:
+        if same_address(u, url):
             raise RunRefused(f"Other page {i} is the tested page itself.")
     return out
 
@@ -376,6 +400,7 @@ def _page_refs(get_browser, settings: Settings, run, report: Report) -> list[Pag
             n=p.n,
             url=p.url,
             final_url=p.final_url or p.url,
+            same_content_as_tested=p.same_content_as_tested,
             har_sha=pagecache.sha256(run.dir / p.har)
             if (run.dir / p.har).is_file()
             else None,
@@ -1003,11 +1028,36 @@ async def run_tt_tests(
                         f"Other page {i} ended on another host after redirects; "
                         "other pages must be pages of the same site."
                     )
+                # After redirects, an other page that ended on the tested
+                # page, or on an earlier other page, is the same page: the
+                # comparisons would PASS on no evidence (K-01).
+                same_as = None
+                if same_address(oc.final_url, cap.final_url):
+                    same_as = "the tested page"
+                else:
+                    for o in report.other_pages:
+                        if same_address(oc.final_url, o.final_url):
+                            same_as = f"other page {o.n}"
+                            break
+                if same_as:
+                    shutil.rmtree(run.dir, ignore_errors=True)
+                    raise RunRefused(
+                        f"Other page {i} ends on the same page as {same_as} after "
+                        "redirects. Give pages that differ."
+                    )
+                # A query string can make another page, so the address was not
+                # refused; the same document bytes under another address is the
+                # tested page again (K-01, Abby 2026-11-12).
+                tested_sha = document_sha(har, cap.final_url)
+                same_content = tested_sha is not None and (
+                    tested_sha == document_sha(run.dir / rel, oc.final_url)
+                )
                 report.other_pages.append(
                     OtherPage(
                         n=i,
                         url=other,
                         final_url=oc.final_url,
+                        same_content_as_tested=same_content,
                         har=rel,
                         cross_site_frames=oc.cross_site_frames,
                         frozen=oc.frozen if settings.frozen_pages_dir else None,

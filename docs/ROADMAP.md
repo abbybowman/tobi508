@@ -272,9 +272,9 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   5.F's error read do not. 5.A-5.C, 9.B, 9.C and 2.A then say DOES NOT
   APPLY and 4.A can PASS (D-01, D-03, K-02, N-01, M-06). Parts B and D.
 - **Content that opens:** a form behind a button with no ARIA marker is
-  never opened, and the 5.x tests say DOES NOT APPLY (H-08). A menu
-  whose trigger is `<a href="#">` is dropped unread (C-03). Parts A
-  and B, then "Opening everything".
+  never opened, and the 5.x tests say DOES NOT APPLY (H-08). Parts B,
+  then "Opening everything". (A menu whose trigger is `<a href="#">`
+  is read now: C-03, fixed.)
 - **The watch is 6.5 seconds:** what starts later is DOES NOT APPLY in
   2.A, 2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second
   can be missed; flashing below the first screen and an animated image
@@ -328,8 +328,8 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 - **2.A-2.D:** a working mechanism is NEEDS REVIEW (E3), never PASS,
   until ER 3's shortlist is built (6.A, 7.A, 7.E, 12.D, 13.A, 13.B, 13.C,
   18.A). 2.C J1's wording when the mechanism is page text naming a key.
-  Real YouTube and Vimeo embeds are NEEDS REVIEW in 2.A (A2) and 3.A;
-  2.B says DOES NOT APPLY until part A (N-08).
+  Real YouTube and Vimeo embeds are NEEDS REVIEW in 2.A (A2), 2.B (A1)
+  and 3.A.
 - **3.A:** CSS background animated images are not decoded (only `<img>`);
   H.264 video cannot be decoded in Chromium (NEEDS REVIEW). No held-out
   pages with flashing exist. Optional: the IRIS cross-check
