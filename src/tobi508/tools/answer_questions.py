@@ -10,7 +10,7 @@ from pydantic import Field
 
 from tobi508 import config
 from tobi508.inline import with_pictures
-from tobi508.models import Answer, AnswerResult
+from tobi508.models import Answer, AnswerResult, DecidedBy
 from tobi508.pipeline import RunRefused
 from tobi508.pipeline import answer_questions as answer_pipeline
 from tobi508.redact import safe_error
@@ -45,9 +45,10 @@ def register(mcp: FastMCP) -> None:
                 min_length=1,
                 description=(
                     "One answer per open question: question_id, a rationale, "
-                    "decided_by ('model', or 'human' to record a person's "
-                    "override, which wins), and the object the question's kind "
-                    "needs. kind 'choice': choice = {choice: one of the "
+                    "decided_by ('model'; every answer sent through this tool "
+                    "is recorded as yours, the calling agent's, even when it "
+                    "says 'human'), and the object the question's kind needs. "
+                    "kind 'choice': choice = {choice: one of the "
                     "question's choices, reasons: a few plain words}, plus any "
                     "field the question asks for: element (a number from "
                     "input.stops), key (e.g. 'Space'), duration_ms (how long a "
@@ -83,8 +84,16 @@ def register(mcp: FastMCP) -> None:
         Results are agent-assisted and NOT a certified Trusted Tester result.
         """
         # Every answer through this tool is the calling agent's: it cannot
-        # claim to be the server's judge (answered_by is set by the server).
-        answers = [a.model_copy(update={"answered_by": "client"}) for a in answers]
+        # claim to be the server's judge (answered_by is set by the server),
+        # nor a person (code review A-05; post-round 2 fix 21's first step:
+        # a person answers only through TOBI's own page). So the picture rule
+        # applies to all of them, and none outranks another agent answer.
+        answers = [
+            a.model_copy(
+                update={"answered_by": "client", "decided_by": DecidedBy.MODEL}
+            )
+            for a in answers
+        ]
         try:
             return with_pictures(
                 await answer_pipeline(config.settings, run_id, answers), wrap=False

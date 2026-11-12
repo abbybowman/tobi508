@@ -244,21 +244,37 @@ def split_cells(
             test = t.test.test_id
             if not decided.get(page, {}).get(test):
                 continue
-            row = out.setdefault(
-                test,
-                dict.fromkeys(
-                    (
-                        "cells",
-                        "agree",
-                        "wrong_pass",
-                        "wrong_dna",
-                        "wrong_fail",
-                        "unsure",
-                        "other",
-                    ),
-                    0,
-                ),
-            )
+            row = out.setdefault(test, dict.fromkeys(CELL_WORDS, 0))
             row["cells"] += 1
-            row[GATE_WORDS.get(t.verdict, "other")] += 1
+            row[_gate_word(t)] += 1
     return out
+
+
+# Every count split_cells gives a type. "pass_vs_dna": the tool said PASS
+# where the key says DOES NOT APPLY (code review L-03): not a wrong PASS
+# against a failure, so counted apart from "other" and read on its own.
+CELL_WORDS = (
+    "cells",
+    "agree",
+    "wrong_pass",
+    "wrong_dna",
+    "wrong_fail",
+    "pass_vs_dna",
+    "unsure",
+    "other",
+)
+
+
+def _gate_word(t) -> str:
+    if t.verdict is Verdict.OTHER:
+        key = getattr(getattr(t.test, "first", None), "result", None)
+        tool = getattr(getattr(t.test, "second", None), "result", None)
+        if key is ScrtResult.DNA and tool is ScrtResult.PASS:
+            return "pass_vs_dna"
+    return GATE_WORDS.get(t.verdict, "other")
+
+
+def decided_cells(row: dict[str, int]) -> int:
+    """The cells an answer settled: agreement and every kind of wrong, not
+    the ones left unsure for a person (code review L-02)."""
+    return row["cells"] - row["unsure"]

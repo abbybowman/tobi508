@@ -126,8 +126,8 @@ below; "run" means I ran a page and got the outcome shown.
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
 | K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
-| B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script |
-| A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read |
+| B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script. **Fixed** |
+| A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read. **Fixed** |
 
 Three causes account for most of the table. They are the first three
 items of "If we started over" at the end.
@@ -845,6 +845,7 @@ The round 2 check uses the server judge; the VAST step uses sign-in.
 - **Checked:** verified (run). `pictures_of` with input
   `run://r1/../r2/evidence/other.png` returned run r2's picture;
   `run://r1/../../secret.png` returned a file two folders up.
+- **Fixed:** 4488286 (no spec change). Only input values that are exactly a link, from this run, read through `resources.runs.run_file`. Test: `tests/test_apijudge.py::test_picture_links_are_whole_input_values_read_only_from_this_run`.
 
 ---
 
@@ -867,6 +868,7 @@ The round 2 check uses the server judge; the VAST step uses sign-in.
 - **Checked:** verified (read). `Job` has no owner field; `outstanding`
   adds running jobs to its list before any owner check. Not exercised
   with two real tokens.
+- **Fixed:** 0c0f90b. A job records `access.caller()`; `get`, `all_jobs` and `running` return only the caller's (all, without sign-in). Test: `tests/test_access.py::test_jobs_belong_to_their_maker`. Still not exercised with two real tokens.
 
 ---
 
@@ -997,6 +999,7 @@ its figures are used. B-01 (P0) belongs with them.
   separately. Decide the numbers in the plan.
 - **Checked:** verified (run). `passes()` returned "passes" for a type
   with one cell, and for a type with 6 wrong DOES NOT APPLY in 10 cells.
+- **Fixed:** 62f0f73 (no spec change). At least 6 decided cells (agree or wrong, not unsure), any wrong DOES NOT APPLY fails a type, the 20% share is of decided cells, and a tool PASS against a DOES NOT APPLY key is counted apart (`pass_vs_dna`); numbers in the judge build plan, "The gate". Test: `tests/test_gate.py`.
 
 #### B-02 Server judge: page text can close the "untrusted data" block
 
@@ -1014,6 +1017,7 @@ its figures are used. B-01 (P0) belongs with them.
 - **Checked:** verified (run) for the mechanism: `_tag` leaves the
   closing tag intact inside the data. Whether the model then obeys is
   not tested.
+- **Fixed:** 7091c95 (no spec change). `<`, `>` and `&` escaped as `\u` sequences in the block; trick page `tests/fixtures/inject/f03-closing-tag-trick.html`.
 
 #### A-05 "A person decided this" is the calling agent's own claim (roadmap step 3)
 
@@ -1029,6 +1033,7 @@ its figures are used. B-01 (P0) belongs with them.
   through MCP as the agent's (`decided_by` model), and apply the picture
   rule to all of them.
 - **Checked:** verified (read).
+- **Fixed:** c7bb392 (no spec change). `tobi_answer_questions` records every answer as `decided_by: model`; the picture rule applies and none outranks another agent answer. Test: `tests/test_tools.py::test_an_agent_cannot_claim_to_be_a_person`.
 
 #### G-02 Server judge: one screenshot is attached once for every question that names it
 
@@ -1048,6 +1053,7 @@ its figures are used. B-01 (P0) belongs with them.
 - **Checked:** verified (read): `build_requests` joins each question's
   pictures as they come. The reviewer built a request for 19 questions
   naming one picture and got 19 copies.
+- **Fixed:** 65449db (no spec change). One attachment per picture a request, counted once toward the cap, cut once a run, requests built off the event loop.
 
 #### B-04 Server judge: judging holds a browser slot and sits outside every time limit
 
@@ -1062,6 +1068,7 @@ its figures are used. B-01 (P0) belongs with them.
 - **Smallest fix:** release the slot before judging (run the judge from
   the job wrapper, after the browser part returns).
 - **Checked:** verified (read).
+- **Fixed:** fa27d93 (no spec change). The pipeline gives the browser slot back once its browsers close (`jobs.release_browser_slot`), before evaluating and judging. The judge's own cap (`JUDGE_CAP_S`) is unchanged.
 
 ### Hangs and waste
 
@@ -1577,6 +1584,7 @@ A-01 (P0) belongs here too.
   "nobody" stays open only when sign-in is off. One test in
   `tests/test_access.py`.
 - **Checked:** verified (read). Not exercised with a real token.
+- **Fixed:** 7bd8327. The verifier refuses a token with no `sub` (audited `authn.no_subject`), and `caller()` raises `NoSubject` if one reaches it. Test: `tests/test_access.py::test_a_token_with_no_subject_is_refused`. Whether VAST's Keycloak always sends `sub` is still to confirm with the admin.
 
 ---
 

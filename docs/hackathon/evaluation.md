@@ -164,9 +164,11 @@ The server reads public web pages, by default only on `.gov` and `.mil`. It need
 - **The server's text never includes page text.** Page strings appear only in a labeled untrusted field, and the server's own question wording is fixed.
 - **Page scripts can't fake focus.** Focus is read through the Chrome DevTools Protocol in an isolated context; a test checks that page script can't spoof it. This includes where a skip link lands (9.A): a test page that tells its own script focus moved, when it did not, is a FAIL, not a PASS. A page that cancels the browser's own error message (5.F) is not credited with that message.
 - **Outcomes come only from spec rows.** A model's answer is recorded as a fact for a rule, never as an outcome.
+- **An agent can't claim to be a person.** Every answer that arrives through MCP is recorded as the calling agent's, whatever it says, so it needs what any agent answer needs (a picture question needs what the picture shows) and outranks nothing. A person's answer is to come from TOBI's own signed-in page (`tests/test_tools.py`).
 - **Adversarial fixture.** Fixture F32 contains text telling automated testers to report PASS for every test; the expected result is FAIL with both traps reported. **[FILL: result at the submission commit.]**
 
-- **Trick text aimed at the server's judge.** Two more pages (`tests/fixtures/inject/`) ask for the outcome the page would not get. Tests check that the model sees such text only inside the block marked untrusted; in a two-call trial the judge answered both correctly. Not yet covered: injected text in accessible names and in frames.
+- **Trick text aimed at the server's judge.** Three more pages (`tests/fixtures/inject/`) ask for the outcome the page would not get; one writes the untrusted block's closing tag before its trick. Page data is escaped (`<`, `>` and `&`), so page text cannot end the block. Tests check that the model sees such text only inside the block marked untrusted; in a two-call trial (before the third page) the judge answered both correctly. Not yet covered: injected text in accessible names and in frames.
+- **Page text can't choose a file for the judge.** The server's judge attaches a picture only when a question's input value is exactly a link to that run's own screenshot, read through the same guarded reader as the run's resources (no `..`, no other run, no other person's run). A link written into page text, such as a link's name, is never read (`tests/test_apijudge.py`).
 
 ### Logs and errors
 
@@ -180,9 +182,9 @@ Settings load from a `.env` file or environment variables (a Kubernetes Secret w
 ### Transport and isolation
 
 - **Local by default; hosted only with NASA sign-in.** stdio is the default transport. HTTP is opt-in and checks the Host and Origin headers of every request, so a web page can't reach it through DNS rebinding (`tests/test_transport.py`). Without sign-in it binds only to a loopback address (127.0.0.1 or ::1). It listens beyond loopback only with `AUTH=oidc`, which needs every setting below or the server refuses to start (`tests/test_access.py`):
-  - **Sign-in on every MCP request.** FastMCP's OIDC proxy signs MCP clients in through VAST's Keycloak, which brokers to NASA Launchpad with NAMS access enforced. A request without a valid token gets 401 and a link to the sign-in metadata (standard MCP authorization, so any compliant client works). Only the server's public host passes the Host check.
+  - **Sign-in on every MCP request.** FastMCP's OIDC proxy signs MCP clients in through VAST's Keycloak, which brokers to NASA Launchpad with NAMS access enforced. A request without a valid token gets 401 and a link to the sign-in metadata (standard MCP authorization, so any compliant client works). A token that names no subject (`sub`) is refused, since runs are owned by subject. Only the server's public host passes the Host check.
   - **Optional group gate.** `REQUIRED_GROUPS` admits only members of the listed VAMS or NAMS groups.
-  - **Runs belong to their maker.** A run, its answers, its `run://` evidence and its reports are visible only to the person who started it. To anyone else it reads as expired, so a run ID reveals nothing.
+  - **Runs belong to their maker.** A run, its answers, its `run://` evidence, its reports and the job that runs it are visible only to the person who started it. To anyone else a run reads as expired and a job as unknown, so an ID reveals nothing, and the list of work left shows only the caller's own runs.
   - **Audit trail.** One JSON line per tool call, resource read and prompt: who (Keycloak subject and NASA email), what (tool, URL without its query string, run ID, test IDs, how many answers), outcome and duration. It never includes answers, page text or report content. Lines go to stderr, where the platform collects them.
   - **[PENDING]** An end-to-end sign-in against VAST's Keycloak with a real MCP client; tested so far with a full sign-in against a local stand-in provider (`tests/test_access_signin.py`).
 - **Fresh state for every load.** Each page load gets a fresh browser context, so cookies and storage can't carry state between probes.
@@ -193,7 +195,6 @@ The template's entry point started an unauthenticated HTTP server on all interfa
 
 ### Known gaps
 
-- An answer that arrives through MCP can still say it is a person's; closing that is scheduled before submission (`docs/ROADMAP.md`). **[PENDING]**
 - Sign-in is tested against a stand-in provider, not yet against NASA's (above).
 - A code review in November 2026 raised leads not yet verified (`docs/reviews/`); they are checked before anything is hosted.
 

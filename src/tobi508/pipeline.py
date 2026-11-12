@@ -33,7 +33,7 @@ from urllib.parse import urlsplit
 
 from playwright.async_api import Browser, async_playwright
 
-from tobi508 import config, flashcap, motion, pagecache, reveal, rules, scrt
+from tobi508 import config, flashcap, jobs, motion, pagecache, reveal, rules, scrt
 from tobi508.browser import (
     MOTION_BROWSER,
     NavigationBlocked,
@@ -1251,6 +1251,9 @@ async def run_tt_tests(
                 motion_task.cancel()
             for b in (browser, *extra_browsers.values()):
                 await b.close()
+    # No browser from here on: a queued run may start while this one is
+    # evaluated and judged (code review B-04).
+    jobs.release_browser_slot()
 
     await say(3, "Evaluating")
     report.findings = []

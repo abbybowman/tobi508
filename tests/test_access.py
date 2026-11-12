@@ -119,6 +119,29 @@ async def test_no_required_groups_admits_any_valid_token():
     assert await _verifier([]).verify_token(_token()) is not None
 
 
+async def test_a_token_with_no_subject_is_refused(caplog, monkeypatch):
+    """S-05: without `sub` a caller would read as "nobody", who opens every
+    run. The verifier refuses such a token, with or without the group gate,
+    and `caller()` refuses one that reaches it all the same."""
+    from types import SimpleNamespace
+
+    no_sub = KEYS.create_token(subject="", issuer=ISSUER)
+    with caplog.at_level(logging.INFO, logger="tobi508.audit"):
+        assert await _verifier([]).verify_token(no_sub) is None
+        assert await _verifier(["g"]).verify_token(no_sub) is None
+    actions = [json.loads(r.message)["action"] for r in caplog.records]
+    assert actions == ["authn.no_subject"] * 2
+    assert await _verifier([]).verify_token(_token()) is not None  # sub "u1"
+
+    monkeypatch.setattr(
+        access, "get_access_token", lambda: SimpleNamespace(claims={"email": "x"})
+    )
+    with pytest.raises(access.NoSubject):
+        access.caller()
+    monkeypatch.setattr(access, "get_access_token", lambda: None)
+    assert access.caller() is None  # sign-in off: one user, every run open
+
+
 async def test_group_gate_still_refuses_a_bad_signature():
     other = RSAKeyPair.generate().create_token(subject="u1", issuer=ISSUER)
     assert await _verifier([]).verify_token(other) is None
@@ -160,6 +183,39 @@ def test_without_sign_in_runs_are_open_and_unowned(as_caller, settings):
     as_caller("alice")  # an unowned run is closed to signed-in callers
     with pytest.raises(FileNotFoundError):
         RunRecorder.open(settings.runs_dir, run.run_id)
+
+
+async def test_jobs_belong_to_their_maker(as_caller, settings):
+    """A-01: a job carries the caller who started it; another caller cannot
+    list it, wait on it by id, or see it running."""
+    import asyncio
+
+    from tobi508 import jobs
+
+    jobs._JOBS.clear()
+    gate = asyncio.Event()
+
+    async def run(progress):
+        await gate.wait()
+        return "result"
+
+    as_caller("alice")
+    a = jobs.start(settings, "https://a.gov", run)
+    assert a.owner == "alice"
+    assert jobs.get(a.id) is a and jobs.all_jobs(settings) == [a]
+    assert [r["id"] for r in jobs.running()] == [a.id]
+
+    as_caller("bob")  # the same as an unknown job id
+    assert jobs.get(a.id) is None
+    assert jobs.all_jobs(settings) == [] and jobs.running() == []
+    b = jobs.start(settings, "https://b.gov", run)
+    assert jobs.all_jobs(settings) == [b]
+
+    as_caller(None)  # without sign-in a local server has one user
+    assert {j.id for j in jobs.all_jobs(settings)} == {a.id, b.id}
+    gate.set()
+    await asyncio.gather(a.task, b.task)
+    jobs._JOBS.clear()
 
 
 # ── Audit line ───────────────────────────────────────────────────────────────
