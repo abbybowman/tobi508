@@ -2296,7 +2296,10 @@ above.
 ## How this could be handed out
 
 Bundles that one thread can take without stepping on another. Each
-names the items and the files it would touch.
+names the items and the files it would touch. What is scheduled when is
+in [the roadmap](../ROADMAP.md); the structural work ("If we started
+over", below) is planned in detail in
+[plans/2026-11-12-coverage-second-look-thin-agent.md](../plans/2026-11-12-coverage-second-look-thin-agent.md).
 
 1. **One-line and one-function fixes, no spec change:** E-01 (hover
    cap to `incomplete`), E-07 (the recording "out of time" helper),

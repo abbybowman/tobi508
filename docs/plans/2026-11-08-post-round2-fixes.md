@@ -17,13 +17,13 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 4 | 4.A: a click that starts a video; listeners read from the page's world | Built (4.A 1.4.0) |
 | 5 | 5.D: focus read again after tabbing away | Built (5.D 1.4.0), shown on custom pages only |
 | 6 | 9.A-9.C: other pages from another template are NEEDS REVIEW | Built (9.A, 9.B 1.1.0; 9.C 1.2.0) |
-| 7 | Frames: 5.x reads fields in frames | Not started |
+| 7 | Frames: 5.x reads fields in frames | Not started; now built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) (one reader for shadow roots and frames) |
 | 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Not started |
 | 9b | Opening everything | Phase 1 built (`reveal.py`, guards RV and RC); phases 2 and 3 on the roadmap |
 | 12-14 | 4.F rubric and order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
 | 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
 | 18-20, 22, 23 | Harness and process notes | Open, low priority |
-| 21 | A person's answer only from TOBI's own UI | Not started; the MCP closure is the first step ([pivot plan](2026-11-07-server-judge-pivot.md)) |
+| 21 | A person's answer only from TOBI's own UI | Not started; the MCP closure is the first step ([pivot plan](2026-11-07-server-judge-pivot.md)); part G of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) adds what the review page must show |
 | 24-27 | Questions that end in "unsure" (4.A, 4.D, 2.B) | Not started |
 | 28 | Judge requests: the page's shared inputs once | Built (`apijudge.py`) |
 | 29 | CI skips docs-only changes and runs in parallel | Built (`.github/workflows/ci.yml`) |
@@ -75,6 +75,10 @@ packet's answer matched; its follow-up round was not sent). Time cost of the err
 pass inside 4.C on a realistic page is not measured.
 
 ### 7. Frames, as TT tells a person to test them
+- **Where it is built (2026-11-12):** part D of
+  [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md), with shadow roots,
+  which the same readers miss. The evidence and the TT method below
+  stand.
 - **Evidence:** fixes 2, 3 and 5; 5.F "15 form field(s) are inside
   frames, which this test does not check yet"; 5.C's spec reads no
   frames yet (a NEEDS REVIEW note, never an absence, as it should).

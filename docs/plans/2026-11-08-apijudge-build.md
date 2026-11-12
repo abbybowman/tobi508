@@ -7,6 +7,15 @@ mode, tests, gate scripts, trick-text pages, a 2-page trial). Not done:
 the full gate and an approved list of question types. Agent-assisted results,
 not certified Trusted Tester results.
 
+**Before the full gate's figures are used** (code review, 2026-11-12;
+[reviews/2026-11-11-code-review.md](../reviews/2026-11-11-code-review.md)):
+picture links read only through the guarded reader (B-01); page text
+unable to close the untrusted block, with a trick page for it (B-02); a
+minimum number of decided cells and a fail on any wrong DOES NOT APPLY in
+`evals/apijudge_gate.py` (L-02, L-03); one picture attached once a request
+(G-02); judging outside the browser slot (B-04). The roadmap has them under
+"Now", item 3.
+
 ## Status
 
 - The module, 2026-11-09: built. `apijudge.py`,

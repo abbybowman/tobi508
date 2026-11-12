@@ -7,7 +7,9 @@ and name the bundle it should take.
 
 You are fixing items from a finished code review of this codebase
 (`tobi508`). Take **one bundle** from "How this could be handed out" in
-`docs/reviews/2026-11-11-code-review.md`; I (Abby) will say which.
+`docs/reviews/2026-11-11-code-review.md`, or **one part** (A to J) of
+`docs/plans/2026-11-12-coverage-second-look-thin-agent.md`; I (Abby)
+will say which. `docs/ROADMAP.md` says what is scheduled when.
 
 ## Read first, in this order
 
