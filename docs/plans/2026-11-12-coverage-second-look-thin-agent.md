@@ -410,6 +410,12 @@ roles, WebAuthn and the option table there stand.
   two per page, chosen by a seeded draw so a rerun shows the same
   ones). A dispute makes the result NEEDS REVIEW with the person's
   comment; it never makes a PASS.
+- **Answers rank by who gave them** (Abby, 2026-11-12; pivot plan, "Who
+  answers what"): Trusted Tester over reviewer over server judge over
+  calling agent, each recorded with time and role. Today
+  `judgment.current_answer` ranks only "human" over the rest; it needs
+  the role, and the pre-SCRT needs the "Not certified by a Trusted
+  Tester" banner until a Trusted Tester certifies every row.
 - **Every dispute becomes a fixture.** The review page records the run,
   the test, and what the person saw; a thread turns each into a page
   under `tests/fixtures/` and, if a rule was wrong, a spec change. This

@@ -1015,7 +1015,7 @@ its figures are used. B-01 (P0) belongs with them.
   closing tag intact inside the data. Whether the model then obeys is
   not tested.
 
-#### A-05 "A person decided this" is the calling agent's own claim (roadmap Now, item 4)
+#### A-05 "A person decided this" is the calling agent's own claim (roadmap step 3)
 
 - **What is wrong:** an agent may send `decided_by: "human"`. Nothing
   checks it. Such an answer skips the rule that a picture question needs
@@ -2414,11 +2414,10 @@ over", below) is planned in detail in
    T-04, A-03 with T-07, then the P2 token items. Files: `models.py`,
    `inline.py`, `pipeline.py` (the text builders), `explain.py`,
    `runlog.py`, `scrt.py`, the tools.
-7. **Before the server judge's figures are used (roadmap Now, 3 and
-   4):** B-01, B-02, L-02 with L-03, A-05, G-02, B-04, then B-05,
+7. **Before the server judge's figures are used (roadmap step 3):** B-01, B-02, L-02 with L-03, A-05, G-02, B-04, then B-05,
    B-10, B-18. Files: `apijudge.py`, `judgment.py`,
    `evals/apijudge_gate.py`, `evals/scoring.py`.
-8. **Before VAST (roadmap, 6):** A-01, S-05, G-09, G-03, B-03, then
+8. **Before VAST (roadmap step 3, then step 9):** A-01, S-05, G-09, G-03, B-03, then
    S-02 to S-04, S-08, Q-09, Q-10. Files: `jobs.py`, `access.py`,
    `tools/`, `capture.py`, `Dockerfile`.
 9. **CI and tests:** Q-01 and Q-02 first (minutes each), then Q-03

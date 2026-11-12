@@ -1,15 +1,13 @@
-# Handoff: fixing what the code review found
+# Handoff: starting a thread on a roadmap step
 
-Start a thread with one of the prompts under "Starting a thread"; each
-sends the thread to the part below the line. For a bundle with no prompt
-of its own, paste everything below the line and name the bundle.
+The roadmap's "Order of work" (`docs/ROADMAP.md`) lists the steps to the
+demo, numbered 1 to 9. Start each step in a new session with its prompt
+below. Steps 1 to 5 send the thread to the instructions below the line
+(how to fix one item, the working rules); steps 6 to 8 stand alone.
 
 ## Starting a thread
 
-Open a new session on this repository and paste one of these. Each
-thread reads the rest of this file itself.
-
-**Thread A, Sonnet: quick fixes and CI**
+**Step 1, Sonnet: quick fixes and CI** (done: PR #39)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow it. Your work is part A of
@@ -22,7 +20,7 @@ thread reads the rest of this file itself.
 > those two. Ask me before anything that turns a NEEDS REVIEW into a
 > PASS.
 
-**Thread B, Opus: the count of what exists, and the guard on DOES NOT APPLY**
+**Step 2, Opus: the count of what exists, and the guard on DOES NOT APPLY** (running)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow it. Your work is part B of
@@ -36,25 +34,111 @@ thread reads the rest of this file itself.
 > keys one test family at a time, with the eleven pages the plan lists
 > as fixtures. Stop and report before part C; it is not yours.
 
-**Thread C, Opus: the server judge and sign-in, then the second look's trial**
+**Step 3, Opus: server judge, gate and sign-in fixes**
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is the review's bundle 7 (the server judge and
-> its gate: B-01, B-02, L-02 with L-03, G-02, B-04; and A-05 if
-> `docs/ROADMAP.md` "Now", item 4, is not done yet), then A-01 and S-05
-> from bundle 8, then the trial in part F of
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`. The gate
-> and judge fixes come first: the roadmap's round 2 rerun waits on them.
-> The trial is a measurement, not a gate: write down what it caught,
-> missed and wrongly flagged, and stop before building the guard.
+> and follow it. Your work is step 3 of `docs/ROADMAP.md` "Order of
+> work". In this order, one commit and one test each: L-02 with L-03
+> (the gate in `evals/apijudge_gate.py` asks for a minimum number of
+> decided cells, not counting unsure, and fails a type on any wrong
+> DOES NOT APPLY; count a tool PASS against a key DOES NOT APPLY apart);
+> B-01 (picture links in a judge request only through
+> `resources.runs.run_file`, and only links that are a whole input
+> value); B-02 (page text cannot close the untrusted block: escape
+> `<`, `>` and `&`, and add a page with the closing tag to
+> `tests/fixtures/inject/`); G-02 (one attachment per picture per
+> request); B-04 (the judge runs after the browser slot is released);
+> A-05 (an answer that arrives through MCP is the calling agent's,
+> whatever `decided_by` says, and the picture rule applies to it); A-01
+> (jobs carry the caller who started them; `get`, `all_jobs` and
+> `running` return only theirs); S-05 (under `AUTH=oidc`, a token with
+> no `sub` is refused). Each item's entry in
+> `docs/reviews/2026-11-11-code-review.md` says where and how. Step 6
+> waits on the first five, so open a pull request when they are done.
+> These are security and evaluation fixes: no spec changes, and no
+> outcome should move.
+
+**Step 4, Opus: the rules' false FAILs**
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "How to fix one item" and "Working rules". Your work
+> is step 4 of `docs/ROADMAP.md` "Order of work": post-round 2 fixes 8,
+> 9c, 9, 10 and 11, in that order, as written in
+> `docs/plans/2026-11-08-post-round2-fixes.md` (each has its evidence,
+> the TT text and the fix). Each removes a FAIL that my round 2 answer
+> key says is wrong; each is a spec change (MINOR), a fixture (a
+> vendored ACT or Baseline case first) and the check's own tests. These
+> turn a FAIL into a PASS or NEEDS REVIEW, the direction where a false
+> PASS can creep in, so for each one also add a fixture of the nearest
+> case that must still FAIL, and stop for me if a fix would remove a
+> FAIL the key confirms. Show the spec change in each pull request's
+> description. When a fix is merged, mark it built in the post-round 2
+> plan's status table and update the README status line.
+
+**Step 5, Sonnet: "unsure" answers that are answerable**
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "How to fix one item" and "Working rules". Your work
+> is step 5 of `docs/ROADMAP.md` "Order of work": post-round 2 fixes 12,
+> 13 and 14, then 24, 25, 26 and 27, as written in
+> `docs/plans/2026-11-08-post-round2-fixes.md`. Each changes a
+> question, its rubric or its evidence, so each needs the judge eval
+> (`docs/solutions/judge-eval.md`; run it through the CLI route) before
+> and after, with both results in `evals/README.md`. Fixes 12 and 13
+> (4.F) and 14 (9.C) are why the server judge stays off those two
+> tests: say in the pull request whether their eval is now clean. Never
+> make a rubric push toward PASS; when the evidence does not settle a
+> question, the answer must stay "unsure". Mark each fix built in the
+> post-round 2 plan's status table and update the README status line.
+
+**Step 6, Opus: the check against round 2** (when steps 1 to 5 are merged)
+
+> Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
+> ("The gate" and "What is left", item 1) and `evals/README.md`. Your
+> work is step 6 of `docs/ROADMAP.md` "Order of work": rerun round 2's
+> 10 frozen pages once with today's rules and the server judge
+> answering every question type, and score them with the same scorer
+> beside round 2's locked rows, judge-decided cells apart from
+> rule-decided ones. Use the CLI route (`claude -p`) unless I tell you
+> Luna is configured. Count the requests with `--dry` first and tell me
+> the estimate before the real run. Write into a new round folder under
+> `evals/judging/`; never rewrite a locked round. Report: false PASS,
+> missed fails (wrong DOES NOT APPLY), false FAILs and NEEDS REVIEW,
+> beside round 2's figures, per test and in all, and for each question
+> type whether it meets the thresholds under "The gate" (read against
+> them, they do not block). Put the result in `evals/README.md`. The
+> README's status table says what real pages showed: update each row
+> from this run, and keep its "Known wrong outcomes" table as it is.
+> Do not fill any [FILL] in `docs/hackathon/`.
+
+**Step 7, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
+
+> Read `CLAUDE.md` and `docs/hackathon/README.md`. I have fixed the
+> submission commit: <commit>. Run the scored suite once at that commit
+> as `docs/hackathon/README.md` describes, and fill every [FILL] in
+> `docs/hackathon/evaluation.md` and `deck.md` from that one run, with
+> its commit, date and environment. Remove a [PENDING] marker only
+> where the work exists and is checked. Never describe a tested page as
+> certified or compliant. Show me the filled figures before you commit.
+
+**Step 8, Sonnet: the second look's trial** (if the days allow; it can wait until after the demo)
+
+> Read `CLAUDE.md`, then part F of
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`, "Trial".
+> Build `evals/second_look.py` and run it on round 2's 10 frozen pages
+> with the rules as they were at round 2's lock commit, three repeats,
+> through the judge's CLI route. It is a measurement, not a gate: write
+> what it caught of the known wrong cells, what it missed, and what it
+> flagged that my keys say is right, with tokens and time per page,
+> into the plan's part F and `evals/README.md`. Stop there; the guard is
+> a later step.
 
 ---
 
-You are fixing items from a finished code review of this codebase
-(`tobi508`). Take **one bundle** from "How this could be handed out" in
-`docs/reviews/2026-11-11-code-review.md`, or **one part** (A to J) of
-`docs/plans/2026-11-12-coverage-second-look-thin-agent.md`; I (Abby)
-will say which. `docs/ROADMAP.md` says what is scheduled when.
+You are working on one step of `docs/ROADMAP.md` "Order of work"; your
+prompt names it. Most steps fix items from a finished code review of
+this codebase (`tobi508`); steps 4 and 5 fix items from the
+post-round 2 plan, and the same way of working applies.
 
 ## Read first, in this order
 
