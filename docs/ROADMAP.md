@@ -33,8 +33,7 @@ keep their own schedule.
   errors are in what the rows are fed, and nothing looks again at a
   PASS or a DOES NOT APPLY. What follows from it is planned in
   [plans/2026-11-12-coverage-second-look-thin-agent.md](plans/2026-11-12-coverage-second-look-thin-agent.md)
-  (parts A to J below) and slotted into "Now" and "Next". Nothing in it
-  is fixed yet.
+  (parts A to J) and slotted into the order of work below.
 - **Time.** A run tests the whole page by default and stops only at
   `MAX_RUN_S` (1800 s); `no_time_limit=false` holds it to `RUN_LIMIT_S`
   (600 s). Lessons and measurements:
@@ -43,125 +42,134 @@ keep their own schedule.
 ## Now: to the Nov 20 demo
 
 Scope (Abby, 2026-11-11): a middle path between the small core and the
-full pivot. Reliability comes first: the rules' false FAILs and the
-"unsure" answers that are answerable. Then a check of how far results
-have moved since round 2, then as much of the pivot core as steady
-progress allows. TOBI is a prototype whose tests keep improving, with
-each test's status in the [README](../README.md); the check measures our
-work and is not a formal gate.
+full pivot. Reliability comes first: the code review's wrong PASS and
+DOES NOT APPLY results, the rules' false FAILs, and the "unsure" answers
+that are answerable. Then a check of how far results have moved since
+round 2, then as much of the pivot core as steady progress allows. TOBI
+is a prototype whose tests keep improving; none of this is a formal gate
+(Abby, 2026-11-12). Every change to a test updates its README status
+line and the README's "Known wrong outcomes" table in the same commit,
+so the README always says what each test can and cannot do today.
 
-**Committed, in this order**
+### Order of work
 
-1. **False FAILs by rule** (bundle 5), largest first: fix 8 (5.A, an icon
-   button labels the search field: 7 cells a run), 9c and 9 (5.C option
-   rows and hidden controls), 10 and 11 (19.A's search page and quoted
-   search). Each is one spec change (MINOR), one fixture, the suite.
-2. **"Unsure" answers that are answerable** (bundle 4), largest first:
-   fix 12 and 13 (4.F: the rubric and the order picture; the server
-   judge's wrong FAILs on 5-6 pages), 14 (9.C pairs repeated components),
-   then 24-27 (4.A carousel arrows and destinations, 4.D pictures, 2.B
-   still regions). Judge eval for each changed question.
-3. **The check against round 2.** Rerun round 2's 10 frozen pages once,
-   after 1 and 2, with today's rules and the server judge answering (CLI
-   route; count the requests with `--dry` first), and score with the same
-   scorer beside round 2's locked rows. It gives the before-and-after
-   figures for the pitch (a development site, said so) and shows which
-   question types are sound enough for Abby to switch on (`JUDGE_TYPES`).
-   Plan: [plans/2026-11-08-apijudge-build.md](plans/2026-11-08-apijudge-build.md).
-   **Before its figures are used** (hours each, from the code review):
-   the gate asks for a minimum number of decided cells and fails a type
-   on a wrong DOES NOT APPLY (L-02, L-03); picture links are read only
-   through the guarded reader (B-01); page text cannot close the
-   untrusted block (B-02); one picture is attached once a request
-   (G-02).
-4. **Close the MCP path for a person's answer:** `decided_by: "human"`
-   arriving through MCP is recorded as the client agent's (fix 21, first
-   step; `judgment.py`). Hours, not days.
-5. **The pitch,** with the last two days kept for it: one scored run at
-   the submission commit for the [FILL] figures, a rehearsal and a
-   fallback video ([docs/hackathon/](hackathon/README.md)).
-
-**Alongside, from 2026-11-12, three threads** (a false PASS is the worst
-error, so these do not wait for the list above). Each opens small pull
-requests and rebases on `main` before it bumps a spec version, since
-items 1 and 2 above change some of the same specs. Prompts:
+**Use the step numbers below.** Plans use other numbers for the same
+work: "fix 8" is a post-round 2 fix, "bundle 5" a pivot-plan bundle,
+"part A" a part of the plan after the code review, "E-01" a code review
+item. They appear only in the last column, to find the detail. Each
+step is one thread, started with its prompt in
 [reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md),
-"Starting a thread".
+"Starting a thread". Run at most three threads at once: more hit the
+5-hour usage limit twice during the review.
 
-- **Thread A (Sonnet): part A, the quick fixes, then CI** (2 to 3
-  days). The wrong PASS and DOES NOT APPLY results that need one line or
-  one function: 4.A's hover cap, 4.C passing after it ran out of time,
-  a `#fragment` read as navigation (4.E, 5.D and menus opened by
-  `<a href="#">`), 4.D's arrow loop, 2.B's missing row for players,
-  2.A's late audio, placeholder addresses in 4.A and 9.C, the tested
-  page given again as an other page. CI first (an hour): the inject
-  tests run nowhere in CI, and a change to only `judge_prompt.md` skips
-  it.
-- **Thread B (Opus): part B, a count of what exists and the guard that
-  holds DOES NOT APPLY** (3 to 4 days). About ten of the wrong DOES NOT
-  APPLY results (forms in web components or behind a button, a form
-  that is only a button, a header in a web component, audio from a
-  script, more than 30 images, a canvas page) become NEEDS REVIEW with a
-  sentence that says what was not checked. Abby agreed on 2026-11-12
-  that a guard may move DOES NOT APPLY.
-- **Thread C (Opus): the server judge and sign-in, then the second
-  look's trial** (2 to 3 days). Before item 3's figures are used: the
-  gate's minimum and its count of wrong DOES NOT APPLY (L-02, L-03),
-  picture links through the guarded reader (B-01), page text unable to
-  close the untrusted block (B-02), one picture once a request (G-02),
-  judging outside the browser slot (B-04). Item 4 above (A-05) if no one
-  has taken it. Before VAST: jobs carry their caller (A-01), a token
-  with no `sub` is refused (S-05). Then part F's trial on round 2's
-  frozen pages.
+| Step | What | Model | When | Detail (other numbers) |
+| --- | --- | --- | --- | --- |
+| 1 | Quick fixes for wrong PASS and DOES NOT APPLY, and CI | Sonnet | now | Plan part A and part I's CI step; PR #39 |
+| 2 | A count of what exists, and the guard that holds DOES NOT APPLY | Opus | now | Plan part B |
+| 3 | Server judge and gate fixes; sign-in ownership; a person's answer never through MCP | Opus | now | Review bundle 7 (B-01, B-02, L-02, L-03, G-02, B-04); A-01, S-05; fix 21's first step (A-05) |
+| 4 | The rules' false FAILs | Opus | now, or when a thread finishes | Fixes 8, 9c, 9, 10, 11; pivot bundle 5 |
+| 5 | "Unsure" answers that are answerable | Sonnet | when a thread finishes | Fixes 12, 13, 14, then 24-27; pivot bundle 4 |
+| 6 | The check against round 2 | Opus | when 1 to 5 are merged (about Nov 17) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
+| 7 | The pitch: one scored run at the submission commit, rehearsal, fallback video | Abby, with a Sonnet thread for the run | Nov 18-19 | [docs/hackathon/](hackathon/README.md) |
+| 8 | If the days allow: the second look's trial | Sonnet | after 6 | Plan part F, "Trial" |
+| 9 | If the days allow: sign in on VAST from Claude Code and run one page | Opus | when the admin's answers arrive, after 3 | [Hosted sign-in plan](plans/2026-11-06-hosted-auth.md). The demo for reviewers is recorded (Abby, 2026-11-12), so this is not needed for it |
 
-Merge what is ready before item 3's rerun, so the before-and-after
-figures include it.
+**Merging.** Steps 1 to 5 change some of the same checks, specs and
+README rows. Each thread branches from `main`, opens a pull request
+every few items, and before it bumps a spec version or edits the
+README tables it merges `main` and takes the next free version. A
+thread that started before another's pull request merged carries on and
+merges `main` at its next pause.
 
-**If the days allow**
+### What each step covers
 
-6. **VAST: sign in from Claude Code and run one page end to end**
-   ([plan](plans/2026-11-06-hosted-auth.md)), when the admin's answers
-   arrive and thread C's A-01 and S-05 are in. Fallback: a recorded demo
-   from a local server.
+1. **Quick fixes and CI.** One line or one function each, no spec
+   decision except two rows reworded: 4.A's hover cap, 4.C passing after
+   it ran out of time, a `#fragment` read as navigation (4.E, 5.D, menus
+   opened by `<a href="#">`), 4.D's arrow loop, 2.B's missing row for
+   players, 2.A's late audio, placeholder addresses in 4.A and 9.C, the
+   tested page given again as an other page. CI: the inject tests run in
+   CI, docs-only means `docs/`, job timeouts.
+2. **The count and the guard.** About ten of the wrong DOES NOT APPLY
+   results (forms in web components or behind a button, a form that is
+   only a button, a header in a web component, audio from a script,
+   more than 30 images, a canvas page) become NEEDS REVIEW with a
+   sentence that says what was not checked. Abby agreed on 2026-11-12
+   that a guard may move DOES NOT APPLY; the template and CLAUDE.md
+   principle 3 change with it.
+3. **Server judge, gate, sign-in.** Before step 6's figures are used:
+   the gate asks for a minimum number of decided cells and counts a
+   wrong DOES NOT APPLY; picture links only through the guarded reader;
+   page text cannot close the untrusted block; one picture once a
+   request; judging outside the browser slot. `decided_by: "human"`
+   through MCP is recorded as the calling agent's. Jobs carry their
+   caller; a token with no `sub` is refused.
+4. **False FAILs by rule,** largest first: fix 8 (5.A, an icon button
+   labels the search field: 7 cells a run), 9c and 9 (5.C option rows
+   and hidden controls), 10 and 11 (19.A's search page and quoted
+   search). Each is one spec change (MINOR), one fixture, the suite.
+   They turn a FAIL into PASS, the direction where a false PASS can
+   creep in, so each comes with a fixture of the near case that must
+   still FAIL.
+5. **Answerable "unsure",** largest first: fix 12 and 13 (4.F: the
+   rubric and the order picture; the server judge's wrong FAILs on 5-6
+   pages), 14 (9.C pairs repeated components), then 24-27 (4.A carousel
+   arrows and destinations, 4.D pictures, 2.B still regions). A judge
+   eval for each changed question.
+6. **The check against round 2.** Rerun round 2's 10 frozen pages once,
+   with that day's rules and the server judge answering (CLI route, or
+   Luna if its endpoint is ready; count the requests with `--dry`
+   first), and score with the same scorer beside round 2's locked rows,
+   judge-decided cells apart from rule-decided ones. It gives the
+   before-and-after figures for the pitch (a development site, said so)
+   and shows which question types Abby can switch on (`JUDGE_TYPES`).
+   A new round folder; the locked rounds are never rewritten.
+7. **The pitch,** with the last two days kept for it: the [FILL]
+   figures from one scored run at the submission commit, a rehearsal
+   and the recorded demo.
+8. **The second look's trial:** one request per frozen round 2 page,
+   with the rules as they were at round 2's lock, asking the server's
+   model to look again at the rules' PASS and DOES NOT APPLY results.
+   It measures; it changes no outcome. It can wait until after the demo.
+9. **VAST end to end,** for the hosted story; the reviewers see a
+   recording.
 
-**Not before the demo:** parts C, D, E, G and H below, the review UI and
-WebAuthn, opening everything phases 2 and 3.
-
-**Say what each test can do on the day** (Abby, 2026-11-12). This
-direction is not a formal gate; what matters is that every step states
-each test's capabilities, reliability and limits as they are. Every
-change to a test updates its README status line and the README's
-"Known wrong outcomes" table in the same commit, and the pitch says
-what the review found and what is planned.
+**Not before the demo:** the plan's parts C, D, E, G and H (steps 11 to
+17 below), the review UI and WebAuthn, opening everything phases 2 and
+3. For the pitch, say what the review found and what is planned.
 
 ## Next: after the demo
 
-In this order unless a judging round says otherwise. Parts are those of
+Steps continue from "Now", in this order unless a judging round says
+otherwise; whatever of steps 1 to 8 was not reached comes first. Parts
+are those of
 [plans/2026-11-12-coverage-second-look-thin-agent.md](plans/2026-11-12-coverage-second-look-thin-agent.md);
 fix numbers are the
 [post-round 2 fixes](plans/2026-11-08-post-round2-fixes.md); bundles are
-the [pivot plan's](plans/2026-11-07-server-judge-pivot.md). Whatever of
-"Now" was not reached comes first (parts A and B, then the rest).
+the [pivot plan's](plans/2026-11-07-server-judge-pivot.md). Model:
+Opus unless the plan's part says where Sonnet suffices (filling the
+grid's pages, the token cuts, carrying a pattern Opus has set through
+the remaining checks).
 
-1. **A grid of hard pages** (part I; 2 to 3 days): nine shared pages (a
+10. **A grid of hard pages** (part I; 2 to 3 days): nine shared pages (a
    shadow root, a frame, more than a cap, a trap, a late start, text not
    in English, hidden text, a form behind a button, a failed reading)
    run against every check, never PASS and DOES NOT APPLY only with a
-   reason. It is the test for items 2 and 3. With it: one recording and
+   reason. It is the test for steps 11 and 12. With it: one recording and
    one walk per fixture page, which is most of the suite's time.
-2. **Every reading reports what it covered** (part C; about two weeks,
+11. **Every reading reports what it covered** (part C; about two weeks,
    reader by reader). One coverage record from each reader and one rule
    in the engine: no PASS or DOES NOT APPLY on a reading that is not
    complete. It replaces each check's own "incomplete" list. The
    checks' shared base goes in with it (one finding builder, one "out
    of time" helper), which is what "Tidy the checks" was. Every outcome
    stays the same except where a gap now holds one back.
-3. **One library for reading the page, frames included** (part D; 4 to
+12. **One library for reading the page, frames included** (part D; 4 to
    5 days). Shadow roots and same-origin frames are read by every
    reader; a cross-origin frame is loaded as its own page. This is
    fix 7 (bundle 3) and more: it is also what turns part B's "not
    checked" sentences into real results.
-4. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
+13. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
    guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
    first six triggers) walk the keyboard through opened content, which
    removes guard RC. Phase 3: 5.D fills fields in opened content. Also
@@ -170,11 +178,11 @@ the [pivot plan's](plans/2026-11-07-server-judge-pivot.md). Whatever of
    trigger is "opened" only by what appears in the region it controls
    (C-02), and a plain button with no ARIA marker opens nothing today
    (H-08; part B holds the outcome meanwhile).
-5. **Meaning goes to the judge, not to a word list** (part E): 5.H's
+14. **Meaning goes to the judge, not to a word list** (part E): 5.H's
    consequence and "checked" words, 4.B's timing words, the "pause"
    words in 2.x. One spec change and one judge eval each. Then the
    spec decisions the review marks "(needs Abby)".
-6. **The store, a thin MCP surface, one writer per run** (part H;
+15. **The store, a thin MCP surface, one writer per run** (part H;
    bundle 7, moved ahead of the review UI, which needs it). The server
    keeps the report; the agent gets a short result and a link; tools
    have no output schema; a job has an owner; answers run as a job.
@@ -184,19 +192,19 @@ the [pivot plan's](plans/2026-11-07-server-judge-pivot.md). Whatever of
    once per site, retention and the disk check, job state that survives
    a restart. Plan first: what is stored, for how long, and who may see
    answers from another user's runs.
-7. **A person's answer only from TOBI's own UI** (the rest of bundle 6):
+16. **A person's answer only from TOBI's own UI** (the rest of bundle 6):
    Trusted Tester and reviewer roles, WebAuthn on submit, the evidence
    page. Design and options in the pivot plan; decide the review view
    there before building one. Added by part G: the whole page beside
    every crop, the list of what was not looked at, a sample of PASS and
    DOES NOT APPLY results for a Trusted Tester to confirm, and every
    dispute turned into a fixture.
-8. **The second look as a guard** (part F), shaped by its trial (not a
+17. **The second look as a guard** (part F), shaped by its trial (not a
    gate: Abby, 2026-11-12). Its README line says what the trial caught
    and missed.
-9. **Round 3** on a site not used before, after the scorer fixes (15-17)
+18. **Round 3** on a site not used before, after the scorer fixes (15-17)
    and the gate fixes (L-02 to L-04, L-13).
-10. **SCRT files, phases 2 and 3**
+19. **SCRT files, phases 2 and 3**
     ([plan](plans/2026-11-02-scrt-io.md)): TT review, merging a partial
     file (which is also how to verify a fix: `verify_fix` on
     `tobi_run_tt_tests`, taking a saved report), export to the real SCRT,
@@ -208,6 +216,30 @@ its "How this could be handed out") are taken from the review file
 itself, one bundle a thread; they are not repeated here.
 
 ## Decisions waiting for Abby
+
+**Soon: each holds up a step of "Now".**
+
+- **The judge's endpoint for step 6.** The CLI route (`claude -p`, as
+  round 2's Agent C) works today. If Luna is to be used: its API shape
+  (Anthropic Messages or another), base URL, auth header, vision input
+  limits, structured output, rate limits and token quota. Ask Sage has
+  no tokens this month.
+- **Publishing the repository.** GSA asks for a GitHub repository;
+  SECURITY.md says NASA's release review comes before the code is
+  public. Which comes first for the submission (step 7).
+- **Windows headed Chrome** was last run on 2026-11-02, before most of
+  today's specs. Run it again before the scored submission run, or state
+  the limit ([browser checks](../specs/rules/_browser-checks.md)).
+- **`JUDGE_TYPES`:** the question types to switch on, after the check against
+  round 2 (step 6).
+- **The VAST admin's answers** (step 9 only): pulling the image, a
+  Chromium service in the namespace, `sub` and groups in access tokens
+  ([hosted sign-in plan](plans/2026-11-06-hosted-auth.md), "Open
+  questions for the VAST admin"). Also whether NASA's Keycloak can ask
+  for a security-key touch on one action rather than at sign-in: to try
+  on VAST.
+
+**After the demo: each shapes a step of "Next".**
 
 - **Spec decisions from the review:** a form behind a plain button
   (H-08), a page that is only a canvas (E-03), native controls that
@@ -222,8 +254,6 @@ itself, one bundle a thread; they are not repeated here.
   name 9.A's key press (M-15) or the media store's fetches (S-04).
 - **Is `tobi_answer_questions` offered on a hosted server** with the
   judge on, or only locally (part H).
-- **`JUDGE_TYPES`:** the question types to switch on, after the check against
-  round 2 (Now, 3).
 - **4.F has guard RV but not RC** (its pass R already Tabs through what
   its first six triggers open): confirm, or put RC back.
 - **9.A as a candidate for guard GU** (it presses Enter on skip links).
@@ -244,19 +274,17 @@ itself, one bundle a thread; they are not repeated here.
   review reproduced the same miss three other ways (M-06: an error in
   a shadow root, on a wrapper, or gone in 60 ms); "something changed
   that was not read as an error" should be NEEDS REVIEW (part C).
-- **Publishing the repository.** GSA asks for a GitHub repository;
-  SECURITY.md says NASA's release review comes before the code is
-  public. Which comes first for the submission.
-- **Windows headed Chrome** was last run on 2026-11-02, before most of
-  today's specs. Run it again before the scored submission run, or state
-  the limit ([browser checks](../specs/rules/_browser-checks.md)).
 - **A second browser.** Whether a Firefox replay matters for the pitch,
   or the documented limit is enough (the report records its browser).
-- The pivot plan's and the ApiJudge plan's own open questions (Keycloak
-  and WebAuthn, who confirms a Trusted Tester, a recorded copy for a
-  final SCRT, the gateway and its token quota, reviewers' access).
 - SECURITY.md's two [TO CONFIRM] items (the reporting route; how long
   `runs/` is kept on NASA machines).
+
+**Answered** (Abby, 2026-11-12; recorded in the
+[pivot plan](plans/2026-11-07-server-judge-pivot.md)): who may answer
+which question, accounts outside NASA, the extension's distribution, who
+confirms a Trusted Tester, live page or recorded copy for a final SCRT,
+a data-handling note for public screenshots (none needed), and reviewers'
+access to the hackathon demo (a recording).
 
 ## Known limits, per test
 
