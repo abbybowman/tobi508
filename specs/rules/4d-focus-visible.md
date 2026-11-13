@@ -1,7 +1,7 @@
 ---
 tt_test: 4.D
 tt_name: 2.4.7-focus-visible
-spec_version: 1.7.0
+spec_version: 1.8.0
 count: focusable
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -87,6 +87,8 @@ Each distinct stop (frame chain plus CSS path; not BODY or OUT), and each widget
 | M9 | J1 = yes | PASS (M7's measured change confirms it) | p. 22 ER 1 |
 | M10 | J1 = no | FAIL | p. 22 ER 1 |
 | M11 | J1 = unsure, or not yet answered | NEEDS REVIEW | Spec rule |
+
+**A style signal, and a page that shifts (1.8.0; review F-02; Abby, 2026-11-13).** A *style signal* is a property that paints (outline colour, style or width, box-shadow, border, background, colour, text decoration, filter, fill, stroke, opacity) that changed on the element or on a part around it, or the element's box having moved with focus when it is *shown only on focus* (its box with focus off is empty or off screen: a skip link). The box having moved is no signal on any other element, because anything that shifts the page between the two pictures (a banner, a spacer, late content) moves every box and changes pixels for reasons that are not a focus style. When the move is the only sign, the element is not shown only on focus, and no paint property changed, the pixels that changed may be the shift's: no clear view (M4, "it moved on the page while we took the pictures"), NEEDS REVIEW, whatever the number of changed pixels. Sizes, heights, origins and an outline offset that change with a shift are not paint properties. *Open (option B, Abby, 2026-11-13):* if many pages that settle late end at this M4, take the two pictures once more after the page settles before giving up. Trigger: more than 1 in 5 of a round's 4.D stops ending at M4 for this reason. Step 6's figures give the rate.
 
 **What counts as an indication.** The change must be on or right around the element, where a keyboard user looks: a change elsewhere on the page, one too faint to see, or one hidden behind other content (a sticky header) leaves fewer than `MIN_CHANGED_PX` changed pixels in the region, so M8 fails it. The indicator may sit on an associated label or a wrapper (C15 Example 2; oj04fd Passed Example 3), which the region and the parent and label style reads cover. An element that appears only when focused, such as a skip link, passes through M6: its box moves and the region changes. A focused element hidden behind a sticky header fails here (no indicator a tester could see, p. 22 ER 1); WCAG 2.2 also covers this as 2.4.11 Focus Not Obscured, which is outside TT 5.1.3 (WCAG 2.0).
 

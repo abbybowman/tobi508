@@ -65,7 +65,7 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.9.0](specs/rules/4a-keyboard-access.md) | ⚠️ 2 agree, 1 FAIL the key passes (a judge answer), 7 NEEDS REVIEW; round 2's PASS on CILab now fails with the key. Caveat: often undecided with embedded players and frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 9 of 10 agree, no wrong outcome, 1 NEEDS REVIEW |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
-| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.7.0](specs/rules/4d-focus-visible.md) | ⚠️ 1 agree, 2 FAILs the key passes (as in round 2), 7 NEEDS REVIEW. Caveat: the judge is often unsure on small focus pictures |
+| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.8.0](specs/rules/4d-focus-visible.md) | ⚠️ 1 agree, 2 FAILs the key passes (as in round 2), 7 NEEDS REVIEW. Caveat: the judge is often unsure on small focus pictures |
 | 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 No wrong outcome; 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.8.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ 1 agree, 2 FAILs the key passes (judge answers; round 2: 6), 7 NEEDS REVIEW. Caveat: the judge is often unsure |
 | 5.A | 3.3.2-label-provided | 3.3.2 | [1.9.0](specs/rules/5a-label-provided.md) | 🟢 No wrong outcome (round 2: 8 FAILs the key passes); 3 agree, 7 NEEDS REVIEW. Caveat: fields inside frames are not checked yet |
@@ -102,7 +102,6 @@ A fix removes its line here in the same commit.
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
 | 4.A | PASS | a mouse-only control inside a web component; a button that answers only `mousedown` |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
-| 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves |
 | 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`) |
 | 5.F, 5.G | Does Not Apply | a form whose button is `type="button"`; an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |

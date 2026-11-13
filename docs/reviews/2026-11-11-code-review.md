@@ -113,7 +113,7 @@ below; "run" means I ran a page and got the outcome shown.
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
 | H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run · 5.D fixed (part B); 5.F, 5.G, 5.H fixed (step 6b) |
 | F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run · fixed (part B) |
-| F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run |
+| F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run · fixed (step 6b) |
 | W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
 | W-07 | 2.B | DOES NOT APPLY | motion that fills most of the screen | run |
 | N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
@@ -589,6 +589,17 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). Three links, the first with
   `outline: none`; focusing the second grows a spacer above them. 4.D
   PASS, rows d1:M6, d2:M6, d3:M6, G4.
+- **Fixed (F-02):** commit "4.D: a box that moved is a focus style only when the
+  element is shown only on focus (F-02)", spec 4.D 1.8.0. Abby chose
+  option A (2026-11-13), with option B kept as an *Open* line in the spec and
+  ROADMAP "Known limits" (trigger: more than 1 in 5 of a round's stops at
+  this M4). Not every changed property counts: a shift also changes
+  heights, origins and `outline-offset` on the page around the link, so
+  the rule asks for a paint property (`PAINT_PROPS`); that keeps ACT
+  oj04fd Passed Example 3 (a border on the link's parent) and plain links
+  with a ring PASS (`f10-100-links`: 76 of 100 links "moved" by scroll
+  alone). Fixtures `4d/f22` (the review's page: NEEDS REVIEW, PASS before);
+  `4d/f03` (skip link) is the nearest case that must still PASS.
 
 #### W-02 3.A says nothing flashes when the flashing is below the first screen
 

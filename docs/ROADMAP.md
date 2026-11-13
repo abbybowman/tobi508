@@ -362,6 +362,12 @@ parts A to D land, a PASS or a DOES NOT APPLY means "in what the tool
 looked at". Browser checks still to run (mostly Windows headed Chrome)
 are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 
+- **4.D, a page that shifts as focus moves (F-02, 4.D 1.8.0):** a link
+  whose only sign of a focus style is that its box moved is NEEDS REVIEW,
+  not PASS, unless it is shown only on focus (a skip link). If many pages
+  that settle late end there (more than 1 in 5 of a round's 4.D stops),
+  build option B: take the two pictures again once after the page
+  settles (Abby, 2026-11-13).
 - **Web components (shadow roots):** the keyboard walk enters them; the
   label pass, the site read, the media read, 4.A's handler scan and
   5.F's error read do not. Since part B's inventory and guard CN
