@@ -99,6 +99,109 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Gate 2026-11-13: round 2's 10 pages again, the server judge on every type (roadmap step 6)
+
+Round 2's 10 frozen svs.gsfc.nasa.gov pages (Abby's `round2-frozen`
+archive, every file checked against its manifest), tested once with
+`main` at `c0236572` (steps 1 to 5 merged: PRs 39, 41, 42, 43, 44), the
+server judge switched on for all 21 types it can take (4.C stays with the
+client), CLI route, `claude-sonnet-5-5`, prompt SHA-256 `e8320f2c…`.
+Folder `evals/judging/gate-2026-11-13/`: `dry-r1.json` (the count),
+`r1/results/pNN/` (report and pre-SCRT per page), `gate.json`
+(`apijudge_gate.py score`), `compare.md` and `compare.json`
+(`compare.py`: beside round 2's three arm C repeats, per TT test, cells a
+judge answer decided apart from the rest, guard CN's NEEDS REVIEW apart).
+Scored with round 2's scorer (`evals.scoring.score` on `compare`,
+unchanged since round 2's lock `e14580a`, with its adjudication); on
+round 2's side it reproduces the locked rows exactly. Agent-assisted
+results, not certified Trusted Tester results; a development site, one
+repeat.
+
+- **Cost.** Dry count: 46 requests, 187 questions, ~200k text tokens,
+  173 pictures. Run: 48 calls, 0 failed, 224 questions answered, 34
+  "unsure", none left open; ~0.62M input tokens (Agent C: 1.71M), 34k
+  output, 328 s in calls. Browser time 78 min (dry) and about the same
+  run; 14194 hit the run cap (below).
+- **All 220 scored cells (per TT test):**
+
+  | Run | False PASS | Missed fail (DNA) | False FAIL | Other | Needs review (guard CN) | Agree (of decided) |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | Gate 2026-11-13 | **0** | **0** | **11** | 1 | 152 (14) | 56/68 |
+  | Round 2 C repeats 1-3 | 3 | 2 | 24-26 | 9 | 86-88 | 94/132-134 |
+
+  Judge-decided cells: 54 (round 2: 42): 0 false PASS, 0 missed fail, 4
+  false FAILs (round 2: 11-13), 36 NEEDS REVIEW (5 CN), 14/18 agree
+  (round 2: 16/27-29). Rule-decided cells: 166 (round 2: 178): 0 false
+  PASS, 0 missed fail (round 2: 3 and 2), 7 false FAILs (round 2: 13), 116
+  NEEDS REVIEW (9 CN), 42/50 agree (round 2: 78/105).
+- **Round 2's 5 wrong PASS and DOES NOT APPLY cells are gone:** 4.A on
+  CILab now fails with the key (a judge answer); 4.C and 5.D on 5340,
+  and 9.A on CILab and 14592, are NEEDS REVIEW (the reveal guard, guard
+  GU, the 600-item read cap). No new one.
+- **The 11 false FAILs:** 6 are 19.A (CILab, 14592, 14194, 5340, 5144,
+  4914; rule rows W3 G4) and come from **this container, not the rules**:
+  the live site search's results page loads its results with scripts
+  from cdn.jsdelivr.net and the site's `/static/`, and the browser here
+  refused every one (`net::ERR_CERT_AUTHORITY_INVALID`: it does not trust
+  the egress proxy's certificate), so no search ever showed results and
+  W3 ("the search does not lead to the page") applied. Round 2's
+  follow-up runs found 14194, 5340, 5144 and 4914 through the same search.
+  It also shows a weakness: a results page whose own scripts failed is
+  read as a finished search; W4 ("search not verified", NEEDS REVIEW) is
+  the row for it. The other 5: 4.A home page (judge: 17 "no alternative"
+  answers), 4.F home page and 5340 (judge: "does not preserve"), 4.D 14592
+  (judge) and 5340 (rule; both as in round 2).
+- **The run cap.** 14194 reached `MAX_RUN_S` (1800 s): 3.A's stepped
+  capture took about 17 min (55 s in the dry run), so 5.A-5.H were not
+  performed there (NEEDS REVIEW, "the run reached its time limit"; 7
+  cells, keys Pass or Does Not Apply).
+- **NEEDS REVIEW (152; round 2: 86-88), in three groups** (lists per
+  cell: `compare.md`):
+  - **Inside a frame or a web component: 19** (step 8's target), all
+    frames, none web components: 5.A-5.H on 5340, 5144 and 4914 (forms
+    in embedded frames) and 4.A on 5144 (a frame it could not read). The
+    key fails 4 of them (5.C on 5340, 5144, 4914; 4.A on 5144): failures
+    the frames hide today. 2 (5.H on 5144 and 4914) are also guard CN.
+  - **Guard CN, the rest: 12,** all where the key says Pass (2) or Does
+    Not Apply (10): 2.B and 3.A on more than 30 images (home, search,
+    galleries, 4914: 6), 5.A, 5.B, 5.F, 5.G on the home page's forms
+    hidden until opened (4), 5.H on a form that is only a button (home,
+    search). Over all 14 CN cells the keys show no failure the guard held
+    back: on these pages it cost agreements and found nothing.
+  - **Every other reason: 121.** 2.C and 2.D on all 10 pages (20: moving
+    content not settled in 6.5 s; as round 2); the reveal guard on 4.C,
+    4.E and 5.D (20: "menus or sections that open"); 9.A and 9.C (20: the
+    600-item read cap); 9.B (10: an other page not read whole); 4.D and
+    4.F (14: the judge's "unsure"); the run cap on 14194 (7); 4.A (6:
+    embedded players, a 40-element cap, controls asked about); audio,
+    video or flashing not playable or checkable from the recording (9:
+    2.A, 2.B, 3.A); 2.B moving regions the judge left unsure (3); fields
+    the walk could not reach (2: 5.F, 5.G on 14592); and 10 others (98
+    fields on search, a form sent to its server, 5.D focus events, guard
+    GU 2, one open 4.C question, 4.B on 5340).
+- **Per question type, read against "The gate" (one repeat; not a gate
+  result, and the test-page half was not run here):**
+
+  | Type | Judge cells | Decided | Agree | Wrong PASS | Wrong DNA | Wrong FAIL | Unsure | Against the thresholds |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | 4.B | 5 | 5 | 5 | 0 | 0 | 0 | 0 | meets all but the cell count (5 of 6) |
+  | 5.B | 8 | 2 | 2 | 0 | 0 | 0 | 6 | no wrong; too few decided (2) |
+  | 5.C | 2 | 2 | 2 | 0 | 0 | 0 | 0 | no wrong; too few (2) |
+  | 5.H | 6 | 2 | 2 | 0 | 0 | 0 | 4 | no wrong; too few (2) |
+  | 5.D | 1 | 1 | 1 | 0 | 0 | 0 | 0 | no wrong; too few (1) |
+  | 4.A | 7 | 3 | 2 | 0 | 0 | 1 | 4 | wrong FAILs 33% of decided (over 20%); too few (3) |
+  | 4.D | 6 | 1 | 0 | 0 | 0 | 1 | 5 | wrong FAIL 100%; too few (1) |
+  | 4.F | 9 | 2 | 0 | 0 | 0 | 2 | 7 | 2 wrong FAILs in a repeat (over 1); 100% |
+  | 2.B | 3 | 0 | 0 | 0 | 0 | 0 | 3 | nothing decided |
+  | 9.C | 7 | 0 | 0 | 0 | 0 | 0 | 7 | nothing decided (the read cap holds the cell) |
+
+  2.A, 2.C, 2.D, 3.A, 4.E, 5.A, 5.F, 5.G, 9.A, 9.B and 19.A asked nothing
+  the judge answered on these pages: no cells. No type has a wrong PASS or
+  a wrong DOES NOT APPLY. `JUDGE_TYPES` is unchanged (empty).
+- **Not verified here:** the test-page half of the gate
+  (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
+  search in a browser that trusts the proxy; 14194 within the run cap.
+
 ## Run 34, 2026-11-13: 5.A 1.8.0 and 5.B 1.6.0 (a button with words labels its field), their packets
 
 Abby, 2026-11-13: a button that is part of a field labels it whatever its words (TT p. 25 Note 3, "regardless of accuracy"), so 5.A 1.8.0 drops 1.1.0's rule that "Go", "Find" or "Subscribe" do not label a field (the rubric and question now say accuracy is another test's), and a text button in the field's input group or search form is row M2i like an icon. 5.B 1.6.0 judges the button's words as the field's near text. Rubric examples are on no fixture page (checked). 44 cases (5.A and 5.B), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **43/44 match**, no false PASS.
