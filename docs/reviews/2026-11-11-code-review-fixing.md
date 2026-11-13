@@ -94,22 +94,39 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 **Step 6, Opus: the check against round 2** (when steps 1 to 5 are merged)
 
 > Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
-> ("The gate" and "What is left", item 1) and `evals/README.md`. Your
-> work is step 6 of `docs/ROADMAP.md` "Order of work": rerun round 2's
-> 10 frozen pages once with today's rules and the server judge
-> answering every question type, and score them with the same scorer
-> beside round 2's locked rows, judge-decided cells apart from
-> rule-decided ones. Use the CLI route (`claude -p`) unless I tell you
-> Luna is configured. Count the requests with `--dry` first and tell me
-> the estimate before the real run. Write into a new round folder under
-> `evals/judging/`; never rewrite a locked round. Report: false PASS,
-> missed fails (wrong DOES NOT APPLY), false FAILs and NEEDS REVIEW,
-> beside round 2's figures, per test and in all, and for each question
-> type whether it meets the thresholds under "The gate" (read against
-> them, they do not block). Put the result in `evals/README.md`. The
-> README's status table says what real pages showed: update each row
-> from this run, and keep its "Known wrong outcomes" table as it is.
-> Do not fill any [FILL] in `docs/hackathon/`.
+> ("The gate" and "What is left", item 1), the docstring of
+> `evals/apijudge_gate.py` and `evals/README.md`. Your work is step 6
+> of `docs/ROADMAP.md` "Order of work": rerun round 2's 10 frozen pages
+> once with today's rules and the server judge answering every question
+> type, and score them with the same scorer beside round 2's locked
+> rows, judge-decided cells apart from rule-decided ones.
+>
+> Before anything else, check and tell me if either fails: `main`
+> holds steps 1 to 5 (PR #43 merged; run on `main`'s head and record
+> the commit), and round 2's frozen recordings are restored under
+> `evals/judging/round2/frozen` (they are not in git; without them stop
+> and ask me for the `round2-frozen` archive, never fetch the pages
+> live).
+>
+> Use the CLI route (`claude -p`) unless I tell you Luna is configured.
+> Run `evals/apijudge_gate.py run --dry` first and tell me the request
+> and token estimate before the real run. Write into a new round folder
+> under `evals/judging/` (`gate-<date>`); never rewrite a locked round.
+>
+> Report: false PASS, missed fails (wrong DOES NOT APPLY), false FAILs
+> and NEEDS REVIEW, beside round 2's figures, per test and in all, and
+> for each question type whether it meets the thresholds under "The
+> gate" (read against them, they do not block). List the NEEDS REVIEW
+> cells that guard CN made (row `CN`) apart from the rest. Do not
+> change `JUDGE_TYPES`: I choose the types from your report.
+>
+> Put the result in `evals/README.md`. The README's status table says
+> what real pages showed: update each row from this run, and keep its
+> "Known wrong outcomes" table as it is. Do not fill any [FILL] in
+> `docs/hackathon/`. Last, give me the path of each page's
+> `pre-scrt.json` from the run beside the path of its key in
+> `evals/judging/round2-armc/keys/`, so I can open the pairs in the
+> pre-SCRT viewer (`demo/prescrt-viewer/`).
 
 **Step 7, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
 
