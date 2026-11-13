@@ -29,6 +29,7 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.site import (
+    NAV_ROLES,
     UNIT_CAP,
     UNITS_FN,
     UNRELATED_REASON,
@@ -166,8 +167,9 @@ def _norm(s: str | None) -> str:
 def make_pairs(
     main: AndiPage, other: AndiPage, by_name_and_place: bool = True
 ) -> list[Pair]:
-    """Spec Terms, in order: destination, id, name, place. Each component is
-    used once; equal names pair first within a destination. With a page of
+    """Spec Terms, in order: destination (within a repeated block), id, name,
+    place. Each component is used once; equal names pair first within a
+    destination. With a page of
     another template (`by_name_and_place` False, spec 1.2.0) only destination
     and id pair: names and places on unrelated pages pair unlike things."""
     a = [c for c in main.comps if c.andi_name is not None]
@@ -199,8 +201,14 @@ def make_pairs(
                 gb[keyfn(y)].append(y)
         return ga, gb
 
-    # 1. Same destination: equal names first, then in order.
-    ga, gb = group(lambda c: c.href if c.role == "link" and c.href else "")
+    # 1. Same destination: equal names first, then in order. Only inside a
+    # repeated block (header, menu, search, footer; spec 1.4.0): the same
+    # address from the pages' own content says nothing about a component.
+    ga, gb = group(
+        lambda c: (
+            c.href if c.role == "link" and c.href and c.region_role in NAV_ROLES else ""
+        )
+    )
     for key, xs in ga.items():
         ys = gb.get(key, [])
         for x in xs:
@@ -362,7 +370,7 @@ J1_RUBRIC = (
 )
 J1_CHOICES = ["consistent", "inconsistent", "different_function", "unsure"]
 MATCHED_BY = {
-    "destination": "both go to the same address",
+    "destination": "both are in the page's header, menu, search or footer and go to the same address",
     "id": "same kind of control with the same id",
     "name": "same kind of control with the same name in the same area",
     "place": "same kind of control in the same place in an area both pages have",

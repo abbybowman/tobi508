@@ -59,7 +59,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 5.H | 3.3.4-error-prevention | 3.3.4 | [1.2.0](specs/rules/5h-error-prevention.md) | 🟢 Sure and accurate once answered |
 | 9.A | 2.4.1-bypass-function | 2.4.1 | [1.2.0](specs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; pages of another template are NEEDS REVIEW, not Does Not Apply |
 | 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.2.0](specs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.3.0](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; pairs only by address and id with pages of another template |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.4.0](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; pairs only by address and id with pages of another template; links in the pages' own content that go to one address with different words are not compared (only the header, menu, search and footer are) |
 | 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.2.0](specs/rules/19a-multiple-ways.md) | ⚠️ Can fail a page that site search reaches (fixes planned) |
 
 ## Known wrong outcomes

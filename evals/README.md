@@ -112,6 +112,11 @@ The server judge's own route (`answer --backend api`, `claude -p`, Sonnet), two 
 - **After:** **15/15, 15/15 and 15/15**, no wrong PASS, nothing left open.
 - **Limit:** the judge eval cannot show how an agent that never opens the order picture answers (see "The judge eval hands images over as files" in docs/solutions/judge-eval.md).
 
+**Fix 14, 9.C 1.4.0 (pair repeated components, not every link with one destination).** New case g1/g2: body links to the same addresses with different words, in the same header and menu; expected PASS.
+- **Before (1.3.0):** 2/3 in each of three repeats. The new case asked 2 questions and the judge answered **inconsistent** on both, every time ("same destination, different words"): a false FAIL (key Pass in round 2). Renamed and paging matched.
+- **After (1.4.0):** **2/2 in each of three repeats**; the body-link pair asks no question (the rule decides: PASS, nothing to compare), so it leaves the eval. Renamed (header and search worded differently: FAIL, the nearest case that must still FAIL) and paging match.
+- **Is 9.C's eval clean?** Yes, on the 2 cases that now ask (6 answers, all as expected, none unsure). It is thin: only the two cases ask a question, and the case that showed the false FAIL no longer asks one, so the change is shown by the rule's own test (`test_9c_pairs_by_destination_only_inside_a_repeated_block`) and by "before" above, not by a judge answering it.
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.
