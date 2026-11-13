@@ -75,7 +75,7 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > description. When a fix is merged, mark it built in the post-round 2
 > plan's status table and update the README status line.
 
-**Step 5, Sonnet: "unsure" answers that are answerable**
+**Step 5, Sonnet: "unsure" answers that are answerable** (built 2026-11-13)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow its "How to fix one item" and "Working rules". Your work

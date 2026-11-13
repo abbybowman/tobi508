@@ -87,7 +87,8 @@ still decide every outcome; the model only answers the questions.
 
 **Switched on one question type at a time.** A type is switched on only
 after it passes the gate (below). 4.F and 9.C stay off until bundle 4
-fixes their questions.
+fixes their questions. (Built 2026-11-13: fixes 12-14. Their judge eval is clean,
+evals/README.md run 31; the gate itself is step 6.)
 
 ## The gate: when a question type may be switched on
 
