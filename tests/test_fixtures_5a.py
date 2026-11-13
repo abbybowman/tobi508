@@ -209,13 +209,56 @@ EXPECTED: dict[str, dict] = {
     # missing "Mission status": the heading is the set's question (TT 5.C
     # Note 4), and since 1.3.0 a quote from the heading over an option
     # passes M7's check (Abby, 2026-11-06).
+    # Post-round 2 fix 9c (5.C 1.6.0): the heading sits directly over the
+    # set, so it is the set's question; not announced, it fails without a
+    # question (M3h), as the judge's "missing" answer did before.
     "f19-filter-boxes-under-heading": {
         "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M3h", "M3h", "M3h"]},
+    },
+    # Fix 9c (svs.gsfc.nasa.gov Home): result cards added inside the filter
+    # form no longer reach a box's nearby text ("ID: 15116"), and each set's
+    # heading sits directly over it: M3h, no question (36 questions before).
+    "f29-filter-sets-over-result-cards": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2", "M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M3h", "M3h", "M3h", "M3h", "M5"]},
+    },
+    # The nearest case that must still FAIL: the question is a paragraph,
+    # not a heading, and each option's label wraps it. Text in a block of
+    # its own (no link, no other option) stays the option's nearby text.
+    "f30-question-text-over-wrapped-options": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
         "5.C": {
             "outcome": "FAIL",
-            "rows": ["M7", "M7", "M7"],
-            "answers": missing("Mission status"),
+            "rows": ["M5", "M7", "M7"],
+            "answers": missing("Are you a veteran?"),
         },
+    },
+    # A heading with text between it and the set may be a section title
+    # (Note 5): still J1's.
+    "f31-heading-then-intro-over-set": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {
+            "outcome": "FAIL",
+            "rows": ["M7", "M7"],
+            "answers": missing("Topics"),
+        },
+    },
+    # f29 without the headings: one J1 per set, as on Home's 36 boxes
+    # before fix 9c (see the test below).
+    "f33-filter-sets-no-heading-over-cards": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2", "M2"]},
+        "5.C": {
+            "outcome": "PASS",
+            "rows": ["M6", "M6", "M6", "M6"],
+            "answers": COMPLETE,
+        },
+    },
+    # Three boxes of one name with no heading and no group: one J1 for the
+    # set (1.2.0).
+    "f32-filter-boxes-no-heading": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M6", "M6", "M6"], "answers": COMPLETE},
     },
     # 5.C 1.3.0 (Abby, 2026-11-06; NASA's Missions filters): two groups of
     # boxes under two headings share one field name and no group label, so
@@ -300,7 +343,7 @@ async def test_options_of_one_set_are_asked_about_once(settings, server, drafts)
     per filter box, and the agent answered none of them)."""
     out = await run_tt_tests(
         settings,
-        f"{server.base}/5a/f19-filter-boxes-under-heading.html",
+        f"{server.base}/5a/f32-filter-boxes-no-heading.html",
         [TestId.T5C],
     )
     qs = [q for q in out.report.open_questions if q.test_id is TestId.T5C]
@@ -371,3 +414,21 @@ async def test_icon_buttons_do_not_pass_the_box_by_themselves(settings, server, 
     )
     f = got["5.A"]
     assert (f.outcome.value, instance_rows(f)) == ("FAIL", ["M5"]), f.rationale
+
+
+async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, drafts):  # noqa: F811
+    """Post-round 2 fix 9c (5.C 1.6.0; svs.gsfc.nasa.gov Home): result cards
+    that script adds inside a filter form ("ID: 15116") are another row's
+    text. Before, each box carried card text, the set merge broke, and the
+    judge got one question per box."""
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/5a/f33-filter-sets-no-heading-over-cards.html",
+        [TestId.T5C],
+    )
+    qs = [q for q in out.report.open_questions if q.test_id is TestId.T5C]
+    assert len(qs) == 2, [q.question_id for q in qs]
+    assert [[c["visible"] for c in q.input["components"]] for q in qs] == [
+        [["Earth"], ["Sun"]],
+        [["Visualization"], ["Animation"]],
+    ]

@@ -121,6 +121,32 @@ COMPONENTS_JS = (
     }
     return best ? txt(best) : '';
   };
+  // The heading sits directly over the option's set (5.C 1.6.0, M3h): no
+  // visible text between the heading and the set's first option, so the
+  // heading is the question the set answers, not a section title further up.
+  const headingEl = (el) => {
+    const scope = el.form || el.closest('form') ||
+      el.closest('section,aside,nav,main,[role=region],[role=search],[role=complementary]') || doc.body;
+    let best = null;
+    for (const h of scope.querySelectorAll(HEAD)) {
+      if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING && !h.contains(el) && vis(h)) best = h;
+    }
+    return best;
+  };
+  const headingDirect = (el, first) => {
+    const h = headingEl(el);
+    if (!h || headingEl(first) !== h) return false;
+    const range = doc.createRange();
+    range.setStartAfter(h); range.setEndBefore(first);
+    const tw = doc.createTreeWalker(range.commonAncestorContainer, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (!range.intersectsNode(n) || h.contains(n)) continue;
+      const p = n.parentElement;
+      if (!p || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(p.tagName) || p.closest('#ANDI508')) continue;
+      if (n.textContent.trim() && vis(p)) return false;
+    }
+    return true;
+  };
   return els.map((el, i) => {
     const tag = el.tagName.toLowerCase(), type = (el.type || '').toLowerCase(), role = el.getAttribute('role') || '';
     const button = tag === 'button' || (tag === 'input' && ['submit', 'reset', 'button'].includes(type)) || role === 'button';
@@ -147,6 +173,11 @@ COMPONENTS_JS = (
       row_text: button ? rowText(el) : '',
       menu: button && isMenu(el),
       heading: isOpt(el) ? headingOf(el) : '',
+      heading_direct: (() => {
+        if (!isOpt(el) || !el.name) return false;
+        const first = els.find((o) => isOpt(o) && o.name === el.name && (o.form || null) === (el.form || null));
+        return !!first && headingDirect(el, first);
+      })(),
       table_headers: headers(el),
       list_text: Array.from((function* () { for (let li = el.closest('li'); li; li = li.parentElement && li.parentElement.closest('li')) yield li; })())
         .map(ownText).filter(Boolean),
@@ -218,6 +249,18 @@ FOCUS_JS = (
     if (el.contains(m) || inOther(m) || !shown(m) || !inReg(m.getBoundingClientRect())) continue;
     imgs++;
   }
+  // An option's nearby text is its own row's (5.C 1.6.0, post-round 2 fix
+  // 9c): text in a block that holds a link or another option, and not this
+  // option, belongs to that block (a result card added inside a filter form:
+  // "ID: 15116"). A question in a block of its own stays.
+  const opt = isOpt(el);
+  const otherRow = (p) => {
+    let b = p;
+    while (b.parentElement && !b.parentElement.contains(el)) b = b.parentElement;
+    if (b.contains(el)) return false;
+    if (b.matches('a[href]') || b.querySelector('a[href]')) return true;
+    return els.some((o) => o !== el && isOpt(o) && b.contains(o));
+  };
   const near = [];
   const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
@@ -232,6 +275,7 @@ FOCUS_JS = (
     const range = doc.createRange(); range.selectNodeContents(n);
     const b = range.getBoundingClientRect();
     if (!b.width || !inReg(b)) continue;
+    if (opt && otherRow(p)) continue;
     near.push({ t, g: grp.some((x) => x.contains(p)),
                 d: Math.hypot((b.left + b.right) / 2 - cx, (b.top + b.bottom) / 2 - cy) });
   }
@@ -313,6 +357,9 @@ class Comp(BaseModel):
     heading: str = (
         ""  # an option's nearest visible heading in its form or section (5.C)
     )
+    # The heading sits directly over the option's set: no visible text
+    # between it and the set's first option (5.C M3h)
+    heading_direct: bool = False
     table_headers: list[str] = Field(default_factory=list)
     list_text: list[str] = Field(default_factory=list)
     # With focus (data-entry fields only)

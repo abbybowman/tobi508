@@ -1,7 +1,7 @@
 ---
 tt_test: 5.A
 tt_name: 3.3.2-label-provided
-spec_version: 1.4.0
+spec_version: 1.5.0
 guards: reveal
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -28,7 +28,7 @@ The tool gives each page one 5.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 ## 2. Evidence to collect
 
-Nothing of its own: pass L ([5c-programmatic-label.md](5c-programmatic-label.md) section 2). For each data-entry field it records, with the field focused (`el.focus()` on pass L's load, so focus-only instructions and floating labels show): its visible-label candidates and whether each is visible; its placeholder and whether the field is empty; its `aria-label` and `title` (never visible text); the visible text within the image (at most 400 characters, nearest first); the text of buttons in the image that act on the field's form (in the field's form, or in no form when the field has none; not a menu or disclosure button: `aria-expanded`, or `aria-haspopup` other than false; 1.2.0); the number of those buttons that have no text (an icon button: a magnifier, a clear button) and sit in the field's input group (the field's own parent element) or in its search form (`role=search` or `<search>` on the form or around it; 1.4.0) and, for an option in a set, the visible text without the legend and whether a picture is near it (1.1.0); and one image: the field's box grown by 240 px left, 120 px up and 160 px right and down, clipped to the viewport after scrolling the field into view (`traverse.screenshot()`).
+Nothing of its own: pass L ([5c-programmatic-label.md](5c-programmatic-label.md) section 2). For each data-entry field it records, with the field focused (`el.focus()` on pass L's load, so focus-only instructions and floating labels show): its visible-label candidates and whether each is visible; its placeholder and whether the field is empty; its `aria-label` and `title` (never visible text); the visible text within the image (at most 400 characters, nearest first; for a radio button or checkbox, only its own row's: text in a block that holds a link or another radio button or checkbox and not this option is that block's, not the option's, so result cards that script adds inside a filter form ("ID: 15116") are left out while a question in a block of its own stays; the block is the largest element around the text that does not hold the option; 1.5.0, post-round 2 fix 9c); the text of buttons in the image that act on the field's form (in the field's form, or in no form when the field has none; not a menu or disclosure button: `aria-expanded`, or `aria-haspopup` other than false; 1.2.0); the number of those buttons that have no text (an icon button: a magnifier, a clear button) and sit in the field's input group (the field's own parent element) or in its search form (`role=search` or `<search>` on the form or around it; 1.4.0) and, for an option in a set, the visible text without the legend and whether a picture is near it (1.1.0); and one image: the field's box grown by 240 px left, 120 px up and 160 px right and down, clipped to the viewport after scrolling the field into view (`traverse.screenshot()`).
 
 **Time budget:** one focus, a few DOM reads and one clipped image per data-entry field, about 0.1 s each, on pass L's load.
 
