@@ -60,7 +60,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 9.A | 2.4.1-bypass-function | 2.4.1 | [1.3.0](specs/rules/9a-bypass.md) | ⚠️ Accurate when the other pages share the tested page's template; pages of another template are NEEDS REVIEW, not Does Not Apply; navigation inside a web component is NEEDS REVIEW (guard CN) |
 | 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.3.0](specs/rules/9b-consistent-navigation.md) | ⚠️ As 9.A; navigation inside a web component is NEEDS REVIEW (guard CN) |
 | 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.4.0](specs/rules/9c-consistent-identification.md) | ⚠️ As 9.A; pairs only by address and id with pages of another template; navigation inside a web component is NEEDS REVIEW (guard CN) |
-| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.4.0](specs/rules/19a-multiple-ways.md) | ⚠️ Can fail a page that only a search in quotation marks finds (fix planned). The page the site search form submits to counts as reached by search (checked on test pages, not yet re-scored on svs.gsfc.nasa.gov) |
+| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.5.0](specs/rules/19a-multiple-ways.md) | The page the site search form submits to counts as reached by search; when the site search finds nothing for the page's heading, it is tried once more with the heading in quotation marks, and its results are read after they load (checked on test pages, not yet re-scored on svs.gsfc.nasa.gov) |
 
 ## Known wrong outcomes
 

@@ -146,7 +146,7 @@ def _fixture_file(path: str) -> Path | None:
         _FIXTURE_FILES = {
             f.relative_to(FIXTURES).as_posix(): f
             for f in FIXTURES.rglob("*")
-            if f.suffix in (".html", ".js") and f.is_file()
+            if f.suffix in (".html", ".js", ".json") and f.is_file()
         }
     return _FIXTURE_FILES.get(key)
 
@@ -248,6 +248,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             return self._send(200, fixture.read_bytes())
         if path.endswith(".js") and fixture is not None:  # lazy/ chunks
             return self._send(200, fixture.read_bytes(), "text/javascript")
+        if path.endswith(".json") and fixture is not None:  # 19a/ search results
+            return self._send(200, fixture.read_bytes(), "application/json")
         self._send(404, b"not found")
 
 

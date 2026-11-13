@@ -64,6 +64,25 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W3", "G4"],
         {},
     ),
+    # Post-round 2 fix 11 (19.A 1.5.0; svs.gsfc.nasa.gov/14592/, key Pass):
+    # the site's search answers "No results for:" the plain heading and finds
+    # the page with the heading in quotation marks; its results arrive by
+    # script after the page loads.
+    "quoted-search-finds-it": (
+        "t4-flare",
+        ["home4"],
+        "PASS",
+        ["W1", "W2", "G2"],
+        {},
+    ),
+    # The nearest case that must still FAIL: neither search finds the page.
+    "quoted-search-finds-nothing": (
+        "t5-eclipse",
+        ["home4"],
+        "FAIL",
+        ["W1", "W3", "G4"],
+        {},
+    ),
     "process-step": (
         "step2",
         ["home"],

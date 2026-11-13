@@ -25,6 +25,10 @@ from tobi508.models import Count
 from tobi508.traverse import DEST_JS, PATH_JS, NewPage
 
 UNIT_CAP = 600  # units read per page (9.A spec section 2)
+# A site search's results page is read whole: its first page of results,
+# often filled in by script after load (19.A 1.5.0, post-round 2 fix 11).
+RESULTS_CAP = 2000
+RESULTS_SETTLE_MS = 5000
 
 # Defines units(cap): the page's rendered content in reading order. Shared by
 # the site read and 9.A's landing read, so both number units the same way.
@@ -280,15 +284,24 @@ def page_label(p: PageRead) -> str:
     return "the tested page" if p.n == 0 else f"other page {p.n}"
 
 
-async def read_page(n: int, url: str, new_page: NewPage) -> PageRead:
-    """One fresh load of a page's HAR and one DOM read (no key pressed)."""
+async def read_page(
+    n: int, url: str, new_page: NewPage, results: bool = False
+) -> PageRead:
+    """One fresh load of a page's HAR and one DOM read (no key pressed).
+    `results`: a site search's results page, read after its scripts have
+    fetched what they fetch, with a larger cap (19.A 1.5.0)."""
     try:
         context, page = await new_page()
     except Exception as exc:
         return PageRead(n=n, url=url, error=type(exc).__name__)
     try:
         await page.wait_for_load_state("load")
-        data = await page.evaluate(READ_JS, UNIT_CAP)
+        if results:
+            try:
+                await page.wait_for_load_state("networkidle", timeout=RESULTS_SETTLE_MS)
+            except Exception:
+                pass
+        data = await page.evaluate(READ_JS, RESULTS_CAP if results else UNIT_CAP)
         try:
             count = await inventory.take(page, "site read")
         except Exception as exc:
