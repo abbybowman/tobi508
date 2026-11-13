@@ -36,6 +36,9 @@ EXPECTED: dict[str, dict] = {
     # Fix 24 (4.A 1.7.0): an arrow that scrolls a container whose items the
     # Tab walk reaches is decided mechanically. The nearest case that must
     # still ask: the same arrow over items with no link or control.
+    # Fix 25 (4.A 1.7.1): J1's input says where the click went; the one reached
+    # link goes to a different address, so nothing matches mechanically.
+    "f22-click-goes-elsewhere": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
     "f20-scroll-arrow-items-have-links": {"outcome": "PASS", "rows": ["M3s"]},
     "f21-scroll-arrow-items-have-no-links": {
         "outcome": "FAIL",
@@ -255,3 +258,17 @@ def test_scroll_arrow_is_covered_only_when_every_revealed_item_is_reached():
     assert not _scroll_covered(inst({"container": "ul", "items": 3, "reached": 2}))
     assert not _scroll_covered(inst({"container": "ul", "items": 0, "reached": 0}))
     assert not _scroll_covered(inst(None))
+
+
+async def test_j1_says_where_the_click_goes(settings, server):
+    """4.A 1.7.1 (fix 25): a candidate whose click navigates carries the
+    address it went to, so the judge can compare it with the stops' links."""
+    got = await run_check(
+        settings,
+        f"{server.base}/4a/f22-click-goes-elsewhere.html",
+        TestId.T4A,
+        NO_ALT,
+    )
+    [q] = got["asked"]
+    assert q.input["candidate"]["goes_to"].endswith("#form-b"), q.input
+    assert "goes_to" in q.question

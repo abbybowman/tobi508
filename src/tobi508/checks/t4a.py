@@ -254,7 +254,8 @@ _MARK_ODD = "function () { (window.__a4u = window.__a4u || new Set()).add(this);
 
 J1_QUESTION = (
     "input.candidate is something a mouse can use (input.candidate.click says "
-    "what clicking it did) that keyboard focus never reaches. shared_inputs.stops lists, "
+    "what clicking it did, and input.candidate.goes_to the address it goes to, "
+    "when it goes anywhere) that keyboard focus never reaches. shared_inputs.stops lists, "
     "numbered, every element keyboard focus does reach, with role, name and link "
     "address. Image A shows the page. Is there an element in shared_inputs.stops that "
     "does the same thing, so a keyboard user loses nothing? Answer alternative "
@@ -264,7 +265,9 @@ J1_QUESTION = (
 J1_RUBRIC = (
     "alternative: a reached element plainly does the same job (a second print "
     "button, a text link with the same purpose, a field where Enter submits the "
-    "same search). Only elements in shared_inputs.stops count: a link to another page "
+    "same search). A reached link to the candidate's address is already matched "
+    "by the tool; a reached link to a different address is an alternative only if "
+    "it plainly does the same job for another reason. Only elements in shared_inputs.stops count: a link to another page "
     "that might offer the same thing is not an alternative (the method must be "
     "available on this page). no_alternative: nothing reached does that job. unsure: "
     "whenever the evidence does not settle it. Answer alternative or "
@@ -983,6 +986,15 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
         await s.close()
 
 
+def _goes_to(inst: Inst4A) -> dict[str, str]:
+    """Where the candidate goes: a link's destination, or the address a click
+    that navigated went to (1.7.1, fix 25). Empty when it goes nowhere."""
+    dest = inst.target.get("dest")
+    if not dest and inst.click and {"navigation", "fragment"} & set(inst.click.kinds):
+        dest = inst.click.url
+    return {"goes_to": dest} if dest else {}
+
+
 def _click_words(kinds: list[str]) -> list[str]:
     """What a click did, for J1's input: a media start reads as what it is."""
     return ["started a video or audio" if k == "media_start" else k for k in kinds]
@@ -1043,6 +1055,7 @@ def questions_for(st: State4A, evidence_refs: list[str]) -> list[OpenQuestion]:
                             "click": _click_words(inst.click.kinds)
                             if inst.click
                             else ["native control"],
+                            **_goes_to(inst),
                         },
                         "image_a": images[0] if images else None,
                     },

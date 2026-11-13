@@ -122,6 +122,11 @@ The server judge's own route (`answer --backend api`, `claude -p`, Sonnet), two 
 - **After (1.7.0):** F20 asks no question (row M3s), so 11 cases ask; **10/11, 9/11, 11/11**. The misses are unsure on f01-click-only-text and inject-f01, which expect FAIL: the same pages that were unsure before, no wrong PASS. They are the case fix 25 is about ("See rates" goes to `#rates`, which does not say it is the same job).
 - **What this does not show:** that a real carousel is decided; its arrows are often moved by a transform, which the check does not see. Re-score on round 2's pages in step 6.
 
+**Fix 25, 4.A 1.7.1 (J1 gets where the candidate goes).** The mechanical half (a reached link with the candidate's address matches without a question) was already built as M3 in 4.A 1.6.0; what was left is the destination in J1's input: `candidate.goes_to` (a link's address, or where a click that navigated went) and a rubric sentence that a reached link to the same address is already matched and one to a different address counts only if it plainly does the same job. New case F22 (a card whose click goes to `#form-b`; the one reached link goes to `#form-a`; expected FAIL).
+- **Before (1.7.0 code):** 12/12 in each of three repeats (F22 answered no_alternative every time).
+- **After (1.7.1):** 12/12 in each of three repeats.
+- **Reading:** no change the eval can see. The earlier unsure answers (4.A f01, f04, inject-f01: "does not clearly do the same job") did not recur in either run, so they were run-to-run noise on a small sample, not something the field fixes. The field is evidence the judge can read, not a measured improvement.
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.

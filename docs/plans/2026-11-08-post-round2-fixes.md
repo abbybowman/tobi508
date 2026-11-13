@@ -27,7 +27,8 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 18-20, 22, 23 | Harness and process notes | Open, low priority |
 | 21 | A person's answer only from TOBI's own UI | First step built (2026-11-12, code review A-05): every answer through MCP is recorded as the calling agent's; the page is not started ([pivot plan](2026-11-07-server-judge-pivot.md)); part G of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) adds what the review page must show |
 | 24 | 4.A: a scroll arrow whose items Tab reaches | Built (4.A 1.7.0: row M3s, scroll check; fixtures F20, F21) |
-| 25-27 | Questions that end in "unsure" (4.A, 4.D, 2.B) | Not started |
+| 25 | 4.A J1: give the candidate's destination | Built (4.A 1.7.1: `candidate.goes_to`; the same-destination match, M3, was built in 4.A 1.6.0; fixture F22) |
+| 26-27 | Questions that end in "unsure" (4.D, 2.B) | Not started |
 | 28 | Judge requests: the page's shared inputs once | Built (`apijudge.py`) |
 | 29 | CI skips docs-only changes and runs in parallel | Built (`.github/workflows/ci.yml`) |
 | GU | Recordings that lack code the page loads when used (found while building fixes 2 and 5) | Built: chunk store and guard GU ([lesson](../solutions/recordings-miss-lazy-scripts.md)) |
