@@ -111,7 +111,7 @@ below; "run" means I ran a page and got the outcome shown.
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
-| H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run |
+| H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run · 5.D fixed (part B); 5.F, 5.G, 5.H fixed (step 6b) |
 | F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run · fixed (part B) |
 | F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run |
 | W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
@@ -543,6 +543,10 @@ different checks, and some of those ways do not hold back an outcome.
   `src/tobi508/checks/t5f.py:1233`. Verified (run): a form, a trap,
   then a second form with a broken error message: 5.F PASS. Without
   the trap the same page is FAIL. 5.G and 5.H read the same pass.
+- **Fixed (M-05):** commit "5.F: a walk that ends in a trap before the last
+  field is not complete (M-05)", no spec change (5.F's G3 already says it;
+  5.G and 5.H read the same pass). Fixtures `5f/f24` (NEEDS REVIEW) and
+  `5f/f25` (trap after the last field, still PASS).
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 

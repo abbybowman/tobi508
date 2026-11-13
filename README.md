@@ -105,7 +105,6 @@ A fix removes its line here in the same commit.
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
 | 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`) |
 | 5.C | PASS | a field whose visible label is not in Latin letters |
-| 5.F | PASS | form fields after a keyboard trap (5.D now says NEEDS REVIEW) |
 | 5.F, 5.G | Does Not Apply | a form whose button is `type="button"`; an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |
 | 5.H | PASS | a multi-step form whose next step says "required" (read) |

@@ -260,6 +260,26 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "Please"}},
         },
     },
+    # M-05: a walk that ends in a trap is complete only when it reached
+    # every field. The first page has two fields past the trap and a broken
+    # error message there (FAIL when nothing stops the walk); the second has
+    # the trap after the last field, so its outcome is unchanged.
+    "f24-trap-before-second-form": {
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
+        "5.G": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
+        },
+    },
+    "f25-trap-after-last-field": {
+        "5.F": {"outcome": "PASS", "rows": ["M2"]},
+        "5.G": {
+            "outcome": "PASS",
+            "rows": ["N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
+        },
+    },
 }
 
 

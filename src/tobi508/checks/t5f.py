@@ -1257,6 +1257,14 @@ def incomplete_of(ps: PassE) -> list[str]:
         out.append(
             "The Tab walk did not get through the whole page, so some fields may not have been checked."
         )
+    # A walk that ended in a trap is complete only when it reached every
+    # field the page has (M-05; spec G3 "ended in a trap before the last
+    # field"). The count comes from the DOM inventory, not from the walk.
+    if ps.p1["end"] in ("stuck", "loop") and ps.inventory_fields > len(ps.fields):
+        n = ps.inventory_fields - len(ps.fields)
+        out.append(
+            f"The keyboard walk ended in a trap, so {n} form field(s) were never reached and not checked."
+        )
     for a in ps.attempts:
         if not a.reached:
             out.append(
