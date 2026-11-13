@@ -594,6 +594,20 @@ def _failed_urls(har_path: Path) -> set[str]:
     return {e["request"]["url"] for e in entries if e["response"].get("status", 0) < 0}
 
 
+def failed_scripts(har_path: Path) -> list[str]:
+    """Scripts the recording asked for that did not load: no response (-1,
+    e.g. refused) or an error status. Facts only; 19.A row W4 decides."""
+    with zipfile.ZipFile(har_path) as z:
+        name = next(n for n in z.namelist() if n.endswith(".har"))
+        entries = json.loads(z.read(name))["log"]["entries"]
+    return [
+        e["request"]["url"]
+        for e in entries
+        if e.get("_resourceType") == "script"
+        and not 0 <= e["response"].get("status", 0) < 400
+    ]
+
+
 async def _idle(page, log: LogFn, timeout_ms: int) -> None:
     try:
         await page.wait_for_load_state("networkidle", timeout=timeout_ms)

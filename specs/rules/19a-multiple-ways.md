@@ -1,7 +1,7 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.6.0
+spec_version: 1.7.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -56,9 +56,9 @@ The instance is the page: the kinds of way found.
 | --- | --- | --- | --- |
 | W1 | Links to T on the other pages, each classified by kind (Terms) | Kinds found | p. 75 HtT 1, 2.a |
 | W2 | Fewer than two kinds, a search form, the live search allowed and run, its results link to T (outside navigation, banner and contentinfo regions, 1.1.0) | Adds search | p. 75 HtT 2.b; G161 |
-| W3 | The live search ran and its results do not link to T, plain or quoted (1.5.0) | Search does not lead to T (not a way) | p. 75 ER 2 |
+| W3 | The live search ran, its results page loaded every script it asked for (1.7.0), and its results do not link to T, plain or quoted (1.5.0) | Search does not lead to T (not a way) | p. 75 ER 2 |
 | W5 | A search form (Terms) on T or on another page submits by GET to T: its own `action` attribute names T's address, the query and a trailing slash aside (a form with no `action` submits to the page it is on and does not count). Submitting any search lands on T | Adds search, without the live search (1.4.0) | p. 75 HtT 1 (site search), 2.b; Abby, 2026-11-08 (post-round 2 fix 10: svs.gsfc.nasa.gov/search/, reached from the top-nav search box and a content link on the home page; key Pass) |
-| W4 | The search form cannot be run (POST, script only, off host, blocked, time, or longer than a caller-named page's 20 s share), or its results page was over the read cap and did not link to T (1.1.0) | Search not verified | Spec rule |
+| W4 | The search form cannot be run (POST, script only, off host, blocked, time, or longer than a caller-named page's 20 s share), or its results page was over the read cap and did not link to T (1.1.0), or its results page did not link to T and a script it asked for did not load (no response, or an error status, in its recording; 1.7.0) | Search not verified | Spec rule; roadmap step 6c (Abby, 2026-11-13): in step 6 the browser refused the results page's scripts from cdn.jsdelivr.net and the site's `/static/` (its proxy certificate was not trusted), so no search showed results and W3 gave six false FAILs. A results page drawn by script shows nothing when its scripts fail, so finding nothing there says nothing |
 
 **3b. Page outcome (first match wins)**
 

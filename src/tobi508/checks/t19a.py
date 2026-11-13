@@ -17,6 +17,7 @@ from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel, Field
 
+from tobi508.capture import failed_scripts
 from tobi508.checks.base import RunContext
 from tobi508.models import (
     REVIEW_HEAD,
@@ -58,6 +59,8 @@ class Search(BaseModel):
     term: str = ""
     tries: list[str] = Field(default_factory=list)  # every term searched
     reason: str = ""
+    # Scripts its results page asked for that did not load (W4, 1.7.0).
+    failed_scripts: list[str] = Field(default_factory=list)
 
 
 class State19A(BaseModel):
@@ -295,6 +298,20 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
         )
         return
     found = results_link_to(res, (st.t_url, st.t_requested))
+    try:
+        failed = failed_scripts(ref.har) if ref.har is not None else []
+    except Exception:
+        failed = []
+    st.search.failed_scripts = failed[:10]
+    if not found and failed:
+        # W4 (1.7.0): the results page did not finish loading, so finding
+        # nothing says nothing (step 6: the container refused its scripts).
+        st.search.status, st.search.reason = (
+            "cannot_run",
+            f"its results page did not finish loading ({len(failed)} of its "
+            "scripts did not load)",
+        )
+        return
     if not found and res.truncated:
         st.search.status, st.search.reason = (
             "cannot_run",
