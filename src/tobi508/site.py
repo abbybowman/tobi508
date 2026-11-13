@@ -175,6 +175,7 @@ UNITS_FN = (
       const hidden = {};
       fields.filter((e) => e.type === 'hidden' && e.name).forEach((e) => { hidden[e.name] = e.value; });
       return { action: f.action, method: (f.getAttribute('method') || 'get').toLowerCase(),
+               explicit: !!(f.getAttribute('action') || '').trim(),
                field: field && field.name ? field.name : '', hidden, css: path(f) };
     }).filter(Boolean);
     return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms };

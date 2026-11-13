@@ -67,6 +67,8 @@ class State19A(BaseModel):
     t_requested: str = ""  # the caller's URL before redirects, when it differs
     links: list[LinkTo] = Field(default_factory=list)
     search_forms: int = 0
+    # T is the address a search form submits to (W5, 1.3.0)
+    search_target: str = ""
     search: Search = Field(default_factory=Search)
     suggestions: list[str] = Field(default_factory=list)
     hint: bool = False
@@ -76,7 +78,7 @@ class State19A(BaseModel):
     @property
     def kinds(self) -> list[str]:
         k = {x.kind for x in self.links}
-        if self.search.status == "found":
+        if self.search.status == "found" or self.search_target:
             k.add("search")
         return [x for x in KIND_WORDS if x in k]
 
@@ -89,6 +91,25 @@ def _to_t(href: str, t: str | tuple[str, ...]) -> bool:
 
 def _same(a: str, b: str) -> bool:
     return norm_href(a) == norm_href(b) and bool(norm_href(a))
+
+
+def _path(u: str) -> tuple[str, str, str]:
+    p = urlsplit(u)
+    return (p.scheme, p.hostname or "", p.path.rstrip("/"))
+
+
+def search_target(forms: list[dict[str, Any]], t: tuple[str, ...]) -> str:
+    """The action of a search form that submits to T (spec W5, 1.3.0): a GET
+    form whose own action attribute names T's address (query and trailing
+    slash aside). Submitting any search lands on T, so the site search
+    reaches it. A form with no action submits to the page it is on and
+    proves nothing."""
+    for f in forms:
+        if f.get("method") != "get" or not f.get("explicit") or not f.get("action"):
+            continue
+        if any(x and _path(f["action"]) == _path(x) for x in t):
+            return f["action"]
+    return ""
 
 
 def _site_map_pages(pages: list[PageRead]) -> set[int]:
@@ -214,7 +235,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     st.search_forms = len(forms) + sum(
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
     )
-    if len(st.kinds) < 2 and st.search_forms:
+    st.search_target = search_target(forms, both)
+    if len(st.kinds) < 2 and st.search_forms and not st.search_target:
         await _live_search(ctx, st, main, forms)
     if len(st.kinds) < 2:
         given = {p.url for p in site.pages} | {ctx_p.final_url for ctx_p in ctx.pages}
@@ -373,12 +395,16 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             Outcome.NEEDS_REVIEW, REVIEW_HEAD, ["A4", "G1"], evidence_refs, note=True
         )
     kinds = st.kinds
-    trace = ["A5", "W1"] + {
-        "found": ["W2"],
-        "not_found": ["W3"],
-        "cannot_run": ["W4"],
-        "not_run": [],
-    }[st.search.status]
+    trace = (
+        ["A5", "W1"]
+        + (["W5"] if st.search_target else [])
+        + {
+            "found": ["W2"],
+            "not_found": ["W3"],
+            "cannot_run": ["W4"],
+            "not_run": [],
+        }[st.search.status]
+    )
     words = [KIND_WORDS[k] for k in kinds]
     pages = ", ".join(f"other page {p['n']}" for p in st.pages)
     rationale = f"Kinds: {kinds}; links: {len(st.links)}; search {st.search.status}; pages: {pages}."
