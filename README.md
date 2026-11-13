@@ -62,7 +62,7 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: moving content not settled in 6.5 s is left for a person |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: as 2.C |
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.2.0](specs/rules/3a-flashing.md) | 🟢 No wrong PASS or Does Not Apply; 3 of 10 agree, 1 Not Tested where the key says Does Not Apply, 6 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.8.1](specs/rules/4a-keyboard-access.md) | ⚠️ 2 agree, 1 FAIL the key passes (a judge answer), 7 NEEDS REVIEW; round 2's PASS on CILab now fails with the key. Caveat: often undecided with embedded players and frames |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.9.0](specs/rules/4a-keyboard-access.md) | ⚠️ 2 agree, 1 FAIL the key passes (a judge answer), 7 NEEDS REVIEW; round 2's PASS on CILab now fails with the key. Caveat: often undecided with embedded players and frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 9 of 10 agree, no wrong outcome, 1 NEEDS REVIEW |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.6.0](specs/rules/4d-focus-visible.md) | ⚠️ 1 agree, 2 FAILs the key passes (as in round 2), 7 NEEDS REVIEW. Caveat: the judge is often unsure on small focus pictures |
@@ -100,7 +100,7 @@ A fix removes its line here in the same commit.
 | 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; motion that starts after 6.5 s |
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
-| 4.A | PASS | a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
+| 4.A | PASS | a mouse-only control inside a web component; a button that answers only `mousedown` |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
 | 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`) |

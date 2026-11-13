@@ -882,7 +882,9 @@ async def _click_check(ctx: RunContext, st: State4A, inst: Inst4A) -> Effect | N
         async def act() -> None:
             await s.page.mouse.click(pt["x"], pt["y"])
 
-        return await observe(s, ctx.quiet_ms, act, inst.target["path_key"], media=True)
+        return await observe(
+            s, ctx.quiet_ms, act, inst.target["path_key"], media=True, popups=True
+        )
     except Exception:
         inst.unreliable = True
         return None
@@ -957,6 +959,7 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
             lambda: s.page.keyboard.press("Enter"),
             sr.path_key,
             media=True,
+            popups=True,
         )
         if not inst.enter.any:
             inst.space = await observe(
@@ -965,6 +968,7 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
                 lambda: s.page.keyboard.press(" "),
                 sr.path_key,
                 media=True,
+                popups=True,
             )
     except Exception:
         inst.unreliable = True
@@ -985,7 +989,9 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
         async def act() -> None:
             await s.page.mouse.click(pt["x"], pt["y"])
 
-        inst.click = await observe(s, ctx.quiet_ms, act, sr.path_key, media=True)
+        inst.click = await observe(
+            s, ctx.quiet_ms, act, sr.path_key, media=True, popups=True
+        )
     except Exception:
         inst.unreliable = True
     finally:
@@ -1002,8 +1008,13 @@ def _goes_to(inst: Inst4A) -> dict[str, str]:
 
 
 def _click_words(kinds: list[str]) -> list[str]:
-    """What a click did, for J1's input: a media start reads as what it is."""
-    return ["started a video or audio" if k == "media_start" else k for k in kinds]
+    """What a click did, for J1's input: each effect in plain words."""
+    words = {
+        "media_start": "started a video or audio",
+        "js_dialog": "showed a pop-up message",
+        "download": "started a download",
+    }
+    return [words.get(k, k) for k in kinds]
 
 
 # ── Questions and answers ────────────────────────────────────────────────────

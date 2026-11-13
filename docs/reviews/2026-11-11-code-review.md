@@ -120,7 +120,7 @@ below; "run" means I ran a page and got the outcome shown.
 | N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run. **Fixed** |
 | E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run · fixed |
 | E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
-| C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run |
+| C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run · fixed (step 6b) |
 | M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run · fixed (part B) |
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
@@ -717,6 +717,11 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). A `<div onclick="alert('Help text')">`
   beside one link: 4.A PASS, row k1:M2. The reviewer's control, where
   the click unhides a paragraph, is NEEDS REVIEW.
+- **Fixed (C-01):** commit "4.A: an alert() or a download is an effect of the
+  action (C-01)", spec 4.A 1.9.0 (Terms: *pop-up*, 4.A only; 4.B and 5.D
+  read neither). `observe(popups=True)`, used by 4.A's click and key
+  checks. Fixtures `4a/f23` (alert), `4a/f24` (download), and `4a/f25`
+  (a click that does nothing: still PASS, M2).
 
 #### M-02 5.H cannot see a form that is only a button
 

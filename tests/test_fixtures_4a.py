@@ -83,6 +83,12 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M6"],
         "choice": NO_ALT,
     },
+    # C-01 (1.9.0): an alert() or a download is an effect of a click, so a
+    # mouse-only control whose only effect is one is a candidate (J1 is
+    # asked). The control: a click that does nothing is still no instance.
+    "f23-click-only-alert": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
+    "f24-click-only-download": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
+    "f25-click-only-does-nothing": {"outcome": "PASS", "rows": ["M2"]},
 }
 
 ACT = {
