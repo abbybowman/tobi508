@@ -309,13 +309,11 @@ itself, one bundle a thread; they are not repeated here.
 **After the demo: each shapes a step of "Next".**
 
 - **Spec decisions from the review:** a form behind a plain button
-  (H-08), a page that is only a canvas (E-03), native controls that
-  answer only `mousedown` (E-08), a title that is a control's only
-  label (E-13), `aria-controls` as a field's "own widget" (H-04), 9.C
-  pairs with no name on either side (K-05), a form whose button is
-  `type="button"` (M-01) or that is only a button (M-02), 4.D's "moved"
-  signal (F-02), an element Tab can never rest on (C-07), 4.F's "order
-  does not matter" making the test DOES NOT APPLY.
+  (H-08), a page that is only a canvas (E-03), a title that is a
+  control's only label (E-13), `aria-controls` as a field's "own
+  widget" (H-04), a form that is only a button (M-02), 4.F's "order
+  does not matter" making the test DOES NOT APPLY. (Decided and built
+  in step 6b, 2026-11-13: E-08, K-05, M-01, F-02, C-07.)
 - **CLAUDE.md's lists:** principle 8 does not name 4.A J1 and J2 or
   4.B J1, which settle a PASS by looking (E-06); principle 5 does not
   name 9.A's key press (M-15) or the media store's fetches (S-04).
@@ -423,8 +421,7 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   note; fix 7, now part D). Fields in shadow roots are not read either
   and get no note (above). 5.F and 5.G leave `time`,
   `datetime-local`, `month` and `week` fields as loaded in attempt 2.
-- **5.F, 5.G, 5.H:** a form whose button is `type="button"` is never
-  submitted (M-01); a form that is only a button is not seen (M-02);
+- **5.F, 5.G, 5.H:** a form that is only a button is not seen (M-02);
   5.H's consequence words are English only, and no match is DOES NOT
   APPLY (M-03). Error handling done on the server cannot be replayed
   from a recording: 5.F answers NEEDS REVIEW when a form is sent, and

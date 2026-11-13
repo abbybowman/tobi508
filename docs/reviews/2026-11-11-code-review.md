@@ -100,7 +100,7 @@ below; "run" means I ran a page and got the outcome shown.
 | E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run. **Fixed** |
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run · fixed (part B) |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run · fixed (part B) |
-| M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
+| M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run · fixed (step 6b) |
 | H-01 | 5.A | PASS | a label whose words are hidden | run |
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
@@ -260,6 +260,17 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). Two fields and a `type="button"` whose
   handler writes "Email: enter a valid email address" into a
   `role="alert"`: 5.F and 5.G DOES NOT APPLY, no question.
+- **Fixed (M-01):** commit "5.F, 5.G: a form checked by a type=button control is
+  pressed, and a press that may not send it is never DOES NOT APPLY (M-01)",
+  specs 5.F 1.7.0, 5.G 1.5.0, 5.H 1.5.0 (5.H reads 5.F's list of what was
+  not tested). Abby chose option A and accepted DOES NOT APPLY to PASS where
+  the pressed control really runs the check and the error is described
+  (2026-11-13). Every other visible button of the form is offered, submit
+  buttons always first (`_choose`); `incomplete_of` adds the new sentence
+  only when no error showed for that form. Fixtures `5f/f26` (a described
+  error: PASS; DOES NOT APPLY before) and `5f/f27` (an "Add another" button
+  that shows nothing: NEEDS REVIEW, the nearest case that must not become a
+  PASS or a DNA).
 
 #### H-01 5.A passes a label whose words nobody can see
 

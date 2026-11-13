@@ -170,7 +170,15 @@ FORMS_JS = (
     let bs;
     if (key) {
       const form = els[f.fields[0]].form;
-      bs = Array.from(form.elements).filter(isSubmit);
+      const subs = Array.from(form.elements).filter(isSubmit);
+      // Every other visible button in the form, after the submit ones (M-01):
+      // a form checked by script has <button type="button" onclick=...>.
+      const shown = (b) => b.checkVisibility ? b.checkVisibility({ visibilityProperty: true }) : true;
+      const others = Array.from(form.elements).filter((b) => !isSubmit(b) &&
+        b.matches('button, input[type=button]') && b.type !== 'reset')
+        .concat(Array.from(form.querySelectorAll('[role=button]')).filter((b) => !subs.includes(b)))
+        .filter((b, i, a) => a.indexOf(b) === i && shown(b)).slice(0, 10);
+      bs = subs.concat(others);
     } else {
       const last = els[f.fields[f.fields.length - 1]];
       bs = Array.from(doc.querySelectorAll(BTN)).filter((b) => !b.form && !b.closest('form') &&
@@ -390,12 +398,38 @@ def wrong_date(min_: str | None, max_: str | None) -> tuple[str, str]:
     return f"{d.month:02d}{d.day:02d}{d.year:04d}", f"{d:%B} {d.day}, {d.year}"
 
 
+SEND_KINDS = ("submit", "image")  # a button that sends a form (others: M-01)
+
+
 def _choose(buttons: list[Btn]) -> int | None:
+    """The control to press: a submit button first (by its words, else the
+    first), then any other button of the form the same way (M-01)."""
     ok = [b for b in buttons if not SKIP_WORDS.search(b.name)]
-    for b in ok:
-        if SUBMIT_WORDS.search(b.name):
-            return b.n
-    return ok[0].n if ok else None
+    for group in (
+        [b for b in ok if b.kind in SEND_KINDS],
+        [b for b in ok if b.kind not in SEND_KINDS],
+    ):
+        for b in group:
+            if SUBMIT_WORDS.search(b.name):
+                return b.n
+        if group:
+            return group[0].n
+    return None
+
+
+def could_have_sent(form: Form5F, attempts: list[AttemptE]) -> bool:
+    """Some attempt pressed a control that could have sent the form (M-01):
+    a submit button, Enter in a form of one field (implicit submission), or a
+    control the agent named (J0). A press of another button on a form with no
+    submit button proves nothing about whether the page checks for errors."""
+    kind = {b.n: b.kind for b in form.buttons}
+    for a in attempts:
+        if a.button is None:
+            if len(form.fields) == 1:
+                return True
+        elif kind.get(a.button) in SEND_KINDS or a.button != form.submit:
+            return True
+    return False
 
 
 def _read_of(got: Any, moment: str, fields: list[Field5D]) -> Read:
@@ -1265,6 +1299,21 @@ def incomplete_of(ps: PassE) -> list[str]:
         out.append(
             f"The keyboard walk ended in a trap, so {n} form field(s) were never reached and not checked."
         )
+    # A form that showed no error, whose pressed control may not send it
+    # (M-01): DOES NOT APPLY would say the page does not check for errors.
+    shown_for = {ps.attempts[i.attempt].form for i in instances(ps)}
+    for form in ps.forms:
+        ats = [a for a in ps.attempts if a.form == form.id]
+        if form.id in shown_for or not ats or any(a.sent for a in ats):
+            continue
+        if not could_have_sent(form, ats):
+            btn = next((b for b in form.buttons if b.n == ats[0].button), None)
+            what = f'"{btn.name}"' if btn and btn.name else "the form's last field"
+            out.append(
+                f"We pressed {what}, but it may not be the control that sends "
+                "this form, so we could not tell whether the page checks it for "
+                "errors. Please check how the form reports errors."
+            )
     for a in ps.attempts:
         if not a.reached:
             out.append(

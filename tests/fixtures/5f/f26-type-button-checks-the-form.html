@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F26 Contact, checked by a type=button</title></head><body>
+<h1>Contact us</h1>
+<form id="f" novalidate>
+<p role="alert" id="msg"></p>
+<p><label for="name">Full name</label> <input id="name"></p>
+<p><label for="email">Email</label> <input id="email"></p>
+<p><button type="button" id="check">Send message</button></p>
+</form>
+<script>
+// A form checked by script: the button is not a submit button.
+document.getElementById("check").addEventListener("click", function () {
+  var ok = /^[^@\s]+@[^@\s]+$/.test(document.getElementById("email").value);
+  document.getElementById("msg").textContent = ok ? "" : "Email: enter a valid email address, like name@example.gov.";
+});
+</script></body></html>
