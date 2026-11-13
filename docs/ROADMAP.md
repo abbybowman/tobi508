@@ -22,7 +22,17 @@ keep their own schedule.
   the server judge, gate and sign-in fixes, the rules' false FAILs, and
   the answerable "unsure" questions. They were planned to take until
   about Nov 17 and took two days, so the order below pulls work up.
-  None of it has been scored on real pages yet: that is step 6.
+- **Step 6, the check against round 2** (2026-11-13;
+  [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6)):
+  wrong PASS and wrong DOES NOT APPLY fell from 5 to 0 and false FAILs
+  from 24-26 to 11 (6 of them the container's, not the rules'), but
+  decided cells fell from about 132 to 68 of 220: NEEDS REVIEW rose
+  from 86 to 152, and the keys fail 21 of those. The tool stopped
+  guessing; it now decides too little. Steps 6c, 8 and 9 win decided
+  cells back, with no wrong PASS or DOES NOT APPLY returning. For the
+  pitch (Abby, 2026-11-13): no target share of NEEDS REVIEW; the three
+  figures side by side, the rise in NEEDS REVIEW named as the cost, and
+  where the lost cells went.
 - **Evals.** Judge eval runs are in [evals/README.md](../evals/README.md).
   Agent eval rounds 1 (nasa.gov) and 2 (svs.gsfc.nasa.gov) are scored
   against Abby's blind SCRT files
@@ -75,6 +85,7 @@ ran three to four times longer than the work took.
 | 1-5 | Quick fixes and CI; the count and guard CN; judge, gate and sign-in fixes; false FAILs; answerable "unsure" | | done: PRs #39 to #44 | Plan parts A and B; review bundle 7; fixes 8 to 14 and 24 to 27 |
 | 6 | The check against round 2: the baseline before the readers change | Opus | done Nov 13: [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | Nov 13-16, beside 7 and 8 | [Spec decisions](plans/2026-11-13-spec-decisions.md): M-05, C-01, M-10, H-02, M-08, K-01; then M-01, E-08, F-02, C-07, K-05 as Abby answers |
+| 6c | Win back decided cells: the 600-item read cap, a time budget per test, 19.A's unverified search, a fuller freeze | Opus | Nov 14, before 8 reaches the site read | Step 6's results; this file, "What each step covers" |
 | 7 | The grid of hard pages, its shadow-root and frame pages first | Sonnet | Nov 13-14, beside 6 | Plan part I |
 | 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |
 | 9 | The second check: round 2's and round 1's frozen pages again, after 8 | Sonnet | Nov 16-17 | As step 6, a new folder |
@@ -113,6 +124,29 @@ what is planned.
    remove. Six need no decision; five wait for Abby's answer in
    [plans/2026-11-13-spec-decisions.md](plans/2026-11-13-spec-decisions.md).
    Each moves a PASS or a DOES NOT APPLY toward NEEDS REVIEW or FAIL.
+6c. **Win back decided cells** (Abby, 2026-11-13), ranked by the
+   failures the keys say are hidden, then by cells won back for the
+   work. In this order:
+   - **The 600-item read cap** (9.A-9.C; `site.py` `UNIT_CAP`): it
+     holds 30 cells and hides 10 failures (the keys fail 9.A on every
+     page). Lifting it is approved (Abby, 2026-11-13), though it moves
+     NEEDS REVIEW back to an outcome: the cap is what held round 2's
+     two wrong 9.A PASSes (CILab, 14592). Done only when those two
+     cells FAIL with the keys and no 9.A-9.C cell passes where the key
+     fails. It merges before step 8 replaces the site read.
+   - **A time budget per test** inside the run limit, so a test that
+     runs long costs its own cell: 3.A's capture took 17 min on 14194
+     (55 s in the dry run) and cost 5.A-5.H there. Find the cause as
+     well as adding the budget.
+   - **19.A: a search whose results page did not finish** (its own
+     scripts failed to load) is "search not verified" (row W4, NEEDS
+     REVIEW), not a search that found nothing (W3, FAIL).
+   - **A fuller freeze** for step 10 and later rounds: the freeze
+     scrolls the page so lazy images load, and records media and
+     19.A's search results, so a run does not depend on the container.
+     Round 2's and round 1's frozen pages cannot be recorded again (the
+     keys describe the pages as they were), so for step 9 the fix is
+     the container: a browser that trusts the egress proxy.
 7. **The grid of hard pages** (part I): nine shared pages (a shadow
    root, a frame, more than a cap, a trap, a late start, text not in
    English, hidden text, a form behind a button, a failed reading) run
@@ -143,7 +177,13 @@ what is planned.
    and on round 1's (the gate script reads only round 2's pages
    today, so it gains a round option): what moved from
    NEEDS REVIEW to an outcome, and whether any of it is wrong against
-   the keys. Then each README status line is rewritten from it, and the
+   the keys. The working goal: at least round 2's decided cells (about
+   132 of 220) with still no wrong PASS or DOES NOT APPLY. It also
+   measures guard CN on round 1's pages before its calibration is
+   judged (on round 2's it cost 14 agreements and held back no
+   failure; an image the recording lacks stays "unread", and the
+   fuller freeze is the fix), and it is where `JUDGE_TYPES` is decided,
+   on both rounds' cells and the gate's test-page half. Then each README status line is rewritten from it, and the
    caveats step 8 removed go.
 10. **Round 3, small.** A site the tool has not been developed against;
     Abby looks for NASA sites built with web components. Three to five
@@ -245,8 +285,11 @@ itself, one bundle a thread; they are not repeated here.
 - **Windows headed Chrome** was last run on 2026-11-02, before most of
   today's specs. Run it again before the scored submission run, or state
   the limit ([browser checks](../specs/rules/_browser-checks.md)).
-- **`JUDGE_TYPES`:** the question types to switch on, after the check against
-  round 2 (step 6).
+- **`JUDGE_TYPES`:** the question types to switch on, after step 9, on
+  round 1's and round 2's cells together and the gate's test-page half
+  (not run in step 6). 4.B is nearest (5 of 5 agree, 6 cells needed);
+  4.A, 4.D and 4.F stay off (they gave the judge's wrong FAILs in both
+  rounds).
 - **Five spec decisions** for step 6b:
   [plans/2026-11-13-spec-decisions.md](plans/2026-11-13-spec-decisions.md),
   part 2.

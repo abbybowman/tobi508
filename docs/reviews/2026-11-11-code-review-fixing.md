@@ -146,6 +146,47 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > `forms.py`, `reveal.py`, `observe.py` dialogs): C-01 touches
 > `observe.py`, so merge `main` before it and keep the change small.
 
+**Step 6c, Opus: win back decided cells** (before step 8 reaches the site read)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "Working rules". Your work is step 6c of
+> `docs/ROADMAP.md` "Order of work"; read step 6's results in
+> `evals/README.md` ("Gate 2026-11-13") and
+> `evals/judging/gate-2026-11-13/compare.md` first. Four items, in the
+> roadmap's order, each its own pull request.
+>
+> (1) The 600-item read cap of 9.A-9.C (`site.py` `UNIT_CAP`; 9.A's
+> spec, section 2). I have approved lifting it. Find out first why it
+> is 600 and what a page over it costs in time; then raise or remove
+> it as one MINOR spec change per spec that names it, with a fixture
+> page over the old cap and the nearest page that must still be NEEDS
+> REVIEW. Then rerun 9.A-9.C on round 2's ten frozen pages (ask me for
+> the `round2-frozen` archive if it is not restored; never fetch them
+> live) and show me every cell beside my key. This turns NEEDS REVIEW
+> into outcomes, and the cap is what held round 2's two wrong 9.A
+> PASSes (CILab, 14592): if either does not FAIL, or any 9.A-9.C cell
+> passes where my key fails, stop and show me before merging.
+>
+> (2) A time budget per test inside the run limit, so a test that runs
+> long is NEEDS REVIEW ("ran out of its time") and the tests after it
+> still run. Show me the budgets before building. Also find why 3.A's
+> stepped capture took 17 min on 14194 against 55 s in the dry run.
+> Update CLAUDE.md "Hosting, time and concurrency" and the README's
+> "How long it takes" in the same commit.
+>
+> (3) 19.A: a search whose results page did not finish loading (its
+> own scripts failed) is row W4, NEEDS REVIEW, not W3. A MINOR spec
+> change, a fixture, and the nearest page that must still FAIL (a
+> finished search that does not list the page).
+>
+> (4) The freeze (`evals/agent/freeze.py`): scroll the page so lazy
+> images load, and record media and 19.A's search results, so that a
+> replay needs nothing live. Never rewrite a locked round or its
+> frozen set: this is for round 3 and later. For reruns of rounds 1
+> and 2, make the browser in this container trust the egress proxy
+> (`UPSTREAM_PROXY`; `docs/solutions/environment.md`) and say what you
+> changed.
+
 **Step 7, Sonnet: the grid of hard pages** (beside step 6)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
