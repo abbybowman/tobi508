@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F21 Quotes</title>
+<style>
+  .row { display: flex; align-items: center; gap: 8px; }
+  .track { display: flex; gap: 12px; margin: 0; padding: 0; list-style: none; width: 460px; overflow-x: auto; scrollbar-width: none; }
+  .track li { flex: 0 0 220px; height: 90px; border: 1px solid #889; padding: 8px; box-sizing: border-box; }
+  .next { width: 36px; height: 36px; }
+</style></head><body>
+<h1>Visitor quotes</h1>
+<div class="row">
+  <ul class="track" id="track">
+    <li>"A calm, clear sky."</li>
+    <li>"We stayed for the whole show."</li>
+    <li>"The children loved it."</li>
+    <li>"Worth the drive."</li>
+    <li>"Quiet, and so dark."</li>
+    <li>"We will be back."</li>
+  </ul>
+  <button class="next" type="button" aria-hidden="true" tabindex="-1" onclick="document.getElementById('track').scrollBy({left: 460, behavior: 'instant'})">&rsaquo;</button>
+</div>
+<p><a href="#visit">Plan your visit</a></p>
+</body></html>

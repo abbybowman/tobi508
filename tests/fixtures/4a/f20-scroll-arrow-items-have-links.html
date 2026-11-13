@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F20 Galleries</title>
+<style>
+  .row { display: flex; align-items: center; gap: 8px; }
+  .track { display: flex; gap: 12px; margin: 0; padding: 0; list-style: none; width: 460px; overflow-x: auto; scrollbar-width: none; }
+  .track li { flex: 0 0 220px; height: 90px; border: 1px solid #889; padding: 8px; box-sizing: border-box; }
+  .next { width: 36px; height: 36px; }
+</style></head><body>
+<h1>Galleries</h1>
+<div class="row">
+  <ul class="track" id="track">
+    <li><a href="#g1">Aurora</a></li>
+    <li><a href="#g2">Comets</a></li>
+    <li><a href="#g3">Nebulae</a></li>
+    <li><a href="#g4">Rings</a></li>
+    <li><a href="#g5">Storms</a></li>
+    <li><a href="#g6">Tides</a></li>
+  </ul>
+  <button class="next" type="button" aria-hidden="true" tabindex="-1" onclick="document.getElementById('track').scrollBy({left: 460, behavior: 'instant'})">&rsaquo;</button>
+</div>
+</body></html>

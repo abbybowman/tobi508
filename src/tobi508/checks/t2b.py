@@ -75,6 +75,12 @@ def still_moving(r: Region) -> bool:
         return False  # content that changes off screen: not seen to move
     if r.source != "pixels":
         return True
+    if r.visible_px == 0:
+        return False  # its box changed by less than the eye sees (1.3.0)
+    return _changes_late(r)
+
+
+def _changes_late(r: Region) -> bool:
     t = r.changed_at
     return bool(t) and t[-1] >= STILL_MOVING_S and len(t) >= MIN_CHANGES
 
@@ -318,14 +324,34 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="") -> Finding:
     return f
 
 
+def _unseen(mp: MotionPass) -> list[Region]:
+    """Regions whose pixels changed for more than 5 s but never by enough to
+    see in their box (2.B 1.3.0): not counted as moving."""
+    return [
+        r
+        for r in mp.regions
+        if r.source == "pixels"
+        and r.visible_px == 0
+        and ("moving" in r.kinds or r.children_moved)
+        and _changes_late(r)
+    ]
+
+
 def _notes(mp: MotionPass) -> list[str]:
+    out = []
     if mp.blink_markup:
-        return [
+        out.append(
             "This page marks some text to blink (an old HTML feature); it does "
             "not blink in Chrome, the browser we test with, but other browsers "
             "may differ."
-        ]
-    return []
+        )
+    if _unseen(mp):
+        out.append(
+            f"{len(_unseen(mp))} part(s) of the page changed by themselves, but "
+            "by less than the eye can see in the pictures we took, so they were "
+            "not counted as moving."
+        )
+    return out
 
 
 def evaluate(st: State2B, evidence_refs: list[str]) -> Finding:

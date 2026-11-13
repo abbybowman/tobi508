@@ -68,7 +68,7 @@ step is one thread, started with its prompt in
 | 2 | A count of what exists, and the guard that holds DOES NOT APPLY | Opus | now | Plan part B |
 | 3 | Server judge and gate fixes; sign-in ownership; a person's answer never through MCP | Opus | now | Review bundle 7 (B-01, B-02, L-02, L-03, G-02, B-04); A-01, S-05; fix 21's first step (A-05) |
 | 4 | The rules' false FAILs | Opus | done: PR #44 | Fixes 8, 8b, 9c, 9, 10, 11; pivot bundle 5 |
-| 5 | "Unsure" answers that are answerable | Sonnet | when a thread finishes | Fixes 12, 13, 14, then 24-27; pivot bundle 4 |
+| 5 | "Unsure" answers that are answerable | Sonnet | built 2026-11-13 (pull request open); the server judge stays off by default until step 6 | Fixes 12, 13, 14, then 24-27; pivot bundle 4 |
 | 6 | The check against round 2 | Opus | when 1 to 5 are merged (about Nov 17) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 7 | The pitch: one scored run at the submission commit, rehearsal, fallback video | Abby, with a Sonnet thread for the run | Nov 18-19 | [docs/hackathon/](hackathon/README.md) |
 | 8 | If the days allow: the second look's trial | Sonnet | after 6 | Plan part F, "Trial" |
