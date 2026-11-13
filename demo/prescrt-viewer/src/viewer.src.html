@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- No network at all: images only from data: URLs, nothing else loads. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>TOBI demo viewer for pre-SCRT files (based on DHS's SCRT)</title>
+<!-- Built file: edit src/ and run build.py. -->
+<style>
+/* ---- DHS SCRT CSS/acrt_styles.css (MIT licence, see LICENSE), unchanged ---- */
+/*@@SCRT_CSS@@*/
+/* ---- TOBI demo viewer additions ---- */
+/*@@VIEWER_CSS@@*/
+</style>
+</head>
+<body>
+<a href="#main" class="skip skiplink">Skip to main content</a>
+<div id="banner" class="banner neutral" role="region" aria-label="What is loaded">
+  <p>No file loaded yet. This viewer shows SCRT and pre-SCRT files; it does not test pages.</p>
+</div>
+<div class="brandbar">
+  <strong>TOBI demo viewer</strong>
+  <span>a fork of the report viewer in DHS's Section 508 Compliance Reporting Tool (SCRT)</span>
+</div>
+
+<main id="main" tabindex="-1">
+  <h1>TOBI demo viewer: SCRT and pre-SCRT files</h1>
+  <p class="intro">This page is TOBI's demonstration viewer, built from the "View Report" page of
+    DHS's SCRT (MIT licence). It is not DHS's tool, and it only displays files: it does not
+    edit or save them. A pre-SCRT file is an agent-assisted record written by TOBI. An SCRT file
+    is the record a person saves in SCRT.</p>
+
+  <h2>Tool tips</h2>
+  <ol>
+    <li>Choose a report file. It can be an SCRT file or a pre-SCRT file.</li>
+    <li>Optionally choose a second file to compare with. Its result and comment appear beside
+      each test, matched by test ID, and rows where the two results differ are marked.</li>
+    <li>Expand the Product, Testing Information and Test Environment sections to see more.</li>
+    <li>Select a screenshot to see it larger. Press Escape to close it.</li>
+  </ol>
+
+  <section aria-labelledby="h-files">
+    <h2 id="h-files">Select files</h2>
+    <div class="dropzones">
+      <div class="drop" id="drop-primary">
+        <label for="primary-file">Report file (SCRT or pre-SCRT JSON)</label>
+        <input type="file" id="primary-file" accept=".json,application/json">
+        <p class="hint">You can also drop a file on this box.</p>
+      </div>
+      <div class="drop" id="drop-compare">
+        <label for="compare-file">Compare with (optional): another SCRT or pre-SCRT file</label>
+        <input type="file" id="compare-file" accept=".json,application/json">
+        <p class="hint">You can also drop a file on this box.</p>
+        <button type="button" id="clear-compare" class="smallbtn" hidden>Remove the compare file</button>
+      </div>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <div id="error" role="alert"></div>
+  </section>
+
+  <div id="report" hidden></div>
+</main>
+
+<dialog id="zoom" aria-labelledby="zoom-title">
+  <h2 id="zoom-title">Screenshot</h2>
+  <img id="zoom-img" alt="">
+  <p><button type="button" id="zoom-close" class="smallbtn">Close</button></p>
+</dialog>
+
+<script>
+/*@@VIEWER_JS@@*/
+</script>
+</body>
+</html>
