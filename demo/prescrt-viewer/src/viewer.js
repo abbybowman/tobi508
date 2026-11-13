@@ -12,6 +12,7 @@
   var IMG_RE = /^data:image\/(png|jpeg|gif);base64,[A-Za-z0-9+/=\s]+$/;
   var NEEDS_TEXT = "Needs review: a person must decide";
   var NONE_TEXT = "No result recorded";
+  var NOT_BY_TOBI = "Not tested by TOBI";
   var NOT_PERFORMED = "This test could not be performed";
   var state = { primary: null, compare: null };
 
@@ -55,6 +56,14 @@
 
   function orEmpty(s, empty) {
     return s ? document.createTextNode(s) : el("span", { class: "empty" }, empty || "(blank)");
+  }
+
+  // A long comment shows its start; the rest opens in place.
+  function longText(s) {
+    if (!s) return el("span", { class: "empty" }, "(blank)");
+    if (s.length <= 450) return document.createTextNode(s);
+    return el("details", { class: "more" }, el("summary", null, s.slice(0, 320) + "... ",
+      el("span", { class: "morelink" }, "Show the whole comment")), s);
   }
 
   // ---- reading files -------------------------------------------------------
@@ -161,36 +170,67 @@
 
   // ---- results -------------------------------------------------------------
 
+  // A blank pre-SCRT result is one of two things: a test TOBI did not run
+  // at all (no spec version and no spec rows: not one of its tests yet, or not
+  // selected), or a test TOBI ran, or tried to, and left for a person.
+  function inScope(row) {
+    var s = row.source;
+    return row.performed || !!(s && (clean(s.spec_version) || (Array.isArray(s.rows) && s.rows.length)));
+  }
+
   function category(row, kind) {
-    if (row.result === "") return kind === "pre" ? "needs" : "none";
+    if (row.result === "") {
+      if (kind !== "pre") return "none";
+      return inScope(row) ? "needs" : "nottested";
+    }
     return RESULTS.indexOf(row.result) >= 0 ? row.result : "other";
   }
 
   var CLASS_OF = { "Pass": "res-pass", "Fail": "res-fail", "Does Not Apply": "res-dna",
-    "Not Tested": "res-nt", needs: "res-needs", none: "res-none", other: "res-other" };
+    "Not Tested": "res-nt", needs: "res-needs", none: "res-none", nottested: "res-none", other: "res-other" };
 
   function resultLabel(row, kind) {
     var cat = category(row, kind);
     if (cat === "needs") return NEEDS_TEXT;
+    if (cat === "nottested") return NOT_BY_TOBI;
     if (cat === "none") return NONE_TEXT;
     if (cat === "other") return "Other: " + row.result;
     return cat;
   }
 
-  function resultNode(row, kind) {
+  // Why a blank row is blank, in a few words (the comment has the full reason).
+  function whyNode(row, cat) {
+    if (cat === "needs") {
+      return el("span", { class: "why" }, row.performed ?
+        "TOBI tested this and could not decide" : "TOBI could not complete this test");
+    }
+    if (cat === "nottested") {
+      var c = row.comment;
+      var why = /does not perform this test yet/.test(c) ? "Not one of TOBI's tests yet" :
+        (/not selected for this run/.test(c) ? "Not selected for this run" : "TOBI did not run this test");
+      return el("span", { class: "why quiet" }, why);
+    }
+    return null;
+  }
+
+  function resultNode(row, kind, isChild) {
     var cat = category(row, kind);
     var wrap = el("div", null, el("span", { class: "res " + CLASS_OF[cat] }, resultLabel(row, kind)));
-    if (kind === "pre" && !row.performed) add(wrap, el("span", { class: "notperf" }, NOT_PERFORMED));
-    if (kind === "pre" && row.needsReview && cat !== "needs") {
-      add(wrap, el("span", { class: "flag" }, "Also marked as needing review by a person"));
+    if (kind === "pre") {
+      add(wrap, whyNode(row, cat));
+      if (row.needsReview && row.result !== "") {
+        add(wrap, el("span", { class: "flag" }, "Also marked as needing review by a person"));
+      }
+      if (row.review && row.review.checked === true) add(wrap, el("span", { class: "flag" }, "Checked by a person"));
+      if (!isChild) {
+        add(wrap, el("details", { class: "audit" }, el("summary", null, "Audit details"),
+          sourceNode(row), el("div", { class: "small" }, el("b", null, "Person's review: "), reviewNode(row))));
+      }
     }
     return wrap;
   }
 
-  function needsPerson(row, kind) {
-    var cat = category(row, kind);
-    return row.needsReview || !row.performed || cat === "needs" || cat === "none";
-  }
+  function needsPerson(row, kind) { return category(row, kind) === "needs"; }
 
   // ---- rendering -----------------------------------------------------------
 
@@ -249,9 +289,8 @@
     return el("div", { class: "kv" }, el("b", null, label + ": "), value instanceof Node ? value : txt(value));
   }
 
-  function sourceNode(row, isChild) {
+  function sourceNode(row) {
     var s = row.source;
-    if (isChild) return el("span", { class: "empty" }, "As the test row");
     if (!s) return el("span", { class: "empty" }, "Not recorded");
     var by = clean(s.by);
     var out = el("div", { class: "small" },
@@ -267,7 +306,7 @@
 
   function reviewNode(row) {
     var r = row.review;
-    if (!r) return el("span", { class: "empty" }, "Not reviewed by a person");
+    if (!r) return el("span", { class: "empty" }, "none recorded");
     return el("div", { class: "small" },
       kv("Checked", r.checked === true ? "Yes" : "No"),
       kv("By", clean(r.by) || "(blank)"),
@@ -341,23 +380,20 @@
     add(out, el("h2", { id: "h-results" }, "Test Results"));
 
     // Summary: counts over tests (rows that are not child issues). Counting only.
-    var counts = {}, notPerf = 0, children = 0, person = 0;
+    var counts = {}, children = 0;
     doc.rows.forEach(function (r) {
       if (r.parent !== null) { children++; return; }
       var c = category(r, doc.kind);
       counts[c] = (counts[c] || 0) + 1;
-      if (pre && !r.performed) notPerf++;
-      if (needsPerson(r, doc.kind)) person++;
     });
     var items = [["Pass", "Pass"], ["Fail", "Fail"], ["Does Not Apply", "Does Not Apply"], ["Not Tested", "Not Tested"]];
-    items.push(pre ? ["needs", "Needs review (blank)"] : ["none", NONE_TEXT]);
+    if (pre) items.push(["needs", "Needs review (TOBI ran or tried the test)"], ["nottested", NOT_BY_TOBI]);
+    else items.push(["none", NONE_TEXT]);
     if (counts.other) items.push(["other", "Other values"]);
     var ul = el("ul", { class: "summary", "aria-label": "Counts of tests by result" });
     items.forEach(function (it) {
       add(ul, el("li", null, el("span", { class: "n" }, String(counts[it[0]] || 0)), it[1]));
     });
-    if (pre) add(ul, el("li", null, el("span", { class: "n" }, String(notPerf)), "Not performed by the tool"));
-    add(ul, el("li", null, el("span", { class: "n" }, String(person)), "Tests needing a person"));
     add(ul, el("li", null, el("span", { class: "n" }, String(children)), "Child issue rows"));
     add(out, el("p", { class: "intro" }, "Counts are of tests; child issue rows are counted apart. These are counts only, not a score."));
     add(out, ul);
@@ -373,32 +409,36 @@
       }
     }
 
-    // Filters.
+    // Filters and column choices.
     var sel = el("select", { id: "filter-result" });
     [["all", "All results"], ["Pass", "Pass"], ["Fail", "Fail"], ["Does Not Apply", "Does Not Apply"],
-      ["Not Tested", "Not Tested"], pre ? ["needs", "Needs review"] : ["none", NONE_TEXT]]
-      .concat(pre ? [["notperf", "Not performed by the tool"]] : [])
+      ["Not Tested", "Not Tested"]]
+      .concat(pre ? [["needs", "Needs review"], ["nottested", NOT_BY_TOBI]] : [["none", NONE_TEXT]])
       .forEach(function (o) { add(sel, el("option", { value: o[0] }, o[1])); });
-    var chkPerson = el("input", { type: "checkbox", id: "filter-person" });
+    var chkPerson = pre ? el("input", { type: "checkbox", id: "filter-person" }) : null;
     var chkDiff = cmp ? el("input", { type: "checkbox", id: "filter-differs" }) : null;
+    var chkCompact = cmp ? el("input", { type: "checkbox", id: "view-compact", checked: true }) : null;
+    var chkRem = el("input", { type: "checkbox", id: "view-remediation" });
+    function opt(chk, text) { return chk ? el("span", null, chk, " ", el("label", { for: chk.id }, text)) : null; }
     add(out, el("div", { class: "filters" },
       el("span", null, el("label", { for: "filter-result" }, "Filter results by: "), sel),
-      el("span", null, chkPerson, " ", el("label", { for: "filter-person" }, "Only rows needing a person")),
-      chkDiff ? el("span", null, chkDiff, " ", el("label", { for: "filter-differs" }, "Only tests whose results differ")) : null));
+      opt(chkPerson, "Only needs review"),
+      opt(chkDiff, "Only tests whose results differ")));
+    add(out, el("div", { class: "filters" },
+      opt(chkCompact, "Compare view: fewer columns, to fit the screen (untick for every column of the report file)"),
+      opt(chkRem, "Show remediation columns")));
     var shown = el("p", { id: "shown", role: "status", "aria-live": "polite" });
     add(out, shown);
 
-    // Table.
-    var heads = ["Test ID", "Row", "Test name", "Test condition", "Test result", "Tester comments"];
-    if (pre) heads.push("Source", "Person's review");
-    heads.push("Location/screen", "Global issue", "Screenshot",
-      "Remediation details", "Remediation screenshot", "Remediation date");
-    var cmpHeads = cmp ? ["Compare file: result", "Compare file: comment", "Same or differs"] : [];
-    // The compare columns go right after the result and comment, so both results show together.
-    var thead = el("thead", null, el("tr", null,
-      heads.slice(0, 6).map(function (h) { return el("th", { scope: "col" }, h); }),
-      cmpHeads.map(function (h, k) { return el("th", { scope: "col", class: k === 2 ? "cmp diffcol" : "cmp" }, h); }),
-      heads.slice(6).map(function (h) { return el("th", { scope: "col" }, h); })));
+    // Table. Each cell carries its column's class so a view can hide columns.
+    var cols = [["id", "Test ID"], ["row", "Row"], ["name", "Test name"], ["cond", "Test condition"],
+      ["result", pre ? "Test result (TOBI)" : "Test result"], ["comment", "Comments"], ["shot", "Screenshot"]];
+    if (cmp) cols.push(["cres", "Compare file: result"], ["ccom", "Compare file: comments"], ["diff", "Same or differs"]);
+    cols.push(["loc", "Location/screen"], ["global", "Global issue"],
+      ["rem", "Remediation details"], ["rem", "Remediation screenshot"], ["rem", "Remediation date"]);
+    var thead = el("thead", null, el("tr", null, cols.map(function (c) {
+      return el("th", { scope: "col", class: "c-" + c[0] + (/^(cres|ccom|diff)$/.test(c[0]) ? " cmp" : "") }, c[1]);
+    })));
     var tbody = el("tbody");
     var groups = [];
     var childNo = {};
@@ -411,41 +451,41 @@
         childNo[r.parent] = (childNo[r.parent] || 0) + 1;
         label = "Child issue " + childNo[r.parent] + " of row " + (r.parent + 1);
       } else label = "Row " + (i + 1);
-      add(tr, el("th", { scope: "row" }, r.id || "(no test ID)"));
-      add(tr, el("td", { class: "rowlabel small" }, (isChild ? "↳ " : "") + label));
-      add(tr, el("td", { class: "mid" }, orEmpty(r.name), r.crt ? el("div", { class: "small" }, "Criteria: " + r.crt) : null));
-      add(tr, el("td", { class: "wide" }, orEmpty(r.condition)));
-      add(tr, el("td", { class: "mid" }, resultNode(r, doc.kind)));
-      add(tr, el("td", { class: "wide" }, orEmpty(r.comment)));
+      add(tr, el("th", { scope: "row", class: "c-id" }, r.id || "(no test ID)",
+        isChild ? el("div", { class: "small childmark" }, "↳ child issue " + childNo[r.parent]) : null));
+      add(tr, el("td", { class: "c-row small" }, (isChild ? "↳ " : "") + label));
+      add(tr, el("td", { class: "c-name" }, orEmpty(r.name), r.crt ? el("div", { class: "small" }, "Criteria: " + r.crt) : null));
+      add(tr, el("td", { class: "c-cond pre" }, orEmpty(r.condition)));
+      add(tr, el("td", { class: "c-result" }, resultNode(r, doc.kind, isChild)));
+      add(tr, el("td", { class: "c-comment pre" }, longText(r.comment),
+        r.location ? el("div", { class: "where" }, el("b", null, "Where: "), r.location) : null));
+      add(tr, el("td", { class: "c-shot" }, imageNode(r.img, "Screenshot for test " + r.id + ", " + label.toLowerCase())));
       var differs = false;
       if (cmp) {
         if (isChild) {
-          add(tr, el("td", { class: "cmpcell", colspan: 3 }, el("span", { class: "empty" }, "See the test row above")));
+          add(tr, el("td", { class: "cmpcell c-cres", colspan: 3 }, el("span", { class: "empty" }, "See the test row above")));
         } else {
           var m = cmap[r.id];
           if (!m) {
-            add(tr, el("td", { class: "cmpcell", colspan: 3 }, el("span", { class: "empty" }, "Not in the compare file")));
+            add(tr, el("td", { class: "cmpcell c-cres", colspan: 3 }, el("span", { class: "empty" }, "Not in the compare file")));
           } else {
             differs = resultKey(m.row) !== resultKey(r);
-            add(tr, el("td", { class: "cmpcell mid" }, resultNode(m.row, cmp.kind)));
-            add(tr, el("td", { class: "cmpcell wide" }, orEmpty(m.row.comment),
+            add(tr, el("td", { class: "cmpcell c-cres" }, resultNode(m.row, cmp.kind, false)));
+            add(tr, el("td", { class: "cmpcell c-ccom pre" }, longText(m.row.comment),
+              m.row.location ? el("div", { class: "where show" }, el("b", null, "Where: "), m.row.location) : null,
+              m.row.img ? el("div", null, imageNode(m.row.img, "Compare file's screenshot for test " + r.id)) : null,
               m.children ? el("div", { class: "small" }, "Plus " + m.children + " child issue row" + (m.children > 1 ? "s" : "") + " in the compare file") : null));
-            add(tr, el("td", { class: "cmpcell diffcol" }, differs ?
+            add(tr, el("td", { class: "cmpcell c-diff" }, differs ?
               el("span", { class: "differs-mark" }, "≠ Differs") : "Same result"));
             if (differs) tr.classList.add("differs");
           }
         }
       }
-      if (pre) {
-        add(tr, el("td", { class: "mid" }, sourceNode(r, isChild)));
-        add(tr, el("td", { class: "mid" }, reviewNode(r)));
-      }
-      add(tr, el("td", { class: "mid" }, orEmpty(r.location)));
-      add(tr, el("td", null, orEmpty(r.global)));
-      add(tr, el("td", null, imageNode(r.img, "Screenshot for test " + r.id + ", " + label.toLowerCase())));
-      add(tr, el("td", { class: "wide" }, orEmpty(r.remediation)));
-      add(tr, el("td", null, imageNode(r.img2, "Remediation screenshot for test " + r.id + ", " + label.toLowerCase())));
-      add(tr, el("td", null, orEmpty(r.remDate)));
+      add(tr, el("td", { class: "c-loc" }, orEmpty(r.location)));
+      add(tr, el("td", { class: "c-global" }, orEmpty(r.global)));
+      add(tr, el("td", { class: "c-rem pre" }, orEmpty(r.remediation)));
+      add(tr, el("td", { class: "c-rem" }, imageNode(r.img2, "Remediation screenshot for test " + r.id + ", " + label.toLowerCase())));
+      add(tr, el("td", { class: "c-rem" }, orEmpty(r.remDate)));
 
       tbody.appendChild(tr);
       if (!isChild) groups.push({ row: r, trs: [tr], differs: differs });
@@ -473,20 +513,26 @@
     }
 
     function apply() {
-      var f = sel.value, onlyPerson = chkPerson.checked, onlyDiff = chkDiff && chkDiff.checked;
+      var f = sel.value, onlyPerson = chkPerson && chkPerson.checked, onlyDiff = chkDiff && chkDiff.checked;
       var n = 0;
       groups.forEach(function (g) {
         var r = g.row, ok = true;
-        if (f === "notperf") ok = !r.performed;
-        else if (f !== "all") ok = category(r, doc.kind) === f;
+        if (f !== "all") ok = category(r, doc.kind) === f;
         if (onlyPerson && !needsPerson(r, doc.kind)) ok = false;
         if (onlyDiff && !g.differs) ok = false;
         g.trs.forEach(function (tr) { tr.hidden = !ok; if (ok) n++; });
       });
       shown.textContent = "Showing " + n + " of " + doc.rows.length + " rows.";
     }
+    function view() {
+      table.classList.toggle("compact", !!(chkCompact && chkCompact.checked));
+      table.classList.toggle("norem", !chkRem.checked);
+    }
+    if (chkCompact) chkCompact.addEventListener("change", view);
+    chkRem.addEventListener("change", view);
+    view();
     sel.addEventListener("change", apply);
-    chkPerson.addEventListener("change", apply);
+    if (chkPerson) chkPerson.addEventListener("change", apply);
     if (chkDiff) chkDiff.addEventListener("change", apply);
     apply();
   }

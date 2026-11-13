@@ -62,12 +62,33 @@ ul.plain, .fields ul, .tree ul { padding-left: 1.4em; background: transparent; m
 #results thead th.cmp { background: #efe3f7; }
 #results td, #results th { overflow: visible; white-space: normal; }
 #results tbody th { font-size: 100%; background: inherit; }
-#results .wide { min-width: 16em; max-width: 26em; white-space: pre-wrap; overflow-wrap: anywhere; }
-#results .mid { min-width: 9em; max-width: 14em; overflow-wrap: anywhere; }
+#results .pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 #results .small { font-size: 90%; }
+#results td, #results th { overflow-wrap: anywhere; }
+#results .c-id { min-width: 3.2em; }
+#results .c-name, #results .c-loc { min-width: 9em; max-width: 14em; }
+#results .c-cond, #results .c-comment, #results .c-ccom, #results td.c-rem.pre { min-width: 16em; max-width: 26em; }
+#results .c-result, #results .c-cres { min-width: 10em; max-width: 14em; }
+#results .c-diff { min-width: 6em; }
+#results.norem .c-rem { display: none; }
+#results .where { margin-top: .4em; display: none; }
+#results .where.show { display: block; }
+#results .childmark { display: none; font-weight: normal; }
+/* Compare view: the two results and comments side by side, within the window. */
+#results.compact { table-layout: fixed; width: 100%; }
+#results.compact .c-row, #results.compact .c-cond, #results.compact .c-loc, #results.compact .c-global { display: none; }
+#results.compact .where, #results.compact .childmark { display: block; }
+#results.compact th, #results.compact td { min-width: 0; max-width: none; }
+#results.compact thead .c-id { width: 5%; }
+#results.compact thead .c-name { width: 11%; }
+#results.compact thead .c-result, #results.compact thead .c-cres { width: 12%; }
+#results.compact thead .c-comment { width: 25%; }
+#results.compact thead .c-shot { width: 8%; }
+#results.compact thead .c-ccom { width: 20%; }
+#results.compact thead .c-diff { width: 7%; }
+#results.compact .thumb img { width: 100%; max-width: 100px; }
 #results tbody tr:nth-child(even) { background: #f3fbfb; }
 #results tr.child > * { background: #f4f4f4; }
-#results tr.child .rowlabel { padding-left: 1em; }
 #results tr.differs th[scope=row] { box-shadow: inset 7px 0 0 #a34700; padding-left: 10px; }
 #results td.cmpcell { background: #faf5fd; }
 
@@ -76,10 +97,14 @@ ul.plain, .fields ul, .tree ul { padding-left: 1.4em; background: transparent; m
 .res-fail { background: #fde8e8; color: #8b0000; border-color: #8b0000; }
 .res-dna { background: #eef0f2; color: #2b2b2b; border-color: #555; }
 .res-nt { background: #efe8f7; color: #4b2a7b; border-color: #4b2a7b; }
-.res-needs { background: #fff1c2; color: #4a3200; border: 2px dashed #7a5500; }
-.res-none { background: #fff; color: #2b2b2b; border: 2px dotted #555; }
+.res-needs { background: #ffdf8a; color: #3a2700; border: 3px solid #7a5500; }
+.res-none { background: #fff; color: #555; border: 1px dotted #777; font-weight: normal; font-style: italic; }
 .res-other { background: #fff; color: #2b2b2b; border-color: #2b2b2b; }
-.notperf { display: block; margin-top: 4px; padding: 2px 4px; font-weight: bold; color: #fff; background: #8b0000; }
+.why { display: block; margin-top: 4px; font-weight: bold; color: #4a3200; }
+.why.quiet { font-weight: normal; color: #444; }
+.audit { margin-top: 6px; font-size: 90%; }
+.audit summary { cursor: pointer; color: #1b4f8a; text-decoration: underline; width: auto; }
+.audit[open] { padding: 4px; border: 1px solid #999; background: #fff; }
 .flag { display: block; margin-top: 4px; font-weight: bold; color: #4a3200; }
 .differs-mark { font-weight: bold; color: #7a2e00; }
 .kv { margin: 0 0 2px; }
@@ -93,3 +118,7 @@ ul.plain, .fields ul, .tree ul { padding-left: 1.4em; background: transparent; m
 #zoom::backdrop { background: rgba(0, 0, 0, .75); }
 #zoom h2 { padding-left: 0; margin-top: 0; }
 #zoom img { max-width: 90vw; max-height: 75vh; display: block; }
+.more summary { cursor: pointer; width: auto; list-style: none; }
+.more summary::-webkit-details-marker { display: none; }
+.more[open] summary { display: none; }
+.morelink { color: #1b4f8a; text-decoration: underline; white-space: nowrap; }

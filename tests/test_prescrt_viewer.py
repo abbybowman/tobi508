@@ -129,13 +129,30 @@ async def test_viewer_shows_scrt_and_pre_scrt_files_as_text(tmp_path):
         assert "https://example.gov/x.png" in await child.inner_text()
 
         # Filters: only rows needing a person.
+        # A blank the tool left for a person is told apart from a test it
+        # did not run; the source is behind "Audit details".
+        assert "TOBI tested this and could not decide" in await needs.inner_text()
+        assert "Not tested by TOBI" in await not_done.inner_text()
+        assert "Needs review" not in await not_done.inner_text()
+        assert await page.locator("#results details.audit[open]").count() == 0
+        assert await page.locator("#results .c-rem:visible").count() == 0
+        assert await page.locator("#results td.c-shot img:visible").count() == 1
+
+        # Filters: only the rows left for a person.
         await page.check("#filter-person")
-        assert await page.locator("#results tbody tr:visible").count() == 2
+        assert await page.locator("#results tbody tr:visible").count() == 1
 
         # Compare with the SCRT sample: results side by side, differences marked.
         await page.set_input_files("#compare-file", str(SAMPLE))
         await page.wait_for_selector("#results th.cmp")
         assert await page.locator("#results tr.differs").count() >= 1
+        # The compare view fits the window; unticking it shows every column.
+        await page.uncheck("#filter-person")
+        wrap = page.locator(".tablewrap")
+        assert await wrap.evaluate("e => e.scrollWidth <= e.clientWidth")
+        assert await page.locator("#results th.c-cond:visible").count() == 0
+        await page.uncheck("#view-compact")
+        assert await page.locator("#results th.c-cond:visible").count() == 1
 
         # Not a report: an error, and nothing rendered.
         await page.set_input_files("#primary-file", str(bad))
