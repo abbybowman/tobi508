@@ -1,7 +1,7 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.5.0
+spec_version: 1.6.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -25,7 +25,7 @@ The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS R
   - *links between pages*: a link to T anywhere else on another page (its content);
   - *search*: the site search leads to T (below), or T is the site search's own page: a search form on T or on another page submits to T (W5, 1.4.0).
 - *Search form*: a form with role search, a search field, or a field named `q`, `query`, `search`, `s`, `k`, `keyword`, `keywords`, `searchterm` or `term` (the last three 1.1.0), on T or on another page.
-- *Live search* (Abby, 2026-11-02: exhaust the pages first, then run the search on the live site): only when the caller's pages show fewer than two kinds and a search form exists. At most two searches per run, with the same form: the term, then, only when its results do not link to T, the term in quotation marks (1.5.0; Abby, 2026-11-08, post-round 2 fix 11: svs.gsfc.nasa.gov answered "No results for:" the plain heading of 14592, and the tester found the page searching with quotation marks). The form must submit by GET; its action URL must pass the allowlist and be on T's host (the allowlist is checked on every redirect hop, the host at the end); the term is T's first `h1`, else its title; the request carries the form's own hidden fields and the term, nothing else. Each results page is recorded as its own HAR and read like another page, whole: after its scripts have fetched what they fetch (network idle, at most 5 s), since results often arrive by script after load, and up to 2,000 units instead of 600 (1.5.0, fix 11). Search counts as a way when the results page links to T (HtT 2.b; G161 step 5).
+- *Live search* (Abby, 2026-11-02: exhaust the pages first, then run the search on the live site): only when the caller's pages show fewer than two kinds and a search form exists. At most two searches per run, with the same form: the term, then, only when its results do not link to T, the term in quotation marks (1.5.0; Abby, 2026-11-08, post-round 2 fix 11: svs.gsfc.nasa.gov answered "No results for:" the plain heading of 14592, and the tester found the page searching with quotation marks). The form must submit by GET; its action URL must pass the allowlist and be on T's host (the allowlist is checked on every redirect hop, the host at the end); the term is T's first `h1`, else its title; the request carries the form's own hidden fields and the term, nothing else. Each results page is recorded as its own HAR and read like another page, whole: after its scripts have fetched what they fetch (network idle, at most 5 s), since results often arrive by script after load, and up to 2,000 units (1.5.0, fix 11). Search counts as a way when the results page links to T (HtT 2.b; G161 step 5).
 - *Suggested pages*: same-host URLs the pages link to that could show more ways and were not given: links named "site map", "sitemap" or "A-Z index"; the home page (a link to the site's root, or named "home"); breadcrumb links. At most 5. They are proposed to the calling agent, which may call again with them, or with other pages of the site it finds that show more ways, as `other_pages` without asking the user first (Abby, 2026-11-05; post-round 1 fix 18: no agent asked a user, and 19.A was undecided on every round 1 page). The tool never visits them by itself (Abby, 2026-11-02); pages passed back are checked like any other page (allowlist, same host) (1.1.1).
 - *Process hint*: T's text has "step N of M", "review your", "confirm", "confirmation", "order summary" or "thank you for", and T has a form with a submit button.
 
@@ -42,7 +42,7 @@ The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS R
 
 ## 2. Evidence to collect
 
-**Site read** (shared with 9.A–9.C): adds each page's title and its search forms (action, method, the field to fill, hidden fields). **Live search**, only as in Terms. Nothing is pressed on the recorded pages.
+**Site read** (shared with 9.A–9.C; each page up to 9.A's read cap, 5,000 units since 1.6.0, 600 before, so links to T further down a long page now count): adds each page's title and its search forms (action, method, the field to fill, hidden fields). **Live search**, only as in Terms. Nothing is pressed on the recorded pages.
 
 **Time budget:** the site read (shared with 9.A–9.C; 19.A itself measured 0.0 s on the agency budget page with one other page); the live search, when it runs, one live load and one read (a few seconds, within the time the other pages add).
 

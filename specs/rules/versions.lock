@@ -1,6 +1,6 @@
 # spec_version and SHA-256 of each rules spec (tests/test_spec_versions.py).
 # After a spec change and its version bump: uv run python -m tobi508.rules lock
-19a-multiple-ways.md 1.5.0 f1869c0aa9ff80608fd4c4400a943a8d65b4d24f47e8ffaade9a83dacc5cd763
+19a-multiple-ways.md 1.6.0 0c580fc53e5e1f35ae41b099b81c10d6d63072e241f13d16d7e370c2405d2175
 2a-audio-control.md 1.1.0 e1aae4e98585d37e54849c204f5b68868aa7b8ab45923b298eb4f1b6f6f7bb5b
 2b-blinking-moving-scrolling.md 1.3.0 0e4f987eceef80a2db454484ea1e1fa30a49e720adac57418eb90812e7cb1b85
 2c-auto-updating.md 1.0.0 d702243e39505057a157431bb6ccb05cd2c33604cc03471d4ce2f550fc491e1d
@@ -19,6 +19,6 @@
 5f-error-identification.md 1.6.0 3b89fe081fd0199420ec4b90a526c5ae491f86119d256f33aa3918a9f97e6ee1
 5g-error-suggestion.md 1.4.0 bf55f9c03652f8a0e6085cd213f014054122a7befdf0350e7b9f9a0c20786f48
 5h-error-prevention.md 1.3.0 f5f1f3def2d6614b42023d29364a3acb01490ac7fec1d88d9e689d656488865c
-9a-bypass.md 1.3.0 e09598585c39b8a78c092fccc8e6ee3a902e8ee79760e3f43928d42fc1715fc5
+9a-bypass.md 1.4.0 0f2737a224908f3f1bda97fd7c0284f0a6b27f64fe9c4e9c355530a9a33b48ac
 9b-consistent-navigation.md 1.3.0 8bdfc9d55ec6ae016ec9190cd21876ae3aaf9d16b4e40c60e6dd4ee5e62a494c
-9c-consistent-identification.md 1.5.0 fc2e77ec34bb962f15eafe284f029124512b14673c213c64be114f1ca025d0b7
+9c-consistent-identification.md 1.6.0 1c0eea40dea7809946f98aae08e69ee6cf245fc09c597952e665a1290f98a522
