@@ -327,3 +327,71 @@ def test_9c_pairs_by_destination_only_inside_a_repeated_block():
     side = AndiPage(n=0, ran=True, comps=[comp(0, "complementary", "Related guide")])
     side2 = AndiPage(n=1, ran=True, comps=[comp(0, "complementary", "Learn more")])
     assert make_pairs(side, side2) == []
+
+
+async def test_the_tested_page_again_with_other_bytes_is_not_compared(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """K-01 (A2 1.4.0 / 1.6.0): the same address apart from the query, nearly
+    the same text, bytes that change on every request. 9.A, 9.B, 9.C and
+    19.A are NEEDS REVIEW and say why."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/stamp",
+        ["9.A", "9.B", "9.C", "19.A"],
+        {},
+        other_pages=[f"{server.base}/stamp?x=1"],
+    )
+    for t, f in got.items():
+        assert f.outcome.value == "NEEDS_REVIEW", (t, f.rows, f.summary)
+        assert "A2" in f.rows, (t, f.rows)
+        assert "nearly the same page" in f.summary, (t, f.summary)
+
+
+async def test_the_same_address_with_other_content_is_still_compared(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """The nearest case that must still be compared: one path, a query that
+    changes the content (a listing's page 2). Its share of text is far below
+    the bar, so 9.B and 9.C compare it and do not stop at A2."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/listing?page=1",
+        ["9.B", "9.C"],
+        {},
+        other_pages=[f"{server.base}/listing?page=2"],
+    )
+    for t, f in got.items():
+        assert "A2" not in f.rows, (t, f.rows, f.summary)
+        assert f.outcome.value == "PASS", (t, f.rows, f.summary)
+
+
+def test_text_share_and_near_copy():
+    from tobi508.site import NEAR_COPY, PageRead, Unit, near_copy, text_share
+
+    def page(url, texts):
+        return PageRead(
+            n=0,
+            url=url,
+            units=[
+                Unit(i=i, kind="control", role="link", text=t, css=f"a{i}")
+                for i, t in enumerate(texts)
+            ],
+        )
+
+    base = [f"link {i}" for i in range(20)]
+    a = page("https://x.gov/p", base)
+    assert NEAR_COPY == 0.9
+    assert text_share(a, page("https://x.gov/p?x=1", base + ["stamp 1"])) > 0.9
+    # a different path is never a near copy, whatever its text
+    assert not near_copy(a, page("https://x.gov/q?x=1", base))
+    # the same path, half the text different: compared
+    assert not near_copy(a, page("https://x.gov/p?x=1", base[:10] + ["z"] * 10))
+    # a trailing slash, the scheme's default port and host case are not paths
+    assert near_copy(a, page("https://X.gov:443/p/?x=1", base))
+    # no text at all is not a copy
+    assert text_share(page("u", []), page("u", [])) == 0.0

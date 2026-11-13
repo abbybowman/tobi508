@@ -1,7 +1,7 @@
 ---
 tt_test: 9.B
 tt_name: 3.2.3-consistent-navigation
-spec_version: 1.3.0
+spec_version: 1.4.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -22,7 +22,7 @@ The tool gives each page one 9.B outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to compare" | Abby, 2026-11-02 (Q1); p. 43 HtT 1 |
-| A2 | A page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
+| A2 | A page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (`site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
 | A3o | Every other page shares almost nothing with the tested page (N2o) and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template (1.1.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No component of the tested page matches one on any other page, or the only pages that match nothing are not of another template | DOES NOT APPLY | p. 43 Applicability |
 | A4 | Otherwise | Applies; go to section 3 | |

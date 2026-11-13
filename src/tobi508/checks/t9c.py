@@ -284,10 +284,19 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
                     "comparing them would compare the page with itself"
                 }
             )
+    # Nearly the same page (K-01, spec A2): the site read has both pages' units.
+    site = await site_read(ctx)
+    for i, read in enumerate(site.pages):
+        if i and read.near_copy and not read.identical and not pages[i].error:
+            pages[i] = pages[i].model_copy(
+                update={
+                    "error": "it is nearly the same page as the tested page, so "
+                    "comparing them would compare the page with itself"
+                }
+            )
     st = State9C(pages=pages)
     if any(p.error for p in st.pages):
         return st
-    site = await site_read(ctx)
     st.kinship = kinship(site)
     st.read = site.read
     for other in st.pages[1:]:

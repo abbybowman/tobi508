@@ -125,7 +125,7 @@ below; "run" means I ran a page and got the outcome shown.
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read · fixed (step 6b) |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run · fixed (step 6b) |
-| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
+| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address; byte-identical copy by content; near copy by unit text, step 6b) |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script. **Fixed** |
 | A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read. **Fixed** |
 
@@ -846,6 +846,15 @@ different checks, and some of those ways do not hold back an outcome.
   spec 9.A 1.2.0, 9.B 1.2.0, 9.C 1.3.0, 19.A 1.2.0). A single-page app whose
   routes serve one shell is warned, never refused outright. Not caught: a
   page whose bytes change on each request.
+- **Fixed (K-01, the rest):** commit "9.A-9.C, 19.A: a near copy of the
+  tested page is not compared (K-01)", specs 9.A 1.4.0, 9.B 1.4.0, 9.C 1.6.0,
+  19.A 1.6.0 (A2). `site.near_copy`: the same host and path apart from the
+  query string and at least 0.9 of the units' text keys shared. Bar set from
+  live NASA search pages (same page 1.00; the highest different page 0.44;
+  see `docs/plans/2026-11-13-spec-decisions-drafts.md`). Fixtures: the test
+  server's `/stamp` (bytes change per request; NEEDS REVIEW on all four,
+  and 9.A said FAIL before) and `/listing?page=1` against `?page=2` (the
+  nearest case that is still compared: PASS).
 
 ### Security, in modes the demo plan turns on
 

@@ -1,7 +1,7 @@
 ---
 tt_test: 9.A
 tt_name: 2.4.1-bypass-function
-spec_version: 1.3.1
+spec_version: 1.4.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -31,7 +31,7 @@ The tool gives each page one 9.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to know which content repeats" | Abby, 2026-11-02 (Q1: other pages required); p. 42 Identify Content |
-| A2 | A page could not be read (load, units), or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
+| A2 | A page could not be read (load, units), or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (`site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
 | A3o | Every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template, so what repeats cannot be told (1.1.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No unit of the tested page is repeated | DOES NOT APPLY | p. 42 Applicability |
 | A4 | Repeated units exist but B is empty (they all come after the main content, such as a footer), or B is small: one control, or fewer than 4 words in all | DOES NOT APPLY, naming what repeats and where: there is nothing before the main content to bypass, as forms tests do not apply to a page with no form | p. 42 Identify Content (EXCLUDE: small sections "are not considered repetitive blocks"; Note: a bypass for navigation "at the bottom of a web page may be unnecessary"); Baseline 4.A (the same limitations); ACT ye5d6e and 3e12e1 look only at repeated content before non-repeated content; Abby, 2026-11-02 (DNA: users who reach the footer have had the page's content and can stop) |

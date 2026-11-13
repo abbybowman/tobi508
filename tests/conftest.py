@@ -16,6 +16,7 @@ import threading
 import time
 from collections import Counter
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 import pytest
 import pytest_asyncio
@@ -237,6 +238,30 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 f"<p id=srv>{nonce}</p><p id=xhr></p><button>Go</button>"
                 "<script>fetch('/data.json').then(r=>r.json())"
                 ".then(j=>{xhr.textContent=j.n})</script>"
+            )
+            return self._send(200, body.encode())
+        route = self.path.split("?")[0]
+        if route in ("/stamp", "/listing"):  # K-01 (9.A-9.C, 19.A)
+            # /stamp: one page whose bytes change on every request (a stamp),
+            # whatever the query. /listing: one path, other content per
+            # ?page= (the nearest case that must still be compared).
+            nav = "".join(
+                f'<li><a href="/nav{i}">Section {i} programs</a></li>'
+                for i in range(25 if route == "/stamp" else 10)
+            )
+            if route == "/stamp":
+                main = f"<h1>Stamped page</h1><p>Rendered at {nonce}</p>"
+            else:
+                page = parse_qs(urlsplit(self.path).query).get("page", ["1"])[0]
+                items = "".join(
+                    f'<li><a href="/item-{page}-{i}">Item {page} number {i}</a></li>'
+                    for i in range(25)
+                )
+                main = f"<h1>Listing</h1><ul>{items}</ul>"
+            body = (
+                "<!doctype html><html lang=en><head><title>K-01</title></head><body>"
+                f"<header><nav aria-label='Main'><ul>{nav}</ul></nav></header>"
+                f"<main>{main}</main></body></html>"
             )
             return self._send(200, body.encode())
         path = self.path.split("?")[0]  # fixtures may add a query (F29 paging)
