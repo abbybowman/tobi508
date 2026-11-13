@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><title>Grid: starts late</title></head><body>
+<nav aria-label="Site"><a href="/grid/about.html">About</a> <a href="/grid/services.html">Services</a> <a href="/grid/contact.html">Contact</a></nav>
+<h1>Welcome</h1>
+<p>Plain text. After 4.5 seconds a script plays a sound; after 9 seconds a block starts to flash.</p>
+<audio id="a" src="/tone.wav" preload="auto"></audio>
+<div id="f" style="width:300px;height:200px;background:#000"></div>
+<form onsubmit="return false"><label for="n">Name</label> <input id="n" name="n"> <label for="e">Email</label> <input id="e" type="email" name="e"> <button type="submit">Send</button></form>
+<script>setTimeout(()=>document.getElementById("a").play(),4500);setTimeout(()=>{let on=false;setInterval(()=>{on=!on;document.getElementById("f").style.background=on?"#fff":"#000"},125)},9000);</script>
+</body></html>

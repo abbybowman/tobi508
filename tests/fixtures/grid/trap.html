@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><title>Grid: a trap in mid-page</title></head><body>
+<nav aria-label="Site"><a href="/grid/about.html">About</a> <a href="/grid/services.html">Services</a> <a href="/grid/contact.html">Contact</a></nav>
+<h1>Sign up</h1>
+<p>The field below swallows the Tab key.</p>
+<p><label for="t">Search</label> <input id="t" name="t"></p>
+<form onsubmit="return false"><label for="n">Name</label> <input id="n" name="n"> <label for="e">Email</label> <input id="e" type="email" name="e"> <button type="submit">Send</button></form>
+<script>document.getElementById("t").addEventListener("keydown",e=>{if(e.key==="Tab")e.preventDefault()})</script>
+</body></html>
