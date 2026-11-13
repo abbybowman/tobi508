@@ -470,7 +470,7 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
     # Controls past the cap were never paired, so no DNA or PASS can rest on
     # the pairs that were read (spec 1.1.0).
     unread = [
-        f"Only the first {UNIT_CAP} pieces of content of {'the tested page' if p.n == 0 else f'other page {p.n}'} were read."
+        f"Only the first {UNIT_CAP:,} pieces of content of {'the tested page' if p.n == 0 else f'other page {p.n}'} were read."
         for p in st.pages
         if p.truncated
     ]

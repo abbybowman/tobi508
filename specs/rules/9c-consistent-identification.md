@@ -1,7 +1,7 @@
 ---
 tt_test: 9.C
 tt_name: 3.2.4-consistent-identification
-spec_version: 1.5.0
+spec_version: 1.6.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -61,7 +61,7 @@ Each pair is an *instance*.
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing each pair |
-| G3 | Any instance is NEEDS REVIEW, or J1 questions were capped (at most 12 per run), or a page was over the read cap of 600 pieces of content, so its later controls were never paired (1.1.0; 9.A Terms: "a page over the cap is incomplete") | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
+| G3 | Any instance is NEEDS REVIEW, or J1 questions were capped (at most 12 per run), or a page was over the read cap of 5,000 pieces of content (1.6.0; 600 before), so its later controls were never paired (1.1.0; 9.A Terms: "a page over the cap is incomplete") | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
 | G4 | Every pair was dropped by C5 | DOES NOT APPLY |
 | G5 | Every instance is PASS | PASS |
 

@@ -99,6 +99,63 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Read cap 2026-11-13: 9.A-9.C on round 2's 10 pages with the cap at 5,000 (roadmap step 6c, item 1)
+
+The site read's cap (`site.py` `UNIT_CAP`; 9.A 1.4.0, 9.C 1.6.0, 19.A
+1.6.0) went from 600 to 5,000. 9.A-9.C on round 2's 10 frozen pages
+(Abby's `round2-frozen` archive, every file checked against its
+manifest), in **replay** mode (every page from the folder, nothing live),
+each page compared with the other 9 as in step 6; then the server judge
+(CLI route, `claude-sonnet-5-5`) answered 9.A's and 9.C's questions on
+those same runs. Scored with round 2's scorer and keys
+(`evals.scoring.score`, the gate's functions). Folder
+`evals/judging/readcap-2026-11-13/`: `cells-rules.json` (judge off),
+`cells-judge.json`, `tools/` (the scripts). Agent-assisted results, not
+certified Trusted Tester results; a development site, one repeat.
+
+- **Why 600, and what more costs.** No reason was recorded: the cap came
+  with the first import (2026-11-02) with only "up to 600 per page". Only
+  2 of the 10 pages are over it (home 772 units, galleries 630), but every
+  run compares against both, so it held all 30 cells. Read uncapped, a
+  real page takes 0.2 s or less and 360 KB. The read is quadratic on one
+  flat list (each element's CSS path counts its siblings): 600 links
+  0.3 s, 5,000 1.1-5.3 s (nested lists to one flat list), 10,000 3.7-18.6
+  s, 20,000 7.8-68 s, about 0.37 KB a unit. A run reads each page once,
+  plus 9.C's marking read per page and 9.A's landing read per candidate
+  (up to 8), so the cap stays, at 5,000 (6.5 times round 2's largest page).
+- **Found on the way:** a page over the cap could reach 9.A's A3, A4 or G2
+  before its truncation was looked at; a menu longer than the cap then
+  gave DOES NOT APPLY ("nothing before the main content"). 9.A 1.4.0 puts
+  a page over the cap in A2 (NEEDS REVIEW, not performed). Fixtures
+  `9x/h1-big-menu` (700 units: FAIL, PASS, PASS) and `9x/h3-huge-menu`
+  (5,001: NEEDS REVIEW on all three; 9.A gave DOES NOT APPLY before).
+- **Cells (30):**
+
+  | Test | Agree | Wrong PASS | Missed fail (DNA) | False FAIL | Other | NEEDS REVIEW |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | 9.A | 10 (9 rule, 1 judge) | 0 | 0 | 0 | 0 | 0 |
+  | 9.B | 9 | 0 | 0 | 0 | 1 | 0 |
+  | 9.C | 4 (1 rule, 3 judge) | 0 | 0 | 0 | 1 | 5 |
+  | Step 6, all three | 0 | 0 | 0 | 0 | 0 | 30 |
+  | Round 2 C1, all three | 12 | 0 | 2 | 2 | 4 | 10 |
+
+  Round 2's two wrong 9.A cells (CILab and 14592, Does Not Apply where
+  the key fails) now FAIL with the key. "Other": 9.B and 9.C on CILab are
+  Does Not Apply where the key passes (A3: CILab has 7 units and none is
+  in a component the other pages have), as in round 2. NEEDS REVIEW: 9.C
+  on home, galleries, 14592, 14194, 5340, where the judge answered unsure
+  on some names (G3). Judge-off, 9.A was 9 of 10 (help waited on its one
+  question) and 9.C 1 of 10.
+- **19.A:** it reads the caller's pages from the same read, so links to T
+  further down a long page now count. On these pages the one such link
+  (home to `/search/`, unit 600 and after) changes no cell: 19.A on the
+  search page already agreed (Pass).
+- **Judge cost:** 9 requests (dry count: 53 questions, ~29k tokens of
+  text); run: 14 calls, 0 failed, 95 answers, 26 unsure, 103 s in calls
+  (9.C asks at most 12 per run and asks the rest once those are answered).
+- **Not verified here:** repeats; 9.A-9.C beside the other tests in one
+  full run (the cap changes no other test's read).
+
 ## Gate 2026-11-13: round 2's 10 pages again, the server judge on every type (roadmap step 6)
 
 Round 2's 10 frozen svs.gsfc.nasa.gov pages (Abby's `round2-frozen`

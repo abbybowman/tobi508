@@ -271,6 +271,13 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
         read_errors=site.errors,
         read=site.read,
     )
+    # A2 (1.4.0): a page over the read cap is not read whole, so what
+    # repeats and where the main content starts cannot be told.
+    st.read_errors += [
+        f"Only the first {UNIT_CAP:,} pieces of content of {page_label(p)} were read."
+        for p in site.pages
+        if p.truncated
+    ]
     if st.read_errors:
         return st
     st.units = site.main.units
@@ -278,11 +285,6 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
     st.kinship = kinship(site)
     if st.kinship.unrelated_review:
         return st  # A3o: nothing more is read
-    for p in site.pages:
-        if p.truncated:
-            st.incomplete.append(
-                f"Only the first {UNIT_CAP} pieces of content of {page_label(p)} were read."
-            )
     st.m, st.m_kind = main_start(st.units, st.rep)
     if st.m is not None:
         st.block = [k for k in range(st.m) if st.rep[k]]
