@@ -99,6 +99,12 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Run 32, 2026-11-13: 5.A 1.6.0, fix 8's icon cases, its packets
+
+Fix 8 sends a placeholder-only field with an icon button in its group to J1 (the graphic case). Run 31 had only the magnifier page; this run adds two pages where the icon must not count: a tree icon (F36) and an arrow, which says only what the button does (F37). 18 cases, 21 questions (all 5.A J1), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **18/18 match**, no false PASS, no "unsure". Leak grep clean (also for "tree" and "arrow").
+- **The icon cases:** the magnifier (F27) was answered graphic; the tree and the arrow not_labeled, each reasoned from the rubric (a tree does not plainly label a search box; an arrow is a "Go"-type control).
+- **Unclear to it:** whether the tree is not_labeled or unsure (either is safe: FAIL or NEEDS REVIEW); quotes are asked only for labeled.
+
 ## Run 31, 2026-11-13: 5.A 1.6.0 and 5.C 1.7.0 (an option's own row; a heading directly over a set), their packets
 
 Post-round 2 fix 9c narrows an option's visible text to its own row (result cards beside a filter no longer reach it) and fails a heading directly over a set without a question (M3h). 27 cases, 35 questions (5.A and 5.C), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **27/27 match**, no false PASS, no "unsure" answer. Leak grep clean.

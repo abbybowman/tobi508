@@ -199,6 +199,17 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
+    # Fix 8's other side (judge eval run 32): an icon that says nothing
+    # about what to enter (a tree), or only what the button does (an
+    # arrow, like "Go"), does not label the box: not_labeled, M5.
+    "f36-tree-icon-in-search-group": {
+        "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
+    "f37-arrow-icon-in-search-group": {
+        "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
