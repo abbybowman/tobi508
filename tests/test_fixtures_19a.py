@@ -44,6 +44,45 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G2"],
         {"J1": {"choice": "not_process"}},
     ),
+    # Post-round 2 fix 10 (19.A 1.4.0; svs.gsfc.nasa.gov/search/, key Pass):
+    # the page is the site search form's own target, so the search reaches
+    # it; with a content link on the home page, two kinds.
+    "search-page-is-the-forms-target": (
+        "search",
+        ["home3"],
+        "PASS",
+        ["W1", "W5", "G2"],
+        {},
+    ),
+    # The nearest case that must still FAIL: a page about searching, which
+    # the form does not submit to, linked once from the home page; the
+    # search for its heading does not find it.
+    "search-help-page-not-the-target": (
+        "search-help",
+        ["home3"],
+        "FAIL",
+        ["W1", "W3", "G4"],
+        {},
+    ),
+    # Post-round 2 fix 11 (19.A 1.5.0; svs.gsfc.nasa.gov/14592/, key Pass):
+    # the site's search answers "No results for:" the plain heading and finds
+    # the page with the heading in quotation marks; its results arrive by
+    # script after the page loads.
+    "quoted-search-finds-it": (
+        "t4-flare",
+        ["home4"],
+        "PASS",
+        ["W1", "W2", "G2"],
+        {},
+    ),
+    # The nearest case that must still FAIL: neither search finds the page.
+    "quoted-search-finds-nothing": (
+        "t5-eclipse",
+        ["home4"],
+        "FAIL",
+        ["W1", "W3", "G4"],
+        {},
+    ),
     "process-step": (
         "step2",
         ["home"],

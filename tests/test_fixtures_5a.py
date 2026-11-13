@@ -35,11 +35,26 @@ def missing(q: str) -> dict:
 EXPECTED: dict[str, dict] = {
     "f01-visually-hidden-label": {
         "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
-        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
     },
     "f02-aria-label-only": {
         "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
-        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # 5.A 1.8.0 (Abby, 2026-11-13): a button that goes with the field labels
+    # it whatever its words (TT p. 25 Note 3); whether "Subscribe" says what
+    # to enter is 5.B's (FAIL, as ACT cc0f0a's "Go").
+    "f40-subscribe-button-only-cue": {
+        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Subscribe")},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5"]},  # no name at all
+        # 5.B 1.6.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
+    },
+    # The nearest case that must still FAIL: a form's Continue button below
+    # several fields labels none of them.
+    "f41-continue-below-several-fields": {
+        "5.A": {"outcome": "FAIL", "rows": ["M2", "M2", "M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M5", "M5"]},
     },
     "f03-date-format-outside-label": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
@@ -93,11 +108,8 @@ EXPECTED: dict[str, dict] = {
         "5.C": {"outcome": "PASS", "rows": ["M5", "M6", "M6"], "answers": COMPLETE},
     },
     "f09-icon-search-box": {
-        "5.A": {
-            "outcome": "PASS",
-            "rows": ["M4"],
-            "answers": {"J1": {"choice": "graphic", "reasons": "a magnifier icon"}},
-        },
+        # 5.A 1.8.0: its "Go" button is in the search form (M2i).
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
     "f10-floating-label-focus-tip": {
@@ -137,7 +149,8 @@ EXPECTED: dict[str, dict] = {
     },
     # The button beside the box labels it (G167): J1, not M3.
     "f16-search-button-beside-box": {
-        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Search")},
+        # 5.A 1.8.0: the button is in the search form (M2i).
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
     # Post-round 1 fix 10: a header's menu button beside a placeholder-only
@@ -180,6 +193,48 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "DNA", "rows": []},
         "5.C": {"outcome": "DNA", "rows": []},
     },
+    # Post-round 2 fix 8 (5.A 1.5.0, 1.7.0; svs.gsfc.nasa.gov's site search,
+    # key Pass on 7 pages): a placeholder-only box whose input group holds
+    # icon buttons (a magnifier submit, a clear button) has a graphic label
+    # (M2i).
+    "f27-icon-buttons-in-search-group": {
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "PASS"},
+    },
+    # The nearest case that must still FAIL: the icon button in the box's
+    # group opens a menu, so it says nothing about the field (M3 as f18;
+    # round 1's key failed nasa.gov's box with "no magnifier glass icon").
+    "f28-menu-icon-in-search-group": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
+    # 5.A 1.7.0 (Abby, 2026-11-13; TT p. 25 Note 3, "regardless of
+    # accuracy"): an icon button that is part of the box is a label
+    # provided, whatever it shows: an arrow (unclear, so 5.B's judge may
+    # answer unsure) or an envelope on a search box (names something else);
+    # 5.B judges whether it describes the box (test_fixtures_5b.py).
+    "f37-arrow-icon-in-search-group": {
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
+    },
+    "f39-envelope-icon-on-search-box": {
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
+    },
+    # The nearest case that must still FAIL: a logo that only sits near the
+    # box, outside its form, is not part of it: pass L does not count it, M3.
+    "f38-logo-beside-search-box": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "DNA"},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
@@ -190,13 +245,70 @@ EXPECTED: dict[str, dict] = {
     # missing "Mission status": the heading is the set's question (TT 5.C
     # Note 4), and since 1.3.0 a quote from the heading over an option
     # passes M7's check (Abby, 2026-11-06).
+    # Post-round 2 fix 9c (5.C 1.7.0): the heading sits directly over the
+    # set, so it is the set's question; not announced, it fails without a
+    # question (M3h), as the judge's "missing" answer did before.
     "f19-filter-boxes-under-heading": {
         "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M3h", "M3h", "M3h"]},
+    },
+    # Fix 9c (svs.gsfc.nasa.gov Home): result cards added inside the filter
+    # form no longer reach a box's nearby text ("ID: 15116"), and each set's
+    # heading sits directly over it: M3h, no question (36 questions before).
+    "f29-filter-sets-over-result-cards": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2", "M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M3h", "M3h", "M3h", "M3h", "M5"]},
+    },
+    # The nearest case that must still FAIL: the question is a paragraph,
+    # not a heading, and each option's label wraps it. Text in a block of
+    # its own (no link, no other option) stays the option's nearby text.
+    "f30-question-text-over-wrapped-options": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
         "5.C": {
             "outcome": "FAIL",
-            "rows": ["M7", "M7", "M7"],
-            "answers": missing("Mission status"),
+            "rows": ["M5", "M7", "M7"],
+            "answers": missing("Are you a veteran?"),
         },
+    },
+    # A heading with text between it and the set may be a section title
+    # (Note 5): still J1's.
+    "f31-heading-then-intro-over-set": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {
+            "outcome": "FAIL",
+            "rows": ["M7", "M7"],
+            "answers": missing("Topics"),
+        },
+    },
+    # f29 without the headings: one J1 per set, as on Home's 36 boxes
+    # before fix 9c (see the test below).
+    "f33-filter-sets-no-heading-over-cards": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2", "M2"]},
+        "5.C": {
+            "outcome": "PASS",
+            "rows": ["M6", "M6", "M6", "M6"],
+            "answers": COMPLETE,
+        },
+    },
+    # Post-round 2 fix 9 (5.C 1.8.0; svs.gsfc.nasa.gov carousels on 14592,
+    # 14194, Galleries, key Pass): scroll buttons that are aria-hidden and
+    # outside the Tab order are in neither the Tab order nor the
+    # accessibility tree, and Tab reaches every card: not components.
+    "f34-hidden-scroll-buttons-off-tab-order": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
+    # The nearest case that must still FAIL: the same buttons, but Tab
+    # reaches them, so a screen reader user lands on a control with no name.
+    "f35-hidden-scroll-buttons-in-tab-order": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M3", "M5", "M5"]},
+    },
+    # Three boxes of one name with no heading and no group: one J1 for the
+    # set (1.2.0).
+    "f32-filter-boxes-no-heading": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M6", "M6", "M6"], "answers": COMPLETE},
     },
     # 5.C 1.3.0 (Abby, 2026-11-06; NASA's Missions filters): two groups of
     # boxes under two headings share one field name and no group label, so
@@ -281,7 +393,7 @@ async def test_options_of_one_set_are_asked_about_once(settings, server, drafts)
     per filter box, and the agent answered none of them)."""
     out = await run_tt_tests(
         settings,
-        f"{server.base}/5a/f19-filter-boxes-under-heading.html",
+        f"{server.base}/5a/f32-filter-boxes-no-heading.html",
         [TestId.T5C],
     )
     qs = [q for q in out.report.open_questions if q.test_id is TestId.T5C]
@@ -339,3 +451,21 @@ async def test_a_quote_for_a_button_set_may_hold_words_of_several_rows(
     assert out == "NEEDS_REVIEW" and last == ["M9", "M9"]
     # the button's own announced word is not a missing word
     assert (await rows("X"))[0] == "NEEDS_REVIEW"
+
+
+async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, drafts):  # noqa: F811
+    """Post-round 2 fix 9c (5.C 1.7.0; svs.gsfc.nasa.gov Home): result cards
+    that script adds inside a filter form ("ID: 15116") are another row's
+    text. Before, each box carried card text, the set merge broke, and the
+    judge got one question per box."""
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/5a/f33-filter-sets-no-heading-over-cards.html",
+        [TestId.T5C],
+    )
+    qs = [q for q in out.report.open_questions if q.test_id is TestId.T5C]
+    assert len(qs) == 2, [q.question_id for q in qs]
+    assert [[c["visible"] for c in q.input["components"]] for q in qs] == [
+        [["Earth"], ["Sun"]],
+        [["Visualization"], ["Animation"]],
+    ]

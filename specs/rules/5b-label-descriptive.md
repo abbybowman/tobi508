@@ -1,7 +1,7 @@
 ---
 tt_test: 5.B
 tt_name: 2.4.6-label-descriptive
-spec_version: 1.4.0
+spec_version: 1.6.0
 guards: reveal
 count: fields.shadow, fields.frames, fields_hidden, contenteditable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -16,7 +16,7 @@ The tool gives each page one 5.B outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 **Other sources.** [Understanding 2.4.6](https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html): labels "do not need to be lengthy. A word, or even a single character, may suffice"; the criterion "does not require headings or labels", only that labels provided are descriptive; a control can have a good accessible name and still fail if its label is not descriptive. [G131](https://www.w3.org/WAI/WCAG22/Techniques/general/G131): for each component with a label, identify its purpose and "Check that each label makes the component's purpose clear". W3C ACT [cc0f0a](https://www.w3.org/WAI/standards-guidelines/act/rules/cc0f0a/): each visible label, "together with its visual context, describes the purpose"; visible headings are context (repeated "Name"/"Street" under visible "Shipping" and "Billing" pass; the same under off-screen headings fail); "Menu" or "Info:" fail. DHS scored 14 of its 16 current cases (7 PASS, 5 FAIL, 2 DNA); ours follow the visual reading, as DHS's do (DHS passed the case whose visible label is hidden from assistive technology, which ACT calls inapplicable). ICT Testing Baseline 3.1 10.B-FormDescriptiveLabel: labels "describe purpose, inform users what input data is expected and, if applicable, what format is required". No Baseline Alignment case for 10.B.
 
-**Terms.** *Pass L*, *component*, *data-entry field*, *visible label*: [5a-label-provided.md](5a-label-provided.md) Terms and [5c-programmatic-label.md](5c-programmatic-label.md) section 2. From 5.A 1.1.0, a radio button or checkbox in a set does not take the set's legend as its label; the legend is the item's `group`, and its near text leaves the legend out (1.1.0). An *item* is a data-entry field with a visible label or visible text near it (its pass L reads), or a button with visible text that acts on a form's data: its form (or "none") has a field that is an item, and it is not a menu or disclosure button (`aria-expanded`, or `aria-haspopup` other than false). A site header's menu buttons are not form controls, and buttons alone are not a form (Abby, 2026-11-04; post-round 1 fix 14: NASA's "Explore" and "News & Events" were judged as a form, and 5.B passed where the tester found nothing to judge; 1.2.0). A field with neither is not an item: it has no visual label to judge (Applicability; 5.A FAILs it). A component's *form* is its form owner (or "none"); fields of one form are judged together, with their group labels (legends) and headings as context (cc0f0a).
+**Terms.** *Pass L*, *component*, *data-entry field*, *visible label*: [5a-label-provided.md](5a-label-provided.md) Terms and [5c-programmatic-label.md](5c-programmatic-label.md) section 2. From 5.A 1.1.0, a radio button or checkbox in a set does not take the set's legend as its label; the legend is the item's `group`, and its near text leaves the legend out (1.1.0). An *item* is a data-entry field with a visible label or visible text near it (its pass L reads), or with an icon button in its input group or search form (5.A section 2 and row M2i: a graphic label, TT p. 26 Note 2; 1.5.0, Abby 2026-11-13; post-round 2 fix 8b: svs.gsfc.nasa.gov's search box, key 5.B Pass on Help, Galleries, 14194, 14592), or whose only cue is its own button's words: a button in its input group or search form, or, in a form of one field, the form's button beside it (5.A 1.8.0; the button's words are the field's near text; 1.6.0), or a button with visible text that acts on a form's data: its form (or "none") has a field that is an item, and it is not a menu or disclosure button (`aria-expanded`, or `aria-haspopup` other than false). A site header's menu buttons are not form controls, and buttons alone are not a form (Abby, 2026-11-04; post-round 1 fix 14: NASA's "Explore" and "News & Events" were judged as a form, and 5.B passed where the tester found nothing to judge; 1.2.0). A field with neither is not an item: it has no visual label to judge (Applicability; 5.A FAILs it). A component's *form* is its form owner (or "none"); fields of one form are judged together, with their group labels (legends) and headings as context (cc0f0a).
 
 ## 1. Applicability
 
@@ -79,11 +79,11 @@ J1 is settled by looking (CLAUDE.md principle 8); the agent answers unsure whene
 
 **Question:** "input.items are the fields and buttons of one form, in page order, with the label people see for each (label), text near it (near), its group's label (group) and, for fields, a picture (image). Taken with what is around them, does each label make clear what to enter (including any format the field needs, such as a date) or what the button does? Answer all_descriptive, some_not_descriptive (put the numbers of the ones that are not in elements) or unsure."
 
-**Input:** per form: items (number, kind, type, label, near, group, required, placeholder, image), and the form's headings and legends.
+**Input:** per form: items (number, kind, type, label, near, group, required, placeholder, image, and for a field labelled by icon buttons their number, `icon_buttons_beside_it`, 1.5.0), and the form's headings and legends.
 
 **Output:** `{choice: all_descriptive|some_not_descriptive|unsure, elements: [numbers], reasons}`.
 
-**Rubric.** descriptive: names what to enter or do, even in one word ("First name", "Search" next to a search box, a magnifier icon on a search button, "Name" under a visible "Billing address" heading). not descriptive: unrelated or empty of meaning ("Menu", "Info", "The sky is blue", "Field 1"), the same label on several fields with nothing visible to tell them apart, a date or number field whose required format appears only in an error message. A placeholder is not a label. unsure: whenever the picture or text does not settle it.
+**Rubric.** descriptive: names what to enter or do, even in one word ("First name", "Search" next to a search box, a magnifier icon on a search button, "Name" under a visible "Billing address" heading). not descriptive: unrelated or empty of meaning ("Menu", "Info", "The sky is blue", "Field 1"), the same label on several fields with nothing visible to tell them apart, a date or number field whose required format appears only in an error message. A placeholder is not a label. A button's words beside a field say what to enter only when they name it ("Search" beside a search box); words that say only what the button does ("Submit", "Send", "OK") do not (1.6.0). A field whose only label is the picture on a button beside it (`icon_buttons_beside_it`; look at the image): descriptive when the picture is a symbol commonly understood for what to enter (a magnifier on a search box, an envelope on an email field, a calendar on a date field); not descriptive when it is unrelated to the field or names something else (a flower or a company logo on a search box, a telephone on an email field) (1.5.0). The rubric's examples are on no fixture page (docs/solutions/judge-eval.md). unsure: whenever the picture or text does not settle it.
 
 | Example | Answer |
 | --- | --- |
@@ -91,6 +91,7 @@ J1 is settled by looking (CLAUDE.md principle 8); the agent answers unsure whene
 | "Menu" on a text field | some_not_descriptive, [1] |
 | "Name", "Street" twice, section headings off screen | some_not_descriptive, all four |
 | "The sky is blue" on a text field | some_not_descriptive, [1] |
+| A search box whose only label is a flower on the button beside it | some_not_descriptive, [1] |
 
 **Use:** M1–M4.
 
@@ -100,7 +101,8 @@ J1 is settled by looking (CLAUDE.md principle 8); the agent answers unsure whene
 | --- | --- |
 | A field labelled only by a placeholder | Not an item (A2 when it is the only field; 5.A FAILs it) |
 | A field labelled by an adjacent button ("Go") | The button's text is its near text; J1 judges it |
-| Icon-only button | Not an item: no visible text to judge, and pass L takes no picture of buttons (Abby, 2026-11-02) |
+| Icon-only button | Not an item itself: no visible text to judge, and pass L takes no picture of buttons (Abby, 2026-11-02). The field it sits beside, in one input group or search form, is an item judged by its picture (1.5.0) |
+| A picture near a field but outside its form (a site logo) | Not the field's label: the field is not an item (5.A FAILs it, M3) |
 | Fields revealed by interaction | Read where 4.F or 5.D revealed them (pass L) |
 
 ## 6. What a FAIL records

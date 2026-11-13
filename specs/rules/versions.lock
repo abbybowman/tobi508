@@ -1,6 +1,6 @@
 # spec_version and SHA-256 of each rules spec (tests/test_spec_versions.py).
 # After a spec change and its version bump: uv run python -m tobi508.rules lock
-19a-multiple-ways.md 1.3.0 350b5c497d6a57a7d1e1e99ef84785ee1ff17e5834719766bd6fd7297524c8ad
+19a-multiple-ways.md 1.5.0 f1869c0aa9ff80608fd4c4400a943a8d65b4d24f47e8ffaade9a83dacc5cd763
 2a-audio-control.md 1.1.0 e1aae4e98585d37e54849c204f5b68868aa7b8ab45923b298eb4f1b6f6f7bb5b
 2b-blinking-moving-scrolling.md 1.3.0 0e4f987eceef80a2db454484ea1e1fa30a49e720adac57418eb90812e7cb1b85
 2c-auto-updating.md 1.0.0 d702243e39505057a157431bb6ccb05cd2c33604cc03471d4ce2f550fc491e1d
@@ -12,9 +12,9 @@
 4d-focus-visible.md 1.6.0 f21c48eaa3bc0015feb98fb2392c6ab18176cfeb7e7a9e4caffb97a8acf33a70
 4e-on-focus.md 1.4.0 c1d3cc40d10e693b74d339709471b176e650a1ed39f8d3281253d1d54c0853e0
 4f-focus-order-meaning.md 1.8.0 2ca2e29d5f57bc0dac24cb6b5b5385f61428b9918380c99a717488d3b0dda13a
-5a-label-provided.md 1.4.0 c2a7b6e94de30806974caec30d33f79b6920e03cc1260492a98e0757dbb2ecf8
-5b-label-descriptive.md 1.4.0 294855f6179f64bc875c274a1c187f047526ec116cfb8bc467043e116ee2912b
-5c-programmatic-label.md 1.6.0 92505b29c5e6f3e2d7302aa9fb65bf8517fd9e34abae96fa6894950119c32aba
+5a-label-provided.md 1.8.0 dbfed9716fc8e79fe181ed79d2f89e4fa5228cb3103813a9db0f54b0ebeda332
+5b-label-descriptive.md 1.6.0 02d43313bc6a63f44eec738b055f80518eb8e0bcb8ff1c101facd82591464b76
+5c-programmatic-label.md 1.8.0 154d7e6764a40c93ce8d7d44505082371cbc794323aa447f82759e3a913eb8ee
 5d-on-input.md 1.6.0 76ec8c3afee5d44bb00a5bbc0a7dec0c0964fe6a82b4807b6960dcd3f94da374
 5f-error-identification.md 1.6.0 3b89fe081fd0199420ec4b90a526c5ae491f86119d256f33aa3918a9f97e6ee1
 5g-error-suggestion.md 1.4.0 bf55f9c03652f8a0e6085cd213f014054122a7befdf0350e7b9f9a0c20786f48

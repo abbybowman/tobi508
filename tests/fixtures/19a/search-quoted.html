@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Search</title></head><body>
+<main><h1>Search</h1><div id="results"><p>Loading...</p></div></main>
+<script>
+// As on the real site, the results arrive by script after the page loads.
+// This test site's search matches an exact phrase only in quotation marks.
+const q = new URLSearchParams(location.search).get("search") || "";
+const file = q.startsWith('"') ? "results-quoted.json" : "results-none.json";
+fetch("/19a/" + file).then((r) => r.json()).then((items) => {
+  const box = document.getElementById("results");
+  box.innerHTML = items.length
+    ? "<ol>" + items.map((i) => '<li><a href="' + i.href + '">' + i.title + "</a></li>").join("") + "</ol>"
+    : "<p>No results for: " + q.replace(/[<&]/g, "") + "</p>";
+});
+</script>
+</body></html>
