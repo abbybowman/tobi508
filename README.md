@@ -22,12 +22,30 @@ agent the judgment questions. Clear failures surface early, and certified
 testers can spend their time on the cases that need a person.
 
 **What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT
-test, with plain-language explanations, evidence, and a pre-SCRT file a
-Trusted Tester can review in DHS's SCRT.
+test, with plain-language explanations, evidence, and a pre-SCRT file: the
+same rows as DHS's SCRT report, plus where each result came from and
+which rows need a person. DHS's SCRT does not open it (by design: it is
+not a Trusted Tester's record); [demo/prescrt-viewer/](demo/prescrt-viewer/)
+shows one beside an SCRT file.
 - **Outcomes** come only from the rules specs in [specs/rules/](specs/rules/),
   one per TT test, checked against the TT 5.1.3 PDF.
 - **When the tool can't decide,** it says NEEDS REVIEW. It never guesses
   PASS.
+
+## How it works
+
+![A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once, and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric: a sure answer goes back to the rule, an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into their own SCRT record. The results and a link to the report go back to the agent, which explains them.](docs/hackathon/diagrams/tobi-flow.png)
+
+The diagram is the planned flow
+([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
+
+- **Built:** recording and replay, the rules specs and checks, the
+  pre-SCRT file, and the server judge.
+- **Off by default:** the server judge (`JUDGE_BACKEND=api`, one question
+  type at a time in `JUDGE_TYPES`). Until a type is switched on, its
+  open questions go to the calling agent, by the same rubric.
+- **Not built yet:** the hosted service, the page where a signed-in
+  person answers, and the export to a Trusted Tester's SCRT record.
 
 ## TT tests in scope
 
@@ -211,8 +229,8 @@ gets out. The agent answers from the page text:
 
 4.C is now FAIL: "Keyboard focus gets trapped on this page…".
 
-**Example output** from a real run (NASA's accounts receivable form, all 17
-tests, 10 questions answered):
+**Example output** from a real run on 2026-11-04 (NASA's accounts
+receivable form, the 17 tests built then, 10 questions answered):
 - [report.json](evals/judging/round1-answers/results/arm-a/runs/20261104T200634Z-d02d2f/report.json):
   findings, questions and answers, and every version used;
 - [pre-scrt.json](evals/judging/round1-answers/results/arm-a/runs/20261104T200634Z-d02d2f/pre-scrt.json):
@@ -230,6 +248,9 @@ Save the report in your repository: a run's files expire after 24 hours.
   its reads, are reused by later calls of the same server session;
 - `BROWSER_CHANNEL` and `HEADLESS`;
 - `DEV_MODE` (allows `file://` pages);
+- `JUDGE_BACKEND` (default `client`: the calling agent answers open
+  questions; `api`: the server's own model answers the question types
+  in `JUDGE_TYPES`), with `JUDGE_ROUTE` and `JUDGE_MODEL`;
 - `UPSTREAM_PROXY`, for containers that re-sign TLS.
 
 **Safety:**
@@ -267,3 +288,8 @@ Third-party software (see [NOTICE](NOTICE)):
   imply SSA endorsement.
 - **jQuery 3.7.1**, Copyright OpenJS Foundation and other contributors, MIT
   ([third_party/jquery/LICENSE.txt](third_party/jquery/LICENSE.txt)).
+- **SCRT 5.2.0**, Copyright Department of Homeland Security, MIT
+  ([third_party/scrt/LICENSE](third_party/scrt/LICENSE)). Its test rows
+  are read as a template; its pages are used in tests, and
+  [demo/prescrt-viewer/](demo/prescrt-viewer/) reuses its stylesheet.
+  Use does not imply DHS endorsement.

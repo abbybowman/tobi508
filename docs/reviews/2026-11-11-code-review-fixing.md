@@ -128,17 +128,73 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > `evals/judging/round2-armc/keys/`, so I can open the pairs in the
 > pre-SCRT viewer (`demo/prescrt-viewer/`).
 
-**Step 7, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
+**Step 7, Sonnet: the grid of hard pages** (beside step 6)
 
-> Read `CLAUDE.md` and `docs/hackathon/README.md`. I have fixed the
-> submission commit: <commit>. Run the scored suite once at that commit
-> as `docs/hackathon/README.md` describes, and fill every [FILL] in
-> `docs/hackathon/evaluation.md` and `deck.md` from that one run, with
-> its commit, date and environment. Remove a [PENDING] marker only
-> where the work exists and is checked. Never describe a tested page as
-> certified or compliant. Show me the filled figures before you commit.
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "Working rules". Your work is step 7 of
+> `docs/ROADMAP.md` "Order of work": part I's grid in
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (CI is
+> done). Start from `docs/reviews/2026-11-11-code-review-pages/`. One
+> test file, one table, check by page: each cell is the expected
+> outcome today or a written reason that the page has nothing for that
+> test. The rule the table must obey: never PASS, and DOES NOT APPLY
+> only with a reason. A cell that breaks the rule today is marked as a
+> known wrong outcome with its review item, not hidden and not fixed
+> here. Build three pages first and open a pull request for them
+> alone, because step 8 is waiting for them: an open shadow root, a
+> same-site frame and a frame from another site, each holding a form,
+> a navigation block, a mouse-only control and a media element. Then
+> the other six pages. Then one recording and one walk per fixture
+> page (Q-07). No spec changes and no outcome changes: this step only
+> adds tests.
 
-**Step 8, Sonnet: the second look's trial** (if the days allow; it can wait until after the demo)
+**Step 8, Opus: one library for reading the page, frames included** (after step 7's first three pages)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is step 8 of `docs/ROADMAP.md` "Order of
+> work": part D of
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`, which
+> absorbs fix 7 of `docs/plans/2026-11-08-post-round2-fixes.md`. First
+> a short design note in the plan's part D (what `jslib` exports, how
+> a reader names an element across shadow roots and frames, how a
+> frame from another site is recorded, loaded and located) and the
+> spec wording for the three decisions the roadmap lists under step 8.
+> Show me both before code: this step turns NEEDS REVIEW into PASS
+> inside web components and frames, and I decide that. Then 8a, reader
+> by reader in the plan's order, one pull request per reader with its
+> fixtures and step 7's grid rerun: a grid cell may move from NEEDS
+> REVIEW to an outcome only when the page's content was really read,
+> and for every cell that becomes PASS add the nearest page that must
+> still FAIL. Then 8b, the frame from another site. Guard CN stays; it
+> stops firing where the readers and the count agree. Update each
+> test's README status line and the "Known wrong outcomes" table in
+> the commit that changes it. Merge `main` before every spec version.
+> Whatever is not merged by the end of Nov 17 stops there: leave
+> `main` whole and write down where you stopped.
+
+**Step 9, Sonnet: the second check** (after step 8, or on Nov 16 with whatever of it is merged)
+
+> As step 6's prompt, with these changes: run on `main`'s head after
+> step 8's pull requests; run round 2's 10 frozen pages and round 1's
+> (`evals/judging/round1/frozen`, restored the same way); write into a
+> new folder; report beside step 6's figures, and list every cell that
+> moved from NEEDS REVIEW to an outcome since step 6 with whether the
+> key agrees. Then rewrite each README status line from this run: one
+> short line per test, and remove a caveat only where this run or a
+> grid cell shows it is gone.
+
+**Step 10, Sonnet: round 3's run** (when I have put my SCRT files for the pages in place)
+
+> Read `docs/how-to/run-a-judging-round.md` and
+> `evals/agent/README.md`. Before the run, do scorer fixes 15, 16 and
+> 17 of `docs/plans/2026-11-08-post-round2-fixes.md`, each with its
+> test. Then run a round on the pages I name, with the server judge
+> answering, exactly as the how-to describes: freeze, run, lock, then
+> score against my keys. Never open my keys before the lock. Report
+> per test and in all, and list apart the cells that are inside a web
+> component or a frame.
+
+**Step 11, Sonnet: the second look's trial** (if the days allow; after step 6)
 
 > Read `CLAUDE.md`, then part F of
 > `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`, "Trial".
@@ -149,6 +205,16 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > flagged that my keys say is right, with tokens and time per page,
 > into the plan's part F and `evals/README.md`. Stop there; the guard is
 > a later step.
+
+**Step 13, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
+
+> Read `CLAUDE.md` and `docs/hackathon/README.md`. I have fixed the
+> submission commit: <commit>. Run the scored suite once at that commit
+> as `docs/hackathon/README.md` describes, and fill every [FILL] in
+> `docs/hackathon/evaluation.md` and `deck.md` from that one run, with
+> its commit, date and environment. Remove a [PENDING] marker only
+> where the work exists and is checked. Never describe a tested page as
+> certified or compliant. Show me the filled figures before you commit.
 
 ---
 
