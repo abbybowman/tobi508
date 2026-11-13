@@ -1,7 +1,7 @@
 ---
 tt_test: 4.D
 tt_name: 2.4.7-focus-visible
-spec_version: 1.5.0
+spec_version: 1.6.0
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -35,7 +35,7 @@ The p. 22 Identify Content block says "4.A to 4.H"; as in 4.C, the spec reads it
 
 **Extra evidence this test collects** (walk extras, collected only when 4.D is selected). Looking at each element as focus lands on it is what p. 22 HtT 2 asks a tester to do; the images and style reads are how the tool looks. At each step where a stop gains focus, after the settle rule:
 
-1. **On image:** a clip of the stop's region, with animations disabled and the caret hidden. Disabling animations finishes CSS transitions, so a ring that fades in is captured in its final state (V1).
+1. **On image:** a clip of the stop's region, with animations disabled and the caret hidden. 1.6.0 (post-round 2 fix 26): a clip smaller than `CONTEXT_MIN_W` × `CONTEXT_MIN_H` (160 × 100 CSS px) grows about its centre to that size, kept inside the viewport, so a small element is pictured with the page around it; the comparison reads its regions, not the clip, so no outcome depends on the added pixels. Disabling animations finishes CSS transitions, so a ring that fades in is captured in its final state (V1).
 2. **Noise read,** only when the page is changing (the step did not settle, the DOM changed during it, or CSS animations are running): a second on image and style read `NOISE_WAIT_MS` later, while focus stays. Pixels and style properties that differ between the two are animation, not a focus indicator, and are left out of the comparison (a slideshow behind a link cannot count as its indicator). The tool's own screenshots are not DOM changes (4.C spec section 2, 1.7.0); before 1.1.0 they were, and on pages with a text field every step took the noise read (1.1.0).
 3. **Focus styles,** read through CDP after the on image (read before it, a transition still shows its start state): the whole computed style of the stop, its ancestors up to the nearest block container, its associated labels, and their ::before and ::after, compared as a whole between the two reads rather than property by property. Also the stop's box, the page's scroll offsets, and for text fields whether they are editable and their caret-color (V7).
 4. **At the next step of the same pass,** after the settle rule, once the focus subject has changed: the off image of the previous stop's region, captured only if that region is fully inside the viewport, and the previous stop's focus styles again. Pixels inside the next subject's box (the next stop, or the next active item of a widget) are masked out of the comparison.
@@ -48,6 +48,8 @@ P1 collects at every stop. P2 collects only at stops (matched by frame chain plu
 
 **Time budget:** measured with the build on Linux (Chromium headless shell): a 100-link page takes 53 s for the walk and 4.D together, of which the walk is about 36 s. Widget pass W adds one replay per widget (about 2–3 s). Earlier estimate, measured on Linux (Chromium headless shell, Playwright 1.63): a clip screenshot takes about 27 ms (median) and a CDP style read about 10 ms, so about 100 ms per stop. On a typical page of 100 stops that is about 10 s for P1 plus a few P2 top-ups, on top of the walk itself. Windows headed Chrome is not yet measured (V8). The whole run stays within `run_limit_s` (4.C spec section 2, Run limits): pass W starts no widget after the checks' deadline (1.1.0); when the walk stops at the limit, stops without complete evidence go to M4 and G3 gives the reason "the page is too large to finish within the time limit".
 
+**Pictures for J1** (1.6.0, fix 26; round 2: 7 of C's 4.D answers were unsure on 48 × 47 px pictures and "a faint ring", where the key passes). A picture whose long side is under `JUDGE_MIN_SIDE` (480 device px) is also saved scaled up in whole steps (at most `JUDGE_MAX_SCALE`, 4), nearest-neighbour so the pixels stay the page's own, as `…-x<k>.png` beside it; J1's images A, B and C are these copies, and the originals stay evidence. **Ring** (a measured fact in `changed_pixels`, no row reads it): `sides_changed` lists the sides of the element (top, right, bottom, left) along which changed pixels sit within `INDICATOR_MARGIN_PX` of the box, outside or just inside it, over at least `RING_SIDE_SHARE` (0.5) of that side's length; `ring: true` when all four do. A ring is a shape, not a degree of visibility: it never turns a faint change into a yes.
+
 **Constants.** These decide outcomes, so they live in this spec, not in server config (CLAUDE.md principle 2): changing one is a spec version change. Provisional until the V-checks and fixtures calibrate them.
 
 | Constant | Value | Used by |
@@ -55,6 +57,9 @@ P1 collects at every stop. P2 collects only at stops (matched by frame chain plu
 | `INDICATOR_MARGIN_PX` | 8 CSS px | Region |
 | `PIXEL_DELTA_VISIBLE` | 8 (max channel difference, 0–255) | Changed pixel |
 | `PIXEL_DELTA_STRONG` | 40 | Strongly changed pixel |
+| `CONTEXT_MIN_W`, `CONTEXT_MIN_H` | 160, 100 CSS px (1.6.0): the smallest clip | On image |
+| `JUDGE_MIN_SIDE`, `JUDGE_MAX_SCALE` | 480 device px, 4 (1.6.0) | Pictures for J1 |
+| `RING_SIDE_SHARE` | 0.5 (1.6.0) | Ring fact |
 | `MIN_CHANGED_PX` | 12 CSS px² | M6, M7, M8 |
 | `MASK_MAX_FRACTION` | 0.5 | Complete evidence |
 | `WIDGET_ITEMS_MAX` | 5 items per widget | Widget pass W |
@@ -131,13 +136,13 @@ One question, asked only for M7. The calling agent answers it once, by the rubri
 
 ### J1. Does this change show where focus is?
 
-**Question:** "Image A shows part of a web page without keyboard focus; image B shows the same part with keyboard focus on the outlined element. Image C marks the pixels that differ. Is there a change on or right around the outlined element in B that a sighted user would notice as showing it has focus? input.changed_pixels counts the pixels that differ, in CSS pixels: on the element, touching it (within 8 pixels of its edge) and elsewhere in the picture. Answer yes, no or unsure, and describe the change in a few plain words."
+**Question:** "Image A shows part of a web page without keyboard focus; image B shows the same part with keyboard focus on the outlined element. Image C marks the pixels that differ. Is there a change on or right around the outlined element in B that a sighted user would notice as showing it has focus? input.changed_pixels counts the pixels that differ, in CSS pixels: on the element, touching it (within 8 pixels of its edge) and elsewhere in the picture. It also gives sides_changed, the sides of the element (top, right, bottom, left) that the changed pixels run along, and ring: true when they surround it on all four. Small pictures are enlarged for you and show the page around the element. Answer yes, no or unsure, and describe the change in a few plain words."
 
 **Input:** images A (off), B (on, with the stop's box outlined on a copy) and C (changed pixels); the instance ID; the stop's role and accessible name, labelled as untrusted page data; `changed_pixels` (1.3.0): the pixels that differ between A and B, in CSS pixels, on the element's box, touching it (within `INDICATOR_MARGIN_PX`, 8) and elsewhere in the picture, after the pixels that change with focus held (noise) and the masked area are left out, as for M7. These are facts for the judge, so it need not estimate from the pictures where a change sits ([research note](../../docs/research/2026-11-07-visual-judgment-and-apijudge.md), section 1); no row reads them. Fixture F16: a faint colour change on the link and a counter beside it.
 
 **Output:** `{indicator: yes|no|unsure, change: "<a few plain words>"}`.
 
-**Rubric.** Yes: an outline, border, underline, background or text color change, or an added icon or marker, on the element or touching it. No: no noticeable change; or the only change is elsewhere in the picture (a slideshow, a video, an animation); or only soft edge pixels around text. Unsure: a pop-up such as a tooltip appears beside the element and nothing on the element changes; or the change is too faint to tell. Mechanical guard: J1 is asked only when M7 measured at least `MIN_CHANGED_PX` changed pixels.
+**Rubric.** Yes: an outline, border, underline, background or text color change, or an added icon or marker, on the element or touching it. No: no noticeable change; or the only change is elsewhere in the picture (a slideshow, a video, an animation); or only soft edge pixels around text. Unsure: a pop-up such as a tooltip appears beside the element and nothing on the element changes; or the change is too faint to tell. ring: true means the changes surround the element, the shape of an outline; it does not say how visible they are, so a very faint ring is still unsure. Mechanical guard: J1 is asked only when M7 measured at least `MIN_CHANGED_PX` changed pixels.
 
 | Example | Answer |
 | --- | --- |

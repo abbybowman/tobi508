@@ -47,7 +47,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.7.1](specs/rules/4a-keyboard-access.md) | A scroll arrow whose items Tab reaches is passed by a check, not asked about (a carousel moved by a transform instead of by scrolling is still asked); A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Does not yet Tab through a form's error states (fix planned); a trap in code the recording lacks is NEEDS REVIEW |
-| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.5.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
+| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.6.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |
 | 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 Sure and accurate |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.7.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ Rules accurate; its open question's rubric judges meaning, not the drawn order, and its order picture draws only stops with a visible box (judge eval clean on 15 cases, three repeats) |
 | 5.A | 3.3.2-label-provided | 3.3.2 | [1.3.0](specs/rules/5a-label-provided.md) | ⚠️ Fails search fields that an icon button labels (fix planned) |

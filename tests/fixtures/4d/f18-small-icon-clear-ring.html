@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F18 Categories</title>
+<style>
+  body { background: #fff; font-family: sans-serif; }
+  .cats { display: flex; gap: 24px; padding: 24px; }
+  .cat { position: relative; width: 44px; height: 44px; }
+  .cat a { display: block; width: 44px; height: 44px; border-radius: 50%; background: #1b4f9c; color: #fff; text-align: center; line-height: 44px; text-decoration: none; outline: none; }
+  /* The ring is a sibling the link's own style does not change. */
+  .cat .ring { position: absolute; left: -6px; top: -6px; width: 44px; height: 44px; border: 3px solid transparent; border-radius: 50%; pointer-events: none; }
+  .cat a:focus + .ring { border-color: #ffbe2e; }
+</style></head><body>
+<h1>Browse</h1>
+<div class="cats">
+  <div class="cat"><a href="#earth" aria-label="Earth">E</a><span class="ring"></span></div>
+  <div class="cat"><a href="#sun" aria-label="Sun">S</a><span class="ring"></span></div>
+  <div class="cat"><a href="#moon" aria-label="Moon">M</a><span class="ring"></span></div>
+</div>
+</body></html>

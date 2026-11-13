@@ -127,6 +127,11 @@ The server judge's own route (`answer --backend api`, `claude -p`, Sonnet), two 
 - **After (1.7.1):** 12/12 in each of three repeats.
 - **Reading:** no change the eval can see. The earlier unsure answers (4.A f01, f04, inject-f01: "does not clearly do the same job") did not recur in either run, so they were run-to-run noise on a small sample, not something the field fixes. The field is evidence the judge can read, not a measured improvement.
 
+**Fix 26, 4.D 1.6.0 (pictures big enough to judge; the ring as a fact).** Small elements are pictured with at least 160 x 100 CSS px of page around them, pictures under 480 px on the long side are enlarged for the judge, and `changed_pixels` gains `sides_changed` and `ring`. New cases F18 (a clear ring drawn by a sibling: the rule decides it, M6, so it asks nothing) and F19 (a 1 px near-white ring round three 44 px circles: must stay NEEDS REVIEW); 4.D cases that ask: f09, f16, f19.
+- **Before (1.5.0):** 3/3 in each of three repeats; all answers unsure: "a thin 1px ring ... too faint to tell" (F19, 64 x 64 px pictures).
+- **After (1.6.0):** **3/3 in each of three repeats**; all unsure, on purpose: the answers now describe the ring ("a ring appears ... near-white on white") and still say it is too faint. Pictures 480 x 300. A ring is a shape, not a verdict.
+- **What this does not show:** whether round 2's 7 unsure cells (48 x 47 px pictures; the key passes) now get an answer. No fixture here is a visible-but-not-strong ring the key would pass, and picking one would mean choosing the answer; the effect on real pages is for step 6 (the round 2 rerun). The eval shows only that no faint change turned into a yes.
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.
