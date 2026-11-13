@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head><title>A button with a mousedown effect and a click handler</title></head>
+<body>
+<h1>A button with a mousedown effect and a click handler</h1>
+<button id="open">Open panel</button>
+<div id="panel" hidden>The panel</div>
+<script>
+var b = document.getElementById('open');
+b.addEventListener('mousedown', function () { b.style.background = '#ddd'; });
+b.addEventListener('click', function () { document.getElementById('panel').hidden = false; });
+</script>
+</body>
+</html>

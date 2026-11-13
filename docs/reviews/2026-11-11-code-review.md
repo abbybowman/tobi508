@@ -119,7 +119,7 @@ below; "run" means I ran a page and got the outcome shown.
 | N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
 | N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run. **Fixed** |
 | E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run · fixed |
-| E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
+| E-08 | 4.A | PASS | a button that answers only `mousedown` | run · fixed (step 6b) |
 | C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run · fixed (step 6b) |
 | M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run · fixed (part B) |
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read · fixed (step 6b) |
@@ -710,6 +710,13 @@ different checks, and some of those ways do not hold back an outcome.
   turns a PASS into a FAIL or a review, so it needs Abby and a spec row.
 - **Checked:** verified (run). `<button onmousedown=...>Open panel
   </button>`: 4.A PASS, rows A3, G4.
+- **Fixed (E-08):** commit "4.A: a native button that answers only mousedown gets the
+  Enter and Space check (E-08)", spec 4.A 1.10.0. Abby chose option A
+  (2026-11-13). `StopHook` marks a native control (not `a`/`area`) with a
+  pointer-down listener and no click listener `pointer_only`; it is
+  executed after the custom controls. Fixtures `4a/f26` (FAIL, M10; no
+  instance and PASS before), `4a/f27` (a click handler too: PASS) and
+  `4a/f28` (a link with a mousedown listener: Enter follows it, PASS).
 
 #### C-01 4.A passes a mouse-only control whose only effect is `alert()`
 

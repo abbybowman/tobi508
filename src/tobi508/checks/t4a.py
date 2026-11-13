@@ -51,6 +51,9 @@ ARROW_MAX = 5
 ARROW_PRESSES = 20
 HOOK = "keys4a"
 
+# A native control that answers only these (and has no click listener of its
+# own) does nothing on Enter or Space: WCAG failure F54 (E-08).
+POINTER_DOWN_TYPES = {"mousedown", "mouseup", "pointerdown", "pointerup"}
 CLICK_TYPES = {"click", "mousedown", "mouseup", "dblclick", "pointerdown", "pointerup"}
 ODD_TYPES = {
     "dragstart",
@@ -315,6 +318,12 @@ class StopHook:
             types = await _own_listener_types(t, step)
             if types & CLICK_TYPES:
                 info["reason"] = "listener"
+        elif info.get("reason") == "native" and step.stop.tag not in ("a", "area"):
+            # A pointer-only native control (E-08): Tab reaches it, but only
+            # the mouse works it. A link with an address is followed by Enter.
+            types = await _own_listener_types(t, step)
+            if types & POINTER_DOWN_TYPES and "click" not in types:
+                info["pointer_only"] = True
         return info
 
 
@@ -701,6 +710,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
         if (_hook(p1, sr) or {}).get("reason") not in (None, "native")
         and not _native_part(p1, sr)
     ]
+    # Pointer-only native controls (E-08) are tried after the custom ones.
+    customs += [
+        sr
+        for sr in st.stop_list
+        if (_hook(p1, sr) or {}).get("pointer_only") and not _native_part(p1, sr)
+    ]
     for done, sr in enumerate(customs):
         inst = Inst4A(
             id=f"x{done + 1}",
@@ -777,7 +792,9 @@ def _target(p1: PassResult, sr: StopRef) -> dict[str, Any]:
         "role": stop.role,
         "name": stop.name,
         "tag": stop.tag,
-        "reason": (_hook(p1, sr) or {}).get("reason"),
+        "reason": "pointer_only"
+        if (_hook(p1, sr) or {}).get("pointer_only")
+        else (_hook(p1, sr) or {}).get("reason"),
     }
 
 

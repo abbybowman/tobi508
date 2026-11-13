@@ -89,6 +89,12 @@ EXPECTED: dict[str, dict] = {
     "f23-click-only-alert": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
     "f24-click-only-download": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
     "f25-click-only-does-nothing": {"outcome": "PASS", "rows": ["M2"]},
+    # E-08 (1.10.0): Tab reaches a native button that answers only mousedown,
+    # but Enter and Space do nothing (F54). f27 has a click handler too
+    # (Enter works); f28 is a link whose Enter follows its address.
+    "f26-native-button-mousedown-only": {"outcome": "FAIL", "rows": ["M10"]},
+    "f27-native-button-mousedown-and-click": {"outcome": "PASS", "rows": []},
+    "f28-link-with-mousedown-tracking": {"outcome": "PASS", "rows": []},
 }
 
 ACT = {
