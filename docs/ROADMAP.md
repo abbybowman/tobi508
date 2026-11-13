@@ -74,6 +74,7 @@ ran three to four times longer than the work took.
 | --- | --- | --- | --- | --- |
 | 1-5 | Quick fixes and CI; the count and guard CN; judge, gate and sign-in fixes; false FAILs; answerable "unsure" | | done: PRs #39 to #44 | Plan parts A and B; review bundle 7; fixes 8 to 14 and 24 to 27 |
 | 6 | The check against round 2: the baseline before the readers change | Opus | Nov 13 | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
+| 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | Nov 13-16, beside 7 and 8 | [Spec decisions](plans/2026-11-13-spec-decisions.md): M-05, C-01, M-10, H-02, M-08, K-01; then M-01, E-08, F-02, C-07, K-05 as Abby answers |
 | 7 | The grid of hard pages, its shadow-root and frame pages first | Sonnet | Nov 13-14, beside 6 | Plan part I |
 | 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |
 | 9 | The second check: round 2's and round 1's frozen pages again, after 8 | Sonnet | Nov 16-17 | As step 6, a new folder |
@@ -107,6 +108,11 @@ what is planned.
    before step 8 so that the effect of steps 1 to 5 and the effect of
    the new readers are measured apart. A new round folder; the locked
    rounds are never rewritten.
+6b. **Single-test fixes** (Abby, 2026-11-13). The rows of the README's
+   "Known wrong outcomes" table that one spec and one fixture can
+   remove. Six need no decision; five wait for Abby's answer in
+   [plans/2026-11-13-spec-decisions.md](plans/2026-11-13-spec-decisions.md).
+   Each moves a PASS or a DOES NOT APPLY toward NEEDS REVIEW or FAIL.
 7. **The grid of hard pages** (part I): nine shared pages (a shadow
    root, a frame, more than a cap, a trap, a late start, text not in
    English, hidden text, a form behind a button, a failed reading) run
@@ -241,6 +247,9 @@ itself, one bundle a thread; they are not repeated here.
   the limit ([browser checks](../specs/rules/_browser-checks.md)).
 - **`JUDGE_TYPES`:** the question types to switch on, after the check against
   round 2 (step 6).
+- **Five spec decisions** for step 6b:
+  [plans/2026-11-13-spec-decisions.md](plans/2026-11-13-spec-decisions.md),
+  part 2.
 - **Step 8's direction** (NEEDS REVIEW to PASS inside web components
   and frames): the three points under step 8, before its first spec
   change.

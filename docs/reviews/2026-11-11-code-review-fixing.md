@@ -128,6 +128,24 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > `evals/judging/round2-armc/keys/`, so I can open the pairs in the
 > pre-SCRT viewer (`demo/prescrt-viewer/`).
 
+**Step 6b, Sonnet: single-test fixes for the known wrong outcomes** (beside steps 7 and 8)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is step 6b of `docs/ROADMAP.md` "Order of
+> work": `docs/plans/2026-11-13-spec-decisions.md`. Part 1 first, in
+> its order, one commit and one fixture each, with the nearest page
+> that must still give the old outcome where there is one. For K-01,
+> show me the rule before building it. Then part 2, only the items
+> where I have written an answer on the "Abby:" line; for each, draft
+> the spec change with its research and show me before building. Every
+> fix moves a PASS or a DOES NOT APPLY toward NEEDS REVIEW or FAIL; if
+> one would do the opposite anywhere, stop and ask. Remove each fixed
+> row from the README's "Known wrong outcomes" table and mark the
+> item fixed in the review file, in the same commit. Stay out of the
+> readers step 8 is replacing (`labels.py`, `site.py`, `motion.py`,
+> `forms.py`, `reveal.py`, `observe.py` dialogs): C-01 touches
+> `observe.py`, so merge `main` before it and keep the change small.
+
 **Step 7, Sonnet: the grid of hard pages** (beside step 6)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
