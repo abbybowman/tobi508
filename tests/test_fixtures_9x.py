@@ -37,6 +37,27 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.C": "PASS"},
         {},
     ),
+    # M-10: an address that already ends in #main has its target before any
+    # press, so a do-nothing button is not a skip control. The control: a
+    # real skip link to #main on the same kind of address still passes.
+    "noop-button-address-with-fragment": (
+        "h1-noop-button-alpha#main",
+        ["h2-beta"],
+        {"9.A": "FAIL"},
+        {},
+    ),
+    "noop-button-address-without-fragment": (
+        "h1-noop-button-alpha",
+        ["h2-beta"],
+        {"9.A": "FAIL"},
+        {},
+    ),
+    "skip-link-address-with-fragment": (
+        "a1-home#main",
+        ["a2-benefits"],
+        {"9.A": "PASS"},
+        {},
+    ),
     "two-pages-one-reordered": (
         "a1-home",
         ["a2-benefits", "a3-nav-reordered"],
@@ -155,9 +176,10 @@ ROWS = {
 @pytest.mark.parametrize("case", sorted(EXPECTED))
 async def test_case(case, settings, server, drafts):  # noqa: F811
     page, others, want, answers = EXPECTED[case]
+    page, hash_, frag = page.partition("#")  # "name#main": the tested address
     got = await run_tests(
         settings,
-        f"{server.base}/9x/{page}.html",
+        f"{server.base}/9x/{page}.html{hash_}{frag}",
         list(want),
         answers,
         other_pages=[f"{server.base}/9x/{o}.html" for o in others],

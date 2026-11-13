@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import re
 from typing import Any
+from urllib.parse import unquote, urlsplit
 
 from pydantic import BaseModel, Field
 
@@ -56,14 +57,24 @@ LANDING_JS = (
     "(args) => {"
     + UNITS_FN
     + """
-  const [cand, blockCss, cap] = args;
+  const [cand, blockCss, cap, hash0] = args;
   const act = document.activeElement;
   let landing = null, how = '';
   if (act && act !== document.body && act !== document.documentElement && path(act) !== cand) {
     landing = act; how = 'focus';
   } else {
     const t = document.querySelector(':target');
-    if (t) { landing = t; how = 'target'; }
+    // The target counts only if the press changed it (M-10): an address that
+    // already ended in #main has its target before any press. A link to that
+    // very fragment still counts (it is how a skip link says where it goes).
+    let own = '';
+    try {
+      const c = document.querySelector(cand);
+      const h = c && c.getAttribute('href');
+      if (h && h.indexOf('#') >= 0) own = decodeURIComponent(h.slice(h.indexOf('#') + 1));
+    } catch (err) { own = ''; }
+    const now = decodeURIComponent(location.hash.slice(1));
+    if (t && (now !== hash0 || (own !== '' && own === now))) { landing = t; how = 'target'; }
   }
   const read = units(cap);
   let at = null;
@@ -204,7 +215,8 @@ async def _read_after(s: Session, st: State9A, c: Cand, url0: str) -> None:
         return
     # Isolated world: page script cannot fake document.activeElement there
     # (docs/solutions/focus-and-walk.md), and the landing decides M5 and M7.
-    args = json.dumps([c.css, block_css, UNIT_CAP])
+    hash0 = unquote(urlsplit(url0).fragment)
+    args = json.dumps([c.css, block_css, UNIT_CAP, hash0])
     got = await s.traversal.reader.evaluate_top(f"({LANDING_JS})({args})")
     if not isinstance(got, dict):
         c.error = "where the keyboard landed could not be read"

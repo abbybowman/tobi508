@@ -1,7 +1,7 @@
 ---
 tt_test: 9.A
 tt_name: 2.4.1-bypass-function
-spec_version: 1.3.0
+spec_version: 1.3.1
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -46,7 +46,7 @@ Small block, in numbers: B is one control, or B's units hold fewer than 4 words 
 **Site read** (`site.py`, shared with 9.B and 9.C, `RunContext.cache["site"]`): one fresh load of each page's HAR, its units (kind, role, text key, name, link destination, CSS path, region, box, whether it is a walk-reachable control) up to 600 per page; a page over the cap is incomplete.
 
 **Candidate replays** (HtT 3): for each candidate, `ctx.replay` to it, press Enter, then read:
-- the *landing*: the focused element if focus moved off the candidate, else the element the URL fragment targets (`:target`), else none; and its position: the first unit at or after it in reading order;
+- the *landing*: the focused element if focus moved off the candidate, else the element the URL fragment targets (`:target`) when the press changed the fragment, or when the pressed link's own `href` names it (1.3.1, review M-10: an address that already ends in `#main` has its target before any press, so a button that does nothing is not a skip control), else none; and its position: the first unit at or after it in reading order;
 - which units of B are no longer rendered (hidden);
 - whether the page navigated away;
 - one Tab: the stop focus reaches next (Chrome moves the sequential focus starting point to a fragment target that cannot take focus; V1).

@@ -1402,6 +1402,11 @@ a narrower page or an agent's wrong answer than the P0 items do.
 - **Checked:** verified (run). A do-nothing button, a header, then
   `<main id="main">`: with `#main` on the address 9.A PASS ("the noop
   button lets keyboard users skip it"); without it, FAIL.
+- **Fixed (M-10):** commit "9.A: a fragment's target counts only if the press
+  changed it (M-10)", spec 9.A 1.3.1 (wording: the code's `LANDING_JS`
+  now says what the spec's landing says). Fixtures
+  `9x/h1-noop-button-alpha#main` (FAIL), the same page without the
+  fragment (FAIL) and `a1-home#main` (a real skip link: still PASS).
 
 #### M-04, M-09 5.H forgets the forms it could not test
 
