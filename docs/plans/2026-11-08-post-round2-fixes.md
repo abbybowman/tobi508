@@ -19,7 +19,7 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 6 | 9.A-9.C: other pages from another template are NEEDS REVIEW | Built (9.A, 9.B 1.1.0; 9.C 1.2.0) |
 | 7 | Frames: 5.x reads fields in frames | Not started; now built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) (one reader for shadow roots and frames) |
 | 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Built (PR #44): 5.A 1.5.0-1.6.0, 5.C 1.7.0-1.8.0, 19.A 1.4.0-1.5.0; judge eval runs 31 and 32 |
-| 8b | 5.B judges a field whose only label is an icon (follows fix 8) | Not started: spec decision for Abby (draft below) |
+| 8b | 5.B judges a field whose only label is an icon (follows fix 8) | Built (PR #44): 5.A 1.7.0 (row M2i), 5.B 1.5.0; judge eval run 33. Open: "Go" text buttons (below) |
 | 9b | Opening everything | Phase 1 built (`reveal.py`, guards RV and RC); phases 2 and 3 on the roadmap |
 | 12-14 | 4.F rubric and order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
 | 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
@@ -123,24 +123,21 @@ still FAIL has its own fixture.
   scripts settle and up to 2,000 units. Fixtures `quoted-search-finds-it`
   (fails without the settled read) and `quoted-search-finds-nothing`.
 
-#### 8b. 5.B: judge a field whose only label is an icon (not started; needs Abby)
-- **Evidence:** fix 8's follow-on. Key: 5.B Pass on Help, Galleries,
-  14194, 14592 ("site search box ... passes"); TOBI: DOES NOT APPLY,
-  because a 5.B item needs visible text and an icon has none. TT 5.B's
-  Notes (p. 26) say a label "can be graphical or textual", so a field
-  labelled by an icon is a 5.B item.
-- **Proposal (draft, 2026-11-13):** a data-entry field with an icon button
-  in its input group or search form (5.A's evidence) becomes a 5.B item;
-  5.B's J1 gets its image and a rubric for pictures: a symbol commonly
-  understood for this field's purpose (a magnifier on a search box, an
-  envelope on an email field, a calendar on a date) is descriptive; a
-  picture that is not a label at all (a tree, a logo) means the field has
-  no visual label (it leaves 5.B; 5.A fails it); a picture that is a
-  label but says something else (an envelope on a phone field) is not
-  descriptive (FAIL); anything the picture does not settle (an arrow, a
-  gear) is unsure (NEEDS REVIEW). Settled by looking (5.B J1 is already
-  in principle 8's list). Judge eval after, with f27, f36 and f37 and a
-  misleading-icon page.
+#### 8b. 5.B: judge a field whose only label is an icon (built, PR #44)
+- **Decision (Abby, 2026-11-13; TT p. 25 Notes 2-3, p. 26 Note 2):** 5.A
+  only asks whether a label is provided, regardless of accuracy. An icon
+  button that is part of the field (its input group or search form) is a
+  label provided, whatever it shows: 5.A 1.7.0 row M2i, PASS, no question.
+  A picture that only sits near the field, outside its form (a site logo),
+  is not counted (M3). 5.B 1.5.0 makes such a field an item and judges the
+  icon by looking: a symbol commonly understood for what to enter is
+  descriptive; an unrelated picture or one that names something else is
+  not; anything unclear is unsure. Fixtures 5a/f27, f36-f39 (5.A and 5.B);
+  judge eval run 33.
+- **Open:** 5.A still does not count a text button that only says what it
+  does ("Go", "Submit") as a label (5.A 1.1.0, judge eval run 12), while
+  an icon button with the same meaning (an arrow) now counts. Whether
+  "Go" should also be a label provided (and 5.B's to judge) is Abby's.
 
 #### 9b. Test what interaction reveals, as a person does (principle 3)
 - **Phase 1 is built** (`reveal.py`; guards RV and RC). Phases 2 and 3

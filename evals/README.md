@@ -99,6 +99,14 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Run 33, 2026-11-13: 5.B 1.5.0 (a field labelled only by an icon), its packets
+
+Fix 8b (Abby, 2026-11-13; TT p. 25 Note 3, "regardless of accuracy"): 5.A 1.7.0 counts an icon button that is part of a field as its label (row M2i, no question), so run 32's tree and arrow pages now pass 5.A; 5.B 1.5.0 judges the picture. The rubric's picture examples (a flower or a company logo on a search box, a telephone on an email field) are on no fixture page; the first preparation named the fixtures' own pairs and was redone. 29 cases (5.B J1), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **28/29 match**, no false PASS.
+- **The icon cases:** the magnifier (F27) all_descriptive; the tree (F36) and the envelope on a search box (F39) some_not_descriptive.
+- **The mismatch is safe:** the arrow (F37) was answered unsure ("whether a right-arrow counts as a commonly understood search symbol"), NEEDS REVIEW against FAIL, as Abby wants for a picture that does not settle it.
+- **Injection pages:** it named the text in two pages that told it how to answer, and ignored it.
+- **Unclear to it:** which numbers to name when the same labels repeat (it listed all four, which matches).
+
 ## Run 32, 2026-11-13: 5.A 1.6.0, fix 8's icon cases, its packets
 
 Fix 8 sends a placeholder-only field with an icon button in its group to J1 (the graphic case). Run 31 had only the magnifier page; this run adds two pages where the icon must not count: a tree icon (F36) and an arrow, which says only what the button does (F37). 18 cases, 21 questions (all 5.A J1), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **18/18 match**, no false PASS, no "unsure". Leak grep clean (also for "tree" and "arrow").

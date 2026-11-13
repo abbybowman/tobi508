@@ -180,17 +180,15 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "DNA", "rows": []},
         "5.C": {"outcome": "DNA", "rows": []},
     },
-    # Post-round 2 fix 8 (5.A 1.5.0; svs.gsfc.nasa.gov's site search, key
-    # Pass on 7 pages): a placeholder-only box whose input group holds icon
-    # buttons (a magnifier submit, a clear button) is not failed by M3; a
-    # person looks at the picture (J1, the graphic case).
+    # Post-round 2 fix 8 (5.A 1.5.0, 1.7.0; svs.gsfc.nasa.gov's site search,
+    # key Pass on 7 pages): a placeholder-only box whose input group holds
+    # icon buttons (a magnifier submit, a clear button) has a graphic label
+    # (M2i).
     "f27-icon-buttons-in-search-group": {
-        "5.A": {
-            "outcome": "PASS",
-            "rows": ["M4"],
-            "answers": {"J1": {"choice": "graphic", "reasons": "a magnifier"}},
-        },
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "PASS"},
     },
     # The nearest case that must still FAIL: the icon button in the box's
     # group opens a menu, so it says nothing about the field (M3 as f18;
@@ -199,16 +197,35 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
-    # Fix 8's other side (judge eval run 32): an icon that says nothing
-    # about what to enter (a tree), or only what the button does (an
-    # arrow, like "Go"), does not label the box: not_labeled, M5.
+    # 5.A 1.7.0 (Abby, 2026-11-13; TT p. 25 Note 3, "regardless of
+    # accuracy"): an icon button that is part of the box is a label
+    # provided, whatever it shows (a tree, an arrow, an envelope); 5.B judges
+    # whether it describes the box (test_fixtures_5b.py).
     "f36-tree-icon-in-search-group": {
-        "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
     },
     "f37-arrow-icon-in-search-group": {
-        "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
+    },
+    "f39-envelope-icon-on-search-box": {
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
+    },
+    # The nearest case that must still FAIL: a logo that only sits near the
+    # box, outside its form, is not part of it: pass L does not count it, M3.
+    "f38-logo-beside-search-box": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "DNA"},
     },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
@@ -426,19 +443,6 @@ async def test_a_quote_for_a_button_set_may_hold_words_of_several_rows(
     assert out == "NEEDS_REVIEW" and last == ["M9", "M9"]
     # the button's own announced word is not a missing word
     assert (await rows("X"))[0] == "NEEDS_REVIEW"
-
-
-async def test_icon_buttons_do_not_pass_the_box_by_themselves(settings, server, drafts):  # noqa: F811
-    """Fix 8 (5.A 1.5.0) only moves the box from M3 to J1: when the person
-    looking says the icons do not label it, it still fails (M5)."""
-    got = await run_both(
-        settings,
-        f"{server.base}/5a/f27-icon-buttons-in-search-group.html",
-        {"5.A": NOT_LABELED, "5.C": {}},
-        [],
-    )
-    f = got["5.A"]
-    assert (f.outcome.value, instance_rows(f)) == ("FAIL", ["M5"]), f.rationale
 
 
 async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, drafts):  # noqa: F811

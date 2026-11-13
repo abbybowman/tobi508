@@ -132,3 +132,46 @@ def test_only_buttons_that_act_on_a_form_are_judged():
     items, forms, _ = items_of(LabelsPass(components=comps))
     assert [i.label for i in items] == ["Email", "Subscribe"]
     assert forms == ["form"]
+
+
+@pytest.mark.parametrize(
+    "page,answer,outcome",
+    [
+        ("f27-icon-buttons-in-search-group", ALL, "PASS"),  # a magnifier
+        ("f36-tree-icon-in-search-group", _not(1), "FAIL"),
+        ("f37-arrow-icon-in-search-group", _not(1), "FAIL"),
+        ("f39-envelope-icon-on-search-box", _not(1), "FAIL"),
+    ],
+)
+async def test_a_field_labelled_only_by_an_icon_is_judged(
+    page,
+    answer,
+    outcome,
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """5.B 1.5.0 (Abby, 2026-11-13; TT p. 26 Note 2, a label "can be
+    graphical"): the icon button that labels the box (5.A M2i) is judged by
+    looking, with the picture; a tree, an arrow or an envelope on a search
+    box does not say what to enter. Before, the box was not an item (DNA)."""
+    got = await run_tests(
+        settings, f"{server.base}/5a/{page}.html", ["5.A", "5.B"], {"5.B": answer}
+    )
+    assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("PASS", ["M2i"])
+    f = got["5.B"]
+    assert f.outcome.value == outcome, (f.rows, f.summary)
+
+
+async def test_a_logo_near_the_box_is_not_its_label(settings, server, drafts):  # noqa: F811
+    """The nearest case: a logo beside the box, not part of it, gives 5.B
+    nothing to judge (DNA); 5.A fails it (M3: a picture outside the box's
+    form is not counted)."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f38-logo-beside-search-box.html",
+        ["5.A", "5.B"],
+        {},
+    )
+    assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("FAIL", ["M3"])
+    assert (got["5.B"].outcome.value, got["5.B"].rows[0]) == ("DNA", "A2")

@@ -91,6 +91,15 @@ def instance_rows(st: State5A) -> list[Row]:
             Outcome.FAIL,
             "Understanding 3.3.2 (each option needs a label); H71; Abby, 2026-11-02",
         ),
+        # An icon button in the field's input group or search form is a
+        # graphic label provided, whatever it shows; whether it describes the
+        # field is 5.B's (TT p. 25 Notes 2-3; 5.A 1.7.0, Abby 2026-11-13).
+        Row(
+            "M2i",
+            lambda c: c.icon_buttons > 0 and not in_set(c),
+            Outcome.PASS,
+            "p. 25 ER 1, Notes 2-3 (graphical; accuracy is 5.B's); Abby, 2026-11-13",
+        ),
         Row(
             "M3",
             lambda c: (
