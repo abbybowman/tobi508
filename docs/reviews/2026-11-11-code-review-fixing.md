@@ -1,132 +1,22 @@
 # Handoff: starting a thread on a roadmap step
 
 The roadmap's "Order of work" (`docs/ROADMAP.md`) lists the steps to the
-demo, numbered 1 to 9. Start each step in a new session with its prompt
-below. Steps 1 to 5 send the thread to the instructions below the line
-(how to fix one item, the working rules); steps 6 to 8 stand alone.
+demo. Start each step in a new session with its prompt below. Most send
+the thread to the instructions below the line (how to fix one item, the
+working rules).
+
+**A prompt is removed from this file when its step is merged,** so what
+is listed here is what is left to start or still running.
+
+**Done:** step 1 (PR #39), steps 2 and 3 (PRs #40 to #42), step 4
+(PR #44), step 5 (PR #43), step 6 (PR #46; results in
+`evals/README.md`, "Gate 2026-11-13").
+
+**Order to start them** (at most three threads at once): 6c and 6b now;
+7 now, since 8 waits for its first three pages; 8 when those pages are
+merged; 9 after 8; 10 when the keys are in place.
 
 ## Starting a thread
-
-**Step 1, Sonnet: quick fixes and CI** (done: PR #39)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is part A of
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (the quick
-> fixes) and then the first step of its part I (CI: Q-01, Q-02, Q-08).
-> Do CI first: it takes an hour and protects everything else. Then the
-> part A items in the plan's table, in its order, one commit and one
-> fixture each. Two of them (E-02, K-04) change which row a control
-> lands on: draft the spec wording and stop for me before building
-> those two. Ask me before anything that turns a NEEDS REVIEW into a
-> PASS.
-
-**Step 2, Opus: the count of what exists, and the guard on DOES NOT APPLY** (running)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is part B of
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`. I agreed on
-> 2026-11-12 that a guard may move DOES NOT APPLY to NEEDS REVIEW: write
-> that into `specs/rules/_template.md` and CLAUDE.md principle 3 in the
-> commit that builds the guard. Start with a short design note in the
-> plan's part B (the `Count` fields, where it is read, how a check
-> reports what it read, the guard's sentences) and show it to me before
-> code. Then the count, the play hook, the guard, and the specs' `count:`
-> keys one test family at a time, with the eleven pages the plan lists
-> as fixtures. Stop and report before part C; it is not yours.
-
-**Step 3, Opus: server judge, gate and sign-in fixes**
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is step 3 of `docs/ROADMAP.md` "Order of
-> work". In this order, one commit and one test each: L-02 with L-03
-> (the gate in `evals/apijudge_gate.py` asks for a minimum number of
-> decided cells, not counting unsure, and fails a type on any wrong
-> DOES NOT APPLY; count a tool PASS against a key DOES NOT APPLY apart);
-> B-01 (picture links in a judge request only through
-> `resources.runs.run_file`, and only links that are a whole input
-> value); B-02 (page text cannot close the untrusted block: escape
-> `<`, `>` and `&`, and add a page with the closing tag to
-> `tests/fixtures/inject/`); G-02 (one attachment per picture per
-> request); B-04 (the judge runs after the browser slot is released);
-> A-05 (an answer that arrives through MCP is the calling agent's,
-> whatever `decided_by` says, and the picture rule applies to it); A-01
-> (jobs carry the caller who started them; `get`, `all_jobs` and
-> `running` return only theirs); S-05 (under `AUTH=oidc`, a token with
-> no `sub` is refused). Each item's entry in
-> `docs/reviews/2026-11-11-code-review.md` says where and how. Step 6
-> waits on the first five, so open a pull request when they are done.
-> These are security and evaluation fixes: no spec changes, and no
-> outcome should move.
-
-**Step 4, Opus: the rules' false FAILs** (done: PR #44)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "How to fix one item" and "Working rules". Your work
-> is step 4 of `docs/ROADMAP.md` "Order of work": post-round 2 fixes 8,
-> 9c, 9, 10 and 11, in that order, as written in
-> `docs/plans/2026-11-08-post-round2-fixes.md` (each has its evidence,
-> the TT text and the fix). Each removes a FAIL that my round 2 answer
-> key says is wrong; each is a spec change (MINOR), a fixture (a
-> vendored ACT or Baseline case first) and the check's own tests. These
-> turn a FAIL into a PASS or NEEDS REVIEW, the direction where a false
-> PASS can creep in, so for each one also add a fixture of the nearest
-> case that must still FAIL, and stop for me if a fix would remove a
-> FAIL the key confirms. Show the spec change in each pull request's
-> description. When a fix is merged, mark it built in the post-round 2
-> plan's status table and update the README status line.
-
-**Step 5, Sonnet: "unsure" answers that are answerable** (built 2026-11-13)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "How to fix one item" and "Working rules". Your work
-> is step 5 of `docs/ROADMAP.md` "Order of work": post-round 2 fixes 12,
-> 13 and 14, then 24, 25, 26 and 27, as written in
-> `docs/plans/2026-11-08-post-round2-fixes.md`. Each changes a
-> question, its rubric or its evidence, so each needs the judge eval
-> (`docs/solutions/judge-eval.md`; run it through the CLI route) before
-> and after, with both results in `evals/README.md`. Fixes 12 and 13
-> (4.F) and 14 (9.C) are why the server judge stays off those two
-> tests: say in the pull request whether their eval is now clean. Never
-> make a rubric push toward PASS; when the evidence does not settle a
-> question, the answer must stay "unsure". Mark each fix built in the
-> post-round 2 plan's status table and update the README status line.
-
-**Step 6, Opus: the check against round 2** (when steps 1 to 5 are merged)
-
-> Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
-> ("The gate" and "What is left", item 1), the docstring of
-> `evals/apijudge_gate.py` and `evals/README.md`. Your work is step 6
-> of `docs/ROADMAP.md` "Order of work": rerun round 2's 10 frozen pages
-> once with today's rules and the server judge answering every question
-> type, and score them with the same scorer beside round 2's locked
-> rows, judge-decided cells apart from rule-decided ones.
->
-> Before anything else, check and tell me if either fails: `main`
-> holds steps 1 to 5 (PR #43 merged; run on `main`'s head and record
-> the commit), and round 2's frozen recordings are restored under
-> `evals/judging/round2/frozen` (they are not in git; without them stop
-> and ask me for the `round2-frozen` archive, never fetch the pages
-> live).
->
-> Use the CLI route (`claude -p`) unless I tell you Luna is configured.
-> Run `evals/apijudge_gate.py run --dry` first and tell me the request
-> and token estimate before the real run. Write into a new round folder
-> under `evals/judging/` (`gate-<date>`); never rewrite a locked round.
->
-> Report: false PASS, missed fails (wrong DOES NOT APPLY), false FAILs
-> and NEEDS REVIEW, beside round 2's figures, per test and in all, and
-> for each question type whether it meets the thresholds under "The
-> gate" (read against them, they do not block). List the NEEDS REVIEW
-> cells that guard CN made (row `CN`) apart from the rest. Do not
-> change `JUDGE_TYPES`: I choose the types from your report.
->
-> Put the result in `evals/README.md`. The README's status table says
-> what real pages showed: update each row from this run, and keep its
-> "Known wrong outcomes" table as it is. Do not fill any [FILL] in
-> `docs/hackathon/`. Last, give me the path of each page's
-> `pre-scrt.json` from the run beside the path of its key in
-> `evals/judging/round2-armc/keys/`, so I can open the pairs in the
-> pre-SCRT viewer (`demo/prescrt-viewer/`).
 
 **Step 6b, Sonnet: single-test fixes for the known wrong outcomes** (beside steps 7 and 8)
 
@@ -187,7 +77,7 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > (`UPSTREAM_PROXY`; `docs/solutions/environment.md`) and say what you
 > changed.
 
-**Step 7, Sonnet: the grid of hard pages** (beside step 6)
+**Step 7, Sonnet: the grid of hard pages** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow its "Working rules". Your work is step 7 of
@@ -233,14 +123,43 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 
 **Step 9, Sonnet: the second check** (after step 8, or on Nov 16 with whatever of it is merged)
 
-> As step 6's prompt, with these changes: run on `main`'s head after
-> step 8's pull requests; run round 2's 10 frozen pages and round 1's
-> (`evals/judging/round1/frozen`, restored the same way); write into a
-> new folder; report beside step 6's figures, and list every cell that
-> moved from NEEDS REVIEW to an outcome since step 6 with whether the
-> key agrees. Then rewrite each README status line from this run: one
-> short line per test, and remove a caveat only where this run or a
-> grid cell shows it is gone.
+> Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
+> ("The gate"), the docstring of `evals/apijudge_gate.py`, and step 6's
+> write-up in `evals/README.md` ("Gate 2026-11-13") with its folder
+> `evals/judging/gate-2026-11-13/` (`compare.py` is the comparison to
+> reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work":
+> step 6 again, on `main`'s head (record the commit), on round 2's 10
+> frozen pages and round 1's, with the server judge answering every
+> question type, scored with the same scorer.
+>
+> Before anything else, check and tell me if either fails: the frozen
+> recordings of both rounds are restored (`evals/judging/round2/frozen`,
+> `evals/judging/round1/frozen`; they are not in git, so stop and ask
+> me for the archives, never fetch the pages live), and the browser in
+> this container trusts the egress proxy (step 6's six 19.A false
+> FAILs were the container's). The gate script reads only round 2's
+> pages today: give it a round option. Use the CLI route (`claude -p`)
+> unless I tell you Luna is configured. Run `--dry` first and tell me
+> the request and token estimate before the real run. Write into a new
+> folder under `evals/judging/`; never rewrite a locked round or step
+> 6's folder.
+>
+> Report, beside step 6's figures and round 2's: false PASS, missed
+> fails (wrong DOES NOT APPLY), false FAILs, NEEDS REVIEW and decided
+> cells, per test and in all; every cell that moved from NEEDS REVIEW
+> to an outcome since step 6, with whether my key agrees; guard CN's
+> cells on round 1's pages apart from the rest, and whether it held
+> back any failure there; and for each question type, on both rounds'
+> cells together, whether it meets the thresholds under "The gate".
+> Run the gate's test-page half for the types that are near. Do not
+> change `JUDGE_TYPES`: I choose the types from your report.
+>
+> Put the result in `evals/README.md`. Then rewrite each README status
+> line from this run: one short line per test, and remove a caveat
+> only where this run or a grid cell shows it is gone. Keep the "Known
+> wrong outcomes" table as it is. Do not fill any [FILL] in
+> `docs/hackathon/`. Last, give me the path of each page's
+> `pre-scrt.json` beside the path of its key.
 
 **Step 10, Sonnet: round 3's run** (when I have put my SCRT files for the pages in place)
 
@@ -253,7 +172,7 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > per test and in all, and list apart the cells that are inside a web
 > component or a frame.
 
-**Step 11, Sonnet: the second look's trial** (if the days allow; after step 6)
+**Step 11, Sonnet: the second look's trial** (if the days allow)
 
 > Read `CLAUDE.md`, then part F of
 > `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`, "Trial".

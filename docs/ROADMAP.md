@@ -74,7 +74,8 @@ work: "fix 8" is a post-round 2 fix, "bundle 5" a pivot-plan bundle,
 item. They appear only in the last column, to find the detail. Each
 step is one thread, started with its prompt in
 [reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md),
-"Starting a thread". Run at most three threads at once: more hit the
+"Starting a thread"; a prompt is removed from that file when its step
+is merged. Run at most three threads at once: more hit the
 5-hour usage limit twice during the review.
 
 The "When" column is a target, not an estimate: the sizes in the plans
@@ -86,7 +87,7 @@ ran three to four times longer than the work took.
 | 6 | The check against round 2: the baseline before the readers change | Opus | done Nov 13: [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | Nov 13-16, beside 7 and 8 | [Spec decisions](plans/2026-11-13-spec-decisions.md): M-05, C-01, M-10, H-02, M-08, K-01; then M-01, E-08, F-02, C-07, K-05 as Abby answers |
 | 6c | Win back decided cells: the 600-item read cap, a time budget per test, 19.A's unverified search, a fuller freeze | Opus | Nov 14, before 8 reaches the site read | Step 6's results; this file, "What each step covers" |
-| 7 | The grid of hard pages, its shadow-root and frame pages first | Sonnet | Nov 13-14, beside 6 | Plan part I |
+| 7 | The grid of hard pages, its shadow-root and frame pages first | Sonnet | Nov 13-14 | Plan part I |
 | 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |
 | 9 | The second check: round 2's and round 1's frozen pages again, after 8 | Sonnet | Nov 16-17 | As step 6, a new folder |
 | 10 | Round 3, small: a NASA site not used before, with web components if Abby finds one | Abby's keys; Sonnet for the run | pages chosen by Nov 15; run Nov 16-17 | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
