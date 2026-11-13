@@ -32,7 +32,7 @@ page on every request (a timestamp, a token) gives different bytes, so
 page with itself (review K-01, M-11; `v/site-a.html`).
 
 **TT.** 9.A-9.C compare *other pages of the set* (9.B: "Identify
-Content: ... the same navigation on the web pages"; TT p. 42-45). A page
+Content: ... the same navigation on the web pages"; page not checked). A page
 against itself is not a set of pages. No TT text says how near is too
 near, so the line below is ours and a NEEDS REVIEW, never a FAIL.
 
