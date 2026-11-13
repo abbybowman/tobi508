@@ -79,8 +79,22 @@ def _field_label(c: Comp) -> tuple[str, list[str]]:
     return label, [t for t in nearby if t.strip() and t.strip() != label][:NEAR_MAX]
 
 
+def _button_words(c: Comp, alone: bool) -> list[str]:
+    """A field's button that labels it (5.A M2i and J1; 5.B 1.6.0): one in
+    its input group or search form, or, in a form of one field, its form's
+    button beside it. Its words are the field's near text (section 5)."""
+    if c.button or c.readonly:
+        return []
+    return (c.attached_buttons or (c.nearby_buttons if alone else []))[:NEAR_MAX]
+
+
 def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
     forms: list[str] = []
+    per_form: dict[str, int] = {}
+    for c in lp.components:
+        if not c.button and not c.readonly:
+            per_form[c.form] = per_form.get(c.form, 0) + 1
+    alone = lambda c: bool(c.form) and per_form.get(c.form) == 1  # noqa: E731
     items: list[Item] = []
     no_label = 0
     # A form counts only when one of its fields has a label to judge: buttons
@@ -88,7 +102,9 @@ def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
     judged = {
         c.form
         for c in lp.components
-        if not c.button and not c.readonly and (any(_field_label(c)) or c.icon_buttons)
+        if not c.button
+        and not c.readonly
+        and (any(_field_label(c)) or c.icon_buttons or _button_words(c, alone(c)))
     }
     for c in lp.components:
         if c.readonly:
@@ -102,6 +118,8 @@ def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
             near: list[str] = []
         else:
             label, near = _field_label(c)
+            if not label and not near:
+                near = _button_words(c, alone(c))
             # A field labelled only by an icon button beside it is an item:
             # TT p. 26 Note 2, a label "can be graphical" (1.5.0).
             if not label and not near and not c.icon_buttons:
@@ -195,7 +213,10 @@ J1_RUBRIC = (
     '("Menu", "Info", "The sky is blue", "Field 1"), the same label on several '
     "fields with nothing visible to tell them apart, a date or number field "
     "whose required format appears only in an error message. A placeholder is "
-    "not a label. A field whose only label is the picture on a button beside "
+    "not a label. A button's words beside a field say what to enter only when "
+    'they name it ("Search" beside a search box); words that say only what '
+    'the button does ("Submit", "Send", "OK") do not. A field whose only '
+    "label is the picture on a button beside "
     "it (icon_buttons_beside_it; look at image): descriptive when the picture "
     "is a symbol commonly understood for what to enter (a magnifier on a "
     "search box, an envelope on an email field, a calendar on a date field); "

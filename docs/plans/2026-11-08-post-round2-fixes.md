@@ -19,7 +19,7 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 6 | 9.A-9.C: other pages from another template are NEEDS REVIEW | Built (9.A, 9.B 1.1.0; 9.C 1.2.0) |
 | 7 | Frames: 5.x reads fields in frames | Not started; now built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) (one reader for shadow roots and frames) |
 | 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Built (PR #44): 5.A 1.5.0-1.6.0, 5.C 1.7.0-1.8.0, 19.A 1.4.0-1.5.0; judge eval runs 31 and 32 |
-| 8b | 5.B judges a field whose only label is an icon (follows fix 8) | Built (PR #44): 5.A 1.7.0 (row M2i), 5.B 1.5.0; judge eval run 33. Open: "Go" text buttons (below) |
+| 8b | 5.B judges a field whose only label is an icon (follows fix 8) | Built (PR #44): 5.A 1.7.0-1.8.0 (row M2i; text buttons too), 5.B 1.5.0-1.6.0; judge eval runs 33-34 |
 | 9b | Opening everything | Phase 1 built (`reveal.py`, guards RV and RC); phases 2 and 3 on the roadmap |
 | 12-14 | 4.F rubric and order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
 | 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
@@ -135,10 +135,14 @@ still FAIL has its own fixture.
   descriptive; an unrelated picture or one that names something else is
   not; anything unclear is unsure. Fixtures 5a/f27, f37 (an arrow: unclear), f38 (a logo outside the form: still M3), f39 (an envelope on a search box: not descriptive) (5.A and 5.B);
   judge eval run 33.
-- **Open:** 5.A still does not count a text button that only says what it
-  does ("Go", "Submit") as a label (5.A 1.1.0, judge eval run 12), while
-  an icon button with the same meaning (an arrow) now counts. Whether
-  "Go" should also be a label provided (and 5.B's to judge) is Abby's.
+- **Text buttons too (Abby, 2026-11-13; 5.A 1.8.0, 5.B 1.6.0):** a button
+  with words that is part of the field ("Go" in a search form), or the
+  button of a one-field form ("Subscribe" under a lone email box), is a
+  label provided as well; 5.A 1.1.0's rule that "Go" or "Subscribe" does
+  not label a field is gone, and 5.B judges their words (ACT cc0f0a
+  Failed Example 5: "Go" labels the field and fails 2.4.6). A form's
+  Continue button below several fields labels none of them (fixture f41).
+  Fixtures f40, f41; judge eval run 34.
 
 #### 9b. Test what interaction reveals, as a person does (principle 3)
 - **Phase 1 is built** (`reveal.py`; guards RV and RC). Phases 2 and 3

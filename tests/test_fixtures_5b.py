@@ -174,3 +174,38 @@ async def test_a_logo_near_the_box_is_not_its_label(settings, server, drafts):  
     )
     assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("FAIL", ["M3"])
     assert (got["5.B"].outcome.value, got["5.B"].rows[0]) == ("DNA", "A2")
+
+
+async def test_a_field_labelled_only_by_its_button_is_judged(settings, server, drafts):  # noqa: F811
+    """5.B 1.6.0 (Abby, 2026-11-13): in a form of one field, the button
+    beside it labels it (5.A 1.8.0); "Subscribe" says what the button does,
+    not what to enter (as ACT cc0f0a's "Go"). Before, the field was not an
+    item and only the button was judged."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f40-subscribe-button-only-cue.html",
+        ["5.A", "5.B"],
+        {"5.A": {"J1": {"choice": "labeled", "quote": "Subscribe"}}, "5.B": _not(1)},
+    )
+    assert got["5.A"].outcome.value == "PASS"
+    f = got["5.B"]
+    assert (f.outcome.value, instance_rows(f)) == ("FAIL", ["M2", "M3"]), f.rows
+
+
+async def test_a_forms_button_below_several_fields_labels_none(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """The nearest case: the third field of three, with only the form's
+    Continue button below it, has no label to judge (it is not an item)."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f41-continue-below-several-fields.html",
+        ["5.A", "5.B"],
+        {"5.A": {"J1": {"choice": "not_labeled"}}, "5.B": ALL},
+    )
+    assert got["5.A"].outcome.value == "FAIL"
+    f = got["5.B"]
+    # First name, Last name and the Continue button; not the third field.
+    assert (f.outcome.value, instance_rows(f)) == ("PASS", ["M1", "M1", "M1"]), f.rows

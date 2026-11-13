@@ -239,11 +239,16 @@ FOCUS_JS = (
   // The same filter as above: a menu button never counts.
   const srch = !!((form || el).closest('[role=search],search'));
   let icons = 0;
+  // Text buttons there too (a search box's "Go"): any button that is part of
+  // the field is a label provided, whatever it says (5.A 1.8.0; its words
+  // are 5.B's).
+  const attached = [];
   for (const o of els) {
     if (o === el || !isBtn(o) || !shown(o) || !inReg(o.getBoundingClientRect())) continue;
     if ((form && !form.contains(o)) || (o.form && o.form !== form) || isMenu(o)) continue;
-    if (txt(o) || o.value) continue;
-    if (srch || o.parentElement === el.parentElement) icons++;
+    if (!(srch || o.parentElement === el.parentElement)) continue;
+    const words = txt(o) || o.value || '';
+    if (words) { if (!attached.includes(words)) attached.push(words); } else icons++;
   }
   // Pictures near the field, not another field's: one may be its label
   // (J1's "graphic"), so a field with one is never failed for having no text.
@@ -323,7 +328,7 @@ FOCUS_JS = (
   return {
     focused: doc.activeElement === el,
     labels, nearby: near.map((x) => x.t), nearby_other: nbr.slice(0, 6),
-    nearby_own: near.filter((x) => !x.g).map((x) => x.t), nearby_buttons: btns.slice(0, 6), nearby_images: imgs, icon_buttons: icons,
+    nearby_own: near.filter((x) => !x.g).map((x) => x.t), nearby_buttons: btns.slice(0, 6), nearby_images: imgs, icon_buttons: icons, attached_buttons: attached.slice(0, 6),
     nearby_css: css.slice(0, 6).map((x) => x.t),
     placeholder_shown: !!el.getAttribute('placeholder') && !el.value,
     // Viewport coordinates: a viewport screenshot's clip is relative to it.
@@ -377,6 +382,8 @@ class Comp(BaseModel):
     nearby_images: int = 0  # pictures nearby that are not another field's
     # Buttons with no text in the field's input group or search form (5.A M3)
     icon_buttons: int = 0
+    # Text of buttons with words in the field's input group or search form
+    attached_buttons: list[str] = Field(default_factory=list)
     # Text drawn by CSS (::before / ::after) nearby: 5.C counts it as shown
     nearby_css: list[str] = Field(default_factory=list)
     placeholder_shown: bool = False
@@ -490,6 +497,7 @@ async def read_session(
         c.nearby_buttons = r.get("nearby_buttons") or []
         c.nearby_images = r.get("nearby_images") or 0
         c.icon_buttons = r.get("icon_buttons") or 0
+        c.attached_buttons = r.get("attached_buttons") or []
         c.nearby_css = r.get("nearby_css") or []
         if images:
             try:

@@ -119,9 +119,9 @@ merges `main` at its next pause.
    search). Each is one spec change (MINOR), one fixture, the suite.
    They turn a FAIL into PASS, the direction where a false PASS can
    creep in, so each comes with a fixture of the near case that must
-   still FAIL. Built in PR #44 (5.A 1.7.0, 5.B 1.5.0, 5.C 1.8.0,
-   19.A 1.5.0), with fix 8b: an icon button that is part of a field is
-   its label in 5.A, and 5.B judges what it shows.
+   still FAIL. Built in PR #44 (5.A 1.8.0, 5.B 1.6.0, 5.C 1.8.0,
+   19.A 1.5.0), with fix 8b: a button that is part of a field is its
+   label in 5.A, and 5.B judges what it shows or says.
 5. **Answerable "unsure",** largest first: fix 12 and 13 (4.F: the
    rubric and the order picture; the server judge's wrong FAILs on 5-6
    pages), 14 (9.C pairs repeated components), then 24-27 (4.A carousel
@@ -372,8 +372,8 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   that stays.
 - **5.B:** icon-only buttons are left out (pass L has no picture of
   buttons); a field whose only label is an icon button beside it is
-  judged by that picture (fix 8b). 5.A does not count a "Go" text button
-  as a label while it counts an arrow icon (a decision for Abby).
+  judged by that picture, and a field whose only cue is its own button's
+  words by those words (fix 8b).
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (both M4; only the wording differs). A jump forward past a
   field after Tab-away is not detected.

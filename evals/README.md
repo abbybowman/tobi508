@@ -99,6 +99,13 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Run 34, 2026-11-13: 5.A 1.8.0 and 5.B 1.6.0 (a button with words labels its field), their packets
+
+Abby, 2026-11-13: a button that is part of a field labels it whatever its words (TT p. 25 Note 3, "regardless of accuracy"), so 5.A 1.8.0 drops 1.1.0's rule that "Go", "Find" or "Subscribe" do not label a field (the rubric and question now say accuracy is another test's), and a text button in the field's input group or search form is row M2i like an icon. 5.B 1.6.0 judges the button's words as the field's near text. Rubric examples are on no fixture page (checked). 44 cases (5.A and 5.B), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **43/44 match**, no false PASS.
+- **The new cases:** "Subscribe" under a lone email box (F40) was answered labeled for 5.A and not descriptive for 5.B; the last of three fields with only the form's Continue button below (F41) not_labeled.
+- **The mismatch is safe:** the arrow (F37) unsure again (NEEDS REVIEW against FAIL), as in run 33.
+- **Unclear to it:** whether a page heading ("Find an office") over a lone box labels it (it answered not_labeled; F02 expects FAIL); a cropped picture over two rows of "Name:"/"Street:".
+
 ## Run 33, 2026-11-13: 5.B 1.5.0 (a field labelled only by an icon), its packets
 
 Fix 8b (Abby, 2026-11-13; TT p. 25 Note 3, "regardless of accuracy"): 5.A 1.7.0 counts an icon button that is part of a field as its label (row M2i, no question), so run 32's tree and arrow pages now pass 5.A; 5.B 1.5.0 judges the picture. The rubric's picture examples (a flower or a company logo on a search box, a telephone on an email field) are on no fixture page; the first preparation named the fixtures' own pairs and was redone. 29 cases (5.B J1), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **28/29 match**, no false PASS.

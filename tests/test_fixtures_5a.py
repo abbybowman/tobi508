@@ -35,11 +35,26 @@ def missing(q: str) -> dict:
 EXPECTED: dict[str, dict] = {
     "f01-visually-hidden-label": {
         "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
-        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
     },
     "f02-aria-label-only": {
         "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
-        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # 5.A 1.8.0 (Abby, 2026-11-13): a button that goes with the field labels
+    # it whatever its words (TT p. 25 Note 3); whether "Subscribe" says what
+    # to enter is 5.B's (FAIL, as ACT cc0f0a's "Go").
+    "f40-subscribe-button-only-cue": {
+        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Subscribe")},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5"]},  # no name at all
+        # 5.B 1.6.0: checked in test_fixtures_5b.py; the judge eval reads it.
+        "5.B": {"outcome": "FAIL"},
+    },
+    # The nearest case that must still FAIL: a form's Continue button below
+    # several fields labels none of them.
+    "f41-continue-below-several-fields": {
+        "5.A": {"outcome": "FAIL", "rows": ["M2", "M2", "M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M5", "M5"]},
     },
     "f03-date-format-outside-label": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
@@ -93,11 +108,8 @@ EXPECTED: dict[str, dict] = {
         "5.C": {"outcome": "PASS", "rows": ["M5", "M6", "M6"], "answers": COMPLETE},
     },
     "f09-icon-search-box": {
-        "5.A": {
-            "outcome": "PASS",
-            "rows": ["M4"],
-            "answers": {"J1": {"choice": "graphic", "reasons": "a magnifier icon"}},
-        },
+        # 5.A 1.8.0: its "Go" button is in the search form (M2i).
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
     "f10-floating-label-focus-tip": {
@@ -137,7 +149,8 @@ EXPECTED: dict[str, dict] = {
     },
     # The button beside the box labels it (G167): J1, not M3.
     "f16-search-button-beside-box": {
-        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Search")},
+        # 5.A 1.8.0: the button is in the search form (M2i).
+        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
     # Post-round 1 fix 10: a header's menu button beside a placeholder-only
