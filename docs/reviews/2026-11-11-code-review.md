@@ -124,7 +124,7 @@ below; "run" means I ran a page and got the outcome shown.
 | M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run · fixed (part B) |
 | M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
-| H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
+| H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run · fixed (step 6b) |
 | K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script. **Fixed** |
 | A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read. **Fixed** |
@@ -794,6 +794,12 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). Fields labelled "Имя пользователя" and
   "必須の住所を入力してください" with `aria-label="f1"` and `"x1"`:
   both on row M5 (pass), not asked.
+- **Fixed (H-02):** commit "5.C: words in any script; visible text with no
+  word never matches (H-02)", specs 5.C 1.9.0 and 5.A 1.9.0 (the same
+  `words`; 5.A's M2o no longer reads non-Latin text beside an option as no
+  text, which was a wrong FAIL, now the question is asked). Fixtures
+  `5a/f42` (not announced: FAIL after J1) and `5a/f43` (announced in
+  full: still PASS, M5).
 
 ### What the caller passes in
 
