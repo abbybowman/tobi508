@@ -22,12 +22,30 @@ agent the judgment questions. Clear failures surface early, and certified
 testers can spend their time on the cases that need a person.
 
 **What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT
-test, with plain-language explanations, evidence, and a pre-SCRT file a
-Trusted Tester can review in DHS's SCRT.
+test, with plain-language explanations, evidence, and a pre-SCRT file: the
+same rows as DHS's SCRT report, plus where each result came from and
+which rows need a person. DHS's SCRT does not open it (by design: it is
+not a Trusted Tester's record); [demo/prescrt-viewer/](demo/prescrt-viewer/)
+shows one beside an SCRT file.
 - **Outcomes** come only from the rules specs in [specs/rules/](specs/rules/),
   one per TT test, checked against the TT 5.1.3 PDF.
 - **When the tool can't decide,** it says NEEDS REVIEW. It never guesses
   PASS.
+
+## How it works
+
+![A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once, and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric: a sure answer goes back to the rule, an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into their own SCRT record. The results and a link to the report go back to the agent, which explains them.](docs/hackathon/diagrams/tobi-flow.png)
+
+The diagram is the planned flow
+([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
+
+- **Built:** recording and replay, the rules specs and checks, the
+  pre-SCRT file, and the server judge.
+- **Off by default:** the server judge (`JUDGE_BACKEND=api`, one question
+  type at a time in `JUDGE_TYPES`). Until a type is switched on, its
+  open questions go to the calling agent, by the same rubric.
+- **Not built yet:** the hosted service, the page where a signed-in
+  person answers, and the export to a Trusted Tester's SCRT record.
 
 ## TT tests in scope
 
@@ -67,7 +85,9 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 The status above is what real pages showed. A code review on 2026-11-11
 then wrote small test pages aimed at each test's blind spots and found
 these wrong PASS and Does Not Apply results. Each was reproduced by a
-run unless marked "(read)". Until they are fixed, read a PASS or a Does
+run unless marked "(read)", and each row was run again on 2026-11-13,
+after the fixes of 2026-11-12 and 13: three cases were fixed and left
+the table, and the rest still give the outcome shown. Until they are fixed, read a PASS or a Does
 Not Apply as "in what the tool looked at". The full list, with the page
 for each, is [the code review](docs/reviews/2026-11-11-code-review.md);
 the fixes are planned in
@@ -76,16 +96,16 @@ A fix removes its line here in the same commit.
 
 | Test | Gives | On a page with |
 | --- | --- | --- |
-| 2.A | Does Not Apply | audio that starts after about 3.5 s |
+| 2.A | Does Not Apply | audio that a script starts after about 4.5 s (audio that starts by itself at 3.5 s is now found) |
 | 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; motion that starts after 6.5 s |
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
 | 4.A | PASS | a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
-| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu on a page that keeps changing |
+| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`) |
 | 5.C | PASS | a field whose visible label is not in Latin letters |
-| 5.D, 5.F | PASS | form fields after a keyboard trap |
+| 5.F | PASS | form fields after a keyboard trap (5.D now says NEEDS REVIEW) |
 | 5.F, 5.G | Does Not Apply | a form whose button is `type="button"`; an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |
 | 5.H | PASS | a multi-step form whose next step says "required" (read) |
@@ -211,8 +231,8 @@ gets out. The agent answers from the page text:
 
 4.C is now FAIL: "Keyboard focus gets trapped on this page…".
 
-**Example output** from a real run (NASA's accounts receivable form, all 17
-tests, 10 questions answered):
+**Example output** from a real run on 2026-11-04 (NASA's accounts
+receivable form, the 17 tests built then, 10 questions answered):
 - [report.json](evals/judging/round1-answers/results/arm-a/runs/20261104T200634Z-d02d2f/report.json):
   findings, questions and answers, and every version used;
 - [pre-scrt.json](evals/judging/round1-answers/results/arm-a/runs/20261104T200634Z-d02d2f/pre-scrt.json):
@@ -230,6 +250,9 @@ Save the report in your repository: a run's files expire after 24 hours.
   its reads, are reused by later calls of the same server session;
 - `BROWSER_CHANNEL` and `HEADLESS`;
 - `DEV_MODE` (allows `file://` pages);
+- `JUDGE_BACKEND` (default `client`: the calling agent answers open
+  questions; `api`: the server's own model answers the question types
+  in `JUDGE_TYPES`), with `JUDGE_ROUTE` and `JUDGE_MODEL`;
 - `UPSTREAM_PROXY`, for containers that re-sign TLS.
 
 **Safety:**
@@ -267,3 +290,8 @@ Third-party software (see [NOTICE](NOTICE)):
   imply SSA endorsement.
 - **jQuery 3.7.1**, Copyright OpenJS Foundation and other contributors, MIT
   ([third_party/jquery/LICENSE.txt](third_party/jquery/LICENSE.txt)).
+- **SCRT 5.2.0**, Copyright Department of Homeland Security, MIT
+  ([third_party/scrt/LICENSE](third_party/scrt/LICENSE)). Its test rows
+  are read as a template; its pages are used in tests, and
+  [demo/prescrt-viewer/](demo/prescrt-viewer/) reuses its stylesheet.
+  Use does not imply DHS endorsement.
