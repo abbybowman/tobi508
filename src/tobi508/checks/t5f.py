@@ -126,7 +126,7 @@ READ_JS = (
     const cs = getComputedStyle(el);
     const d = ['aria-describedby', 'aria-errormessage'].flatMap((a) => (el.getAttribute(a) || '').split(/\\s+/))
       .filter(Boolean).map((id) => (doc.getElementById(id) || {}).textContent || '').join(' ').replace(/\\s+/g, ' ').trim();
-    return { ai: el.getAttribute('aria-invalid') === 'true',
+    return { shown: vis(el), ai: el.getAttribute('aria-invalid') === 'true',
              valid: el.validity ? el.validity.valid : null,
              vmsg: el.validationMessage || '',
              look: [cs.borderTopColor, cs.borderTopStyle, cs.backgroundColor, cs.outlineColor, cs.outlineStyle].join(' '),

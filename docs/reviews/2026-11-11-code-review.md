@@ -122,7 +122,7 @@ below; "run" means I ran a page and got the outcome shown.
 | E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
 | C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run · fixed (step 6b) |
 | M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run · fixed (part B) |
-| M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
+| M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read · fixed (step 6b) |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
 | H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run · fixed (step 6b) |
 | K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
@@ -757,6 +757,13 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (read): the rule is as described. The reviewer
   ran a two-step page, saw `checked: true` in the evidence, and got
   PASS from `evaluate` on the saved state.
+- **Fixed (M-08):** commit "5.H: a form is still there only if the same fields
+  are shown (M-08)", spec 5.H 1.4.0. Pass E's field read now says whether
+  each field is shown; M1 needs one shown and none lost. Fixture `5h/f08`
+  is the review's wizard with step 1 hidden but kept and step 2 added by
+  script (PASS on M1 before the fix; FAIL after J2 = none). The review's
+  own page has step 2 hidden at load, so guard CN already made it NEEDS
+  REVIEW. The nearest case that must still PASS is `5h/f01`.
 
 #### M-03 English word lists decide DOES NOT APPLY in 5.H and PASS in 4.B
 

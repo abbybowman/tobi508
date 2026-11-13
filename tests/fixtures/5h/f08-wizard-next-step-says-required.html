@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Checkout: step 1 of 2</title></head><body><main><h1>Checkout</h1>
+<form id="f"><div id="s1"><p>Step 1 of 2: your details</p><label>Name <input name="n"></label><label>Email <input name="e"></label>
+<button type="submit">Next</button></div></form>
+<script>
+// Step 1 is hidden, not removed; step 2 is built when step 1 is sent, so no
+// hidden field of step 2 is in the page at load.
+document.getElementById('f').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var f = document.getElementById('f');
+  document.getElementById('s1').hidden = true;
+  if (!document.getElementById('s2')) {
+    var d = document.createElement('div');
+    d.id = 's2';
+    d.innerHTML = '<p>Step 2 of 2: payment</p><label>Card <input name="c"></label><p>Card number is required to pay.</p><button type="submit">Pay now</button>';
+    f.appendChild(d);
+  }
+});
+</script>
+</main></body></html>
