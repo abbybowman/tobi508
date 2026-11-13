@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><title>Grid: the framed part</title></head><body>
+<nav aria-label="Site"><a href="/grid/about.html">About</a> <a href="/grid/services.html">Services</a> <a href="/grid/contact.html">Contact</a></nav>
+<form onsubmit="return false"><label for="n">Name</label> <input id="n" name="n">
+<label for="e">Email</label> <input id="e" type="email" name="e">
+<button type="submit">Send</button></form>
+<p>Press and hold the Space bar for 3 seconds to open the details.</p>
+<p><span id="more" style="display:inline-block;padding:8px;border:1px solid">Show details</span> <span id="out"></span></p>
+<audio src="/tone.wav" autoplay loop></audio>
+<video src="/3a/media/video-grey.webm" width="120" height="80" autoplay muted loop></video>
+<script>
+document.getElementById('more').addEventListener('click', () => { document.getElementById('out').textContent = 'Details shown: 42'; });
+</script>
+</body></html>

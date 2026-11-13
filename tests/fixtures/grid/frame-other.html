@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><title>Grid: frame from another site</title></head><body>
+<h1>Services</h1>
+<p>Everything below this line is in a frame from another site (frame-inner.html; the fixture server answers to localhost as well as 127.0.0.1, which Chrome counts as two sites).</p>
+<div id="slot"></div>
+<script>
+var f = document.createElement('iframe');
+f.title = 'Services';
+f.width = 600; f.height = 260;
+f.src = location.href.replace('127.0.0.1', 'localhost').replace('frame-other', 'frame-inner');
+document.getElementById('slot').appendChild(f);
+</script>
+</body></html>
