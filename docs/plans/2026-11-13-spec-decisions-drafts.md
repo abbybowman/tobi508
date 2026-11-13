@@ -60,14 +60,42 @@ the byte flag only (it collects before the site read today, so its order
 changes). Spec: A2 in 9.A, 9.B, 9.C, 19.A, a MINOR each (9.A 1.4.0, 9.B
 1.4.0, 9.C 1.6.0, 19.A 1.6.0, or the next free numbers when I merge).
 
-**What I have not done and would do before building.** Measure the
-share on the fixtures that must stay apart: `a1-home` against
-`a2-benefits` (same template, different main) and round 2's frozen page
-pairs, to show 0.9 sits well above any real pair. If a real pair lands
-near it I would raise the number, not lower it. Fixture: the review's
-`site-a.html` and `site-a.html?x=1` with a visible timestamp (must be
-NEEDS REVIEW), and `a1-home` against `a2-benefits` on the same address
-with different queries (must still compare).
+**Measurement (2026-11-13, Abby asked for it).** The share is |A ∩ B| /
+|A ∪ B| over the units' text keys, as `site.read_page` reads them. Live
+pages loaded in Chromium, waiting for the page's scripts, search by each
+site's own search field (`svs.gsfc.nasa.gov/search?search=...`,
+`www.nasa.gov/?search=...`):
+
+| Pair | Share |
+| --- | --- |
+| svs: hubble / glacier / solar eclipse, each pair | 0.19, 0.20, 0.21 |
+| svs: hubble against hubble with `&x=1` (same page) | 1.00 |
+| svs: hubble against the home page | 0.05 |
+| www: hubble / volcano / artemis moon crew, each pair | 0.41, 0.44, 0.42 |
+| www: hubble against hubble with `&x=1` (same page) | 1.00 |
+| www: search against `/missions/`, `/about/`; `/missions/` against `/about/` | 0.16, 0.18, 0.13 |
+
+Whole-page and main-only shares agree. The highest pair that is not a
+copy is 0.44; every copy is 1.00. So a bar anywhere from about 0.6 to
+0.95 separates them on these pages; **0.9 stays**, as Abby proposed.
+Two things the run showed that the draft must say:
+
+- **What the tool's own recording sees is different.** The search
+  results load by script, and a recording holds the page before them, so
+  the recorded read of any search term is the empty shell: svs gave 1.00
+  for different terms, and www's recorded documents are byte-for-byte the
+  same for different terms (today's A2 already fires there). So two
+  recorded search pages are near copies and NEEDS REVIEW. That is
+  right: the tool cannot see what differs.
+- **The case K-01 exists for is real.** svs served byte-different shells
+  for the same page under two query strings (the byte rule did not catch
+  it; the unit share, 1.00, does).
+
+Scripts are in the session scratchpad only (live loads are a
+measurement, not a test; no test fetches the network). Fixtures:
+the review's `site-a.html` and `site-a.html?x=1` with a visible
+timestamp (must be NEEDS REVIEW), and `a1-home` against `a2-benefits` on
+the same address with different queries (must still compare).
 
 **Direction.** PASS (and FAIL, 19.A) → NEEDS REVIEW. A real "page 2" of
 a listing (`?page=2`, nearly the same chrome and different items) could
@@ -75,8 +103,7 @@ also be caught; that is a NEEDS REVIEW on a page the caller chose, and I
 think the cost is right. Say if you want the address test to be only
 "the same path" with no unit test (simpler, catches more).
 
-**Question for you:** is this the rule? (Yes / change the 0.9 / address
-only.)
+**Decided (Abby, 2026-11-13):** 0.9, applies to 9.A-9.C and 19.A only.
 
 ---
 
@@ -112,7 +139,7 @@ indicator is **NEEDS REVIEW, never DOES NOT APPLY**, with the sentence
 please check how the form reports errors." Same for 5.G (A1 reads 5.F's
 section 1).
 
-⚠ **Direction.** DNA → NEEDS REVIEW or FAIL in most pages. DNA → PASS
+**Decided (Abby, 2026-11-13): DNA → PASS is fine when appropriate.** Direction: DNA → NEEDS REVIEW or FAIL in most pages. DNA → PASS
 only if the pressed control is a `type=button` that really runs the
 page's check and the error that appears is identified and described in
 text (rows M2/M6 with J1 "described", as for any form). Pressing a
@@ -120,7 +147,7 @@ control that is not the send control and showing nothing gives
 NEEDS REVIEW (the A3 change), never PASS or DNA. If you do not want any
 DNA → PASS, I would keep the new buttons for pressing but make a form
 that has no submit-type button NEEDS REVIEW at best (an extra clause in
-G3), which is your option B with the pressing kept. Tell me which.
+G3), which is your option B with the pressing kept. Not needed: Abby chose the first.
 
 **Fixtures.** `5f/f26`: `type=button` + `validate()` with an inline error
 (PASS with J1 described, or NEEDS REVIEW under the stricter clause);
@@ -265,8 +292,7 @@ PASS → DOES NOT APPLY when the unnamed pair is the only pair. A DNA says
 "no such components", which is not true of the page: there are
 components, and they were not compared. **I suggest NEEDS REVIEW for
 that case only** ("the only controls shared between the pages have no
-name, so nothing could be compared"), still never PASS. Tell me B as
-written (DNA) or B with this NEEDS REVIEW.
+name, so nothing could be compared"), still never PASS. **Decided (Abby, 2026-11-13): B with this NEEDS REVIEW.**
 
 **Fixtures.** `9x/` the review's `un-a` and `un-b` (the pair alone:
 NEEDS REVIEW or DNA by your answer); the same pages with one named pair
