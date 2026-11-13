@@ -21,7 +21,8 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Not started |
 | 9b | Opening everything | Phase 1 built (`reveal.py`, guards RV and RC); phases 2 and 3 on the roadmap |
 | 12 | 4.F J1: different from the visual order is not "does not preserve" | Built (4.F 1.6.0: rubric; fixtures F20-F22; judge eval 14/14 twice, was 12/14 and 11/14) |
-| 13-14 | 4.F order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
+| 13 | 4.F's order picture draws stops nobody can see | Built (4.F 1.7.0: a badge only for a stop with a visible box, the rest listed as `drawn: false`; fixture F23; judge eval 15/15 three times) |
+| 14 | 9.C pairing | Not started; ApiJudge stays off for 9.C until it is built |
 | 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
 | 18-20, 22, 23 | Harness and process notes | Open, low priority |
 | 21 | A person's answer only from TOBI's own UI | First step built (2026-11-12, code review A-05): every answer through MCP is recorded as the calling agent's; the page is not started ([pivot plan](2026-11-07-server-judge-pivot.md)); part G of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) adds what the review page must show |

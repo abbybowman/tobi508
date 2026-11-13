@@ -56,6 +56,14 @@ EXPECTED: dict[str, dict] = {
         "choice": "preserves",
         "signals": {"S3"},
     },
+    # Fix 13 (4.F 1.7.0): a skip link shown only on focus, a one-pixel
+    # screen-reader link and two independent columns. The first two have no
+    # visible box on a fresh load, so image A draws no badge for them.
+    "f23-stops-with-no-visible-box": {
+        "outcome": "PASS",
+        "choice": "preserves",
+        "signals": {"S3"},
+    },
     "f22-steps-out-of-sequence": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",
@@ -124,6 +132,33 @@ def _cropped(settings, got) -> None:
     assert c.height * 3 < f.height, (c.size, f.size)
 
 
+def _undrawn(settings, got) -> None:
+    """1.7.0: a stop with no visible box gets no badge; the order list says
+    so in text (round 2: C saw "empty boxes 28, 30 and 32")."""
+    from PIL import Image
+
+    [q] = got["asked"]
+    off = {o["name"]: o for o in q.input["order"] if o.get("drawn") is False}
+    assert set(off) == {"Skip to bulletins", "Accessibility statement"}, q.input
+    assert all(o["page_box"] is None for o in off.values())
+    assert all(o["drawn"] if "drawn" in o else True for o in q.input["order"][2:])
+    assert "drawn: false" in q.question and "drawn: false" in q.rubric
+    # No red box or badge where the hidden skip link would have been (the
+    # off-screen box, then the page's top-left corner when focused).
+    rid = got["run_id"]
+    full = q.evidence_paths[-1]
+    img = Image.open(settings.runs_dir / rid / full.split(rid + "/", 1)[1]).convert(
+        "RGB"
+    )
+    red = [
+        (x, y)
+        for x in range(0, 80)
+        for y in range(0, 36)
+        if (lambda p: p[0] > 180 and p[1] < 40 and p[2] < 40)(img.getpixel((x, y)))
+    ]
+    assert not red, "a badge was drawn at the hidden skip link's focused place"
+
+
 @pytest.mark.parametrize("name", sorted(EXPECTED))
 async def test_fixture(name, settings, server):
     e = EXPECTED[name]
@@ -134,6 +169,8 @@ async def test_fixture(name, settings, server):
     assert f.outcome.value == e["outcome"], (f.rows, f.summary)
     if name == "f19-long-report-form-interleaved":
         _cropped(settings, got)
+    if name == "f23-stops-with-no-visible-box":
+        _undrawn(settings, got)
     if "rows" in e:
         assert [r.split("[")[0] for r in instance_rows(f)] == e["rows"], f.rows
     if "rows_include" in e:

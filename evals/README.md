@@ -106,6 +106,10 @@ The server judge's own route (`answer --backend api`, `claude -p`, Sonnet), two 
 **Fix 12, 4.F 1.6.0 (rubric: meaning and operation, not the drawn order).** Cases: the 11 existing plus F20 (tiles reached right to left), F21 (a tile's buttons in another order than drawn) and F22 (numbered steps out of sequence: must still FAIL), 14 cases.
 - **Before (rubric 1.5.0):** 12/14 and 11/14. F20 answered does_not_preserve (FAIL, key PASS) in both repeats; F21 and F05 unsure in some.
 - **After (1.6.0):** **14/14 and 14/14.** F22 is still does_not_preserve; no wrong PASS; the rubric's examples are on no fixture page's words except main content before side navigation, which is also F05's shape (Understanding 2.4.3 states it that way).
+**Fix 13, 4.F 1.7.0 (the order picture draws only stops with a visible box).** New case F23 (a skip link shown only on focus, a one-pixel screen-reader link, two independent columns); 15 cases.
+- **Before (1.6.0 code):** F23, F04 and F05: 3/3 in both repeats, but the picture drew badges 1 and 2 on empty boxes (the two hidden links). The answers did not change: these hidden links were not what the judge hesitated over, so this run shows the picture, not an answer, was wrong.
+- **First after run:** 14/15 and 15/15; F16 (a site overlay that is not the menu) went unsure in 3 of 6 runs, though its input was identical. The "drawn: false" sentences were in every question. Added to the question and rubric only when a stop is undrawn, F16 was **15/15 in each of three repeats**. Lesson: a sentence about a case that is not on the page makes the agent less sure (same as "A rubric's only example becomes the rule").
+- **After:** **15/15, 15/15 and 15/15**, no wrong PASS, nothing left open.
 - **Limit:** the judge eval cannot show how an agent that never opens the order picture answers (see "The judge eval hands images over as files" in docs/solutions/judge-eval.md).
 
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
