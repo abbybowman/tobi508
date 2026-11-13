@@ -33,6 +33,15 @@ EXPECTED: dict[str, dict] = {
         "choice": {"J1": {"choice": "alternative", "element": 1}},
     },
     "f07-same-address-link": {"outcome": "PASS", "rows": ["M3"]},
+    # Fix 24 (4.A 1.7.0): an arrow that scrolls a container whose items the
+    # Tab walk reaches is decided mechanically. The nearest case that must
+    # still ask: the same arrow over items with no link or control.
+    "f20-scroll-arrow-items-have-links": {"outcome": "PASS", "rows": ["M3s"]},
+    "f21-scroll-arrow-items-have-no-links": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
     # Native date input parts are native (1.2.0): only the custom picker is
     # executed. NEEDS REVIEW since 1.5.0: the picker opens a panel with
     # controls, which this test does not walk yet (guard RC, fix 9b phase 2).
@@ -232,3 +241,17 @@ async def test_no_stops_fails_without_a_question(settings, act_server):
     f = got["finding"]
     assert (f.outcome.value, instance_rows(f)) == ("FAIL", ["M4n"]), f.rationale
     assert "did not get through the whole page" not in f.summary
+
+
+def test_scroll_arrow_is_covered_only_when_every_revealed_item_is_reached():
+    """4.A 1.7.0 (fix 24): row M3s needs at least one revealed item and every
+    one of them reached; a partly reached scroller still asks J1."""
+    from tobi508.checks.t4a import Inst4A, _scroll_covered
+
+    def inst(scroll):
+        return Inst4A(id="k1", kind="K", target={}, scroll=scroll)
+
+    assert _scroll_covered(inst({"container": "ul", "items": 3, "reached": 3}))
+    assert not _scroll_covered(inst({"container": "ul", "items": 3, "reached": 2}))
+    assert not _scroll_covered(inst({"container": "ul", "items": 0, "reached": 0}))
+    assert not _scroll_covered(inst(None))

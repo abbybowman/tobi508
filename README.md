@@ -44,7 +44,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 Accurate on real pages |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 Accurate on real pages |
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.1.0](specs/rules/3a-flashing.md) | Videos that do not play on load are read from their files (checked on test pages and NASA 14592); at most 3 videos and the first 10 s of each; a video it cannot read is left for a person |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.6.0](specs/rules/4a-keyboard-access.md) | A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.7.0](specs/rules/4a-keyboard-access.md) | A scroll arrow whose items Tab reaches is passed by a check, not asked about (a carousel moved by a transform instead of by scrolling is still asked); A video that starts only on a mouse click is a mouse-only control (checked on test pages, not yet re-scored on NASA's CILab); often undecided inside embedded frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 Sure and accurate |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ Does not yet Tab through a form's error states (fix planned); a trap in code the recording lacks is NEEDS REVIEW |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.5.0](specs/rules/4d-focus-visible.md) | ⚠️ Mostly accurate; one FAIL the tester's key passes is being rechecked |

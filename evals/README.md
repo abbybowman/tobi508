@@ -117,6 +117,11 @@ The server judge's own route (`answer --backend api`, `claude -p`, Sonnet), two 
 - **After (1.4.0):** **2/2 in each of three repeats**; the body-link pair asks no question (the rule decides: PASS, nothing to compare), so it leaves the eval. Renamed (header and search worded differently: FAIL, the nearest case that must still FAIL) and paging match.
 - **Is 9.C's eval clean?** Yes, on the 2 cases that now ask (6 answers, all as expected, none unsure). It is thin: only the two cases ask a question, and the case that showed the false FAIL no longer asks one, so the change is shown by the rule's own test (`test_9c_pairs_by_destination_only_inside_a_repeated_block`) and by "before" above, not by a judge answering it.
 
+**Fix 24, 4.A 1.7.0 (a scroll arrow whose items Tab reaches).** New cases F20 (an arrow over six cards that each hold a link: expected PASS) and F21 (the same arrow over six text-only cards: must still FAIL); 12 cases.
+- **Before (1.6.0 code):** 10/12, 12/12, 12/12. F20 and F21 were answered correctly every time (alternative, no_alternative), so on this tidy page the judge needed no help; the two misses in repeat 1 are the baseline's 4.A f01 and f04 (unsure, expected FAIL). Round 2's real carousels (21 unsure answers) are not in the eval.
+- **After (1.7.0):** F20 asks no question (row M3s), so 11 cases ask; **10/11, 9/11, 11/11**. The misses are unsure on f01-click-only-text and inject-f01, which expect FAIL: the same pages that were unsure before, no wrong PASS. They are the case fix 25 is about ("See rates" goes to `#rates`, which does not say it is the same job).
+- **What this does not show:** that a real carousel is decided; its arrows are often moved by a transform, which the check does not see. Re-score on round 2's pages in step 6.
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.
