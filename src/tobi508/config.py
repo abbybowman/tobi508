@@ -123,6 +123,16 @@ class Settings(BaseSettings):
     # settle_quiet_ms: the settle rule's DOM-quiet window after each key press.
     settle_quiet_ms: int = Field(default=150, ge=50, le=1000)
     record_scroll_passes: int = Field(default=1, ge=0, le=50)
+    # Scroll down one window at a time before the passes above, so images
+    # and content that load when they come into view (loading="lazy",
+    # IntersectionObserver) are recorded; a jump to the bottom skips them
+    # (roadmap step 6c: round 2's 14194, 14592 and 4914 lacked 16 lazy
+    # images). The freeze turns it on (evals/agent/freeze.py).
+    record_scroll_steps: bool = False
+    # The media store keeps the file each player chose (currentSrc) before
+    # any alternative <source> (the freeze: those are the files a replay
+    # plays; the alternatives can be gigabytes of ProRes).
+    media_chosen_first: bool = False
     # The media store (2.A-2.D plan Q9): media saved in full while recording
     # so its byte ranges replay. None lifts the cap (a run with
     # no_time_limit, the user's choice when a file was over it).

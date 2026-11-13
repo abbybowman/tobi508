@@ -92,17 +92,23 @@ Round folder `evals/judging/<round>/`, for example `evals/judging/round1/`.
    BROWSER_CHANNEL=chromium HEADLESS=true uv run python -m evals.agent.freeze evals/judging/<round>
    ```
 
-   It records the tested pages only, into `frozen/` (an index, the
-   recordings and `freeze.json`). Check that every page says `frozen`, and
+   It records the tested pages and, since roadmap step 6c, each page's
+   19.A site search (plain and in quotation marks, the form and term 19.A
+   would use), into `frozen/` (an index, the recordings and
+   `freeze.json`). It scrolls each page down one window at a time so
+   images that load when they come into view are recorded, and stores the
+   video or audio file each player chose in full (up to 500 MB a page). Check that every page says `frozen`, and
    compare each frozen page's footer timestamp with your own testing. It
    prints each page's status, title and first heading and how many of its
    CSS, font and script requests failed, and stops with an error on a page
    that is not a 2xx or lost most of them (a typo in `pages.txt`, a
    container that cannot load the site's files); `--accept-suspect` keeps
    such a page anyway.
-   During the arms, the tested pages come only from these copies; other
-   pages of the same site (site maps, search results) load live for both
-   arms, so run the two arms close together.
+   During the arms, the tested pages and their searches come only from
+   these copies; other pages of the same site (site maps, any other link)
+   load live for both arms, so run the two arms close together. A rerun in
+   "replay" mode needs nothing live for the tested pages, other pages
+   that are themselves in the round, and 19.A's searches.
 3. **Agent A, then Agent B:**
 
    ```bash
