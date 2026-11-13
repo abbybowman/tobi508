@@ -99,6 +99,33 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Run 34, 2026-11-13: 5.A 1.8.0 and 5.B 1.6.0 (a button with words labels its field), their packets
+
+Abby, 2026-11-13: a button that is part of a field labels it whatever its words (TT p. 25 Note 3, "regardless of accuracy"), so 5.A 1.8.0 drops 1.1.0's rule that "Go", "Find" or "Subscribe" do not label a field (the rubric and question now say accuracy is another test's), and a text button in the field's input group or search form is row M2i like an icon. 5.B 1.6.0 judges the button's words as the field's near text. Rubric examples are on no fixture page (checked). 44 cases (5.A and 5.B), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **43/44 match**, no false PASS.
+- **The new cases:** "Subscribe" under a lone email box (F40) was answered labeled for 5.A and not descriptive for 5.B; the last of three fields with only the form's Continue button below (F41) not_labeled.
+- **The mismatch is safe:** the arrow (F37) unsure again (NEEDS REVIEW against FAIL), as in run 33.
+- **Unclear to it:** whether a page heading ("Find an office") over a lone box labels it (it answered not_labeled; F02 expects FAIL); a cropped picture over two rows of "Name:"/"Street:".
+
+## Run 33, 2026-11-13: 5.B 1.5.0 (a field labelled only by an icon), its packets
+
+Fix 8b (Abby, 2026-11-13; TT p. 25 Note 3, "regardless of accuracy"): 5.A 1.7.0 counts an icon button that is part of a field as its label (row M2i, no question), so run 32's tree and arrow pages now pass 5.A; 5.B 1.5.0 judges the picture. The rubric's picture examples (a flower or a company logo on a search box, a telephone on an email field) are on no fixture page; the first preparation named the fixtures' own pairs and was redone. 29 cases (5.B J1), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **28/29 match**, no false PASS.
+- **The icon cases:** the magnifier (F27) all_descriptive; the tree (F36) and the envelope on a search box (F39) some_not_descriptive.
+- **The mismatch is safe:** the arrow (F37) was answered unsure ("whether a right-arrow counts as a commonly understood search symbol"), NEEDS REVIEW against FAIL, as Abby wants for a picture that does not settle it.
+- **Injection pages:** it named the text in two pages that told it how to answer, and ignored it.
+- **Unclear to it:** which numbers to name when the same labels repeat (it listed all four, which matches).
+
+## Run 32, 2026-11-13: 5.A 1.6.0, fix 8's icon cases, its packets
+
+Fix 8 sends a placeholder-only field with an icon button in its group to J1 (the graphic case). Run 31 had only the magnifier page; this run adds two pages where the icon must not count: a tree icon (F36) and an arrow, which says only what the button does (F37). 18 cases, 21 questions (all 5.A J1), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **18/18 match**, no false PASS, no "unsure". Leak grep clean (also for "tree" and "arrow").
+- **The icon cases:** the magnifier (F27) was answered graphic; the tree and the arrow not_labeled, each reasoned from the rubric (a tree does not plainly label a search box; an arrow is a "Go"-type control).
+- **Unclear to it:** whether the tree is not_labeled or unsure (either is safe: FAIL or NEEDS REVIEW); quotes are asked only for labeled.
+
+## Run 31, 2026-11-13: 5.A 1.6.0 and 5.C 1.7.0 (an option's own row; a heading directly over a set), their packets
+
+Post-round 2 fix 9c narrows an option's visible text to its own row (result cards beside a filter no longer reach it) and fails a heading directly over a set without a question (M3h). 27 cases, 35 questions (5.A and 5.C), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **27/27 match**, no false PASS, no "unsure" answer. Leak grep clean.
+- **The new cases:** the two filter sets beside result cards (F33) were asked once per set, each box's visible text its own label only, and answered complete; the plain-text question over wrapped-label radios (F30) was answered missing; the heading with "Choose any." between it and the set (F31) was answered missing, quoting "Choose any." (it read the heading as a section title), which reaches M7 (FAIL) as expected.
+- **Unclear to it:** whether a section heading ("Newsletter", "Find an office") labels a field beside a "Subscribe" or "Find" button (it answered not_labeled, which matches); whether a page title above a set is its question when no `heading_over_them` is given (it answered complete, which matches); a tight crop around a field with nothing near it (5.A, answered not_labeled).
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.

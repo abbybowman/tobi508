@@ -347,7 +347,7 @@ for the Nov 20 demo and what comes after is in
 | 2 | `rules-principle3` | Fixes 1-6, 9b phase 1, the chunk store and guard GU | Built, except fix 3 (error values) |
 | 3 | `frames` | Fix 7: 5.x reads fields in frames; the per-test frame leftovers | Not started; built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) |
 | 4 | `questions-for-judges` | Fixes 12-14 and 24-27; then the gate for 4.F and 9.C | Not started |
-| 5 | `rules-false-fail` | Fixes 8-11 and 9c | Not started |
+| 5 | `rules-false-fail` | Fixes 8-11 and 9c | Built (PR #44), with fix 8b (5.B, icon labels) |
 | 6 | `human-answers` | Close MCP's `decided_by: "human"`; roles; WebAuthn on submit; the evidence page (option A) | Not started; part G of that plan adds the whole page beside each crop, the list of what was not looked at, and a sample of PASS and DOES NOT APPLY |
 | 7 | `vast-deploy` | Store (run index, answers by content hash), retention and disk check, Keycloak, one page end to end | Not started (sign-in built against a stand-in: [plan](2026-11-06-hosted-auth.md)); the store now comes before bundle 6 and carries the thin MCP surface (part H of that plan) |
 | 8 | `scorer-round3` | Fixes 15-17 and 29 | 29 built; 17 partly |

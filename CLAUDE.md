@@ -120,9 +120,11 @@ by TT test ID. Package: `tobi508`.
   redirects, each its own HAR. Never follow the tested page's links.
 - **19.A's live site search** is the only live request a page's content
   shapes. It runs only when the caller's pages show fewer than two kinds of
-  way; one per run; a GET form whose action passes the allowlist and is on
-  the tested page's host (every redirect hop checked); the term is the
-  tested page's own heading; recorded as its own HAR.
+  way; at most two per run (the heading, then, only when that finds
+  nothing, the heading in quotation marks; fix 11, 2026-11-08); a GET form
+  whose action passes the allowlist and is on the tested page's host
+  (every redirect hop checked); the term is the tested page's own heading;
+  each recorded as its own HAR.
 - **19.A's suggested pages** (links on the caller's pages to a site map,
   the home page or a breadcrumb, on the tested page's host; at most 5) go
   in a follow-up call, which the server makes itself when the agent calls

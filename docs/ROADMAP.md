@@ -67,7 +67,7 @@ step is one thread, started with its prompt in
 | 1 | Quick fixes for wrong PASS and DOES NOT APPLY, and CI | Sonnet | now | Plan part A and part I's CI step; PR #39 |
 | 2 | A count of what exists, and the guard that holds DOES NOT APPLY | Opus | now | Plan part B |
 | 3 | Server judge and gate fixes; sign-in ownership; a person's answer never through MCP | Opus | now | Review bundle 7 (B-01, B-02, L-02, L-03, G-02, B-04); A-01, S-05; fix 21's first step (A-05) |
-| 4 | The rules' false FAILs | Opus | now, or when a thread finishes | Fixes 8, 9c, 9, 10, 11; pivot bundle 5 |
+| 4 | The rules' false FAILs | Opus | done: PR #44 | Fixes 8, 8b, 9c, 9, 10, 11; pivot bundle 5 |
 | 5 | "Unsure" answers that are answerable | Sonnet | when a thread finishes | Fixes 12, 13, 14, then 24-27; pivot bundle 4 |
 | 6 | The check against round 2 | Opus | when 1 to 5 are merged (about Nov 17) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 7 | The pitch: one scored run at the submission commit, rehearsal, fallback video | Abby, with a Sonnet thread for the run | Nov 18-19 | [docs/hackathon/](hackathon/README.md) |
@@ -119,7 +119,9 @@ merges `main` at its next pause.
    search). Each is one spec change (MINOR), one fixture, the suite.
    They turn a FAIL into PASS, the direction where a false PASS can
    creep in, so each comes with a fixture of the near case that must
-   still FAIL.
+   still FAIL. Built in PR #44 (5.A 1.8.0, 5.B 1.6.0, 5.C 1.8.0,
+   19.A 1.5.0), with fix 8b: a button that is part of a field is its
+   label in 5.A, and 5.B judges what it shows or says.
 5. **Answerable "unsure",** largest first: fix 12 and 13 (4.F: the
    rubric and the order picture; the server judge's wrong FAILs on 5-6
    pages), 14 (9.C pairs repeated components), then 24-27 (4.A carousel
@@ -369,7 +371,9 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   from a recording: 5.F answers NEEDS REVIEW when a form is sent, and
   that stays.
 - **5.B:** icon-only buttons are left out (pass L has no picture of
-  buttons).
+  buttons); a field whose only label is an icon button beside it is
+  judged by that picture, and a field whose only cue is its own button's
+  words by those words (fix 8b).
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (both M4; only the wording differs). A jump forward past a
   field after Tab-away is not detected.

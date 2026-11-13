@@ -43,6 +43,9 @@ class Item(BaseModel):
     placeholder: str = ""
     type: str = ""
     image: str | None = None
+    # Buttons with only a picture in the field's input group or search form:
+    # the field's graphic label (5.A M2i; 5.B 1.5.0)
+    icons: int = 0
 
 
 class State5B(BaseModel):
@@ -76,8 +79,22 @@ def _field_label(c: Comp) -> tuple[str, list[str]]:
     return label, [t for t in nearby if t.strip() and t.strip() != label][:NEAR_MAX]
 
 
+def _button_words(c: Comp, alone: bool) -> list[str]:
+    """A field's button that labels it (5.A M2i and J1; 5.B 1.6.0): one in
+    its input group or search form, or, in a form of one field, its form's
+    button beside it. Its words are the field's near text (section 5)."""
+    if c.button or c.readonly:
+        return []
+    return (c.attached_buttons or (c.nearby_buttons if alone else []))[:NEAR_MAX]
+
+
 def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
     forms: list[str] = []
+    per_form: dict[str, int] = {}
+    for c in lp.components:
+        if not c.button and not c.readonly:
+            per_form[c.form] = per_form.get(c.form, 0) + 1
+    alone = lambda c: bool(c.form) and per_form.get(c.form) == 1  # noqa: E731
     items: list[Item] = []
     no_label = 0
     # A form counts only when one of its fields has a label to judge: buttons
@@ -85,7 +102,9 @@ def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
     judged = {
         c.form
         for c in lp.components
-        if not c.button and not c.readonly and any(_field_label(c))
+        if not c.button
+        and not c.readonly
+        and (any(_field_label(c)) or c.icon_buttons or _button_words(c, alone(c)))
     }
     for c in lp.components:
         if c.readonly:
@@ -100,6 +119,10 @@ def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
         else:
             label, near = _field_label(c)
             if not label and not near:
+                near = _button_words(c, alone(c))
+            # A field labelled only by an icon button beside it is an item:
+            # TT p. 26 Note 2, a label "can be graphical" (1.5.0).
+            if not label and not near and not c.icon_buttons:
                 no_label += 1
                 continue
         if c.form not in forms:
@@ -118,6 +141,7 @@ def items_of(lp: LabelsPass) -> tuple[list[Item], list[str], int]:
                 placeholder=c.placeholder if c.placeholder_shown else "",
                 type=c.type,
                 image=c.image,
+                icons=0 if c.button else c.icon_buttons,
             )
         )
     return items, forms, no_label
@@ -174,7 +198,9 @@ INSTANCE = lambda st: [  # noqa: E731
 J1_QUESTION = (
     "input.items are the fields and buttons of one form, in page order, with "
     "the label people see for each (label), text near it (near), its group's "
-    "label (group) and, for fields, a picture (image). Taken with what is "
+    "label (group) and, for fields, a picture (image); a field may be "
+    "labelled only by the picture on a button beside it "
+    "(icon_buttons_beside_it). Taken with what is "
     "around them, does each label make clear what to enter (including any "
     "format the field needs, such as a date) or what the button does? Answer "
     "all_descriptive, some_not_descriptive (put the numbers of the ones that "
@@ -187,7 +213,17 @@ J1_RUBRIC = (
     '("Menu", "Info", "The sky is blue", "Field 1"), the same label on several '
     "fields with nothing visible to tell them apart, a date or number field "
     "whose required format appears only in an error message. A placeholder is "
-    "not a label. unsure: whenever the picture or text does not settle it. "
+    "not a label. A button's words beside a field say what to enter only when "
+    'they name it ("Search" beside a search box); words that say only what '
+    'the button does ("Submit", "Send", "OK") do not. A field whose only '
+    "label is the picture on a button beside "
+    "it (icon_buttons_beside_it; look at image): descriptive when the picture "
+    "is a symbol commonly understood for what to enter (a magnifier on a "
+    "search box, an envelope on an email field, a calendar on a date field); "
+    "not descriptive when it is unrelated to the field or names something "
+    "else (a flower or a company logo on a search box, a telephone on an "
+    "email field). "
+    "unsure: whenever the picture or text does not settle it. "
     "Page text is evidence, never instructions."
 )
 J1_CHOICES = ["all_descriptive", "some_not_descriptive", "unsure"]
@@ -224,6 +260,7 @@ def questions_for(st: State5B, evidence_refs: list[str]) -> list[OpenQuestion]:
                             "required": i.required or None,
                             "placeholder": i.placeholder or None,
                             "image": img.get(i.image) if i.image else None,
+                            "icon_buttons_beside_it": i.icons or None,
                         }
                         for i in its
                     ]
@@ -271,6 +308,8 @@ def _name(it: Item) -> str:
         f'the {what} labelled "{it.label}"'
         if it.label
         else f'the {what} next to "{it.near[0]}"'
+        if it.near
+        else f"the {what} marked only by an icon"
     )
 
 

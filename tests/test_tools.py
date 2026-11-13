@@ -615,7 +615,10 @@ async def test_pictures_come_with_the_questions_that_name_them(settings, server)
     async with Client(mcp) as client:
         res = await client.call_tool(
             "tobi_run_tt_tests",
-            {"url": f"{server.base}/5a/f09-icon-search-box.html", "tests": ["5.A"]},
+            {
+                "url": f"{server.base}/5a/f40-subscribe-button-only-cue.html",
+                "tests": ["5.A"],
+            },
             raise_on_error=False,
         )
     out = json.loads(res.content[0].text)

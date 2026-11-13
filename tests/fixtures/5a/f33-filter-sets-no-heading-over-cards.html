@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F33 Recently released</title>
+<style>
+  ul.opts { list-style: none; display: flex; gap: 8px; padding: 0; margin: 0 0 8px; }
+  .cards { list-style: none; display: flex; gap: 8px; padding: 0; }
+  .card { width: 200px; border: 1px solid #999; position: relative; }
+  .badge { position: absolute; top: 0; left: 0; background: #222; color: #fff; padding: 2px; }
+  .thumb { display: block; height: 80px; background: #ccd; }
+  .hstack { display: flex; gap: 6px; align-items: center; }
+  h3 { margin: 4px 0; font-size: 1rem; }
+</style></head><body>
+<h1>Visualization studio</h1>
+<form id="rec_form" onsubmit="return false">
+<ul class="opts">
+<li><input type="checkbox" id="nsc1" name="nsc" value="1" checked><label for="nsc1">Earth</label></li>
+<li><input type="checkbox" id="nsc2" name="nsc" value="2" checked><label for="nsc2">Sun</label></li>
+</ul>
+<ul class="opts">
+<li><input type="checkbox" id="rt1" name="rtype" value="1" checked><label for="rt1">Visualization</label></li>
+<li><input type="checkbox" id="rt2" name="rtype" value="2" checked><label for="rt2">Animation</label></li>
+</ul>
+<div id="results"></div>
+</form>
+<script>
+// The results are added by script, inside the form, as on the real page.
+const r = document.getElementById("results");
+r.innerHTML = '<ul class="cards">' + [15116, 15117, 15118].map((id) =>
+  '<li class="card"><a class="thumb" href="#v' + id + '" aria-label="Visualization ' + id + '"></a>' +
+  '<span class="badge"> ID: ' + id + ' </span><p>November 12, 2026</p></li>').join("") + "</ul>";
+</script>
+</body></html>

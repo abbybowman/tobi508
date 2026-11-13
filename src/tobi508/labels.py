@@ -121,6 +121,32 @@ COMPONENTS_JS = (
     }
     return best ? txt(best) : '';
   };
+  // The heading sits directly over the option's set (5.C 1.7.0, M3h): no
+  // visible text between the heading and the set's first option, so the
+  // heading is the question the set answers, not a section title further up.
+  const headingEl = (el) => {
+    const scope = el.form || el.closest('form') ||
+      el.closest('section,aside,nav,main,[role=region],[role=search],[role=complementary]') || doc.body;
+    let best = null;
+    for (const h of scope.querySelectorAll(HEAD)) {
+      if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING && !h.contains(el) && vis(h)) best = h;
+    }
+    return best;
+  };
+  const headingDirect = (el, first) => {
+    const h = headingEl(el);
+    if (!h || headingEl(first) !== h) return false;
+    const range = doc.createRange();
+    range.setStartAfter(h); range.setEndBefore(first);
+    const tw = doc.createTreeWalker(range.commonAncestorContainer, NodeFilter.SHOW_TEXT);
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (!range.intersectsNode(n) || h.contains(n)) continue;
+      const p = n.parentElement;
+      if (!p || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(p.tagName) || p.closest('#ANDI508')) continue;
+      if (n.textContent.trim() && vis(p)) return false;
+    }
+    return true;
+  };
   return els.map((el, i) => {
     const tag = el.tagName.toLowerCase(), type = (el.type || '').toLowerCase(), role = el.getAttribute('role') || '';
     const button = tag === 'button' || (tag === 'input' && ['submit', 'reset', 'button'].includes(type)) || role === 'button';
@@ -147,6 +173,14 @@ COMPONENTS_JS = (
       row_text: button ? rowText(el) : '',
       menu: button && isMenu(el),
       heading: isOpt(el) ? headingOf(el) : '',
+      // Hidden from screen readers and out of the Tab order (5.C 1.8.0).
+      aria_hidden: !!el.closest('[aria-hidden="true"]'),
+      tabbable: el.tabIndex >= 0,
+      heading_direct: (() => {
+        if (!isOpt(el) || !el.name) return false;
+        const first = els.find((o) => isOpt(o) && o.name === el.name && (o.form || null) === (el.form || null));
+        return !!first && headingDirect(el, first);
+      })(),
       table_headers: headers(el),
       list_text: Array.from((function* () { for (let li = el.closest('li'); li; li = li.parentElement && li.parentElement.closest('li')) yield li; })())
         .map(ownText).filter(Boolean),
@@ -199,6 +233,23 @@ FOCUS_JS = (
     const t = txt(o) || o.value || '';
     if (t && !btns.includes(t)) btns.push(t);
   }
+  // Buttons with no text (an icon: a magnifier, a clear button) in the
+  // field's input group (the same parent) or in its search form: a picture
+  // may label the field, so M3 asks J1 instead of failing (5.A 1.5.0; fix 8).
+  // The same filter as above: a menu button never counts.
+  const srch = !!((form || el).closest('[role=search],search'));
+  let icons = 0;
+  // Text buttons there too (a search box's "Go"): any button that is part of
+  // the field is a label provided, whatever it says (5.A 1.8.0; its words
+  // are 5.B's).
+  const attached = [];
+  for (const o of els) {
+    if (o === el || !isBtn(o) || !shown(o) || !inReg(o.getBoundingClientRect())) continue;
+    if ((form && !form.contains(o)) || (o.form && o.form !== form) || isMenu(o)) continue;
+    if (!(srch || o.parentElement === el.parentElement)) continue;
+    const words = txt(o) || o.value || '';
+    if (words) { if (!attached.includes(words)) attached.push(words); } else icons++;
+  }
   // Pictures near the field, not another field's: one may be its label
   // (J1's "graphic"), so a field with one is never failed for having no text.
   let imgs = 0;
@@ -206,6 +257,18 @@ FOCUS_JS = (
     if (el.contains(m) || inOther(m) || !shown(m) || !inReg(m.getBoundingClientRect())) continue;
     imgs++;
   }
+  // An option's nearby text is its own row's (5.C 1.7.0, post-round 2 fix
+  // 9c): text in a block that holds a link or another option, and not this
+  // option, belongs to that block (a result card added inside a filter form:
+  // "ID: 15116"). A question in a block of its own stays.
+  const opt = isOpt(el);
+  const otherRow = (p) => {
+    let b = p;
+    while (b.parentElement && !b.parentElement.contains(el)) b = b.parentElement;
+    if (b.contains(el)) return false;
+    if (b.matches('a[href]') || b.querySelector('a[href]')) return true;
+    return els.some((o) => o !== el && isOpt(o) && b.contains(o));
+  };
   const near = [];
   const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
@@ -220,6 +283,7 @@ FOCUS_JS = (
     const range = doc.createRange(); range.selectNodeContents(n);
     const b = range.getBoundingClientRect();
     if (!b.width || !inReg(b)) continue;
+    if (opt && otherRow(p)) continue;
     near.push({ t, g: grp.some((x) => x.contains(p)),
                 d: Math.hypot((b.left + b.right) / 2 - cx, (b.top + b.bottom) / 2 - cy) });
   }
@@ -264,7 +328,7 @@ FOCUS_JS = (
   return {
     focused: doc.activeElement === el,
     labels, nearby: near.map((x) => x.t), nearby_other: nbr.slice(0, 6),
-    nearby_own: near.filter((x) => !x.g).map((x) => x.t), nearby_buttons: btns.slice(0, 6), nearby_images: imgs,
+    nearby_own: near.filter((x) => !x.g).map((x) => x.t), nearby_buttons: btns.slice(0, 6), nearby_images: imgs, icon_buttons: icons, attached_buttons: attached.slice(0, 6),
     nearby_css: css.slice(0, 6).map((x) => x.t),
     placeholder_shown: !!el.getAttribute('placeholder') && !el.value,
     // Viewport coordinates: a viewport screenshot's clip is relative to it.
@@ -301,6 +365,11 @@ class Comp(BaseModel):
     heading: str = (
         ""  # an option's nearest visible heading in its form or section (5.C)
     )
+    # The heading sits directly over the option's set: no visible text
+    # between it and the set's first option (5.C M3h)
+    heading_direct: bool = False
+    aria_hidden: bool = False  # itself or an ancestor has aria-hidden="true"
+    tabbable: bool = True  # tabIndex >= 0 (in the sequential focus order)
     table_headers: list[str] = Field(default_factory=list)
     list_text: list[str] = Field(default_factory=list)
     # With focus (data-entry fields only)
@@ -311,6 +380,10 @@ class Comp(BaseModel):
     nearby_own: list[str] = Field(default_factory=list)  # nearby, minus the legend
     nearby_buttons: list[str] = Field(default_factory=list)  # buttons' text nearby
     nearby_images: int = 0  # pictures nearby that are not another field's
+    # Buttons with no text in the field's input group or search form (5.A M3)
+    icon_buttons: int = 0
+    # Text of buttons with words in the field's input group or search form
+    attached_buttons: list[str] = Field(default_factory=list)
     # Text drawn by CSS (::before / ::after) nearby: 5.C counts it as shown
     nearby_css: list[str] = Field(default_factory=list)
     placeholder_shown: bool = False
@@ -423,6 +496,8 @@ async def read_session(
         c.nearby_own = r.get("nearby_own") or []
         c.nearby_buttons = r.get("nearby_buttons") or []
         c.nearby_images = r.get("nearby_images") or 0
+        c.icon_buttons = r.get("icon_buttons") or 0
+        c.attached_buttons = r.get("attached_buttons") or []
         c.nearby_css = r.get("nearby_css") or []
         if images:
             try:

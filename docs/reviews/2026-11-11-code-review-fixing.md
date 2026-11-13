@@ -58,7 +58,7 @@ below. Steps 1 to 5 send the thread to the instructions below the line
 > These are security and evaluation fixes: no spec changes, and no
 > outcome should move.
 
-**Step 4, Opus: the rules' false FAILs**
+**Step 4, Opus: the rules' false FAILs** (done: PR #44)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow its "How to fix one item" and "Working rules". Your work

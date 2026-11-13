@@ -91,9 +91,26 @@ def instance_rows(st: State5A) -> list[Row]:
             Outcome.FAIL,
             "Understanding 3.3.2 (each option needs a label); H71; Abby, 2026-11-02",
         ),
+        # A button in the field's input group or search form, with a picture
+        # or words ("Go"), is a label provided, whatever it shows; whether it
+        # describes the field is 5.B's (TT p. 25 Notes 2-3; 5.A 1.7.0, 1.8.0;
+        # Abby 2026-11-13).
+        Row(
+            "M2i",
+            lambda c: (
+                (c.icon_buttons > 0 or bool(c.attached_buttons)) and not in_set(c)
+            ),
+            Outcome.PASS,
+            "p. 25 ER 1, Notes 2-3 (graphical; accuracy is 5.B's); Abby, 2026-11-13",
+        ),
         Row(
             "M3",
-            lambda c: c.placeholder_shown and not c.nearby and not c.nearby_buttons,
+            lambda c: (
+                c.placeholder_shown
+                and not c.nearby
+                and not c.nearby_buttons
+                and not c.icon_buttons
+            ),
             Outcome.FAIL,
             "p. 25 Note 1; W3C forms tutorial; w3c/wcag#4918",
         ),
@@ -124,8 +141,9 @@ def instance_rows(st: State5A) -> list[Row]:
 
 J1_QUESTION = (
     "Image A shows the field in input.field while it has focus, with what is "
-    "around it. Is there visible text or a picture next to it that tells the "
-    "user what the field is for or what to enter? Answer labeled (copy the "
+    "around it. Is there visible text or a picture next to it that is this "
+    "field's label or instructions (whether they are accurate is another "
+    "test)? Answer labeled (copy the "
     "words from input.text, input.buttons_next_to_it or "
     "input.labels_of_neighbouring_fields into quote), "
     "graphic (describe it in reasons), "
@@ -133,13 +151,15 @@ J1_QUESTION = (
 )
 J1_RUBRIC = (
     "labeled: text people can see, beside, above or inside the field while it "
-    'has focus, that names it or says what to enter ("First Name:" next to it, '
+    "has focus, that goes with it as its label or instructions, accurate or "
+    'not ("First Name:" next to it, '
     "a column heading over a grid of fields, one label for a set of phone "
-    'number boxes, a "Search" button beside a search box). A button in '
-    "input.buttons_next_to_it counts only when its words say what to type into "
-    'the field ("Search" names search terms); words that only say what the '
-    'button does ("Go", "Find", "Submit", "Subscribe", "Send", "Continue") '
-    "do not, so a field with nothing else is not_labeled. A label in "
+    "number boxes, a button beside a box). A button in "
+    "input.buttons_next_to_it counts, whatever its words, when it belongs with "
+    "this field: the box's own button, beside it or just under it in a form "
+    "of one field; whether its words describe the field is not asked here. A "
+    "form's submit button below a form of several fields labels none of "
+    "them, so such a field with nothing else is not_labeled. A label in "
     "input.labels_of_neighbouring_fields counts only when this field is part "
     "of the set it labels (the second and third boxes of one phone number). "
     "For a radio button or checkbox, input.question_of_the_set (a legend over "

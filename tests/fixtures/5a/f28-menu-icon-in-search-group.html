@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F28 Agency news</title>
+<style>
+  header { background: #222; color: #fff; padding: 8px; }
+  .input-group { display: inline-flex; border: 1px solid #ccc; }
+  .input-group input { border: 0; background: #222; color: #fff; padding: 4px; }
+  .input-group button { border: 0; background: #222; padding: 4px 8px; }
+  #menu[hidden] { display: none; }
+</style></head><body>
+<header>
+<form action="search" method="get" onsubmit="return false">
+<div class="input-group">
+<input type="text" id="q" name="q" placeholder="Search">
+<button type="button" id="open-menu" aria-label="Menu" aria-expanded="false" aria-controls="menu"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M1 3h14M1 8h14M1 13h14" stroke="#fff" stroke-width="2"/></svg></button>
+</div>
+</form>
+<ul id="menu" hidden><li><a href="#news">News</a></li></ul>
+</header>
+<main><h1>News</h1><p>Recent releases from the agency.</p></main>
+<script>
+document.getElementById("open-menu").addEventListener("click", (e) => {
+  const open = e.currentTarget.getAttribute("aria-expanded") === "true";
+  e.currentTarget.setAttribute("aria-expanded", String(!open));
+  document.getElementById("menu").hidden = open;
+});
+</script></body></html>

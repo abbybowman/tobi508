@@ -76,6 +76,11 @@ def rel_images(evidence_refs: list[str], paths: list[str | None]) -> list[str]:
     return [f"{base}/{p}" for p in paths if p]
 
 
+def hidden_off_tab(c: Comp) -> bool:
+    """aria-hidden, not in the sequential focus order, and never a walk stop."""
+    return c.aria_hidden and not c.tabbable and c.tab_index is None
+
+
 def groups(lp: LabelsPass) -> dict[str, int]:
     out: dict[str, int] = {}
     for c in lp.components:
@@ -249,6 +254,19 @@ def instance_rows(st: State5C) -> list[Row]:
             "p. 27 Notes 4-5 (options associated with their question; section "
             "headings when there is significant risk of confusion); H71; ARIA17; "
             "Abby, 2026-11-06",
+        ),
+        Row(
+            "M3h",
+            lambda c: (
+                c.option
+                and c.heading_direct
+                and multi.get(c.group or "", 0) > 1
+                and len(heads.get(c.group or "", ())) == 1
+                and not heading_announced(c)
+            ),
+            Outcome.FAIL,
+            "p. 27 Note 4 (options associated with their question); H71; ARIA17; "
+            "Abby, 2026-11-08 (post-round 2 fix 9c)",
         ),
         Row(
             "M5",
@@ -473,6 +491,7 @@ def _sentence(st: State5C, c: Comp, rid: str) -> str:
     return {
         "M1": f"We could not read the text shown around {cl}, so we could not check that screen readers announce it. Please look at it.",
         "M3s": f'{cl} is a choice under the heading "{c.heading}", but screen readers announce only "{prog}": the heading is not connected to the choices, and other choices with the same name sit under other headings, so a screen reader user cannot tell which group it belongs to. Group each set of choices with its heading (a fieldset and legend, or a group labelled by the heading). To find it, {reach}. If you disagree, tell your assistant.',
+        "M3h": f'{cl} is a choice under the heading "{c.heading}", which asks the question these choices answer, but screen readers announce only "{prog}": the heading is not connected to the choices. Group the choices with their heading (a fieldset and legend, or a group labelled by the heading). To find it, {reach}. If you disagree, tell your assistant.',
         "M3o": f"{cl} is one of several choices under the same question, and screen readers announce only the question, not which choice it is. Give each choice its own label in the code. To find it, {reach}. If you disagree, tell your assistant.",
         "M2": f"ANDI did not analyse {cl}, so what screen readers announce for it could not be checked. Please check it with a screen reader.",
         "M3": f"{cl} has no name for screen readers: the text people see next to it is not connected to it in the code. To find it, {reach}.",
@@ -583,7 +602,24 @@ class Check5C:
         return []
 
     async def collect(self, ctx: RunContext, walk: KeyboardWalk | None) -> State5C:
-        return State5C(lp=await labels_pass(ctx, walk))
+        lp = await labels_pass(ctx, walk)
+        # Controls that are aria-hidden and outside the Tab order (tabindex
+        # below 0, and the walk never stopped on them) are in neither the Tab
+        # order nor the accessibility tree: not components of 5.C (1.8.0,
+        # post-round 2 fix 9). One that Tab reaches stays, and fails as any.
+        out = [c for c in lp.components if hidden_off_tab(c)]
+        if out:
+            lp = lp.model_copy(
+                update={
+                    "components": [c for c in lp.components if c not in out],
+                    "notes": [
+                        *lp.notes,
+                        f"{len(out)} control(s) hidden from screen readers and "
+                        "outside the Tab order were left out.",
+                    ],
+                }
+            )
+        return State5C(lp=lp)
 
     def evaluate(self, state: State5C, evidence_refs: list[str]) -> Finding:
         return evaluate(state, evidence_refs)
