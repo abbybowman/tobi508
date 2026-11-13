@@ -54,6 +54,11 @@ EXPECTED: dict[str, dict] = {
     # where the changed pixels sit.
     "f16-faint-color-and-counter": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
     "f08-focusable-iframe": {"outcome": "PASS"},
+    # C-07 (1.7.0): a script moves focus off link 3 at once, so the walk never
+    # stops on it: 4.D checked 10 of the page's 11 elements and may not say
+    # PASS. f21 is the same page with every element reached: still PASS.
+    "f20-script-moves-focus-off-one-link": {"outcome": "NEEDS_REVIEW"},
+    "f21-eleven-links-all-reached": {"outcome": "PASS"},
     # F-01 (Abby approved, 2026-11-12): a menubar of 8 items with a clear
     # outline on each. The loop stopped on item 7 with no "after" picture, so
     # it was NEEDS REVIEW for any menu of 7 or more; the first five items

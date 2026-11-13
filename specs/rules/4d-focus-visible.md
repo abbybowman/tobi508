@@ -1,7 +1,8 @@
 ---
 tt_test: 4.D
 tt_name: 2.4.7-focus-visible
-spec_version: 1.6.0
+spec_version: 1.7.0
+count: focusable
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -129,6 +130,8 @@ A page with a confirmed FAIL stays FAIL even when other instances need review.
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 **Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test's focus pictures do not go through opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
+
+**Guard CN: elements the walk did not reach** (1.7.0; front matter `count: focusable`; defined in [_template.md](_template.md); Abby, 2026-11-13; review C-07). The page's inventory (`count.py`, `Report.counts`) counts the elements that take keyboard focus (the walk's own test: focusable, rendered, not disabled, not inert) in every document, web component and frame. This test checks the distinct element stops of P1 and P2 (`State4D.reached`; the walk reads the deepest focused element, so a focusable frame is never a stop of its own: each frame the walk went into counts once, as one stop, which can hide one missed element only on a page that has a frame that is not itself focusable and an unreached element). When the inventory has more than the walk reached, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and the sentence "The page has 11 elements that take focus, and the keyboard reached 10." Trace row `CN`. FAIL is unchanged. So an element a script moves focus off at once, which is never a stop and was never checked (WCAG failure F55 also names it: a person should look), is left for a person, not "each of the 10 elements we could reach". Unlike 4.F's guard (`focusable@dna`), PASS is held here: the only pages this stops are those where the walk missed an element, and a missed element is exactly what 4.D cannot say PASS about (Abby, 2026-11-13). *Open:* if many pages that settle late or hold elements the walk cannot reach end here, the guard is too wide for PASS (as 4.F's was); round figures decide.
 
 ## 4. Judgment questions
 

@@ -1915,6 +1915,13 @@ not checked.
   while 4.E and 4.A on the same page do object (`traverse.py:906-962`).
   Whether an element Tab can never rest on belongs in 4.D is a spec
   question.
+  **C-07 fixed** (step 6b), commit "4.D: more focusable elements than the
+  walk reached is NEEDS REVIEW (C-07)", spec 4.D 1.7.0 (guard CN,
+  `count: focusable`; Abby chose option A, 2026-11-13). Fixtures `4d/f20`
+  (the review's page: NEEDS REVIEW, PASS before) and `4d/f21` (every
+  element reached: still PASS). PASS is held here, unlike 4.F's
+  `focusable@dna`; the spec says to revisit if the round figures show it
+  is too wide.
 - **G-04** A run stopped at the default limit (1,800 s) is told it
   "reached its time limit (600 s)" and to "run again with
   no_time_limit=true", which it already was; an agent that obeys
