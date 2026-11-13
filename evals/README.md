@@ -99,6 +99,12 @@ counts a tool result that matches as a **validated catch**, weighted +1 like
 an agreement and shown apart (`evals/scoring.py`). The file sits outside
 the lock, as the keys do.
 
+## Run 31, 2026-11-13: 5.A 1.5.0 and 5.C 1.6.0 (an option's own row; a heading directly over a set), their packets
+
+Post-round 2 fix 9c narrows an option's visible text to its own row (result cards beside a filter no longer reach it) and fails a heading directly over a set without a question (M3h). 27 cases, 35 questions (5.A and 5.C), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **27/27 match**, no false PASS, no "unsure" answer. Leak grep clean.
+- **The new cases:** the two filter sets beside result cards (F33) were asked once per set, each box's visible text its own label only, and answered complete; the plain-text question over wrapped-label radios (F30) was answered missing; the heading with "Choose any." between it and the set (F31) was answered missing, quoting "Choose any." (it read the heading as a section title), which reaches M7 (FAIL) as expected.
+- **Unclear to it:** whether a section heading ("Newsletter", "Find an office") labels a field beside a "Subscribe" or "Find" button (it answered not_labeled, which matches); whether a page title above a set is its question when no `heading_over_them` is given (it answered complete, which matches); a tight crop around a field with nothing near it (5.A, answered not_labeled).
+
 ## Run 30, 2026-11-07: 4.D 1.3.0 (where the changed pixels sit), its packets
 
 4.D was missing from `judge_eval.py`'s cases (its custom fixtures and its ACT cases); both are in now. 2 cases ask (F09's faint outline, F16's faint colour change with a counter beside the link), 4 questions, one fresh Sonnet agent: **2/2 match**, all four answers unsure, no false PASS.
