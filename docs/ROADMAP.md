@@ -73,7 +73,7 @@ ran three to four times longer than the work took.
 | Step | What | Model | When | Detail (other numbers) |
 | --- | --- | --- | --- | --- |
 | 1-5 | Quick fixes and CI; the count and guard CN; judge, gate and sign-in fixes; false FAILs; answerable "unsure" | | done: PRs #39 to #44 | Plan parts A and B; review bundle 7; fixes 8 to 14 and 24 to 27 |
-| 6 | The check against round 2: the baseline before the readers change | Opus | Nov 13 | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
+| 6 | The check against round 2: the baseline before the readers change | Opus | done Nov 13: [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | Nov 13-16, beside 7 and 8 | [Spec decisions](plans/2026-11-13-spec-decisions.md): M-05, C-01, M-10, H-02, M-08, K-01; then M-01, E-08, F-02, C-07, K-05 as Abby answers |
 | 7 | The grid of hard pages, its shadow-root and frame pages first | Sonnet | Nov 13-14, beside 6 | Plan part I |
 | 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |

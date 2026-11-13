@@ -18,6 +18,7 @@ copies them. Agent-assisted results, not certified Trusted Tester results.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -33,6 +34,15 @@ from tobi508 import scrt  # noqa: E402
 from tobi508.compare import compare, page_key  # noqa: E402
 
 KEYS = REPO / "evals" / "judging" / "round2-armc"
+# A NEEDS REVIEW finding whose summary gives a frame or a web component as
+# what was not read (roadmap step 8 aims at these). Tight on purpose: 4.A's
+# fixed sentence "including inside frames" and 3.A's "frame-by-frame" do not
+# count.
+INSIDE = re.compile(
+    r"inside (?:a )?frames?\b|(?:fields?|form fields?|buttons?\(s\)) inside "
+    r"(?:a )?frames?|embedded frame we could not read|web component|shadow root",
+    re.I,
+)
 COLS = (
     "cells",
     "agree",
@@ -119,7 +129,19 @@ def side(run_dirs: list[Path], merged_pre: dict | None = None) -> list[dict]:
                     else None,
                     "judge_decided": decided,
                     "cn": bool(finding and "CN" in finding.get("rows", [])),
-                    "rows": finding.get("rows", []) if finding else [],
+                    "inside": bool(
+                        finding
+                        and INSIDE.search(
+                            finding["summary"].replace("including inside frames", "")
+                        )
+                    ),
+                    # the rule's own rows; per-instance rows (`k1:M6`) counted
+                    "rows": [
+                        x for x in (finding or {}).get("rows", []) if ":" not in x
+                    ],
+                    "instance_rows": sum(
+                        1 for x in (finding or {}).get("rows", []) if ":" in x
+                    ),
                 }
             )
     return rows
@@ -177,6 +199,11 @@ HEAD = (
     "| Other | Needs review (guard CN) | Agree (of decided) |\n"
     "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"
 )
+
+
+def _short(r: dict) -> str:
+    n = r["instance_rows"]
+    return " ".join(r["rows"]) + (f" (+{n} instance rows)" if n else "")
 
 
 def markdown(out: dict) -> str:
@@ -249,9 +276,23 @@ def markdown(out: dict) -> str:
         lines.append(
             f"| {r['page']} | {r['test']} | {r['key']} | {r['tool']} | "
             f"{r['verdict']} | "
-            f"{'yes' if r['judge_decided'] else 'no'} | {' '.join(r['rows'])} |"
+            f"{'yes' if r['judge_decided'] else 'no'} | {_short(r)} |"
         )
     nr = [r for r in gate if r["verdict"] == "needs_review"]
+    sel = [r for r in nr if r["inside"]]
+    lines += [
+        "",
+        f"## {names[0]}: NEEDS REVIEW cells inside a frame or a web component: "
+        f"{len(sel)}",
+        "",
+        "| Page | Test | Key | Guard CN | Judge-decided |",
+        "| --- | --- | --- | --- | --- |",
+    ]
+    for r in sel:
+        lines.append(
+            f"| {r['page']} | {r['test']} | {r['key']} | "
+            f"{'yes' if r['cn'] else 'no'} | {'yes' if r['judge_decided'] else 'no'} |"
+        )
     for cn, title in (
         (True, "made by guard CN (row CN)"),
         (False, "for any other reason"),
@@ -267,9 +308,20 @@ def markdown(out: dict) -> str:
         for r in sel:
             lines.append(
                 f"| {r['page']} | {r['test']} | {r['key']} | "
-                f"{'yes' if r['judge_decided'] else 'no'} | {' '.join(r['rows'])} |"
+                f"{'yes' if r['judge_decided'] else 'no'} | {_short(r)} |"
             )
     return "\n".join(lines) + "\n"
+
+
+def _dump(out: dict) -> str:
+    """JSON with one cell per line, so the file diffs and reads by row."""
+    head = {k: v for k, v in out.items() if k != "sides"}
+    body = json.dumps(head, indent=1)[:-2]
+    sides = []
+    for name, rows in out["sides"].items():
+        cells = ",\n".join("   " + json.dumps(r) for r in rows)
+        sides.append(f"  {json.dumps(name)}: [\n{cells}\n  ]")
+    return body + ',\n "sides": {\n' + ",\n".join(sides) + "\n }\n}\n"
 
 
 def main() -> None:
@@ -290,7 +342,7 @@ def main() -> None:
             for name, rows in {"gate-2026-11-13": gate, **r2}.items()
         },
     }
-    (HERE / "compare.json").write_text(json.dumps(out, indent=1) + "\n")
+    (HERE / "compare.json").write_text(_dump(out))
     (HERE / "compare.md").write_text(markdown(out))
     print(
         json.dumps({n: t["all"].get("all") for n, t in out["tally"].items()}, indent=1)
