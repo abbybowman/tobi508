@@ -56,6 +56,11 @@ class State2B(BaseModel):
     j3: dict[str, dict[str, Any]] = Field(default_factory=dict)  # text, "m1-e3"
     selected: list[str] = Field(default_factory=list)
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """Image addresses pass T examined for animation, for guard CN."""
+        return {"page": {"images": self.mp.images_read}}
+
 
 # ── Terms ─────────────────────────────────────────────────────────────────
 
@@ -71,7 +76,7 @@ def still_moving(r: Region) -> bool:
     if r.source != "pixels":
         return True
     if r.visible_px == 0:
-        return False  # its box changed by less than the eye sees (1.2.0)
+        return False  # its box changed by less than the eye sees (1.3.0)
     return _changes_late(r)
 
 
@@ -321,7 +326,7 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="") -> Finding:
 
 def _unseen(mp: MotionPass) -> list[Region]:
     """Regions whose pixels changed for more than 5 s but never by enough to
-    see in their box (2.B 1.2.0): not counted as moving."""
+    see in their box (2.B 1.3.0): not counted as moving."""
     return [
         r
         for r in mp.regions

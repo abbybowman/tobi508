@@ -90,10 +90,18 @@ UNRECORDED_CODE_SENTENCE = (
 )
 
 
-def apply_guards(f: Finding, guards: tuple[str, ...], report: Any) -> Finding:
+def apply_guards(
+    f: Finding,
+    guards: tuple[str, ...],
+    report: Any,
+    state: Any = None,
+    count: tuple[str, ...] = (),
+) -> Finding:
     """The shared page guards a spec declares in its front matter (their rows
-    are in the spec and `_template.md`; this runs them). A guard only moves a
-    would-be PASS to NEEDS REVIEW, never the other way.
+    are in the spec and `_template.md`; this runs them). A guard moves a
+    would-be PASS, or (CN only) a DOES NOT APPLY, to NEEDS REVIEW, never the
+    other way (Abby, 2026-11-12). `state`: the check's evidence, whose `read`
+    CN compares with the inventory; `count`: the spec's `count:` keys.
 
     GU (`unrecorded-code`): the recording lacks code that the page's own
     scripts name and load when used, so a replay cannot run the page's
@@ -152,4 +160,136 @@ def apply_guards(f: Finding, guards: tuple[str, ...], report: Any) -> Finding:
             f" Guard RC: {rv['opened_with_focusable']} opened section(s) hold "
             "controls that were not checked."
         )
+    return _count_guard(f, report, state, count)
+
+
+# Guard CN's sentences, one per inventory key: (singular, plural) nouns, and
+# where a part is. Wording only; the comparison is in _count_guard.
+_NOUN = {
+    "fields": ("form field", "form fields"),
+    "contenteditable": ("editable text area", "editable text areas"),
+    "forms_with_button": ("form with a button", "forms with a button"),
+    "media": ("audio or video element", "audio or video elements"),
+    "canvases": ("drawing area (canvas)", "drawing areas (canvas)"),
+    "draggable": ("item moved by dragging", "items moved by dragging"),
+    "landmarks": ("page region (landmark)", "page regions (landmarks)"),
+    "links": ("link", "links"),
+    "players": ("video player in a frame", "video players in frames"),
+    "frames": ("frame", "frames"),
+    "frames_unread": ("frame that could not be read", "frames that could not be read"),
+    "shadow_roots": ("web component", "web components"),
+    "closed_hosts": ("closed web component", "closed web components"),
+}
+_PLACE = {
+    "shadow": (" inside a web component", " inside web components"),
+    "frames": (" inside a frame", " inside frames"),
+    "detached": (" outside the page", " outside the page"),
+}
+_PLAYED = {
+    "": "",
+    "light": " on the page",
+    "shadow": " inside a web component",
+    "frames": " inside a frame",
+    "detached": " from a script",
+}
+
+
+def count_sentence(key: str, there: int, read: int) -> str:
+    """One plain sentence for one gap of guard CN (`there` > `read`)."""
+    name, _, part = key.partition(".")
+    gap = there - read
+    one = gap == 1
+    was = "was" if one else "were"
+    if name == "fields_hidden":
+        place = _PLACE.get(part, ("", ""))[not one]
+        return (
+            f"{gap} form field{'' if one else 's'}{place} "
+            f"{'is' if one else 'are'} hidden until something opens "
+            f"{'it' if one else 'them'}, and {was} not checked."
+        )
+    if name == "media_played":
+        return (
+            f"{gap} {'sound or video' if one else 'sounds or videos'} played"
+            f"{_PLAYED.get(part, '')}, and {was} not checked."
+        )
+    if name == "images":
+        if read:
+            return f"{there} images: only the first {read} were checked for animation."
+        return f"{gap} image{'' if one else 's'} {was} not checked for animation."
+    if name == "focusable":
+        return (
+            f"The page has {there} elements that take focus, and the keyboard "
+            f"reached {read}."
+        )
+    noun = _NOUN.get(name, (name, name))[not one]
+    place = _PLACE.get(part, ("", ""))[not one]
+    verb = "tested" if name == "forms_with_button" else "checked"
+    return f"{gap} {noun}{place} {was} not {verb}."
+
+
+NOT_INVENTORIED = (
+    "This page's contents could not be inventoried, so this test's result "
+    "could not be confirmed."
+)
+
+
+def _page_label(page: str) -> str:
+    return "This page" if page == "page" else f"Other page {page.lstrip('p')}"
+
+
+def _count_guard(f: Finding, report: Any, state: Any, keys: tuple[str, ...]) -> Finding:
+    """CN (`count:`): the page's inventory (`report.counts`, count.py) shows
+    more of a thing than the test read (`state.read`): a would-be PASS or DOES
+    NOT APPLY becomes NEEDS REVIEW (Abby, 2026-11-12). A key marked `@dna`
+    holds DOES NOT APPLY only. FAIL and NOT TESTED are unchanged. A run made
+    before the inventory existed (no `counts`) is left as it was."""
+    if not keys or f.outcome not in (Outcome.PASS, Outcome.DNA):
+        return f
+    counts = getattr(report, "counts", None) or {}
+    if not counts:
+        return f
+    read = getattr(state, "read", None) or {}
+    sentences: list[str] = []
+    trace: list[str] = []
+    for page in ["page", *sorted(p for p in read if p != "page")]:
+        c = counts.get(page)
+        if c is None or c.error:
+            head = (
+                NOT_INVENTORIED
+                if page == "page"
+                else f"{_page_label(page)}'s contents could not be inventoried, "
+                "so this test's result could not be confirmed."
+            )
+            sentences.append(head)
+            trace.append(f"{page}: no inventory ({c.error if c else 'missing'})")
+            continue
+        got = read.get(page, {})
+        for spec_key in keys:
+            key, dna_only = spec_key.removesuffix("@dna"), spec_key.endswith("@dna")
+            if dna_only and f.outcome is not Outcome.DNA:
+                continue
+            there, done = c.get(key), int(got.get(key, 0))
+            if key.startswith("fields_hidden") and c.openers == 0:
+                # Nothing on the page could show them: hidden for everyone,
+                # as DHS's Baseline TC10.A-ic-dna-1 and -2 (Abby, 2026-11-12).
+                there = 0
+            if there > done:
+                s = count_sentence(key, there, done)
+                if page != "page":
+                    s = f"On {_page_label(page).lower()}, {s[0].lower()}{s[1:]}"
+                sentences.append(s)
+                trace.append(f"{page} {key} {there} > read {done}")
+    if not sentences:
+        return f
+    was = f.outcome.value
+    f.outcome = Outcome.NEEDS_REVIEW
+    f.rows = [*f.rows, "CN"]
+    more = len(sentences) - 3
+    f.summary = (
+        f"{REVIEW_HEAD} "
+        + " ".join(sentences[:3])
+        + (f" ({more} more in the report.)" if more > 0 else "")
+    )
+    f.note = TEST_NOT_PERFORMED_NOTE
+    f.rationale += f" Guard CN (would have been {was}): " + "; ".join(trace) + "."
     return f

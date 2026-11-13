@@ -42,7 +42,7 @@ EXPECTED: dict[str, dict] = {
         "signals": {"S3"},
     },
     "f07-one-link": {"outcome": "DNA", "rows": []},
-    # Fix 12 (4.F 1.6.0): a different order from the one drawn is not
+    # Fix 12 (4.F 1.7.0): a different order from the one drawn is not
     # "does not preserve" by itself. Cards reached right to left, a card's
     # buttons reached in the other order than drawn: meaning and operation
     # hold. The same layout with numbered steps out of sequence must FAIL.
@@ -56,7 +56,7 @@ EXPECTED: dict[str, dict] = {
         "choice": "preserves",
         "signals": {"S3"},
     },
-    # Fix 13 (4.F 1.7.0): a skip link shown only on focus, a one-pixel
+    # Fix 13 (4.F 1.8.0): a skip link shown only on focus, a one-pixel
     # screen-reader link and two independent columns. The first two have no
     # visible box on a fresh load, so image A draws no badge for them.
     "f23-stops-with-no-visible-box": {
@@ -133,7 +133,7 @@ def _cropped(settings, got) -> None:
 
 
 def _undrawn(settings, got) -> None:
-    """1.7.0: a stop with no visible box gets no badge; the order list says
+    """1.8.0: a stop with no visible box gets no badge; the order list says
     so in text (round 2: C saw "empty boxes 28, 30 and 32")."""
     from PIL import Image
 

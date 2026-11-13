@@ -147,7 +147,7 @@ SCAN_FN = (
   const sx = scrollX, sy = scrollY;
   let total = 0;
   const unreached = [], signals = [];
-  // Containers that scroll (1.7.0, fix 24): a pointer-only control near one
+  // Containers that scroll (1.8.0, fix 24): a pointer-only control near one
   // may be its arrow.
   const scrollers = full ? all().filter(isScroller) : [];
   const nearScroller = (el) => { let a = el;
@@ -202,7 +202,7 @@ POINT_FN = (
 }"""
 )
 
-# Scroll check (1.7.0, fix 24). Before a click: every scrolling container, its
+# Scroll check (1.8.0, fix 24). Before a click: every scrolling container, its
 # scroll position and its items (its children, through single wrappers) with
 # their boxes. After: for each container that scrolled, the items that came
 # into view and how many of them are, or hold, a stop. Top document only.
@@ -388,6 +388,12 @@ class State4A(BaseModel):
     notes: list[str] = Field(default_factory=list)
     shot: str | None = None
     browser: str | None = None
+
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """Guard CN (count.py): drawing areas and dragged items are recorded
+        for a person (kind U), never tested, so none counts as read."""
+        return {"page": {"canvases": 0, "draggable": 0}}
 
 
 def _norm(s: str | None) -> str:
@@ -988,7 +994,7 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
 
 def _goes_to(inst: Inst4A) -> dict[str, str]:
     """Where the candidate goes: a link's destination, or the address a click
-    that navigated went to (1.7.1, fix 25). Empty when it goes nowhere."""
+    that navigated went to (1.8.1, fix 25). Empty when it goes nowhere."""
     dest = inst.target.get("dest")
     if not dest and inst.click and {"navigation", "fragment"} & set(inst.click.kinds):
         dest = inst.click.url
@@ -1107,7 +1113,12 @@ def apply_answers(st: State4A, report) -> None:
 APPLICABILITY = [
     Row(
         "A1",
-        lambda st: st.stops == 0 and st.inventory == 0 and st.targets == 0,
+        lambda st: (
+            st.stops == 0
+            and st.inventory == 0
+            and st.targets == 0
+            and not any(i.kind == "U" for i in st.instances)
+        ),
         Outcome.DNA,
         "p. 19 Applicability",
     ),

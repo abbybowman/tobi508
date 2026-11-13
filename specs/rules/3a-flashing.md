@@ -1,7 +1,8 @@
 ---
 tt_test: 3.A
 tt_name: 2.3.1-flashing
-spec_version: 1.1.0
+spec_version: 1.2.0
+count: images, players
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -99,6 +100,8 @@ The page's assessment is fails if any source fails; else could not assess if any
 *Where* is "an area of <w> by <h> pixels (<its text>) at the <top|middle|bottom> <left|centre|right> of the screen", "an animated image at ...", or "a video (analyzed at full screen)".
 
 **Notes (no outcome).** Flashing slower than 3 per second that lasts more than 5 s is 2.B's concern.
+
+**Guard CN: images past the read's limit, and video players** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-06). The page's inventory (`count.py`, `Report.counts`) counts the distinct image addresses (`http` or `https`) of every document, web component and frame, and frames whose address is a video player from another site (YouTube, Vimeo and a few others). Pass T examines at most 30 image addresses for animation, and skips one that is not in the recording or is over 5 MB (`MotionPass.images_read`); it cannot look inside a player. When the inventory has more of either than pass T read, a DOES NOT APPLY or PASS becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("32 images: only the first 30 were checked for animation", "1 video player in a frame was not checked"). Trace row `CN`. NOT TESTED (flashing found) and FAIL are unchanged.
 
 ## 4. Judgment questions
 

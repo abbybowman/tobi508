@@ -1,7 +1,8 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.2.0
+spec_version: 1.3.0
+count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -77,6 +78,8 @@ The instance is the page: the kinds of way found.
 | G4 | "We found only <kinds or 'no way'> to reach this page, and nothing else to check: add a second way, such as a link in the site navigation, a site map or a site search that finds it." |
 | A1 | "This test could not be performed: it needs other pages of the same site. Run it again with other_pages (the home page and, if there is one, the site map)." |
 | A3 | "This page is a step in a process (or its result), so this test does not apply." |
+
+**Guard CN: navigation inside web components** (1.3.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

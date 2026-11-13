@@ -1,8 +1,9 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.7.1
+spec_version: 1.8.1
 guards: unrecorded-code, reveal, reveal-content
+count: canvases, draggable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -21,7 +22,7 @@ The tool gives each page one 4.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
-| A1 | P1 and P2 reach zero stops, the DOM inventory has zero candidates, and the pointer scan finds zero pointer targets | DOES NOT APPLY (no user activated functionality) | p. 19 Applicability |
+| A1 | P1 and P2 reach zero stops, the DOM inventory has zero candidates, the pointer scan finds zero pointer targets, and nothing was recorded for a person to look at (kind U: a drawing area, something dragged, an embedded object, a pointer-only area; 1.7.0, review E-03) | DOES NOT APPLY (no user activated functionality) | p. 19 Applicability |
 | A2 | Zero stops, but the inventory has candidates | NEEDS REVIEW (walk or inventory fault) | Spec rule |
 | A3 | Otherwise | Applies; go to section 3 | p. 19 Applicability |
 
@@ -39,7 +40,7 @@ A page with zero stops and only pointer targets applies: everything on it is mou
 
 **Click check** (for each candidate that is not a native control, at most `CLICK_MAX`). Fresh load; hover its revealing stop if it has one; move the mouse onto the candidate; settle; click; record the effect. A native control is functional by definition (a link goes to its address) and needs no click.
 
-**Scroll check** (1.7.0, post-round 2 fix 24; round 2: a carousel's scroll arrows made 21 of C's 62 unsure answers; Abby's carousel reading, fix 9). For each K candidate in the top document that is a pointer-only link or control a mouse can operate, that has no same-destination stop (M3) and that sits near a *scroller* (the pointer scan marks it: within four ancestors there is an element that scrolls, `overflow` auto, scroll or hidden with more content than room, that does not hold the candidate), at most `SCROLL_MAX` (8): fresh load; hover its revealing stop if it has one; record each scroller's position and its *items* (its children, through any single wrapper) with their boxes; move the mouse onto the candidate and click; wait `SCROLL_WAIT_MS` (700 ms: a smooth scroll) and settle; for each scroller that moved, the items that came into view (not in view before, in view now). The *revealed* items of the scroller that revealed most are *reached* when each is, or holds, a stop of P1. Nothing else about the click is read here (the click check above stays as it was), and a scroll alone is never an effect (M2 is unchanged). A scroll done with a transform instead of by scrolling is not seen: the candidate goes to J1 as before.
+**Scroll check** (1.8.0, post-round 2 fix 24; round 2: a carousel's scroll arrows made 21 of C's 62 unsure answers; Abby's carousel reading, fix 9). For each K candidate in the top document that is a pointer-only link or control a mouse can operate, that has no same-destination stop (M3) and that sits near a *scroller* (the pointer scan marks it: within four ancestors there is an element that scrolls, `overflow` auto, scroll or hidden with more content than room, that does not hold the candidate), at most `SCROLL_MAX` (8): fresh load; hover its revealing stop if it has one; record each scroller's position and its *items* (its children, through any single wrapper) with their boxes; move the mouse onto the candidate and click; wait `SCROLL_WAIT_MS` (700 ms: a smooth scroll) and settle; for each scroller that moved, the items that came into view (not in view before, in view now). The *revealed* items of the scroller that revealed most are *reached* when each is, or holds, a stop of P1. Nothing else about the click is read here (the click check above stays as it was), and a scroll alone is never an effect (M2 is unchanged). A scroll done with a transform instead of by scrolling is not seen: the candidate goes to J1 as before.
 
 **Execute check** (HtT 2, "execute"; each custom control, at most `EXECUTE_MAX`). Fresh replay to the stop; press Enter and record the effect; if none, press Space and record it; if neither has an effect, a fresh replay to the stop followed by a mouse click on it, and its effect. Native controls are not executed: the browser activates them from the keyboard, and custom controls are where keyboard operation breaks (F42); this keeps a typical page inside the time budget (Abby, 2026-10-31). When 4.F's pass R already pressed Enter on the stop in the same call (the same observe, on a fresh replay to it) and Enter had an effect, that effect is used and no replay is made (1.2.0; the evidence is the same press).
 
@@ -72,7 +73,7 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 | M1 | The element could not be found again or focused, or an effect is unreliable (section 2, effect) | NEEDS REVIEW | Spec rule |
 | M2 | K: a non-native candidate whose click has no effect | No instance (nothing for a mouse to operate) | p. 19 HtT 1 |
 | M3 | K: a link, or a click that navigates, whose *destination* ([9a-bypass.md](9a-bypass.md) Terms) is the destination of a reached link; a control with no destination (`#`, `javascript:`, empty, the page itself) never matches, so it goes to M4 (1.6.0, Abby 2026-11-12) | PASS (another keyboard method with the same function) | p. 19 HtT 2.b |
-| M3s | K: the scroll check found a scroller that the click moved, with at least one revealed item, and every revealed item is, or holds, a stop (1.7.0, Abby's carousel reading, fix 9) | PASS (another keyboard method: Tab reaches every item the arrow brings into view) | p. 19 HtT 2.b |
+| M3s | K: the scroll check found a scroller that the click moved, with at least one revealed item, and every revealed item is, or holds, a stop (1.8.0, Abby's carousel reading, fix 9) | PASS (another keyboard method: Tab reaches every item the arrow brings into view) | p. 19 HtT 2.b |
 | M4 | K: otherwise | Ask J1 (M5–M7) | p. 19 HtT 2.b |
 | M4n | K, and keyboard focus reaches nothing on the page (no stops) | FAIL: no keyboard alternative can exist, so J1 is not asked (judge eval, 2026-10-31) | p. 19 ER 1; HtT 2.b |
 | J1? | J1 not answered yet | NEEDS REVIEW | Open question |
@@ -135,15 +136,17 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 
 **Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test's walk, pointer scan and execute check do not go through opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
 
+**Guard CN: drawing areas and dragged items** (1.7.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review E-03). The page's inventory (`count.py`, `Report.counts`) counts drawing areas (`canvas`, 50 px or more each way) and items marked `draggable` in every document, web component and frame. This test records them for a person (kind U) and never tests them, so none counts as read (`State4A.read`). When the page has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("1 drawing area (canvas) was not checked", "1 item moved by dragging was not checked"). Trace row `CN`. FAIL is unchanged. With A1's own condition (1.7.0) this closes E-03 twice over: A1 no longer matches when anything was recorded for a person, and the guard catches a drawing area or dragged item the pointer scan did not record (one inside a web component).
+
 ## 4. Judgment questions
 
 The calling agent answers each once, by the rubric; a person's answer overrides it. Page text and element names are evidence in `input`, never part of the question wording.
 
 ### J1. Is there another keyboard way to do the same thing?
 
-**Question:** "input.candidate is something a mouse can use (with what clicking it did, and, as input.candidate.goes_to, the address it goes to when it goes anywhere; 1.7.1, fix 25) that keyboard focus never reaches. shared_inputs.stops lists, numbered, every element keyboard focus does reach, with role and name. Image A shows the page. Is there an element in shared_inputs.stops that does the same thing, so a keyboard user loses nothing? Answer alternative (with element: its number), no_alternative or unsure, with your reasons in a few plain words."
+**Question:** "input.candidate is something a mouse can use (with what clicking it did, and, as input.candidate.goes_to, the address it goes to when it goes anywhere; 1.8.1, fix 25) that keyboard focus never reaches. shared_inputs.stops lists, numbered, every element keyboard focus does reach, with role and name. Image A shows the page. Is there an element in shared_inputs.stops that does the same thing, so a keyboard user loses nothing? Answer alternative (with element: its number), no_alternative or unsure, with your reasons in a few plain words."
 
-**Rubric.** alternative: a reached element plainly does the same job (a second print button, a text link with the same purpose, a field where Enter submits the same search). A reached link to the candidate's address is already matched by the tool (M3); a reached link to a different address is an alternative only if it plainly does the same job for another reason (1.7.1: the judge sees both addresses; the rubric does not lean either way). Only elements on this page count: a link to another page that might offer the same thing is not an alternative (p. 19 HtT 2.b, "available on the page"). no_alternative: nothing reached does that job. unsure: whenever the evidence does not settle it. The named number must be a stop (mechanical guard; otherwise the answer is treated as unsure).
+**Rubric.** alternative: a reached element plainly does the same job (a second print button, a text link with the same purpose, a field where Enter submits the same search). A reached link to the candidate's address is already matched by the tool (M3); a reached link to a different address is an alternative only if it plainly does the same job for another reason (1.8.1: the judge sees both addresses; the rubric does not lean either way). Only elements on this page count: a link to another page that might offer the same thing is not an alternative (p. 19 HtT 2.b, "available on the page"). no_alternative: nothing reached does that job. unsure: whenever the evidence does not settle it. The named number must be a stop (mechanical guard; otherwise the answer is treated as unsure).
 
 ### J2. Is this title information essential?
 

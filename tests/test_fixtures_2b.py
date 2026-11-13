@@ -30,7 +30,7 @@ CASES = {
     # Two colours back and forth is blinking: K6. Four colours: C1.
     "t-color-toggle": (NOT_ESSENTIAL, "FAIL", "K6"),
     "t-color-cycle": (NOT_ESSENTIAL, "NEEDS_REVIEW", "C1"),
-    # Fix 27 (2.B 1.2.0): a box whose colour moves by 3 of 255 changed pixels
+    # Fix 27 (2.B 1.3.0): a box whose colour moves by 3 of 255 changed pixels
     # but nothing a person sees: not a moving region. The same box moving by
     # 23 of 255 (the nearest case that must still fail) is blinking.
     "t-color-hair": ({}, "DNA", "A2"),
@@ -148,7 +148,7 @@ EVAL = {
     "t-anim-pause": "NEEDS_REVIEW",
     "t-carousels": "FAIL",
     "t-below-fold": "FAIL",
-    # Fix 27 (2.B 1.2.0): a change of 3 of 255 is no motion (asks nothing);
+    # Fix 27 (2.B 1.3.0): a change of 3 of 255 is no motion (asks nothing);
     # a change of 23 of 255 is blinking.
     "t-color-hair": "DNA",
     "t-color-subtle": "FAIL",

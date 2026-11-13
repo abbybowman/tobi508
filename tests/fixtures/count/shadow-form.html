@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><title>Shadow form</title></head><body>
+<h1>Contact</h1>
+<p>Some text.</p>
+<div id="host"></div>
+<script>
+const r = document.getElementById('host').attachShadow({mode:'open'});
+r.innerHTML = '<form><input type="text" placeholder="Name"><input type="email"><button type="submit">Send</button></form>';
+</script>
+</body></html>

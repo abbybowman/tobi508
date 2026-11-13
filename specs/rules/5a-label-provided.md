@@ -1,8 +1,9 @@
 ---
 tt_test: 5.A
 tt_name: 3.3.2-label-provided
-spec_version: 1.3.0
+spec_version: 1.4.0
 guards: reveal
+count: fields.shadow, fields.frames, fields_hidden, contenteditable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -75,6 +76,8 @@ Each data-entry field is an *instance*; each radio button and checkbox is its ow
 **Opened content is read like content at load** (fix 9b; Abby, 2026-11-09). Every state `reveal.py` opens is read with ANDI like the page as loaded, and when opened content holds sets of check boxes or radio buttons, up to two options of each (at most 3 sets) are chosen together with Space on a fresh load and the page is read again, because choosing can add controls (a filter that adds a remove button for each choice). Components found this way are tested like any other and say how they were reached.
 
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
+
+**Guard CN: form fields pass L could not read** (1.4.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review D-01, H-08). The page's inventory (`count.py`, `Report.counts`) counts form fields inside web components (open shadow roots) and inside frames, form fields in the page but hidden when it loads (`display: none`, `hidden`, a closed `<details>`), and editable text areas (`contenteditable`). Pass L reads the page's own document only: nothing inside web components or frames and no editable area, and a hidden field only when an opened section showed it (matched by its path; `labels.what_was_read`). When the inventory has more of any of these than pass L read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("2 form fields inside web components were not checked", "1 form field is hidden until something opens it, and was not checked"). Hidden fields count only when the page has something that could show them (a button, a disclosure, a same-page or script link, an inline click handler); on a page with none, a hidden field is hidden from everyone and holds nothing, as DHS's Baseline cases TC10.A-ic-dna-1 and -2 expect (Abby, 2026-11-12). Trace row `CN`. FAIL is unchanged. A hidden form behind a plain button, which the reveal pass does not open, therefore ends NEEDS REVIEW, not DOES NOT APPLY.
 
 ## 4. Judgment questions
 

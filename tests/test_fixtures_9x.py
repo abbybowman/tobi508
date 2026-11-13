@@ -49,7 +49,7 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.A": "PASS", "9.B": "PASS", "9.C": "FAIL"},
         {"9.C": {"J1": {"choice": "inconsistent"}}},
     ),
-    # Fix 14 (9.C 1.4.0): links in the pages' own content that go to one
+    # Fix 14 (9.C 1.5.0): links in the pages' own content that go to one
     # address with different words are not a repeated component, so they
     # are not paired by address (round 2: Home and Help, key Pass). The
     # header, menu and search still agree. "renamed" above is the nearest
@@ -276,7 +276,7 @@ def test_9b_page_over_the_cap_is_never_dna():
 
 
 def test_9c_pairs_by_destination_only_inside_a_repeated_block():
-    """1.4.0 (fix 14): the same address from the pages' own content is not a
+    """1.5.0 (fix 14): the same address from the pages' own content is not a
     repeated component; from the header, menu, search or footer it is. Built
     evidence: the page pair is g1/g2 against a5-renamed."""
     from tobi508.checks.t9c import AndiPage, Comp, make_pairs
