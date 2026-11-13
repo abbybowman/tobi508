@@ -1,7 +1,8 @@
 ---
 tt_test: 2.B
 tt_name: 2.2.2-blinking-moving-scrolling
-spec_version: 1.1.0
+spec_version: 1.2.0
+count: images
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -105,6 +106,8 @@ gives FAIL, as for any blinking content.
 | K6 | "<content> keeps moving for more than 5 seconds, and we found no way to stop or hide it in the three items before it, the three after it, or the first three on the page. Add a pause button next to it." |
 | A2 | "Nothing on this page moved for more than 5 seconds while we watched, so this test does not apply." |
 | A4 | "<content> moves, but only while the page loads and nothing can be used yet, so it does not need a pause." |
+
+**Guard CN: images past the read's limit** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-06). The page's inventory (`count.py`, `Report.counts`) counts the distinct image addresses (`http` or `https`) of every document, web component and frame. Pass T examines at most 30 of them for animation, and skips one that is not in the recording or is over 5 MB (`MotionPass.images_read`). When the inventory has more than pass T examined, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and the sentence "32 images: only the first 30 were checked for animation." Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

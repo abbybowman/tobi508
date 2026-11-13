@@ -1,8 +1,9 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.6.0
+spec_version: 1.7.0
 guards: unrecorded-code, reveal, reveal-content
+count: canvases, draggable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -21,7 +22,7 @@ The tool gives each page one 4.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
-| A1 | P1 and P2 reach zero stops, the DOM inventory has zero candidates, and the pointer scan finds zero pointer targets | DOES NOT APPLY (no user activated functionality) | p. 19 Applicability |
+| A1 | P1 and P2 reach zero stops, the DOM inventory has zero candidates, the pointer scan finds zero pointer targets, and nothing was recorded for a person to look at (kind U: a drawing area, something dragged, an embedded object, a pointer-only area; 1.7.0, review E-03) | DOES NOT APPLY (no user activated functionality) | p. 19 Applicability |
 | A2 | Zero stops, but the inventory has candidates | NEEDS REVIEW (walk or inventory fault) | Spec rule |
 | A3 | Otherwise | Applies; go to section 3 | p. 19 Applicability |
 
@@ -130,6 +131,8 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
 **Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test's walk, pointer scan and execute check do not go through opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
+
+**Guard CN: drawing areas and dragged items** (1.7.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review E-03). The page's inventory (`count.py`, `Report.counts`) counts drawing areas (`canvas`, 50 px or more each way) and items marked `draggable` in every document, web component and frame. This test records them for a person (kind U) and never tests them, so none counts as read (`State4A.read`). When the page has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("1 drawing area (canvas) was not checked", "1 item moved by dragging was not checked"). Trace row `CN`. FAIL is unchanged. With A1's own condition (1.7.0) this closes E-03 twice over: A1 no longer matches when anything was recorded for a person, and the guard catches a drawing area or dragged item the pointer scan did not record (one inside a web component).
 
 ## 4. Judgment questions
 

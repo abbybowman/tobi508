@@ -1,7 +1,8 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.3.0
+spec_version: 1.4.0
+count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -22,7 +23,7 @@ The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS R
   - *table of contents*: a link to T inside a region or list labelled "contents" or "on this page";
   - *site map*: a link to T, outside those regions, on another page that is a site map: a page people can see and reach from a visible link (its title or first heading says "site map" or "sitemap", or a link named so leads to it). An XML sitemap for search engines is not a way for people (1.1.0);
   - *links between pages*: a link to T anywhere else on another page (its content);
-  - *search*: the site search leads to T (below), or T is the site search's own page: a search form on T or on another page submits to T (W5, 1.3.0).
+  - *search*: the site search leads to T (below), or T is the site search's own page: a search form on T or on another page submits to T (W5, 1.4.0).
 - *Search form*: a form with role search, a search field, or a field named `q`, `query`, `search`, `s`, `k`, `keyword`, `keywords`, `searchterm` or `term` (the last three 1.1.0), on T or on another page.
 - *Live search* (Abby, 2026-11-02: exhaust the pages first, then run the search on the live site): only when the caller's pages show fewer than two kinds and a search form exists. One search per run: the form must submit by GET; its action URL must pass the allowlist and be on T's host (the allowlist is checked on every redirect hop, the host at the end); the term is T's first `h1`, else its title; the request carries the form's own hidden fields and the term, nothing else. The results page is recorded as its own HAR and read like another page. Search counts as a way when the results page links to T (HtT 2.b; G161 step 5).
 - *Suggested pages*: same-host URLs the pages link to that could show more ways and were not given: links named "site map", "sitemap" or "A-Z index"; the home page (a link to the site's root, or named "home"); breadcrumb links. At most 5. They are proposed to the calling agent, which may call again with them, or with other pages of the site it finds that show more ways, as `other_pages` without asking the user first (Abby, 2026-11-05; post-round 1 fix 18: no agent asked a user, and 19.A was undecided on every round 1 page). The tool never visits them by itself (Abby, 2026-11-02); pages passed back are checked like any other page (allowlist, same host) (1.1.1).
@@ -56,7 +57,7 @@ The instance is the page: the kinds of way found.
 | W1 | Links to T on the other pages, each classified by kind (Terms) | Kinds found | p. 75 HtT 1, 2.a |
 | W2 | Fewer than two kinds, a search form, the live search allowed and run, its results link to T (outside navigation, banner and contentinfo regions, 1.1.0) | Adds search | p. 75 HtT 2.b; G161 |
 | W3 | The live search ran and its results do not link to T | Search does not lead to T (not a way) | p. 75 ER 2 |
-| W5 | A search form (Terms) on T or on another page submits by GET to T: its own `action` attribute names T's address, the query and a trailing slash aside (a form with no `action` submits to the page it is on and does not count). Submitting any search lands on T | Adds search, without the live search (1.3.0) | p. 75 HtT 1 (site search), 2.b; Abby, 2026-11-08 (post-round 2 fix 10: svs.gsfc.nasa.gov/search/, reached from the top-nav search box and a content link on the home page; key Pass) |
+| W5 | A search form (Terms) on T or on another page submits by GET to T: its own `action` attribute names T's address, the query and a trailing slash aside (a form with no `action` submits to the page it is on and does not count). Submitting any search lands on T | Adds search, without the live search (1.4.0) | p. 75 HtT 1 (site search), 2.b; Abby, 2026-11-08 (post-round 2 fix 10: svs.gsfc.nasa.gov/search/, reached from the top-nav search box and a content link on the home page; key Pass) |
 | W4 | The search form cannot be run (POST, script only, off host, blocked, time, or longer than a caller-named page's 20 s share), or its results page was over the read cap and did not link to T (1.1.0) | Search not verified | Spec rule |
 
 **3b. Page outcome (first match wins)**
@@ -78,6 +79,8 @@ The instance is the page: the kinds of way found.
 | G4 | "We found only <kinds or 'no way'> to reach this page, and nothing else to check: add a second way, such as a link in the site navigation, a site map or a site search that finds it." |
 | A1 | "This test could not be performed: it needs other pages of the same site. Run it again with other_pages (the home page and, if there is one, the site map)." |
 | A3 | "This page is a step in a process (or its result), so this test does not apply." |
+
+**Guard CN: navigation inside web components** (1.3.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

@@ -180,7 +180,7 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "DNA", "rows": []},
         "5.C": {"outcome": "DNA", "rows": []},
     },
-    # Post-round 2 fix 8 (5.A 1.4.0; svs.gsfc.nasa.gov's site search, key
+    # Post-round 2 fix 8 (5.A 1.5.0; svs.gsfc.nasa.gov's site search, key
     # Pass on 7 pages): a placeholder-only box whose input group holds icon
     # buttons (a magnifier submit, a clear button) is not failed by M3; a
     # person looks at the picture (J1, the graphic case).
@@ -209,7 +209,7 @@ EXPECTED: dict[str, dict] = {
     # missing "Mission status": the heading is the set's question (TT 5.C
     # Note 4), and since 1.3.0 a quote from the heading over an option
     # passes M7's check (Abby, 2026-11-06).
-    # Post-round 2 fix 9c (5.C 1.6.0): the heading sits directly over the
+    # Post-round 2 fix 9c (5.C 1.7.0): the heading sits directly over the
     # set, so it is the set's question; not announced, it fails without a
     # question (M3h), as the judge's "missing" answer did before.
     "f19-filter-boxes-under-heading": {
@@ -254,7 +254,7 @@ EXPECTED: dict[str, dict] = {
             "answers": COMPLETE,
         },
     },
-    # Post-round 2 fix 9 (5.C 1.7.0; svs.gsfc.nasa.gov carousels on 14592,
+    # Post-round 2 fix 9 (5.C 1.8.0; svs.gsfc.nasa.gov carousels on 14592,
     # 14194, Galleries, key Pass): scroll buttons that are aria-hidden and
     # outside the Tab order are in neither the Tab order nor the
     # accessibility tree, and Tab reaches every card: not components.
@@ -418,7 +418,7 @@ async def test_a_quote_for_a_button_set_may_hold_words_of_several_rows(
 
 
 async def test_icon_buttons_do_not_pass_the_box_by_themselves(settings, server, drafts):  # noqa: F811
-    """Fix 8 (5.A 1.4.0) only moves the box from M3 to J1: when the person
+    """Fix 8 (5.A 1.5.0) only moves the box from M3 to J1: when the person
     looking says the icons do not label it, it still fails (M5)."""
     got = await run_both(
         settings,
@@ -431,7 +431,7 @@ async def test_icon_buttons_do_not_pass_the_box_by_themselves(settings, server, 
 
 
 async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, drafts):  # noqa: F811
-    """Post-round 2 fix 9c (5.C 1.6.0; svs.gsfc.nasa.gov Home): result cards
+    """Post-round 2 fix 9c (5.C 1.7.0; svs.gsfc.nasa.gov Home): result cards
     that script adds inside a filter form ("ID: 15116") are another row's
     text. Before, each box carried card text, the set merge broke, and the
     judge got one question per box."""

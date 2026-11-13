@@ -220,6 +220,20 @@ class State5D(BaseModel):
     skip: list[str] = Field(default_factory=list)  # path keys that changed context
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
+    # What pass F read, by the page inventory's keys (count.py; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
+
+
+def what_was_read(fields: list[Field5D], count) -> dict[str, int]:
+    """The fields the walk reached (radio groups once), and the hidden fields
+    the fill showed and then filled, matched to the inventory by path."""
+    hidden = set(count.hidden_field_paths) if count is not None else set()
+    shown = {f.css_path for f in fields if f.index < 0 and f.css_path}
+    return {
+        "fields": sum(f.index >= 0 for f in fields),
+        "fields_hidden": len(hidden & shown),
+        "contenteditable": 0,
+    }
 
 
 # ── Pass F ───────────────────────────────────────────────────────────────────
@@ -644,6 +658,11 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State5D:
                     pass
             await s.close()
     st.fields = fields
+    st.read = {
+        "page": what_was_read(
+            _fields(walk) + [f for f in fields if f.index < 0], ctx.cache.get("count")
+        )
+    }
     return st
 
 

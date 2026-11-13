@@ -172,6 +172,11 @@ class State5C(BaseModel):
     lp: LabelsPass
     j: dict[str, dict] = Field(default_factory=dict)  # "c<n>-J1" -> answer
 
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """What pass L read, for guard CN (count.py)."""
+        return self.lp.read
+
 
 # ── Rules ────────────────────────────────────────────────────────────────────
 
@@ -600,7 +605,7 @@ class Check5C:
         lp = await labels_pass(ctx, walk)
         # Controls that are aria-hidden and outside the Tab order (tabindex
         # below 0, and the walk never stopped on them) are in neither the Tab
-        # order nor the accessibility tree: not components of 5.C (1.7.0,
+        # order nor the accessibility tree: not components of 5.C (1.8.0,
         # post-round 2 fix 9). One that Tab reaches stays, and fails as any.
         out = [c for c in lp.components if hidden_off_tab(c)]
         if out:

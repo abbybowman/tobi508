@@ -115,6 +115,8 @@ class State9A(BaseModel):
     units: list[Unit] = Field(default_factory=list)
     rep: list[bool] = Field(default_factory=list)
     m: int | None = None
+    # What the site read covered, per page (site.SiteRead.read; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
     m_kind: str = ""  # main | h1 | first_unique
     block: list[int] = Field(default_factory=list)
     cands: list[Cand] = Field(default_factory=list)
@@ -267,6 +269,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
     st = State9A(
         pages=[{"n": p.n, "url": p.final_url} for p in ctx.pages],
         read_errors=site.errors,
+        read=site.read,
     )
     if st.read_errors:
         return st

@@ -121,7 +121,7 @@ COMPONENTS_JS = (
     }
     return best ? txt(best) : '';
   };
-  // The heading sits directly over the option's set (5.C 1.6.0, M3h): no
+  // The heading sits directly over the option's set (5.C 1.7.0, M3h): no
   // visible text between the heading and the set's first option, so the
   // heading is the question the set answers, not a section title further up.
   const headingEl = (el) => {
@@ -173,7 +173,7 @@ COMPONENTS_JS = (
       row_text: button ? rowText(el) : '',
       menu: button && isMenu(el),
       heading: isOpt(el) ? headingOf(el) : '',
-      // Hidden from screen readers and out of the Tab order (5.C 1.7.0).
+      // Hidden from screen readers and out of the Tab order (5.C 1.8.0).
       aria_hidden: !!el.closest('[aria-hidden="true"]'),
       tabbable: el.tabIndex >= 0,
       heading_direct: (() => {
@@ -235,7 +235,7 @@ FOCUS_JS = (
   }
   // Buttons with no text (an icon: a magnifier, a clear button) in the
   // field's input group (the same parent) or in its search form: a picture
-  // may label the field, so M3 asks J1 instead of failing (5.A 1.4.0; fix 8).
+  // may label the field, so M3 asks J1 instead of failing (5.A 1.5.0; fix 8).
   // The same filter as above: a menu button never counts.
   const srch = !!((form || el).closest('[role=search],search'));
   let icons = 0;
@@ -252,7 +252,7 @@ FOCUS_JS = (
     if (el.contains(m) || inOther(m) || !shown(m) || !inReg(m.getBoundingClientRect())) continue;
     imgs++;
   }
-  // An option's nearby text is its own row's (5.C 1.6.0, post-round 2 fix
+  // An option's nearby text is its own row's (5.C 1.7.0, post-round 2 fix
   // 9c): text in a block that holds a link or another option, and not this
   // option, belongs to that block (a result card added inside a filter form:
   // "ID: 15116"). A question in a block of its own stays.
@@ -411,6 +411,10 @@ class LabelsPass(BaseModel):
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
     revealed_from: list[str] = Field(default_factory=list)
+    # What this pass read, by the page inventory's keys (count.py; guard CN):
+    # documents only, so nothing inside web components or frames, and no
+    # editable areas; hidden fields only those an opened section showed.
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
 def _norm(t: str) -> str:
@@ -598,5 +602,19 @@ async def labels_pass(ctx, walk) -> LabelsPass:
         }
         for c in lp.components:
             c.tab_index = idx.get(c.css)
+    lp.read = {"page": what_was_read(lp, ctx.cache.get("count"))}
     ctx.cache["labels-pass"] = lp
     return lp.model_copy(deep=True)
+
+
+def what_was_read(lp: LabelsPass, count) -> dict[str, int]:
+    """Pass L's reading by the inventory's keys. Hidden fields are matched by
+    path: one is read when an opened section showed it and it was read."""
+    opened = {c.css for c in lp.components if c.origin != "load"}
+    hidden = set(count.hidden_field_paths) if count is not None else set()
+    return {
+        "fields.shadow": 0,
+        "fields.frames": 0,
+        "contenteditable": 0,
+        "fields_hidden": len(hidden & opened),
+    }

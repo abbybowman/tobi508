@@ -247,6 +247,127 @@ a MINOR bump of every spec that lists it, the README status lines,
 `docs/hackathon/evaluation.md` and the deck slide, and the roadmap's
 "Known limits".
 
+### Design note (thread B, 2026-11-12; for Abby before code)
+
+**The `Count`** (`count.py`, a Pydantic model; facts only). Each thing
+is a `Part` with `light` (the page's own document), `shadow` (inside
+open shadow roots, at any depth) and `frames` (inside any frame,
+including its shadow roots); a spec key names a part with a dot
+(`fields.shadow`) or the whole with the bare name (`fields`).
+
+| Key | What is counted | Notes |
+| --- | --- | --- |
+| `fields` | rendered form fields, the walk's `FIELD` selector, radio groups once | same definition as `dom_inventory`'s `form_fields` |
+| `fields_hidden` | fields in the DOM and not rendered (`display: none`, `hidden`, closed `<details>`); paths kept (light DOM, first 200) | not disabled; `type=hidden` excluded |
+| `contenteditable` | editable regions not inside a field | |
+| `forms_with_button` | `form` elements holding any `button` or `input[type=submit\|button\|image]`, rendered or not; paths kept | |
+| `media`, `media_played` | `video`/`audio` elements; elements that played (the hook), split light / shadow / detached | `media_played` has a fourth part, `detached` |
+| `canvases`, `draggable`, `images` | canvas 50 px or more; `draggable=true`; `img` | |
+| `focusable` | the walk's tabbable candidates (today's inventory) | |
+| `landmarks`, `links` | landmark elements and roles; `a[href]` | |
+| `frames`, `frames_unread`, `players` | frames; frames a script could not run in; frames whose host is a known player (2.B's list) | plain numbers |
+| `shadow_roots`, `closed_hosts` | open roots entered; custom elements with no open root (maybe a closed one) | plain numbers |
+
+Plus `where` ("walk", "own load", "site read"), `error` (the count
+could not be taken) and `played_from` ("pass T" or the count's load).
+
+**Where it is read.**
+
+- Tested page: a walk extra of the pipeline's own, P1 only, whose
+  `on_start` runs the count after `Traversal.start()` has settled (no
+  extra load; C-09). A confirming second P1 does not count again. When
+  no walk runs, one load of its own (settle, count, close) before the
+  checks collect. Kept in `ctx.cache["count"]`, written to
+  `evidence/count.json` and `report.counts["page"]`.
+- Other pages: `site.read_page` runs the same script on the load it
+  already makes, into `PageRead.count` and `report.counts["p1"]` ...
+- One script per Playwright frame (as `dom_inventory` does, so
+  cross-site frames are counted too); a frame that refuses it adds to
+  `frames_unread`.
+- **The play hook** (`PLAY_HOOK_JS`), added by `capture.replay_context`
+  to every replay context before page scripts: wraps
+  `HTMLMediaElement.prototype.play` and `speechSynthesis.speak`, listens
+  for `play` on the document (capture) and on every shadow root as
+  `attachShadow` makes it (media events do not cross a shadow
+  boundary, and `<audio autoplay>` never calls `play()`). It keeps the
+  elements in a list, so `new Audio()` counts though it is never in the
+  document. Read at the count; and at the end of pass T's watch, which
+  is the load where autoplay is allowed: that reading replaces
+  `media_played` when pass T runs (`played_from: "pass T"`).
+
+**How a check reports what it read.** Every check's state gets
+`read: dict[str, dict[str, int]]`, keyed by page (`"page"`, `"p1"` ...)
+then by count key, filled in `collect` from its reader's own data (a
+number, never a decision). Readers that today enter no shadow root or
+frame report 0 there, so the gap shows; after part D they report what
+they read and the guard goes quiet with no change. Where a count by
+number would let one read thing hide another, the check matches by
+path: `fields_hidden` read = hidden fields whose path a revealed read
+(`labels.read_revealed`, 5.D's pass F) actually read;
+`forms_with_button` read = forms 5.F-5.H took. 2.A's `media_played`
+read = played elements that are in its own media list (`M.media`).
+A check that does not report a key the spec lists reads as 0 there.
+
+**The guard** (`CN`, front matter `count:`, in `engine.apply_guards`
+after GU, RV and RC; it gets the check's state as a new argument):
+
+- For each page the check's `read` names and each key the spec lists,
+  a gap is `count - read` when positive. Any gap: PASS or DOES NOT
+  APPLY becomes NEEDS REVIEW, note "This test could not be performed",
+  row `CN`, the gaps' sentences in the summary (first three), all of
+  them in the rationale with their numbers. FAIL and NOT TESTED are
+  unchanged.
+- The count is missing or has `error` while the spec lists keys: the
+  same move, "This page's contents could not be inventoried, so this
+  test's result could not be confirmed." (Abby, 2026-11-12: "inventoried",
+  not "counted". The inventory is taken once, so this means it could not
+  be taken, not that two readings disagreed.)
+  An old run with no `counts` is left as it was.
+- A key may be marked `@dna` (`count: focusable@dna`): it holds DOES
+  NOT APPLY only. Proposed for 4.F, where a page often has more
+  focusable elements than the walk reaches and the walk's own rows
+  already decide PASS (F-11 is the DOES NOT APPLY case).
+- Sentences, one per key and part, plain, with the number:
+  - "2 form fields inside web components were not checked."
+  - "1 form field inside a frame was not checked."
+  - "1 form field is hidden until something opens it, and was not checked."
+  - "1 editable text area was not checked."
+  - "1 form with a button was not tested."
+  - "1 sound or video played from a script or a web component, and was not checked."
+  - "31 images: only the first 30 were checked for animation."
+  - "1 video player in a frame was not checked." ; "1 drawing area
+    (canvas) and 1 item moved by dragging were not checked."
+  - "The page has 4 elements that take focus, and the keyboard reached 1."
+  - "On other page 1, 3 links inside a web component were not read."
+
+**Keys per spec** (the draft table above, made concrete):
+
+| Tests | `count:` |
+| --- | --- |
+| 5.A, 5.B, 5.C | `fields.shadow, fields.frames, fields_hidden, contenteditable` |
+| 5.D | `fields, fields_hidden, contenteditable` |
+| 5.F, 5.G, 5.H | `forms_with_button, fields_hidden, fields.shadow, fields.frames` |
+| 2.A | `media_played, media.shadow, media.frames` |
+| 2.B, 2.C | `players, media.shadow, images, canvases` |
+| 3.A | `images, players` |
+| 4.A | `canvases, draggable`, and row A1 itself requires none recorded (E-03) |
+| 4.F | `focusable@dna` |
+| 9.A, 9.B, 9.C, 19.A | `landmarks.shadow, landmarks.frames, links.shadow, links.frames` |
+
+**Order of work,** one commit each, every fixture of the family rerun:
+(1) `count.py`, the hook, the report field, and the guard with the
+template and principle 3, no spec listing a key yet (nothing moves);
+(2) 5.A-5.C (`v/shadow-form`, `h/b3`, `h/b2`); (3) 5.D; (4) 5.F-5.H
+(`m/mf_hidden`, `m/mh_delete`); (5) 2.A (`n/a_detached`, `n/a_shadow`);
+(6) 2.B, 2.C, 3.A (`n/g_many`); (7) 4.A (`e/canvasonly`); (8) 4.F
+(`f/trap`); (9) 9.A-9.C, 19.A (`v/sh-a` with `v/sh-b`). The pages go
+to `tests/fixtures/count/` with one test file; the quiet page is a
+light-DOM form, a played `<audio>` with controls, and a light header.
+
+**Decided (Abby, 2026-11-12):** 4.F's `focusable` holds DOES NOT APPLY
+only (`@dna`); 5.D lists `fields_hidden` (NEEDS REVIEW on a page with a
+hidden form until phase 3 of fix 9b); the count runs on every run.
+
 ## Part C: every reading reports what it covered
 
 Part B catches what a count can see. This part catches the rest: a cap

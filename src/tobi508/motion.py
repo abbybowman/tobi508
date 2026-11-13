@@ -40,7 +40,9 @@ from PIL import Image, ImageChops
 from playwright.async_api import BrowserContext, Frame, Page
 from pydantic import BaseModel, Field
 
+from tobi508 import count as inventory
 from tobi508.browser import AUTOPLAY_ARG, MOTION_BROWSER  # noqa: F401
+from tobi508.models import Part
 from tobi508.observe import DIALOGS_JS
 from tobi508.redact import safe_error
 from tobi508.site import UNITS_FN
@@ -836,6 +838,13 @@ class MotionPass(BaseModel):
     timers: list[Timer] = Field(default_factory=list)
     audio_connects: int = 0
     media: list[Media] = Field(default_factory=list)
+    # Media that played on this load, attached to a document or not (the play
+    # hook, count.py), and how many of them `media` lists (guard CN, N-01).
+    played: Part | None = None
+    played_listed: Part = Field(default_factory=Part)
+    # Image addresses the animated-image read examined (at most 30, each
+    # in the recording and small enough to decode), for guard CN.
+    images_read: int = 0
     polls: list[Poll] = Field(default_factory=list)
     carousels: list[str] = Field(default_factory=list)  # "<frame>|<css>" at 0 s
     blink_markup: bool = False  # <blink> or text-decoration: blink (2.B note)
@@ -1261,6 +1270,12 @@ async def _watch(
         out.below = []
     out.regions = sorted(regions.values(), key=lambda r: (r.box[1:2], r.box[0:1]))
 
+    try:
+        got = await inventory.played(page)
+    except Exception:
+        got = None
+    if got is not None:
+        out.played, out.played_listed = got
     for i, _, facts in await _each_frame(
         page, "() => window.__a11yMotion ? window.__a11yMotion.facts() : null"
     ):
@@ -1433,8 +1448,11 @@ async def _long_images(page, har: Path, out: MotionPass) -> dict[str, str]:
     try:
         for src in srcs[:30]:
             body = media_body(har, src)
-            kind = _image_type(body) if body else None
-            if not kind or len(body) > IMAGE_MAX_BYTES:
+            if not body or len(body) > IMAGE_MAX_BYTES:
+                continue
+            out.images_read += 1  # read: a type that cannot animate is done
+            kind = _image_type(body)
+            if not kind:
                 continue
             if tool is None:
                 tool_ctx, tool = await _secure_tool_page(page)

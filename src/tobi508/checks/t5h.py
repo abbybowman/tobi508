@@ -60,6 +60,8 @@ class State5H(BaseModel):
     forms: list[Form5H] = Field(default_factory=list)
     j1: dict[str, Any] | None = None
     j2: dict[str, Any] | None = None
+    # What pass E read, for guard CN (count.py).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
@@ -67,7 +69,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
         return State5H(ran=False, incomplete=["The keyboard walk did not run."])
     ps = await error_pass(ctx, walk)
     # 5.F's whole list: a cut walk, unread forms or reads (spec A2, 1.1.0).
-    st = State5H(incomplete=incomplete_of(ps))
+    st = State5H(incomplete=incomplete_of(ps), read=ps.read)
     base_texts: list[str] = []
     all_text = ""
     for f in ps.forms:

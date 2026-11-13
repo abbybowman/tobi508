@@ -104,6 +104,7 @@ flowchart LR
 - When a rule cannot decide: NEEDS REVIEW, never PASS
 - An opinion becomes PASS only when a key press confirms it, or the question is one a tester settles by looking
 - A test the tool cannot perform says so, by name
+- Never PASS or Does Not Apply on a reading that is not complete: an inventory of the page holds back a result when a test did not read everything there
 
 **Notes:** A false PASS hides a barrier from the people it blocks. A false FAIL costs a developer time. The scoring weights say the same: a false PASS counts three times any other error.
 

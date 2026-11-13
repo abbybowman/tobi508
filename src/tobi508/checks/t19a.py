@@ -65,9 +65,11 @@ class State19A(BaseModel):
     pages: list[dict[str, Any]] = Field(default_factory=list)
     t_url: str = ""
     t_requested: str = ""  # the caller's URL before redirects, when it differs
+    # What the site read covered, per page (site.SiteRead.read; guard CN).
+    read: dict[str, dict[str, int]] = Field(default_factory=dict)
     links: list[LinkTo] = Field(default_factory=list)
     search_forms: int = 0
-    # T is the address a search form submits to (W5, 1.3.0)
+    # T is the address a search form submits to (W5, 1.4.0)
     search_target: str = ""
     search: Search = Field(default_factory=Search)
     suggestions: list[str] = Field(default_factory=list)
@@ -99,7 +101,7 @@ def _path(u: str) -> tuple[str, str, str]:
 
 
 def search_target(forms: list[dict[str, Any]], t: tuple[str, ...]) -> str:
-    """The action of a search form that submits to T (spec W5, 1.3.0): a GET
+    """The action of a search form that submits to T (spec W5, 1.4.0): a GET
     form whose own action attribute names T's address (query and trailing
     slash aside). Submitting any search lands on T, so the site search
     reaches it. A form with no action submits to the page it is on and
@@ -221,6 +223,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     st = State19A(
         pages=[{"n": p.n, "url": p.final_url} for p in ctx.pages],
         read_errors=site.errors,
+        read=site.read,
     )
     if st.read_errors:
         return st
