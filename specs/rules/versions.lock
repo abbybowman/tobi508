@@ -9,7 +9,7 @@
 4a-keyboard-access.md 1.8.1 9c65faa9ca316f3f580e6125e538c18ada4eaa4bb79100dff6402c347b8a1a30
 4b-no-keystroke-timing.md 1.3.0 9da43cd17d25a3d68e43a942924070c6a86949e1ba6875b0a9f9713058bb57fe
 4c-no-keyboard-trap.md 1.13.0 6c055d884af73caaecaaaac6d91883e968d38ef9745c84dd772ab84b755cdc58
-4d-focus-visible.md 1.6.0 f21c48eaa3bc0015feb98fb2392c6ab18176cfeb7e7a9e4caffb97a8acf33a70
+4d-focus-visible.md 1.6.0 55f5d984ac6a4583eaa807be76490a552da10aea874c83b67a8bf03ac1ce4537
 4e-on-focus.md 1.4.0 c1d3cc40d10e693b74d339709471b176e650a1ed39f8d3281253d1d54c0853e0
 4f-focus-order-meaning.md 1.8.0 2ca2e29d5f57bc0dac24cb6b5b5385f61428b9918380c99a717488d3b0dda13a
 5a-label-provided.md 1.8.0 dbfed9716fc8e79fe181ed79d2f89e4fa5228cb3103813a9db0f54b0ebeda332

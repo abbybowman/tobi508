@@ -48,7 +48,7 @@ P1 collects at every stop. P2 collects only at stops (matched by frame chain plu
 
 **Time budget:** measured with the build on Linux (Chromium headless shell): a 100-link page takes 53 s for the walk and 4.D together, of which the walk is about 36 s. Widget pass W adds one replay per widget (about 2–3 s). Earlier estimate, measured on Linux (Chromium headless shell, Playwright 1.63): a clip screenshot takes about 27 ms (median) and a CDP style read about 10 ms, so about 100 ms per stop. On a typical page of 100 stops that is about 10 s for P1 plus a few P2 top-ups, on top of the walk itself. Windows headed Chrome is not yet measured (V8). The whole run stays within `run_limit_s` (4.C spec section 2, Run limits): pass W starts no widget after the checks' deadline (1.1.0); when the walk stops at the limit, stops without complete evidence go to M4 and G3 gives the reason "the page is too large to finish within the time limit".
 
-**Pictures for J1** (1.6.0, fix 26; round 2: 7 of C's 4.D answers were unsure on 48 × 47 px pictures and "a faint ring", where the key passes). A picture whose long side is under `JUDGE_MIN_SIDE` (480 device px) is also saved scaled up in whole steps (at most `JUDGE_MAX_SCALE`, 4), nearest-neighbour so the pixels stay the page's own, as `…-x<k>.png` beside it; J1's images A, B and C are these copies, and the originals stay evidence. **Ring** (a measured fact in `changed_pixels`, no row reads it): `sides_changed` lists the sides of the element (top, right, bottom, left) along which changed pixels sit within `INDICATOR_MARGIN_PX` of the box, outside or just inside it, over at least `RING_SIDE_SHARE` (0.5) of that side's length; `ring: true` when all four do. A ring is a shape, not a degree of visibility: it never turns a faint change into a yes.
+**Pictures for J1** (1.6.0, fix 26; round 2: 7 of C's 4.D answers were unsure on 48 × 47 px pictures and "a faint ring", where the key passes). A picture whose long side is under `JUDGE_MIN_SIDE` (480 device px) is also saved scaled up in whole steps (at most `JUDGE_MAX_SCALE`, 4), nearest-neighbour so the pixels stay the page's own, as `…-x<k>.png` beside it; J1's images A, B and C are these copies, and the originals stay evidence. **Ring** (a measured fact in `changed_pixels`, no row reads it): `sides_changed` lists the sides of the element (top, right, bottom, left) along which changed pixels sit in the band of `INDICATOR_MARGIN_PX` just outside the box (not inside it: the text of a link reaches its edges; the top and bottom bands run out to the corners), at least `RING_SIDE_PX` (6 CSS px) changed on that side; `ring: true` when all four do. A ring is a shape, not a degree of visibility: it never turns a faint change into a yes.
 
 **Constants.** These decide outcomes, so they live in this spec, not in server config (CLAUDE.md principle 2): changing one is a spec version change. Provisional until the V-checks and fixtures calibrate them.
 
@@ -59,7 +59,7 @@ P1 collects at every stop. P2 collects only at stops (matched by frame chain plu
 | `PIXEL_DELTA_STRONG` | 40 | Strongly changed pixel |
 | `CONTEXT_MIN_W`, `CONTEXT_MIN_H` | 160, 100 CSS px (1.6.0): the smallest clip | On image |
 | `JUDGE_MIN_SIDE`, `JUDGE_MAX_SCALE` | 480 device px, 4 (1.6.0) | Pictures for J1 |
-| `RING_SIDE_SHARE` | 0.5 (1.6.0) | Ring fact |
+| `RING_SIDE_PX` | 6 CSS px (1.6.0) | Ring fact |
 | `MIN_CHANGED_PX` | 12 CSS px² | M6, M7, M8 |
 | `MASK_MAX_FRACTION` | 0.5 | Complete evidence |
 | `WIDGET_ITEMS_MAX` | 5 items per widget | Widget pass W |

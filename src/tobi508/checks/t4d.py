@@ -45,9 +45,9 @@ CONTEXT_MIN_W = 160
 CONTEXT_MIN_H = 100
 JUDGE_MIN_SIDE = 480
 JUDGE_MAX_SCALE = 4
-# A side of the element has changed pixels along at least this share of its
-# length: the changed pixels form a ring when all four sides do.
-RING_SIDE_SHARE = 0.5
+# A side of the element has at least this many changed CSS px in the band just
+# outside it: the changed pixels form a ring when all four sides do.
+RING_SIDE_PX = 6
 MASK_MAX_FRACTION = 0.5
 WIDGET_ITEMS_MAX = 5
 WIDGET_MAX = 10
@@ -589,20 +589,20 @@ def _sides_changed(
     size: tuple[int, int],
 ) -> list[str]:
     """The sides of the element along which changed pixels sit in the band of
-    INDICATOR_MARGIN_PX around the box (outside it or just inside it), over at
-    least RING_SIDE_SHARE of the side's length. A fact for J1 (1.4.0): all four
-    sides is a ring or halo around the element; it says nothing of how visible
-    it is. No outcome reads it."""
+    INDICATOR_MARGIN_PX just outside its box, RING_SIDE_PX or more on each. A fact for J1 (1.6.0): all four sides is a ring or halo
+    around the element; it says nothing of how visible it is. Only outside the
+    box: the text of a link reaches its edges, so a colour change in it looked
+    like a ring on CI's fonts. No outcome reads it."""
     x, y, w, h = e["self_rect"]
     m = INDICATOR_MARGIN_PX
     x0, y0 = (x - cp[0]) * dpr, (y - cp[1]) * dpr
     x1, y1 = x0 + w * dpr, y0 + h * dpr
     band = m * dpr
     strips = {  # side -> (strip box, True when the side runs along x)
-        "top": ((x0, y0 - band, x1, y0 + band), True),
-        "bottom": ((x0, y1 - band, x1, y1 + band), True),
-        "left": ((x0 - band, y0, x0 + band, y1), False),
-        "right": ((x1 - band, y0, x1 + band, y1), False),
+        "top": ((x0 - band, y0 - band, x1 + band, y0), True),
+        "bottom": ((x0 - band, y1, x1 + band, y1 + band), True),
+        "left": ((x0 - band, y0, x0, y1), False),
+        "right": ((x1, y0, x1 + band, y1), False),
     }
     got = []
     for side, (box, along_x) in strips.items():
@@ -614,9 +614,7 @@ def _sides_changed(
         )
         if bx[2] <= bx[0] or bx[3] <= bx[1]:
             continue
-        xp, yp = changed.crop(bx).getprojection()
-        prof = xp if along_x else yp
-        if prof and sum(prof) / len(prof) >= RING_SIDE_SHARE:
+        if changed.crop(bx).histogram()[255] / (dpr * dpr) >= RING_SIDE_PX:
             got.append(side)
     return got
 
