@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">TOBI: how a page gets tested (planned flow)</title>
+<desc id="d">A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric; a sure answer goes back to the rule, and an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into an SCRT record. The results and a link to the report go back to the agent, which explains them.</desc>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#003366"/></marker></defs>
+<rect width="1600" height="900" fill="#ffffff"/>
+<text x="40" y="58" font-size="34" font-weight="bold" fill="#003366">TOBI: how a page gets tested</text>
+<text x="40" y="90" font-size="18" fill="#444">The planned flow: the server judges, a person reviews, the calling agent explains</text>
+<rect x="340" y="120" width="740" height="500" rx="16" fill="#eef3f9" stroke="#003366" stroke-width="2.5"/>
+<text x="360" y="150" font-size="20" font-weight="bold" fill="#003366">TOBI MCP server (hosted on NASA's VAST)</text>
+<rect x="40" y="170" width="250" height="250" rx="12" fill="#ffffff" stroke="#003366" stroke-width="2.5"/>
+<circle cx="66" cy="198" r="15" fill="#003366"/><text x="66" y="204" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">1</text>
+<text x="90" y="204" font-size="19" font-weight="bold" fill="#003366">Developer's AI agent</text>
+<text x="56" y="232" font-size="16" fill="#1b1b1b">Any MCP client, in the</text>
+<text x="56" y="253" font-size="16" fill="#1b1b1b">tool the developer</text>
+<text x="56" y="274" font-size="16" fill="#1b1b1b">already uses.</text>
+<text x="56" y="295" font-size="16" fill="#1b1b1b"></text>
+<text x="56" y="316" font-size="16" fill="#1b1b1b">Asks TOBI to test a page.</text>
+<text x="56" y="337" font-size="16" fill="#1b1b1b">Later explains the results</text>
+<text x="56" y="358" font-size="16" fill="#1b1b1b">in plain words and helps</text>
+<text x="56" y="379" font-size="16" fill="#1b1b1b">fix the developer's code.</text>
+<rect x="365" y="175" width="205" height="125" rx="12" fill="#ffffff" stroke="#003366" stroke-width="2.5"/>
+<circle cx="391" cy="203" r="15" fill="#003366"/><text x="391" y="209" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">2</text>
+<text x="415" y="209" font-size="19" font-weight="bold" fill="#003366">Record the page</text>
+<text x="381" y="237" font-size="16" fill="#1b1b1b">Once, in real Chrome.</text>
+<text x="381" y="258" font-size="16" fill="#1b1b1b">Every test runs on the</text>
+<text x="381" y="279" font-size="16" fill="#1b1b1b">same replayed copy.</text>
+<rect x="615" y="175" width="205" height="125" rx="12" fill="#ffffff" stroke="#003366" stroke-width="2.5"/>
+<circle cx="641" cy="203" r="15" fill="#003366"/><text x="641" y="209" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">3</text>
+<text x="665" y="209" font-size="19" font-weight="bold" fill="#003366">Rules decide</text>
+<text x="631" y="237" font-size="16" fill="#1b1b1b">One written rules spec</text>
+<text x="631" y="258" font-size="16" fill="#1b1b1b">per Trusted Tester test,</text>
+<text x="631" y="279" font-size="16" fill="#1b1b1b">citing the DHS process.</text>
+<rect x="865" y="175" width="195" height="125" rx="12" fill="#ffffff" stroke="#003366" stroke-width="2.5"/>
+<text x="881" y="209" font-size="19" font-weight="bold" fill="#003366">Outcome by rule</text>
+<text x="881" y="237" font-size="16" fill="#1b1b1b">PASS, FAIL or</text>
+<text x="881" y="258" font-size="16" fill="#1b1b1b">DOES NOT APPLY,</text>
+<text x="881" y="279" font-size="16" fill="#1b1b1b">with evidence.</text>
+<rect x="615" y="350" width="205" height="90" rx="12" fill="#ffffff" stroke="#003366" stroke-width="2.5"/>
+<text x="631" y="384" font-size="19" font-weight="bold" fill="#003366">A rule asks an</text>
+<text x="631" y="408" font-size="19" font-weight="bold" fill="#003366">open question</text>
+<rect x="615" y="490" width="205" height="115" rx="12" fill="#fff1c2" stroke="#7a5500" stroke-width="2.5"/>
+<circle cx="641" cy="518" r="15" fill="#003366"/><text x="641" y="524" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">4</text>
+<text x="665" y="524" font-size="19" font-weight="bold" fill="#3a2700">Server judge</text>
+<text x="631" y="552" font-size="16" fill="#1b1b1b">TOBI's own pinned model</text>
+<text x="631" y="573" font-size="16" fill="#1b1b1b">answers by rubric, from</text>
+<text x="631" y="594" font-size="16" fill="#1b1b1b">evidence and pictures.</text>
+<rect x="1120" y="175" width="230" height="150" rx="12" fill="#f4f4f4" stroke="#003366" stroke-width="2.5"/>
+<circle cx="1146" cy="203" r="15" fill="#003366"/><text x="1146" y="209" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">6</text>
+<text x="1170" y="209" font-size="19" font-weight="bold" fill="#003366">pre-SCRT file</text>
+<text x="1136" y="237" font-size="16" fill="#1b1b1b">Results by test ID.</text>
+<text x="1136" y="258" font-size="16" fill="#1b1b1b">Banner: not certified by</text>
+<text x="1136" y="279" font-size="16" fill="#1b1b1b">a Trusted Tester.</text>
+<text x="1136" y="300" font-size="16" fill="#1b1b1b">Records who answered what.</text>
+<rect x="1120" y="440" width="230" height="165" rx="12" fill="#e7f5ea" stroke="#0b5d1e" stroke-width="2.5" stroke-dasharray="9 6"/>
+<circle cx="1146" cy="468" r="15" fill="#003366"/><text x="1146" y="474" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">5</text>
+<text x="1170" y="474" font-size="19" font-weight="bold" fill="#0b5d1e">A person reviews</text>
+<text x="1136" y="502" font-size="16" fill="#1b1b1b">Signed in to TOBI's own</text>
+<text x="1136" y="523" font-size="16" fill="#1b1b1b">review page: a reviewer</text>
+<text x="1136" y="544" font-size="16" fill="#1b1b1b">or a Trusted Tester.</text>
+<text x="1136" y="565" font-size="16" fill="#1b1b1b">Their answer overrides</text>
+<text x="1136" y="586" font-size="16" fill="#1b1b1b">the model's.</text>
+<rect x="1395" y="175" width="180" height="150" rx="12" fill="#f4f4f4" stroke="#003366" stroke-width="2.5" stroke-dasharray="9 6"/>
+<circle cx="1421" cy="203" r="15" fill="#003366"/><text x="1421" y="209" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">7</text>
+<text x="1445" y="209" font-size="19" font-weight="bold" fill="#003366">SCRT record</text>
+<text x="1411" y="237" font-size="16" fill="#1b1b1b">The Trusted Tester's</text>
+<text x="1411" y="258" font-size="16" fill="#1b1b1b">own record, once</text>
+<text x="1411" y="279" font-size="16" fill="#1b1b1b">they have certified</text>
+<text x="1411" y="300" font-size="16" fill="#1b1b1b">every row.</text>
+<path d="M290,395 L335,395" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<text x="196" y="446" text-anchor="start" font-size="14" font-weight="bold" fill="#1b1b1b">tobi_run_tt_tests</text>
+<path d="M570,237 L610,237" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<path d="M820,237 L860,237" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<path d="M717,300 L717,345" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<text x="727" y="328" text-anchor="start" font-size="14" fill="#1b1b1b">needs a judgment</text>
+<path d="M717,440 L717,485" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<path d="M820,520 L962,520 L962,305" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<text x="972" y="420" text-anchor="start" font-size="14" font-weight="bold" fill="#1b1b1b">sure:</text>
+<text x="972" y="439" text-anchor="start" font-size="14" fill="#1b1b1b">the rule uses</text>
+<text x="972" y="458" text-anchor="start" font-size="14" fill="#1b1b1b">the answer</text>
+<path d="M820,575 L1115,575" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<text x="838" y="598" text-anchor="start" font-size="14" font-weight="bold" fill="#1b1b1b">unsure, or the model call failed</text>
+<path d="M1060,237 L1115,237" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<path d="M1235,440 L1235,330" fill="none" stroke="#003366" stroke-width="3" stroke-dasharray="9 6" marker-end="url(#a)"/>
+<text x="1245" y="378" text-anchor="start" font-size="14" fill="#1b1b1b">each answer saves</text>
+<text x="1245" y="397" text-anchor="start" font-size="14" fill="#1b1b1b">an updated file</text>
+<path d="M1350,250 L1390,250" fill="none" stroke="#003366" stroke-width="3" stroke-dasharray="9 6" marker-end="url(#a)"/>
+<path d="M470,620 L470,700 L165,700 L165,425" fill="none" stroke="#003366" stroke-width="3" marker-end="url(#a)"/>
+<text x="318" y="690" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b1b1b">results, and a link to the full report</text>
+<rect x="40" y="745" width="1535" height="118" rx="12" fill="#ffffff" stroke="#999" stroke-width="1.5"/>
+<text x="65" y="783" font-size="18" font-weight="bold" fill="#003366">The rules decide every outcome.</text><text x="65" y="809" font-size="16" fill="#1b1b1b">A model only answers the narrow</text><text x="65" y="831" font-size="16" fill="#1b1b1b">questions a rule asks.</text>
+<text x="465" y="783" font-size="18" font-weight="bold" fill="#003366">Unsure never becomes PASS.</text><text x="465" y="809" font-size="16" fill="#1b1b1b">It goes to a person, and an agent</text><text x="465" y="831" font-size="16" fill="#1b1b1b">cannot answer as that person.</text>
+<text x="865" y="783" font-size="18" font-weight="bold" fill="#003366">Agent-assisted, not certified.</text><text x="865" y="809" font-size="16" fill="#1b1b1b">Only a Trusted Tester's own</text><text x="865" y="831" font-size="16" fill="#1b1b1b">review makes an SCRT record.</text>
+<line x1="1275" y1="779" x2="1335" y2="779" stroke="#003366" stroke-width="3"/><text x="1347" y="784" font-size="15" fill="#1b1b1b">built (the judge is switched</text><text x="1347" y="803" font-size="15" fill="#1b1b1b">on per question type)</text>
+<line x1="1275" y1="829" x2="1335" y2="829" stroke="#003366" stroke-width="3" stroke-dasharray="9 6"/><text x="1347" y="834" font-size="15" fill="#1b1b1b">planned, not built yet</text>
+</svg>
