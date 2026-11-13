@@ -39,6 +39,15 @@ def test_template_rows_are_the_catalog_tests_in_order():
     assert ids == catalog.active_ids()  # 61; SCRT writes "7. D", " 1.A"
     one = scrt.template_rows()[0]
     assert one.DisabilityImpact[:2] == ["Without Vision", "With Limited Vision"]
+    # One group's name has commas of its own: it stays one entry.
+    whole = "With Limited Language, Cognitive, and Learning Abilities"
+    assert whole in one.DisabilityImpact
+    names = {n for r in scrt.template_rows() for n in r.DisabilityImpact}
+    assert not names & {"Cognitive", "and Learning Abilities"}
+    assert scrt.impacts("Without Vision, With Limited Vision") == [
+        "Without Vision",
+        "With Limited Vision",
+    ]
     assert all(r.TestResult is None for r in scrt.template_rows())
 
 

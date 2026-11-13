@@ -212,9 +212,15 @@ def _text(v: Any) -> str | None:
 
 
 def impacts(raw: str | None) -> list[str]:
-    """ "'Without Vision', 'With Limited Vision'" -> a list, duplicates dropped."""
+    """ "'Without Vision', 'With Limited Vision'" -> a list, duplicates dropped.
+
+    SCRT quotes each name, and one name has commas of its own ('With Limited
+    Language, Cognitive, and Learning Abilities'), so a quoted list is split
+    between the quotes, never at a bare comma."""
+    text = (raw or "").strip()
+    parts = re.split(r"'\s*,\s*'", text) if "'" in text else text.split(",")
     out: list[str] = []
-    for part in (raw or "").split(","):
+    for part in parts:
         name = part.strip().strip("'").strip()
         if name and name not in out:
             out.append(name)
