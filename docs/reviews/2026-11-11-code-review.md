@@ -1349,6 +1349,12 @@ a narrower page or an agent's wrong answer than the P0 items do.
 - **Checked:** verified (run). Two pages, each with the same nameless
   icon button and nameless icon link in the header: 9.C PASS, four pairs,
   all C1.
+- **Fixed (K-05):** commit "9.C: a pair with no name on either page is left out
+  (K-05)", spec 9.C 1.7.0 (row C0; G3u). Abby chose option B with one change
+  (2026-11-13): when the unnamed pair is the only one compared the result
+  is NEEDS REVIEW, not DOES NOT APPLY. Fixtures `9x/i1`+`i2` (the pair alone:
+  NEEDS REVIEW) and `9x/i3`+`i4` (beside a named pair that agrees: PASS).
+  The nearest case that must still FAIL is the existing `renamed`.
 
 #### K-04 9.C pairs every `javascript:` link with every other, and FAILs unrelated controls
 

@@ -58,6 +58,22 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.A": "PASS"},
         {},
     ),
+    # K-05 (9.C 1.7.0): a pair with no name on either page has nothing to
+    # compare. Alone it is NEEDS REVIEW (not DOES NOT APPLY, never PASS);
+    # beside a named pair that agrees the named pair decides ("renamed" above
+    # is the nearest case that must still FAIL).
+    "unnamed-controls-only": (
+        "i1-unnamed-only-a",
+        ["i2-unnamed-only-b"],
+        {"9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    "unnamed-controls-beside-named": (
+        "i3-unnamed-and-named-a",
+        ["i4-unnamed-and-named-b"],
+        {"9.C": "PASS"},
+        {},
+    ),
     "two-pages-one-reordered": (
         "a1-home",
         ["a2-benefits", "a3-nav-reordered"],
@@ -170,6 +186,8 @@ ROWS = {
     ("nav-css-order", "9.B"): ["N4"],
     ("renamed", "9.C"): ["C1"] * 10 + ["C4", "C4"],
     ("paging", "9.C"): ["C1", "C3", "C3"],
+    ("unnamed-controls-only", "9.C"): ["C0", "C0"],
+    ("unnamed-controls-beside-named", "9.C"): ["C1", "C1", "C0"],
 }
 
 

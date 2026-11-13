@@ -1,7 +1,7 @@
 ---
 tt_test: 9.C
 tt_name: 3.2.4-consistent-identification
-spec_version: 1.6.0
+spec_version: 1.7.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -47,6 +47,7 @@ Each pair is an *instance*.
 
 | # | Evidence pattern | Instance outcome | Source |
 | --- | --- | --- | --- |
+| C0 | Neither side has an accessible name (1.7.0, review K-05, Abby 2026-11-13: two controls with no name "agree" only because there is nothing to compare; a control with no name is 5.C's FAIL, row M3, not 9.C's) | Not an instance (left out, with a note) | Abby, 2026-11-13; 5.C M3 |
 | C1 | Names agree and descriptions agree | PASS | p. 44 ER 1 |
 | C2 | Matched by destination or id, and one of the two has no name | FAIL: identified on one page and not on the other | p. 44 ER 1; G197 step 1 |
 | J1? | Otherwise, J1 not answered | NEEDS REVIEW | Open question |
@@ -62,6 +63,7 @@ Each pair is an *instance*.
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing each pair |
 | G3 | Any instance is NEEDS REVIEW, or J1 questions were capped (at most 12 per run), or a page was over the read cap of 600 pieces of content, so its later controls were never paired (1.1.0; 9.A Terms: "a page over the cap is incomplete") | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
+| G3u | Every pair that was compared was left out, and at least one by C0 (the only controls the pages share have no name; 1.7.0). Never DOES NOT APPLY: there were shared components, and they were not compared; never PASS | NEEDS REVIEW, with the note "This test could not be performed": "The only controls the two pages share have no name, so nothing could be compared." |
 | G4 | Every pair was dropped by C5 | DOES NOT APPLY |
 | G5 | Every instance is PASS | PASS |
 
