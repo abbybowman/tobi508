@@ -44,6 +44,8 @@ from tobi508.walk import KeyboardWalk
 HOVER_MAX = 40
 REVEAL_REPLAYS = 10
 CLICK_MAX = 10
+SCROLL_MAX = 8  # scroll checks (fix 24); each is one fresh load and one click
+SCROLL_WAIT_MS = 700  # a smooth scroll finishes in about half a second
 EXECUTE_MAX = 10
 ARROW_MAX = 5
 ARROW_PRESSES = 20
@@ -95,6 +97,9 @@ _COMMON_JS = (
     }
     return null;
   };
+  const isScroller = (e) => { if (e === document.documentElement || e === document.body) return false;
+    if (!(e.scrollWidth > e.clientWidth + 1 || e.scrollHeight > e.clientHeight + 1)) return false;
+    const c = getComputedStyle(e); return /(auto|scroll|hidden)/.test(c.overflowX + ' ' + c.overflowY); };
   const chainOf = () => {
     const c = [];
     try { for (let w = window; w.frameElement; w = w.parent) c.unshift(path(w.frameElement)); }
@@ -142,6 +147,13 @@ SCAN_FN = (
   const sx = scrollX, sy = scrollY;
   let total = 0;
   const unreached = [], signals = [];
+  // Containers that scroll (1.8.0, fix 24): a pointer-only control near one
+  // may be its arrow.
+  const scrollers = full ? all().filter(isScroller) : [];
+  const nearScroller = (el) => { let a = el;
+    for (let n = 0; n < 4 && a; n++) { a = a.parentElement;
+      if (a && scrollers.some((c) => a.contains(c) && !c.contains(el))) return true; }
+    return false; };
   for (const el of all()) {
     if (!vis(el)) continue;
     if (full) {
@@ -162,7 +174,7 @@ SCAN_FN = (
     const w = el.closest(COMPOSITE);
     unreached.push({ css: path(el), tag: el.tagName.toLowerCase(), role: el.getAttribute('role'),
       reason, name: nameOf(el), href: el.href && typeof el.href === 'string' ? el.href : null,
-      dest: destHref(el),
+      dest: destHref(el), scroller: nearScroller(el),
       widget: w ? [...chain, path(w)].join(' >> ') : null });
     if (unreached.length >= 200) break;
   }
@@ -190,6 +202,40 @@ POINT_FN = (
 }"""
 )
 
+# Scroll check (1.8.0, fix 24). Before a click: every scrolling container, its
+# scroll position and its items (its children, through single wrappers) with
+# their boxes. After: for each container that scrolled, the items that came
+# into view and how many of them are, or hold, a stop. Top document only.
+SCROLL_BEFORE_FN = (
+    "() => {"
+    + _COMMON_JS
+    + """
+  window.__a4s = all().filter(isScroller).map((c) => {
+    let items = Array.from(c.children);
+    while (items.length === 1 && items[0].children.length) items = Array.from(items[0].children);
+    return { c, l: c.scrollLeft, t: c.scrollTop, items, rects: items.map((k) => k.getBoundingClientRect()) };
+  });
+  return window.__a4s.length;
+}"""
+)
+SCROLL_AFTER_FN = (
+    "(stopCss) => {"
+    + _COMMON_JS
+    + """
+  const stops = stopCss.map(find).filter(Boolean);
+  const out = [];
+  for (const s of window.__a4s || []) {
+    if (s.c.scrollLeft === s.l && s.c.scrollTop === s.t) continue;
+    const cr = s.c.getBoundingClientRect();
+    const inView = (r) => r.right > cr.left + 1 && r.left < cr.right - 1 && r.bottom > cr.top + 1 && r.top < cr.bottom - 1;
+    const revealed = s.items.filter((k, i) => inView(k.getBoundingClientRect()) && !inView(s.rects[i]));
+    const reached = revealed.filter((k) => stops.some((x) => k === x || deepContains(k, x)));
+    out.push({ css: path(s.c), items: revealed.length, reached: reached.length });
+  }
+  return out;
+}"""
+)
+
 CHAIN_FN = "function () {" + _COMMON_JS + "  return chainOf(); }"
 
 # Per stop (walk extra). `this` is the element.
@@ -208,7 +254,8 @@ _MARK_ODD = "function () { (window.__a4u = window.__a4u || new Set()).add(this);
 
 J1_QUESTION = (
     "input.candidate is something a mouse can use (input.candidate.click says "
-    "what clicking it did) that keyboard focus never reaches. shared_inputs.stops lists, "
+    "what clicking it did, and input.candidate.goes_to the address it goes to, "
+    "when it goes anywhere) that keyboard focus never reaches. shared_inputs.stops lists, "
     "numbered, every element keyboard focus does reach, with role, name and link "
     "address. Image A shows the page. Is there an element in shared_inputs.stops that "
     "does the same thing, so a keyboard user loses nothing? Answer alternative "
@@ -218,7 +265,9 @@ J1_QUESTION = (
 J1_RUBRIC = (
     "alternative: a reached element plainly does the same job (a second print "
     "button, a text link with the same purpose, a field where Enter submits the "
-    "same search). Only elements in shared_inputs.stops count: a link to another page "
+    "same search). A reached link to the candidate's address is already matched "
+    "by the tool; a reached link to a different address is an alternative only if "
+    "it plainly does the same job for another reason. Only elements in shared_inputs.stops count: a link to another page "
     "that might offer the same thing is not an alternative (the method must be "
     "available on this page). no_alternative: nothing reached does that job. unsure: "
     "whenever the evidence does not settle it. Answer alternative or "
@@ -306,6 +355,9 @@ class Inst4A(BaseModel):
     space: Effect | None = None
     checked: bool = True  # False: a cap or the time limit left it unchecked
     same_link: int | None = None  # stop number with the same address
+    # Scroll check: the click scrolled a container; its newly visible items
+    # and how many of them are, or hold, a stop.
+    scroll: dict[str, Any] | None = None
     title: str | None = None
     elsewhere: bool | None = None
     signal: str | None = None
@@ -624,6 +676,24 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
             f"More than {CLICK_MAX} things a mouse can use were found; not all were clicked."
         )
 
+    # Scroll arrows (fix 24): a pointer-only control near a scrolling container
+    # that scrolls it, where every item it brings into view holds a stop.
+    scrolls = 0
+    for inst in st.instances:
+        if (
+            inst.kind != "K"
+            or not inst.checked
+            or not inst.target.get("scroller")
+            or inst.target.get("frame_chain")
+            or inst.same_link is not None
+            or not _mouse_only(inst)
+        ):
+            continue
+        if scrolls >= SCROLL_MAX or _out_of_time(ctx):
+            break
+        scrolls += 1
+        inst.scroll = await _scroll_check(ctx, st, inst)
+
     # X: execute custom controls.
     customs = [
         sr
@@ -726,6 +796,7 @@ def _k(st: State4A, t: dict, revealed_by: int | None, checked: bool = True) -> I
             "href": t.get("href"),
             "dest": t.get("dest"),
             "reason": t.get("reason"),
+            "scroller": bool(t.get("scroller")),
         },
         revealed_by=revealed_by,
         checked=checked,
@@ -819,6 +890,54 @@ async def _click_check(ctx: RunContext, st: State4A, inst: Inst4A) -> Effect | N
         await s.close()
 
 
+async def _scroll_check(
+    ctx: RunContext, st: State4A, inst: Inst4A
+) -> dict[str, Any] | None:
+    """Click the candidate on a fresh load and read which scrolling container
+    moved, how many items it brought into view and how many of those are, or
+    hold, a stop of the walk (spec section 2, scroll check). None: not read."""
+    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    try:
+        frames = await _frame_ctx(s)
+        if inst.revealed_by:
+            pt = await _point(s, frames, st.stop_list[inst.revealed_by - 1].path_key)
+            if pt:
+                await s.page.mouse.move(pt["x"], pt["y"])
+                await settle(s.page, ctx.quiet_ms)
+        pt = await _point(s, frames, inst.target["path_key"])
+        if not pt:
+            return None
+        await s.page.evaluate(SCROLL_BEFORE_FN)
+        await s.page.mouse.move(pt["x"], pt["y"])
+        await s.page.mouse.click(pt["x"], pt["y"])
+        await s.page.wait_for_timeout(SCROLL_WAIT_MS)
+        await settle(s.page, ctx.quiet_ms)
+        stops = [
+            _split(sr.path_key)[1] for sr in st.stop_list if not _split(sr.path_key)[0]
+        ]
+        got = await s.page.evaluate(SCROLL_AFTER_FN, stops)
+    except Exception:
+        return None
+    finally:
+        await s.close()
+    got = [g for g in got or [] if g["items"] > 0]
+    if not got:
+        return None
+    best = max(got, key=lambda g: g["items"])
+    return {
+        "container": best["css"],
+        "items": best["items"],
+        "reached": best["reached"],
+    }
+
+
+def _scroll_covered(inst: Inst4A) -> bool:
+    """The click scrolled a container and every item it brought into view is,
+    or holds, a stop the keyboard reaches (row M3s)."""
+    sc = inst.scroll
+    return bool(sc and sc["items"] > 0 and sc["items"] == sc["reached"])
+
+
 async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
     # 4.F's pass R pressed Enter on this stop through the same observe, on a
     # fresh replay: when it did something, Space and the click are not needed.
@@ -873,6 +992,15 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
         await s.close()
 
 
+def _goes_to(inst: Inst4A) -> dict[str, str]:
+    """Where the candidate goes: a link's destination, or the address a click
+    that navigated went to (1.8.1, fix 25). Empty when it goes nowhere."""
+    dest = inst.target.get("dest")
+    if not dest and inst.click and {"navigation", "fragment"} & set(inst.click.kinds):
+        dest = inst.click.url
+    return {"goes_to": dest} if dest else {}
+
+
 def _click_words(kinds: list[str]) -> list[str]:
     """What a click did, for J1's input: a media start reads as what it is."""
     return ["started a video or audio" if k == "media_start" else k for k in kinds]
@@ -900,6 +1028,7 @@ def _needs_j1(inst: Inst4A, n_stops: int = 1) -> bool:
         and inst.checked
         and not inst.unreliable
         and inst.same_link is None
+        and not _scroll_covered(inst)
         and (inst.target.get("reason") == "native" or (inst.click and inst.click.any))
         and not (inst.click and inst.click.unreliable)
     )
@@ -932,6 +1061,7 @@ def questions_for(st: State4A, evidence_refs: list[str]) -> list[OpenQuestion]:
                             "click": _click_words(inst.click.kinds)
                             if inst.click
                             else ["native control"],
+                            **_goes_to(inst),
                         },
                         "image_a": images[0] if images else None,
                     },
@@ -1046,6 +1176,12 @@ def instance_rows(n_stops: int) -> list[Row]:
         Row(
             "M3",
             lambda i: K(i) and i.same_link is not None,
+            Outcome.PASS,
+            "p. 19 HtT 2.b",
+        ),
+        Row(
+            "M3s",
+            lambda i: K(i) and _scroll_covered(i),
             Outcome.PASS,
             "p. 19 HtT 2.b",
         ),
@@ -1182,6 +1318,7 @@ def _sentence(st: State4A, inst: Inst4A, rid: str) -> str | None:
         "C?": f"We did not get to check {el}; please check it works with the keyboard.",
         "M1": f"Something about {el} could not be read reliably (the page kept changing on its own); please check it works with the keyboard.",
         "M3": f"{el}{hover} can't be reached with the keyboard, but {other} goes to the same place and can.",
+        "M3s": f"{el}{hover} is an arrow that scrolls a list, but keyboard users can reach every item it brings into view with the Tab key.",
         "M4n": f"{el}{hover} works with a mouse, but nothing on this page can be reached with the keyboard, so keyboard users cannot use it.",
         "J1?": f"{el}{hover} works with a mouse but can't be reached with the keyboard; a question about it is still open.",
         "M5": f"{el}{hover} can't be reached with the keyboard, but {other} does the same thing ({reasons}). If you disagree, tell your assistant.",
@@ -1233,7 +1370,7 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
         text = _sentence(st, inst, row.id)
         if text:
             sentences.append((row.outcome, text))
-        if row.outcome is not Outcome.PASS or row.id in ("M3", "M5"):
+        if row.outcome is not Outcome.PASS or row.id in ("M3", "M3s", "M5"):
             instances.append(
                 Instance(
                     selector=inst.target.get("css_path"),

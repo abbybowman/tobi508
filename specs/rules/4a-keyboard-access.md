@@ -1,7 +1,7 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.7.0
+spec_version: 1.8.1
 guards: unrecorded-code, reveal, reveal-content
 count: canvases, draggable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -40,6 +40,8 @@ A page with zero stops and only pointer targets applies: everything on it is mou
 
 **Click check** (for each candidate that is not a native control, at most `CLICK_MAX`). Fresh load; hover its revealing stop if it has one; move the mouse onto the candidate; settle; click; record the effect. A native control is functional by definition (a link goes to its address) and needs no click.
 
+**Scroll check** (1.8.0, post-round 2 fix 24; round 2: a carousel's scroll arrows made 21 of C's 62 unsure answers; Abby's carousel reading, fix 9). For each K candidate in the top document that is a pointer-only link or control a mouse can operate, that has no same-destination stop (M3) and that sits near a *scroller* (the pointer scan marks it: within four ancestors there is an element that scrolls, `overflow` auto, scroll or hidden with more content than room, that does not hold the candidate), at most `SCROLL_MAX` (8): fresh load; hover its revealing stop if it has one; record each scroller's position and its *items* (its children, through any single wrapper) with their boxes; move the mouse onto the candidate and click; wait `SCROLL_WAIT_MS` (700 ms: a smooth scroll) and settle; for each scroller that moved, the items that came into view (not in view before, in view now). The *revealed* items of the scroller that revealed most are *reached* when each is, or holds, a stop of P1. Nothing else about the click is read here (the click check above stays as it was), and a scroll alone is never an effect (M2 is unchanged). A scroll done with a transform instead of by scrolling is not seen: the candidate goes to J1 as before.
+
 **Execute check** (HtT 2, "execute"; each custom control, at most `EXECUTE_MAX`). Fresh replay to the stop; press Enter and record the effect; if none, press Space and record it; if neither has an effect, a fresh replay to the stop followed by a mouse click on it, and its effect. Native controls are not executed: the browser activates them from the keyboard, and custom controls are where keyboard operation breaks (F42); this keeps a typical page inside the time budget (Abby, 2026-10-31). When 4.F's pass R already pressed Enter on the stop in the same call (the same observe, on a fresh replay to it) and Enter had an effect, that effect is used and no replay is made (1.2.0; the evidence is the same press).
 
 **Title check** (HtT 1.b, 2.a). Every stop with a non-empty title. Chrome does not show a title tooltip on keyboard focus (V2), so title text is never treated as revealed by focus. The title is *available elsewhere* (HtT 2.c) when, after collapsing whitespace and case, it equals the stop's accessible name or is contained in the page's visible text.
@@ -71,6 +73,7 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 | M1 | The element could not be found again or focused, or an effect is unreliable (section 2, effect) | NEEDS REVIEW | Spec rule |
 | M2 | K: a non-native candidate whose click has no effect | No instance (nothing for a mouse to operate) | p. 19 HtT 1 |
 | M3 | K: a link, or a click that navigates, whose *destination* ([9a-bypass.md](9a-bypass.md) Terms) is the destination of a reached link; a control with no destination (`#`, `javascript:`, empty, the page itself) never matches, so it goes to M4 (1.6.0, Abby 2026-11-12) | PASS (another keyboard method with the same function) | p. 19 HtT 2.b |
+| M3s | K: the scroll check found a scroller that the click moved, with at least one revealed item, and every revealed item is, or holds, a stop (1.8.0, Abby's carousel reading, fix 9) | PASS (another keyboard method: Tab reaches every item the arrow brings into view) | p. 19 HtT 2.b |
 | M4 | K: otherwise | Ask J1 (M5–M7) | p. 19 HtT 2.b |
 | M4n | K, and keyboard focus reaches nothing on the page (no stops) | FAIL: no keyboard alternative can exist, so J1 is not asked (judge eval, 2026-10-31) | p. 19 ER 1; HtT 2.b |
 | J1? | J1 not answered yet | NEEDS REVIEW | Open question |
@@ -116,6 +119,7 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 | J1? / J2? | "<element> works with a mouse but can't be reached with the keyboard; a question about it is still open." / "<element> has information that shows only when the mouse rests on it; a question about it is still open." |
 | M4n | "<element> works with a mouse, but nothing on this page can be reached with the keyboard, so keyboard users cannot use it." |
 | M3 | "<element> can't be reached with the keyboard, but <other> goes to the same place and can." |
+| M3s | "<element> is an arrow that scrolls a list, but keyboard users can reach every item it brings into view with the Tab key." |
 | M5 | "<element> can't be reached with the keyboard, but <other> does the same thing (<J1 reasons>). If you disagree, tell your assistant." |
 | M6 | "<element> works with a mouse but can't be reached with the keyboard, and nothing else on the page does the same thing (<J1 reasons>). If you disagree, tell your assistant." |
 | M7 | "<element> works with a mouse but can't be reached with the keyboard; please check whether something else on the page does the same thing." |
@@ -140,9 +144,9 @@ The calling agent answers each once, by the rubric; a person's answer overrides 
 
 ### J1. Is there another keyboard way to do the same thing?
 
-**Question:** "input.candidate is something a mouse can use (with what clicking it did) that keyboard focus never reaches. shared_inputs.stops lists, numbered, every element keyboard focus does reach, with role and name. Image A shows the page. Is there an element in shared_inputs.stops that does the same thing, so a keyboard user loses nothing? Answer alternative (with element: its number), no_alternative or unsure, with your reasons in a few plain words."
+**Question:** "input.candidate is something a mouse can use (with what clicking it did, and, as input.candidate.goes_to, the address it goes to when it goes anywhere; 1.8.1, fix 25) that keyboard focus never reaches. shared_inputs.stops lists, numbered, every element keyboard focus does reach, with role and name. Image A shows the page. Is there an element in shared_inputs.stops that does the same thing, so a keyboard user loses nothing? Answer alternative (with element: its number), no_alternative or unsure, with your reasons in a few plain words."
 
-**Rubric.** alternative: a reached element plainly does the same job (a second print button, a text link with the same purpose, a field where Enter submits the same search). Only elements on this page count: a link to another page that might offer the same thing is not an alternative (p. 19 HtT 2.b, "available on the page"). no_alternative: nothing reached does that job. unsure: whenever the evidence does not settle it. The named number must be a stop (mechanical guard; otherwise the answer is treated as unsure).
+**Rubric.** alternative: a reached element plainly does the same job (a second print button, a text link with the same purpose, a field where Enter submits the same search). A reached link to the candidate's address is already matched by the tool (M3); a reached link to a different address is an alternative only if it plainly does the same job for another reason (1.8.1: the judge sees both addresses; the rubric does not lean either way). Only elements on this page count: a link to another page that might offer the same thing is not an alternative (p. 19 HtT 2.b, "available on the page"). no_alternative: nothing reached does that job. unsure: whenever the evidence does not settle it. The named number must be a stop (mechanical guard; otherwise the answer is treated as unsure).
 
 ### J2. Is this title information essential?
 

@@ -49,6 +49,17 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.A": "PASS", "9.B": "PASS", "9.C": "FAIL"},
         {"9.C": {"J1": {"choice": "inconsistent"}}},
     ),
+    # Fix 14 (9.C 1.5.0): links in the pages' own content that go to one
+    # address with different words are not a repeated component, so they
+    # are not paired by address (round 2: Home and Help, key Pass). The
+    # header, menu and search still agree. "renamed" above is the nearest
+    # case that must still FAIL: the same change in the menu.
+    "body-links-reworded": (
+        "g1-body-links",
+        ["g2-body-links-reworded"],
+        {"9.C": "PASS"},
+        {},
+    ),
     # Pages of another template: nothing can be said (spec 1.1.0 / 1.2.0,
     # A3o). They were DOES NOT APPLY before.
     "unrelated": (
@@ -262,3 +273,35 @@ def test_9b_page_over_the_cap_is_never_dna():
         evaluate(State9B(cmps=[Cmp(n=1, url="u1")], kinship=no_nav), []).outcome.value
         == "DNA"
     )
+
+
+def test_9c_pairs_by_destination_only_inside_a_repeated_block():
+    """1.5.0 (fix 14): the same address from the pages' own content is not a
+    repeated component; from the header, menu, search or footer it is. Built
+    evidence: the page pair is g1/g2 against a5-renamed."""
+    from tobi508.checks.t9c import AndiPage, Comp, make_pairs
+
+    def comp(k, region, name, href="/apply"):
+        return Comp(
+            k=k, css=f"a{k}", role="link", href=href, region_role=region, andi_name=name
+        )
+
+    here = AndiPage(
+        n=0,
+        ran=True,
+        comps=[
+            comp(0, "", "benefits application guide"),
+            comp(1, "navigation", "Apply"),
+        ],
+    )
+    there = AndiPage(
+        n=1,
+        ran=True,
+        comps=[comp(0, "", "See how to apply"), comp(1, "navigation", "Apply now")],
+    )
+    got = [(p.here, p.there, p.by) for p in make_pairs(here, there)]
+    assert got == [(1, 1, "destination")], got
+    # A sidebar (complementary) is not a repeated block either.
+    side = AndiPage(n=0, ran=True, comps=[comp(0, "complementary", "Related guide")])
+    side2 = AndiPage(n=1, ran=True, comps=[comp(0, "complementary", "Learn more")])
+    assert make_pairs(side, side2) == []

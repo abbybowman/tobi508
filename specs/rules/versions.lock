@@ -2,16 +2,16 @@
 # After a spec change and its version bump: uv run python -m tobi508.rules lock
 19a-multiple-ways.md 1.5.0 f1869c0aa9ff80608fd4c4400a943a8d65b4d24f47e8ffaade9a83dacc5cd763
 2a-audio-control.md 1.1.0 e1aae4e98585d37e54849c204f5b68868aa7b8ab45923b298eb4f1b6f6f7bb5b
-2b-blinking-moving-scrolling.md 1.2.0 f83a17808fc9dcfa12c2e4e544e9230c2a12e3c9672918422d579522faf72bb2
+2b-blinking-moving-scrolling.md 1.3.0 0e4f987eceef80a2db454484ea1e1fa30a49e720adac57418eb90812e7cb1b85
 2c-auto-updating.md 1.0.0 d702243e39505057a157431bb6ccb05cd2c33604cc03471d4ce2f550fc491e1d
 2d-change-notify-auto.md 1.1.0 77cceaa8ca6d0049c9bfb6503602556b1fdf3b6e5be555b5e686930156ee22a1
 3a-flashing.md 1.2.0 fbdfd3369a690fc45ddfe9e67971ebe42703e43dda08c66312d97de1a05cf432
-4a-keyboard-access.md 1.7.0 a3cca8a27eff99144607f42c25ecf716e8dca1620327897f51dee846dc25a4f8
+4a-keyboard-access.md 1.8.1 9c65faa9ca316f3f580e6125e538c18ada4eaa4bb79100dff6402c347b8a1a30
 4b-no-keystroke-timing.md 1.3.0 9da43cd17d25a3d68e43a942924070c6a86949e1ba6875b0a9f9713058bb57fe
 4c-no-keyboard-trap.md 1.13.0 6c055d884af73caaecaaaac6d91883e968d38ef9745c84dd772ab84b755cdc58
-4d-focus-visible.md 1.5.0 f0cae2837739bbfb207779de2d4f402f8c86bd5b3582c84e49237f40db9e0327
+4d-focus-visible.md 1.6.0 55f5d984ac6a4583eaa807be76490a552da10aea874c83b67a8bf03ac1ce4537
 4e-on-focus.md 1.4.0 c1d3cc40d10e693b74d339709471b176e650a1ed39f8d3281253d1d54c0853e0
-4f-focus-order-meaning.md 1.6.0 59cfadf57846987c2634a48b6d8a052549c524fff5340986a0028ea095daac9c
+4f-focus-order-meaning.md 1.8.0 2ca2e29d5f57bc0dac24cb6b5b5385f61428b9918380c99a717488d3b0dda13a
 5a-label-provided.md 1.8.0 dbfed9716fc8e79fe181ed79d2f89e4fa5228cb3103813a9db0f54b0ebeda332
 5b-label-descriptive.md 1.6.0 02d43313bc6a63f44eec738b055f80518eb8e0bcb8ff1c101facd82591464b76
 5c-programmatic-label.md 1.8.0 154d7e6764a40c93ce8d7d44505082371cbc794323aa447f82759e3a913eb8ee
@@ -21,4 +21,4 @@
 5h-error-prevention.md 1.3.0 f5f1f3def2d6614b42023d29364a3acb01490ac7fec1d88d9e689d656488865c
 9a-bypass.md 1.3.0 e09598585c39b8a78c092fccc8e6ee3a902e8ee79760e3f43928d42fc1715fc5
 9b-consistent-navigation.md 1.3.0 8bdfc9d55ec6ae016ec9190cd21876ae3aaf9d16b4e40c60e6dd4ee5e62a494c
-9c-consistent-identification.md 1.4.0 cdf249b9abb08ac730e355619afe17485f3e5eb8e230e74a646fbd6b791aa165
+9c-consistent-identification.md 1.5.0 fc2e77ec34bb962f15eafe284f029124512b14673c213c64be114f1ca025d0b7

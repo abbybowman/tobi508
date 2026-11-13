@@ -695,6 +695,9 @@ class Region(BaseModel):
     colors: list[int | None] = Field(default_factory=list)  # per read (2.B)
     transforms: list[int | None] = Field(default_factory=list)  # per read
     states: int = 0  # distinct looks of its box over the frames (top page; capped)
+    # Most pixels of its box that differ visibly (by VISIBLE_DELTA or more)
+    # between two frames; None when its box was not read (not the top page).
+    visible_px: int | None = None
     # pixels (changed in the frames), or what showed motion the frames could
     # not: animation (over 5 s of active time), marquee or video (2.B Terms),
     # or dom: content the DOM log saw keep changing off screen (2.C)
@@ -1372,9 +1375,22 @@ async def _crops(
 MAX_STATES = 10
 
 
+VISIBLE_DELTA = 8  # of 255 in a channel: a change smaller than this is not seen
+
+
+def _visible_px(a: Image.Image, b: Image.Image) -> int:
+    """Pixels whose colour differs between two same-size pictures by at least
+    VISIBLE_DELTA in some channel."""
+    r, g, bl = ImageChops.difference(a, b).split()
+    mx = ImageChops.lighter(ImageChops.lighter(r, g), bl)
+    return mx.point(lambda v: 255 if v >= VISIBLE_DELTA else 0).histogram()[255]
+
+
 def _states(pngs: list[bytes], regions: dict[str, Region]) -> None:
     """How many distinct looks each top-page region's box had over the
-    frames (2.B: two states blink; three or more is C1)."""
+    frames (2.B: two states blink; three or more is C1), and the most pixels
+    of its box that differ visibly between two frames (`visible_px`: from the
+    first frame, or the frame before; 2.B 1.3.0)."""
     boxes = {
         k: r.box
         for k, r in regions.items()
@@ -1383,15 +1399,29 @@ def _states(pngs: list[bytes], regions: dict[str, Region]) -> None:
     if not boxes or not pngs:
         return
     seen: dict[str, set[bytes]] = {k: set() for k in boxes}
+    first: dict[str, Image.Image] = {}
+    last: dict[str, Image.Image] = {}
+    visible: dict[str, int] = {}
     for png in pngs:
         img = Image.open(io.BytesIO(png)).convert("RGB")
         w, h = img.size
         for k, (x, y, bw, bh) in boxes.items():
             crop = (max(0, x), max(0, y), min(w, x + bw), min(h, y + bh))
-            if crop[0] < crop[2] and crop[1] < crop[3] and len(seen[k]) <= MAX_STATES:
-                seen[k].add(img.crop(crop).tobytes())
+            if crop[0] >= crop[2] or crop[1] >= crop[3]:
+                continue
+            part = img.crop(crop)
+            if len(seen[k]) <= MAX_STATES:
+                seen[k].add(part.tobytes())
+            for other in (first.get(k), last.get(k)):
+                if other is not None and other.size == part.size:
+                    visible[k] = max(visible.get(k, 0), _visible_px(other, part))
+            first.setdefault(k, part)
+            visible.setdefault(k, 0)
+            last[k] = part
     for k, s in seen.items():
         regions[k].states = len(s)
+        if k in visible:
+            regions[k].visible_px = visible[k]
 
 
 # G152 (2.B Terms): an animated image's frames, delays and loop count, from

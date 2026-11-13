@@ -61,6 +61,12 @@ EXPECTED: dict[str, dict] = {
     # once so the last item reached has its picture too.
     "f17-menubar-of-eight-items": {"outcome": "PASS", "rows": ["M6"]},
     "f09-faint-outline": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
+    # Fix 26 (4.D 1.4.0): small round icons. The pictures carry context and
+    # are scaled up for the judge, and J1's input says the changed pixels
+    # form a ring. F18's ring is clear (PASS); F19's is nearly the page's
+    # colour (stays NEEDS REVIEW: a ring is a shape, not how visible it is).
+    "f18-small-icon-clear-ring": {"outcome": "PASS", "choice": "yes"},
+    "f19-small-icon-faint-ring": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
     # ~59-62 s alone on the 2026-11-01 container (was ~55 s when the guard was
     # set), and over 65 s now and then under -n 8 with the full suite: 75 s
     # still catches a real slowdown (Abby, 2026-11-01). Pausing the mutation
@@ -82,8 +88,28 @@ def _f16_pixels(asked) -> None:
     assert any(p["elsewhere"] > 0 for p in px.values()), px  # the counter
 
 
+def _f19_ring(asked) -> None:
+    """1.6.0 (fix 26): a faint 1 px ring round a 44 px circle. J1's input says
+    the changed pixels run along all four sides (ring), and the pictures are
+    the enlarged copies; a ring is a shape, not a verdict (still unsure)."""
+    assert asked
+    for q in asked:
+        px = q.input["changed_pixels"]
+        assert px.get("ring") is True and len(px["sides_changed"]) == 4, px
+        for k in ("image_a_off", "image_b_on", "image_c_changed"):
+            assert "-x" in q.input[k] and q.input[k].endswith(".png"), q.input
+
+
+def _f16_no_ring(asked) -> None:
+    """A colour shift on link text is no ring."""
+    assert asked and all("ring" not in q.input["changed_pixels"] for q in asked)
+
+
 # Checks on the questions a fixture's run asks (on test_fixture's own run).
-ASKED = {"f16-faint-color-and-counter": _f16_pixels}
+ASKED = {
+    "f16-faint-color-and-counter": lambda a: (_f16_pixels(a), _f16_no_ring(a)),
+    "f19-small-icon-faint-ring": _f19_ring,
+}
 
 
 def test_every_fixture_is_listed():

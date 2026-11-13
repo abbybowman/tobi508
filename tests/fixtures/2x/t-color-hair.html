@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head><title>Status</title></head>
+<body>
+<main>
+<h1>Status</h1>
+<p>Static text.</p>
+<p id="stamp" style="font: bold 20px sans-serif; margin: 0; width: 160px; height: 41px; background: #ffffff">Service status</p>
+<p>Text after the status.</p>
+</main>
+<script>
+/* The colour moves by 3 of 255 every half second: too little to see. */
+let on = false;
+setInterval(() => { on = !on; document.getElementById('stamp').style.background = on ? '#fdfdfd' : '#ffffff'; }, 500);
+</script>
+</body>
+</html>
