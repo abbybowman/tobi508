@@ -87,7 +87,11 @@ then wrote small test pages aimed at each test's blind spots and found
 these wrong PASS and Does Not Apply results. Each was reproduced by a
 run unless marked "(read)", and each row was run again on 2026-11-13,
 after the fixes of 2026-11-12 and 13: three cases were fixed and left
-the table, and the rest still give the outcome shown. Until they are fixed, read a PASS or a Does
+the table. Eleven more were fixed on 2026-11-13 (a keyboard trap, an `alert()`
+or download, a `#main` address, non-Latin labels, a multi-step form, a near
+copy of the tested page, a `type="button"` form, a `mousedown`-only button, a
+page that shifts, a script that moves focus off, unnamed pairs) and left it; the
+rest still give the outcome shown. Until they are fixed, read a PASS or a Does
 Not Apply as "in what the tool looked at". The full list, with the page
 for each, is [the code review](docs/reviews/2026-11-11-code-review.md);
 the fixes are planned in
