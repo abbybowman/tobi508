@@ -254,6 +254,20 @@ EXPECTED: dict[str, dict] = {
             "answers": COMPLETE,
         },
     },
+    # Post-round 2 fix 9 (5.C 1.7.0; svs.gsfc.nasa.gov carousels on 14592,
+    # 14194, Galleries, key Pass): scroll buttons that are aria-hidden and
+    # outside the Tab order are in neither the Tab order nor the
+    # accessibility tree, and Tab reaches every card: not components.
+    "f34-hidden-scroll-buttons-off-tab-order": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
+    # The nearest case that must still FAIL: the same buttons, but Tab
+    # reaches them, so a screen reader user lands on a control with no name.
+    "f35-hidden-scroll-buttons-in-tab-order": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M3", "M5", "M5"]},
+    },
     # Three boxes of one name with no heading and no group: one J1 for the
     # set (1.2.0).
     "f32-filter-boxes-no-heading": {

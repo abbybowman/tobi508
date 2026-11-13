@@ -173,6 +173,9 @@ COMPONENTS_JS = (
       row_text: button ? rowText(el) : '',
       menu: button && isMenu(el),
       heading: isOpt(el) ? headingOf(el) : '',
+      // Hidden from screen readers and out of the Tab order (5.C 1.7.0).
+      aria_hidden: !!el.closest('[aria-hidden="true"]'),
+      tabbable: el.tabIndex >= 0,
       heading_direct: (() => {
         if (!isOpt(el) || !el.name) return false;
         const first = els.find((o) => isOpt(o) && o.name === el.name && (o.form || null) === (el.form || null));
@@ -360,6 +363,8 @@ class Comp(BaseModel):
     # The heading sits directly over the option's set: no visible text
     # between it and the set's first option (5.C M3h)
     heading_direct: bool = False
+    aria_hidden: bool = False  # itself or an ancestor has aria-hidden="true"
+    tabbable: bool = True  # tabIndex >= 0 (in the sequential focus order)
     table_headers: list[str] = Field(default_factory=list)
     list_text: list[str] = Field(default_factory=list)
     # With focus (data-entry fields only)

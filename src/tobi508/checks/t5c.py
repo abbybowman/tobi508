@@ -76,6 +76,11 @@ def rel_images(evidence_refs: list[str], paths: list[str | None]) -> list[str]:
     return [f"{base}/{p}" for p in paths if p]
 
 
+def hidden_off_tab(c: Comp) -> bool:
+    """aria-hidden, not in the sequential focus order, and never a walk stop."""
+    return c.aria_hidden and not c.tabbable and c.tab_index is None
+
+
 def groups(lp: LabelsPass) -> dict[str, int]:
     out: dict[str, int] = {}
     for c in lp.components:
@@ -592,7 +597,24 @@ class Check5C:
         return []
 
     async def collect(self, ctx: RunContext, walk: KeyboardWalk | None) -> State5C:
-        return State5C(lp=await labels_pass(ctx, walk))
+        lp = await labels_pass(ctx, walk)
+        # Controls that are aria-hidden and outside the Tab order (tabindex
+        # below 0, and the walk never stopped on them) are in neither the Tab
+        # order nor the accessibility tree: not components of 5.C (1.7.0,
+        # post-round 2 fix 9). One that Tab reaches stays, and fails as any.
+        out = [c for c in lp.components if hidden_off_tab(c)]
+        if out:
+            lp = lp.model_copy(
+                update={
+                    "components": [c for c in lp.components if c not in out],
+                    "notes": [
+                        *lp.notes,
+                        f"{len(out)} control(s) hidden from screen readers and "
+                        "outside the Tab order were left out.",
+                    ],
+                }
+            )
+        return State5C(lp=lp)
 
     def evaluate(self, state: State5C, evidence_refs: list[str]) -> Finding:
         return evaluate(state, evidence_refs)
