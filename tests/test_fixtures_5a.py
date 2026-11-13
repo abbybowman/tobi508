@@ -199,14 +199,9 @@ EXPECTED: dict[str, dict] = {
     },
     # 5.A 1.7.0 (Abby, 2026-11-13; TT p. 25 Note 3, "regardless of
     # accuracy"): an icon button that is part of the box is a label
-    # provided, whatever it shows (a tree, an arrow, an envelope); 5.B judges
-    # whether it describes the box (test_fixtures_5b.py).
-    "f36-tree-icon-in-search-group": {
-        "5.A": {"outcome": "PASS", "rows": ["M2i"]},
-        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
-        # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
-        "5.B": {"outcome": "FAIL"},
-    },
+    # provided, whatever it shows: an arrow (unclear, so 5.B's judge may
+    # answer unsure) or an envelope on a search box (names something else);
+    # 5.B judges whether it describes the box (test_fixtures_5b.py).
     "f37-arrow-icon-in-search-group": {
         "5.A": {"outcome": "PASS", "rows": ["M2i"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},

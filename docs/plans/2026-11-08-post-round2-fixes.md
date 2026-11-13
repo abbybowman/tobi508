@@ -101,8 +101,9 @@ Each is now described by its spec and its tests; the nearest case that must
 still FAIL has its own fixture.
 - **8 (5.A 1.5.0):** an icon button with no text in the field's input group
   or search form sends M3 to J1 (the graphic case). Fixtures 5a/f27 (the
-  svs search box, PASS on "graphic"), f28 (a menu icon: still M3), f36 and
-  f37 (a tree icon, an arrow: not_labeled, M5). Judge eval runs 31 and 32.
+  svs search box, PASS on "graphic"), f28 (a menu icon: still M3). Judge eval
+  runs 31 and 32 (run 32 also had a tree-icon page, since removed: 8b
+  made it the envelope page's twin).
 - **9c (5.A 1.6.0, 5.C 1.7.0):** an option's nearby text leaves out text in
   another row (a block that holds a link or another option); new row M3h,
   a heading directly over a set that the options do not announce fails
@@ -132,7 +133,7 @@ still FAIL has its own fixture.
   is not counted (M3). 5.B 1.5.0 makes such a field an item and judges the
   icon by looking: a symbol commonly understood for what to enter is
   descriptive; an unrelated picture or one that names something else is
-  not; anything unclear is unsure. Fixtures 5a/f27, f36-f39 (5.A and 5.B);
+  not; anything unclear is unsure. Fixtures 5a/f27, f37 (an arrow: unclear), f38 (a logo outside the form: still M3), f39 (an envelope on a search box: not descriptive) (5.A and 5.B);
   judge eval run 33.
 - **Open:** 5.A still does not count a text button that only says what it
   does ("Go", "Submit") as a label (5.A 1.1.0, judge eval run 12), while

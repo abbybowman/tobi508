@@ -138,7 +138,6 @@ def test_only_buttons_that_act_on_a_form_are_judged():
     "page,answer,outcome",
     [
         ("f27-icon-buttons-in-search-group", ALL, "PASS"),  # a magnifier
-        ("f36-tree-icon-in-search-group", _not(1), "FAIL"),
         ("f37-arrow-icon-in-search-group", _not(1), "FAIL"),
         ("f39-envelope-icon-on-search-box", _not(1), "FAIL"),
     ],
@@ -153,7 +152,7 @@ async def test_a_field_labelled_only_by_an_icon_is_judged(
 ):
     """5.B 1.5.0 (Abby, 2026-11-13; TT p. 26 Note 2, a label "can be
     graphical"): the icon button that labels the box (5.A M2i) is judged by
-    looking, with the picture; a tree, an arrow or an envelope on a search
+    looking, with the picture; an arrow or an envelope on a search
     box does not say what to enter. Before, the box was not an item (DNA)."""
     got = await run_tests(
         settings, f"{server.base}/5a/{page}.html", ["5.A", "5.B"], {"5.B": answer}
