@@ -8,9 +8,8 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** step 1 (PR #39), steps 2 and 3 (PRs #40 to #42), step 4
-(PR #44), step 5 (PR #43), step 6 (PR #46; results in
-`evals/README.md`, "Gate 2026-11-13").
+**Done:** steps 1 to 5 (PRs #39 to #44) and step 6 (PR #46; results
+in `evals/README.md`, "Gate 2026-11-13").
 
 **Order to start them** (at most three threads at once): 6c and 6b now;
 7 now, since 8 waits for its first three pages; 8 when those pages are
