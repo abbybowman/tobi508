@@ -85,7 +85,9 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 The status above is what real pages showed. A code review on 2026-11-11
 then wrote small test pages aimed at each test's blind spots and found
 these wrong PASS and Does Not Apply results. Each was reproduced by a
-run unless marked "(read)". Until they are fixed, read a PASS or a Does
+run unless marked "(read)", and each row was run again on 2026-11-13,
+after the fixes of 2026-11-12 and 13: three cases were fixed and left
+the table, and the rest still give the outcome shown. Until they are fixed, read a PASS or a Does
 Not Apply as "in what the tool looked at". The full list, with the page
 for each, is [the code review](docs/reviews/2026-11-11-code-review.md);
 the fixes are planned in
@@ -94,16 +96,16 @@ A fix removes its line here in the same commit.
 
 | Test | Gives | On a page with |
 | --- | --- | --- |
-| 2.A | Does Not Apply | audio that starts after about 3.5 s |
+| 2.A | Does Not Apply | audio that a script starts after about 4.5 s (audio that starts by itself at 3.5 s is now found) |
 | 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; motion that starts after 6.5 s |
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
 | 4.A | PASS | a mouse-only control inside a web component; a control whose only effect is `alert()`; a button that answers only `mousedown` |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.D | PASS | a link with no focus indicator on a page that shifts as focus moves; an element that a script moves focus off at once is never checked |
-| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`); a field in a menu on a page that keeps changing |
+| 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`) |
 | 5.C | PASS | a field whose visible label is not in Latin letters |
-| 5.D, 5.F | PASS | form fields after a keyboard trap |
+| 5.F | PASS | form fields after a keyboard trap (5.D now says NEEDS REVIEW) |
 | 5.F, 5.G | Does Not Apply | a form whose button is `type="button"`; an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |
 | 5.H | PASS | a multi-step form whose next step says "required" (read) |
