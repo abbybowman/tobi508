@@ -7,7 +7,7 @@ Each rule cell reviewed with Abby: [`evals/judging/round2/review-with-tester.md`
 What is scheduled when is in [the roadmap](../ROADMAP.md); the reasons for
 the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-judge-pivot.md).
 
-## Status (2026-11-11)
+## Status (2026-11-13)
 
 | Fix | What | Status |
 | --- | --- | --- |
@@ -18,7 +18,8 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 5 | 5.D: focus read again after tabbing away | Built (5.D 1.4.0), shown on custom pages only |
 | 6 | 9.A-9.C: other pages from another template are NEEDS REVIEW | Built (9.A, 9.B 1.1.0; 9.C 1.2.0) |
 | 7 | Frames: 5.x reads fields in frames | Not started; now built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) (one reader for shadow roots and frames) |
-| 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Not started |
+| 8-11, 9c | False FAILs by rule (5.A icon label, 5.C hidden controls and option rows, 19.A search) | Built (PR #44): 5.A 1.5.0-1.6.0, 5.C 1.7.0-1.8.0, 19.A 1.4.0-1.5.0; judge eval runs 31 and 32 |
+| 8b | 5.B judges a field whose only label is an icon (follows fix 8) | Not started: spec decision for Abby (draft below) |
 | 9b | Opening everything | Phase 1 built (`reveal.py`, guards RV and RC); phases 2 and 3 on the roadmap |
 | 12-14 | 4.F rubric and order picture; 9.C pairing | Not started; ApiJudge stays off for 4.F and 9.C until they are built |
 | 15-17 | Answer keys give Pass reasons; scorer per criterion; judge-decided cells apart | 17 partly (`scoring.split_cells`); the rest before round 3 |
@@ -95,70 +96,57 @@ pass inside 4.C on a realistic page is not measured.
 
 ### False FAILs by rule
 
-#### 8. 5.A: an icon button in the same input group is a visible label
-- **Evidence:** 7 pages per run. The search field's placeholder
-  "Search..." plus a magnifier submit button ("Search!") and a clear
-  button, in one Bootstrap `input-group` (shared border: the field has
-  `border-end-0`, the buttons `border-start-0`), inside
-  `<form role="search">`. Key: Pass ("has visual labels/instructions").
-- **TT and WCAG (Abby):** icon-only visible labels are acceptable for
-  commonly understood functions (search, menu, download).
-- **Fix:** M3 does not fail a placeholder-only field when an icon button
-  sits in its input group or search form; it asks J1, the graphic case
-  (settled by looking, principle 8). 5.B then has a visible label to
-  judge (the 4 DNA cells follow).
+#### 8, 9c, 9, 10, 11 (built, PR #44)
+Each is now described by its spec and its tests; the nearest case that must
+still FAIL has its own fixture.
+- **8 (5.A 1.5.0):** an icon button with no text in the field's input group
+  or search form sends M3 to J1 (the graphic case). Fixtures 5a/f27 (the
+  svs search box, PASS on "graphic"), f28 (a menu icon: still M3), f36 and
+  f37 (a tree icon, an arrow: not_labeled, M5). Judge eval runs 31 and 32.
+- **9c (5.A 1.6.0, 5.C 1.7.0):** an option's nearby text leaves out text in
+  another row (a block that holds a link or another option); new row M3h,
+  a heading directly over a set that the options do not announce fails
+  without a question. The plan's literal row ("the nearest container that
+  holds the option and its label") would have dropped a plain-text
+  question over wrapped-label radios and passed a Note 4 failure, so the
+  spec drops only another row's text (fixture f30). Fixtures f29-f33;
+  judge eval run 31.
+- **9 (5.C 1.8.0):** a control that is aria-hidden, has a negative
+  tabindex and is never a walk stop is not a component (a note counts
+  them). Fixtures f34, and f35 (Tab reaches them: still M3).
+- **10 (19.A 1.4.0):** row W5, a GET search form whose own action names
+  the tested page makes search a way. Fixtures `search-page-is-the-forms-target`
+  and `search-help-page-not-the-target` (still FAIL).
+- **11 (19.A 1.5.0):** a second live search with the heading in quotation
+  marks when the first does not find the page (two at most; CLAUDE.md
+  principle 5's exception updated); each results page read after its
+  scripts settle and up to 2,000 units. Fixtures `quoted-search-finds-it`
+  (fails without the settled read) and `quoted-search-finds-nothing`.
 
-#### 9. 5.C: controls that are aria-hidden and outside the Tab order
-- **Evidence:** carousel scroll buttons on 14592, 14194, Galleries:
-  `aria-hidden`, never reached by Tab (ANDI: "focusable but … aria-hidden",
-  so `tabindex="-1"`), and Tab alone reaches every card. Key: Pass.
-- **Fix:** 5.C skips such controls (they are in neither the Tab order nor
-  the accessibility tree; ACT 6cfa84 concerns sequential focus
-  navigation). Still fail aria-hidden controls that Tab reaches.
+#### 8b. 5.B: judge a field whose only label is an icon (not started; needs Abby)
+- **Evidence:** fix 8's follow-on. Key: 5.B Pass on Help, Galleries,
+  14194, 14592 ("site search box ... passes"); TOBI: DOES NOT APPLY,
+  because a 5.B item needs visible text and an icon has none. TT 5.B's
+  Notes (p. 26) say a label "can be graphical or textual", so a field
+  labelled by an icon is a 5.B item.
+- **Proposal (draft, 2026-11-13):** a data-entry field with an icon button
+  in its input group or search form (5.A's evidence) becomes a 5.B item;
+  5.B's J1 gets its image and a rubric for pictures: a symbol commonly
+  understood for this field's purpose (a magnifier on a search box, an
+  envelope on an email field, a calendar on a date) is descriptive; a
+  picture that is not a label at all (a tree, a logo) means the field has
+  no visual label (it leaves 5.B; 5.A fails it); a picture that is a
+  label but says something else (an envelope on a phone field) is not
+  descriptive (FAIL); anything the picture does not settle (an arrow, a
+  gear) is unsure (NEEDS REVIEW). Settled by looking (5.B J1 is already
+  in principle 8's list). Judge eval after, with f27, f36 and f37 and a
+  misleading-icon page.
 
 #### 9b. Test what interaction reveals, as a person does (principle 3)
 - **Phase 1 is built** (`reveal.py`; guards RV and RC). Phases 2 and 3
   (the keyboard walk through opened content; 5.D filling opened fields)
   are on [the roadmap](../ROADMAP.md).
 
-#### 9c. 5.C: card text leaks into a checkbox's visible text; filter headings
-- **Evidence:** Home's 36 filter checkboxes (3 filter forms, two sets
-  each: "NASA Science category" and "Page type"). Each form wraps its
-  section's result cards, which script adds, so card text such as
-  "ID: 15116" sits inside the form and lands in each checkbox's nearby
-  text. That breaks the set merge (5.C 1.2.0 asks one question per set
-  only when the option's announced text holds every word shown beside
-  it): 36 questions instead of 6. It also confused the judge ("ID: 15116
-  belongs to the video, not this"), whose answers then differed within
-  one set (20 missing, 7 complete, 9 unsure).
-- **Decision (Abby, 2026-11-08):** a heading over a set of filter
-  checkboxes is the question the set answers. Shown only visually, it
-  passes the visual tests (5.A, 5.B) and fails 5.C when it is not
-  programmatically connected (a fieldset and legend, or a group labelled
-  by it): TT p. 27 Note 4, as on www.nasa.gov's Missions filters (round
-  1, 5.C 1.3.0, M3s). So the judge's "missing" answers on Home were right.
-- **Fix:** nearby text for an option is the text of its own row: within
-  the nearest container that holds the option and its label but no other
-  option or link (5.A section 2, which pass L shares with 5.A and 5.B;
-  judge eval after). And widen M3s: a heading directly over a set (no
-  other content between them) whose options do not announce it fails
-  without a question, as several headings over one field name do now;
-  a heading further away stays J1's (Note 5, section titles).
-
-#### 10. 19.A: the site search's own results page
-- **Evidence:** Search. Key: Pass, top-nav search is one way, tag links
-  that open a filtered search are a second (content links). TOBI: FAIL,
-  only links.
-- **Fix:** a page that is the site search form's target counts as
-  reachable by search.
-
-#### 11. 19.A: quoted search and the whole first page of results
-- **Evidence:** 14592. The site answered "No results for:" the unquoted
-  heading (recorded reply: an empty list). Abby found it searching with
-  quotation marks.
-- **Fix:** when the plain search finds nothing, search again with the
-  heading in quotation marks (still one search request per form, so two
-  at most); read the whole first page of results.
 
 ### Questions and pictures (any judge)
 
