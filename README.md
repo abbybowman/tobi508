@@ -40,7 +40,7 @@ Status is based on two rounds of agent-eval testing: 19 real pages across 2 site
 | ID | TT test name | WCAG 2.0 | Spec | Status on real pages |
 | --- | --- | --- | --- | --- |
 | 2.A | 1.4.2-audio-control | 1.4.2 | [1.0.0](specs/rules/2a-audio-control.md) | 🟢 Accurate on real pages |
-| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.1.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 Accurate; a few regions left for a person to check |
+| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.2.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 Accurate; a few regions left for a person to check; a part of the page whose colour changes by less than the eye can see is not counted as moving (the finding notes it) |
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 Accurate on real pages |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 Accurate on real pages |
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.1.0](specs/rules/3a-flashing.md) | Videos that do not play on load are read from their files (checked on test pages and NASA 14592); at most 3 videos and the first 10 s of each; a video it cannot read is left for a person |

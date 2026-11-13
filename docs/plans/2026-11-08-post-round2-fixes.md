@@ -29,7 +29,7 @@ the server judge are in [2026-11-07-server-judge-pivot.md](2026-11-07-server-jud
 | 24 | 4.A: a scroll arrow whose items Tab reaches | Built (4.A 1.7.0: row M3s, scroll check; fixtures F20, F21) |
 | 25 | 4.A J1: give the candidate's destination | Built (4.A 1.7.1: `candidate.goes_to`; the same-destination match, M3, was built in 4.A 1.6.0; fixture F22) |
 | 26 | 4.D: pictures big enough to judge, and the ring as a fact | Built (4.D 1.6.0: a small element is pictured with context and enlarged for the judge; `sides_changed` and `ring`; fixtures F18, F19; judge eval 3/3 three times, faint cases still unsure; a real-page effect is not yet measured) |
-| 27 | 2.B: a region with no visible motion | Not started |
+| 27 | 2.B: a region with no visible motion | Built (2.B 1.2.0: a pixel region is moving only if its box differs by 8 of 255 or more in some frame; fixtures t-color-hair, t-color-subtle; judge eval: the hair case asked and was unsure 3 of 3 before, asks nothing after) |
 | 28 | Judge requests: the page's shared inputs once | Built (`apijudge.py`) |
 | 29 | CI skips docs-only changes and runs in parallel | Built (`.github/workflows/ci.yml`) |
 | GU | Recordings that lack code the page loads when used (found while building fixes 2 and 5) | Built: chunk store and guard GU ([lesson](../solutions/recordings-miss-lazy-scripts.md)) |
