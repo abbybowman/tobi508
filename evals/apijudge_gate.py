@@ -206,20 +206,25 @@ async def run(
             got = apijudge.dry(s, run_ids, set(types.split(",")))
             (gd / f"dry-r{k}.json").write_text(json.dumps(got, indent=1))
             print(json.dumps(got["total"]), f"~{got['rough_input_tokens']:,} tokens")
-    (gd / "run.json").write_text(
-        json.dumps(
-            {
-                "date": date,
-                "round": rnd,
-                "types": types,
-                "repeat": repeat,
-                "pages": [u for _, u in chosen],
-                "dry": dry,
-                "started": datetime.now(timezone.utc).isoformat(),
-            },
-            indent=1,
-        )
-    )
+    meta = {
+        "date": date,
+        "round": rnd,
+        "types": types,
+        "repeat": repeat,
+        "pages": [u for _, u in chosen],
+        "dry": dry,
+        "started": datetime.now(timezone.utc).isoformat(),
+    }
+    # A rerun of missing pages (`--pages`, after a container restart) adds to
+    # the real run's page list; it never replaces it.
+    old = gd / "run.json"
+    if not dry and old.is_file():
+        prev = json.loads(old.read_text())
+        if not prev.get("dry") and prev.get("types") == types:
+            have = set(prev["pages"]) | set(meta["pages"])
+            meta["pages"] = [u for u in urls if u in have]
+            meta["started"] = prev["started"]
+    old.write_text(json.dumps(meta, indent=1))
 
 
 # ── score ───────────────────────────────────────────────────────────────────
