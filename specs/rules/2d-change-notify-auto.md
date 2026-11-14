@@ -1,7 +1,7 @@
 ---
 tt_test: 2.D
 tt_name: 4.1.2-change-notify-auto
-spec_version: 1.1.0
+spec_version: 1.2.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -19,7 +19,7 @@ pass T found; it presses no keys.
 
 **Other sources.** DHS course FAQ, [2.D ARIA Live Region in Change Notification](https://github.com/Section508Coordinators/DHSA-TT-200-A/wiki/2.D-ARIA-Live-Region-in-Change-Notification-(Auto-updating)) (Ann Marie Davis, 2019): "you should assume that the screen reader will present the information to the user if it is within the live region ... You are not required to make any other determination except whether change notification appears within the live region." ANDI 29.2.2 (`sandi.js`) counts as live regions `aria-live` polite or assertive, and roles `alert`, `status`, `log`, `marquee` and `timer`. [Understanding 4.1.2](https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html) (notification of changes to states and values); [Understanding 4.1.3](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html) (ARIA19, ARIA22, ARIA23) for contrast only: WCAG 2.1, outside Section 508. No ACT rule, no DHS ACT data, no ICT Baseline test (Baseline 5 is User Controls), no Baseline Alignment cases.
 
-**Terms.** Pass T, region, content and element: [2c-auto-updating.md](2c-auto-updating.md) Terms. A *change* is one mutation record inside an auto-updating region during pass T that alters visible text, an image source or rendered children (attribute-only style changes, such as a slide's transform, are not changes of content). When a region showed new content with no such record (a carousel that shows each slide by changing a class), its class and other non-style attribute changes are its changes: otherwise N2 would hold with no change at all, a false PASS. A *live region* is an element ANDI counts as one (above) whose `aria-live` is not `off`. It must be present and rendered at 0 s of pass T, before the change; a region added with the change does not count. A change is *in* a live region when its target is inside one.
+**Terms.** Pass T, region, content and element: [2c-auto-updating.md](2c-auto-updating.md) Terms. A *change* is one mutation record inside an auto-updating region during pass T that alters visible text, an image source or rendered children (attribute-only style changes, such as a slide's transform, are not changes of content). When a region showed new content with no such record (a carousel that shows each slide by changing a class), its class and other non-style attribute changes are its changes: otherwise N2 would hold with no change at all, a false PASS. A *live region* is an element ANDI counts as one (above) whose `aria-live` is not `off`. It must be present and rendered at 0 s of pass T, before the change; a region added with the change does not count. A change is *in* a live region when its target is inside one. Pass T's change log and live-region read include content inside web components (2.C 1.1.0; 1.2.0).
 
 ## 1. Applicability
 

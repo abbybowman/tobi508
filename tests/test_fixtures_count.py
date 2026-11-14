@@ -79,12 +79,10 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
         ),
     },
     # N-01: autoplaying audio inside a web component.
-    "audio-shadow": {
-        "2.A": (
-            "NEEDS_REVIEW",
-            "1 sound or video played inside a web component, and was not checked.",
-        ),
-    },
+    # Part D (2.A 1.2.0): pass T reads media inside web components, so the
+    # rows decide: audio that plays by itself with no control, as a plain
+    # <audio autoplay>.
+    "audio-shadow": {"2.A": ("FAIL", None)},
     # N-06: an animated image after the 30th image.
     "many-images": {
         "2.B": ("NEEDS_REVIEW", "32 images: only the first 30 were checked"),
