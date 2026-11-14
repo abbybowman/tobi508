@@ -84,12 +84,6 @@ def wrong(outcome: Outcome, item: str, what: str) -> Cell:
 # line in the review's list (or a fix) from whoever takes it up; none is
 # fixed here.
 UNFILED = {
-    "NEW-1": (
-        "4.B reads the visible text of every frame but not of open shadow "
-        'roots: the same instruction ("press and hold the Space bar for 3 '
-        'seconds") is a question inside a frame and is not read inside a '
-        "shadow root, so 4.B PASSes."
-    ),
     "NEW-2": (
         "The PASS of 4.C, 4.D, 4.E, 4.F and 5.D on a page whose stops are in "
         "a shadow root or a frame. The keyboard walk reached all 6 stops the "
@@ -191,13 +185,12 @@ EXPECTED: dict[str, dict[str, Cell]] = {
             "the only moving thing is a grey video that never changes "
             "brightness, so nothing flashes"
         ),
-        "4.A": wrong(
-            Outcome.PASS,
-            "D-03",
-            'the mouse-only "Show details" is inside the shadow root; its '
-            "click listener is read from the light DOM only.",
-        ),
-        "4.B": wrong(Outcome.PASS, "NEW-1", UNFILED["NEW-1"]),
+        # D-03 (part D): listeners are read inside web components, so the
+        # mouse-only "Show details" asks J1.
+        "4.A": nr(),
+        # NEW-1 (part D): the page's text includes its web components', so
+        # the timing sentence asks J1.
+        "4.B": nr(),
         "4.C": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.E": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),

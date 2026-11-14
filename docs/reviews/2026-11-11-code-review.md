@@ -105,7 +105,7 @@ below; "run" means I ran a page and got the outcome shown.
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
-| D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
+| D-03 | 4.A | PASS | a mouse-only control in a shadow root | run · fixed (step 8) |
 | D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
 | K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · fixed (step 8: read) |
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B); read (step 8) |
@@ -412,6 +412,7 @@ them.
 - **Checked:** verified (run). Two one-control pages, same handler: in
   the ordinary DOM, 4.A is NEEDS REVIEW with question `4.A-k1-J1`; in a
   shadow root, 4.A is PASS (rows A3, G4).
+- **Fixed:** step 8 reader 8, spec 4.A 1.12.0: listeners are read with `pierce` (`traverse.FocusReader.listeners`); the review's page asks J1 (`4a/f29`, PASS on `main`), and its keyboard-ready twin still PASSes (`4a/f30`).
 
 #### D-01 5.A, 5.B and 5.C say "no form fields" when the form is in a shadow root
 
@@ -1829,6 +1830,7 @@ not checked.
   shadowrootmode>`) are invisible to the settle rule and to "what did
   this action change". `traverse.py:110-113`. The reviewer confirmed it
   with a script.
+  - **Fixed:** step 8 reader 8, spec 4.A 1.12.0: the walk's change log sweeps for open shadow roots no script attached (`INIT_JS` `log.sweep`), and pass T observes them (reader 3); `4a/f31` was PASS on `main`.
 - **D-16** Two failed reads compare as equal, so an action that could
   not be observed reads as "no effect"; dialogs in frames or shadow
   roots are not counted; `#nav` matches `#nav-link`.

@@ -24,6 +24,22 @@ NO_ALT = {"J1": {"choice": "no_alternative"}}
 EXPECTED: dict[str, dict] = {
     "f01-click-only-text": {"outcome": "FAIL", "rows": ["M6"], "choice": NO_ALT},
     "f02-custom-button-ignores-keys": {"outcome": "FAIL", "rows": ["M10"]},
+    # D-03 (part D): listeners are read inside web components. The review's
+    # mouse-only span inside one (PASS on main) asks J1 like f01; f30, f03's
+    # keyboard-ready button inside one, still PASS on its rows.
+    "f29-click-only-in-web-component": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
+    "f30-custom-button-with-keys-in-web-component": {"outcome": "PASS", "rows": ["M8"]},
+    # D-04 (part D): a click whose only effect is inside a server-rendered
+    # shadow root (no attachShadow call) is an effect, as f01's.
+    "f31-click-changes-server-rendered-component": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
     "f03-custom-button-with-keys": {"outcome": "PASS", "rows": ["M8"]},
     "f04-hover-only-menu": {"outcome": "FAIL", "rows": ["M6", "M6"], "choice": NO_ALT},
     "f05-hover-and-focus-menu": {"outcome": "PASS", "rows": []},
