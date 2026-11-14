@@ -551,6 +551,33 @@ class FocusReader:
         )
         return res["result"].get("value")
 
+    async def ax_top(self, expression: str) -> dict[str, str] | None:
+        """Chrome's accessible name and description (its accessibility tree,
+        what a screen reader reads) of the element an expression gives in the
+        top frame's isolated world. None when there is no such element or
+        the tree has no node for it."""
+        session, ctx = await self._session_for(await self._top_frame_id())
+        res = await session.send(
+            "Runtime.evaluate", {"expression": expression, "contextId": ctx}
+        )
+        oid = res["result"].get("objectId")
+        if not oid:
+            return None
+        try:
+            ax = await session.send(
+                "Accessibility.getPartialAXTree",
+                {"objectId": oid, "fetchRelatives": False},
+            )
+        finally:
+            await session.send("Runtime.releaseObject", {"objectId": oid})
+        if not ax.get("nodes"):
+            return None
+        node = ax["nodes"][0]
+        return {
+            "name": (node.get("name") or {}).get("value") or "",
+            "desc": (node.get("description") or {}).get("value") or "",
+        }
+
     async def _top_frame_id(self) -> str:
         if self._top is None:
             self._top = await self.context.new_cdp_session(self.page)

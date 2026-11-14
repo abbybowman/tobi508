@@ -15,6 +15,7 @@ Members of `J`:
 * `rendered(el)`: laid out and not `visibility: hidden`.
 * `seen(el)`: rendered, at least 4 by 4 px, opacity 0.1 or more, not clipped
   away: what a sighted person can see.
+* `text(el)`: visible text, composed tree, hidden words left out (H-01).
 * `texts(root, fn)`: every text node of `root` and the shadow roots inside
   it (slotted text is counted where it is written, once).
 * `FIELD`, `off(el)`, `field(el)`: the 5.D field selector; a field that is
@@ -41,7 +42,8 @@ PATH_JS = """
     const root = n.getRootNode();
     if (n.id && root.querySelectorAll('#' + CSS.escape(n.id)).length === 1) return { s: '#' + CSS.escape(n.id), unique: true };
     const tag = n.tagName.toLowerCase();
-    const p = n.parentElement;
+    // An element directly in a shadow root has the root as its parent node.
+    const p = n.parentElement || (n.parentNode && n.parentNode.host ? n.parentNode : null);
     if (!p) return { s: tag, unique: false };
     const same = Array.from(p.children).filter((c) => c.tagName === n.tagName);
     return { s: same.length > 1 ? `${tag}:nth-of-type(${same.indexOf(n) + 1})` : tag, unique: false };
@@ -111,6 +113,36 @@ JSLIB = (
     };
     visit(root);
   };
+  // Visible text (review H-01): the text nodes under `el` in the composed
+  // tree (a host's shadow root, a slot's assigned nodes) whose parent a
+  // person can see and whose box is on the page; not a select's options.
+  const SKIP = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE', 'SELECT', 'OPTION', 'TEXTAREA', 'DATALIST']);
+  const text = (el) => {
+    if (!el) return '';
+    const parts = [];
+    const visit = (n) => {
+      if (n.nodeType === 3) {
+        const p = n.parentElement;
+        if (!p || !n.textContent.trim() || !seen(p)) return;
+        const range = document.createRange();
+        range.selectNodeContents(n);
+        const b = range.getBoundingClientRect();
+        if (!b.width || b.right + scrollX <= 0 || b.bottom + scrollY <= 0) return;
+        parts.push(n.textContent);
+        return;
+      }
+      if (n.nodeType !== 1 && n.nodeType !== 11) return;
+      if (n.nodeType === 1 && SKIP.has(n.tagName)) return;
+      if (n.nodeType === 1 && n.tagName === 'SLOT') {
+        const got = n.assignedNodes({ flatten: true });
+        for (const c of (got.length ? got : n.childNodes)) visit(c);
+        return;
+      }
+      for (const c of (n.shadowRoot ? n.shadowRoot.childNodes : n.childNodes)) visit(c);
+    };
+    visit(el);
+    return parts.join(' ').replace(/\\s+/g, ' ').trim();
+  };
   const FIELD = '"""
     + FIELD_SELECTOR
     + """';
@@ -163,7 +195,7 @@ JSLIB = (
       return el;
     } catch (e) { return null; }
   };
-  return { roots, all, where, rendered, seen, texts, FIELD, inert, off, field, NATIVE, tabindex,
+  return { roots, all, where, rendered, seen, texts, text, FIELD, inert, off, field, NATIVE, tabindex,
     focusable, byId, scope, active, hostOf, path, find };
 })();
 """

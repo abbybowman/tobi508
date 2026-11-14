@@ -18,18 +18,12 @@ from tobi508.pipeline import run_tt_tests
 EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
     # D-01: a form inside a web component.
     "shadow-form": {
-        "5.A": (
-            "NEEDS_REVIEW",
-            "2 form fields inside web components were not checked.",
-        ),
-        "5.B": (
-            "NEEDS_REVIEW",
-            "2 form fields inside web components were not checked.",
-        ),
-        "5.C": (
-            "NEEDS_REVIEW",
-            "2 form fields inside web components were not checked.",
-        ),
+        # Part D (5.A, 5.C 1.10.0, 5.B 1.7.0): pass L reads the web component,
+        # so its rows decide and the guard is quiet: the placeholder-only
+        # "Name" FAILs 5.A, the unnamed email field FAILs 5.C, and 5.B asks.
+        "5.A": ("FAIL", None),
+        "5.B": ("NEEDS_REVIEW", None),
+        "5.C": ("FAIL", None),
     },
     # H-08: a form a plain button shows.
     "hidden-form-button": {

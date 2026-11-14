@@ -69,6 +69,42 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
+    # H-01 (5.A 1.10.0): a label's text is what a person can see. A label
+    # showing only "*" (its words in a screen-reader-only span), an empty
+    # label wrapping a drop-down, and a label pushed off screen with
+    # text-indent are no visible label: J1 asks, and "not labeled" FAILs.
+    "f44-label-words-hidden": {
+        "5.A": {"outcome": "FAIL", "rows": ["M5", "M5", "M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M6"], "answers": COMPLETE},
+    },
+    # Part D (5.A and 5.C 1.10.0): fields inside web components are read like
+    # any field; inside one, the name comes from Chrome's accessibility tree
+    # (ANDI does not analyse shadow roots). Each PASS has a twin that FAILs.
+    "f45-shadow-labelled": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    # f45's twin for 5.A: the field's only text is its placeholder.
+    "f46-shadow-placeholder-only": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # A label filled through a slot is the field's label, seen and announced.
+    "f47-shadow-slotted-label": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # f45's twin for 5.C: aria-labelledby cannot reach out of a shadow root,
+    # so the field has no name although the text is right there.
+    "f48-shadow-labelledby-outside": {
+        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Search terms")},
+        "5.C": {"outcome": "FAIL", "rows": ["M3"]},
+    },
+    # Web components inside a web component, the same tag twice.
+    "f49-shadow-nested": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
     "f03-date-format-outside-label": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
         "5.C": {
