@@ -28,12 +28,14 @@ from typing import Any, Protocol
 from playwright.async_api import BrowserContext, CDPSession, Page
 
 from tobi508.jslib import PATH_JS  # the walk's CSS path, every reader's (jslib.py)
-from tobi508.models import BoundingBox, PassResult, Step, Stop
+from tobi508.models import BoundingBox, Candidate, PassResult, Step, Stop
 
 # Tab press cap per pass (4.C spec section 2, P1): 3 x inventory + 50, max 3,000.
 CAP_PER_CANDIDATE = 3
 CAP_BASE = 50
 CAP_MAX = 3000
+# Candidates listed in an inventory (past it the count alone is kept).
+ITEMS_MAX = 200
 
 
 @dataclass
@@ -284,7 +286,10 @@ _ACTIVE_FN = "function () { return this.activeElement; }"
 # Tabbable candidates in one frame's document and its open shadow roots
 # (4.C spec section 2, Setup): natively focusable or tabindex >= 0, not
 # disabled, not inert, rendered (not display:none or visibility:hidden).
-_INVENTORY_JS = """() => {
+_INVENTORY_JS = (
+    """() => {"""
+    + PATH_JS
+    + """
   const NATIVE = 'a[href], area[href], button, input:not([type="hidden"]), select, textarea, ' +
     'iframe, frame, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"])';
   const inert = (el) => {
@@ -314,6 +319,8 @@ _INVENTORY_JS = """() => {
     if (el.matches('input[type=radio]') && el.name) return 'radio:' + (el.form ? 'f' : '') + el.name;
     return null;
   };
+  const ITEMS_MAX = 200, DATEISH = ['date', 'time', 'datetime-local', 'month', 'week'];
+  const items = [];
   let count = 0;
   const fields = new Set();
   let n = 0;
@@ -330,10 +337,26 @@ _INVENTORY_JS = """() => {
     const groups = new Set();
     for (const el of root.querySelectorAll('*')) {
       if (candidate(el)) {
+        // `g` names what a stop of this element is identified by when it is
+        // not the element's own path: a radio group, or the date input whose
+        // parts take focus one by one (Stop.group).
+        let g = null, counted = true;
         if (el.matches('input[type=radio]') && el.name) {
           const k = groupKey(el, root);
-          if (!groups.has(k)) { groups.add(k); count += 1; }
-        } else count += 1;
+          if (groups.has(k)) counted = false; else groups.add(k);
+          g = 'radio:' + (el.form ? path(el.form) : '') + ':' + el.name;
+        } else if (el.tagName === 'INPUT' && DATEISH.includes(el.type)) {
+          g = 'input:' + path(el);
+        }
+        if (counted) {
+          count += 1;
+          if (items.length <= ITEMS_MAX) {
+            const label = (el.getAttribute('aria-label') || el.getAttribute('title') || el.textContent ||
+              el.getAttribute('placeholder') || el.getAttribute('name') || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+            items.push({ p: path(el), g, l: label, t: el.getAttribute('role') || el.tagName.toLowerCase() +
+              (el.tagName === 'INPUT' ? ':' + el.type : '') });
+          }
+        }
       }
       if (el.matches(FIELD) && !el.matches(':disabled') && !el.readOnly && el.getAttribute('aria-disabled') !== 'true'
           && el.getAttribute('aria-readonly') !== 'true' && !inert(el) && rendered(el)) {
@@ -344,8 +367,11 @@ _INVENTORY_JS = """() => {
     }
   };
   walk(document);
-  return { count, fields: fields.size };
+  return { count, fields: fields.size, items: items.length > ITEMS_MAX ? null : items };
 }"""
+)
+
+_PATH_OF_JS = "(el) => {" + PATH_JS + " return path(el); }"
 
 _NEG_TABINDEX_FRAME_JS = """(el) => {
   const v = el.getAttribute('tabindex');
@@ -366,6 +392,10 @@ class Inventory:
     keyboard_unreachable: int = 0
     # Form fields 5.D would complete (radio groups once), every frame read.
     form_fields: int = 0
+    # The candidates themselves, one per radio group, past ITEMS_MAX none (the
+    # count alone is then all there is): what a coverage rule matches the
+    # walk's stops against (walk.walk_coverage).
+    items: list[Candidate] | None = field(default_factory=list)
 
 
 async def dom_inventory(page: Page) -> Inventory:
@@ -379,12 +409,14 @@ async def dom_inventory(page: Page) -> Inventory:
             continue
         skipped = False
         f = frame
+        chain: list[str] = []  # the iframes' CSS paths, top first (Stop.frame_chain)
         try:
             while f.parent_frame is not None:
                 owner = await f.frame_element()
                 if await owner.evaluate(_NEG_TABINDEX_FRAME_JS):
                     skipped = True
                     break
+                chain.insert(0, await owner.evaluate(_PATH_OF_JS))
                 f = f.parent_frame
         except Exception:
             # The frame (or a parent) detached or reloaded mid-read: an embed
@@ -397,6 +429,23 @@ async def dom_inventory(page: Page) -> Inventory:
             inv.keyboard_unreachable += n
         else:
             inv.candidates += n
+            if inv.items is not None and got.get("items") is not None:
+                prefix = " >> ".join(chain)
+                inv.items.extend(
+                    Candidate(
+                        key=" >> ".join([*chain, c["p"]]),
+                        group=f"{prefix}|{c['g']}" if c["g"] else None,
+                        label=c["l"],
+                        kind=c["t"],
+                    )
+                    for c in got["items"]
+                )
+                if len(inv.items) > ITEMS_MAX:
+                    inv.items = None
+            else:
+                inv.items = None
+    if inv.unreachable_frames:
+        inv.items = None  # a frame that could not be read has candidates unlisted
     return inv
 
 
@@ -1321,13 +1370,15 @@ async def run_pass(
         end, trap, _ = await drive(s, key, cap, detect_p1_end, deadline, pace)
         if end in ("stuck", "loop"):
             await s.traversal.shoot(shot_label or name)
-        end_inv = (await dom_inventory(s.page)).candidates
+        end_inv = await dom_inventory(s.page)
         return PassResult(
             steps=s.traversal.steps,
             end=end,
             trap=trap,
             failed_requests=len(s.failed_requests),
-            inventory_end=end_inv,
+            inventory_end=end_inv.candidates,
+            inventory_end_items=end_inv.items,
+            form_fields_end=end_inv.form_fields,
             **base,
         )
     except WalkTooLong:

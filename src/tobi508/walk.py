@@ -24,7 +24,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from tobi508.models import PassResult
+from tobi508.models import PassResult, Stop
 from tobi508.traverse import NewPage, Pace, StepHook, run_pass
 
 TRAP_ENDS = ("stuck", "loop")
@@ -134,3 +134,142 @@ async def _confirmed(
     if again.end == first.end and trap_paths(again) == trap_paths(first):
         return first.model_copy(update={"confirmed": True})
     return again.model_copy(update={"unrepeated": first})
+
+
+# --- Coverage: was the walk complete for a test? (row WK; 6d) ---------------
+
+
+class WalkCoverage(BaseModel):
+    """What the passes a test reads reached, against what Tab should land on
+    when the last of them ended (`PassResult.inventory_end`, `inventory_end_items`).
+    Facts only: each check's rows decide what an incomplete walk means."""
+
+    counted: int | None = None  # None: the end inventory was not read
+    reached: int = 0
+    not_reached: int = 0
+    not_reached_names: list[str] = []  # up to 3, as `"Two" (a)`; [] past the item cap
+    causes: list[str] = []  # how a pass ended, when not at the wrap
+    sentence: str | None = None  # the plain sentence; None when complete
+
+    @property
+    def complete(self) -> bool:
+        return self.counted is not None and self.not_reached == 0
+
+
+def _chain(stop: Stop) -> str:
+    return " >> ".join(stop.frame_chain)
+
+
+def _stop_ids(passes: list[PassResult]) -> tuple[set[str], set[str], set[str]]:
+    """Every identity a stop gives: its path key, its group (a radio group or a
+    date input's parts, with the frame chain), and each frame the walk went
+    into (the walk reads the deepest focused element, so a focusable frame is
+    never a stop of its own)."""
+    keys: set[str] = set()
+    groups: set[str] = set()
+    frames: set[str] = set()
+    for p in passes:
+        for st in p.steps:
+            s = st.stop
+            if s.kind != "element":
+                continue
+            keys.add(s.path_key)
+            if s.group:
+                groups.add(f"{_chain(s)}|{s.group}")
+            for i in range(len(s.frame_chain)):
+                frames.add(" >> ".join(s.frame_chain[: i + 1]))
+    return keys, groups, frames
+
+
+def _describe(stop: Stop) -> str:
+    what = stop.role or stop.control or stop.tag or "element"
+    return f'"{stop.name}" ({what})' if stop.name else f"a {what}"
+
+
+_WHO = {"P1": "Tab", "P2": "Shift+Tab"}
+
+
+def _cause(p: PassResult) -> str | None:
+    who = _WHO.get(p.name, p.name)
+    if p.end in ("stuck", "loop"):
+        els = [s.stop for s in p.steps if s.stop.kind == "element"]
+        at = f" at {_describe(els[-1])}" if els else ""
+        return (
+            f"{who} {'got stuck' if p.end == 'stuck' else 'went round in a loop'}{at}"
+        )
+    if p.end == "cap":
+        return f"{who} stopped at its limit of {p.cap} presses"
+    if p.end == "time":
+        return f"{who} ran out of time"
+    if p.end == "error":
+        return f"{who} could not finish"
+    if p.end == "navigation":
+        return f"{who} left the page"
+    return None
+
+
+def walk_coverage(
+    walk: KeyboardWalk, passes: tuple[str, ...] = ("P1", "P2")
+) -> WalkCoverage:
+    """Row WK for the elements that take focus (spec Terms). An element is
+    reached when a pass in `passes` stopped on it. The elements to reach are
+    the candidates of the last pass named, counted when that pass ended: a
+    page that grew is complete if everything present then was reached, and a
+    pass that ended in a trap, a loop, a cap or out of time matters only
+    through what is left over. A radio group is one element, a date input
+    one, a frame the walk went into one."""
+    read = [p for name, p in (("P1", walk.p1), ("P2", walk.p2)) if name in passes]
+    last = read[-1]
+    causes = [c for p in read if (c := _cause(p))]
+    cov = WalkCoverage(causes=causes)
+    if last.inventory_end is None:
+        cov.sentence = (
+            "The keyboard walk could not count the elements on this page that take "
+            "focus when it ended, so we cannot say it reached all of them."
+        )
+        return cov
+    keys, groups, frames = _stop_ids(read)
+    cov.counted = last.inventory_end
+    items = last.inventory_end_items
+    if items is not None:
+        left = [
+            c
+            for c in items
+            if not (c.key in keys or c.key in frames or (c.group and c.group in groups))
+        ]
+        cov.not_reached = len(left)
+        cov.reached = len(items) - len(left)
+        cov.not_reached_names = [
+            f'"{c.label}" ({c.kind})' if c.label else f"a {c.kind}" for c in left[:3]
+        ]
+    else:
+        # Past the list's cap: stops against the count (radio groups, date
+        # inputs and entered frames once).
+        n = len(
+            {
+                f"{_chain(s.stop)}|{s.stop.group}" if s.stop.group else s.stop.path_key
+                for p in read
+                for s in p.steps
+                if s.stop.kind == "element"
+            }
+        ) + len({f for f in frames if f not in keys})
+        cov.reached = min(n, cov.counted)
+        cov.not_reached = max(0, cov.counted - n)
+    if cov.not_reached:
+        which = (
+            " and ".join(cov.not_reached_names)
+            if cov.not_reached_names and cov.not_reached <= 3
+            else (
+                f"{', '.join(cov.not_reached_names)} and {cov.not_reached - 3} more"
+                if cov.not_reached_names
+                else f"{cov.not_reached} of them"
+            )
+        )
+        cov.sentence = (
+            f"The keyboard reached {cov.reached} of the {cov.counted} elements on "
+            f"this page that take focus, so {which} "
+            f"{'was' if cov.not_reached == 1 else 'were'} not checked."
+        )
+        if causes:
+            cov.sentence += " " + "; ".join(causes) + "."
+    return cov
