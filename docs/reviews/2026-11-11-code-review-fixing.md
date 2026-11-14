@@ -9,40 +9,13 @@ working rules).
 is listed here is what is left to start or still running.
 
 **Done:** steps 1 to 5 (PRs #39 to #44), step 6 (PR #46; results in
-`evals/README.md`, "Gate 2026-11-13"), step 6b (PR #53), step 7
-(PRs #48, #50), and step 6c's read cap, 19.A search row and freeze
-(PRs #49, #51, #52).
+`evals/README.md`, "Gate 2026-11-13"), step 6b (PR #53), step 6c
+(PRs #49, #51, #52, #54, #55) and step 7 (PRs #48, #50).
 
-**Order to start them** (at most three threads at once): 8 now (the
-grid it is tested on is merged); 6c's two remaining items in its
-running thread; 9 after 8; 10 when the keys are in place.
+**Order to start them** (at most three threads at once): 8 and 9a now;
+9b after 8; 10 when the keys are in place.
 
 ## Starting a thread
-
-**Step 6c, Opus: what is left of it** (running)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is what is left of step 6c
-> of `docs/ROADMAP.md` "Order of work", each its own pull request.
->
-> (1) A time budget per test inside the run limit, so a test that runs
-> long is NEEDS REVIEW ("ran out of its time") and the tests after it
-> still run. Show me the budgets before building. Also find why 3.A's
-> stepped capture took 17 min on 14194 against 55 s in the dry run.
-> Update CLAUDE.md "Hosting, time and concurrency" and the README's
-> "How long it takes" in the same commit.
->
-> (2) 9.B and 9.C on CILab are DOES NOT APPLY where my key passes
-> (round 2's review item 13): row A3o does not fire because
-> `has_own_navigation()` is false there (7 units, no labelled region).
-> Look at CILab's units in the run's evidence and tell me why its top
-> navigation is not counted, and why 9.A found repeated content on the
-> same run. Then propose either a fix to the read, or A3o in 9.A, 9.B
-> and 9.C holding whenever every other page shares almost nothing and
-> the tested page has any link or control. Show me the spec wording
-> before building. It moves DOES NOT APPLY to NEEDS REVIEW only; add
-> CILab's shape as a fixture and the nearest page that stays DOES NOT
-> APPLY.
 
 **Step 8, Opus: one library for reading the page, frames included** (now)
 
@@ -68,16 +41,18 @@ running thread; 9 after 8; 10 when the keys are in place.
 > Whatever is not merged by the end of Nov 17 stops there: leave
 > `main` whole and write down where you stopped.
 
-**Step 9, Sonnet: the second check** (after step 8, or on Nov 16 with whatever of it is merged)
+**Step 9a and 9b, Sonnet: the second and third checks** (9a now; 9b after step 8, or on Nov 16 with whatever of it is merged; the same prompt, a fresh thread each)
 
 > Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
 > ("The gate"), the docstring of `evals/apijudge_gate.py`, and step 6's
 > write-up in `evals/README.md` ("Gate 2026-11-13") with its folder
 > `evals/judging/gate-2026-11-13/` (`compare.py` is the comparison to
-> reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work":
-> step 6 again, on `main`'s head (record the commit), on round 2's 10
-> frozen pages and round 1's, with the server judge answering every
-> question type, scored with the same scorer.
+> reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work"
+> (I will say whether this is 9a or 9b): step 6 again, on `main`'s
+> head (record the commit), on round 2's 10 frozen pages and round
+> 1's, two repeats, with the server judge answering every question
+> type, scored with the same scorer. Report the two repeats side by
+> side and name every cell that differs between them.
 >
 > Before anything else, check and tell me if either fails: the frozen
 > recordings of both rounds are restored (`evals/judging/round2/frozen`,
@@ -91,13 +66,17 @@ running thread; 9 after 8; 10 when the keys are in place.
 > folder under `evals/judging/`; never rewrite a locked round or step
 > 6's folder.
 >
-> Report, beside step 6's figures and round 2's: false PASS, missed
+> Report, beside step 6's figures and round 2's (and, for 9b, beside
+> 9a's): false PASS, missed
 > fails (wrong DOES NOT APPLY), false FAILs, NEEDS REVIEW and decided
 > cells, per test and in all; every cell that moved from NEEDS REVIEW
 > to an outcome since step 6, with whether my key agrees; guard CN's
 > cells on round 1's pages apart from the rest, and whether it held
 > back any failure there; and for each question type, on both rounds'
 > cells together, whether it meets the thresholds under "The gate".
+> From each report's `test_times`, list every test that ran out of its
+> budget and the longest time each test took, so the provisional
+> budgets can be set.
 > Run the gate's test-page half for the types that are near. Do not
 > change `JUDGE_TYPES`: I choose the types from your report.
 >

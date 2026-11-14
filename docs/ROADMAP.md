@@ -86,10 +86,11 @@ ran three to four times longer than the work took.
 | 1-5 | Quick fixes and CI; the count and guard CN; judge, gate and sign-in fixes; false FAILs; answerable "unsure" | | done: PRs #39 to #44 | Plan parts A and B; review bundle 7; fixes 8 to 14 and 24 to 27 |
 | 6 | The check against round 2: the baseline before the readers change | Opus | done Nov 13: [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | done Nov 13: PR #53 | Eleven review items (M-05, C-01, M-10, H-02, M-08, K-01, M-01, E-08, F-02, C-07, K-05); each is marked fixed in [the review](reviews/2026-11-11-code-review.md) and decided in its spec |
-| 6c | Win back decided cells: the read cap, 19.A's unverified search and a fuller freeze are done (PRs #49, #51, #52); left: a time budget per test, and 9.B and 9.C on a page with no navigation the read can see | Opus | Nov 14 | Step 6's results; this file, "What each step covers" |
+| 6c | Win back decided cells: the read cap, 19.A's unverified search, a fuller freeze, a time budget per test, 9.B and 9.C on a page whose own navigation matches nothing | Opus | done Nov 13-14: PRs #49, #51, #52, #54, #55 | This file, "What each step covers"; [time budgets](solutions/time-budget.md) |
 | 7 | The grid of hard pages | Sonnet | done Nov 13: PRs #48, #50 | Plan part I; `tests/test_fixtures_grid.py` |
 | 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |
-| 9 | The second check: round 2's and round 1's frozen pages again, after 8 | Sonnet | Nov 16-17 | As step 6, a new folder |
+| 9a | The second check, now: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | Nov 14, beside 8 | As step 6, a new folder |
+| 9b | The third check: the same pages after 8 | Sonnet | Nov 16-17 | As 9a, a new folder |
 | 10 | Round 3, small: a NASA site not used before, with web components if Abby finds one | Abby's keys; Sonnet for the run | pages chosen by Nov 15; run Nov 16-17 | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
 | 11 | If the days allow: the second look's trial | Sonnet | after 6, beside 8 | Plan part F, "Trial" |
 | 12 | If the days allow: sign in on VAST from Claude Code and run one page | Opus | when the admin's answers arrive | [Hosted sign-in plan](plans/2026-11-06-hosted-auth.md). The demo for reviewers is recorded (Abby, 2026-11-12), so this is not needed for it |
@@ -140,9 +141,13 @@ what is planned.
      well as adding the budget.
      **Built 2026-11-14:** budgets as settings (60 s to 600 s, about twice
      the longest seen on round 2's pages, provisional until step 9), each
-     capped at half of what is left of the run, cheapest first; the 17 min was not
-     reproduced (3.A on 14194: 56 s, 117 s with its stepped capture
-     forced; `docs/solutions/time-budget.md`).
+     capped at half of what is left of the run, cheapest first; each
+     report records every test's time (`test_times`). The cause was
+     seen once more (3.A on 14194 ran 1,178 s against its 240 s
+     budget): a cancelled test's cleanup waited on a page still
+     running script, and 3.A's flash counting never yielded. A test
+     past its budget is now abandoned, not awaited, and the counting
+     runs off the event loop (`docs/solutions/time-budget.md`).
    - **19.A: a search whose results page did not finish** (its own
      scripts failed to load) is "search not verified" (row W4, NEEDS
      REVIEW), not a search that found nothing (W3, FAIL).
@@ -160,15 +165,15 @@ what is planned.
      player's chosen file first (500 MB a page) and records 19.A's
      searches; in a cloud container, `UPSTREAM_PROXY` in `.env`
      (`docs/solutions/environment.md`).
-   - **9.B and 9.C on a page whose navigation the read does not see**
-     (found when the cap was lifted; round 2's review item 13): CILab
-     is DOES NOT APPLY where the key passes. Row A3o (other pages of
-     another template: NEEDS REVIEW) asks that the tested page have
-     navigation of its own, and the read finds none on CILab (7 items,
-     no labelled region). Either the read is fixed so its top
-     navigation counts, or A3o holds whenever every other page shares
-     almost nothing and the tested page has any link or control. It
-     moves DOES NOT APPLY to NEEDS REVIEW only.
+   - **9.B and 9.C when nothing matches** (found when the cap was
+     lifted; round 2's review item 13): CILab was DOES NOT APPLY where
+     the key passes. Its navigation was read; what blocked row A3o was
+     a filter label on the search page that happened to name it, so
+     that page did not "share almost nothing".
+     **Built 2026-11-14:** nothing matches and the tested page has
+     navigation of its own is A3o, NEEDS REVIEW, whatever the other
+     pages share (9.A 1.6.0, 9.B 1.5.0, 9.C 1.8.0); with none of its
+     own it stays DOES NOT APPLY.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the
@@ -196,7 +201,7 @@ what is planned.
      frame), as one MINOR version per spec; and whether a recording
      that lacks a frame's page holds the test at NEEDS REVIEW (proposed:
      yes).
-9. **The second check.** Step 6 again after step 8, on round 2's pages
+9. **The second and third checks.** Step 6 again, on round 2's pages
    and on round 1's (the gate script reads only round 2's pages
    today, so it gains a round option): what moved from
    NEEDS REVIEW to an outcome, and whether any of it is wrong against
@@ -208,6 +213,13 @@ what is planned.
    fuller freeze is the fix), and it is where `JUDGE_TYPES` is decided,
    on both rounds' cells and the gate's test-page half. Then each README status line is rewritten from it, and the
    caveats step 8 removed go.
+   It runs twice (Abby, 2026-11-14 to confirm): **9a** now, on `main`
+   after 6b and 6c, so their effect is measured apart from step 8's
+   and the pitch has a second set of figures whatever step 8 reaches;
+   **9b** after step 8. Each runs two repeats: step 6c saw the same
+   frozen page take a different path on different loads (3.A's stepped
+   capture ran on one load of 14194 and not on the next), so one
+   repeat can mislead.
 10. **Round 3, small.** A site the tool has not been developed against;
     Abby looks for NASA sites built with web components. Three to five
     pages, Abby's blind SCRT files first, then the tool, then the score.
@@ -318,6 +330,13 @@ itself, one bundle a thread; they are not repeated here.
   change.
 - **Round 3's site and pages** (step 10), by Nov 15, and how many pages
   Abby can key.
+- **Step 9 in two runs** (9a now, 9b after step 8), two repeats each:
+  proposed 2026-11-14.
+- **The walk that ends in a trap,** fixed test by test so far (5.D,
+  5.F; 4.F and 4.D by guard CN): the grid shows 4.E still passes after
+  one. One shared "the walk was complete" check for every test that
+  reads the walk is the first piece of step 14 (part C); pull that
+  piece up beside step 8, or leave it in the README's table.
 - **The VAST admin's answers** (step 12 only): pulling the image, a
   Chromium service in the namespace, `sub` and groups in access tokens
   ([hosted sign-in plan](plans/2026-11-06-hosted-auth.md), "Open
