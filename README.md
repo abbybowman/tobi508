@@ -105,7 +105,9 @@ A fix removes its line here in the same commit.
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
 | 4.A | PASS | a mouse-only control inside a web component |
-| 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
+| 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read); timing instructions inside a web component (found by the grid of hard pages, 2026-11-13) |
+| 4.E | PASS | elements after a keyboard trap (grid) |
+| 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
 | 5.A | PASS | a label whose words are hidden (a screen-reader-only span, `text-indent`) |
 | 5.F, 5.G | Does Not Apply | an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |

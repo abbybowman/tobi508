@@ -881,7 +881,7 @@ different checks, and some of those ways do not hold back an outcome.
   9.C 1.6.0 and 19.A 1.7.0 for the read cap). `site.near_copy`: the same host and path apart from the
   query string and at least 0.9 of the units' text keys shared. Bar set from
   live NASA search pages (same page 1.00; the highest different page 0.44;
-  see `docs/plans/2026-11-13-spec-decisions-drafts.md`). Fixtures: the test
+  the draft is in git history, `docs/plans/2026-11-13-spec-decisions-drafts.md` before 2026-11-14). Fixtures: the test
   server's `/stamp` (bytes change per request; NEEDS REVIEW on all four,
   and 9.A said FAIL before) and `/listing?page=1` against `?page=2` (the
   nearest case that is still compared: PASS).

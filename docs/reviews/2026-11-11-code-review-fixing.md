@@ -8,95 +8,42 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 5 (PRs #39 to #44) and step 6 (PR #46; results
-in `evals/README.md`, "Gate 2026-11-13").
+**Done:** steps 1 to 5 (PRs #39 to #44), step 6 (PR #46; results in
+`evals/README.md`, "Gate 2026-11-13"), step 6b (PR #53), step 6c
+(PRs #49, #51, #52, #54, #55) and step 7 (PRs #48, #50).
 
-**Order to start them** (at most three threads at once): 6c and 6b now;
-7 now, since 8 waits for its first three pages; 8 when those pages are
-merged; 9 after 8; 10 when the keys are in place.
+**Order to start them** (at most three threads at once): 8, 9a and 6d
+now; 9b after 8; 10 when the keys are in place.
 
 ## Starting a thread
 
-**Step 6b, Sonnet: single-test fixes for the known wrong outcomes** (beside steps 7 and 8)
+**Step 6d, Sonnet: the walk was complete, checked in one place** (now, beside step 8)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is step 6b of `docs/ROADMAP.md` "Order of
-> work": `docs/plans/2026-11-13-spec-decisions.md`. Part 1 first, in
-> its order, one commit and one fixture each, with the nearest page
-> that must still give the old outcome where there is one. For K-01,
-> show me the rule before building it. Then part 2, only the items
-> where I have written an answer on the "Abby:" line; for each, draft
-> the spec change with its research and show me before building. Every
-> fix moves a PASS or a DOES NOT APPLY toward NEEDS REVIEW or FAIL; if
-> one would do the opposite anywhere, stop and ask. Remove each fixed
-> row from the README's "Known wrong outcomes" table and mark the
-> item fixed in the review file, in the same commit. Stay out of the
-> readers step 8 is replacing (`labels.py`, `site.py`, `motion.py`,
-> `forms.py`, `reveal.py`, `observe.py` dialogs): C-01 touches
-> `observe.py`, so merge `main` before it and keep the change small.
+> and follow it. Your work is step 6d of `docs/ROADMAP.md` "Order of
+> work": the first conversion of part C in
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (the
+> walk), and nothing else of part C. First list, for every test that
+> reads the keyboard walk (4.A-4.F, 5.A-5.H), what it does today when
+> the walk ended in a trap, a loop, a cap or out of time, or reached
+> fewer stops than the page has (`walk.py` `TRAP_ENDS`, guard CN's
+> `count: focusable`, each check's own list), and show me the table:
+> which tests already hold PASS and DOES NOT APPLY, and which do not
+> (the grid's NEW-3 says 4.E does not). Then one shared function that
+> answers "was the walk complete, and if not, what did it not reach"
+> in a plain sentence, and each test's own lists replaced by it, one
+> test a commit with its fixtures and the grid rerun. The spec wording
+> is one sentence per spec (a MINOR version each, the same sentence);
+> show me it once before building. Every change moves a PASS or a DOES
+> NOT APPLY to NEEDS REVIEW; no FAIL changes; if a cell would move the
+> other way, stop and ask. Update the grid's cells, the README's
+> "Known wrong outcomes" row for 4.E, and the review items in the same
+> commits. Step 8 is running beside you in the readers (`labels.py`,
+> `site.py`, `motion.py`, `forms.py`, `reveal.py`, `observe.py`): stay
+> out of them, and merge `main` before every spec version and before
+> editing `tests/test_fixtures_grid.py`.
 
-**Step 6c, Opus: win back decided cells** (before step 8 reaches the site read)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 6c of
-> `docs/ROADMAP.md` "Order of work"; read step 6's results in
-> `evals/README.md` ("Gate 2026-11-13") and
-> `evals/judging/gate-2026-11-13/compare.md` first. Four items, in the
-> roadmap's order, each its own pull request.
->
-> (1) The 600-item read cap of 9.A-9.C (`site.py` `UNIT_CAP`; 9.A's
-> spec, section 2). I have approved lifting it. Find out first why it
-> is 600 and what a page over it costs in time; then raise or remove
-> it as one MINOR spec change per spec that names it, with a fixture
-> page over the old cap and the nearest page that must still be NEEDS
-> REVIEW. Then rerun 9.A-9.C on round 2's ten frozen pages (ask me for
-> the `round2-frozen` archive if it is not restored; never fetch them
-> live) and show me every cell beside my key. This turns NEEDS REVIEW
-> into outcomes, and the cap is what held round 2's two wrong 9.A
-> PASSes (CILab, 14592): if either does not FAIL, or any 9.A-9.C cell
-> passes where my key fails, stop and show me before merging.
->
-> (2) A time budget per test inside the run limit, so a test that runs
-> long is NEEDS REVIEW ("ran out of its time") and the tests after it
-> still run. Show me the budgets before building. Also find why 3.A's
-> stepped capture took 17 min on 14194 against 55 s in the dry run.
-> Update CLAUDE.md "Hosting, time and concurrency" and the README's
-> "How long it takes" in the same commit.
->
-> (3) 19.A: a search whose results page did not finish loading (its
-> own scripts failed) is row W4, NEEDS REVIEW, not W3. A MINOR spec
-> change, a fixture, and the nearest page that must still FAIL (a
-> finished search that does not list the page).
->
-> (4) The freeze (`evals/agent/freeze.py`): scroll the page so lazy
-> images load, and record media and 19.A's search results, so that a
-> replay needs nothing live. Never rewrite a locked round or its
-> frozen set: this is for round 3 and later. For reruns of rounds 1
-> and 2, make the browser in this container trust the egress proxy
-> (`UPSTREAM_PROXY`; `docs/solutions/environment.md`) and say what you
-> changed.
-
-**Step 7, Sonnet: the grid of hard pages** (now)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 7 of
-> `docs/ROADMAP.md` "Order of work": part I's grid in
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (CI is
-> done). Start from `docs/reviews/2026-11-11-code-review-pages/`. One
-> test file, one table, check by page: each cell is the expected
-> outcome today or a written reason that the page has nothing for that
-> test. The rule the table must obey: never PASS, and DOES NOT APPLY
-> only with a reason. A cell that breaks the rule today is marked as a
-> known wrong outcome with its review item, not hidden and not fixed
-> here. Build three pages first and open a pull request for them
-> alone, because step 8 is waiting for them: an open shadow root, a
-> same-site frame and a frame from another site, each holding a form,
-> a navigation block, a mouse-only control and a media element. Then
-> the other six pages. Then one recording and one walk per fixture
-> page (Q-07). No spec changes and no outcome changes: this step only
-> adds tests.
-
-**Step 8, Opus: one library for reading the page, frames included** (after step 7's first three pages)
+**Step 8, Opus: one library for reading the page, frames included** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow it. Your work is step 8 of `docs/ROADMAP.md` "Order of
@@ -116,20 +63,25 @@ merged; 9 after 8; 10 when the keys are in place.
 > still FAIL. Then 8b, the frame from another site. Guard CN stays; it
 > stops firing where the readers and the count agree. Update each
 > test's README status line and the "Known wrong outcomes" table in
-> the commit that changes it. Merge `main` before every spec version.
+> the commit that changes it. Merge `main` before every spec version
+> and before editing `tests/test_fixtures_grid.py`: step 6d is running
+> beside you in `walk.py` and the checks' use of the walk (whether it
+> was complete), so leave that to it.
 > Whatever is not merged by the end of Nov 17 stops there: leave
 > `main` whole and write down where you stopped.
 
-**Step 9, Sonnet: the second check** (after step 8, or on Nov 16 with whatever of it is merged)
+**Step 9a and 9b, Sonnet: the second and third checks** (9a now; 9b after step 8, or on Nov 16 with whatever of it is merged; the same prompt, a fresh thread each)
 
 > Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
 > ("The gate"), the docstring of `evals/apijudge_gate.py`, and step 6's
 > write-up in `evals/README.md` ("Gate 2026-11-13") with its folder
 > `evals/judging/gate-2026-11-13/` (`compare.py` is the comparison to
-> reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work":
-> step 6 again, on `main`'s head (record the commit), on round 2's 10
-> frozen pages and round 1's, with the server judge answering every
-> question type, scored with the same scorer.
+> reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work"
+> (I will say whether this is 9a or 9b): step 6 again, on `main`'s
+> head (record the commit), on round 2's 10 frozen pages and round
+> 1's, two repeats, with the server judge answering every question
+> type, scored with the same scorer. Report the two repeats side by
+> side and name every cell that differs between them.
 >
 > Before anything else, check and tell me if either fails: the frozen
 > recordings of both rounds are restored (`evals/judging/round2/frozen`,
@@ -143,13 +95,17 @@ merged; 9 after 8; 10 when the keys are in place.
 > folder under `evals/judging/`; never rewrite a locked round or step
 > 6's folder.
 >
-> Report, beside step 6's figures and round 2's: false PASS, missed
+> Report, beside step 6's figures and round 2's (and, for 9b, beside
+> 9a's): false PASS, missed
 > fails (wrong DOES NOT APPLY), false FAILs, NEEDS REVIEW and decided
 > cells, per test and in all; every cell that moved from NEEDS REVIEW
 > to an outcome since step 6, with whether my key agrees; guard CN's
 > cells on round 1's pages apart from the rest, and whether it held
 > back any failure there; and for each question type, on both rounds'
 > cells together, whether it meets the thresholds under "The gate".
+> From each report's `test_times`, list every test that ran out of its
+> budget and the longest time each test took, so the provisional
+> budgets can be set.
 > Run the gate's test-page half for the types that are near. Do not
 > change `JUDGE_TYPES`: I choose the types from your report.
 >
