@@ -876,8 +876,9 @@ different checks, and some of those ways do not hold back an outcome.
   routes serve one shell is warned, never refused outright. Not caught: a
   page whose bytes change on each request.
 - **Fixed (K-01, the rest):** commit "9.A-9.C, 19.A: a near copy of the
-  tested page is not compared (K-01)", specs 9.A 1.4.0, 9.B 1.4.0, 9.C 1.6.0,
-  19.A 1.6.0 (A2). `site.near_copy`: the same host and path apart from the
+  tested page is not compared (K-01)", specs 9.A 1.5.0, 9.B 1.4.0, 9.C 1.7.0,
+  19.A 1.8.0 (A2; numbers after merging `main`, which had used 9.A 1.4.0,
+  9.C 1.6.0 and 19.A 1.7.0 for the read cap). `site.near_copy`: the same host and path apart from the
   query string and at least 0.9 of the units' text keys shared. Bar set from
   live NASA search pages (same page 1.00; the highest different page 0.44;
   the draft is in git history, `docs/plans/2026-11-13-spec-decisions-drafts.md` before 2026-11-14). Fixtures: the test
@@ -1460,7 +1461,7 @@ a narrower page or an agent's wrong answer than the P0 items do.
   `<main id="main">`: with `#main` on the address 9.A PASS ("the noop
   button lets keyboard users skip it"); without it, FAIL.
 - **Fixed (M-10):** commit "9.A: a fragment's target counts only if the press
-  changed it (M-10)", spec 9.A 1.3.1 (wording: the code's `LANDING_JS`
+  changed it (M-10)", spec 9.A 1.5.0 (wording: the code's `LANDING_JS`
   now says what the spec's landing says). Fixtures
   `9x/h1-noop-button-alpha#main` (FAIL), the same page without the
   fragment (FAIL) and `a1-home#main` (a real skip link: still PASS).

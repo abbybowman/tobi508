@@ -503,6 +503,27 @@ UNRELATED_REASON = (
     "footer as this one."
 )
 
+# A3o when nothing matches but the tested page has navigation of its own
+# (9.A 1.6.0, 9.B 1.5.0, 9.C 1.8.0; Abby 2026-11-14, round 2 item 13: CILab,
+# whose top links match nothing on the main site's pages).
+NO_MATCH = {
+    "9.A": "Nothing on this page appears on the other pages you gave, so we "
+    "could not tell which content repeats.",
+    "9.B": "None of this page's navigation appears on the other pages you "
+    "gave, so we could not tell whether it is consistent with theirs.",
+    "9.C": "None of this page's links or controls appear on the other pages "
+    "you gave, so we could not tell whether they are named consistently.",
+}
+SAME_PART = (
+    "Give other pages from the same part of the site (for a microsite, its own pages)."
+)
+
+
+def a3o_reason(kin: Kinship, test: str) -> str:
+    """Row A3o's sentence: another template when every other page shares
+    almost nothing, else nothing matching."""
+    return UNRELATED_REASON if kin.all_unrelated else f"{NO_MATCH[test]} {SAME_PART}"
+
 
 def _named_regions(p: PageRead) -> set[str]:
     """Region keys that name a label or id (`role|label`, `role|#id`), not a

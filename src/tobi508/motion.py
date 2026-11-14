@@ -1706,7 +1706,9 @@ async def collect(ctx: Any, keep_shots: bool = True) -> MotionPass:
         return ctx.cache["motion"]
     started = ctx.cache.get("motion_task")  # the pipeline's, beside the walk
     if started is not None and started is not asyncio.current_task():
-        return await started
+        # Shielded: a test that runs out of its own time budget while it waits
+        # must not cancel the pass the other 2.x tests and 3.A share.
+        return await asyncio.shield(started)
     if getattr(ctx, "open_motion", None) is None:
         mp = MotionPass(ok=False, error="the page could not be watched in this run")
     elif ctx.out_of_time():

@@ -1,11 +1,11 @@
 # spec_version and SHA-256 of each rules spec (tests/test_spec_versions.py).
 # After a spec change and its version bump: uv run python -m tobi508.rules lock
-19a-multiple-ways.md 1.8.0 0b6666b4cf8d9c1486ad8be059ed5578b518440e4b4ec86edb2a04db151f1435
+19a-multiple-ways.md 1.8.0 081dee134c0d81903846294d3908657f0066a2259dabfee929dda88ca7a40a19
 2a-audio-control.md 1.1.0 e1aae4e98585d37e54849c204f5b68868aa7b8ab45923b298eb4f1b6f6f7bb5b
 2b-blinking-moving-scrolling.md 1.3.0 0e4f987eceef80a2db454484ea1e1fa30a49e720adac57418eb90812e7cb1b85
 2c-auto-updating.md 1.0.0 d702243e39505057a157431bb6ccb05cd2c33604cc03471d4ce2f550fc491e1d
 2d-change-notify-auto.md 1.1.0 77cceaa8ca6d0049c9bfb6503602556b1fdf3b6e5be555b5e686930156ee22a1
-3a-flashing.md 1.2.0 fbdfd3369a690fc45ddfe9e67971ebe42703e43dda08c66312d97de1a05cf432
+3a-flashing.md 1.2.1 1b1fb8cf276517812fda31741adc2a47a5e2e9d6743fa8bffd697175451a2fa7
 4a-keyboard-access.md 1.10.0 00be770b6a27781358fdb704581b112cd211fc20aff6421c4d1e2fdba555af8f
 4b-no-keystroke-timing.md 1.3.0 9da43cd17d25a3d68e43a942924070c6a86949e1ba6875b0a9f9713058bb57fe
 4c-no-keyboard-trap.md 1.13.0 6c055d884af73caaecaaaac6d91883e968d38ef9745c84dd772ab84b755cdc58
@@ -19,6 +19,6 @@
 5f-error-identification.md 1.7.0 9d85d34c55acc0352547caba594b930e27628fb36735e2e91d92c28ede5f6fb6
 5g-error-suggestion.md 1.5.0 41cdb37234dcedfe6f6d4276eeaf46afd7e3a3e646bd102a8f510b6a90e7d13f
 5h-error-prevention.md 1.5.0 c4dd34d19b217e5caf6abfa0f6c6d8c5d86280f232069d1a9ddab6f75d48a225
-9a-bypass.md 1.5.0 40927f015eaed9f7d11749c30e2453cc0603a18b546c7c929161c64f44b7f0fa
-9b-consistent-navigation.md 1.4.0 2d3ccc9a519491b04a671610f384b5f8aab6b6977faeb292cf7da9a3f1ad85c3
-9c-consistent-identification.md 1.7.0 da07509cce4db531c0deffe80fdb13c5a469499261768266e35e2e2824c5ea9e
+9a-bypass.md 1.6.0 abe96bad7dea665a9c78a653d173f65a4bf8e2002beb888d162a8614d8964658
+9b-consistent-navigation.md 1.5.0 3e771d16ddf4a73f49c16a50161d241fef2414e7c4bf28360fcd9c2dc1f9eec2
+9c-consistent-identification.md 1.8.0 a3d4f02ead7c576cb201a64cfe1f206eb90bd93100036bc41ef26679503a405f

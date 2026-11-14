@@ -194,6 +194,18 @@ by TT test ID. Package: `tobi508`.
   plus `MOVING_ALLOWANCE_S` (default 45 s) once pass T finds content that
   keeps changing by itself. `no_time_limit=true` also lifts the media
   store's caps.
+- Each test has its own time for collecting its evidence: its budget
+  (`TEST_BUDGETS_S`, defaults in `config.TEST_BUDGETS_DEFAULT`,
+  provisional until roadmap step 9 measures round 1's pages) or
+  `TEST_BUDGET_SHARE` (half) of what is left of the run, whichever is
+  smaller. Past it the test is NEEDS REVIEW, not performed ("ran out of its
+  time"), and the tests after it still run; `ctx.out_of_time()` stops work
+  a little before, without calling it the run's limit. Tests run cheapest
+  budget first, after the tests whose replays they read
+  (`checks.base.AFTER`). Each report records every test's budget, time
+  given, seconds taken and whether it ran out (`test_times`). Work that
+  never yields (numpy counting) runs off the event loop
+  (`asyncio.to_thread`), or a budget cannot stop it.
 - At most `MAX_CONCURRENT_RUNS` (default 2) runs use a browser at once; a
   queued run's limit starts when it starts.
 

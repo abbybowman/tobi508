@@ -1,7 +1,7 @@
 ---
 tt_test: 9.C
 tt_name: 3.2.4-consistent-identification
-spec_version: 1.7.0
+spec_version: 1.8.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -28,9 +28,9 @@ Names and descriptions *agree* when they are equal after collapsing spaces and i
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to compare" | Abby, 2026-11-02 (Q1) |
-| A2 | ANDI did not run, or a page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (`site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.3.0; Abby, 2026-11-12) | p. 44 HtT 1; Spec rule |
-| A3o | No pair, every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template (1.2.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
-| A3 | No pair, and every page was read in full (with a page over the read cap: G3, 1.1.0) | DOES NOT APPLY | p. 44 Identify Content, Note |
+| A2 | ANDI did not run, or a page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (1.7.0; `site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.3.0; Abby, 2026-11-12) | p. 44 HtT 1; Spec rule |
+| A3o | No pair, and the tested page has navigation of its own | NEEDS REVIEW, not performed (1.2.0; 1.8.0: no longer only when every other page shares almost nothing) | Abby, 2026-11-09 (bundle 2 decision 3); Abby, 2026-11-14 (round 2 item 13: CILab, key Pass: its own top links match nothing on the main site's pages, and one of those pages names the lab in its content); p. 42 Applicability |
+| A3 | No pair, every page was read in full (with a page over the read cap: G3, 1.1.0), and the tested page has no navigation of its own | DOES NOT APPLY | p. 44 Identify Content, Note |
 | A4 | Otherwise | Applies; go to section 3 | |
 
 ## 2. Evidence to collect
@@ -74,7 +74,7 @@ Each pair is an *instance*.
 | Page PASS | "Links and controls that do the same thing here and on the other pages you gave have the same names for screen reader users." |
 | Page FAIL | "Some links or controls that do the same thing have different names on different pages: "<name here>" here and "<name there>" on <page>. Use the same name on every page." |
 | A1 | "This test could not be performed: it needs other pages of the same site to compare. Run it again with other_pages." |
-| A3o | "The other pages you gave share almost nothing with this page, so they look like they come from a different template, and we could not tell which content repeats. Give pages that use the same header, menu and footer as this one." |
+| A3o | When every other page shares almost nothing: "The other pages you gave share almost nothing with this page, so they look like they come from a different template, and we could not tell which content repeats. Give pages that use the same header, menu and footer as this one."" Otherwise (1.8.0): "None of this page's links or controls appear on the other pages you gave, so we could not tell whether they are named consistently. Give other pages from the same part of the site (for a microsite, its own pages)." |
 | A3 | "No link or control on this page also appears on the other pages you gave, so this test does not apply." |
 | C2 | "<component> has a name screen readers announce on one page and none on <page>." |
 

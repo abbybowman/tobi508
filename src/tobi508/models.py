@@ -439,6 +439,18 @@ class StepLog(BaseModel):
     detail: dict[str, Any] = Field(default_factory=dict)
 
 
+class TestTime(BaseModel):
+    """One test's collect in a run (step 6c): its configured budget, the time
+    it was given (the budget or a share of what was left of the run,
+    whichever was smaller), the seconds it took, and whether its time ran
+    out."""
+
+    budget_s: int
+    limit_s: float
+    seconds: float = 0.0
+    ran_out: bool = False
+
+
 class Versions(BaseModel):
     tobi508: str
     andi: str
@@ -468,6 +480,14 @@ class Versions(BaseModel):
             "whether pages' Content-Security-Policy was bypassed (bypass_csp, "
             "so ANDI can run), and how long a load from the recording may "
             "take (replay_navigation_timeout_ms)."
+        ),
+    )
+    test_budgets_s: dict[str, int] = Field(
+        default_factory=dict,
+        description=(
+            "TT test ID -> the seconds that test may spend collecting its "
+            "evidence, inside the run limit (settings test_budgets_s; "
+            "provisional until roadmap step 9)."
         ),
     )
     display: dict[str, int | float | None] = Field(
@@ -670,6 +690,13 @@ class Report(BaseModel):
     answers: list[RecordedAnswer] = Field(default_factory=list)
     judge_backend: str = "client"
     errors: list[str] = Field(default_factory=list)
+    test_times: dict[str, TestTime] = Field(
+        default_factory=dict,
+        description=(
+            "TT test ID -> its collect in this run: budget, the time it was "
+            "given, seconds taken, whether its time ran out (step 6c)."
+        ),
+    )
     evidence_dir: str
 
 

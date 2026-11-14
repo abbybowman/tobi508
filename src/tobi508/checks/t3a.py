@@ -11,6 +11,7 @@ WCAG 2.0 assessment is a note in the summary, never an outcome.
 
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -246,9 +247,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
     page_clock = bool(kinds & {"animation", "timer", "raf", "screencast"})
     if ctx.out_of_time():
         st.unmeasured.append(
-            flashcap.Unmeasured(
-                what="the flashing we suspected", why="the run reached its time limit"
-            )
+            flashcap.Unmeasured(what="the flashing we suspected", why=ctx.time_reason())
         )
         return st
     try:
@@ -284,7 +283,9 @@ async def _measure(
             )
             st.stepped = info
             st.window = [info.window.get("width", 0), info.window.get("height", 0)]
-            a = flashcap.analyze_stepped(pngs, mask)
+            # Off the event loop (W-01): counting 181 frames took 15-19 s and
+            # stopped the server; a budget's cancel now ends the await at once.
+            a = await asyncio.to_thread(flashcap.analyze_stepped, pngs, mask)
             src = flashcap.Source(
                 kind="page", analysis=a, analyzed_s=round(info.page_ms / 1000, 2)
             )
@@ -304,7 +305,7 @@ async def _measure(
                 st.unmeasured.append(
                     flashcap.Unmeasured(
                         what="part of the page's own animation",
-                        why="the run reached its time limit during the capture",
+                        why=f"{ctx.time_reason()} during the capture",
                     )
                 )
             if a.flashing:
@@ -333,7 +334,7 @@ async def _measure(
                 st.unmeasured.append(
                     flashcap.Unmeasured(
                         what="an animated image",
-                        why="the run reached its time limit",
+                        why=ctx.time_reason(),
                         src=src_url[:200],
                     )
                 )
@@ -361,8 +362,8 @@ async def _measure(
                 frames, durations, reps = await flashcap.image_frames(
                     tool, body, kind, w, h
                 )
-                a, span, total = flashcap.analyze_image(
-                    frames, durations, reps, (b["x"], b["y"])
+                a, span, total = await asyncio.to_thread(
+                    flashcap.analyze_image, frames, durations, reps, (b["x"], b["y"])
                 )
             except Exception as exc:
                 st.unmeasured.append(
@@ -430,7 +431,7 @@ def _files(t: Trigger) -> list[str]:
 async def _video(ctx, st: State3A, mp, page, har: Path, t: Trigger, tool) -> None:
     gone = flashcap.Unmeasured(what="a video", why="", css=t.css, src=t.src[:200])
     if ctx.out_of_time():
-        gone.why = "the run reached its time limit"
+        gone.why = ctx.time_reason()
         st.unmeasured.append(gone)
         return
     files = _files(t)
@@ -510,7 +511,7 @@ async def _video(ctx, st: State3A, mp, page, har: Path, t: Trigger, tool) -> Non
         box = [round(v) for v in got] if got else []
     except Exception:
         pass
-    a = flashcap.analyze_video(frames, times)
+    a = await asyncio.to_thread(flashcap.analyze_video, frames, times)
     src = flashcap.Source(
         kind="video",
         css=t.css,

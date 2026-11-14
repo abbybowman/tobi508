@@ -165,6 +165,26 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
     "two-links": ("b5-two-links", ["b6-sibling-with-aside"], {"9.A": "PASS"}, {}),
     # The page tells its own script that focus moved; it did not.
     "fake-focus": ("b7-fake-focus", ["a2-benefits"], {"9.A": "FAIL"}, {}),
+    # Round 2 item 13 (9.A 1.6.0, 9.B 1.5.0, 9.C 1.8.0): a lab's own pages
+    # (CILab) whose top links match nothing on the agency's pages, while one
+    # agency page names the lab in its own content, so not every other page
+    # "shares almost nothing". The links are navigation of its own: NEEDS
+    # REVIEW (A3o), not DOES NOT APPLY (A3). 9.A's repeated logo and name
+    # before the content still FAIL, as round 2's key does.
+    "lab-pages": (
+        "k1-lab",
+        ["a1-home", "k2-search"],
+        {"9.A": "FAIL", "9.B": "NEEDS_REVIEW", "9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    # The nearest page that must stay DOES NOT APPLY: links only inside its
+    # main content, so no navigation of its own.
+    "links-only-in-main": (
+        "k3-links-in-main",
+        ["a1-home", "k2-search"],
+        {"9.A": "DNA", "9.B": "DNA", "9.C": "DNA"},
+        {},
+    ),
     "paging": (
         "d1-page4",
         ["d2-page5"],
@@ -280,6 +300,30 @@ def test_9c_page_over_the_cap_is_never_pass_or_dna():
     assert "other page 1" in f.summary
     none = State9C(pages=[page(0, True), page(1, False)], pairs=[])
     assert evaluate(none, []).outcome.value == "NEEDS_REVIEW"
+
+
+@pytest.mark.parametrize("case", ["lab-pages", "links-only-in-main"])
+async def test_nothing_matches_is_review_only_with_navigation_of_its_own(
+    case,
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    page, others, want, answers = EXPECTED[case]
+    got = await run_tests(
+        settings,
+        f"{server.base}/9x/{page}.html",
+        ["9.B", "9.C"],
+        answers,
+        other_pages=[f"{server.base}/9x/{o}.html" for o in others],
+    )
+    for t in ("9.B", "9.C"):
+        if case == "lab-pages":
+            assert got[t].rows == ["A3o", "G1"], (t, got[t].rows)
+            assert "Give other pages from the same part of the site" in got[t].summary
+            assert "different template" not in got[t].summary
+        else:
+            assert got[t].rows == ["A3", "G1"], (t, got[t].rows)
 
 
 @pytest.mark.parametrize(
