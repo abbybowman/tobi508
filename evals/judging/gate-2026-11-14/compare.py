@@ -97,8 +97,6 @@ def _text_diff(a: str, b: str) -> str:
     lo = max(i - 15, 0)
     out = f"'...{a[lo : len(a) - j]}' -> '...{b[lo : len(b) - j]}'"
     return out[:300]
-        :300
-    ]
 
 
 def dry_vs_real(real: dict[str, dict], dry: dict[str, dict]) -> dict:
