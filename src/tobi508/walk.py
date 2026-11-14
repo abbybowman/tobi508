@@ -162,7 +162,8 @@ def _chain(stop: Stop) -> str:
 
 def _stop_ids(passes: list[PassResult]) -> tuple[set[str], set[str], set[str]]:
     """Every identity a stop gives: its path key, its group (a radio group or a
-    date input's parts, with the frame chain), and each frame the walk went
+    date input's parts, with the frame chain), the composite widget holding
+    it, and each frame the walk went
     into (the walk reads the deepest focused element, so a focusable frame is
     never a stop of its own)."""
     keys: set[str] = set()
@@ -174,6 +175,10 @@ def _stop_ids(passes: list[PassResult]) -> tuple[set[str], set[str], set[str]]:
             if s.kind != "element":
                 continue
             keys.add(s.path_key)
+            if s.widget:
+                # Focus handed to an item of a composite widget (a listbox's
+                # option): the widget itself was reached.
+                keys.add(s.widget)
             if s.group:
                 groups.add(f"{_chain(s)}|{s.group}")
             for i in range(len(s.frame_chain)):

@@ -54,6 +54,13 @@ class Cell:
     # PASS only: the nearest fixture page (under tests/fixtures/) that must
     # still FAIL, read the same way; its own test file asserts the FAIL.
     fails_on: str | None = None
+    # PASS earned by coverage (step 6d), instead of `fails_on`: the evidence
+    # the reason names, (elements reached, elements counted), which the run's
+    # rationale must show ("Walk: reached 7 of 7"), and the nearest fixture
+    # page (under tests/fixtures/) that must still be NEEDS REVIEW because an
+    # element was never reached; its own test file asserts that.
+    reached: tuple[int, int] | None = None
+    holds_on: str | None = None
 
 
 def nr() -> Cell:
@@ -62,6 +69,10 @@ def nr() -> Cell:
 
 def passes(fails_on: str) -> Cell:
     return Cell(Outcome.PASS, fails_on=fails_on)
+
+
+def earned(reached: tuple[int, int], holds_on: str) -> Cell:
+    return Cell(Outcome.PASS, reached=reached, holds_on=holds_on)
 
 
 def fail() -> Cell:
@@ -101,13 +112,7 @@ UNFILED = {
     ),
 }
 
-NEW3_AND_4 = {
-    "NEW-3": (
-        "4.E PASSes after a keyboard trap: the walk stopped inside the trap "
-        'and 4.C says NEEDS REVIEW, but 4.E reads "each element we could '
-        'reach" as all of them. The same cause as H-03, M-05 and F-11 (a '
-        "trap counted as a complete walk), in a test they do not name."
-    ),
+NEW4 = {
     "NEW-4": (
         "4.A, 4.C, 4.D, 4.E and 4.F PASS on a page whose only form opens "
         "from a plain button: the walk reached the page's own 4 stops and "
@@ -115,7 +120,7 @@ NEW3_AND_4 = {
         "only; the 5.x tests say NEEDS REVIEW for the same page)."
     ),
 }
-UNFILED.update(NEW3_AND_4)
+UNFILED.update(NEW4)
 
 
 def _site_cells() -> dict[str, Cell]:
@@ -274,7 +279,11 @@ EXPECTED.update(
             "4.B": nr(),
             "4.C": nr(),
             "4.D": nr(),
-            "4.E": wrong(Outcome.PASS, "NEW-3", UNFILED["NEW-3"]),
+            # NEW-3 withdrawn (step 6d): the walk stops inside the trap in both
+            # directions, yet every one of the page's 7 elements is reached by
+            # one of them (P1: 4, P2: 4 from the end), so "each element we could
+            # reach" is all of them. 4e/f13 is the page where one was not.
+            "4.E": earned((7, 7), "4e/f13-link-skipped-by-script.html"),
             "4.F": nr(),
             "5.A": na(
                 "5.A read all 3 fields, the 2 after the trap too (rows c1 to "
@@ -437,6 +446,11 @@ def test_the_table_passes_only_with_a_twin_and_does_not_apply_only_with_a_reason
                 assert c.nothing_for_it is None, where
                 assert len(c.known_wrong[1]) > 20, where
                 continue
+            if c.outcome is Outcome.PASS and c.reached:
+                assert c.holds_on and c.fails_on is None, where
+                assert c.reached[0] == c.reached[1] > 0, where
+                assert (GRID.parent / c.holds_on).is_file(), where
+                continue
             if c.outcome is Outcome.PASS:
                 assert c.fails_on, ("PASS needs a page that must FAIL", where)
                 assert (GRID.parent / c.fails_on).is_file(), where
@@ -489,10 +503,14 @@ async def test_each_page_gives_each_cell_its_outcome(page, settings, server):
         # The only outcomes that need no reason; never PASS on this page unless
         # the table says it is a known wrong outcome.
         if f.outcome is Outcome.PASS:
-            assert c.known_wrong or c.fails_on, (
+            assert c.known_wrong or c.fails_on or c.reached, (
                 test,
                 "a PASS the table does not own up to",
             )
+            if c.reached:  # the evidence the reason names, not only a sentence
+                assert (
+                    f"Walk: reached {c.reached[0]} of {c.reached[1]}" in f.rationale
+                ), (test, f.rationale)
             if c.fails_on:
                 assert "CN" not in f.rows, (test, "a PASS on content not read")
         if f.outcome is Outcome.DNA:

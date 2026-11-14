@@ -561,6 +561,12 @@ different checks, and some of those ways do not hold back an outcome.
   5.G and 5.H read the same pass). Fixtures `5f/f24` (NEEDS REVIEW) and
   `5f/f25` (trap after the last field, still PASS).
 
+- **Step 6d (2026-11-14):** the same cause in 4.E (a trap counted as a
+  complete walk), found by the grid as NEW-3, is closed by coverage, not
+  by treating a trap as incomplete: 4.E 1.5.0 reads `walk.walk_coverage`
+  (an element no pass reached is NEEDS REVIEW). The grid's page reached
+  7 of 7 elements, so its PASS stands; fixture `4e/f13`.
+
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 
 - **What is wrong:** 4.F's DOES NOT APPLY row counts the distinct stops

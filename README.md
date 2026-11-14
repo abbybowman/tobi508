@@ -66,7 +66,7 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 9 of 10 agree, no wrong outcome, 1 NEEDS REVIEW |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.1](specs/rules/4c-no-keyboard-trap.md) | ⚠️ No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.8.0](specs/rules/4d-focus-visible.md) | ⚠️ 1 agree, 2 FAILs the key passes (as in round 2), 7 NEEDS REVIEW. Caveat: the judge is often unsure on small focus pictures |
-| 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 No wrong outcome; 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
+| 4.E | 3.2.1-on-focus | 3.2.1 | [1.5.0](specs/rules/4e-on-focus.md) | 🟢 No wrong outcome; 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.8.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ 1 agree, 2 FAILs the key passes (judge answers; round 2: 6), 7 NEEDS REVIEW. Caveat: the judge is often unsure |
 | 5.A | 3.3.2-label-provided | 3.3.2 | [1.11.0](specs/rules/5a-label-provided.md) | 🟢 No wrong outcome (round 2: 8 FAILs the key passes); 3 agree, 7 NEEDS REVIEW. Reads fields inside web components (1.10.0) and frames, each opened as a page of its own (1.11.0). Caveat: a frame the recording lacks is left for a person |
 | 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.8.0](specs/rules/5b-label-descriptive.md) | 🟢 No wrong outcome (round 2: 5 wrong); 3 agree, 7 NEEDS REVIEW. Reads fields inside web components (1.7.0) and frames (1.8.0). Caveat: the judge is often unsure |
@@ -106,7 +106,6 @@ A fix removes its line here in the same commit.
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
 | 4.A | PASS | a mouse-only control inside a web component |
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read); timing instructions inside a web component (found by the grid of hard pages, 2026-11-13) |
-| 4.E | PASS | elements after a keyboard trap (grid) |
 | 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
 | 5.F, 5.G | Does Not Apply | an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |

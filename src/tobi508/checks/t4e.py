@@ -28,7 +28,7 @@ from tobi508.models import (
 )
 from tobi508.observe import COVER_MOST, DIALOGS_JS, cover, without_fragment
 from tobi508.traverse import Traversal, open_session, screenshot
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, walk_coverage
 
 MAX_REPLAYS = 10
 CONTROL_WAIT_MS = 2000
@@ -157,6 +157,8 @@ class State4E(BaseModel):
     stops: int
     inventory: int
     different_traps: bool = False
+    walk_gap: str | None = None  # row WK's sentence, when an element was not reached
+    walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     instances: list[Inst4E] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
@@ -258,6 +260,14 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
         b = {s.stop.path_key for s in p2.steps[-6:]}
         if not (a & b):
             st.different_traps = True
+    # Row WK (1.5.0): an element no pass reached was not checked, whatever
+    # the passes ended in (a trap another pass went round is complete).
+    cov = walk_coverage(walk)
+    if cov.counted is not None:
+        st.walk_reached = (cov.reached, cov.counted)
+    if not cov.complete and cov.sentence:
+        st.walk_gap = cov.sentence
+        st.incomplete.append(cov.sentence)
     seen: set[tuple[str, str]] = set()
     for p in (p1, p2):
         key = "Tab" if p.name == "P1" else "Shift+Tab"
@@ -598,6 +608,8 @@ def evaluate(st: State4E, evidence_refs: list[str]) -> Finding:
     }
     page = first_match(PAGE_ROWS, ev)
     trace.append(page.id)
+    if st.walk_gap and page.outcome is Outcome.NEEDS_REVIEW:
+        trace.insert(-1, "WK")
     order = {Outcome.FAIL: 0, Outcome.NEEDS_REVIEW: 1}
     body = [t for _, t in sorted(sentences, key=lambda x: order.get(x[0], 2))]
     if page.outcome is Outcome.PASS:
@@ -618,6 +630,8 @@ def evaluate(st: State4E, evidence_refs: list[str]) -> Finding:
         parts += incomplete
     parts += notes
     rationale = f"Spec {page.id}. " + "; ".join(trace[1:-1] or ["no instances"])
+    if st.walk_reached:
+        rationale += f". Walk: reached {st.walk_reached[0]} of {st.walk_reached[1]}"
     if incomplete:
         rationale += ". Incomplete: " + "; ".join(incomplete)
     f = Finding(
