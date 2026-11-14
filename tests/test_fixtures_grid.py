@@ -39,7 +39,12 @@ HELPERS = {"frame-inner"}
 
 @dataclass(frozen=True)
 class Cell:
-    outcome: Outcome
+    # None: the page has nothing for this test (see `nothing_here`); the run's
+    # outcome there is not part of the table.
+    outcome: Outcome | None
+    # No outcome: why the page is not a case for this test (a plain page, for
+    # a test about something the page does not have).
+    nothing_here: str | None = None
     # DOES NOT APPLY only: why the page has nothing for this test.
     nothing_for_it: str | None = None
     # A cell that breaks the rule today: (review item, what is wrong).
@@ -56,6 +61,10 @@ def fail() -> Cell:
 
 def dna(reason: str) -> Cell:
     return Cell(Outcome.DNA, nothing_for_it=reason)
+
+
+def na(reason: str) -> Cell:
+    return Cell(None, nothing_here=reason)
 
 
 def wrong(outcome: Outcome, item: str, what: str) -> Cell:
@@ -83,7 +92,21 @@ UNFILED = {
     ),
 }
 
-NO_OTHER_PAGES = "no other pages of the site were given"
+NEW3_AND_4 = {
+    "NEW-3": (
+        "4.E PASSes after a keyboard trap: the walk stopped inside the trap "
+        'and 4.C says NEEDS REVIEW, but 4.E reads "each element we could '
+        'reach" as all of them. The same cause as H-03, M-05 and F-11 (a '
+        "trap counted as a complete walk), in a test they do not name."
+    ),
+    "NEW-4": (
+        "4.A, 4.C, 4.D, 4.E and 4.F PASS on a page whose only form opens "
+        "from a plain button: the walk reached the page's own 4 stops and "
+        "never opened the panel, and no guard holds the PASS (rows A3, G4 "
+        "only; the 5.x tests say NEEDS REVIEW for the same page)."
+    ),
+}
+UNFILED.update(NEW3_AND_4)
 
 
 def _site_cells() -> dict[str, Cell]:
@@ -185,6 +208,201 @@ EXPECTED: dict[str, dict[str, Cell]] = {
 }
 
 
+def _plain(reason: str, tests: tuple[str, ...]) -> dict[str, Cell]:
+    return {t: na(reason) for t in tests}
+
+
+WALK = ("4.A", "4.B", "4.C", "4.D", "4.E", "4.F")
+FIELDS = ("5.A", "5.C", "5.D", "5.F")
+NOTHING_MOVES = {
+    "2.C": dna("no text, counter or feed on the page updates by itself"),
+    "2.D": dna("nothing on the page changes by itself"),
+}
+NO_MEDIA = {
+    "2.A": dna("the page has no audio or video and plays no sound"),
+    "2.B": dna("nothing on the page moves, blinks or scrolls"),
+    "3.A": dna("nothing on the page flashes"),
+    **NOTHING_MOVES,
+}
+CONTACT_FORM = dna(
+    "the form is a plain contact form: no payment, legal agreement, change to "
+    "saved data or test"
+)
+NO_CHECKING = dna(
+    "the form has no required field and no typed field, so the page never "
+    "checks it for errors"
+)
+
+EXPECTED.update(
+    {
+        # More than a cap: 31 images, then a long gap, then an animated image.
+        # N-06; guard CN holds 2.B and 3.A. The rest of the page is plain.
+        "cap": {
+            "2.A": dna("the page has no audio or video and plays no sound"),
+            "2.B": nr(),
+            "2.C": NOTHING_MOVES["2.C"],
+            "2.D": NOTHING_MOVES["2.D"],
+            "3.A": nr(),
+            **_plain(
+                "the cap is on images; the page has no mouse-only control, "
+                "trap, menu or hidden text",
+                WALK,
+            ),
+            **_plain("a plain labelled form; the cap is on images", FIELDS),
+            "5.B": nr(),
+            "5.G": nr(),
+            "5.H": CONTACT_FORM,
+            **_site_cells(),
+        },
+        # A trap in mid-page: the Search field swallows Tab; a form follows.
+        "trap": {
+            **NO_MEDIA,
+            "4.A": nr(),
+            "4.B": nr(),
+            "4.C": nr(),
+            "4.D": nr(),
+            "4.E": wrong(Outcome.PASS, "NEW-3", UNFILED["NEW-3"]),
+            "4.F": nr(),
+            "5.A": na(
+                "5.A read all 3 fields, the 2 after the trap too (rows c1 to "
+                "c3), and their labels are plain"
+            ),
+            "5.B": nr(),
+            "5.C": nr(),
+            "5.D": nr(),
+            # The identical form PASSes 5.F on cap.html: only the trap differs.
+            "5.F": wrong(
+                Outcome.DNA,
+                "M-05",
+                "the form after the trap was never tested and the run reads "
+                'that as "the page did not check the form"; the same form '
+                "PASSes 5.F on cap.html. The same cause as M-05 (a trap "
+                "counted as a complete test), here as DOES NOT APPLY.",
+            ),
+            "5.G": wrong(
+                Outcome.DNA,
+                "M-05",
+                'as 5.F: the form after the trap was never tested, so "the '
+                'page did not check the form".',
+            ),
+            "5.H": nr(),
+            **_site_cells(),
+        },
+        # Starts late: a script plays a sound after 4.5 s, a block flashes
+        # from 9 s; the watch is 6.5 s.
+        "late": {
+            "2.A": wrong(
+                Outcome.DNA,
+                "N-02",
+                "a sound a script starts after about 4.5 s is not heard in "
+                'the 6.5 s watch ("No audio played by itself").',
+            ),
+            "2.B": wrong(
+                Outcome.DNA,
+                "N-04",
+                "a block that starts to flash after 9 s is past the 6.5 s "
+                'watch ("Nothing on it moved").',
+            ),
+            "2.C": nr(),
+            "2.D": nr(),
+            "3.A": wrong(
+                Outcome.DNA,
+                "N-07",
+                "flashing that starts after 9 s is past the capture "
+                '("Nothing on this page flashes").',
+            ),
+            **_plain(
+                "what starts late is audio and a flash; the page has no "
+                "mouse-only control, trap, menu or hidden text",
+                WALK,
+            ),
+            **_plain("a plain labelled form; what starts late is not a field", FIELDS),
+            "5.B": nr(),
+            "5.G": nr(),
+            "5.H": CONTACT_FORM,
+            **_site_cells(),
+        },
+        # lang="ru": Russian and Japanese labels, a Russian sentence about
+        # holding a key, fields with a misleading aria-label.
+        "language": {
+            **NO_MEDIA,
+            "4.A": na("no mouse-only control: nothing here depends on the words"),
+            "4.B": wrong(
+                Outcome.PASS,
+                "M-03",
+                "an English word list decides 4.B: the Russian sentence "
+                '"Нажмите и удерживайте пробел 3 секунды" (press and hold '
+                'the space bar for 3 seconds) is not found, so "nothing on '
+                'this page asks you to press keys at a certain speed".',
+            ),
+            **_plain(
+                "decided by the keyboard walk and focus pictures, not by the "
+                "page's words",
+                ("4.C", "4.D", "4.E", "4.F"),
+            ),
+            "5.A": na(
+                "every field has a visible label with text (rows c1, c2); "
+                "5.A asks only that one is there"
+            ),
+            "5.B": nr(),
+            "5.C": wrong(
+                Outcome.PASS,
+                "H-02",
+                "the visible labels are Cyrillic and Japanese, the announced "
+                'names are "f1" and "x1": the word splitter keeps only '
+                "a-z and 0-9, so no visible word is missing.",
+            ),
+            "5.D": na("two plain text fields; nothing on the page changes on input"),
+            "5.F": NO_CHECKING,
+            "5.G": dna(
+                "the page did not check the form for errors, so there is no "
+                "error to suggest a fix for"
+            ),
+            "5.H": CONTACT_FORM,
+            **_site_cells(),
+        },
+        # Words hidden from people: a screen-reader-only label and a label
+        # pushed off the screen by text-indent.
+        "hidden-text": {
+            **NO_MEDIA,
+            **_plain("no mouse-only control, trap, menu or timing text", WALK),
+            "5.A": wrong(
+                Outcome.PASS,
+                "H-01",
+                "both labels' words are hidden from people (a clipped span, "
+                "text-indent: -9999px) and still count as a visible label "
+                "(rows c1, c2 on M2).",
+            ),
+            "5.B": nr(),
+            "5.C": nr(),
+            "5.D": na("two plain text fields; nothing on the page changes on input"),
+            "5.F": NO_CHECKING,
+            "5.G": dna(
+                "the page did not check the form for errors, so there is no "
+                "error to suggest a fix for"
+            ),
+            "5.H": CONTACT_FORM,
+            **_site_cells(),
+        },
+        # A form behind a plain button (the panel is `hidden` until a click).
+        "form-behind-button": {
+            **NO_MEDIA,
+            "4.A": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
+            "4.B": na(
+                "no text about timing, hidden or shown: the panel holds only a form"
+            ),
+            "4.C": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
+            "4.D": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
+            "4.E": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
+            "4.F": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
+            # H-08: held by guard CN ("hidden until something opens it").
+            **{t: nr() for t in ("5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H")},
+            **_site_cells(),
+        },
+    }
+)
+
+
 def _items() -> set[str]:
     """Review item IDs: a heading or a bold ID in the review file."""
     text = REVIEW.read_text()
@@ -214,6 +432,11 @@ def test_the_table_never_passes_and_does_not_apply_only_with_a_reason():
     for page, cells in EXPECTED.items():
         for test, c in cells.items():
             where = (page, test)
+            if c.outcome is None:
+                assert c.nothing_here and len(c.nothing_here) > 20, where
+                assert c.known_wrong is None and c.nothing_for_it is None, where
+                continue
+            assert c.nothing_here is None, where
             if c.known_wrong is not None:
                 assert c.outcome in (Outcome.PASS, Outcome.DNA), where
                 assert c.nothing_for_it is None, where
@@ -256,6 +479,8 @@ async def test_each_page_gives_each_cell_its_outcome(page, settings, server):
     off = []
     for test, c in EXPECTED[page].items():
         f = by[test]
+        if c.outcome is None:
+            continue  # the page has nothing for this test; the table says why
         if f.outcome is not c.outcome:
             fixed = " (a known wrong outcome: fixed? update the cell)" * bool(
                 c.known_wrong

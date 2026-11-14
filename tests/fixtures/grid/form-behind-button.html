@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><title>Grid: a form behind a button</title></head><body>
+<nav aria-label="Site"><a href="/grid/about.html">About</a> <a href="/grid/services.html">Services</a> <a href="/grid/contact.html">Contact</a></nav>
+<h1>Agency</h1>
+<p><button id="open">Sign up for updates</button></p>
+<div id="panel" hidden><form onsubmit="return false"><label for="m">Email</label> <input id="m" type="email" name="m"> <button>Subscribe</button></form></div>
+<script>document.getElementById("open").addEventListener("click",()=>{document.getElementById("panel").hidden=false})</script>
+</body></html>
