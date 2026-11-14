@@ -107,7 +107,7 @@ below; "run" means I ran a page and got the outcome shown.
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
 | D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
-| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · 9.x fixed; 19.A open |
+| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · fixed (step 8: read) |
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
@@ -457,6 +457,7 @@ them.
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
 - **Partly fixed:** 76b8f24 (guard CN, part B), specs 9.A 1.3.0, 9.B 1.3.0, 9.C 1.4.0, 19.A 1.3.0: 9.A, 9.B and 9.C are NEEDS REVIEW on the shared web-component header (M-12 too). 19.A still FAILs it: a guard never moves a FAIL; accepted as a known limit until part D reads web components (Abby, 2026-11-12). Frames are not counted for these tests (a player's own links would hold every page with an embed).
+- **Fixed (read):** step 8 reader 2, specs 9.A 1.7.0, 9.B 1.6.0, 9.C 1.9.0, 19.A 1.9.0: the site read follows the page as rendered into web components; on the review's two pages 19.A now finds the shared navigation (FAIL as "only one way", as on the same pages without a web component) and 9.A-9.C decide as they do there (`test_navigation_inside_a_web_component_is_read`, `9x/j*`, `19a/w-*`).
 - **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
   shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
 

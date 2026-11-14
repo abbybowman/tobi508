@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Forms</title></head><body>
+<site-header></site-header>
+<main><h1>Forms</h1><p>Download our forms.</p></main>
+<footer><a href="/19a/privacy.html">Privacy</a></footer>
+<script>
+// The site header, as a web component (an open shadow root).
+customElements.define('site-header', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML = '<header><a href="/19a/w-home.html">Example Agency</a><nav aria-label="Main"><ul><li><a href="/19a/w-home2.html">Home</a></li><li><a href="/19a/w-t3-forms.html">Forms</a></li></ul></nav></header>';
+  }
+});
+</script>
+</body></html>

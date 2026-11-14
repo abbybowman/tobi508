@@ -86,8 +86,7 @@ COUNT_JS = (
     for (let n = el; n; n = n.parentNode || n.host || null) if (n === modal) return false;
     return true;
   };
-  const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
-    '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
+  const { LANDMARK, LINK } = J;
   // What could show hidden content: a button, a disclosure, a same-page or
   // script link, an element with an inline click handler (Abby, 2026-11-12:
   // hidden fields with nothing that can open them do not hold an outcome).
@@ -143,7 +142,7 @@ COUNT_JS = (
         } else add('focusable');
       }
       if (el.matches(LANDMARK)) add('landmarks');
-      if (el.matches('a[href], area[href]')) add('links');
+      if (el.matches(LINK)) add('links');
       if (el.shadowRoot) { out.shadow_roots += 1; walk(el.shadowRoot, 'shadow'); }
       else if (el.tagName.includes('-') && window.customElements && customElements.get(el.tagName.toLowerCase())) out.closed_hosts += 1;
     }

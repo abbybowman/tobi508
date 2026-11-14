@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Site map</title></head><body>
+<site-header></site-header>
+<main><h1>Site map</h1><ul><li><a href="/19a/w-home.html">Home</a></li><li><a href="/19a/w-benefits.html">Apply for benefits</a></li><li><a href="/19a/t2-status.html">Check status</a></li><li><a href="/19a/contact.html">Contact us</a></li></ul></main>
+<footer><a href="/19a/privacy.html">Privacy</a></footer>
+<script>
+// The site header, as a web component (an open shadow root).
+customElements.define('site-header', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML = '<header><a href="/19a/w-home.html">Example Agency</a><form role="search" action="/19a/search.html" method="get"><label for="q">Search</label> <input id="q" name="q" type="search"> <button type="submit">Search</button></form><nav aria-label="Main"><ul><li><a href="/19a/w-home.html">Home</a></li><li><a href="/19a/about.html">About us</a></li></ul></nav></header>';
+  }
+});
+</script>
+</body></html>
