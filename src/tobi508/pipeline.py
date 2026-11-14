@@ -457,6 +457,44 @@ def _page_refs(get_browser, settings: Settings, run, report: Report) -> list[Pag
     ]
 
 
+def _awaiting(coro, depth: int = 40) -> str:
+    """Where a suspended coroutine waits: each frame down its await chain."""
+    out = []
+    while coro is not None and depth:
+        frame = getattr(coro, "cr_frame", None) or getattr(coro, "gi_frame", None)
+        if frame is not None:
+            code = frame.f_code
+            out.append(
+                f"{code.co_filename.rsplit('/', 1)[-1]}:{frame.f_lineno} {code.co_name}"
+            )
+        coro = getattr(coro, "cr_await", None) or getattr(coro, "gi_yieldfrom", None)
+        depth -= 1
+    return " > ".join(out)
+
+
+async def _abandoned_at(aw, hard: float, log=None, name: str = ""):
+    """Await `aw` until `hard`; then cancel it and return at once (TimeoutError),
+    without waiting for its cleanup. `asyncio.wait_for` waits for a cancelled
+    task to finish, and a test's cleanup can wait on a busy page (closing a
+    context whose page is still running script): 14194's 3.A ran 1,178 s
+    against a 240 s budget that way (step 6c). The task finishes cancelling
+    on its own; the run's end closes the browsers. Where it was is logged."""
+    left = hard - time.monotonic()
+    if left <= 0:
+        aw.close()
+        raise TimeoutError
+    task = asyncio.ensure_future(aw)
+    done, _ = await asyncio.wait({task}, timeout=left)
+    if task in done:
+        return task.result()
+    where = _awaiting(task.get_coro())
+    task.cancel()
+    task.add_done_callback(lambda t: t.cancelled() or t.exception())
+    if log is not None:
+        log("check_abandoned", "error", test=name, where=where[:2000])
+    raise TimeoutError
+
+
 async def _bounded(aw, hard: float):
     """Await `aw`, cancelling it at `hard` (TimeoutError)."""
     if hard == math.inf:
@@ -1309,7 +1347,9 @@ async def run_tt_tests(
                 )
                 try:
                     with metered() as cost:
-                        state = await _bounded(c.collect(ctx, walk), min(limit, own))
+                        state = await _abandoned_at(
+                            c.collect(ctx, walk), min(limit, own), run.log, tid
+                        )
                 except TimeoutError:
                     if own < limit:
                         ran_out[c.test_id] = out_of_budget_reason(own_s)

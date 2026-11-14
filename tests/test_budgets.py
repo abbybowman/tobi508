@@ -141,3 +141,33 @@ async def test_3a_stepped_capture_stops_at_its_budget(settings, server, monkeypa
     assert f.outcome is Outcome.NEEDS_REVIEW, (f.rows, f.summary)
     assert report.test_times["3.A"].ran_out
     assert report.test_times["3.A"].seconds < 25, report.test_times
+
+
+async def test_a_budget_does_not_wait_for_a_slow_cleanup(settings, server, monkeypatch):
+    """The 3.A case (14194: 1,178 s against 240 s): a test whose cleanup
+    waits after it is cancelled (closing a page still running script) must
+    not hold the run. wait_for would wait the 30 s; the run moves on at the
+    budget, and the log says where the test was waiting."""
+    import json
+    import time as clock
+
+    async def stuck_page(ctx, walk):
+        try:
+            await asyncio.sleep(60)
+        finally:
+            await asyncio.sleep(30)  # like context.close() on a busy page
+
+    s = _with(settings, **{"4.B": 1})
+    monkeypatch.setattr(REGISTRY[TestId.T4B], "collect", stuck_page)
+    t0 = clock.monotonic()
+    res = await run_tt_tests(s, f"{server.base}/no_trap.html", [TestId.T4B, TestId.T4D])
+    assert clock.monotonic() - t0 < 25
+    report = _report(s, res)
+    assert report.test_times["4.B"].ran_out
+    assert report.test_times["4.B"].seconds < 5, report.test_times["4.B"]
+    steps = [
+        json.loads(x)
+        for x in (s.runs_dir / res.run_id / "steps.jsonl").read_text().splitlines()
+    ]
+    gone = [e for e in steps if e["step"] == "check_abandoned"]
+    assert gone and "stuck_page" in gone[0]["detail"]["where"], gone

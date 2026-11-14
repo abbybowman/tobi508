@@ -112,6 +112,15 @@ is NEEDS REVIEW and the next starts (cheapest budget first). Three traps:
   `motion.collect` does; `test_budgets.py` fails without it.
 - A budget of 0 never starts the coroutine (`_bounded` closes it), so a
   test of what happens mid-await needs a budget the work outlasts.
+- `asyncio.wait_for` waits for a cancelled task to finish its cleanup, and
+  a test's cleanup can wait on a busy page (`context.close()` while the
+  page still runs script). On 14194 (2026-11-14, the order check) 3.A ran
+  1,178 s against its 240 s budget, with nothing logged between its start
+  and its end; a rerun took 59 s (no page trigger, so no stepped capture),
+  so the slow path was not caught in the act. The pipeline now cancels a
+  test at its budget and moves on without waiting (`_abandoned_at`),
+  logging where it was waiting (`check_abandoned`), and the run's end
+  closes the browsers. The step-6 17 min is most likely the same.
 - A timeout cannot interrupt code that never yields: 3.A's flash counting
   (numpy, 15-19 s on 181 frames, review W-01) blocked the whole server.
   It runs in `asyncio.to_thread` now (the await ends at once; the thread
