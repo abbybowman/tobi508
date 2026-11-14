@@ -15,9 +15,11 @@ A type passes only when both hold:
   reported, not a reason on its own (code review L-02, L-03).
 
     uv run python evals/apijudge_gate.py run   --date D [--repeat N]
-        [--types 4.A,5.B] [--pages cilab,14592] [--dry]
-    uv run python evals/apijudge_gate.py score --date D [--eval OUT]
+        [--types 4.A,5.B] [--pages cilab,14592] [--round 1|2] [--dry]
+    uv run python evals/apijudge_gate.py score --date D [--eval OUT] [--round 1|2]
 
+`--round N` (1 or 2; omitted = round 2, into `gate-D/` as step 6 ran it) takes
+that round's pages, frozen copies and keys, and writes `gate-D/roundN/`.
 `run` tests each page of `evals/judging/round2-armc/pages.txt` on the frozen
 copy (`evals/judging/round2/frozen`, tested_frozen as Agent C ran it) with the
 judge switched on for `--types`, into `evals/judging/gate-D/rN/pNN/`
@@ -59,6 +61,12 @@ from tobi508.compare import compare, page_key  # noqa: E402
 
 SRC = REPO / "evals" / "judging" / "round2"
 KEYS = REPO / "evals" / "judging" / "round2-armc"
+# `--round N`: the round's frozen copies and its tester's keys (pages.txt,
+# keys/, adjudications.json). Round 1's keys live in its own folder.
+ROUNDS = {
+    1: (REPO / "evals" / "judging" / "round1", REPO / "evals" / "judging" / "round1"),
+    2: (SRC, KEYS),
+}
 MAX_WRONG_FAIL_PER_REPEAT = 1
 MAX_WRONG_FAIL_SHARE = 0.20
 # Fewer decided cells than this over all repeats and a type is "too few cells
@@ -66,8 +74,15 @@ MAX_WRONG_FAIL_SHARE = 0.20
 MIN_DECIDED_CELLS = 6
 
 
-def gate_dir(date: str) -> Path:
-    return REPO / "evals" / "judging" / f"gate-{date}"
+def gate_dir(date: str, rnd: int | None = None) -> Path:
+    """`gate-D/` (round 2 alone, as step 6 ran it) or `gate-D/roundN/`."""
+    d = REPO / "evals" / "judging" / f"gate-{date}"
+    return d if rnd is None else d / f"round{rnd}"
+
+
+def round_dirs(rnd: int | None) -> tuple[Path, Path]:
+    """(the round's folder with `frozen/`, the folder with its keys)."""
+    return ROUNDS[2 if rnd is None else rnd]
 
 
 def passes(
@@ -117,7 +132,7 @@ def eval_by_type(eval_dir: Path) -> dict[str, bool]:
 # ── run ─────────────────────────────────────────────────────────────────────
 
 
-def _settings(out: Path, types: str, judge_on: bool):
+def _settings(out: Path, types: str, judge_on: bool, src: Path = SRC):
     from tobi508.config import Settings
 
     kw = {
@@ -125,7 +140,7 @@ def _settings(out: Path, types: str, judge_on: bool):
         "browser_channel": "chromium",
         "headless": True,
         "run_ttl_hours": 720,
-        "frozen_pages_dir": (SRC / "frozen").resolve(),
+        "frozen_pages_dir": (src / "frozen").resolve(),
         "frozen_pages_mode": "tested_frozen",
     }
     if judge_on:
@@ -147,7 +162,14 @@ def _keep(run_dir: Path, dest: Path) -> None:
         shutil.copyfile(run_dir / name, dest / name)
 
 
-async def run(date: str, repeat: int, types: str, pages: list[str], dry: bool) -> None:
+async def run(
+    date: str,
+    repeat: int,
+    types: str,
+    pages: list[str],
+    dry: bool,
+    rnd: int | None = None,
+) -> None:
     from tobi508 import apijudge
     from tobi508.checks import REGISTRY
     from tobi508.models import TestId
@@ -155,8 +177,9 @@ async def run(date: str, repeat: int, types: str, pages: list[str], dry: bool) -
 
     if not types:
         sys.exit("--types: the question types to switch on, e.g. 4.A,5.B")
-    gd = gate_dir(date)
-    listed = judging.parse_pages((KEYS / "pages.txt").read_text("utf-8"))
+    gd = gate_dir(date, rnd)
+    src, keys_dir = round_dirs(rnd)
+    listed = judging.parse_pages((keys_dir / "pages.txt").read_text("utf-8"))
     urls = [u for u, _ in listed]
     chosen = [
         (n, u)
@@ -167,7 +190,7 @@ async def run(date: str, repeat: int, types: str, pages: list[str], dry: bool) -
     for k in range(1, repeat + 1):
         runs = gd / f"r{k}" / "runs"
         runs.mkdir(parents=True, exist_ok=True)
-        s = _settings(gd / f"r{k}", types, judge_on=not dry)
+        s = _settings(gd / f"r{k}", types, judge_on=not dry, src=src)
         run_ids: list[str] = []
         for n, url in chosen:
             pid = f"p{n:02d}"
@@ -187,6 +210,7 @@ async def run(date: str, repeat: int, types: str, pages: list[str], dry: bool) -
         json.dumps(
             {
                 "date": date,
+                "round": rnd,
                 "types": types,
                 "repeat": repeat,
                 "pages": [u for _, u in chosen],
@@ -201,14 +225,15 @@ async def run(date: str, repeat: int, types: str, pages: list[str], dry: bool) -
 # ── score ───────────────────────────────────────────────────────────────────
 
 
-def score(date: str, eval_dir: Path | None) -> dict:
+def score(date: str, eval_dir: Path | None, rnd: int | None = None) -> dict:
     from tobi508.models import Report
 
-    gd = gate_dir(date)
+    gd = gate_dir(date, rnd)
+    _, keys_dir = round_dirs(rnd)
     meta = json.loads((gd / "run.json").read_text())
-    listed = judging.parse_pages((KEYS / "pages.txt").read_text("utf-8"))
-    keys = judging.read_keys(KEYS, listed)
-    adj = adjudications(KEYS)
+    listed = judging.parse_pages((keys_dir / "pages.txt").read_text("utf-8"))
+    keys = judging.read_keys(keys_dir, listed)
+    adj = adjudications(keys_dir)
     cells: dict[str, dict[str, int]] = {}
     fails: dict[str, list[int]] = {}
     detail: list[dict] = []
@@ -310,8 +335,12 @@ def main(argv: list[str]) -> None:
 
     if not argv or argv[0] not in ("run", "score") or not opt("--date"):
         sys.exit(__doc__)
-    if not (SRC / "frozen" / "pages").is_dir():
-        sys.exit(f"{SRC / 'frozen' / 'pages'} is missing: restore round2-frozen")
+    rnd = int(opt("--round")) if opt("--round") else None
+    if rnd is not None and rnd not in ROUNDS:
+        sys.exit("--round: 1 or 2")
+    src, _ = round_dirs(rnd)
+    if not (src / "frozen" / "pages").is_dir():
+        sys.exit(f"{src / 'frozen' / 'pages'} is missing: restore the frozen archive")
     if argv[0] == "run":
         pages = [p for p in opt("--pages").split(",") if p]
         asyncio.run(
@@ -321,11 +350,12 @@ def main(argv: list[str]) -> None:
                 opt("--types"),
                 pages,
                 "--dry" in argv,
+                rnd,
             )
         )
     else:
         ev = Path(opt("--eval")).resolve() if opt("--eval") else None
-        score(opt("--date"), ev)
+        score(opt("--date"), ev, rnd)
 
 
 if __name__ == "__main__":
