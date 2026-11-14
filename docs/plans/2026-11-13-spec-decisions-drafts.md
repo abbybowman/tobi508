@@ -57,8 +57,8 @@ as it is (it is the 1.0 end of the same rule).
 `kin`; `site_read` sets `identical` from it as well as from
 `same_content_as_tested`; 9.C reads it from `site_read` instead of from
 the byte flag only (it collects before the site read today, so its order
-changes). Spec: A2 in 9.A, 9.B, 9.C, 19.A, a MINOR each (9.A 1.4.0, 9.B
-1.4.0, 9.C 1.6.0, 19.A 1.6.0, or the next free numbers when I merge).
+changes). Spec: A2 in 9.A, 9.B, 9.C, 19.A, a MINOR each (built as 9.A 1.5.0, 9.B
+1.4.0, 9.C 1.7.0, 19.A 1.8.0: the next free numbers after merging `main`).
 
 **Measurement (2026-11-13, Abby asked for it).** The share is |A ∩ B| /
 |A ∪ B| over the units' text keys, as `site.read_page` reads them. Live
@@ -282,7 +282,7 @@ consistent for components that perform the same function." An unnamed
 control has no name to be consistent; naming is 5.C's (and the name
 tests'): 5.C row M3 FAILs "no name at all".
 
-**Draft (9.C 1.6.0).** A pair in which both names are empty is not
+**Draft (built as 9.C 1.7.0).** A pair in which both names are empty is not
 compared: it is left out of 9.C with a note ("N pairs of controls have
 no name on either page; 5.C reports them. They are not compared here").
 9.C's outcome comes from the other pairs; with none, DOES NOT APPLY.
