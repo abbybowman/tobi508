@@ -239,10 +239,13 @@ what is planned.
    It runs twice (Abby, 2026-11-14): **9a** now, on `main`
    after 6b and 6c, so their effect is measured apart from step 8's
    and the pitch has a second set of figures whatever step 8 reaches;
-   **9b** after step 8. Each runs two repeats: step 6c saw the same
-   frozen page take a different path on different loads (3.A's stepped
-   capture ran on one load of 14194 and not on the next), so one
-   repeat can mislead.
+   **9b** after step 8. 9a is one repeat (Abby, 2026-11-14: a
+   checkpoint, not a scoring round), run at the commit of its dry
+   count so that the dry run's outcomes stand in for a second repeat
+   on the cells no judge answer decides: step 6c saw the same frozen
+   page take a different path on different loads, and that comparison
+   shows how often, at no cost in tokens. Whether 9b needs a second
+   repeat is decided from it.
 10. **Round 3, small.** A site the tool has not been developed against;
     Abby looks for NASA sites built with web components. Three to five
     pages, Abby's blind SCRT files first, then the tool, then the score.
