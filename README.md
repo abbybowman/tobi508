@@ -61,7 +61,7 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 | 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.3.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 No wrong outcome; 1 of 10 agree, 9 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: moving content not settled in 6.5 s is left for a person |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: as 2.C |
-| 3.A | 2.3.1-flashing | 2.3.1 | [1.2.0](specs/rules/3a-flashing.md) | 🟢 No wrong PASS or Does Not Apply; 3 of 10 agree, 1 Not Tested where the key says Does Not Apply, 6 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
+| 3.A | 2.3.1-flashing | 2.3.1 | [1.2.1](specs/rules/3a-flashing.md) | 🟢 No wrong PASS or Does Not Apply; 3 of 10 agree, 1 Not Tested where the key says Does Not Apply, 6 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.10.0](specs/rules/4a-keyboard-access.md) | ⚠️ 2 agree, 1 FAIL the key passes (a judge answer), 7 NEEDS REVIEW; round 2's PASS on CILab now fails with the key. Caveat: often undecided with embedded players and frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 9 of 10 agree, no wrong outcome, 1 NEEDS REVIEW |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
@@ -138,6 +138,16 @@ A fix removes its line here in the same commit.
   for that is refused. On www.nasa.gov, runs with 3 other pages took 2-3
   minutes. Tests not finished in time come back NEEDS REVIEW, with the
   reason.
+- **One test:** each test also has its own time for collecting its
+  evidence: its budget (60 s for most, up to 10 min for 5.D; provisional,
+  about twice the longest seen on round 2's pages; setting
+  `TEST_BUDGETS_S`) or half of what is left of the run, whichever is
+  smaller. A test that runs out of its time is NEEDS REVIEW ("ran out of
+  its time") and the tests after it still run, cheapest first. The report
+  lists each test's time (`test_times`). Round 2's ten pages took 17 s to
+  15.5 min each with every test (66 min in all; 2026-11-13, judge off);
+  the longest single tests were 5.D on a page with 98 form fields (8 min)
+  and 4.F on a long page (4.5 min).
 - **One call:** at most 45 s (`CALL_WAIT_S`), under common MCP client
   timeouts. A run not done by then goes on in the server: the result says
   `"status": "running"` with a `job_id`, and `tobi_run_status` waits for it

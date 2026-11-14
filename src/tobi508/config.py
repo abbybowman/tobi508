@@ -21,6 +21,38 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 ENV_FILE = REPO_ROOT / ".env"
 
 
+# Each test's own time for collecting its evidence, inside the run limit
+# (roadmap step 6c, Abby 2026-11-14). PROVISIONAL until step 9 measures
+# round 1's pages too: about twice the longest collect on round 2's ten
+# frozen pages (2026-11-13, Linux headless, judge off; in brackets), at
+# least 60 s. Ceilings: a test gets its budget or TEST_BUDGET_SHARE of what
+# is left of the run, whichever is smaller (checks.base.time_for).
+TEST_BUDGETS_DEFAULT: dict[str, int] = {
+    "2.A": 120,  # (1 s: waits on pass T, which runs beside the walk)
+    "2.B": 120,
+    "2.C": 120,
+    "2.D": 120,
+    "3.A": 240,  # (62 s; 117 s with its stepped capture)
+    "4.A": 240,  # (112 s, 5144)
+    "4.B": 60,  # (10 s)
+    "4.C": 180,  # (65 s, 5340)
+    "4.D": 60,  # (9 s)
+    "4.E": 60,  # (0 s)
+    "4.F": 540,  # (270 s, 4914)
+    "5.A": 60,  # (11 s)
+    "5.B": 60,
+    "5.C": 60,
+    "5.D": 600,  # (483 s, search: 98 fields)
+    "5.F": 120,
+    "5.G": 120,
+    "5.H": 120,
+    "9.A": 180,  # (56 s, home)
+    "9.B": 60,
+    "9.C": 180,  # (62 s, home)
+    "19.A": 120,  # (two live searches of up to 20 s each, and their reads)
+}
+
+
 class Settings(BaseSettings):
     """MCP server settings. Override any field via environment variables."""
 
@@ -137,6 +169,15 @@ class Settings(BaseSettings):
     # so its byte ranges replay. None lifts the cap (a run with
     # no_time_limit, the user's choice when a file was over it).
     media_cap_mb: float | None = Field(default=50, gt=0)
+    # Each test's budget in seconds (TEST_BUDGETS_DEFAULT above; JSON in the
+    # environment replaces the whole table, a test not in it gets
+    # test_budget_default_s), and the share of the run left that one test
+    # may take at most.
+    test_budgets_s: dict[str, int] = Field(
+        default_factory=lambda: dict(TEST_BUDGETS_DEFAULT)
+    )
+    test_budget_default_s: int = Field(default=60, ge=1)
+    test_budget_share: float = Field(default=0.5, gt=0, le=1)
     media_cap_s: float | None = Field(default=15, gt=0)
     # Wall clock for one run. Tests not finished in time are NEEDS_REVIEW
     # with the reason. 600 s since long polling (Abby, 2026-11-05): a call

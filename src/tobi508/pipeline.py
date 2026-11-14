@@ -45,7 +45,13 @@ from tobi508.browser import (
 )
 from tobi508.capture import Capture, document_sha, replay_context, unrecorded_code
 from tobi508.checks import REGISTRY, RunContext
-from tobi508.checks.base import PageRef
+from tobi508.checks.base import (
+    AFTER,
+    PageRef,
+    budget_s,
+    out_of_budget_reason,
+    time_for,
+)
 from tobi508.config import Settings
 from tobi508.egress import EgressProxy
 from tobi508.engine import apply_guards
@@ -67,6 +73,7 @@ from tobi508.models import (
     Report,
     RunResult,
     TestId,
+    TestTime,
     unsure_by_server,
     utcnow,
     waiting_head,
@@ -272,6 +279,29 @@ def _limit(settings: Settings, pages: int) -> int:
     return settings.run_limit_s + pages * settings.other_page_s
 
 
+BUDGET_GRACE_S = 10  # a test stops starting work this long before its end
+
+
+def run_order(checks: list, settings: Settings) -> list:
+    """Cheapest budget first (step 6c), each test after the selected tests
+    its collect reads (checks.base.AFTER); ties keep the registry's order."""
+    left = list(checks)
+    ids = {c.test_id.value for c in left}
+    done: set[str] = set()
+    out: list = []
+    while left:
+        ready = [
+            c
+            for c in left
+            if all(d in done or d not in ids for d in AFTER.get(c.test_id.value, ()))
+        ]
+        nxt = min(ready or left, key=lambda c: budget_s(settings, c.test_id.value))
+        out.append(nxt)
+        left.remove(nxt)
+        done.add(nxt.test_id.value)
+    return out
+
+
 def uses_pages(check) -> bool:
     return bool(getattr(check, "uses_pages", False))
 
@@ -425,6 +455,44 @@ def _page_refs(get_browser, settings: Settings, run, report: Report) -> list[Pag
         )
         for p in report.other_pages
     ]
+
+
+def _awaiting(coro, depth: int = 40) -> str:
+    """Where a suspended coroutine waits: each frame down its await chain."""
+    out = []
+    while coro is not None and depth:
+        frame = getattr(coro, "cr_frame", None) or getattr(coro, "gi_frame", None)
+        if frame is not None:
+            code = frame.f_code
+            out.append(
+                f"{code.co_filename.rsplit('/', 1)[-1]}:{frame.f_lineno} {code.co_name}"
+            )
+        coro = getattr(coro, "cr_await", None) or getattr(coro, "gi_yieldfrom", None)
+        depth -= 1
+    return " > ".join(out)
+
+
+async def _abandoned_at(aw, hard: float, log=None, name: str = ""):
+    """Await `aw` until `hard`; then cancel it and return at once (TimeoutError),
+    without waiting for its cleanup. `asyncio.wait_for` waits for a cancelled
+    task to finish, and a test's cleanup can wait on a busy page (closing a
+    context whose page is still running script): 14194's 3.A ran 1,178 s
+    against a 240 s budget that way (step 6c). The task finishes cancelling
+    on its own; the run's end closes the browsers. Where it was is logged."""
+    left = hard - time.monotonic()
+    if left <= 0:
+        aw.close()
+        raise TimeoutError
+    task = asyncio.ensure_future(aw)
+    done, _ = await asyncio.wait({task}, timeout=left)
+    if task in done:
+        return task.result()
+    where = _awaiting(task.get_coro())
+    task.cancel()
+    task.add_done_callback(lambda t: t.cancelled() or t.exception())
+    if log is not None:
+        log("check_abandoned", "error", test=name, where=where[:2000])
+    raise TimeoutError
 
 
 async def _bounded(aw, hard: float):
@@ -933,12 +1001,12 @@ async def run_tt_tests(
         if no_time_limit
         else t_start + _limit(settings, len(others)) - HARD_MARGIN_S
     )
-    # Checks whose replays others reuse (4.D's arrows, 4.F's Enter presses,
-    # for 4.A) collect first; 5.A and 5.C (shares -1) collect last, after the
-    # replays that may reveal fields for them. Findings keep the report's order.
-    checks.sort(key=lambda c: -getattr(c, "shares", 0))
+    # Cheapest budget first, each after the tests whose replays it reads
+    # (checks.base.AFTER; step 6c). Findings keep the report's order.
+    checks = run_order(checks, settings)
     states: dict[TestId, Any] = {}
     skipped: dict[TestId, str] = {}  # tests left out, and why (fix 12)
+    ran_out: dict[TestId, str] = {}  # tests past their own budget (step 6c)
     walk: KeyboardWalk | None = None
     motion_task: asyncio.Task | None = None
     allowance = [0]  # T1 (a): seconds added once pass T finds moving content
@@ -1264,21 +1332,44 @@ async def run_tt_tests(
                 if needs_walk(c, ctx) and walk is None:
                     continue  # NEEDS REVIEW: the run did not complete (errors say why)
                 await say(2, f"Checking {c.test_id.value}")
+                # The test's own time, inside the run limit (step 6c): its
+                # budget or a share of what is left, whichever is smaller. It
+                # stops starting work a little before (ctx.out_of_time) and is
+                # cancelled at the end.
+                tid = c.test_id.value
+                t0 = time.monotonic()
+                limit = hard + allowance[0]
+                own_s = time_for(settings, tid, limit - t0)
+                own = t0 + own_s
+                ctx.test_deadline = own - min(BUDGET_GRACE_S, own_s / 6)
+                times = report.test_times[tid] = TestTime(
+                    budget_s=budget_s(settings, tid), limit_s=round(own_s, 1)
+                )
                 try:
                     with metered() as cost:
-                        state = await _bounded(
-                            c.collect(ctx, walk), hard + allowance[0]
+                        state = await _abandoned_at(
+                            c.collect(ctx, walk), min(limit, own), run.log, tid
                         )
                 except TimeoutError:
-                    msg = "the run reached its time limit before this test finished"
-                    run.log("check_error", "error", test=c.test_id.value, error=msg)
-                    report.errors.append(f"{c.test_id.value}: {msg}")
+                    if own < limit:
+                        ran_out[c.test_id] = out_of_budget_reason(own_s)
+                        times.ran_out = True
+                        msg = f"ran out of its time ({own_s:.0f} s)"
+                    else:
+                        msg = "the run reached its time limit before this test finished"
+                    run.log("check_error", "error", test=tid, error=msg)
+                    report.errors.append(f"{tid}: {msg}")
                     continue
                 except Exception as exc:
                     err = safe_error(exc)
-                    run.log("check_error", "error", test=c.test_id.value, error=err)
-                    report.errors.append(f"{c.test_id.value}: {err}")
+                    run.log("check_error", "error", test=tid, error=err)
+                    report.errors.append(f"{tid}: {err}")
                     continue
+                finally:
+                    if time.monotonic() > ctx.test_deadline:
+                        times.ran_out = True  # stopped early, or cancelled
+                    ctx.test_deadline = math.inf
+                    times.seconds = round(time.monotonic() - t0, 1)
                 states[c.test_id] = state
                 run.write_json(run.evidence_dir / evidence_name(c.test_id), state)
                 run.log("collected", test=c.test_id.value, cost=asdict(cost))
@@ -1319,7 +1410,7 @@ async def run_tt_tests(
 
     await say(3, "Evaluating")
     report.findings = []
-    _evaluate(run, report, states, skipped)
+    _evaluate(run, report, states, {**skipped, **ran_out})
     result = await get_judge(settings.judge_backend).judge(report.open_questions)
     report.open_questions = result.pending
     report.finished_at = utcnow()

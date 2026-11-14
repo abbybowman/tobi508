@@ -43,12 +43,16 @@ smallest, t5d.py for a form test, or t9b.py for a multi-page test):
      <id>-build-tasks.md's V-checks to specs/rules/_browser-checks.md and
      what is left to docs/ROADMAP.md, delete the file, and add any lesson
      that cost time to docs/solutions/.
-  7. The pipeline, tools, report, explain prompt and resume path need no
+  7. Give it a time budget in config.TEST_BUDGETS_DEFAULT (about twice
+     its longest collect on real pages, at least 60 s), and an AFTER entry
+     below if it reads evidence another test's replays leave.
+  8. The pipeline, tools, report, explain prompt and resume path need no
      changes; the tool description lists the new test from the registry.
 """
 
 from __future__ import annotations
 
+import math
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -77,9 +81,47 @@ class PageRef:
     har: Path | None = None
 
 
+# Each test's own time for collecting its evidence (roadmap step 6c; the
+# numbers are settings, config.TEST_BUDGETS_DEFAULT, provisional until step
+# 9). A test gets its budget or `test_budget_share` of what is left of the
+# run, whichever is smaller, so no test can take the rest of the run.
+
+
+def budget_s(settings: Any, test_id: str) -> int:
+    return settings.test_budgets_s.get(test_id, settings.test_budget_default_s)
+
+
+def time_for(settings: Any, test_id: str, left_s: float) -> float:
+    """Seconds this test may take now, with `left_s` left of the run."""
+    share = settings.test_budget_share * left_s
+    return max(0.0, min(budget_s(settings, test_id), share))
+
+
+def out_of_budget_reason(seconds: float) -> str:
+    return (
+        f"This test ran out of its time ({seconds:.0f} s) before it finished, "
+        "so a person needs to check it. The tests after it still ran."
+    )
+
+
+# Tests whose collect must come after others' in one call, because those
+# replays give it evidence (labels.read_revealed: fields 4.F and 5.D reveal
+# are read for 5.A-5.C). The run order is otherwise cheapest budget first
+# (pipeline.run_order). 4.A after 4.D and 4.F only saves time (it reuses
+# their presses), with the same outcome.
+AFTER: dict[str, tuple[str, ...]] = {
+    "4.A": ("4.D", "4.F"),
+    "5.A": ("4.F", "5.D"),
+    "5.B": ("4.F", "5.D"),
+    "5.C": ("4.F", "5.D"),
+}
+
+
 # What a check records when the run's time limit cut work short (one wording
 # for every check; RunContext.out_of_time).
 OUT_OF_TIME_MSG = "The run time limit was reached before every check finished."
+# The same, when the test's own budget ended first (step 6c).
+OUT_OF_BUDGET_MSG = "This test's own time ran out before it finished."
 
 
 @dataclass
@@ -121,6 +163,10 @@ class RunContext:
     # Content pass T found still changing, which the settle rule stops
     # waiting on once pass T ends (pipeline.SettleIgnore; T1 (b)).
     settle_ignore: Any = None
+    # The test now collecting stops starting work here (its budget, step 6c;
+    # the pipeline sets it before each collect). It never marks the run as
+    # timed out.
+    test_deadline: float = math.inf
 
     def out_of_time(self, record: list[str] | None = None) -> bool:
         """Past the checks' deadline (4.C spec section 2, Run limits). Use it
@@ -128,12 +174,24 @@ class RunContext:
         the run limit cut something short. Pass the check's own `incomplete`
         list as `record` and the reason is added to it too (E-07): a check
         that skips work for lack of time must not PASS (spec G3)."""
-        if time.monotonic() > self.deadline:
+        now = time.monotonic()
+        if now > self.deadline:
             self.timed_out = True
             if record is not None and OUT_OF_TIME_MSG not in record:
                 record.append(OUT_OF_TIME_MSG)
             return True
+        if now > self.test_deadline:
+            if record is not None and OUT_OF_BUDGET_MSG not in record:
+                record.append(OUT_OF_BUDGET_MSG)
+            return True
         return False
+
+    def time_reason(self) -> str:
+        """Which limit `out_of_time` met, in the words of a "not measured"
+        note: the run's, or the test's own (step 6c)."""
+        if time.monotonic() > self.deadline:
+            return "the run reached its time limit"
+        return "this test's own time ran out"
 
     async def replay(
         self, keys: list[str], shots: bool = False, hooks: list | None = None
