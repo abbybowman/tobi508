@@ -75,7 +75,8 @@ EXPECTED: dict[str, dict] = {
     # link are stops, and the group is one candidate, so every element was
     # reached: PASS (guard CN said NEEDS REVIEW). f24 is the nearest page that
     # must stay NEEDS REVIEW: a script moves focus off every radio at once, so
-    # the group is never a stop and the walk is not complete (row WK; guard CN holds it too).
+    # the group is never a stop and the walk is not complete (row WK; guard CN
+    # holds it too).
     "f23-radio-group-of-three": {"outcome": "PASS"},
     "f24-radio-group-focus-moved-off": {"outcome": "NEEDS_REVIEW", "page_rows": ["WK"]},
     # Row WK (1.9.0, step 6d): a loop is complete when the other pass reached
