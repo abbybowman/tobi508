@@ -199,7 +199,9 @@ what is planned.
    leaves an element unreached), then 4.D 1.9.0 (guard CN stays beside
    it) and 4.A 1.11.0. What Tab should land on leaves out a radio group's
    other radios and whatever an open modal dialog covers. 5.D 1.7.0 (by fields,
-   `walk.field_coverage`; guard CN stays). Next: 5.F (5.G and 5.H follow). 4.B, 4.C and 4.F keep their own decisions.
+   `walk.field_coverage`; guard CN stays). 5.F 1.8.0, 5.G 1.6.0 and 5.H 1.6.0 (they
+   read 5.F's list). Phase 1 is built; phase 2 (4.A, 4.B, 4.F, 5.x reading
+   the union of the passes) is a proposal to Abby first. 4.B, 4.C and 4.F keep their own decisions.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the

@@ -581,6 +581,11 @@ different checks, and some of those ways do not hold back an outcome.
   (`count: fields`), which stays. A field a script skips with the walk
   wrapped is NEEDS REVIEW (`5d/f23`); the same page without the script
   is PASS (`5d/f24`).
+- **Step 6d, 5.F, 5.G, 5.H (1.8.0, 1.6.0, 1.6.0):** 5.F's trap-specific line
+  ("ended in a trap, so N form fields were never reached") is replaced by
+  the field coverage sentence; a trap after the last field is still
+  complete, and a field a script skips with the walk wrapped is now NEEDS
+  REVIEW too (`5f/f28`). 5.G and 5.H read 5.F's list.
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 
