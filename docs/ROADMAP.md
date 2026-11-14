@@ -146,6 +146,10 @@ what is planned.
    - **19.A: a search whose results page did not finish** (its own
      scripts failed to load) is "search not verified" (row W4, NEEDS
      REVIEW), not a search that found nothing (W3, FAIL).
+     **Built 2026-11-13:** 19.A 1.7.0 reads the results page's recording
+     for scripts that did not load; on 14194 in this container (its
+     search's 13 scripts refused) it is W4, NEEDS REVIEW, where step 6
+     gave FAIL.
    - **A fuller freeze** for step 10 and later rounds: the freeze
      scrolls the page so lazy images load, and records media and
      19.A's search results, so a run does not depend on the container.

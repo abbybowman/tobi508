@@ -83,6 +83,18 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W3", "G4"],
         {},
     ),
+    # Step 6c item 3 (19.A 1.7.0; step 6's six false FAILs): the results
+    # page's own script did not load, so the search never showed results.
+    # That is a search not verified (W4), not one that found nothing (W3).
+    # "quoted-search-finds-nothing" above is the nearest case that must
+    # still FAIL: a finished search that does not list the page.
+    "search-results-script-failed": (
+        "t6-aurora",
+        ["home5"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
     "process-step": (
         "step2",
         ["home"],
@@ -253,3 +265,42 @@ async def test_finish_makes_the_suggested_pages_call_once(
     _start_follow_ups(settings)  # a second finish: nothing more from the first run
     report = Report.model_validate_json(run.report_path.read_text("utf-8"))
     assert len(report.follow_ups_made) == 1
+
+
+def test_failed_scripts_reads_the_recording(tmp_path):
+    """A script the recording saved with no response (-1: refused, as the
+    container's untrusted proxy certificate did in step 6) or an error status
+    counts; other resources and loaded scripts do not."""
+    import json
+    import zipfile
+
+    from tobi508.capture import failed_scripts
+
+    def entry(url, kind, status):
+        return {
+            "request": {"url": url},
+            "response": {"status": status},
+            "_resourceType": kind,
+        }
+
+    har = tmp_path / "r.har.zip"
+    with zipfile.ZipFile(har, "w") as z:
+        z.writestr(
+            "r.har",
+            json.dumps(
+                {
+                    "log": {
+                        "entries": [
+                            entry("https://cdn.example/app.js", "script", -1),
+                            entry("https://example.gov/static/r.js", "script", 404),
+                            entry("https://example.gov/ok.js", "script", 200),
+                            entry("https://example.gov/x.png", "image", -1),
+                        ]
+                    }
+                }
+            ),
+        )
+    assert failed_scripts(har) == [
+        "https://cdn.example/app.js",
+        "https://example.gov/static/r.js",
+    ]

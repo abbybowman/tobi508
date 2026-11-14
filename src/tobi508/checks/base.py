@@ -73,6 +73,8 @@ class PageRef:
     har_sha: str | None = None  # its recording's SHA-256 (pagecache reads)
     # Its document is the tested page's, byte for byte (K-01): not compared.
     same_content_as_tested: bool = False
+    # Its recording, for a page recorded during the run (19.A's search).
+    har: Path | None = None
 
 
 # What a check records when the run's time limit cut work short (one wording
