@@ -499,6 +499,7 @@ async def test_each_page_gives_each_cell_its_outcome(page, settings, server):
                 c.known_wrong
             )
             got = f"{test}: {f.outcome.value}, table says {c.outcome.value}"
+            got += " :: " + f.summary[:400] + " :: " + f.rationale[:200]
             off.append(got + fixed)
         # The only outcomes that need no reason; never PASS on this page unless
         # the table says it is a known wrong outcome.
