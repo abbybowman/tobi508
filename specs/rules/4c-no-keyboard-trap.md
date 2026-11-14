@@ -1,7 +1,7 @@
 ---
 tt_test: 4.C
 tt_name: 2.1.2-no-keyboard-trap
-spec_version: 1.13.0
+spec_version: 1.13.1
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -193,4 +193,4 @@ Each FAIL instance records, to meet p. 5 (location, plus the failing content whe
 1. Backward: P2 always runs from a fresh load, so elements after a forward trap are reached from the end.
 2. Mouse bypass (P6), only when P1 and P2 end in different traps: click a non-interactive spot just after P1's trap in DOM order, then resume Tab with P1's rules (V8). If the click does not set the Tab starting point, script focus() on the next candidate is the fallback, and the log records that it was used.
 
-Traps found while continuing are separate instances. Stops reached only after a bypass are tagged so 4.D and 4.E can still test them.
+Traps found while continuing are separate instances. Stops reached only after a bypass are tagged in 4.C's own instances. They are not passed to 4.D and 4.E: when P1 and P2 end in different traps, 4.D and 4.E are NEEDS REVIEW for the part of the page between the traps (passing P6's stops to them is not built; ROADMAP, "Next: after the demo").

@@ -27,6 +27,7 @@ from typing import Any, Protocol
 
 from playwright.async_api import BrowserContext, CDPSession, Page
 
+from tobi508.jslib import PATH_JS  # the walk's CSS path, every reader's (jslib.py)
 from tobi508.models import BoundingBox, PassResult, Step, Stop
 
 # Tab press cap per pass (4.C spec section 2, P1): 3 x inventory + 50, max 3,000.
@@ -209,28 +210,6 @@ DEST_JS = """
   };
 """
 
-PATH_JS = """
-  const seg = (n) => {
-    const root = n.getRootNode();
-    if (n.id && root.querySelectorAll('#' + CSS.escape(n.id)).length === 1) return { s: '#' + CSS.escape(n.id), unique: true };
-    const tag = n.tagName.toLowerCase();
-    const p = n.parentElement;
-    if (!p) return { s: tag, unique: false };
-    const same = Array.from(p.children).filter((c) => c.tagName === n.tagName);
-    return { s: same.length > 1 ? `${tag}:nth-of-type(${same.indexOf(n) + 1})` : tag, unique: false };
-  };
-  const path = (n) => {
-    const parts = [];
-    for (let cur = n; cur && cur.nodeType === 1; cur = cur.parentElement) {
-      const { s, unique } = seg(cur);
-      parts.unshift(s);
-      if (unique || !cur.parentElement) break;
-    }
-    const root = n.getRootNode();
-    return (root.host ? path(root.host) + ' ' : '') + parts.join(' > ');
-  };
-"""
-
 # A11y-world helpers. `this` is the element.
 _DESCRIBE_FN = (
     "function () {"
@@ -338,9 +317,24 @@ _INVENTORY_JS = """() => {
   let count = 0;
   const fields = new Set();
   let n = 0;
+  // Tab lands on one radio of a group (the checked one, or the first or last
+  // by direction): a group counts once, as `fields` does. A group is the
+  // radios of one name in one form (or none) in one document or shadow root.
+  const forms = new Map();
+  const groupKey = (el, root) => {
+    const f = el.form;
+    if (f && !forms.has(f)) forms.set(f, forms.size + 1);
+    return root.nodeType + ':' + (f ? forms.get(f) : '') + ':' + el.name;
+  };
   const walk = (root) => {
+    const groups = new Set();
     for (const el of root.querySelectorAll('*')) {
-      if (candidate(el)) count += 1;
+      if (candidate(el)) {
+        if (el.matches('input[type=radio]') && el.name) {
+          const k = groupKey(el, root);
+          if (!groups.has(k)) { groups.add(k); count += 1; }
+        } else count += 1;
+      }
       if (el.matches(FIELD) && !el.matches(':disabled') && !el.readOnly && el.getAttribute('aria-disabled') !== 'true'
           && el.getAttribute('aria-readonly') !== 'true' && !inert(el) && rendered(el)) {
         const k = fieldKey(el);
@@ -571,6 +565,33 @@ class FocusReader:
             {"expression": expression, "contextId": ctx, "returnByValue": True},
         )
         return res["result"].get("value")
+
+    async def ax_top(self, expression: str) -> dict[str, str] | None:
+        """Chrome's accessible name and description (its accessibility tree,
+        what a screen reader reads) of the element an expression gives in the
+        top frame's isolated world. None when there is no such element or
+        the tree has no node for it."""
+        session, ctx = await self._session_for(await self._top_frame_id())
+        res = await session.send(
+            "Runtime.evaluate", {"expression": expression, "contextId": ctx}
+        )
+        oid = res["result"].get("objectId")
+        if not oid:
+            return None
+        try:
+            ax = await session.send(
+                "Accessibility.getPartialAXTree",
+                {"objectId": oid, "fetchRelatives": False},
+            )
+        finally:
+            await session.send("Runtime.releaseObject", {"objectId": oid})
+        if not ax.get("nodes"):
+            return None
+        node = ax["nodes"][0]
+        return {
+            "name": (node.get("name") or {}).get("value") or "",
+            "desc": (node.get("description") or {}).get("value") or "",
+        }
 
     async def _top_frame_id(self) -> str:
         if self._top is None:

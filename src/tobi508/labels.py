@@ -12,16 +12,21 @@ decided here (CLAUDE.md principle 2).
 from __future__ import annotations
 
 from typing import Any
+from urllib.parse import urlsplit
 
 from pydantic import BaseModel, Field
 
 from tobi508.andi import andi_output, inject_andi, install_andi_routes
-from tobi508.traverse import PATH_JS, Session, screenshot
+from tobi508.browser import NavigationGuard
+from tobi508.jslib import JSLIB, PATH_JS, FrameDoc, frame_docs
+from tobi508.traverse import Session, screenshot
 
 COMPONENT_MAX = 60
 # The image and the nearby-text region around a field (5.A spec section 2).
 LEFT, UP, RIGHT, DOWN = 240, 120, 160, 160
 NEARBY_CHARS = 400
+# Where a component's programmatic name comes from inside a web component.
+AX_SOURCE = "accessibility tree"
 
 _SHARED_JS = """
   const doc = document;
@@ -37,7 +42,9 @@ _SHARED_JS = """
     if ((cs.clip || '').startsWith('rect(0') || (cs.clipPath || '').includes('inset(50%')) return false;
     return true;
   };
-  const txt = (e) => (e ? (e.innerText || e.textContent || '') : '').replace(/\\s+/g, ' ').trim();
+  // Visible text only (review H-01: words hidden with screen-reader-only CSS
+  // or pushed off screen, and a wrapped select's options, are not a label's).
+  const txt = (e) => J.text(e);
   const isOpt = (o) => {
     const t = (o.type || '').toLowerCase(), ro = o.getAttribute('role') || '';
     return t === 'radio' || t === 'checkbox' || ['radio', 'checkbox', 'switch'].includes(ro);
@@ -50,7 +57,9 @@ _SHARED_JS = """
   // A menu or disclosure button opens content; it does not act on form data.
   const isMenu = (o) => o.hasAttribute('aria-expanded') ||
     !['', 'false'].includes((o.getAttribute('aria-haspopup') || '').toLowerCase());
-  const comps =() => Array.from(doc.querySelectorAll(SEL)).filter((el) => {
+  // Inside open shadow roots too (part D): a web component's fields are
+  // the page's fields.
+  const comps =() => J.all(SEL).filter((el) => {
     if (el.closest('#ANDI508')) return false;
     const t = (el.type || '').toLowerCase();
     if (el.tagName === 'INPUT' && ['hidden', 'image'].includes(t)) return false;
@@ -58,7 +67,7 @@ _SHARED_JS = """
     return vis(el);
   });
   const ids = (el, a) => (el.getAttribute(a) || '').split(/\\s+/).filter(Boolean)
-    .map((id) => doc.getElementById(id)).filter(Boolean);
+    .map((id) => J.byId(el, id)).filter(Boolean);
   const labelEls = (el) => {
     const out = [...(el.labels ? Array.from(el.labels) : []), ...ids(el, 'aria-labelledby')];
     return out;
@@ -74,6 +83,7 @@ _SHARED_JS = """
 
 COMPONENTS_JS = (
     "(function () {"
+    + JSLIB
     + PATH_JS
     + _SHARED_JS
     + """
@@ -96,7 +106,7 @@ COMPONENTS_JS = (
     if (!cell || !cell.closest('table')) return [];
     const out = [];
     const hdr = (cell.getAttribute('headers') || '').split(/\\s+/).filter(Boolean)
-      .map((id) => doc.getElementById(id)).filter(Boolean);
+      .map((id) => J.byId(cell, id)).filter(Boolean);
     if (hdr.length) return hdr.map(txt).filter(Boolean);
     const tr = cell.parentElement, table = cell.closest('table');
     const rowTh = Array.from(tr.children).find((c) => c.tagName === 'TH' && c !== cell);
@@ -114,7 +124,7 @@ COMPONENTS_JS = (
   const HEAD = 'h1,h2,h3,h4,h5,h6,[role=heading]';
   const headingOf = (el) => {
     const scope = el.form || el.closest('form') ||
-      el.closest('section,aside,nav,main,[role=region],[role=search],[role=complementary]') || doc.body;
+      el.closest('section,aside,nav,main,[role=region],[role=search],[role=complementary]') || J.scope(el);
     let best = null;
     for (const h of scope.querySelectorAll(HEAD)) {
       if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING && !h.contains(el) && vis(h)) best = h;
@@ -126,7 +136,7 @@ COMPONENTS_JS = (
   // heading is the question the set answers, not a section title further up.
   const headingEl = (el) => {
     const scope = el.form || el.closest('form') ||
-      el.closest('section,aside,nav,main,[role=region],[role=search],[role=complementary]') || doc.body;
+      el.closest('section,aside,nav,main,[role=region],[role=search],[role=complementary]') || J.scope(el);
     let best = null;
     for (const h of scope.querySelectorAll(HEAD)) {
       if (h.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING && !h.contains(el) && vis(h)) best = h;
@@ -161,6 +171,10 @@ COMPONENTS_JS = (
     const r = el.getBoundingClientRect();
     return {
       i, css: path(el), tag, type, role, button, option, group, set_size,
+      // Where it is, and whether the page's inventory counts it as a field
+      // (count.py; guard CN compares the two): radio groups once.
+      where: J.where(el), host: J.hostOf(el), counted: J.field(el),
+      radio_key: el.matches('input[type=radio]') && el.name ? (el.form ? 'f' : '') + el.name : null,
       form: (el.form || el.closest('form')) ? path(el.form || el.closest('form')) : '',
       readonly: el.readOnly === true || el.getAttribute('aria-readonly') === 'true',
       required: el.required === true || el.getAttribute('aria-required') === 'true',
@@ -193,6 +207,7 @@ COMPONENTS_JS = (
 # Focus component i of the last COMPONENTS_JS read; what is visible around it.
 FOCUS_JS = (
     "(function (i) {"
+    + JSLIB
     + PATH_JS
     + _SHARED_JS
     + """
@@ -215,7 +230,7 @@ FOCUS_JS = (
   }
   // Fieldsets that do not hold this field belong to other fields (their
   // legend and content); outside the field's form is not its cue.
-  for (const fs of doc.querySelectorAll('fieldset')) if (!fs.contains(el)) others.push(fs);
+  for (const fs of J.all('fieldset')) if (!fs.contains(el)) others.push(fs);
   const form = el.form || el.closest('form');
   const inOther = (n) => others.some((o) => o === n || o.contains(n)) || (form && !form.contains(n));
   const grp = groupEls(el);
@@ -253,7 +268,7 @@ FOCUS_JS = (
   // Pictures near the field, not another field's: one may be its label
   // (J1's "graphic"), so a field with one is never failed for having no text.
   let imgs = 0;
-  for (const m of doc.querySelectorAll('img,svg,[role=img],input[type=image]')) {
+  for (const m of J.all('img,svg,[role=img],input[type=image]')) {
     if (el.contains(m) || inOther(m) || !shown(m) || !inReg(m.getBoundingClientRect())) continue;
     imgs++;
   }
@@ -270,30 +285,30 @@ FOCUS_JS = (
     return els.some((o) => o !== el && isOpt(o) && b.contains(o));
   };
   const near = [];
-  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const cx = (r.left + r.right) / 2, cy = (r.top + r.bottom) / 2;
-  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+  // The page's text and its web components' (part D).
+  J.texts(doc.body, (n) => {
     const p = n.parentElement;
-    if (!p || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'OPTION', 'TEXTAREA'].includes(p.tagName)) continue;
-    if (p.closest('#ANDI508') || el.contains(p) || inOther(p) || !shown(p)) continue;
+    if (!p || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'OPTION', 'TEXTAREA'].includes(p.tagName)) return;
+    if (p.closest('#ANDI508') || el.contains(p) || inOther(p) || !shown(p)) return;
     // Section headings need no association (5.C p. 27 Note 5): not field text.
-    if (p.closest('h1,h2,h3,h4,h5,h6,[role=heading]')) continue;
+    if (p.closest('h1,h2,h3,h4,h5,h6,[role=heading]')) return;
     const t = n.textContent.replace(/\\s+/g, ' ').trim();
-    if (!t) continue;
+    if (!t) return;
     const range = doc.createRange(); range.selectNodeContents(n);
     const b = range.getBoundingClientRect();
-    if (!b.width || !inReg(b)) continue;
-    if (opt && otherRow(p)) continue;
+    if (!b.width || !inReg(b)) return;
+    if (opt && otherRow(p)) return;
     near.push({ t, g: grp.some((x) => x.contains(p)),
                 d: Math.hypot((b.left + b.right) / 2 - cx, (b.top + b.bottom) / 2 - cy) });
-  }
+  });
   near.sort((a, b) => a.d - b.d);
   // Text the page's style draws (::before / ::after content: a red "*", a
   // "(required)"), which no text node holds (5.C 1.4.0). Quoted strings
   // only; counters, attr() and images are left out. Kept apart: 5.C counts
   // it as visible, 5.A and 5.B do not read it.
   const css = [];
-  const root = form || doc.body;
+  const root = form || J.scope(el);
   let seen = 0;
   for (const p of root.querySelectorAll('*')) {
     if (++seen > 3000) break;
@@ -326,7 +341,7 @@ FOCUS_JS = (
     }
   }
   return {
-    focused: doc.activeElement === el,
+    focused: J.active() === el,
     labels, nearby: near.map((x) => x.t), nearby_other: nbr.slice(0, 6),
     nearby_own: near.filter((x) => !x.g).map((x) => x.t), nearby_buttons: btns.slice(0, 6), nearby_images: imgs, icon_buttons: icons, attached_buttons: attached.slice(0, 6),
     nearby_css: css.slice(0, 6).map((x) => x.t),
@@ -344,6 +359,21 @@ FOCUS_JS = (
 class Comp(BaseModel):
     n: int
     css: str
+    # "light": the page's own document; "shadow": inside a web component
+    # (an open shadow root), whose tag is `host` (part D).
+    where: str = "light"
+    host: str = ""
+    # Inside a frame: the iframe elements' CSS paths, top first (the walk's
+    # frame chain), the frame's address and title. Pass L reads a frame on a
+    # page of its own (TT 12.D; Abby, 2026-11-14), so `css` is its path in
+    # the frame's document.
+    frame_chain: list[str] = Field(default_factory=list)
+    frame_url: str = ""
+    frame_title: str = ""
+    # The page's inventory counts it as a field (count.py, `J.field`); radio
+    # buttons by group, as the inventory counts them.
+    counted: bool = False
+    radio_key: str | None = None
     tag: str = ""
     type: str = ""
     role: str = ""
@@ -388,7 +418,10 @@ class Comp(BaseModel):
     nearby_css: list[str] = Field(default_factory=list)
     placeholder_shown: bool = False
     image: str | None = None
-    andi: dict[str, Any] | None = None  # name, desc, group, dangers, warnings
+    # name, desc, group, dangers, warnings; inside a web component, which
+    # ANDI does not analyse, Chrome's accessibility tree's name and
+    # description instead, with source "accessibility tree" (Abby, 2026-11-14)
+    andi: dict[str, Any] | None = None
     origin: str = "load"  # or how a replay revealed it
     tab_index: int | None = None  # P1 step index, when it is a walk stop
 
@@ -419,7 +452,7 @@ class LabelsPass(BaseModel):
     notes: list[str] = Field(default_factory=list)
     revealed_from: list[str] = Field(default_factory=list)
     # What this pass read, by the page inventory's keys (count.py; guard CN):
-    # documents only, so nothing inside web components or frames, and no
+    # the page's document and its web components, not frames, and no
     # editable areas; hidden fields only those an opened section showed.
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
@@ -442,9 +475,11 @@ async def read_session(
             f"The form fields could not be read ({type(exc).__name__})."
         )
         return out
-    # Forms inside frames are not read yet: say so, never treat them as absent.
+    # Pass L reads the page's frames as pages of their own (labels_pass).
+    # On a replay that revealed content they are not read: say so, never
+    # treat them as absent.
     framed = 0
-    for fr in page.frames[1:]:
+    for fr in page.frames[1:] if origin != "load" else []:
         try:
             framed += await fr.evaluate(
                 "document.querySelectorAll('input:not([type=hidden]),select,textarea,button').length"
@@ -509,6 +544,26 @@ async def read_session(
                 c.image = p.resolve().relative_to(ctx.rel.resolve()).as_posix()
             except Exception:
                 c.image = None
+    # Inside a web component ANDI analyses nothing (checked 2026-11-14): the
+    # name and description come from Chrome's accessibility tree, the tree a
+    # screen reader reads (5.C Terms, ANDI output; Abby, 2026-11-14).
+    for i, c in enumerate(out.components):
+        if c.where != "shadow":
+            continue
+        try:
+            ax = await s.traversal.reader.ax_top(f"(window.__a11yLabelEls || [])[{i}]")
+        except Exception:
+            ax = None
+        if ax is not None:
+            c.andi = {
+                **ax,
+                # ANDI's group label is the legend or the group's label;
+                # the same read here (`group_labels`).
+                "group": " ".join(c.group_labels),
+                "dangers": [],
+                "warnings": [],
+                "source": AX_SOURCE,
+            }
     # ANDI last: it changes the page.
     if ctx.third_party is not None:
         try:
@@ -527,10 +582,78 @@ async def read_session(
                 out.andi_ran = True
                 by_mark = {r.get("mark"): r for r in rows if r.get("mark") is not None}
                 for i, c in enumerate(out.components):
-                    c.andi = by_mark.get(str(i))
+                    if c.where != "shadow":
+                        c.andi = by_mark.get(str(i))
         except Exception as exc:
             out.notes.append(f"ANDI could not run on this page ({type(exc).__name__}).")
     return out
+
+
+async def _read_frames(ctx, s: Session, docs: list[FrameDoc], lp: LabelsPass) -> None:
+    """Each frame the page shows, opened as a page of its own on this replay
+    and read like the page: the inventory, the visible labels, the pictures
+    and ANDI (TT 12.D "test in new tab"; Appendix D; Abby, 2026-11-14: ANDI
+    inside an embedded frame is not accurate). Only addresses this replay
+    showed as frames (principle 5's frame-page exception); at most
+    `FRAME_PAGES_MAX`. A frame not read is said, never left out."""
+    from tobi508.traverse import open_session
+
+    guard = NavigationGuard.of(s.traversal.context)
+    context = s.traversal.context
+    skipped = 0
+    for k, d in enumerate(d for d in docs if d.shown and not d.missing and d.url):
+        if ctx.out_of_time() or guard is None or not guard.allow_frame_page(d.url):
+            skipped += 1
+            continue
+        page = None
+        try:
+            page = await context.new_page()
+            await guard.goto(page, d.url)
+
+            async def opener(p=page):
+                return context, p
+
+            fs = await open_session(opener, ctx.quiet_ms)
+            got = await read_session(ctx, fs, "load", True, f"lf{k + 1}")
+        except Exception:
+            skipped += 1
+            continue
+        finally:
+            if page is not None:
+                await page.close()
+        for c in got.components:
+            lp.components.append(
+                c.model_copy(
+                    update={
+                        "n": len(lp.components) + 1,
+                        "frame_chain": d.chain,
+                        "frame_url": d.url,
+                        "frame_title": d.title,
+                    }
+                )
+            )
+        lp.incomplete += [
+            f"In the frame {frame_name(d.title, d.url)}: {x}" for x in got.incomplete
+        ]
+        lp.notes += [
+            f"In the frame {frame_name(d.title, d.url)}: {x}" for x in got.notes
+        ]
+        if ctx.third_party is not None and not got.andi_ran:
+            lp.incomplete.append(
+                f"ANDI could not run in the frame {frame_name(d.title, d.url)}."
+            )
+    if skipped:
+        lp.incomplete.append(
+            f"{skipped} frame{'' if skipped == 1 else 's'} could not be opened as a "
+            "page of its own, so the form fields inside "
+            f"{'it' if skipped == 1 else 'them'} were not checked."
+        )
+
+
+def frame_name(title: str, url: str) -> str:
+    """How a person is told which frame: its title, and its host."""
+    host = urlsplit(url).hostname or url
+    return f"'{title}' ({host})" if title else f"at {host}"
 
 
 def wanted(ctx) -> bool:
@@ -560,6 +683,7 @@ async def read_revealed(ctx, s: Session, origin: str) -> bool | None:
 def _signature(c: Comp) -> tuple:
     """What makes a control the same control across opened states."""
     return (
+        tuple(c.frame_chain),
         c.tag,
         c.type,
         c.role,
@@ -581,10 +705,16 @@ async def labels_pass(ctx, walk) -> LabelsPass:
 
     s = await open_session(ctx.new_page, ctx.quiet_ms)
     try:
+        # The frames as loaded, before ANDI changes the page.
+        try:
+            docs = await frame_docs(s.traversal.page)
+        except Exception:
+            docs = []
         lp = await read_session(ctx, s, "load", True, "l")
+        await _read_frames(ctx, s, docs, lp)
     finally:
         await s.close()
-    seen = {c.css for c in lp.components}
+    seen = {(tuple(c.frame_chain), c.css) for c in lp.components}
     # The same control read in another opened state has another path (a list
     # that grew above it moved its position): it is the same control when its
     # kind, text, group, heading and row are the same. Compared with what was
@@ -594,35 +724,51 @@ async def labels_pass(ctx, walk) -> LabelsPass:
         fresh: set[tuple] = set()
         for c in extra.components:
             sig = _signature(c)
-            if c.css in seen or sig in sigs:
+            if (tuple(c.frame_chain), c.css) in seen or sig in sigs:
                 continue
-            seen.add(c.css)
+            seen.add((tuple(c.frame_chain), c.css))
             fresh.add(sig)
             lp.components.append(c.model_copy(update={"n": len(lp.components) + 1}))
             if c.origin not in lp.revealed_from:
                 lp.revealed_from.append(c.origin)
         sigs |= fresh
     if walk is not None:
-        idx = {
-            st.stop.css_path: i
-            for i, st in enumerate(walk.p1.steps)
-            if st.stop.kind == "element" and not st.stop.frame_chain
-        }
+        # The first time the walk reached it: the walk goes round to the
+        # first stop again, which is not how a person reaches it.
+        idx: dict[tuple, int] = {}
+        for i, st in enumerate(walk.p1.steps):
+            if st.stop.kind == "element":
+                idx.setdefault((tuple(st.stop.frame_chain), st.stop.css_path), i)
         for c in lp.components:
-            c.tab_index = idx.get(c.css)
+            c.tab_index = idx.get((tuple(c.frame_chain), c.css))
     lp.read = {"page": what_was_read(lp, ctx.cache.get("count"))}
     ctx.cache["labels-pass"] = lp
     return lp.model_copy(deep=True)
 
 
 def what_was_read(lp: LabelsPass, count) -> dict[str, int]:
-    """Pass L's reading by the inventory's keys. Hidden fields are matched by
-    path: one is read when an opened section showed it and it was read."""
+    """Pass L's reading by the inventory's keys. Fields inside web components
+    are those it read on the page as loaded, counted as the inventory counts
+    them (radio groups once). Hidden fields are matched by path: one is read
+    when an opened section showed it and it was read."""
     opened = {c.css for c in lp.components if c.origin != "load"}
     hidden = set(count.hidden_field_paths) if count is not None else set()
+    shadow = {
+        c.radio_key or f"#{c.n}"
+        for c in lp.components
+        if c.where == "shadow"
+        and c.counted
+        and c.origin == "load"
+        and not c.frame_chain
+    }
+    framed = {
+        (tuple(c.frame_chain), c.radio_key or f"#{c.n}")
+        for c in lp.components
+        if c.frame_chain and c.counted and c.origin == "load"
+    }
     return {
-        "fields.shadow": 0,
-        "fields.frames": 0,
+        "fields.shadow": len(shadow),
+        "fields.frames": len(framed),
         "contenteditable": 0,
         "fields_hidden": len(hidden & opened),
     }

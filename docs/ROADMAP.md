@@ -284,6 +284,14 @@ the remaining checks).
    checks' shared base goes in with it (one finding builder, one "out
    of time" helper), which is what "Tidy the checks" was. Every outcome
    stays the same except where a gap now holds one back.
+14b. **P6's stops to 4.D and 4.E** (from step 6d, 2026-11-14). 4.C's mouse
+   bypass (P6) reaches stops that neither the Tab nor the Shift+Tab walk
+   reached when the two end in different traps, and 4.C's spec said they
+   are "tagged so 4.D and 4.E can still test them". They are not passed
+   today: 4.D and 4.E are NEEDS REVIEW for that part of the page (4.C
+   1.13.1 says so). Build: share P6's steps with 4.D and 4.E, run their own
+   readings (focus pictures, focus-event check) on them, and only then
+   count them as reached (step 6d's walk-coverage rule).
 15. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
    guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
    first six triggers) walk the keyboard through opened content, which
@@ -414,6 +422,13 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   that settle late end there (more than 1 in 5 of a round's 4.D stops),
   build option B: take the two pictures again once after the page
   settles (Abby, 2026-11-13).
+- **Radio groups (4.A-4.F, step 6d):** a radio group is one element that
+  takes focus, since Tab lands on one radio of it. The walk does not visit
+  the radios of a group one by one (arrow keys are not walked), so what
+  the other radios look like on focus is not read. 4.A must not ask about
+  a radio Tab cannot land on: today it asks whether a group's second
+  radio "works with a mouse but cannot be reached", which Tab never
+  could.
 - **Web components (shadow roots):** the keyboard walk enters them; the
   label pass, the site read, the media read, 4.A's handler scan and
   5.F's error read do not. Since part B's inventory and guard CN
@@ -465,9 +480,9 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
-- **5.A, 5.C, 5.F, 5.G:** fields in frames are not read (a NEEDS REVIEW
-  note; fix 7, now part D). Fields in shadow roots are not read either
-  and get no note (above). 5.F and 5.G leave `time`,
+- **5.F, 5.G:** fields in frames and in shadow roots are not read
+  (guard CN holds PASS and DOES NOT APPLY; step 8 reader 4). 5.A-5.C read
+  both since step 8 (5.A 1.11.0, 5.C 1.11.0). 5.F and 5.G leave `time`,
   `datetime-local`, `month` and `week` fields as loaded in attempt 2.
 - **5.F, 5.G, 5.H:** a form that is only a button is not seen (M-02);
   5.H's consequence words are English only, and no match is DOES NOT

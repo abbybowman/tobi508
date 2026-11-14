@@ -216,6 +216,11 @@ def count_sentence(key: str, there: int, read: int) -> str:
         if read:
             return f"{there} images: only the first {read} were checked for animation."
         return f"{gap} image{'' if one else 's'} {was} not checked for animation."
+    if name == "frames_missing":
+        return (
+            f"{gap} frame{'' if one else 's'} on this page {was} not recorded, "
+            f"so what is inside {'it' if one else 'them'} was not checked."
+        )
     if name == "focusable":
         return (
             f"The page has {there} elements that take focus, and the keyboard "

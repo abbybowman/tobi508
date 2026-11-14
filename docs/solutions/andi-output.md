@@ -44,3 +44,25 @@ afterwards on a separate fresh load of the same recording, and so would any
 scanner (none is vendored yet). ANDI is served
 from `third_party/` only (`andi.install_andi_routes`), never from ssa.gov.
 Scanner output is evidence for spec rows; a clean scan never means PASS.
+
+## Web components and frames (step 8, 2026-11-14)
+
+- **ANDI 29.2.2 does not enter shadow roots.** `andi.js` has no
+  `shadowRoot` code, and a page with one labelled field outside a web
+  component and one inside gave output for the outside one only. Inside a
+  web component, 5.C takes the name and description from Chrome's
+  accessibility tree (`FocusReader.ax_top`, CDP
+  `Accessibility.getPartialAXTree` on the isolated world's element), with
+  source "accessibility tree" (Abby, 2026-11-14). Copying a component's
+  content into the page for ANDI would change what its ids resolve to.
+- **ANDI does run inside a frame from another site** when injected into
+  the frame's own document, but Abby found ANDI inside an embedded frame
+  inaccurate in practice, so pass L opens each shown frame as a page of
+  its own on the same replay (`labels._read_frames`, TT 12.D "test in new
+  tab"). The navigation guard allows only addresses the replay showed as
+  frames, at most 10 (`NavigationGuard.allow_frame_page`, principle 5).
+  The frame's page shares the tested page's replay context: close only
+  its page (`Session.close` closes the whole context).
+- **A frame the recording lacks** loads Chrome's error page on the
+  replay (`jslib.frame_docs`: `missing`); the inventory counts it as
+  `frames_missing` and guard CN holds PASS and DOES NOT APPLY.

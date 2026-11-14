@@ -833,7 +833,14 @@ def _reached(p1: Any, p2: Any) -> int:
     into once: the walk reads the deepest focused element, so a focusable frame
     is never a stop of its own, and the inventory counts it (guard CN)."""
     steps = [s for p in (p1, p2) for s in p.steps if s.stop.kind == "element"]
-    stops = {s.stop.path_key for s in steps}
+    # A radio group is one stop: Tab lands on one radio of it, P1 on one and
+    # P2 on another, and the inventory counts the group once.
+    stops = {
+        s.stop.group
+        if s.stop.tag == "input" and (s.stop.group or "").startswith("radio:")
+        else s.stop.path_key
+        for s in steps
+    }
     frames = {
         tuple(s.stop.frame_chain[: i + 1])
         for s in steps

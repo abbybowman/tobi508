@@ -217,3 +217,19 @@ def test_hidden_fields_hold_nothing_when_nothing_could_open_them():
     openable = Count(fields_hidden=Part(light=1), openers=1)
     f = apply_guards(finding(Outcome.DNA), (), report(page=openable), State(), keys)
     assert f.outcome is Outcome.NEEDS_REVIEW and "CN" in f.rows
+
+
+async def test_the_focusable_count_has_a_radio_group_once(browser):
+    """Tab lands on one radio of a group (the same rule as traverse's
+    inventory): 3 radios of one name and a button are 2 elements that take
+    focus, and a group in another form is its own."""
+    ctx = await browser.new_context()
+    page = await ctx.new_page()
+    await page.set_content(
+        "<input type=radio name=s><input type=radio name=s><input type=radio name=s>"
+        "<form><input type=radio name=s><input type=radio name=s></form>"
+        "<button>Send</button>"
+    )
+    c = await inventory.take(page, "test")
+    await ctx.close()
+    assert c.focusable.light == 3

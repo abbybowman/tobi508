@@ -12,6 +12,7 @@ Verified behavior this module depends on (see tests/test_browser.py):
 
 from __future__ import annotations
 
+import weakref
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import urljoin, urlsplit
@@ -145,6 +146,12 @@ def _is_top_level_navigation(route: Route) -> bool:
         return True
 
 
+# At most this many frames a context are opened as pages of their own
+# (principle 5's frame-page exception).
+FRAME_PAGES_MAX = 10
+_GUARDS: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
+
+
 class NavigationGuard:
     """Enforces the allowlist on every top-level navigation in a context.
 
@@ -173,11 +180,35 @@ class NavigationGuard:
         self.unreachable: dict[str, str] = {}
         self.redirects: list[dict[str, Any]] = []
         self._pending_redirect: str | None = None
+        # Frames opened as pages of their own on a replay (allow_frame_page).
+        self.frame_pages: set[str] = set()
 
     async def install(self, context: BrowserContext) -> None:
+        _GUARDS[context] = self
         await context.route("**", self._handle)
 
+    @staticmethod
+    def of(context: BrowserContext) -> NavigationGuard | None:
+        """The guard installed in a context, if any."""
+        return _GUARDS.get(context)
+
+    def allow_frame_page(self, url: str) -> bool:
+        """Principle 5's frame-page exception (Abby, 2026-11-14; plan
+        2026-11-12 part D): on a replay, never live, a page of its own may be
+        opened at the address of a frame the tested page's replay showed (so
+        its recording holds it), at most FRAME_PAGES_MAX a context. The
+        caller passes only such an address; no other is allowed."""
+        if self.live or len(self.frame_pages) >= FRAME_PAGES_MAX:
+            return False
+        if not url.startswith(("http:", "https:")):
+            return False
+        self.frame_pages.add(url)
+        self._log("frame_page_allowed", "info", url=url)
+        return True
+
     def _check(self, url: str) -> bool:
+        if not self.live and url in self.frame_pages:
+            return True  # from the recording only: the replay aborts the rest
         decision = check_url(url, self.settings.allowed_domains, self.settings.dev_mode)
         if not decision.allowed:
             self.blocked.append({"url": url, "reason": decision.reason})
