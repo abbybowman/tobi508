@@ -161,6 +161,16 @@ def _frame_cells() -> dict[str, Cell]:
     }
 
 
+CONTACT_FORM = dna(
+    "the form is a plain contact form: no payment, legal agreement, change to "
+    "saved data or test"
+)
+NO_CHECKING = dna(
+    "the form has no required field and no typed field, so the page never "
+    "checks it for errors"
+)
+
+
 # page -> test -> the cell. Review IDs in the `wrong` cells.
 EXPECTED: dict[str, dict[str, Cell]] = {
     # An open shadow root with a form, a navigation block, a mouse-only
@@ -199,9 +209,15 @@ EXPECTED: dict[str, dict[str, Cell]] = {
         "5.B": nr(),
         "5.C": passes("5a/f48-shadow-labelledby-outside.html"),
         "5.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        "5.F": nr(),
-        "5.G": nr(),
-        "5.H": nr(),
+        # Part D (5.F 1.8.0, 5.G 1.6.0, 5.H 1.6.0): pass E reads the form
+        # inside the web component; it checks nothing and sends nothing
+        # anywhere special, as the hidden-text page's form.
+        "5.F": NO_CHECKING,
+        "5.G": dna(
+            "the page did not check the form for errors, so there is no "
+            "error to suggest a fix for"
+        ),
+        "5.H": CONTACT_FORM,
         **_site_cells(),
     },
     # The same four things in a frame from the same site (frame-inner.html).
@@ -232,14 +248,6 @@ NO_MEDIA = {
     "3.A": dna("nothing on the page flashes"),
     **NOTHING_MOVES,
 }
-CONTACT_FORM = dna(
-    "the form is a plain contact form: no payment, legal agreement, change to "
-    "saved data or test"
-)
-NO_CHECKING = dna(
-    "the form has no required field and no typed field, so the page never "
-    "checks it for errors"
-)
 
 EXPECTED.update(
     {

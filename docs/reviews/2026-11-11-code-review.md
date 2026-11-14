@@ -504,6 +504,7 @@ them.
 - **Checked:** verified (run) for two of the three: error text in a
   shadow root, and a red border on a wrapper, both 5.F DOES NOT APPLY.
   The 60 ms message is the reviewer's run.
+- **Partly fixed:** step 8 reader 4, specs 5.F 1.8.0, 5.G 1.6.0, 5.H 1.6.0: pass E reads text, live regions, dialogs and fields inside web components (`jslib`), so the error in a shadow root is new text and asks J1 (`5f/f28`, FAIL on "Error."; its twin `5f/f29` PASS). Open: the red border on a wrapper, and the message gone within 150 ms.
 
 ### A walk cut short by a trap or the clock
 
