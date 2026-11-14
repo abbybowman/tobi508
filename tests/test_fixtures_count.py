@@ -16,6 +16,15 @@ from tobi508.pipeline import run_tt_tests
 # page -> test -> (outcome, a sentence the summary holds, or None when CN must
 # stay quiet). Review IDs in the comments.
 EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
+    # Decision 3 (Abby, 2026-11-14): a frame whose page the recording lacks.
+    "frame-missing": {
+        t: (
+            "NEEDS_REVIEW",
+            "1 frame on this page was not recorded, so what is inside it was not "
+            "checked.",
+        )
+        for t in ("5.A", "5.B", "5.C")
+    },
     # D-01: a form inside a web component.
     "shadow-form": {
         # Part D (5.A, 5.C 1.10.0, 5.B 1.7.0): pass L reads the web component,

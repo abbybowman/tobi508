@@ -19,7 +19,7 @@ from typing import Any
 
 from playwright.async_api import Page
 
-from tobi508.jslib import JSLIB, PATH_JS
+from tobi508.jslib import JSLIB, PATH_JS, frame_docs
 from tobi508.models import Count, Part
 
 PATHS_MAX = 200
@@ -201,6 +201,12 @@ async def take(page: Page, where: str) -> Count:
     own document cannot be read, `error` says so (guard CN then holds a PASS
     or DOES NOT APPLY)."""
     count = Count(where=where, played_from=where)
+    try:
+        count.frames_missing = sum(
+            1 for d in await frame_docs(page) if d.missing and d.shown
+        )
+    except Exception:
+        pass  # the frames are counted below; a missing one cannot be told apart
     images: set[str] = set()
     for frame in [page.main_frame, *(f for f in page.frames if f != page.main_frame)]:
         main = frame == page.main_frame

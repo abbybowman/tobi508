@@ -577,6 +577,9 @@ class Count(BaseModel):
     links: Part = Field(default_factory=Part)
     frames: int = 0
     frames_unread: int = 0
+    # Frames shown on the page whose document did not load from the recording
+    # (decision 3, Abby 2026-11-14): what is inside them was never seen.
+    frames_missing: int = 0
     players: int = 0
     shadow_roots: int = 0
     closed_hosts: int = 0

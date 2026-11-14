@@ -32,10 +32,13 @@ Members of `J`:
   space after the host's path) and its reading back, one root at a time.
 
 Frames are not entered here: Python reads each frame as its own document
-(part D's design note).
+(part D's design note); `frame_docs(page)` lists them with their chains.
 """
 
 from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Any
 
 PATH_JS = """
   const seg = (n) => {
@@ -200,3 +203,78 @@ JSLIB = (
 })();
 """
 )
+
+
+# One frame element, read in its parent's document: its path (the walk's
+# frame chain uses the same), whether a person can see it, its `src` and its
+# title.
+_FRAME_EL_JS = (
+    "(el) => {"
+    + PATH_JS
+    + """
+  const r = el.getBoundingClientRect();
+  const shown = (el.checkVisibility ? el.checkVisibility({ visibilityProperty: true })
+    : el.getClientRects().length > 0) && r.width >= 1 && r.height >= 1;
+  return { css: path(el), shown, src: el.getAttribute('src') ? el.src : '', title: el.getAttribute('title') || '' };
+}"""
+)
+
+
+@dataclass
+class FrameDoc:
+    """One frame of a loaded page, as the readers name it (part D)."""
+
+    frame: Any  # playwright Frame
+    chain: list[str]  # the iframe elements' CSS paths, top first
+    url: str  # the frame document's address ("" when unknown)
+    title: str  # the frame element's title, else its document's
+    shown: bool  # a person can see the frame element
+    # The frame's document did not load from the recording (its request
+    # failed while recording, or was never made): Chrome's error page, or
+    # blank while the element names a web address.
+    missing: bool = False
+
+
+async def frame_docs(page) -> list[FrameDoc]:
+    """Every frame of the page below the top document, nested ones too,
+    each with its chain. A frame whose element cannot be read (it detached
+    mid-read) is left out; the inventory counts such frames apart."""
+    out: list[FrameDoc] = []
+    for f in page.frames:
+        if f == page.main_frame:
+            continue
+        chain: list[str] = []
+        info: dict = {}
+        try:
+            cur = f
+            while cur.parent_frame is not None:
+                el = await cur.frame_element()
+                got = await el.evaluate(_FRAME_EL_JS)
+                if cur is f:
+                    info = got
+                chain.insert(0, got["css"])
+                cur = cur.parent_frame
+        except Exception:
+            continue
+        url = f.url or ""
+        missing = url.startswith("chrome-error:") or (
+            url in ("", "about:blank")
+            and info.get("src", "").startswith(("http:", "https:"))
+        )
+        title = info.get("title", "")
+        if not title and not missing:
+            try:
+                title = await f.title()
+            except Exception:
+                title = ""
+        out.append(
+            FrameDoc(
+                frame=f,
+                chain=chain,
+                url="" if missing else url,
+                title=title,
+                shown=bool(info.get("shown")),
+                missing=missing,
+            )
+        )
+    return out
