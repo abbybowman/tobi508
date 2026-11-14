@@ -1,7 +1,7 @@
 ---
 tt_test: 9.B
 tt_name: 3.2.3-consistent-navigation
-spec_version: 1.4.0
+spec_version: 1.5.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -23,8 +23,8 @@ The tool gives each page one 9.B outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to compare" | Abby, 2026-11-02 (Q1); p. 43 HtT 1 |
 | A2 | A page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (1.4.0; `site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
-| A3o | Every other page shares almost nothing with the tested page (N2o) and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template (1.1.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
-| A3 | No component of the tested page matches one on any other page, or the only pages that match nothing are not of another template | DOES NOT APPLY | p. 43 Applicability |
+| A3o | No component of the tested page matches one on any other page (pages that share almost nothing are not compared, N2o), and the tested page has navigation of its own | NEEDS REVIEW, not performed (1.1.0; 1.5.0: no longer only when every other page shares almost nothing) | Abby, 2026-11-09 (bundle 2 decision 3); Abby, 2026-11-14 (round 2 item 13: CILab, key Pass: its own top links match nothing on the main site's pages, and one of those pages names the lab in its content); p. 42 Applicability |
+| A3 | No component of the tested page matches one on any other page, and the tested page has no navigation of its own | DOES NOT APPLY | p. 43 Applicability |
 | A4 | Otherwise | Applies; go to section 3 | |
 
 ## 2. Evidence to collect
@@ -67,7 +67,7 @@ Each other page is an *instance* (the tested page compared with it).
 | Page PASS | "The navigation this page shares with the other pages you gave appears in the same order on each of them." |
 | Page FAIL | "Some navigation appears in a different order on another page: "<a>" comes before "<b>" here but after it on <page>. Keep repeated navigation in the same order on every page." |
 | A1 | "This test could not be performed: it needs other pages of the same site to compare. Run it again with other_pages." |
-| A3o | "The other pages you gave share almost nothing with this page, so they look like they come from a different template, and we could not tell which content repeats. Give pages that use the same header, menu and footer as this one." |
+| A3o | When every other page shares almost nothing: "The other pages you gave share almost nothing with this page, so they look like they come from a different template, and we could not tell which content repeats. Give pages that use the same header, menu and footer as this one."" Otherwise (1.5.0): "None of this page's navigation appears on the other pages you gave, so we could not tell whether it is consistent with theirs. Give other pages from the same part of the site (for a microsite, its own pages)." |
 | A3 | "No navigation on this page appears on the other pages you gave, so this test does not apply." |
 | N5 | "Only one link or control is shared with <page>, so there is no order to compare. A person should check the navigation." |
 
