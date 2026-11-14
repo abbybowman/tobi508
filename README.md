@@ -53,32 +53,32 @@ The table lists each implemented test's rules spec and what our tests on
 real pages showed. Every other active TT 5.1.3 test comes back NEEDS
 REVIEW, "This test could not be performed".
 
-Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (frozen copies) tested again with that day's rules and the server judge answering the open questions, scored against a certified Trusted Tester's blind SCRT files (one development site, one repeat). Counts are of the 10 pages. Details and the figures beside round 2: [evaluation results](evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6). Every test's limits: [Known limits, per test](docs/ROADMAP.md#known-limits-per-test).
+Status is from one run on 2026-11-14 (`main` at `8854a4f`, step 9a): round 2's 10 svs.gsfc.nasa.gov pages (R2) and round 1's 9 www.nasa.gov pages (R1), frozen copies, tested with the server judge answering the open questions and scored against a certified Trusted Tester's blind SCRT files (two development sites, one repeat). "NR" is NEEDS REVIEW; a "wrong" outcome is a PASS, Does Not Apply or FAIL the key does not give. No test had a wrong PASS or a missed fail. A test with no key on a round's pages shows no figure for it. Details and the figures beside step 6 and round 2: [evaluation results](evals/README.md#gate-2026-11-14-both-rounds-pages-the-server-judge-on-every-type-one-repeat-roadmap-step-9a). Every test's limits: [Known limits, per test](docs/ROADMAP.md#known-limits-per-test).
 
 | ID | TT test name | WCAG 2.0 | Spec | Status on real pages |
 | --- | --- | --- | --- | --- |
-| 2.A | 1.4.2-audio-control | 1.4.2 | [1.1.0](specs/rules/2a-audio-control.md) | 🟢 7 of 10 agree, no wrong outcome, 3 NEEDS REVIEW. Caveat: audio that does not play from the recording is left for a person |
-| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.3.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 No wrong outcome; 1 of 10 agree, 9 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
-| 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: moving content not settled in 6.5 s is left for a person |
-| 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: as 2.C |
-| 3.A | 2.3.1-flashing | 2.3.1 | [1.2.1](specs/rules/3a-flashing.md) | 🟢 No wrong PASS or Does Not Apply; 3 of 10 agree, 1 Not Tested where the key says Does Not Apply, 6 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.10.0](specs/rules/4a-keyboard-access.md) | ⚠️ 2 agree, 1 FAIL the key passes (a judge answer), 7 NEEDS REVIEW; round 2's PASS on CILab now fails with the key. Caveat: often undecided with embedded players and frames |
-| 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 9 of 10 agree, no wrong outcome, 1 NEEDS REVIEW |
-| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | ⚠️ No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
-| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.8.0](specs/rules/4d-focus-visible.md) | ⚠️ 1 agree, 2 FAILs the key passes (as in round 2), 7 NEEDS REVIEW. Caveat: the judge is often unsure on small focus pictures |
-| 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 No wrong outcome; 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
-| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.8.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ 1 agree, 2 FAILs the key passes (judge answers; round 2: 6), 7 NEEDS REVIEW. Caveat: the judge is often unsure |
-| 5.A | 3.3.2-label-provided | 3.3.2 | [1.9.0](specs/rules/5a-label-provided.md) | 🟢 No wrong outcome (round 2: 8 FAILs the key passes); 3 agree, 7 NEEDS REVIEW. Caveat: fields inside frames are not checked yet |
-| 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.6.0](specs/rules/5b-label-descriptive.md) | 🟢 No wrong outcome (round 2: 5 wrong); 3 agree, 7 NEEDS REVIEW. Caveat: the judge is often unsure |
-| 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.9.0](specs/rules/5c-programmatic-label.md) | 🟢 No wrong outcome (round 2: 3 FAILs the key passes); 5 agree, 5 NEEDS REVIEW. Caveat: fields inside frames are not checked yet (3 of the key's FAILs are there) |
-| 5.D | 3.2.2-on-input | 3.2.2 | [1.6.0](specs/rules/5d-on-input.md) | 🟢 No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 3 agree, 7 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
-| 5.F | 3.3.1-error-identification | 3.3.1 | [1.7.0](specs/rules/5f-error-identification.md) | 🟢 No wrong outcome; 3 agree, 7 NEEDS REVIEW. Caveat: fields inside frames are not checked yet |
-| 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.5.0](specs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; 3 agree, 7 NEEDS REVIEW. Caveat: as 5.F |
-| 5.H | 3.3.4-error-prevention | 3.3.4 | [1.5.0](specs/rules/5h-error-prevention.md) | 🟢 No wrong outcome; 4 agree, 6 NEEDS REVIEW. Caveat: a form that is only a button is NEEDS REVIEW (guard CN) |
-| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.6.0](specs/rules/9a-bypass.md) | 🟢 10 of 10 agree (FAIL; round 2: 2 Does Not Apply where the key fails). Caveat: a page with more than 5,000 items is left for a person |
-| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.5.0](specs/rules/9b-consistent-navigation.md) | 🟢 9 of 10 agree; CILab NEEDS REVIEW (1.5.0; it was Does Not Apply where the key passes, as in round 2). Caveat: as 9.A |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.8.0](specs/rules/9c-consistent-identification.md) | ⚠️ 4 of 10 agree, no wrong PASS or FAIL (round 2: 2 FAILs the key passes); 6 NEEDS REVIEW: CILab (1.8.0; it was Does Not Apply where the key passes) and 5 the judge was unsure on. Caveat: as 9.A |
-| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.8.0](specs/rules/19a-multiple-ways.md) | ⚠️ 4 of 10 agree; 6 FAILs the key passes, all from a site search whose results page's scripts did not load in the test container: since 1.7.0 that is NEEDS REVIEW (checked on 14194). Caveat: a search page that cannot load its own scripts is left for a person |
+| 2.A | 1.4.2-audio-control | 1.4.2 | [1.1.0](specs/rules/2a-audio-control.md) | 🟢 R2 7/10 agree, 3 NR; no wrong outcome. Caveat: audio that does not play from the recording is left for a person |
+| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.3.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 R2 1/10 agree, 9 NR; no wrong outcome. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
+| 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 R2 0/10 agree, 10 NR; no wrong outcome. Caveat: moving content not settled in 6.5 s is left for a person |
+| 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 R2 0/10 agree, 10 NR; no wrong outcome. Caveat: as 2.C |
+| 3.A | 2.3.1-flashing | 2.3.1 | [1.2.1](specs/rules/3a-flashing.md) | 🟢 R2 3/10 agree, 6 NR, 1 Not Tested where the key says Does Not Apply; no wrong PASS. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.10.0](specs/rules/4a-keyboard-access.md) | ⚠️ R2 2/10 agree, 7 NR, 1 FAIL the key passes · R1 0/9 agree, 8 NR, 1 such FAIL (judge answers). Caveat: often undecided with embedded players and frames |
+| 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 R2 9/10 agree, 1 NR · R1 9/9 agree; no wrong outcome |
+| 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.0](specs/rules/4c-no-keyboard-trap.md) | 🟢 R2 2/10 agree, 8 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: menus or sections that open leave it for a person |
+| 4.D | 2.4.7-focus-visible | 2.4.7 | [1.8.0](specs/rules/4d-focus-visible.md) | ⚠️ R2 1/10 agree, 7 NR, 2 FAILs the key passes · R1 3/9 agree, 6 NR. Caveat: the judge is often unsure on small focus pictures |
+| 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 R2 2/10 agree, 8 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: menus or sections that open leave it for a person |
+| 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.8.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ R2 2/10 agree, 6 NR, 2 FAILs the key passes (judge answers) · R1 5/9 agree, 4 NR. Caveat: the judge is often unsure |
+| 5.A | 3.3.2-label-provided | 3.3.2 | [1.9.0](specs/rules/5a-label-provided.md) | 🟢 R2 3/10 agree, 7 NR · R1 9/9 agree; no wrong outcome. Caveat: fields inside frames are not checked yet |
+| 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.6.0](specs/rules/5b-label-descriptive.md) | ⚠️ R2 3/10 agree, 7 NR · R1 0/9 agree, 8 NR, 1 FAIL the key passes (judge answer). Caveat: the judge is often unsure |
+| 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.9.0](specs/rules/5c-programmatic-label.md) | ⚠️ R2 5/10 agree, 5 NR · R1 1/9 agree, 7 NR, 1 FAIL the key passes (a rule). Caveat: fields inside frames are not checked yet (3 of the key's FAILs are there) |
+| 5.D | 3.2.2-on-input | 3.2.2 | [1.6.0](specs/rules/5d-on-input.md) | ⚠️ R2 3/10 agree, 7 NR · R1 1/9 agree, 7 NR, 1 FAIL the key passes (judge answer). Caveat: menus or sections that open leave it for a person |
+| 5.F | 3.3.1-error-identification | 3.3.1 | [1.7.0](specs/rules/5f-error-identification.md) | 🟢 R2 3/10 agree, 7 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: fields inside frames are not checked yet |
+| 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.5.0](specs/rules/5g-error-suggestion.md) | 🟢 R2 3/10 agree, 7 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: as 5.F |
+| 5.H | 3.3.4-error-prevention | 3.3.4 | [1.5.0](specs/rules/5h-error-prevention.md) | 🟢 R2 4/10 agree, 6 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: a form that is only a button is NEEDS REVIEW (guard CN) |
+| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.6.0](specs/rules/9a-bypass.md) | 🟢 R2 10/10 agree · R1 8/9 agree, 1 NR; no wrong outcome. Caveat: a page with more than 5,000 items is left for a person |
+| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.5.0](specs/rules/9b-consistent-navigation.md) | 🟢 R2 9/10 agree, 1 NR · R1 9/9 agree; no wrong outcome. Caveat: as 9.A |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.8.0](specs/rules/9c-consistent-identification.md) | ⚠️ R2 7/10 agree, 3 NR · R1 1/9 agree, 8 FAILs the key passes (one cause: "Home" against "NASA — return to the homepage"). Caveat: as 9.A |
+| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.8.0](specs/rules/19a-multiple-ways.md) | ⚠️ R2 5/10 agree, 4 NR, 1 FAIL the key passes (CILab) · R1 1/9 agree, 8 NR. Caveat: a search page that cannot load its own scripts is left for a person |
 
 ## Known wrong outcomes
 
