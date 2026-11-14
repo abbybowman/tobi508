@@ -176,16 +176,27 @@ what is planned.
      pages share (9.A 1.6.0, 9.B 1.5.0, 9.C 1.8.0); with none of its
      own it stays DOES NOT APPLY.
 6d. **The walk was complete, checked in one place** (Abby,
-   2026-11-14). A walk that ends in a trap, a loop, a cap or out of
-   time has been handled test by test (5.D, 5.F; 4.D and 4.F by guard
-   CN), and the grid shows 4.E still passes after a trap. One shared
-   answer, "the walk reached every stop it could have, or here is what
-   it did not reach", read by every test that uses the walk (4.A-4.F,
-   5.A-5.H): PASS or DOES NOT APPLY on an incomplete walk becomes
-   NEEDS REVIEW with the sentence. It is the first conversion of step
-   14 (part C), pulled up; the coverage record for the other readers
-   stays there. It touches `walk.py` and the checks, not the readers
-   step 8 replaces.
+   2026-11-14). "Complete" is coverage, not how a pass ended: every
+   element a test checks was reached by some pass it may read (the
+   forward walk, the backward walk, or the walk after a click past a
+   trap). TT p. 21's note says to keep testing after a trap, and 4.C's
+   spec already walks backwards and clicks past one; a trap is 4.C's
+   finding, not a reason for other tests to stop. Two phases:
+   - **Phase 1:** one shared answer, "every element was reached, or
+     here is what was not", read by 4.A, 4.D, 4.E, 5.D and 5.F-5.H (the
+     5.x tests count fields). PASS or DOES NOT APPLY with an element
+     never reached becomes NEEDS REVIEW with the sentence. 4.B and 4.C
+     get no such check, 5.A-5.C do not read the walk, and 4.F keeps its
+     2026-11-13 rule. It is the first conversion of step 14 (part C),
+     pulled up.
+   - **Phase 2** (approved, Abby 2026-11-14; a proposal and its moved
+     cells shown first): 4.A, 4.B and 4.F read only the forward walk
+     and so give up at a forward trap; they read what the other passes
+     reached instead. 4.C's outcome is untouched, and 4.F does not PASS
+     on the backward walk alone where a forward trap whose only exit
+     is the opposite direction was logged for it.
+   It touches `walk.py` and the checks, not the readers step 8
+   replaces.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the

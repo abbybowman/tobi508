@@ -17,7 +17,7 @@ now; 9b after 8; 10 when the keys are in place.
 
 ## Starting a thread
 
-**Step 6d, Sonnet: the walk was complete, checked in one place** (now, beside step 8)
+**Step 6d, Sonnet: the walk was complete, checked in one place** (running; the roadmap's step 6d has the rule as decided on 2026-11-14, which replaces "a trap makes the walk incomplete" below)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow it. Your work is step 6d of `docs/ROADMAP.md` "Order of
