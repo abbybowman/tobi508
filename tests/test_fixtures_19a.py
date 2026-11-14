@@ -14,6 +14,17 @@ from .harness import run_tests
 # case -> (tested page, other pages, expected outcome, rows, answers)
 EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     "nav-and-site-map": ("t-benefits", ["home", "sitemap"], "PASS", ["W1", "G2"], {}),
+    # Part D (19.A 1.9.0; step 8, reader 2; review K-02): the site header,
+    # navigation and search box, built as a web component, is read like a
+    # plain one. Its twin with one way only still FAILs.
+    "wc-nav-and-site-map": (
+        "w-benefits",
+        ["w-home", "w-sitemap"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    "wc-one-way-nothing-else": ("w-t3-forms", ["w-home2"], "FAIL", ["W1", "G4"], {}),
     "nav-and-related-link": (
         "t-benefits",
         ["home", "related"],

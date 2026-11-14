@@ -80,6 +80,24 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.B": "FAIL", "9.C": "PASS"},
         {},
     ),
+    # Part D (step 8, reader 2; 9.A 1.7.0, 9.B 1.6.0, 9.C 1.9.0): the same
+    # pages with the site header built as a web component read like the
+    # plain ones; 9.C names components inside it from Chrome's accessibility
+    # tree. Each PASS has its twin that must still FAIL.
+    "wc-consistent-site": (
+        "j1-wc-home",
+        ["j2-wc-benefits"],
+        {"9.A": "PASS", "9.B": "PASS", "9.C": "PASS"},
+        {},
+    ),
+    "wc-nav-reordered": ("j1-wc-home", ["j3-wc-nav-reordered"], {"9.B": "FAIL"}, {}),
+    "wc-renamed": (
+        "j1-wc-home",
+        ["j5-wc-renamed"],
+        {"9.C": "FAIL"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
+    "wc-no-skip": ("j6-wc-home-no-skip", ["j2-wc-benefits"], {"9.A": "FAIL"}, {}),
     "renamed": (
         "a1-home",
         ["a5-renamed"],
