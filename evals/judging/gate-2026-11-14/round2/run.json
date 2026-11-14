@@ -1,0 +1,20 @@
+{
+ "date": "2026-11-14",
+ "round": 2,
+ "types": "2.A,2.B,2.C,2.D,3.A,4.A,4.B,4.D,4.E,4.F,5.A,5.B,5.C,5.D,5.F,5.G,5.H,9.A,9.B,9.C,19.A",
+ "repeat": 1,
+ "pages": [
+  "https://svs.gsfc.nasa.gov/",
+  "https://svs.gsfc.nasa.gov/help/",
+  "https://svs.gsfc.nasa.gov/search/",
+  "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+  "https://svs.gsfc.nasa.gov/cilab/",
+  "https://svs.gsfc.nasa.gov/14592/",
+  "https://svs.gsfc.nasa.gov/14194/",
+  "https://svs.gsfc.nasa.gov/5340/",
+  "https://svs.gsfc.nasa.gov/5144/",
+  "https://svs.gsfc.nasa.gov/4914/"
+ ],
+ "dry": true,
+ "started": "2026-11-14T15:55:05.741612+00:00"
+}
