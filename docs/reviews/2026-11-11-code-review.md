@@ -1908,6 +1908,7 @@ not checked.
   failed dialog read is taken as "none" (`observe.py:51-77`,
   `t4e.py:86-88`). An unreliable step with no signal found does not
   hold back a PASS; that follows the spec, and is a question for Abby.
+  - **F-08 fixed:** step 8 reader 5, specs 4.E 1.6.0, 5.D 1.8.0: dialogs are read in the page, its web components and its frames (`observe.open_dialogs`), and a failed read keeps the last state instead of making every dialog new. `4e/f13` (web component) and `f14` (frame) were PASS on `main` and now ask J1 (FAIL with changes_context).
 - **4.F gaps (F-13, F-14, F-16)** A backward pass that gets stuck is not
   "incomplete", so the backward order goes unchecked
   (`t4f.py:597-606`). In the dialog check, focus landing on the page

@@ -41,12 +41,12 @@ from tobi508.models import (
 )
 from tobi508.observe import (
     COVER_MOST,
-    DIALOGS_JS,
     OVERLAYS_JS,
     Effect,
     changed_share,
     cover,
     observe,
+    open_dialogs,
 )
 from tobi508.traverse import (
     RERUN_WINDOW_MS,
@@ -446,12 +446,12 @@ async def _attempt(
 async def _dialogs(s: Session) -> list[dict[str, Any]]:
     """Open dialogs and large positioned layers (their share of the window,
     modal or not), for J2's covering guard."""
-    out: list[dict[str, Any]] = []
-    for js in (DIALOGS_JS, OVERLAYS_JS):
-        try:
-            out += list(await s.page.evaluate(js))
-        except Exception:
-            pass
+    got = await open_dialogs(s.page)
+    out: list[dict[str, Any]] = list((got or {}).values())
+    try:
+        out += list(await s.page.evaluate(OVERLAYS_JS))
+    except Exception:
+        pass
     return out
 
 
