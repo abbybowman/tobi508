@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><title>Welcome</title></head>
+<body>
+<x-player></x-player>
+<main>
+<h1>Welcome</h1>
+<p>Static text.</p>
+</main>
+<script>
+// The audio and its button inside a web component (an open shadow root).
+customElements.define('x-player', class extends HTMLElement {
+  constructor() {
+    super();
+    const r = this.attachShadow({ mode: 'open' });
+    r.innerHTML = '<button id="stop">Stop sound</button><audio id="a" autoplay loop src="/tone20.wav"></audio>';
+    r.getElementById('stop').addEventListener('click', () => {});
+  }
+});
+</script>
+</body>
+</html>

@@ -166,17 +166,12 @@ EXPECTED: dict[str, dict[str, Cell]] = {
     # An open shadow root with a form, a navigation block, a mouse-only
     # control, a sentence about holding a key, audio and a video.
     "shadow": {
-        # N-01 (fixed for 2.A: guard CN, "2 sounds or videos played inside a
-        # web component, and were not checked").
-        "2.A": nr(),
-        "2.B": wrong(
-            Outcome.DNA,
-            "N-01",
-            "2.B's watcher reads media with the same document-only query as "
-            "2.A did (`M.media`), so the looping video inside the shadow "
-            'root is never seen: "Nothing on it moved". On the same page '
-            "outside the root, or in a frame, 2.B is NEEDS REVIEW.",
-        ),
+        # N-01 (part D, 2.A 1.2.0): pass T reads the audio inside the web
+        # component: it plays by itself with no control first, a real FAIL.
+        "2.A": fail(),
+        # N-01 (part D, 2.B 1.4.0): pass T reads media inside web
+        # components; the looping video moves, essential or not is a question.
+        "2.B": nr(),
         "2.C": dna(
             "no text, counter or feed on the page updates by itself; the "
             "looping video is 2.B's"

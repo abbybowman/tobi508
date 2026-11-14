@@ -22,6 +22,7 @@ from pydantic import BaseModel, Field
 from tobi508 import capture, flash, flashcap, motion
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row
+from tobi508.jslib import JSLIB
 from tobi508.models import DecidedBy, Finding, Instance, OpenQuestion, Outcome, TestId
 from tobi508.redact import safe_error
 from tobi508.walk import KeyboardWalk
@@ -505,7 +506,9 @@ async def _video(ctx, st: State3A, mp, page, har: Path, t: Trigger, tool) -> Non
     box = []
     try:
         got = await page.evaluate(
-            "(css) => { const e = document.querySelector(css); if (!e) return null; const r = e.getBoundingClientRect(); return [r.left + scrollX, r.top + scrollY, r.width, r.height]; }",
+            "(css) => {"
+            + JSLIB
+            + " const e = J.find(css); if (!e) return null; const r = e.getBoundingClientRect(); return [r.left + scrollX, r.top + scrollY, r.width, r.height]; }",
             t.css,
         )
         box = [round(v) for v in got] if got else []

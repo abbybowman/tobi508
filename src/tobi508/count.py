@@ -235,22 +235,28 @@ async def take(page: Page, where: str) -> Count:
     return count
 
 
-# What played on this load, in one frame; `listed`: those pass T's media read
-# (`motion.M.media`: the document's first 20 `video`/`audio`) also lists.
-# Speech and Web Audio sources count as played from a script.
-PLAYED_JS = """() => {
+# What played on this load, in one frame; `listed` and `listed_shadow`:
+# those pass T's media read (`motion.M.media`: the first 20 `video`/`audio`
+# of the document and its open shadow roots, `J.all`) also lists. Speech and
+# Web Audio sources count as played from a script.
+PLAYED_JS = (
+    "() => {"
+    + JSLIB
+    + """
   const hook = window.__tobiPlayed;
   if (!hook) return null;
-  const out = { light: 0, shadow: 0, detached: 0, listed: 0 };
-  const listed = new Set(Array.from(document.querySelectorAll('video, audio')).slice(0, 20));
+  const out = { light: 0, shadow: 0, detached: 0, listed: 0, listed_shadow: 0 };
+  const listed = new Set(J.all('video, audio').slice(0, 20));
   for (const el of hook.list()) {
     const root = el.isConnected ? el.getRootNode() : null;
-    out[root === document ? 'light' : root ? 'shadow' : 'detached'] += 1;
-    if (listed.has(el)) out.listed += 1;
+    const where = root === document ? 'light' : root ? 'shadow' : 'detached';
+    out[where] += 1;
+    if (listed.has(el)) out[where === 'shadow' ? 'listed_shadow' : 'listed'] += 1;
   }
   out.detached += hook.audio() + hook.speech();
   return out;
 }"""
+)
 
 
 async def played(page: Page) -> tuple[Part, Part] | None:
@@ -273,9 +279,10 @@ async def played(page: Page) -> tuple[Part, Part] | None:
             part.shadow += got["shadow"]
             part.detached += got["detached"]
             listed.light += got["listed"]
+            listed.shadow += got.get("listed_shadow", 0)
         else:
             part.frames += got["light"] + got["shadow"] + got["detached"]
-            listed.frames += got["listed"]
+            listed.frames += got["listed"] + got.get("listed_shadow", 0)
     return part, listed
 
 
