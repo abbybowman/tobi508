@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><title>Search</title></head><body>
+<h1>Search the library</h1>
+<span id="lbl">Search terms</span>
+<x-field></x-field>
+<script>
+customElements.define('x-field', class extends HTMLElement {
+  constructor() {
+    super();
+    // aria-labelledby cannot name an element outside the shadow root: the
+    // field has no name for assistive technology.
+    this.attachShadow({ mode: 'open' }).innerHTML = '<input id="q" name="q" aria-labelledby="lbl">';
+  }
+});
+</script>
+</body></html>

@@ -4,7 +4,9 @@ One table: page by TT test. Every page of `tests/fixtures/grid/` is run
 against all 22 checks in one call, with no answers to open questions, and
 each cell says what the run gives today. The rule the table obeys:
 
-* never PASS, and
+* PASS only where the test really read the content (roadmap step 8:
+  inside a web component or a frame too; guard CN is quiet there) and a
+  fixture page, the same with one defect, must still FAIL (`fails_on`), and
 * DOES NOT APPLY only with a written reason.
 
 A cell that breaks the rule today is not hidden and not fixed here: it is
@@ -16,7 +18,7 @@ found that the review has no item for is `NEW-n`, described in `UNFILED`.
 
 Expected outcomes live here, never in a page (CLAUDE.md, "Fixtures"). Pages
 are served from `tests/fixtures/` by the shared fixture server (conftest).
-This file adds tests only: no spec and no outcome changed.
+Step 8 (part D) moves a cell from NEEDS REVIEW to PASS only with its twin.
 """
 
 from __future__ import annotations
@@ -49,10 +51,17 @@ class Cell:
     nothing_for_it: str | None = None
     # A cell that breaks the rule today: (review item, what is wrong).
     known_wrong: tuple[str, str] | None = None
+    # PASS only: the nearest fixture page (under tests/fixtures/) that must
+    # still FAIL, read the same way; its own test file asserts the FAIL.
+    fails_on: str | None = None
 
 
 def nr() -> Cell:
     return Cell(Outcome.NEEDS_REVIEW)
+
+
+def passes(fails_on: str) -> Cell:
+    return Cell(Outcome.PASS, fails_on=fails_on)
 
 
 def fail() -> Cell:
@@ -186,10 +195,12 @@ EXPECTED: dict[str, dict[str, Cell]] = {
         "4.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.E": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.F": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        # D-01: no longer "no form fields"; guard CN holds them.
-        "5.A": nr(),
+        # D-01: pass L reads the web component (5.A, 5.C 1.10.0; part D):
+        # both fields are labelled, so 5.A and 5.C PASS on their rows; 5.B
+        # asks whether the labels describe the fields.
+        "5.A": passes("5a/f46-shadow-placeholder-only.html"),
         "5.B": nr(),
-        "5.C": nr(),
+        "5.C": passes("5a/f48-shadow-labelledby-outside.html"),
         "5.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "5.F": nr(),
         "5.G": nr(),
@@ -352,13 +363,9 @@ EXPECTED.update(
         "hidden-text": {
             **NO_MEDIA,
             **_plain("no mouse-only control, trap, menu or timing text", WALK),
-            "5.A": wrong(
-                Outcome.PASS,
-                "H-01",
-                "both labels' words are hidden from people (a clipped span, "
-                "text-indent: -9999px) and still count as a visible label "
-                "(rows c1, c2 on M2).",
-            ),
+            # H-01 (5.A 1.10.0): a label's text is what people see, so
+            # neither label counts and J1 asks.
+            "5.A": nr(),
             "5.B": nr(),
             "5.C": nr(),
             "5.D": na("two plain text fields; nothing on the page changes on input"),
@@ -414,7 +421,7 @@ def test_every_grid_page_has_a_row_and_every_row_a_cell_for_every_test():
         assert set(cells) == tests, (page, tests ^ set(cells))
 
 
-def test_the_table_never_passes_and_does_not_apply_only_with_a_reason():
+def test_the_table_passes_only_with_a_twin_and_does_not_apply_only_with_a_reason():
     for page, cells in EXPECTED.items():
         for test, c in cells.items():
             where = (page, test)
@@ -428,7 +435,11 @@ def test_the_table_never_passes_and_does_not_apply_only_with_a_reason():
                 assert c.nothing_for_it is None, where
                 assert len(c.known_wrong[1]) > 20, where
                 continue
-            assert c.outcome is not Outcome.PASS, ("PASS is not a cell", where)
+            if c.outcome is Outcome.PASS:
+                assert c.fails_on, ("PASS needs a page that must FAIL", where)
+                assert (GRID.parent / c.fails_on).is_file(), where
+                continue
+            assert c.fails_on is None, where
             if c.outcome is Outcome.DNA:
                 assert c.nothing_for_it and len(c.nothing_for_it) > 20, where
             else:
@@ -476,7 +487,12 @@ async def test_each_page_gives_each_cell_its_outcome(page, settings, server):
         # The only outcomes that need no reason; never PASS on this page unless
         # the table says it is a known wrong outcome.
         if f.outcome is Outcome.PASS:
-            assert c.known_wrong, (test, "a PASS the table does not own up to")
+            assert c.known_wrong or c.fails_on, (
+                test,
+                "a PASS the table does not own up to",
+            )
+            if c.fails_on:
+                assert "CN" not in f.rows, (test, "a PASS on content not read")
         if f.outcome is Outcome.DNA:
             assert c.nothing_for_it or c.known_wrong, (test, f.summary)
     assert not off, off

@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><title>Search</title></head><body>
+<h1>Search the library</h1>
+<x-field><span slot="label">Search terms</span></x-field>
+<script>
+customElements.define('x-field', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML =
+      '<label for="q"><slot name="label"></slot></label> <input id="q" name="q">';
+  }
+});
+</script>
+</body></html>

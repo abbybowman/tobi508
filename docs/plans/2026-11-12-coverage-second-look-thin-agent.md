@@ -446,6 +446,264 @@ this part are marked fixed.
   and same-origin frame content for the grid's pages, and the guard no
   longer fires on them.
 
+### Design note (step 8, 2026-11-14; for Abby before code)
+
+**Checked first** (a throwaway test against the fixture server, full
+Chromium replay; verified, run):
+
+1. ANDI 29.2.2 does not analyse a field inside an open shadow root. A
+   page with one labelled field outside and one inside a web component
+   gave ANDI output for the outside one only; `andi.js` has no
+   `shadowRoot` code.
+2. ANDI runs in place inside a frame from another site: injected into
+   the frame's own document (`frame.add_script_tag`) on the replay, it
+   reported the frame's button ("Inner"), version 29.2.2, nothing
+   aborted. This is TT Appendix D's workaround, done by the tool.
+3. A frame's page loaded as its own top-level page on the replay is
+   refused by the navigation allowlist (`NavigationGuard`: "host
+   'localhost' is not in the allowlist"). Opening it would need a new
+   exception to principle 5: page content (the frame's `src`) choosing
+   a top-level address.
+4. Frames from another site are already in the tested page's recording:
+   the HAR is recorded for the whole browser context, frames included
+   (`Capture.cross_site_frames`, `tests/test_full_chromium.py`), and
+   such pages replay in full Chromium, where the frame runs out of
+   process. Playwright and CDP reach it there (the walk already follows
+   focus into it; `count.take` already counts inside it).
+
+**What `jslib` exports.** `src/tobi508/jslib.py`, one string `JSLIB` of
+`const` declarations put at the start of every reader's script, as
+`PATH_JS` is today (`PATH_JS` moves into it; `traverse` re-exports the
+name). One definition of each rule, taken from the copy the count uses
+(`count.COUNT_JS`), so the count and the readers cannot disagree:
+
+| Name | What it is | Replaces |
+| --- | --- | --- |
+| `kids(n)` | the children as rendered (composed tree): a host's shadow root's children; a `slot`'s assigned nodes; else the element's children. Light children a slot does not show are left out | `el.children` walks (`site.py`), `[...shadowRoot.children, ...children]` (`motion.py`) |
+| `all(sel, root?)` | every element matching `sel` in a document and its open shadow roots, at any depth, in document order | `document.querySelectorAll` in the readers |
+| `rendered(el)` | `checkVisibility({visibilityProperty: true})` | five copies (D-19) |
+| `seen(el)` | `rendered`, at least 4 by 4 px, opacity 0.1 or more, not clipped away: what a sighted person can see | `labels.shown`, `site.shown` |
+| `text(el)` | visible text: the text nodes under `el` (composed tree) whose parent is `seen`, `alt` of shown images, not `select`/`option` (H-01) | `innerText` reads (`labels.txt`, 5.F, 4.B) |
+| `FIELD`, `isField(el)` | the 5.D field selector (with `searchbox`, `slider`, `spinbutton`) | `labels.SEL`, `reveal.FIELD`, `traverse`'s copy |
+| `tabbable(el)`, `inert(el)` | the count's `focusable` rule | `_INVENTORY_JS`, `site.tabbable`, `_FOCUS_NEXT_JS` |
+| `byId(el, id)` | `el.getRootNode().getElementById(id)`: an `aria-labelledby` or `headers` id is looked up in the field's own tree (D-21) | `document.getElementById` |
+| `path(el)`, `find(path)` | below | `PATH_JS`, `reveal.find`, `t4a`'s copy |
+| `hostOf(el)` | the nearest web component host's tag (`x-form`), or `''` | new: for the location sentence |
+
+Readers keep their own rules (what a label is, what an error is); only
+these shared tests move. A reader that cannot use a rule unchanged
+says so in its commit.
+
+**Frames are read by Python, one document at a time.** No script reaches
+into `frame.contentDocument`. A reader asks `jslib.documents(session)`
+for every frame CDP reaches (`FocusReader.frames()`: frame id, session,
+isolated world), each with its chain, its address, its title and
+whether it is on another host, and runs its script in each one's
+isolated world (the page's own scripts cannot change what it sees). The
+same code then reads a same-site frame and a frame from another site;
+the count does the same (`count.take`). A frame no script could run in
+is `frames_unread`, as today.
+
+**How a reader names an element.** As the walk names its stops, so a
+reader's element and a walk stop still match by name:
+
+- In one document, `path(el)`: CSS segments joined by ` > `; at a
+  shadow boundary, the host's path, one space, then the path inside
+  the root (`x-form #email`). `find(path)` reads it back, one shadow
+  root at a time (reveal's `find`, with an escaped space in an id no
+  longer taken for a boundary).
+- Across frames, the chain: the CSS paths of the `iframe` elements, top
+  first (`Stop.frame_chain`), computed in Python from each frame's
+  element (as `traverse`'s inventory does). The whole name is
+  `path_key`: chain and path joined by ` >> `.
+- Every reader's item carries `frame_chain` and `css`; in the report a
+  person reads "inside the web component `<x-form>`" and "in the frame
+  'Contact form' (forms.example.com)" (fix 7: the frame's title, else
+  its address), with the chain and path in the evidence.
+
+**A frame from another site: recorded, loaded, located.**
+
+- *Recorded:* in the tested page's own recording, as today (point 4).
+  Nothing new is fetched and no second recording is made.
+- *Loaded:* in place, on the tested page's replay, in full Chromium.
+  Each reader reads it as one more document (above), and pass L injects
+  ANDI into the frame's own document and reads its output there (point
+  2; TT Appendix D). **This changes the roadmap's wording** ("loaded as
+  its own page from its own recording"). Reasons: it needs no exception
+  to principle 5 or the allowlist (point 3); the frame keeps the size
+  and place it has on the page, so 5.A's picture of a field and its
+  nearby text are what a person sees there; the walk's stops in the
+  frame and the readers' items match by `path_key`. TT allows both: 12.D
+  says "test in new tab", Appendix D says run ANDI in the frame's
+  context. If you prefer the new tab, the change is one rule: a replay
+  (never live) may open, as a top-level page, an address the tested
+  page's recording holds as one of its frames' documents; the readers
+  stay the same.
+- *Located:* by its chain and its title or address, as above.
+- *Not in the recording:* a shown frame whose document did not load from
+  the recording (its request failed while recording, or was never made,
+  such as a frame a click adds) becomes Chrome's error page or stays
+  blank on the replay. The count records it as `frames_missing`
+  (decision 3 below).
+
+**The readers, in the plan's order** (8a, one pull request each, with
+its fixtures, the grid rerun and a page that must still FAIL beside
+every cell that becomes PASS):
+
+| # | Reader | Tests whose `read` it fills | Review items |
+| --- | --- | --- | --- |
+| 1 | `jslib` itself; `labels.py` `comps()`, `FOCUS_JS`, ANDI per frame | 5.A, 5.B, 5.C (`fields.shadow`, `fields.frames`) | D-01 (read), H-01 |
+| 2 | `site.py` `walk` (composed tree) | 9.A, 9.B, 9.C, 19.A (`landmarks.shadow`, `links.shadow`) | K-02, M-12 |
+| 3 | `motion.py` `M.media` and element reads | 2.A (`media.shadow`, `media.frames`), 2.B | N-01 (2.B's wrong DNA) |
+| 4 | `checks/t5f.py` text walker and form read | 5.F, 5.G, 5.H (`fields.shadow`, `fields.frames`) | M-06 |
+| 5 | `observe.py` dialogs and overlays | 4.E, 5.D | F-08 |
+| 6 | `forms.py` id lookups and `SIG_FN` | 5.D | D-21 |
+| 7 | `reveal.py` field list | the reveal guards | D-19 |
+| 8 | 4.A's listeners in shadow roots (`traverse`, CDP `pierce`) and changes in server-rendered shadow roots (`INIT_JS`) | 4.A, 4.B (NEW-1) | D-03, D-04 |
+
+Reader 8 touches `traverse.py`, beside step 6d's `walk.py`: it goes
+last, after merging `main`. 8b is then small, because the readers
+already read frames from another site: ANDI's per-frame run checked
+there, `frames_missing`, the location sentence, and fixtures (the ACT
+and Baseline frame cases, 5340's shape: a form in a frame from another
+site), all in full Chromium.
+
+**The grid.** Its rule today is "never PASS". After step 8 a cell on
+`shadow`, `frame-same` or `frame-other` may PASS only where the reader
+read the content (the test's `read` matches the count, so guard CN is
+quiet) and the grid has a twin page, the same with one defect, where
+that test FAILs. The rule in its docstring changes to say so, in
+reader 1's pull request.
+
+**Not in step 8:** closed shadow roots (nothing can enter one; still
+`closed_hosts`), a frame inside a web component inside a frame (read,
+but not given its own fixture), and 4.x's use of the walk (step 6d).
+
+### Decided (Abby, 2026-11-14)
+
+1. **Frames are tested as their own pages for ANDI,** not in place:
+   ANDI run inside an embedded frame is not accurate and does not find
+   everything (Abby's experience; TT 12.D's "test in new tab"). Pass L
+   (5.A-5.C) reads every frame with a document of its own (same site or
+   another) on a page of its own, opened in the same replay context,
+   in the configured window: the inventory, the visible labels, the
+   pictures and ANDI. Its components keep the frame's chain, so they
+   still match the walk's stops by `path_key`. The readers that use no
+   ANDI (5.D-5.H, 2.A, 4.E) read frames in place, where the page's own
+   behaviour (submitting, errors, playing) is what people get. The rule
+   this needs, a new principle 5 exception: *on a replay, never live, a
+   page of its own may be opened at the address of a frame the tested
+   page's replay showed and its recording holds; at most 10 frames a
+   run; no other address*. The navigation guard checks the address
+   against that list instead of the allowlist.
+2. **Not a decision:** a TT test's PASS or FAIL is valid in the page's
+   own document, a web component or a frame alike. The template
+   paragraph stays as a statement of how the tool reads, not a choice.
+   A FAIL with several instances is already a parent row and one child
+   row per instance in the pre-SCRT file (`scrt.from_report`); each
+   instance's location says the web component or frame, so failures
+   inside a frame show as their own child rows. PASS and DOES NOT APPLY
+   stay one row.
+3. **(1a) Chrome's accessibility tree** gives the name and description
+   of a component inside a web component, for 5.B and 5.C, recorded as
+   that source. Making the vendored ANDI read shadow roots would mean
+   changing it (its hashes are pinned) or copying the web component's
+   content into the page, which changes what the names resolve to
+   (ids inside a shadow root do not reach out of it): a false PASS risk.
+4. **The spec changes are approved,** one MINOR version per spec, in the
+   pull request of the reader that makes each true.
+5. **`frames_missing` holds PASS and DOES NOT APPLY** as proposed.
+   Government sites carry no advertising frames, so no size floor
+   beyond "shown". **Later (not step 8, not part F):** at recording
+   time, one more live try of a frame whose document failed, under the
+   allowlist and the egress rules, as the fuller freeze does for media;
+   it is a request page content chooses, so it needs its own principle
+   5 exception. The second look (part F) asks a model to reread
+   confident outcomes and fetches nothing.
+
+### Spec wording for step 8's three decisions (draft, for Abby)
+
+**Decision 1: a result read inside a web component or a frame may PASS
+on the same rows.** In `specs/rules/_template.md`, a new paragraph
+after "Guards":
+
+> **Inside web components and frames** (Abby, 2026-11-xx; plan
+> 2026-11-12 part D). Content inside an open shadow root (a web
+> component), at any depth, and content inside a frame, from the same
+> site or another, is part of the page. A test reads it with the same
+> reader as the rest of the page and decides it on the same rows: it
+> may PASS, FAIL or DOES NOT APPLY there exactly as outside. It counts
+> as read only when the reader really read it: the test's `read`
+> includes it, so guard CN compares it with the inventory. What no
+> reader can enter (a closed shadow root; a frame no script runs in) is
+> never read and never counted as read. A frame is read in its own
+> document, in place on the tested page's replay; ANDI, where a test
+> uses it, is run in the frame's own document (TT Appendix D). A finding
+> inside one says where: "inside the web component `<x-form>`", "in
+> the frame 'Contact form' (forms.example.com)".
+
+**Decision 1a, for 5.B and 5.C only (yours; not in the roadmap):**
+ANDI cannot read inside a web component (point 1). Proposed: for a
+component inside an open shadow root, the "ANDI output" in the Terms is
+replaced by Chrome's own accessible name and description for it (the
+accessibility tree, the same tree a screen reader reads; CDP
+`Accessibility.getPartialAXTree`, which the walk already uses), named as
+that source in the finding and the question's input, and decided on the
+same rows. Spec wording, 5.C Terms, *ANDI output*:
+
+> ... For a component inside a web component, which ANDI 29.2.2 does
+> not analyse (checked 2026-11-14), Chrome's accessible name and
+> description from its accessibility tree, recorded as that source
+> (Abby, 2026-11-xx).
+
+The alternative keeps ANDI as the only source: such a component stays
+row M2, NEEDS REVIEW ("ANDI did not analyse the component"), so 5.C
+cannot PASS on a page whose fields are in web components. 5.A (visible
+label) reads no ANDI output and is not affected.
+
+**Decision 2: the spec changes that say so,** one MINOR version per
+spec, each in the pull request of the reader that makes it true:
+
+- *Terms.* Each test's thing is defined wherever it is. 5.A, 5.B, 5.C,
+  5.F, 5.G, 5.H, *form component* / *field*: "... in the page's own
+  document, inside an open shadow root at any depth, or inside a frame
+  (from the same site or another)". 2.A, *media element*: the same.
+  9.A-9.C and 19.A, the units of the site read: "... inside open shadow
+  roots too; a frame is one unit, as before (a player's own links are
+  not the site's navigation)". New Term in each spec that reads frames,
+  *frame*: "an `iframe` or `frame` element whose document is read in
+  place, as part of the page; its findings name the frame by title or
+  address".
+- *Section 2 sentences that become untrue.* For example 5.C step 1
+  ("in the top document ... Components inside frames are not read yet")
+  becomes "in the page's document, its open shadow roots and its
+  frames"; 5.F "Run limits" loses "Fields inside frames are not checked
+  yet"; each guard CN paragraph's "Pass L reads the page's own document
+  only: nothing inside web components or frames" becomes what the
+  reader now reads.
+- *`count:` keys.* Unchanged lists: `fields.shadow` and `fields.frames`
+  stay and the guard goes quiet because `read` now reports them.
+  Added: `frames_missing` (decision 3) to every spec whose list has a
+  `.frames` key or the whole `fields` (5.A, 5.B, 5.C, 5.D, 5.F, 5.G,
+  5.H, 2.A). 9.A-9.C and 19.A gain no `.frames` key.
+- *`_template.md`*: the paragraph above, and guard CN's list of keys
+  gains `frames_missing`.
+
+**Decision 3: a recording that lacks a frame's page holds the test at
+NEEDS REVIEW (proposed: yes).** A new inventory key in guard CN, with
+no reader ever reading it (so it always holds):
+
+> *`frames_missing`*: a frame shown on the page (rendered, at least 20
+> by 20 pixels) whose document did not load from the recording: its
+> request failed while recording, or was never made (a frame added by
+> a click). What is inside it was never seen. Sentence: "1 frame on
+> this page was not recorded, so what is inside it was not checked."
+
+It holds PASS and DOES NOT APPLY only, never FAIL, like every guard.
+Its cost is measured in step 9b (round 2's frozen pages): a page with
+an advertising or tracking frame that failed to record would be held
+too; if that is common, the size floor rises before the key is listed.
+
 ## Part E: meaning goes to the judge
 
 A word list decides an outcome in these places. Each is English only,

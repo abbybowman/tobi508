@@ -19,8 +19,8 @@ from typing import Any
 
 from playwright.async_api import Page
 
+from tobi508.jslib import JSLIB, PATH_JS
 from tobi508.models import Count, Part
-from tobi508.traverse import PATH_JS
 
 PATHS_MAX = 200
 
@@ -73,13 +73,10 @@ PLAY_HOOK_JS = """(() => {
 # itself, `shadow` everything inside a shadow root at any depth.
 COUNT_JS = (
     "(pathsMax) => {"
+    + JSLIB
     + PATH_JS
     + """
-  const FIELD = 'input:not([type=hidden]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image])' +
-    ':not([type=color]):not([type=file]), select, textarea, [role=textbox], [role=searchbox], [role=combobox], ' +
-    '[role=checkbox], [role=switch], [role=radio], [role=slider], [role=spinbutton]';
-  const NATIVE = 'a[href], area[href], button, input:not([type="hidden"]), select, textarea, ' +
-    'iframe, frame, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"])';
+  const { FIELD, inert, rendered, focusable, off } = J;
   const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
     '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
   // What could show hidden content: a button, a disclosure, a same-page or
@@ -88,26 +85,6 @@ COUNT_JS = (
   const OPENER = 'button, [role=button], input[type=button], summary, a[href^="#"], ' +
     'a[href^="javascript:" i], [onclick], [aria-expanded], [aria-controls]';
   const BUTTON = 'button, input[type=submit], input[type=button], input[type=image], [role=button]';
-  const inert = (el) => {
-    for (let n = el; n; n = n.parentNode || n.host || null) if (n.nodeType === 1 && n.hasAttribute('inert')) return true;
-    return false;
-  };
-  const rendered = (el) => el.checkVisibility
-    ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0;
-  const tabindex = (el) => {
-    const v = el.getAttribute('tabindex');
-    return v !== null && v.trim() !== '' && !isNaN(v) ? parseInt(v, 10) : null;
-  };
-  const focusable = (el) => {
-    const ti = tabindex(el);
-    if (ti !== null && ti < 0) return false;
-    if (!(el.matches(NATIVE) || ti !== null)) return false;
-    if (el.tagName === 'SUMMARY' && !(el.parentElement && el.parentElement.tagName === 'DETAILS' &&
-        el.parentElement.querySelector(':scope > summary') === el)) return false;
-    return !el.matches(':disabled') && !inert(el) && rendered(el);
-  };
-  const off = (el) => el.matches(':disabled') || el.readOnly === true || el.getAttribute('aria-disabled') === 'true'
-    || el.getAttribute('aria-readonly') === 'true' || inert(el);
   const part = () => ({ light: 0, shadow: 0 });
   const out = { fields: part(), fields_hidden: part(), contenteditable: part(), forms_with_button: part(),
     media: part(), canvases: part(), draggable: part(), images: part(), focusable: part(),

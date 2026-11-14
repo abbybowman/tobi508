@@ -27,6 +27,7 @@ from typing import Any, Protocol
 
 from playwright.async_api import BrowserContext, CDPSession, Page
 
+from tobi508.jslib import PATH_JS  # the walk's CSS path, every reader's (jslib.py)
 from tobi508.models import BoundingBox, PassResult, Step, Stop
 
 # Tab press cap per pass (4.C spec section 2, P1): 3 x inventory + 50, max 3,000.
@@ -206,28 +207,6 @@ DEST_JS = """
       }
     }
     return h;
-  };
-"""
-
-PATH_JS = """
-  const seg = (n) => {
-    const root = n.getRootNode();
-    if (n.id && root.querySelectorAll('#' + CSS.escape(n.id)).length === 1) return { s: '#' + CSS.escape(n.id), unique: true };
-    const tag = n.tagName.toLowerCase();
-    const p = n.parentElement;
-    if (!p) return { s: tag, unique: false };
-    const same = Array.from(p.children).filter((c) => c.tagName === n.tagName);
-    return { s: same.length > 1 ? `${tag}:nth-of-type(${same.indexOf(n) + 1})` : tag, unique: false };
-  };
-  const path = (n) => {
-    const parts = [];
-    for (let cur = n; cur && cur.nodeType === 1; cur = cur.parentElement) {
-      const { s, unique } = seg(cur);
-      parts.unshift(s);
-      if (unique || !cur.parentElement) break;
-    }
-    const root = n.getRootNode();
-    return (root.host ? path(root.host) + ' ' : '') + parts.join(' > ');
   };
 """
 
@@ -571,6 +550,33 @@ class FocusReader:
             {"expression": expression, "contextId": ctx, "returnByValue": True},
         )
         return res["result"].get("value")
+
+    async def ax_top(self, expression: str) -> dict[str, str] | None:
+        """Chrome's accessible name and description (its accessibility tree,
+        what a screen reader reads) of the element an expression gives in the
+        top frame's isolated world. None when there is no such element or
+        the tree has no node for it."""
+        session, ctx = await self._session_for(await self._top_frame_id())
+        res = await session.send(
+            "Runtime.evaluate", {"expression": expression, "contextId": ctx}
+        )
+        oid = res["result"].get("objectId")
+        if not oid:
+            return None
+        try:
+            ax = await session.send(
+                "Accessibility.getPartialAXTree",
+                {"objectId": oid, "fetchRelatives": False},
+            )
+        finally:
+            await session.send("Runtime.releaseObject", {"objectId": oid})
+        if not ax.get("nodes"):
+            return None
+        node = ax["nodes"][0]
+        return {
+            "name": (node.get("name") or {}).get("value") or "",
+            "desc": (node.get("description") or {}).get("value") or "",
+        }
 
     async def _top_frame_id(self) -> str:
         if self._top is None:

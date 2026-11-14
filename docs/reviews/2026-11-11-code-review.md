@@ -101,12 +101,12 @@ below; "run" means I ran a page and got the outcome shown.
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run · fixed (part B) |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run · fixed (part B) |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run · fixed (step 6b) |
-| H-01 | 5.A | PASS | a label whose words are hidden | run |
+| H-01 | 5.A | PASS | a label whose words are hidden | run · fixed (step 8) |
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
-| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B) |
+| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
 | K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · 9.x fixed; 19.A open |
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
@@ -292,6 +292,7 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). Three fields: a label of a hidden span
   plus "*", an empty label wrapping a select, a label with
   `text-indent: -9999px`. 5.A PASS, all three on row M2.
+- **Fixed:** 607db8b (step 8, reader 1), spec 5.A 1.10.0: a label's text is the words a person can see (`jslib` `J.text`), and M2 needs a word; all three fields now go to J1 (`tests/fixtures/5a/f44-label-words-hidden.html`, the grid's `hidden-text`).
 
 #### C-03 A menu opened by `<a href="#">` is dropped unread, and the page still passes
 
@@ -434,6 +435,7 @@ them.
   fields, and 5.F, 5.G and 5.H are NEEDS REVIEW ("2 form field(s) could
   not be read"), which is the safe answer.
 - **Fixed:** 76b8f24 and 6c16bec (guard CN, part B), specs 5.A 1.4.0, 5.B 1.4.0, 5.C 1.6.0: NEEDS REVIEW, "2 form fields inside web components were not checked". Reading them is part D.
+- **Fixed (read):** 607db8b (step 8, reader 1), specs 5.A 1.10.0, 5.B 1.7.0, 5.C 1.10.0: pass L reads fields inside web components; 5.C names them from Chrome's accessibility tree. The review's page: 5.A FAIL (placeholder only), 5.C FAIL (unnamed field), 5.B asks.
 
 #### K-02 Navigation inside a shadow root or a frame is invisible to 9.B, 9.C and 19.A
 

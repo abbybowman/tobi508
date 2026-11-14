@@ -61,6 +61,7 @@ addopts = "-m 'not slow' -n auto"
 # Embedded JavaScript strings are kept readable rather than wrapped.
 "src/tobi508/traverse.py" = ["E501"]
 "src/tobi508/count.py" = ["E501"]
+"src/tobi508/jslib.py" = ["E501"]
 # Spec row tables and question wording stay on one line each.
 "src/tobi508/checks/t4c.py" = ["E501"]
 "src/tobi508/checks/t5d.py" = ["E501"]

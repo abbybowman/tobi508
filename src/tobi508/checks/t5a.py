@@ -8,6 +8,8 @@ tables decide outcomes.
 
 from __future__ import annotations
 
+import re
+
 from pydantic import BaseModel, Field
 
 from tobi508.checks.base import RunContext
@@ -45,7 +47,9 @@ def in_set(c: Comp) -> bool:
 def _shown_label(c: Comp) -> bool:
     return any(
         x.get("shown")
-        and (x.get("text") or "").strip()
+        # A word, not only a symbol: a label that shows "*" while its words
+        # are hidden is no visible label (5.A 1.10.0, review H-01).
+        and re.search(r"[^\W_]", x.get("text") or "")
         and not (x.get("group") and in_set(c))
         for x in c.label_shown
     )

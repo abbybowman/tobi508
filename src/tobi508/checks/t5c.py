@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
-from tobi508.labels import Comp, LabelsPass, labels_pass
+from tobi508.labels import AX_SOURCE, Comp, LabelsPass, labels_pass
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -113,9 +113,12 @@ def groups(lp: LabelsPass) -> dict[str, int]:
 def announced(c: Comp) -> dict[str, Any]:
     """The programmatic text, by source (spec Terms)."""
     a = c.andi or {}
+    # Inside a web component the name and description are Chrome's
+    # accessibility tree's, named as that source (spec Terms, ANDI output).
+    src = "Chrome's accessibility tree" if a.get("source") == AX_SOURCE else "ANDI"
     out = {
-        "name (ANDI)": a.get("name") or "",
-        "description (ANDI)": a.get("desc") or "",
+        f"name ({src})": a.get("name") or "",
+        f"description ({src})": a.get("desc") or "",
         "group label (ANDI)": a.get("group") or "",
         "table headers": "; ".join(c.table_headers),
         "list context": "; ".join(c.list_text),
