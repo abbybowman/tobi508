@@ -554,9 +554,22 @@ async def test_f34_600_links(open_fixture):
 
 async def test_f29_feed_grows_live_and_footer_is_reachable_backward(open_fixture):
     page = await open_fixture("f29-infinite-feed")
+    # Each next page arrives by fetch. Before each Tab, wait until focus is
+    # not on one of the feed's last two links (so its first page is in, and
+    # more are, or loading failed): a fixed 20 ms let a busy CI runner Tab
+    # into the footer before the feed loaded (CI run 167).
+    ready = """() => {
+      const feed = document.getElementById('feed');
+      const links = [...feed.querySelectorAll('a')];
+      return !!feed.dataset.error ||
+        links.indexOf(document.activeElement) < links.length - 2;
+    }"""
+    await page.wait_for_function(ready, timeout=10_000)
     start = (await dom_inventory(page)).candidates
-    seq = await keys(page, "Tab", start + 10, wait_ms=20)
-    await page.wait_for_timeout(300)
+    seq = []
+    for _ in range(start + 10):
+        await page.wait_for_function(ready, timeout=10_000)
+        seq += await keys(page, "Tab", 1)
     grown = (await dom_inventory(page)).candidates
     assert grown > start  # live, Tab keeps loading more stories
     assert "f1" not in seq
