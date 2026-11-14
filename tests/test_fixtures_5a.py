@@ -543,7 +543,7 @@ async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, dr
 
 
 async def test_a_star_quoted_as_the_label_is_no_label(settings, server, drafts):  # noqa: F811
-    """5.A 1.11.0 (H-01): the judge eval of 2026-11-14 answered "labeled"
+    """5.A 1.12.0 (H-01): the judge eval of 2026-11-14 answered "labeled"
     quoting the "*" a field shows while its words are hidden. A quote with no
     word is no label: never PASS on it."""
     got = await run_both(

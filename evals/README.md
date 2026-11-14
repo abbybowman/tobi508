@@ -259,10 +259,10 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
-## Run 35, 2026-11-14: 5.A 1.11.0 and 5.C 1.11.0 (step 8: web components, frames, hidden label words), the new pages' packets
+## Run 35, 2026-11-14: 5.A 1.11.0 and 5.C 1.11.0 (and 5.A 1.12.0's M4) (step 8: web components, frames, hidden label words), the new pages' packets
 
 Step 8 changed 5.A's and 5.C's inputs for fields inside web components and frames (the location names the frame; inside a web component the name comes from Chrome's accessibility tree) and what a visible label is (H-01). `prepare` ran every 5.A and 5.C case (31 ask questions); one fresh agent (general-purpose, told to open nothing outside its packets; it listed only packet files) answered the 4 packets of the new pages: f44 (hidden label words, 5.A and 5.C), f48 (`aria-labelledby` out of a web component, 5.A) and f53 (a field in a frame from another site, 5.A). **4/4 match** on the page outcome, no false PASS.
-- **Found:** on f44 it answered 5.A J1 "labeled" quoting the "*" that is all a label shows while its words are hidden, so that field passed on M4. 5.A 1.11.0's M4 now needs a quote with a word (a "*" alone goes to NEEDS REVIEW); `test_a_star_quoted_as_the_label_is_no_label`.
+- **Found:** on f44 it answered 5.A J1 "labeled" quoting the "*" that is all a label shows while its words are hidden, so that field passed on M4. 5.A 1.12.0's M4 now needs a quote with a word (a "*" alone goes to NEEDS REVIEW); `test_a_star_quoted_as_the_label_is_no_label`.
 - **Its other answers:** f44's drop-down with no label not_labeled (it called this close: the default option "Choose one" read as a placeholder), the off-screen label's field not_labeled; f44 5.C missing "*" (the required cue not announced); f48 and f53 labeled by the visible words.
 - The other 27 cases' packets were not answered this run: their questions did not change.
 

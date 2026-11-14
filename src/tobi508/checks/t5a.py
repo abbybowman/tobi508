@@ -129,7 +129,7 @@ def instance_rows(st: State5A) -> list[Row]:
             "M4",
             lambda c: (
                 # The quote holds a word: "*" alone is a required marker,
-                # not a label (5.A 1.11.0, review H-01; judge eval 2026-11-14).
+                # not a label (5.A 1.12.0, review H-01; judge eval 2026-11-14).
                 (
                     _j(st, c) == "labeled"
                     and _quote_ok(st, c)

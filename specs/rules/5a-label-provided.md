@@ -1,7 +1,7 @@
 ---
 tt_test: 5.A
 tt_name: 3.3.2-label-provided
-spec_version: 1.11.0
+spec_version: 1.12.0
 guards: reveal
 count: fields.shadow, fields.frames, fields_hidden, contenteditable, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -47,7 +47,7 @@ Each data-entry field is an *instance*; each radio button and checkbox is its ow
 | M2i | No visible label of its own (not an option in a set), and a button sits in the field's input group or search form (section 2), with a picture (1.7.0) or words such as "Go" (1.8.0): it is part of the field, so a label is provided, whatever it shows or says (Abby, 2026-11-13; ACT cc0f0a Failed Example 5, where "Go" labels the field and fails 2.4.6, is 5.B's FAIL). Whether it describes the field (a magnifier on a search box does; a tree, a logo or an envelope does not) is 5.B's | PASS (1.7.0) | p. 25 ER 1; Notes 2 ("can be graphical or textual") and 3 ("only determines whether visual labels or instructions are provided, regardless of accuracy"); Abby, 2026-11-13 |
 | M3 | No visible label; the only text shown for the field is its placeholder, and no button's text is beside it (a "Search" button labels the box beside it, G167: J1; 1.1.0). Only buttons that act on the field's form count (section 2): a site header's menu button beside its search box does not (Abby, 2026-11-04; post-round 1 fix 10: NASA's "Explore" kept M3 from firing on 9 pages; 1.2.0), and no icon button sits in the field's input group or search form (such a field is M2i; Abby, 2026-11-08, post-round 2 fix 8: svs.gsfc.nasa.gov's "Search..." box with a magnifier submit button and a clear button in one input group, key Pass on 7 pages; a menu button with an icon still does not count; 1.5.0) | FAIL: a placeholder is not a label; it disappears as soon as the user types, so the field is no longer labelled while it still has focus (Abby, 2026-11-01) | p. 25 Note 1 ("visible when the form field has focus"), Note 2 ("can be graphical or textual"); W3C forms tutorial, [Placeholder text](https://www.w3.org/WAI/tutorials/forms/instructions/#placeholder-text) ("not a replacement for labels"); [w3c/wcag#4918](https://github.com/w3c/wcag/issues/4918) (placeholder alone "would fail 3.3.2"; it does provide an accessible name, so 5.C is not affected: TC10.A-all-pass-1) |
 | J1? | Otherwise, J1 not answered | NEEDS REVIEW | Open question |
-| M4 | J1 = labeled, its quote found in the visible text of the image (as written, or its words in one piece of text: a label's colon can be a piece of its own, 1.1.0) and holding a word (a quote of only "*" is a required marker, not a label: the field goes on to M9, NEEDS REVIEW; 1.11.0, review H-01: the judge eval of 2026-11-14 answered "labeled" quoting "*"), or J1 = graphic | PASS | p. 25 ER 1, Note 2 |
+| M4 | J1 = labeled, its quote found in the visible text of the image (as written, or its words in one piece of text: a label's colon can be a piece of its own, 1.1.0) and holding a word (a quote of only "*" is a required marker, not a label: the field goes on to M9, NEEDS REVIEW; 1.12.0, review H-01: the judge eval of 2026-11-14 answered "labeled" quoting "*"), or J1 = graphic | PASS | p. 25 ER 1, Note 2 |
 | M5 | J1 = not_labeled | FAIL | p. 25 ER 1; Understanding 3.3.2 (`aria-label` alone); TC10.E-1-fail-1 |
 | M6 | J1 = unsure, or a quote not found | NEEDS REVIEW | Spec rule |
 
