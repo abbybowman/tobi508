@@ -8,95 +8,43 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 5 (PRs #39 to #44) and step 6 (PR #46; results
-in `evals/README.md`, "Gate 2026-11-13").
+**Done:** steps 1 to 5 (PRs #39 to #44), step 6 (PR #46; results in
+`evals/README.md`, "Gate 2026-11-13"), step 6b (PR #53), step 7
+(PRs #48, #50), and step 6c's read cap, 19.A search row and freeze
+(PRs #49, #51, #52).
 
-**Order to start them** (at most three threads at once): 6c and 6b now;
-7 now, since 8 waits for its first three pages; 8 when those pages are
-merged; 9 after 8; 10 when the keys are in place.
+**Order to start them** (at most three threads at once): 8 now (the
+grid it is tested on is merged); 6c's two remaining items in its
+running thread; 9 after 8; 10 when the keys are in place.
 
 ## Starting a thread
 
-**Step 6b, Sonnet: single-test fixes for the known wrong outcomes** (beside steps 7 and 8)
+**Step 6c, Opus: what is left of it** (running)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is step 6b of `docs/ROADMAP.md` "Order of
-> work": `docs/plans/2026-11-13-spec-decisions.md`. Part 1 first, in
-> its order, one commit and one fixture each, with the nearest page
-> that must still give the old outcome where there is one. For K-01,
-> show me the rule before building it. Then part 2, only the items
-> where I have written an answer on the "Abby:" line; for each, draft
-> the spec change with its research and show me before building. Every
-> fix moves a PASS or a DOES NOT APPLY toward NEEDS REVIEW or FAIL; if
-> one would do the opposite anywhere, stop and ask. Remove each fixed
-> row from the README's "Known wrong outcomes" table and mark the
-> item fixed in the review file, in the same commit. Stay out of the
-> readers step 8 is replacing (`labels.py`, `site.py`, `motion.py`,
-> `forms.py`, `reveal.py`, `observe.py` dialogs): C-01 touches
-> `observe.py`, so merge `main` before it and keep the change small.
-
-**Step 6c, Opus: win back decided cells** (before step 8 reaches the site read)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 6c of
-> `docs/ROADMAP.md` "Order of work"; read step 6's results in
-> `evals/README.md` ("Gate 2026-11-13") and
-> `evals/judging/gate-2026-11-13/compare.md` first. Four items, in the
-> roadmap's order, each its own pull request.
+> and follow its "Working rules". Your work is what is left of step 6c
+> of `docs/ROADMAP.md` "Order of work", each its own pull request.
 >
-> (1) The 600-item read cap of 9.A-9.C (`site.py` `UNIT_CAP`; 9.A's
-> spec, section 2). I have approved lifting it. Find out first why it
-> is 600 and what a page over it costs in time; then raise or remove
-> it as one MINOR spec change per spec that names it, with a fixture
-> page over the old cap and the nearest page that must still be NEEDS
-> REVIEW. Then rerun 9.A-9.C on round 2's ten frozen pages (ask me for
-> the `round2-frozen` archive if it is not restored; never fetch them
-> live) and show me every cell beside my key. This turns NEEDS REVIEW
-> into outcomes, and the cap is what held round 2's two wrong 9.A
-> PASSes (CILab, 14592): if either does not FAIL, or any 9.A-9.C cell
-> passes where my key fails, stop and show me before merging.
->
-> (2) A time budget per test inside the run limit, so a test that runs
+> (1) A time budget per test inside the run limit, so a test that runs
 > long is NEEDS REVIEW ("ran out of its time") and the tests after it
 > still run. Show me the budgets before building. Also find why 3.A's
 > stepped capture took 17 min on 14194 against 55 s in the dry run.
 > Update CLAUDE.md "Hosting, time and concurrency" and the README's
 > "How long it takes" in the same commit.
 >
-> (3) 19.A: a search whose results page did not finish loading (its
-> own scripts failed) is row W4, NEEDS REVIEW, not W3. A MINOR spec
-> change, a fixture, and the nearest page that must still FAIL (a
-> finished search that does not list the page).
->
-> (4) The freeze (`evals/agent/freeze.py`): scroll the page so lazy
-> images load, and record media and 19.A's search results, so that a
-> replay needs nothing live. Never rewrite a locked round or its
-> frozen set: this is for round 3 and later. For reruns of rounds 1
-> and 2, make the browser in this container trust the egress proxy
-> (`UPSTREAM_PROXY`; `docs/solutions/environment.md`) and say what you
-> changed.
+> (2) 9.B and 9.C on CILab are DOES NOT APPLY where my key passes
+> (round 2's review item 13): row A3o does not fire because
+> `has_own_navigation()` is false there (7 units, no labelled region).
+> Look at CILab's units in the run's evidence and tell me why its top
+> navigation is not counted, and why 9.A found repeated content on the
+> same run. Then propose either a fix to the read, or A3o in 9.A, 9.B
+> and 9.C holding whenever every other page shares almost nothing and
+> the tested page has any link or control. Show me the spec wording
+> before building. It moves DOES NOT APPLY to NEEDS REVIEW only; add
+> CILab's shape as a fixture and the nearest page that stays DOES NOT
+> APPLY.
 
-**Step 7, Sonnet: the grid of hard pages** (now)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 7 of
-> `docs/ROADMAP.md` "Order of work": part I's grid in
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (CI is
-> done). Start from `docs/reviews/2026-11-11-code-review-pages/`. One
-> test file, one table, check by page: each cell is the expected
-> outcome today or a written reason that the page has nothing for that
-> test. The rule the table must obey: never PASS, and DOES NOT APPLY
-> only with a reason. A cell that breaks the rule today is marked as a
-> known wrong outcome with its review item, not hidden and not fixed
-> here. Build three pages first and open a pull request for them
-> alone, because step 8 is waiting for them: an open shadow root, a
-> same-site frame and a frame from another site, each holding a form,
-> a navigation block, a mouse-only control and a media element. Then
-> the other six pages. Then one recording and one walk per fixture
-> page (Q-07). No spec changes and no outcome changes: this step only
-> adds tests.
-
-**Step 8, Opus: one library for reading the page, frames included** (after step 7's first three pages)
+**Step 8, Opus: one library for reading the page, frames included** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow it. Your work is step 8 of `docs/ROADMAP.md` "Order of
