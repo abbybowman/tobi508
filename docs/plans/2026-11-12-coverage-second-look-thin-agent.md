@@ -579,6 +579,48 @@ reader 1's pull request.
 `closed_hosts`), a frame inside a web component inside a frame (read,
 but not given its own fixture), and 4.x's use of the walk (step 6d).
 
+### Decided (Abby, 2026-11-14)
+
+1. **Frames are tested as their own pages for ANDI,** not in place:
+   ANDI run inside an embedded frame is not accurate and does not find
+   everything (Abby's experience; TT 12.D's "test in new tab"). Pass L
+   (5.A-5.C) reads every frame with a document of its own (same site or
+   another) on a page of its own, opened in the same replay context,
+   in the configured window: the inventory, the visible labels, the
+   pictures and ANDI. Its components keep the frame's chain, so they
+   still match the walk's stops by `path_key`. The readers that use no
+   ANDI (5.D-5.H, 2.A, 4.E) read frames in place, where the page's own
+   behaviour (submitting, errors, playing) is what people get. The rule
+   this needs, a new principle 5 exception: *on a replay, never live, a
+   page of its own may be opened at the address of a frame the tested
+   page's replay showed and its recording holds; at most 10 frames a
+   run; no other address*. The navigation guard checks the address
+   against that list instead of the allowlist.
+2. **Not a decision:** a TT test's PASS or FAIL is valid in the page's
+   own document, a web component or a frame alike. The template
+   paragraph stays as a statement of how the tool reads, not a choice.
+   A FAIL with several instances is already a parent row and one child
+   row per instance in the pre-SCRT file (`scrt.from_report`); each
+   instance's location says the web component or frame, so failures
+   inside a frame show as their own child rows. PASS and DOES NOT APPLY
+   stay one row.
+3. **(1a) Chrome's accessibility tree** gives the name and description
+   of a component inside a web component, for 5.B and 5.C, recorded as
+   that source. Making the vendored ANDI read shadow roots would mean
+   changing it (its hashes are pinned) or copying the web component's
+   content into the page, which changes what the names resolve to
+   (ids inside a shadow root do not reach out of it): a false PASS risk.
+4. **The spec changes are approved,** one MINOR version per spec, in the
+   pull request of the reader that makes each true.
+5. **`frames_missing` holds PASS and DOES NOT APPLY** as proposed.
+   Government sites carry no advertising frames, so no size floor
+   beyond "shown". **Later (not step 8, not part F):** at recording
+   time, one more live try of a frame whose document failed, under the
+   allowlist and the egress rules, as the fuller freeze does for media;
+   it is a request page content chooses, so it needs its own principle
+   5 exception. The second look (part F) asks a model to reread
+   confident outcomes and fetches nothing.
+
 ### Spec wording for step 8's three decisions (draft, for Abby)
 
 **Decision 1: a result read inside a web component or a frame may PASS
