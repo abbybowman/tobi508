@@ -12,10 +12,36 @@ is listed here is what is left to start or still running.
 `evals/README.md`, "Gate 2026-11-13"), step 6b (PR #53), step 6c
 (PRs #49, #51, #52, #54, #55) and step 7 (PRs #48, #50).
 
-**Order to start them** (at most three threads at once): 8 and 9a now;
-9b after 8; 10 when the keys are in place.
+**Order to start them** (at most three threads at once): 8, 9a and 6d
+now; 9b after 8; 10 when the keys are in place.
 
 ## Starting a thread
+
+**Step 6d, Sonnet: the walk was complete, checked in one place** (now, beside step 8)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is step 6d of `docs/ROADMAP.md` "Order of
+> work": the first conversion of part C in
+> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (the
+> walk), and nothing else of part C. First list, for every test that
+> reads the keyboard walk (4.A-4.F, 5.A-5.H), what it does today when
+> the walk ended in a trap, a loop, a cap or out of time, or reached
+> fewer stops than the page has (`walk.py` `TRAP_ENDS`, guard CN's
+> `count: focusable`, each check's own list), and show me the table:
+> which tests already hold PASS and DOES NOT APPLY, and which do not
+> (the grid's NEW-3 says 4.E does not). Then one shared function that
+> answers "was the walk complete, and if not, what did it not reach"
+> in a plain sentence, and each test's own lists replaced by it, one
+> test a commit with its fixtures and the grid rerun. The spec wording
+> is one sentence per spec (a MINOR version each, the same sentence);
+> show me it once before building. Every change moves a PASS or a DOES
+> NOT APPLY to NEEDS REVIEW; no FAIL changes; if a cell would move the
+> other way, stop and ask. Update the grid's cells, the README's
+> "Known wrong outcomes" row for 4.E, and the review items in the same
+> commits. Step 8 is running beside you in the readers (`labels.py`,
+> `site.py`, `motion.py`, `forms.py`, `reveal.py`, `observe.py`): stay
+> out of them, and merge `main` before every spec version and before
+> editing `tests/test_fixtures_grid.py`.
 
 **Step 8, Opus: one library for reading the page, frames included** (now)
 
@@ -37,7 +63,10 @@ is listed here is what is left to start or still running.
 > still FAIL. Then 8b, the frame from another site. Guard CN stays; it
 > stops firing where the readers and the count agree. Update each
 > test's README status line and the "Known wrong outcomes" table in
-> the commit that changes it. Merge `main` before every spec version.
+> the commit that changes it. Merge `main` before every spec version
+> and before editing `tests/test_fixtures_grid.py`: step 6d is running
+> beside you in `walk.py` and the checks' use of the walk (whether it
+> was complete), so leave that to it.
 > Whatever is not merged by the end of Nov 17 stops there: leave
 > `main` whole and write down where you stopped.
 

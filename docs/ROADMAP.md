@@ -87,6 +87,7 @@ ran three to four times longer than the work took.
 | 6 | The check against round 2: the baseline before the readers change | Opus | done Nov 13: [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | done Nov 13: PR #53 | Eleven review items (M-05, C-01, M-10, H-02, M-08, K-01, M-01, E-08, F-02, C-07, K-05); each is marked fixed in [the review](reviews/2026-11-11-code-review.md) and decided in its spec |
 | 6c | Win back decided cells: the read cap, 19.A's unverified search, a fuller freeze, a time budget per test, 9.B and 9.C on a page whose own navigation matches nothing | Opus | done Nov 13-14: PRs #49, #51, #52, #54, #55 | This file, "What each step covers"; [time budgets](solutions/time-budget.md) |
+| 6d | One shared check that the keyboard walk was complete, for every test that reads it | Sonnet | Nov 14-15, beside 8 | Plan part C, its first conversion (the walk); review H-03, M-05, F-11; the grid's NEW-3 |
 | 7 | The grid of hard pages | Sonnet | done Nov 13: PRs #48, #50 | Plan part I; `tests/test_fixtures_grid.py` |
 | 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |
 | 9a | The second check, now: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | Nov 14, beside 8 | As step 6, a new folder |
@@ -174,6 +175,17 @@ what is planned.
      navigation of its own is A3o, NEEDS REVIEW, whatever the other
      pages share (9.A 1.6.0, 9.B 1.5.0, 9.C 1.8.0); with none of its
      own it stays DOES NOT APPLY.
+6d. **The walk was complete, checked in one place** (Abby,
+   2026-11-14). A walk that ends in a trap, a loop, a cap or out of
+   time has been handled test by test (5.D, 5.F; 4.D and 4.F by guard
+   CN), and the grid shows 4.E still passes after a trap. One shared
+   answer, "the walk reached every stop it could have, or here is what
+   it did not reach", read by every test that uses the walk (4.A-4.F,
+   5.A-5.H): PASS or DOES NOT APPLY on an incomplete walk becomes
+   NEEDS REVIEW with the sentence. It is the first conversion of step
+   14 (part C), pulled up; the coverage record for the other readers
+   stays there. It touches `walk.py` and the checks, not the readers
+   step 8 replaces.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the
@@ -213,7 +225,7 @@ what is planned.
    fuller freeze is the fix), and it is where `JUDGE_TYPES` is decided,
    on both rounds' cells and the gate's test-page half. Then each README status line is rewritten from it, and the
    caveats step 8 removed go.
-   It runs twice (Abby, 2026-11-14 to confirm): **9a** now, on `main`
+   It runs twice (Abby, 2026-11-14): **9a** now, on `main`
    after 6b and 6c, so their effect is measured apart from step 8's
    and the pitch has a second set of figures whatever step 8 reaches;
    **9b** after step 8. Each runs two repeats: step 6c saw the same
@@ -330,19 +342,6 @@ itself, one bundle a thread; they are not repeated here.
   change.
 - **Round 3's site and pages** (step 10), by Nov 15, and how many pages
   Abby can key.
-- **Step 9 in two runs** (9a now, 9b after step 8), two repeats each:
-  proposed 2026-11-14.
-- **The walk that ends in a trap,** fixed test by test so far (5.D,
-  5.F; 4.F and 4.D by guard CN): the grid shows 4.E still passes after
-  one. One shared "the walk was complete" check for every test that
-  reads the walk is the first piece of step 14 (part C); pull that
-  piece up beside step 8, or leave it in the README's table.
-- **The VAST admin's answers** (step 12 only): pulling the image, a
-  Chromium service in the namespace, `sub` and groups in access tokens
-  ([hosted sign-in plan](plans/2026-11-06-hosted-auth.md), "Open
-  questions for the VAST admin"). Also whether NASA's Keycloak can ask
-  for a security-key touch on one action rather than at sign-in: to try
-  on VAST.
 
 **After the demo: each shapes a step of "Next".**
 
