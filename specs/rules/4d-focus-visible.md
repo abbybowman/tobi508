@@ -1,7 +1,7 @@
 ---
 tt_test: 4.D
 tt_name: 2.4.7-focus-visible
-spec_version: 1.8.0
+spec_version: 1.9.0
 count: focusable
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -17,6 +17,8 @@ The tool gives each page one 4.D outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 **W3C sources.** [Understanding 2.4.7](https://www.w3.org/WAI/WCAG22/Understanding/focus-visible), techniques [G149](https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/G149) and [C15](https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/C15), failure [F55](https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F55), and ACT rule [oj04fd](https://www.w3.org/WAI/standards-guidelines/act/rules/oj04fd/), on whose 7 approved test cases DHS reports TT 5.1 fully consistent. They inform OPEN items and fixtures only; the PDF stays the authority.
 
 **Terms.** *Stop*, *OUT*, *BODY*, passes P1 and P2, stop identity and the settle rule are defined in [4c-no-keyboard-trap.md](4c-no-keyboard-trap.md) (Terms, section 2). The *region* of a stop is its border box plus `INDICATOR_MARGIN_PX` on every side, joined with the boxes of its associated labels and of any ancestor (up to its nearest block container) whose style changes between the two reads and whose area is at most `ANCESTOR_MAX_FACTOR` times the stop's own region or `ANCESTOR_MAX_AREA` (an indicator on a wrapper or card, as in oj04fd Passed Example 3 and C15 Example 2), clipped to the viewport, in page coordinates. The *on image* is a clip of the region at the step where the stop gains focus; the *off image* is a clip of the same page region at the next step of the same pass, after focus has moved on. A *frame stop* is a stop that is a frame or iframe element itself.
+
+**Terms for row WK.** An element is *reached* when a pass this test has evidence from stopped on it: P1 and P2 (P6's stops are not passed to this test; 4.C spec section 6). The *elements to reach* are the elements Tab lands on when the last of those passes ended (`PassResult.inventory_end`: focusable, rendered, not disabled, not inert, not `tabindex="-1"`; a radio group, a date input and a frame the walk went into count once each). A pass that ended in a trap, a loop, a cap or out of time matters here only through what is left unreached: a page that grew is complete if everything present when the last pass ended was reached. The sentence is built by `walk.walk_coverage`, for example: "The keyboard reached 5 of the 6 elements on this page that take focus, so "Two" (a) was not checked. Tab got stuck at "Search" (textbox)." It names only what ran.
 
 ## 1. Applicability
 
@@ -100,11 +102,13 @@ Each distinct stop (frame chain plus CSS path; not BODY or OUT), and each widget
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
-| G3 | Any instance is NEEDS REVIEW; or P1 or P2 is incomplete (cap, time limit, error); or more than `WIDGET_MAX` widgets; or the run limit was reached before widget pass W checked every widget (1.1.0); or P1 and P2 ended in different traps, so stops between them were reached only by 4.C's bypass or not at all | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
+| G3 | Any instance is NEEDS REVIEW; or P1 or P2 is incomplete (cap, time limit, error); or the walk did not reach every element (row WK, 1.9.0); or more than `WIDGET_MAX` widgets; or the run limit was reached before widget pass W checked every widget (1.1.0); or P1 and P2 ended in different traps, so stops between them were reached only by 4.C's bypass or not at all | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
 | G4 | P1 and P2 each ended in a wrap or at the same trap; every instance is PASS | PASS |
 | G5 | Anything else | NEEDS REVIEW |
 
 A page with a confirmed FAIL stays FAIL even when other instances need review.
+
+**Row WK: the walk did not reach every element** (1.9.0; Abby, 2026-11-14; review H-03, M-05, F-11). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every element this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. Guard CN (`count: focusable`) below stays beside it: it counts from the page's inventory at load and WK from the end of the last pass, and removing it could let a NEEDS REVIEW become a PASS.
 
 **Plain-language sentences.** The finding lists every FAIL and NEEDS REVIEW instance with its sentence; PASS instances appear only as a count, with their sentences kept in the evidence. Row IDs stay in the evidence trace. `<element>` is the role and name in plain words (the "Contact us" link); `<keys>` is the key sequence from a fresh load ("Tab 7 times"); `<change>` is the style signal in plain words (an outline appears; the border, background or text color changes; an underline or shadow appears; it appears on screen; its label changes).
 

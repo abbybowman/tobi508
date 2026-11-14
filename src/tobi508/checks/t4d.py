@@ -30,7 +30,7 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.traverse import Traversal, screenshot
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, walk_coverage
 
 # Spec constants (section 2). They decide outcomes, so they are not settings.
 INDICATOR_MARGIN_PX = 8
@@ -448,6 +448,8 @@ class State4D(BaseModel):
     stops: int
     inventory: int
     different_traps: bool = False
+    walk_gap: str | None = None  # row WK's sentence, when an element was not reached
+    walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     # Distinct element stops of P1 and P2 (guard CN, C-07).
     reached: int = 0
     instances: list[Inst4D] = Field(default_factory=list)
@@ -870,6 +872,14 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
             & {s.stop.path_key for s in p2.steps[-6:]}
         ):
             st.different_traps = True
+    # Row WK (1.9.0): an element no pass reached was not checked, whatever
+    # the passes ended in (a loop or trap another pass went round is complete).
+    cov = walk_coverage(walk)
+    if cov.counted is not None:
+        st.walk_reached = (cov.reached, cov.counted)
+    if not cov.complete and cov.sentence:
+        st.walk_gap = cov.sentence
+        st.incomplete.append(cov.sentence)
     by_subject: dict[str, Inst4D] = {}
     _attempts_from(p1, st, by_subject, ctx.rel)
     _attempts_from(p2, st, by_subject, ctx.rel)
@@ -1285,6 +1295,8 @@ def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
         PAGE_ROWS, {"results": results, "incomplete": incomplete, "complete": complete}
     )
     trace.append(page.id)
+    if st.walk_gap and page.outcome is Outcome.NEEDS_REVIEW:
+        trace.insert(-1, "WK")
     n_pass = sum(o is Outcome.PASS for _, o in results)
     head = {
         Outcome.PASS: f"We moved keyboard focus to each of the {n_pass} elements we could reach, and every one showed where focus was.",
@@ -1306,6 +1318,11 @@ def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
         summary=" ".join(parts),
         rationale=f"Spec {page.id}. "
         + "; ".join(trace[1:-1] or ["no instances"])
+        + (
+            f". Walk: reached {st.walk_reached[0]} of {st.walk_reached[1]}"
+            if st.walk_reached
+            else ""
+        )
         + (". Incomplete: " + "; ".join(incomplete) if incomplete else ""),
         decided_by=DecidedBy.RULE,
         rows=trace,

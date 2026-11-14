@@ -566,6 +566,10 @@ different checks, and some of those ways do not hold back an outcome.
   by treating a trap as incomplete: 4.E 1.5.0 reads `walk.walk_coverage`
   (an element no pass reached is NEEDS REVIEW). The grid's page reached
   7 of 7 elements, so its PASS stands; fixture `4e/f13`.
+- **Step 6d, 4.D (1.9.0):** 4.D reads the same coverage (row WK) beside guard
+  CN, which stays: removing it could let a NEEDS REVIEW become a PASS.
+  A loop whose other pass reached every element stays PASS (`4d/f25`); a
+  link skipped in both directions is NEEDS REVIEW (`4d/f26`).
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 
