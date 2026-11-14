@@ -302,13 +302,21 @@ _INVENTORY_JS = (
     const v = el.getAttribute('tabindex');
     return v !== null && v.trim() !== '' && !isNaN(v) ? parseInt(v, 10) : null;
   };
+  // While a modal dialog (showModal) is open, the rest of the page, frames
+  // included, cannot take focus: not something Tab should land on.
+  const modal = (() => { try { return window.top.document.querySelector('dialog:modal'); } catch (e) { return null; } })();
+  const behindModal = (el) => {
+    if (!modal) return false;
+    for (let n = el; n; n = n.parentNode || n.host || null) if (n === modal) return false;
+    return true;
+  };
   const candidate = (el) => {
     const ti = tabindex(el);
     if (ti !== null && ti < 0) return false;
     if (!(el.matches(NATIVE) || ti !== null)) return false;
     if (el.tagName === 'SUMMARY' && !(el.parentElement && el.parentElement.tagName === 'DETAILS' &&
         el.parentElement.querySelector(':scope > summary') === el)) return false;
-    return !el.matches(':disabled') && !inert(el) && rendered(el);
+    return !el.matches(':disabled') && !inert(el) && !behindModal(el) && rendered(el);
   };
   // Form fields 5.D completes (its spec, Terms: field), radio groups once;
   // not disabled, not read-only, rendered.

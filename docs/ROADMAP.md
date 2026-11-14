@@ -197,7 +197,9 @@ what is planned.
    **Built 2026-11-14:** the function and 4.E 1.5.0 (the grid's NEW-3
    is withdrawn: its trap page reached 7 of 7; the new fixture 4e/f13
    leaves an element unreached), then 4.D 1.9.0 (guard CN stays beside
-   it). Next: 4.A, 5.D, 5.F (5.G and 5.H follow). 4.B, 4.C and 4.F keep their own decisions.
+   it) and 4.A 1.11.0. What Tab should land on leaves out a radio group's
+   other radios and whatever an open modal dialog covers. Next: 5.D,
+   5.F (5.G and 5.H follow). 4.B, 4.C and 4.F keep their own decisions.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the

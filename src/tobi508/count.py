@@ -77,6 +77,15 @@ COUNT_JS = (
     + PATH_JS
     + """
   const { FIELD, inert, rendered, focusable, off } = J;
+  // While a modal dialog (showModal) is open, the rest of the page, frames
+  // included, cannot take focus: not something Tab should land on (the same
+  // rule as traverse's inventory; jslib's `focusable` is left as it is).
+  const modal = (() => { try { return window.top.document.querySelector('dialog:modal'); } catch (e) { return null; } })();
+  const behindModal = (el) => {
+    if (!modal) return false;
+    for (let n = el; n; n = n.parentNode || n.host || null) if (n === modal) return false;
+    return true;
+  };
   const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
     '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
   // What could show hidden content: a button, a disclosure, a same-page or
@@ -125,7 +134,7 @@ COUNT_JS = (
         const u = (el.currentSrc || '').split('#')[0];
         if (/^https?:/.test(u) && imgs[where].size < 1000) imgs[where].add(u);
       }
-      if (focusable(el)) {
+      if (focusable(el) && !behindModal(el)) {
         // Tab lands on one radio of a group: a group counts once.
         if (el.matches('input[type=radio]') && el.name) {
           if (el.form && !formIds.has(el.form)) formIds.set(el.form, formIds.size + 1);

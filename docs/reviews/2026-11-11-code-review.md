@@ -570,6 +570,12 @@ different checks, and some of those ways do not hold back an outcome.
   CN, which stays: removing it could let a NEEDS REVIEW become a PASS.
   A loop whose other pass reached every element stays PASS (`4d/f25`); a
   link skipped in both directions is NEEDS REVIEW (`4d/f26`).
+- **Step 6d, 4.A (1.11.0):** 4.A reads the coverage too; its sentence replaces
+  the generic "did not get through the whole page" line when an element was
+  unreached (P1's own condition is unchanged). Two ACT cases (c88fcaf4,
+  fa27b588: a modal dialog open on load) showed the count held elements
+  behind a modal, which Tab cannot reach: the inventory and the focusable
+  count now leave them out (traverse.py, count.py).
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 

@@ -233,3 +233,15 @@ async def test_the_focusable_count_has_a_radio_group_once(browser):
     c = await inventory.take(page, "test")
     await ctx.close()
     assert c.focusable.light == 3
+
+
+async def test_the_focusable_count_leaves_out_what_an_open_modal_dialog_covers(browser):
+    ctx = await browser.new_context()
+    page = await ctx.new_page()
+    await page.set_content(
+        "<a href='#'>behind</a><dialog id=d><button>ok</button></dialog>"
+        "<script>document.getElementById('d').showModal()</script>"
+    )
+    c = await inventory.take(page, "test")
+    await ctx.close()
+    assert c.focusable.light == 1  # the dialog's button
