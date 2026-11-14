@@ -338,9 +338,24 @@ _INVENTORY_JS = """() => {
   let count = 0;
   const fields = new Set();
   let n = 0;
+  // Tab lands on one radio of a group (the checked one, or the first or last
+  // by direction): a group counts once, as `fields` does. A group is the
+  // radios of one name in one form (or none) in one document or shadow root.
+  const forms = new Map();
+  const groupKey = (el, root) => {
+    const f = el.form;
+    if (f && !forms.has(f)) forms.set(f, forms.size + 1);
+    return root.nodeType + ':' + (f ? forms.get(f) : '') + ':' + el.name;
+  };
   const walk = (root) => {
+    const groups = new Set();
     for (const el of root.querySelectorAll('*')) {
-      if (candidate(el)) count += 1;
+      if (candidate(el)) {
+        if (el.matches('input[type=radio]') && el.name) {
+          const k = groupKey(el, root);
+          if (!groups.has(k)) { groups.add(k); count += 1; }
+        } else count += 1;
+      }
       if (el.matches(FIELD) && !el.matches(':disabled') && !el.readOnly && el.getAttribute('aria-disabled') !== 'true'
           && el.getAttribute('aria-readonly') !== 'true' && !inert(el) && rendered(el)) {
         const k = fieldKey(el);

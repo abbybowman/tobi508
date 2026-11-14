@@ -403,6 +403,13 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   that settle late end there (more than 1 in 5 of a round's 4.D stops),
   build option B: take the two pictures again once after the page
   settles (Abby, 2026-11-13).
+- **Radio groups (4.A-4.F, step 6d):** a radio group is one element that
+  takes focus, since Tab lands on one radio of it. The walk does not visit
+  the radios of a group one by one (arrow keys are not walked), so what
+  the other radios look like on focus is not read. 4.A must not ask about
+  a radio Tab cannot land on: today it asks whether a group's second
+  radio "works with a mouse but cannot be reached", which Tab never
+  could.
 - **Web components (shadow roots):** the keyboard walk enters them; the
   label pass, the site read, the media read, 4.A's handler scan and
   5.F's error read do not. Since part B's inventory and guard CN

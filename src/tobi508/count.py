@@ -115,6 +115,8 @@ COUNT_JS = (
     hidden_field_paths: [], form_paths: [], played: { light: 0, shadow: 0, detached: 0 },
     speech: 0, audio: 0 };
   const radios = { light: new Set(), shadow: new Set() };
+  const tabRadios = { light: new Set(), shadow: new Set() };
+  const formIds = new Map();
   const imgs = { light: new Set(), shadow: new Set() };
   const walk = (root, where) => {
     for (const el of root.querySelectorAll('*')) {
@@ -146,7 +148,14 @@ COUNT_JS = (
         const u = (el.currentSrc || '').split('#')[0];
         if (/^https?:/.test(u) && imgs[where].size < 1000) imgs[where].add(u);
       }
-      if (focusable(el)) add('focusable');
+      if (focusable(el)) {
+        // Tab lands on one radio of a group: a group counts once.
+        if (el.matches('input[type=radio]') && el.name) {
+          if (el.form && !formIds.has(el.form)) formIds.set(el.form, formIds.size + 1);
+          const k = (el.form ? formIds.get(el.form) : '') + ':' + el.name;
+          if (!tabRadios[where].has(k)) { tabRadios[where].add(k); add('focusable'); }
+        } else add('focusable');
+      }
       if (el.matches(LANDMARK)) add('landmarks');
       if (el.matches('a[href], area[href]')) add('links');
       if (el.shadowRoot) { out.shadow_roots += 1; walk(el.shadowRoot, 'shadow'); }
