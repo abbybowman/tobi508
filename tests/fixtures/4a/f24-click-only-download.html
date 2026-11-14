@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><title>Report download, click only</title></head>
+<body>
+<h1>Report download, click only</h1>
+<a href="/a1">Home</a>
+<div style="cursor:pointer;padding:8px;border:1px solid #000;width:160px" id="dl">Download the report</div>
+<script>
+document.getElementById('dl').addEventListener('click', function () {
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['report'], { type: 'text/plain' }));
+  a.download = 'report.txt';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+</script>
+</body>
+</html>

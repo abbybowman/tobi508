@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F27 Two fields and a button that adds a row</title></head><body>
+<h1>Your dependants</h1>
+<form id="f" novalidate>
+<p><label for="a">First name</label> <input id="a"></p>
+<p><label for="b">Last name</label> <input id="b"></p>
+<p><button type="button" id="more">Add another</button></p>
+</form>
+<script>
+// This button never checks or sends anything the tool can see.
+document.getElementById("more").addEventListener("click", function () {});
+</script></body></html>

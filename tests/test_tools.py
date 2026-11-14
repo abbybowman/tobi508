@@ -158,12 +158,15 @@ async def test_no_test_is_reported_not_tested(settings):
 
     built = {t.value for t in REGISTRY}
     # The page's one email field is not checked by anything (no form, no
-    # script): no automatic error detection, so 5.F and 5.G do not apply.
+    # script), but the tool pressed its "Custom control" (a role=button div
+    # that is not a submit button) and it showed nothing: that proves nothing
+    # about whether the page checks for errors, so 5.F and 5.G are NEEDS
+    # REVIEW, never DOES NOT APPLY (5.F 1.7.0, review M-01).
     # Its iframe holds a button that pass L does not read (frames are not
     # read yet), so 5.A and 5.C say a person must check it, never PASS.
     expected = {
-        "5.F": "DNA",
-        "5.G": "DNA",
+        "5.F": "NEEDS_REVIEW",
+        "5.G": "NEEDS_REVIEW",
         "5.A": "NEEDS_REVIEW",
         "5.C": "NEEDS_REVIEW",
         "5.B": "NEEDS_REVIEW",  # its J1 is open, and the framed button

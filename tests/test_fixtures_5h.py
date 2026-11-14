@@ -41,6 +41,15 @@ EXPECTED: dict[str, tuple[str, list[str], dict]] = {
         ["A6", "f1:M2", "G4"],
         {"J1": MULTI, "J2": {"choice": "review_step"}},
     ),
+    # M-08 (1.4.0): a next step that says "required" is not a check: step 1's
+    # fields are gone, so the form is not "still there". f01 above is the
+    # nearest case that must still PASS (the same fields stay and an error
+    # shows). With no review step this wizard is a FAIL once J2 says so.
+    "f08-wizard-next-step-says-required": (
+        "FAIL",
+        ["A6", "f1:M3", "G2"],
+        {"J1": MULTI, "J2": {"choice": "none"}},
+    ),
 }
 
 

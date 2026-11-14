@@ -284,10 +284,19 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
                     "comparing them would compare the page with itself"
                 }
             )
+    # Nearly the same page (K-01, spec A2): the site read has both pages' units.
+    site = await site_read(ctx)
+    for i, read in enumerate(site.pages):
+        if i and read.near_copy and not read.identical and not pages[i].error:
+            pages[i] = pages[i].model_copy(
+                update={
+                    "error": "it is nearly the same page as the tested page, so "
+                    "comparing them would compare the page with itself"
+                }
+            )
     st = State9C(pages=pages)
     if any(p.error for p in st.pages):
         return st
-    site = await site_read(ctx)
     st.kinship = kinship(site)
     st.read = site.read
     for other in st.pages[1:]:
@@ -310,6 +319,11 @@ def _agree(st: State9C, p: Pair) -> bool:
     return _norm(x.andi_name) == _norm(y.andi_name) and _norm(x.andi_desc) == _norm(
         y.andi_desc
     )
+
+
+def _unnamed(st: State9C, p: Pair) -> bool:
+    """Neither side has an accessible name (a pair of unnamed icon buttons)."""
+    return all(not _norm(c.andi_name) for c in _sides(st, p))
 
 
 def _j(p: Pair) -> str | None:
@@ -337,6 +351,10 @@ def instance_rows(st: State9C) -> list[Row]:
 
 
 def _row(st: State9C, p: Pair) -> tuple[str, Outcome | None]:
+    # C0 (K-05): two controls with no name on either page have no name to
+    # compare; naming them is 5.C's. Left out, never counted as agreeing.
+    if _unnamed(st, p):
+        return "C0", None
     if _j(p) == "different_function" and not _agree(st, p):
         return "C5", None
     row = first_match(instance_rows(st), p)
@@ -501,9 +519,12 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
     trace = ["A4"]
     results, sentences, inst = [], [], []
     capped = _asked(st)[J1_MAX:]
+    unnamed = 0
     for p in st.pairs:
         rid, outcome = _row(st, p)
         trace.append(f"{p.id}:{rid}")
+        if rid == "C0":
+            unnamed += 1
         if outcome is None:
             continue
         if p in capped:
@@ -526,6 +547,30 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
                     description=f"{p.id} [{rid} {outcome.value}] {x.role} {x.andi_name!r} / {y.andi_name!r} ({p.by})",
                 )
             )
+    left_out = (
+        f"{unnamed} pair(s) of controls have no name on either page, so there was "
+        "no name to compare; the test for form labels and names reports them."
+        if unnamed
+        else ""
+    )
+    if not results and not unread and unnamed:
+        # Components were shared and not compared: not "no such components"
+        # (DOES NOT APPLY), and never PASS (K-05, Abby 2026-11-13).
+        return _finding(
+            Outcome.NEEDS_REVIEW,
+            " ".join(
+                [
+                    REVIEW_HEAD,
+                    "The only controls the two pages share have no name, so "
+                    "nothing could be compared.",
+                    left_out,
+                ]
+            ),
+            trace + ["G3"],
+            evidence_refs,
+            rationale="Spec G3. C0: every compared pair had no name",
+            note=True,
+        )
     if not results and not unread:
         return _finding(
             Outcome.DNA,
@@ -536,9 +581,14 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
     if any(o is Outcome.FAIL for o in results):
         gid, outcome = "G2", Outcome.FAIL
         head = "Some links or controls that do the same thing have different names on different pages:"
-        tail = ["Use the same name on every page."]
+        tail = ["Use the same name on every page."] + ([left_out] if left_out else [])
     elif any(o is Outcome.NEEDS_REVIEW for o in results) or unread:
-        gid, outcome, head, tail = "G3", Outcome.NEEDS_REVIEW, REVIEW_HEAD, []
+        gid, outcome, head, tail = (
+            "G3",
+            Outcome.NEEDS_REVIEW,
+            REVIEW_HEAD,
+            ([left_out] if left_out else []),
+        )
         if capped:
             tail = [
                 f"Only {J1_MAX} differences were asked about; a person should check the rest."
@@ -547,7 +597,7 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
     else:
         gid, outcome = "G5", Outcome.PASS
         head = "Links and controls that do the same thing here and on the other pages you gave have the same names for screen reader users."
-        tail = []
+        tail = [left_out] if left_out else []
     trace.append(gid)
     return _finding(
         outcome,

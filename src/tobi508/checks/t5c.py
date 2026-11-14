@@ -10,6 +10,7 @@ tables decide outcomes.
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -32,7 +33,24 @@ from tobi508.walk import KeyboardWalk
 
 
 def words(t: str) -> set[str]:
-    return set(re.findall(r"[0-9a-z]+|\*", (t or "").lower()))
+    """The words of a text, in any script (H-02): letters and digits in a
+    row, lower-cased, and the required star. A script that writes no spaces
+    (Chinese, Japanese) gives one word per run, which only an equal run
+    announced can hold."""
+    return set(re.findall(r"[^\W_]+|\*", (t or "").lower()))
+
+
+def unreadable(t: str) -> bool:
+    """Visible text that has something in it (a symbol such as a star or a
+    pictograph) but no word: nothing to compare, so never a match (H-02)."""
+    return not words(t) and any(
+        ch.strip() and unicodedata.category(ch)[0] in "SMNL" for ch in (t or "")
+    )
+
+
+def holds(seen: str, prog: set[str]) -> bool:
+    """Every word of `seen` is in `prog`, and `seen` has words to hold."""
+    return not unreadable(seen) and words(seen) <= prog
 
 
 def norm(t: str) -> str:
@@ -112,7 +130,7 @@ def programmatic(c: Comp) -> str:
 def heading_announced(c: Comp) -> bool:
     """An option's visible heading (its question) is in what is announced;
     True when it has none."""
-    return not c.heading or words(c.heading) <= words(programmatic(c))
+    return not c.heading or holds(c.heading, words(programmatic(c)))
 
 
 def headings_of_set(lp: LabelsPass) -> dict[str, set[str]]:
@@ -162,10 +180,9 @@ def covered(c: Comp, multi: bool) -> bool:
     prog = words(programmatic(c))
     if c.required:
         prog |= {"*", "required"}
-    seen = words(" ".join(shown(c)))
     if c.option and multi and not (c.andi or {}).get("group"):
         return False
-    return seen <= prog
+    return holds(" ".join(shown(c)), prog)
 
 
 class State5C(BaseModel):
@@ -373,7 +390,7 @@ def _only_set_label(c: Comp) -> bool:
     prog = words(programmatic(c))
     if c.required:
         prog |= {"*", "required"}
-    return bool(c.nearby) and words(" ".join(shown(c))) <= prog
+    return bool(c.nearby) and holds(" ".join(shown(c)), prog)
 
 
 def j1_sets(st: State5C) -> list[list[Comp]]:

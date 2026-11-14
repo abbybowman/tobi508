@@ -278,6 +278,7 @@ async def observe(
     submits: bool = False,
     noise_ms: int = NOISE_MS,
     media: bool = False,
+    popups: bool = False,
 ) -> Effect:
     """What an action changes (spec: Terms, effect). `own` is the path key of
     the element acted on: focus moving onto it (a click) is not an effect.
@@ -286,7 +287,10 @@ async def observe(
     noise window (5.D's leave step reuses the one its completion measured).
     `media` (4.A only, spec term *media start*) also records "media_start":
     an audio or video element that was not playing before the action and is
-    after it. Off elsewhere, so 4.B and 5.D keep the effect they cite."""
+    after it. Off elsewhere, so 4.B and 5.D keep the effect they cite.
+    `popups` (4.A only, C-01) also records "js_dialog" (alert, confirm,
+    prompt: the browser closes one at once when nobody listens, so the
+    before/after read never saw it) and "download"."""
     page = s.page
     await settle(page, quiet_ms)
     before = await snapshot(s, media)
@@ -295,16 +299,36 @@ async def observe(
     if noise_ms:
         await page.wait_for_timeout(noise_ms)
     m1, *_ = await _read_logs(page)
-    async with _Opened(s) as opened:
-        # Enabling discovery reports pages that already exist; only pages
-        # created after this point are the action's.
-        earlier = set(opened.ids)
-        await act()
-        await settle(page, quiet_ms)
-        after = await snapshot(s, media)
-        sub1 = len(await submissions(page)) if submits else 0
-        m2, *_ = await _read_logs(page)
-        new_windows = opened.ids - earlier if opened.ok else set()
+    popped: list[str] = []
+
+    async def on_dialog(d: Any) -> None:
+        popped.append("js_dialog")
+        try:
+            await d.dismiss()  # what the browser does with no listener
+        except Exception:
+            pass
+
+    def on_download(_d: Any) -> None:
+        popped.append("download")
+
+    if popups:
+        page.on("dialog", on_dialog)
+        page.on("download", on_download)
+    try:
+        async with _Opened(s) as opened:
+            # Enabling discovery reports pages that already exist; only pages
+            # created after this point are the action's.
+            earlier = set(opened.ids)
+            await act()
+            await settle(page, quiet_ms)
+            after = await snapshot(s, media)
+            sub1 = len(await submissions(page)) if submits else 0
+            m2, *_ = await _read_logs(page)
+            new_windows = opened.ids - earlier if opened.ok else set()
+    finally:
+        if popups:
+            page.remove_listener("dialog", on_dialog)
+            page.remove_listener("download", on_download)
     e = Effect(mutations=max(0, m2 - m1), noise=max(0, m1 - m0))
     if without_fragment(after["url"]) != without_fragment(before["url"]):
         e.kinds.append("navigation")
@@ -325,6 +349,9 @@ async def observe(
         e.kinds.append("new_page")
     if after["dialogs"] != before["dialogs"]:
         e.kinds.append("dialog")
+    for k in ("js_dialog", "download"):
+        if k in popped:
+            e.kinds.append(k)
     f = after["focus"]
     if f != before["focus"] and not (own and f and f.startswith(own)):
         e.kinds.append("focus")

@@ -270,21 +270,11 @@ EXPECTED.update(
             "5.B": nr(),
             "5.C": nr(),
             "5.D": nr(),
-            # The identical form PASSes 5.F on cap.html: only the trap differs.
-            "5.F": wrong(
-                Outcome.DNA,
-                "M-05",
-                "the form after the trap was never tested and the run reads "
-                'that as "the page did not check the form"; the same form '
-                "PASSes 5.F on cap.html. The same cause as M-05 (a trap "
-                "counted as a complete test), here as DOES NOT APPLY.",
-            ),
-            "5.G": wrong(
-                Outcome.DNA,
-                "M-05",
-                'as 5.F: the form after the trap was never tested, so "the '
-                'page did not check the form".',
-            ),
+            # Fixed (M-05, step 6b): the walk ended in a trap before the last
+            # field, so the form after it was never tested. The identical form
+            # PASSes 5.F on cap.html: only the trap differs.
+            "5.F": nr(),
+            "5.G": nr(),
             "5.H": nr(),
             **_site_cells(),
         },
@@ -345,13 +335,9 @@ EXPECTED.update(
                 "5.A asks only that one is there"
             ),
             "5.B": nr(),
-            "5.C": wrong(
-                Outcome.PASS,
-                "H-02",
-                "the visible labels are Cyrillic and Japanese, the announced "
-                'names are "f1" and "x1": the word splitter keeps only '
-                "a-z and 0-9, so no visible word is missing.",
-            ),
+            # Fixed (H-02, step 6b): the visible labels are Cyrillic and
+            # Japanese and the announced names "f1" and "x1": J1 is asked.
+            "5.C": nr(),
             "5.D": na("two plain text fields; nothing on the page changes on input"),
             "5.F": NO_CHECKING,
             "5.G": dna(
