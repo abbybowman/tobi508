@@ -68,17 +68,17 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.8.0](specs/rules/4d-focus-visible.md) | ⚠️ 1 agree, 2 FAILs the key passes (as in round 2), 7 NEEDS REVIEW. Caveat: the judge is often unsure on small focus pictures |
 | 4.E | 3.2.1-on-focus | 3.2.1 | [1.4.0](specs/rules/4e-on-focus.md) | 🟢 No wrong outcome; 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.8.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ 1 agree, 2 FAILs the key passes (judge answers; round 2: 6), 7 NEEDS REVIEW. Caveat: the judge is often unsure |
-| 5.A | 3.3.2-label-provided | 3.3.2 | [1.11.0](specs/rules/5a-label-provided.md) | 🟢 No wrong outcome (round 2: 8 FAILs the key passes); 3 agree, 7 NEEDS REVIEW. Reads fields inside web components (1.10.0) and frames, each opened as a page of its own (1.11.0). Caveat: a frame the recording lacks is left for a person |
+| 5.A | 3.3.2-label-provided | 3.3.2 | [1.12.0](specs/rules/5a-label-provided.md) | 🟢 No wrong outcome (round 2: 8 FAILs the key passes); 3 agree, 7 NEEDS REVIEW. Reads fields inside web components (1.10.0) and frames, each opened as a page of its own (1.11.0). Caveat: a frame the recording lacks is left for a person |
 | 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.8.0](specs/rules/5b-label-descriptive.md) | 🟢 No wrong outcome (round 2: 5 wrong); 3 agree, 7 NEEDS REVIEW. Reads fields inside web components (1.7.0) and frames (1.8.0). Caveat: the judge is often unsure |
 | 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.11.0](specs/rules/5c-programmatic-label.md) | 🟢 No wrong outcome (round 2: 3 FAILs the key passes); 5 agree, 5 NEEDS REVIEW. Reads fields inside web components, their names from Chrome's accessibility tree (ANDI cannot read there; 1.10.0), and frames, each opened as a page of its own with ANDI run there (1.11.0; round 2's key has 3 FAILs in frames, not yet rerun). Caveat: a frame the recording lacks is left for a person |
 | 5.D | 3.2.2-on-input | 3.2.2 | [1.6.0](specs/rules/5d-on-input.md) | 🟢 No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 3 agree, 7 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |
 | 5.F | 3.3.1-error-identification | 3.3.1 | [1.7.0](specs/rules/5f-error-identification.md) | 🟢 No wrong outcome; 3 agree, 7 NEEDS REVIEW. Caveat: fields inside frames are not checked yet |
 | 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.5.0](specs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; 3 agree, 7 NEEDS REVIEW. Caveat: as 5.F |
 | 5.H | 3.3.4-error-prevention | 3.3.4 | [1.5.0](specs/rules/5h-error-prevention.md) | 🟢 No wrong outcome; 4 agree, 6 NEEDS REVIEW. Caveat: a form that is only a button is NEEDS REVIEW (guard CN) |
-| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.6.0](specs/rules/9a-bypass.md) | 🟢 10 of 10 agree (FAIL; round 2: 2 Does Not Apply where the key fails). Caveat: a page with more than 5,000 items is left for a person |
-| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.5.0](specs/rules/9b-consistent-navigation.md) | 🟢 9 of 10 agree; CILab NEEDS REVIEW (1.5.0; it was Does Not Apply where the key passes, as in round 2). Caveat: as 9.A |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.8.0](specs/rules/9c-consistent-identification.md) | ⚠️ 4 of 10 agree, no wrong PASS or FAIL (round 2: 2 FAILs the key passes); 6 NEEDS REVIEW: CILab (1.8.0; it was Does Not Apply where the key passes) and 5 the judge was unsure on. Caveat: as 9.A |
-| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.8.0](specs/rules/19a-multiple-ways.md) | ⚠️ 4 of 10 agree; 6 FAILs the key passes, all from a site search whose results page's scripts did not load in the test container: since 1.7.0 that is NEEDS REVIEW (checked on 14194). Caveat: a search page that cannot load its own scripts is left for a person |
+| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.7.0](specs/rules/9a-bypass.md) | 🟢 10 of 10 agree (FAIL; round 2: 2 Does Not Apply where the key fails). Reads navigation inside web components (1.7.0). Caveat: a page with more than 5,000 items is left for a person |
+| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.6.0](specs/rules/9b-consistent-navigation.md) | 🟢 9 of 10 agree; reads navigation inside web components (1.6.0); CILab NEEDS REVIEW (1.5.0; it was Does Not Apply where the key passes, as in round 2). Caveat: as 9.A |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.9.0](specs/rules/9c-consistent-identification.md) | ⚠️ Reads components inside web components, named from Chrome's accessibility tree (1.9.0). 4 of 10 agree, no wrong PASS or FAIL (round 2: 2 FAILs the key passes); 6 NEEDS REVIEW: CILab (1.8.0; it was Does Not Apply where the key passes) and 5 the judge was unsure on. Caveat: as 9.A |
+| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.9.0](specs/rules/19a-multiple-ways.md) | ⚠️ Reads navigation inside web components (1.9.0). 4 of 10 agree; 6 FAILs the key passes, all from a site search whose results page's scripts did not load in the test container: since 1.7.0 that is NEEDS REVIEW (checked on 14194). Caveat: a search page that cannot load its own scripts is left for a person |
 
 ## Known wrong outcomes
 
@@ -110,7 +110,6 @@ A fix removes its line here in the same commit.
 | 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
 | 5.F, 5.G | Does Not Apply | an error shown in a web component or as a red border on a wrapper |
 | 5.H | Does Not Apply | a payment form not in English |
-| 19.A | FAIL | a site header built as a web component (9.A-9.C now say NEEDS REVIEW; 19.A waits for part D) |
 
 ## Tools
 
