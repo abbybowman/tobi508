@@ -80,7 +80,7 @@ Each completed field is an *instance*. After the Tab that leaves a field, focus 
 | M4 | The top URL changed, the page reloaded or a form was submitted | Ask J1 (J1?, M8–M10) | p. 27 HtT 4 (user agent, viewport; "a form automatically submitted when exiting a field"); F36 |
 | M5 | A new page or window opened | Ask J1 | p. 27 HtT 4 ("a new window launched when a radio button is selected"); F37 |
 | M6 | Focus went elsewhere (not where expected) | Ask J1 | p. 27 HtT 4 (focus); Understanding 3.2.2 (auto-advancing fields are a change of focus) |
-| M7 | No change above, but a dialog appeared or the DOM changed outside the field's own widget | Ask J2 and J1 together (M11–M13) | p. 27 HtT 4 ("content that changes the meaning of the page") |
+| M7 | No change above, but a dialog appeared or the DOM changed outside the field's own widget (inside the page's web components too, and the field's own widget found by ids in its own tree: 1.8.0, part D, review D-21; `5d/f23` was PASS) | Ask J2 and J1 together (M11–M13) | p. 27 HtT 4 ("content that changes the meaning of the page") |
 | J1? | J1 not answered yet | NEEDS REVIEW | Open question |
 | M8 | J1 = told, and its quote is found in the preceding text | No instance (the user was notified) | p. 27 HtT 4.a.i; G13 |
 | M9 | J1 = not told | FAIL | p. 27 ER 1 |

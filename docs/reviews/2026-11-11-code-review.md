@@ -2234,6 +2234,7 @@ Cleanup. All reviewers' claims unless marked.
   page is counted as a link (D-22). The 300 ms noise window and a Chrome
   session are repeated per action (D-23, D-24). Past 20 nested frames
   focus reads as "body" instead of "unknown" (D-25).
+  - **D-21 fixed:** step 8 reader 6, spec 5.D 1.8.0: `forms.py` looks ids up in the field's own tree, takes the text before a field inside a web component from that component, and its change signature reads text and dialogs inside web components (`5d/f23`: PASS on `main`, now asks J2 and J1). **D-19 (in part):** `jslib` holds the shared rules; reveal's field list is reader 7.
 - **4.A-4.C cleanup:** the specs give "exact wording" for the questions
   and the code words them differently; 4.C's rows J1? and J2? are not
   in its spec table (E-17). `_label`, `_norm` and the key-text helper

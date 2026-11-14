@@ -72,6 +72,13 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M9"],
         "answers": {"J2": {"choice": "changes_context"}, "J1": {"choice": "not_told"}},
     },
+    # D-21 (part D, 5.D 1.8.0): f16 inside a web component; the change
+    # inside it is a change in the page.
+    "f23-web-component-shows-full-terms": {
+        "outcome": "FAIL",
+        "rows": ["M9"],
+        "answers": {"J2": {"choice": "changes_context"}, "J1": {"choice": "not_told"}},
+    },
     "f08-autocomplete-list": {"outcome": "PASS", "rows": []},
     "f09-field-in-iframe": {"outcome": "FAIL", "rows": ["M9"], "answers": NOT_TOLD},
     "f10-zip-submits-when-valid": {
