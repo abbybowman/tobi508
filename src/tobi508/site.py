@@ -25,7 +25,10 @@ from tobi508 import count as inventory
 from tobi508.models import Count
 from tobi508.traverse import DEST_JS, PATH_JS, NewPage
 
-UNIT_CAP = 600  # units read per page (9.A spec section 2)
+# Units read per page (9.A spec section 2, 1.4.0). 600 until roadmap step 6c:
+# round 2's home page has 772, which held every 9.x cell. The read is
+# quadratic on one flat list (traverse.PATH_JS): 5 s at 5,000 links.
+UNIT_CAP = 5000
 # A site search's results page is read whole: its first page of results,
 # often filled in by script after load (19.A 1.5.0, post-round 2 fix 11).
 RESULTS_CAP = 2000

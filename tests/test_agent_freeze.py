@@ -36,12 +36,98 @@ async def _frozen_round(settings, tmp_path, stop=True) -> tuple[Path, list[str]]
     return rd, (urls if stop else (urls, srv))
 
 
-async def test_freeze_records_the_tested_pages_only(settings, tmp_path):
+async def test_freeze_records_the_tested_pages_and_their_searches(settings, tmp_path):
+    """Since step 6c the freeze also records 19.A's site search for each
+    page (plain, then quoted), and nothing else: no site map, no link."""
     rd, urls = await _frozen_round(settings, tmp_path)
     index = json.loads((rd / "frozen" / "index.json").read_text())
-    assert sorted(index) == sorted(urls)  # no search, no site map: those are live
+    searches = sorted(set(index) - set(urls))
+    assert set(urls) <= set(index)
+    assert searches and all("/19a/search.html?" in u for u in searches), searches
+    assert not any("sitemap" in u for u in index)
     log = json.loads((rd / "frozen" / "freeze.json").read_text())
-    assert log["recordings"] == 2
+    assert log["recordings"] == len(index)
+    got = log["searches"][urls[0]]["searches"]
+    assert [i["status"] for i in got] == ["frozen"] * len(got), got
+
+
+async def test_a_replay_of_the_frozen_set_needs_nothing_live(settings, tmp_path):
+    """19.A on the frozen set with the site down, in replay mode: its search
+    comes from the folder and finds the page, as the live search did
+    (test_fixtures_19a "nav-and-live-search": W1 W2 G2)."""
+    from .harness import run_tests
+
+    rd, urls = await _frozen_round(settings, tmp_path)
+    s = settings.model_copy(
+        update={"frozen_pages_dir": rd / "frozen", "frozen_pages_mode": "replay"}
+    )
+    got = await run_tests(s, urls[0], ["19.A"], {}, other_pages=[urls[1]])
+    f = got["19.A"]
+    assert f.outcome.value == "PASS", (f.rows, f.summary)
+    assert [r for r in f.rows if r != "A5"] == ["W1", "W2", "G2"]
+
+
+async def test_the_freeze_scrolls_so_content_shown_on_view_is_recorded(
+    settings, tmp_path
+):
+    """An image a script shows only when it comes into view, 2,500 px down:
+    a jump to the bottom never shows it; a window-by-window scroll does."""
+    from playwright.async_api import async_playwright
+
+    from tobi508.browser import launch_browser
+    from tobi508.capture import record
+
+    srv = LocalServer()
+    url = f"{srv.base}/lazy/l07-lazy-images.html"
+    seen = {}
+    try:
+        async with EgressProxy(settings) as proxy, async_playwright() as pw:
+            browser = await launch_browser(pw, settings, proxy)
+            for steps in (False, True):
+                s = settings.model_copy(update={"record_scroll_steps": steps})
+                har = tmp_path / f"{steps}.har.zip"
+                await record(browser, s, url, har, lambda *a, **k: None, proxy)
+                import zipfile
+
+                with zipfile.ZipFile(har) as z:
+                    name = next(n for n in z.namelist() if n.endswith(".har"))
+                    entries = json.loads(z.read(name))["log"]["entries"]
+                seen[steps] = any(
+                    e["request"]["url"].endswith("/lazy/l07-middle.svg")
+                    for e in entries
+                )
+            await browser.close()
+    finally:
+        srv.stop()
+    assert seen == {False: False, True: True}, seen
+
+
+async def test_media_chosen_first_puts_each_players_file_first(settings):
+    """With two players, each player's chosen file comes before any
+    alternative, so a cap spends itself on what a replay plays."""
+    from playwright.async_api import async_playwright
+
+    from tobi508.capture import _MEDIA_JS
+
+    html = (
+        "<video><source src='https://example.gov/a.mov' type='video/quicktime'>"
+        "<source src='https://example.gov/a.webm' type='video/webm'></video>"
+        "<video><source src='https://example.gov/b.mov' type='video/quicktime'>"
+        "<source src='https://example.gov/b.webm' type='video/webm'></video>"
+    )
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch()
+        page = await browser.new_page()
+        await page.route("**/*", lambda r: r.abort())
+        await page.set_content(html)
+        await page.wait_for_function(
+            "() => [...document.querySelectorAll('video')].every((v) => v.currentSrc)"
+        )
+        first = await page.evaluate(_MEDIA_JS, True)
+        plain = await page.evaluate(_MEDIA_JS, False)
+        await browser.close()
+    assert first[:2] == ["https://example.gov/a.webm", "https://example.gov/b.webm"]
+    assert plain[:2] == ["https://example.gov/a.webm", "https://example.gov/a.mov"]
 
 
 def _text(res) -> str:

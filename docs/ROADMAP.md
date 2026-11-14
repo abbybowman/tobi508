@@ -135,6 +135,10 @@ what is planned.
      two wrong 9.A PASSes (CILab, 14592). Done only when those two
      cells FAIL with the keys and no 9.A-9.C cell passes where the key
      fails. It merges before step 8 replaces the site read.
+     **Built 2026-11-13:** the cap is 5,000 (9.A 1.4.0, 9.C 1.6.0, 19.A
+     1.6.0), and a page over it is 9.A row A2. Round 2's pages: 9.A 10 of
+     10 FAIL with the keys, 9.B 9 of 10, 9.C 4 of 10 (5 NEEDS REVIEW), no
+     wrong PASS ([results](../evals/README.md#read-cap-2026-11-13-9a-9c-on-round-2s-10-pages-with-the-cap-at-5000-roadmap-step-6c-item-1)).
    - **A time budget per test** inside the run limit, so a test that
      runs long costs its own cell: 3.A's capture took 17 min on 14194
      (55 s in the dry run) and cost 5.A-5.H there. Find the cause as
@@ -142,12 +146,20 @@ what is planned.
    - **19.A: a search whose results page did not finish** (its own
      scripts failed to load) is "search not verified" (row W4, NEEDS
      REVIEW), not a search that found nothing (W3, FAIL).
+     **Built 2026-11-13:** 19.A 1.7.0 reads the results page's recording
+     for scripts that did not load; on 14194 in this container (its
+     search's 13 scripts refused) it is W4, NEEDS REVIEW, where step 6
+     gave FAIL.
    - **A fuller freeze** for step 10 and later rounds: the freeze
      scrolls the page so lazy images load, and records media and
      19.A's search results, so a run does not depend on the container.
      Round 2's and round 1's frozen pages cannot be recorded again (the
      keys describe the pages as they were), so for step 9 the fix is
      the container: a browser that trusts the egress proxy.
+     **Built 2026-11-13:** the freeze scrolls window by window, stores each
+     player's chosen file first (500 MB a page) and records 19.A's
+     searches; in a cloud container, `UPSTREAM_PROXY` in `.env`
+     (`docs/solutions/environment.md`).
 7. **The grid of hard pages** (part I): nine shared pages (a shadow
    root, a frame, more than a cap, a trap, a late start, text not in
    English, hidden text, a form behind a button, a failed reading) run

@@ -75,10 +75,10 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 | 5.F | 3.3.1-error-identification | 3.3.1 | [1.7.0](specs/rules/5f-error-identification.md) | 🟢 No wrong outcome; 3 agree, 7 NEEDS REVIEW. Caveat: fields inside frames are not checked yet |
 | 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.5.0](specs/rules/5g-error-suggestion.md) | 🟢 No wrong outcome; 3 agree, 7 NEEDS REVIEW. Caveat: as 5.F |
 | 5.H | 3.3.4-error-prevention | 3.3.4 | [1.5.0](specs/rules/5h-error-prevention.md) | 🟢 No wrong outcome; 4 agree, 6 NEEDS REVIEW. Caveat: a form that is only a button is NEEDS REVIEW (guard CN) |
-| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.4.0](specs/rules/9a-bypass.md) | ⚠️ No wrong outcome (round 2: 2 Does Not Apply where the key fails); NEEDS REVIEW on all 10. Caveat: only the first 600 items of a page are read |
-| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.4.0](specs/rules/9b-consistent-navigation.md) | ⚠️ No wrong outcome; NEEDS REVIEW on all 10. Caveat: an other page not read whole is left for a person |
-| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.7.0](specs/rules/9c-consistent-identification.md) | ⚠️ No wrong outcome (round 2: 2 FAILs the key passes); NEEDS REVIEW on all 10. Caveat: as 9.A |
-| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.6.0](specs/rules/19a-multiple-ways.md) | ⚠️ 4 of 10 agree; 6 FAILs the key passes. Caveat: in the test container the live site search's scripts did not load, so the search showed nothing (a results page whose scripts fail should be NEEDS REVIEW) |
+| 9.A | 2.4.1-bypass-function | 2.4.1 | [1.5.0](specs/rules/9a-bypass.md) | 🟢 10 of 10 agree (FAIL; round 2: 2 Does Not Apply where the key fails). Caveat: a page with more than 5,000 items is left for a person |
+| 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.4.0](specs/rules/9b-consistent-navigation.md) | 🟢 9 of 10 agree; 1 Does Not Apply where the key passes (CILab, as in round 2). Caveat: as 9.A |
+| 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.7.0](specs/rules/9c-consistent-identification.md) | ⚠️ 4 of 10 agree, no wrong PASS or FAIL (round 2: 2 FAILs the key passes); 1 Does Not Apply where the key passes (CILab), 5 NEEDS REVIEW (the judge unsure). Caveat: as 9.A |
+| 19.A | 2.4.5-multiple-ways | 2.4.5 | [1.8.0](specs/rules/19a-multiple-ways.md) | ⚠️ 4 of 10 agree; 6 FAILs the key passes, all from a site search whose results page's scripts did not load in the test container: since 1.7.0 that is NEEDS REVIEW (checked on 14194). Caveat: a search page that cannot load its own scripts is left for a person |
 
 ## Known wrong outcomes
 

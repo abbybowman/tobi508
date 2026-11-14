@@ -62,7 +62,7 @@ Each pair is an *instance*.
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing each pair |
-| G3 | Any instance is NEEDS REVIEW, or J1 questions were capped (at most 12 per run), or a page was over the read cap of 600 pieces of content, so its later controls were never paired (1.1.0; 9.A Terms: "a page over the cap is incomplete") | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
+| G3 | Any instance is NEEDS REVIEW, or J1 questions were capped (at most 12 per run), or a page was over the read cap of 5,000 pieces of content (1.6.0; 600 before), so its later controls were never paired (1.1.0; 9.A Terms: "a page over the cap is incomplete") | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
 | G3u | Every pair that was compared was left out, and at least one by C0 (the only controls the pages share have no name; 1.7.0). Never DOES NOT APPLY: there were shared components, and they were not compared; never PASS | NEEDS REVIEW, with the note "This test could not be performed": "The only controls the two pages share have no name, so nothing could be compared." |
 | G4 | Every pair was dropped by C5 | DOES NOT APPLY |
 | G5 | Every instance is PASS | PASS |

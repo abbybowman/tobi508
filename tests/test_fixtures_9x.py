@@ -171,6 +171,31 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.A": "DNA", "9.B": "PASS", "9.C": "PASS"},
         {"9.C": {"J1": {"choice": "consistent"}}},
     ),
+    # The read cap (9.A 1.4.0, 9.C 1.6.0; roadmap step 6c): 700 pieces of
+    # content, over the old cap of 600, are read whole and decided. Round 2's
+    # home page (772) and galleries page (630) held every 9.x cell.
+    "over-the-old-cap": (
+        "h1-big-menu",
+        ["h2-big-menu-benefits"],
+        {"9.A": "FAIL", "9.B": "PASS", "9.C": "PASS"},
+        {},
+    ),
+    # The nearest page that must still be NEEDS REVIEW: 5,001 topics, over
+    # the cap, so the main content is never reached. 9.A gave DOES NOT APPLY
+    # here (A4: "nothing before the main content") before 1.4.0.
+    "over-the-cap": (
+        "h3-huge-menu",
+        ["h2-big-menu-benefits"],
+        {"9.A": "NEEDS_REVIEW", "9.B": "NEEDS_REVIEW", "9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    # An other page over the cap: what repeats cannot be told (9.A A2).
+    "other-page-over-the-cap": (
+        "h1-big-menu",
+        ["h3-huge-menu"],
+        {"9.A": "NEEDS_REVIEW", "9.B": "NEEDS_REVIEW", "9.C": "NEEDS_REVIEW"},
+        {},
+    ),
 }
 
 # Rules tests only, left out of the judge eval: the same page and question
@@ -209,8 +234,35 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
             assert sorted(instance_rows(f)) == sorted(ROWS[(case, t)]), f.rows
 
 
+@pytest.mark.parametrize("case", ["over-the-cap", "other-page-over-the-cap"])
+async def test_page_over_the_cap_is_not_performed(case, settings, server, drafts):  # noqa: F811
+    """9.A 1.4.0: a page over the read cap is A2 (not performed) before A3,
+    A4 or G2 can decide; 9.B N1 and 9.C G3 as before. The summary names the
+    cap and the page."""
+    from tobi508.site import UNIT_CAP
+
+    page, others, want, answers = EXPECTED[case]
+    got = await run_tests(
+        settings,
+        f"{server.base}/9x/{page}.html",
+        list(want),
+        answers,
+        other_pages=[f"{server.base}/9x/{o}.html" for o in others],
+    )
+    where = "the tested page" if case == "over-the-cap" else "other page 1"
+    assert got["9.A"].rows == ["A2", "G1"], got["9.A"].rows
+    assert got["9.A"].note == "This test could not be performed"
+    for t in ("9.A", "9.C"):
+        assert f"first {UNIT_CAP:,} pieces of content of {where}" in got[t].summary, (
+            t,
+            got[t].summary,
+        )
+    assert got["9.B"].rows[-1] == "G3", got["9.B"].rows
+    assert got["9.C"].rows[-1] == "G3", got["9.C"].rows
+
+
 def test_9c_page_over_the_cap_is_never_pass_or_dna():
-    """A page over the 600-unit cap has controls that were never paired, so
+    """A page over the read cap has controls that were never paired, so
     agreeing pairs (G5) or no pairs (A3) cannot decide (spec 1.1.0). Built
     evidence: no fixture page this large is worth vendoring."""
     from tobi508.checks.t9c import AndiPage, Comp, Pair, State9C, evaluate

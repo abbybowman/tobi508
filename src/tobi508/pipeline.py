@@ -390,6 +390,7 @@ def _live_recorder(browser, settings, run, report, proxy, final_url, get_browser
             n=100 + n,
             url=url,
             final_url=lc.final_url,
+            har=run.dir / rel,
             new_page=_opener(
                 get_browser,
                 settings,

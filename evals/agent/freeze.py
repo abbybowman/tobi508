@@ -10,9 +10,23 @@ fonts and scripts missing)
 Each page in <round>/pages.txt is recorded once, as a live run records it
 (capture.record: the allowlist and every redirect hop checked, scrolled to
 load lazy content), into <round>/frozen/ (index.json, the recordings and
-freeze.json). Nothing else is recorded: during the arms, other pages of the
-tested site (site maps, search results, any route an agent tries) load live
-for both arms, and the tested pages come only from these copies.
+freeze.json). Since roadmap step 6c (round 3 on; a locked round's frozen
+set is never recorded again) the freeze also:
+  * scrolls each page down one window at a time, so images that load when
+    they come into view are recorded (`record_scroll_steps`);
+  * stores the media file each player chose, in full, before any
+    alternative source (`media_chosen_first`, caps MEDIA_CAP_MB and
+    MEDIA_CAP_S per page);
+  * records 19.A's site search for each page: the same form and term 19.A
+    would use (the page's first heading, plain and in quotation marks),
+    read from the frozen copies, so a replay needs nothing live.
+Other routes an agent tries (site maps, any other page) still load live in
+"tested_frozen" mode.
+
+In a cloud container, set UPSTREAM_PROXY to the container's HTTPS_PROXY
+first (docs/solutions/environment.md): otherwise the browser refuses the
+container's certificates and pages are frozen without their CSS and scripts
+(the check below calls them suspect).
 
 This step touches the live site, close to the tester's own testing; compare
 each page's footer timestamp with the tester's after freezing.
@@ -39,6 +53,8 @@ from tobi508.policy import check_url
 from tobi508.redact import safe_error
 
 FROZEN = "frozen"
+MEDIA_CAP_MB = 500  # per page: round 2's chosen files were 2-92 MB
+MEDIA_CAP_S = 300
 ASSET_TYPES = ("stylesheet", "script", "font")
 MOST = 0.5  # more than half the CSS, font and script requests failed
 
@@ -120,7 +136,14 @@ async def freeze(rd: Path, settings: Settings, accept: bool = False) -> dict:
         raise JudgingError("This round is locked")
     folder = rd / FROZEN
     s = settings.model_copy(
-        update={"frozen_pages_dir": folder, "frozen_pages_mode": "record_missing"}
+        update={
+            "frozen_pages_dir": folder,
+            "frozen_pages_mode": "record_missing",
+            "record_scroll_steps": True,
+            "media_chosen_first": True,
+            "media_cap_mb": MEDIA_CAP_MB,
+            "media_cap_s": MEDIA_CAP_S,
+        }
     )
     pages = [u for u, _ in _pages(rd)]
     log: dict = {"started_at": datetime.now(timezone.utc).isoformat(), "pages": {}}
@@ -158,6 +181,7 @@ async def freeze(rd: Path, settings: Settings, accept: bool = False) -> dict:
                     entry.update(status="error", error=safe_error(exc)[:300])
                 entry["seconds"] = round(time.monotonic() - t0, 1)
                 log["pages"][url] = entry
+            log["searches"] = await record_searches(browser, s, proxy, pages)
         finally:
             await browser.close()
     folder.mkdir(parents=True, exist_ok=True)
@@ -165,6 +189,96 @@ async def freeze(rd: Path, settings: Settings, accept: bool = False) -> dict:
     log["recordings"] = len(load(folder))
     (folder / "freeze.json").write_text(json.dumps(log, indent=1) + "\n")
     return log
+
+
+async def _read_frozen(browser, s: Settings, url: str):
+    """A frozen page read as 19.A reads it (site.read_page on a replay)."""
+    from tobi508.capture import replay_context
+    from tobi508.site import read_page
+
+    rec = load(s.frozen_pages_dir).get(url)
+    if rec is None:
+        return None
+
+    async def new_page():
+        replay = await replay_context(
+            browser, s, s.frozen_pages_dir / rec.har, lambda *a, **k: None
+        )
+        page = await replay.context.new_page()
+        await replay.guard.goto(page, rec.final_url)
+        return replay.context, page
+
+    got = await read_page(0, rec.final_url, new_page)
+    return None if got.error else got
+
+
+def search_urls(main, others) -> list[str]:
+    """The site searches 19.A would make for `main` (t19a._live_search):
+    the first form of the tested page, then of the other pages in the
+    caller's order, that the tool can submit; the term, then the term in
+    quotation marks."""
+    from tobi508.checks.t19a import _term, search_url
+
+    forms = [f for p in [main, *others] for f in p.forms]
+    term = _term(main)
+    if not term:
+        return []
+    out = []
+    for t in [term] + ([] if '"' in term else [f'"{term}"']):
+        u = next((u for u in (search_url(f, t) for f in forms) if u), None)
+        if u and u not in out:
+            out.append(u)
+    return out
+
+
+async def record_searches(browser, s: Settings, proxy, pages: list[str]) -> dict:
+    """Record 19.A's searches for every page into the frozen set, under the
+    rules of the live search (allowlist on every hop, the tested page's
+    host). Page content chooses only what 19.A's own search would."""
+    from evals.judging import other_pages
+    from tobi508.pipeline import _same_site
+
+    reads = {u: await _read_frozen(browser, s, u) for u in pages}
+    out: dict = {}
+    for url in pages:
+        main = reads.get(url)
+        if main is None:
+            out[url] = {"status": "not read"}
+            continue
+        others = [reads[o] for o in other_pages(url, pages) if reads.get(o)]
+        done = []
+        for su in search_urls(main, others):
+            item: dict = {"url": su}
+            done.append(item)
+            if not check_url(su, s.allowed_domains, s.dev_mode).allowed or not (
+                _same_site(su, main.url)
+            ):
+                item["status"] = "not allowed"
+                continue
+            try:
+                with tempfile.TemporaryDirectory() as tmp:
+                    cap = await obtain(
+                        browser,
+                        s,
+                        su,
+                        Path(tmp) / "search.har.zip",
+                        lambda *a, **k: None,
+                        proxy,
+                        tested=False,
+                    )
+                if not _same_site(cap.final_url, main.url):
+                    item["status"] = "left the host"
+                    continue
+                rec = load(s.frozen_pages_dir).get(su)
+                item["status"] = "frozen"
+                if rec is not None:
+                    item.update(
+                        check_recording(s.frozen_pages_dir / rec.har, cap.final_url)
+                    )
+            except Exception as exc:
+                item.update(status="error", error=safe_error(exc)[:300])
+        out[url] = {"searches": done}
+    return out
 
 
 def main(argv: list[str]) -> None:
@@ -180,6 +294,12 @@ def main(argv: list[str]) -> None:
             f"title {e.get('title')!r}; heading {e.get('heading')!r}"
             + (f"; SUSPECT: {e['suspect']}" if e.get("suspect") else "")
         )
+    for u, e in log.get("searches", {}).items():
+        for item in e.get("searches", []):
+            print(
+                f"  19.A search for {u}: {item['url']}: {item.get('status')}"
+                + (f"; SUSPECT: {item['suspect']}" if item.get("suspect") else "")
+            )
     bad = [u for u, e in log["pages"].items() if e["status"] != "frozen"]
     print(f"{log['recordings']} recordings; pages not frozen: {bad or 'none'}")
     if any(e["status"] == "suspect" for e in log["pages"].values()):
