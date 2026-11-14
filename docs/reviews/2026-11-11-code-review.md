@@ -108,7 +108,7 @@ below; "run" means I ran a page and got the outcome shown.
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
 | D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
 | K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · fixed (step 8: read) |
-| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
+| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B); read (step 8) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
 | H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run · 5.D fixed (part B); 5.F, 5.G, 5.H fixed (step 6b) |
@@ -484,6 +484,7 @@ them.
   APPLY. The watchers reviewer found the same independently (W-03)
   and adds that `speechSynthesis.speak()` is not hooked either.
 - **Fixed:** 76b8f24 (play hook and guard CN, part B), spec 2.A 1.1.0: `new Audio()` and autoplay inside a web component are NEEDS REVIEW ("1 sound or video played from a script, and was not checked").
+- **Fixed (read):** step 8 reader 3, specs 2.A 1.2.0, 2.B 1.4.0, 2.C 1.1.0, 2.D 1.2.0, 3.A 1.3.0: pass T reads media, live regions, carousels and marquees inside web components and watches their changes; 2.A's probe finds media by path into them (`J.find`: `document.querySelector` would have read shadow audio as gone, so as stopped). The review's page: 2.A FAIL, as a plain `<audio autoplay>`; the grid's shadow page: 2.A FAIL, 2.B NEEDS REVIEW (was a wrong DOES NOT APPLY).
 
 #### M-06 5.F and 5.G read "no error seen" as "the page did not check"
 

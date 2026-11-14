@@ -73,16 +73,23 @@ class State2A(BaseModel):
     @property
     def read(self) -> dict[str, dict[str, int]]:
         """What pass T's media read covered, for guard CN (count.py): the
-        played elements it lists, and media in frames; nothing inside web
-        components or played from a script with no element on the page."""
+        played elements it lists, the media inside web components it read
+        (part D, 2.A 1.2.0), and media in frames; nothing played from a
+        script with no element on the page."""
         listed = self.mp.played_listed
         return {
             "page": {
                 "media_played.light": listed.light,
                 "media_played.frames": listed.frames,
-                "media_played.shadow": 0,
+                "media_played.shadow": listed.shadow,
                 "media_played.detached": 0,
-                "media.shadow": 0,
+                "media.shadow": len(
+                    {
+                        css
+                        for (f, css), r in _reads(self.mp).items()
+                        if f == 0 and r[0].shadow
+                    }
+                ),
                 "media.frames": sum(f != 0 for f, _ in _reads(self.mp)),
             }
         }

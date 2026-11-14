@@ -28,6 +28,7 @@ from typing import Any
 from PIL import Image, ImageChops
 from playwright.async_api import Page
 
+from tobi508.jslib import JSLIB
 from tobi508.motion import Candidate, Element, MotionPass, Probe, Region
 from tobi508.traverse import open_session, replay
 
@@ -303,16 +304,22 @@ async def watch(page: Page, r: Region) -> str:
 AUDIO_CONFIRM_S = 3.5  # 2.A spec Terms
 
 # The audio's state in its own frame: media by path, or Web Audio contexts.
-_AUDIO_JS = """(css) => {
+_AUDIO_JS = (
+    "(css) => {"
+    + JSLIB
+    + """
   if (!css) {
     const M = window.__a11yMotion;
     const states = M ? Array.from(M.ctxs).map((c) => c.state) : [];
     return { web: states };
   }
-  const m = document.querySelector(css);
+  // By path, into web components (J.find): a media element inside one is
+  // not "gone" because document.querySelector cannot reach it (part D).
+  const m = J.find(css);
   if (!m) return null;
   return { paused: m.paused, muted: m.muted, volume: m.volume, ended: m.ended };
 }"""
+)
 
 
 async def audio_watch(page: Page, r: Region) -> str:
@@ -350,12 +357,16 @@ def _watcher(r: Region):
     return audio_watch if r.source == "audio" else watch
 
 
-_FOCUS_JS = """(css) => {
-  const el = document.querySelector(css);
+_FOCUS_JS = (
+    "(css) => {"
+    + JSLIB
+    + """
+  const el = J.find(css);
   if (!el) return false;
   el.focus();
-  return document.activeElement === el;
+  return J.active() === el;
 }"""
+)
 
 
 async def _reach(ctx: Any, el: Element, presses: int):

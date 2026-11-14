@@ -1,7 +1,7 @@
 ---
 tt_test: 2.C
 tt_name: 2.2.2-auto-updating
-spec_version: 1.0.0
+spec_version: 1.1.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -115,12 +115,14 @@ and names each content that changed and when it stopped.
 
 ## 2. Evidence to collect
 
-**Pass T** (`motion.py`, shared with 2.A, 2.B and 2.D, `RunContext.cache["motion"]`; starts beside the walk's P1, plan Q2):
+**Pass T** (`motion.py`, shared with 2.A, 2.B and 2.D, `RunContext.cache["motion"]`; starts beside the walk's P1, plan Q2). Its reads of the page's elements (media, live regions, carousels, marquees, videos, media controls) take them from the page's document and its open shadow roots at any depth (`jslib` `J.all`), and find an element again by path into web components (`J.find`), so content inside a web component is watched like the rest (1.1.0; Abby, 2026-11-14; review N-01):
 
 - **Setup.** One fresh load of the recorded page, in the batch's browser,
   with these added by init scripts before page scripts run (plan Q7):
   - a mutation log with targets (node path, kind, text before and after,
-    capped);
+    capped), inside open shadow roots too: each root as it is attached,
+    and those already in the page (server-rendered ones attach none) when
+    the watch starts (1.1.0; plan 2026-11-12 part D, review D-04's cause);
   - timer hooks (`setInterval` and `setTimeout` periods of 1 s or more);
   - the Web Audio connect hook (2.A).
 - **Frames** every 0.5 s for 6.5 s. From them come the regions, each with

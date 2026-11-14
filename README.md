@@ -57,11 +57,11 @@ Status is from one run on 2026-11-13: round 2's 10 svs.gsfc.nasa.gov pages (froz
 
 | ID | TT test name | WCAG 2.0 | Spec | Status on real pages |
 | --- | --- | --- | --- | --- |
-| 2.A | 1.4.2-audio-control | 1.4.2 | [1.1.0](specs/rules/2a-audio-control.md) | 🟢 7 of 10 agree, no wrong outcome, 3 NEEDS REVIEW. Caveat: audio that does not play from the recording is left for a person |
-| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.3.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 No wrong outcome; 1 of 10 agree, 9 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
-| 2.C | 2.2.2-auto-updating | 2.2.2 | [1.0.0](specs/rules/2c-auto-updating.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: moving content not settled in 6.5 s is left for a person |
-| 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.1.0](specs/rules/2d-change-notify-auto.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Caveat: as 2.C |
-| 3.A | 2.3.1-flashing | 2.3.1 | [1.2.1](specs/rules/3a-flashing.md) | 🟢 No wrong PASS or Does Not Apply; 3 of 10 agree, 1 Not Tested where the key says Does Not Apply, 6 NEEDS REVIEW. Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
+| 2.A | 1.4.2-audio-control | 1.4.2 | [1.2.0](specs/rules/2a-audio-control.md) | 🟢 7 of 10 agree, no wrong outcome, 3 NEEDS REVIEW. Reads and probes media inside web components (1.2.0). Caveat: audio that does not play from the recording is left for a person |
+| 2.B | 2.2.2-blinking-moving-scrolling | 2.2.2 | [1.4.0](specs/rules/2b-blinking-moving-scrolling.md) | 🟢 No wrong outcome; 1 of 10 agree, 9 NEEDS REVIEW. Watches inside web components (1.4.0). Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
+| 2.C | 2.2.2-auto-updating | 2.2.2 | [1.1.0](specs/rules/2c-auto-updating.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Watches inside web components (1.1.0). Caveat: moving content not settled in 6.5 s is left for a person |
+| 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.2.0](specs/rules/2d-change-notify-auto.md) | 🟢 No wrong outcome; NEEDS REVIEW on all 10. Watches inside web components (1.2.0). Caveat: as 2.C |
+| 3.A | 2.3.1-flashing | 2.3.1 | [1.3.0](specs/rules/3a-flashing.md) | 🟢 No wrong PASS or Does Not Apply; 3 of 10 agree, 1 Not Tested where the key says Does Not Apply, 6 NEEDS REVIEW. Reads videos inside web components (1.3.0). Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
 | 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.10.0](specs/rules/4a-keyboard-access.md) | ⚠️ 2 agree, 1 FAIL the key passes (a judge answer), 7 NEEDS REVIEW; round 2's PASS on CILab now fails with the key. Caveat: often undecided with embedded players and frames |
 | 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 9 of 10 agree, no wrong outcome, 1 NEEDS REVIEW |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.1](specs/rules/4c-no-keyboard-trap.md) | ⚠️ No wrong PASS (round 2's on 5340 is now NEEDS REVIEW); 2 agree, 8 NEEDS REVIEW. Caveat: menus or sections that open leave it for a person |

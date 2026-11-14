@@ -40,6 +40,11 @@ CASES = {
     # DOES NOT APPLY (A3) when the read it first appeared in was compared with
     # itself.
     "t-audio-late": ({}, "FAIL", "K6"),
+    # Part D (2.A 1.2.0): the audio and its "Stop sound" button inside a web
+    # component are read and probed like t-audio-stop-first; the twin's
+    # button does nothing, so it still FAILs.
+    "t-audio-shadow-stop-first": ({}, "NEEDS_REVIEW", "K3/E3"),
+    "t-audio-shadow-broken-first": ({}, "FAIL", "K6"),
     # Web Audio: no bytes to measure (A2).
     "t-webaudio": ({}, "NEEDS_REVIEW", "A2"),
 }

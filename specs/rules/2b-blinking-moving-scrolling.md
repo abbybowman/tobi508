@@ -1,7 +1,7 @@
 ---
 tt_test: 2.B
 tt_name: 2.2.2-blinking-moving-scrolling
-spec_version: 1.3.0
+spec_version: 1.4.0
 count: images
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -64,7 +64,7 @@ confirm time, the content no longer rendered, or (for a video) paused.
 
 ## 2. Evidence to collect
 
-Pass T and the mechanism probe as in [2c-auto-updating.md](2c-auto-updating.md) section 2, shared. Pass T's reads add, for each region:
+Pass T and the mechanism probe as in [2c-auto-updating.md](2c-auto-updating.md) section 2, shared; since 2.C 1.1.0 pass T reads videos, carousels and marquees inside web components too, so a video moving inside one is found like any other (1.4.0; review N-01). Pass T's reads add, for each region:
 
 - its animations' timing, from `getAnimations()`;
 - for each animated image: frames, loop count and one play-through, from
