@@ -45,7 +45,7 @@ from tobi508.browser import (
 )
 from tobi508.capture import Capture, document_sha, replay_context, unrecorded_code
 from tobi508.checks import REGISTRY, RunContext
-from tobi508.checks.base import PageRef
+from tobi508.checks.base import PageRef, budget_s, out_of_budget_reason
 from tobi508.config import Settings
 from tobi508.egress import EgressProxy
 from tobi508.engine import apply_guards
@@ -939,6 +939,7 @@ async def run_tt_tests(
     checks.sort(key=lambda c: -getattr(c, "shares", 0))
     states: dict[TestId, Any] = {}
     skipped: dict[TestId, str] = {}  # tests left out, and why (fix 12)
+    ran_out: dict[TestId, str] = {}  # tests past their own budget (step 6c)
     walk: KeyboardWalk | None = None
     motion_task: asyncio.Task | None = None
     allowance = [0]  # T1 (a): seconds added once pass T finds moving content
@@ -1264,13 +1265,18 @@ async def run_tt_tests(
                 if needs_walk(c, ctx) and walk is None:
                     continue  # NEEDS REVIEW: the run did not complete (errors say why)
                 await say(2, f"Checking {c.test_id.value}")
+                # The test's own budget, inside the run limit (step 6c).
+                limit = hard + allowance[0]
+                own = time.monotonic() + budget_s(c.test_id.value)
                 try:
                     with metered() as cost:
-                        state = await _bounded(
-                            c.collect(ctx, walk), hard + allowance[0]
-                        )
+                        state = await _bounded(c.collect(ctx, walk), min(limit, own))
                 except TimeoutError:
-                    msg = "the run reached its time limit before this test finished"
+                    if own < limit:
+                        ran_out[c.test_id] = out_of_budget_reason(c.test_id.value)
+                        msg = f"ran out of its time ({budget_s(c.test_id.value)} s)"
+                    else:
+                        msg = "the run reached its time limit before this test finished"
                     run.log("check_error", "error", test=c.test_id.value, error=msg)
                     report.errors.append(f"{c.test_id.value}: {msg}")
                     continue
@@ -1319,7 +1325,7 @@ async def run_tt_tests(
 
     await say(3, "Evaluating")
     report.findings = []
-    _evaluate(run, report, states, skipped)
+    _evaluate(run, report, states, {**skipped, **ran_out})
     result = await get_judge(settings.judge_backend).judge(report.open_questions)
     report.open_questions = result.pending
     report.finished_at = utcnow()

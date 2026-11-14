@@ -194,6 +194,13 @@ by TT test ID. Package: `tobi508`.
   plus `MOVING_ALLOWANCE_S` (default 45 s) once pass T finds content that
   keeps changing by itself. `no_time_limit=true` also lifts the media
   store's caps.
+- Each test has its own budget for collecting its evidence
+  (`TEST_BUDGET_S` in `checks/base.py`, recorded as
+  `versions.test_budgets_s`): past it the test is NEEDS REVIEW, not
+  performed ("ran out of its time"), and the tests after it still run. A
+  budget never extends the run limit, and the shared walk and opening of
+  menus count against the run limit only. A new test gets a budget of
+  about twice its longest collect on real pages, at least 60 s.
 - At most `MAX_CONCURRENT_RUNS` (default 2) runs use a browser at once; a
   queued run's limit starts when it starts.
 

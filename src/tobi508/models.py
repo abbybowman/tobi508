@@ -470,6 +470,13 @@ class Versions(BaseModel):
             "take (replay_navigation_timeout_ms)."
         ),
     )
+    test_budgets_s: dict[str, int] = Field(
+        default_factory=dict,
+        description=(
+            "TT test ID -> the seconds that test may spend collecting its "
+            "evidence, inside the run limit (checks.base.TEST_BUDGET_S)."
+        ),
+    )
     display: dict[str, int | float | None] = Field(
         default_factory=dict,
         description=(

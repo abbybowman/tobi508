@@ -43,7 +43,9 @@ smallest, t5d.py for a form test, or t9b.py for a multi-page test):
      <id>-build-tasks.md's V-checks to specs/rules/_browser-checks.md and
      what is left to docs/ROADMAP.md, delete the file, and add any lesson
      that cost time to docs/solutions/.
-  7. The pipeline, tools, report, explain prompt and resume path need no
+  7. Give it a time budget in TEST_BUDGET_S below (about twice the longest
+     collect measured on real pages, at least 60 s).
+  8. The pipeline, tools, report, explain prompt and resume path need no
      changes; the tool description lists the new test from the registry.
 """
 
@@ -75,6 +77,51 @@ class PageRef:
     same_content_as_tested: bool = False
     # Its recording, for a page recorded during the run (19.A's search).
     har: Path | None = None
+
+
+# Each test's own time for collecting its evidence, inside the run limit
+# (roadmap step 6c, Abby 2026-11-14): a test still collecting when its budget
+# ends is NEEDS REVIEW, not performed ("ran out of its time"), and the tests
+# after it still run. About twice the longest collect measured on round 2's
+# ten frozen pages (2026-11-13, Linux headless, judge off; in brackets), at
+# least 60 s. The shared walk and opening of menus are not a test's: they
+# count against the run limit only. A budget never extends the run limit.
+TEST_BUDGET_S: dict[str, int] = {
+    "2.A": 120,  # (1 s: waits on pass T, which runs beside the walk)
+    "2.B": 120,
+    "2.C": 120,
+    "2.D": 120,
+    "3.A": 240,  # (62 s; 117 s with its stepped capture)
+    "4.A": 240,  # (112 s, 5144)
+    "4.B": 60,  # (10 s)
+    "4.C": 180,  # (65 s, 5340)
+    "4.D": 60,  # (9 s)
+    "4.E": 60,  # (0 s: reads other tests' replays)
+    "4.F": 540,  # (270 s, 4914)
+    "5.A": 60,  # (11 s)
+    "5.B": 60,
+    "5.C": 60,
+    "5.D": 600,  # (483 s, search: 98 fields)
+    "5.F": 120,
+    "5.G": 120,
+    "5.H": 120,
+    "9.A": 180,  # (56 s, home)
+    "9.B": 60,
+    "9.C": 180,  # (62 s, home)
+    "19.A": 120,  # (two live searches of up to 20 s each, and their reads)
+}
+BUDGET_DEFAULT_S = 60
+
+
+def budget_s(test_id: str) -> int:
+    return TEST_BUDGET_S.get(test_id, BUDGET_DEFAULT_S)
+
+
+def out_of_budget_reason(test_id: str) -> str:
+    return (
+        f"This test ran out of its time ({budget_s(test_id)} s) before it "
+        "finished, so a person needs to check it. The tests after it still ran."
+    )
 
 
 # What a check records when the run's time limit cut work short (one wording

@@ -100,3 +100,39 @@ lifted their field caps when `ctx.deadline` was infinite, which was how
 stop (`MAX_RUN_S`), the caps came back silently, and a time-budget test
 caught it. The run context now carries `no_time_limit` itself; check that
 flag, never the deadline's value.
+
+**A budget per test (2026-11-14, roadmap step 6c).** One slow test used
+to cost every test after it: on step 6's run of 14194, 3.A took about 17
+min and the run cap (`MAX_RUN_S`) left 5.A-5.H not performed. Each test
+now has its own budget (`checks/base.TEST_BUDGET_S`); past it, that test is
+NEEDS REVIEW and the next starts. Two traps:
+- A test awaiting a task other tests share must shield it
+  (`asyncio.shield`): cancelling the awaiting test cancels the task.
+  `motion.collect` does; `test_budgets.py` fails without it.
+- A budget of 0 never starts the coroutine (`_bounded` closes it), so a
+  test of what happens mid-await needs a budget the work outlasts.
+
+Measured on round 2's ten frozen pages (2026-11-13, Linux headless, 4 CPUs,
+replay mode, judge off), seconds of each test's own collect:
+
+| Page | Total | Walk | Menus | 3.A | 4.A | 4.C | 4.F | 5.D | 9.A | 9.C |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| home | 423 | 99 | 36 | 5 | 46 | 15 | 86 | 5 | 56 | 62 |
+| help | 103 | 54 | 6 | 3 | 6 | 10 | 9 | 2 | 5 | 4 |
+| search | 672 | 84 | 32 | 3 | 20 | 17 | 10 | 483 | 3 | 2 |
+| galleries | 138 | 98 | 0 | 3 | 10 | 6 | 3 | 3 | 3 | 1 |
+| CILab | 17 | 6 | 0 | 3 | 4 | 0 | 0 | 0 | 0 | 1 |
+| 14592 | 494 | 73 | 144 | 41 | 21 | 29 | 125 | 21 | 15 | 8 |
+| 14194 | 538 | 72 | 93 | 56 | 26 | 44 | 166 | 27 | 20 | 11 |
+| 5340 | 202 | 50 | 0 | 21 | 20 | 65 | 2 | 29 | 1 | 2 |
+| 5144 | 481 | 135 | 4 | 32 | 112 | 17 | 30 | 67 | 6 | 2 |
+| 4914 | 928 | 298 | 38 | 63 | 37 | 35 | 270 | 159 | 13 | 4 |
+
+Every other test was under 11 s (the 2.x tests read pass T, which runs
+beside the walk). **3.A's 17 min was not reproduced:** on the same frozen
+copy 3.A took 56 s (no page trigger, so no stepped capture: the video
+decode alone), and with a page trigger forced, 117 s (stepped capture 33 s
+for 181 frames, 0.19 s a step; video decode 33 s), with step 6's outcome
+(NOT TESTED, flashing in the video). Step 6's step log was not kept, so the
+cause is unknown; `stepped.wall_s` in 3.A's evidence shows the capture's
+own time if it happens again.

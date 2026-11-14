@@ -44,6 +44,7 @@ def collect_versions(
         rules_spec=spec_versions(settings.rules_dir),
         judging_model=_judging_model(settings),
         display=configured_display(settings),
+        test_budgets_s=_budgets(),
         run_settings={
             "settle_quiet_ms": settings.settle_quiet_ms,
             "record_scroll_passes": settings.record_scroll_passes,
@@ -61,6 +62,13 @@ def collect_versions(
             "replay_navigation_timeout_ms": settings.replay_navigation_timeout_ms,
         },
     )
+
+
+def _budgets() -> dict[str, int]:
+    from tobi508.checks import REGISTRY
+    from tobi508.checks.base import budget_s
+
+    return {t.value: budget_s(t.value) for t in REGISTRY}
 
 
 def configured_display(settings: Settings) -> dict[str, int | float | None]:
