@@ -32,8 +32,8 @@ from tobi508.site import (
     NAV_ROLES,
     UNIT_CAP,
     UNITS_FN,
-    UNRELATED_REASON,
     Kinship,
+    a3o_reason,
     kinship,
     norm_href,
     site_read,
@@ -501,10 +501,11 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
             rationale="Spec G3. Incomplete: " + "; ".join(unread),
             note=True,
         )
-    if not st.pairs and st.kinship is not None and st.kinship.unrelated_review:
+    # A3o (1.8.0): no pair and the page has navigation of its own.
+    if not st.pairs and st.kinship is not None and st.kinship.own_navigation:
         return _finding(
             Outcome.NEEDS_REVIEW,
-            " ".join([REVIEW_HEAD, UNRELATED_REASON]),
+            " ".join([REVIEW_HEAD, a3o_reason(st.kinship, "9.C")]),
             ["A3o", "G1"],
             evidence_refs,
             note=True,

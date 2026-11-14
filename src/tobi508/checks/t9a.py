@@ -31,9 +31,9 @@ from tobi508.models import (
 from tobi508.site import (
     UNIT_CAP,
     UNITS_FN,
-    UNRELATED_REASON,
     Kinship,
     Unit,
+    a3o_reason,
     kinship,
     norm_href,
     page_label,
@@ -295,7 +295,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
     st.units = site.main.units
     st.rep = repeated_flags(site)
     st.kinship = kinship(site)
-    if st.kinship.unrelated_review:
+    if _a3o(st):
         return st  # A3o: nothing more is read
     st.m, st.m_kind = main_start(st.units, st.rep)
     if st.m is not None:
@@ -656,6 +656,13 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="", note=False):
     return f
 
 
+def _a3o(st: State9A) -> bool:
+    """A3o (1.6.0): the tested page has navigation of its own, and nothing on
+    it repeats or every other page shares almost nothing with it."""
+    k = st.kinship
+    return k is not None and k.own_navigation and (k.all_unrelated or not any(st.rep))
+
+
 def evaluate(st: State9A, evidence_refs: list[str]) -> Finding:
     if st.no_pages:
         f = Finding.not_performed(TestId.T9A, NOT_PERFORMED_PAGES)
@@ -668,10 +675,10 @@ def evaluate(st: State9A, evidence_refs: list[str]) -> Finding:
         f.rows = ["A2", "G1"]
         return f
     pages = ", ".join(f"other page {p['n']}" for p in st.pages)
-    if st.kinship is not None and st.kinship.unrelated_review:
+    if _a3o(st):
         return _finding(
             Outcome.NEEDS_REVIEW,
-            " ".join([REVIEW_HEAD, UNRELATED_REASON]),
+            " ".join([REVIEW_HEAD, a3o_reason(st.kinship, "9.A")]),
             ["A3o", "G1"],
             evidence_refs,
             note=True,
