@@ -105,6 +105,28 @@ EXPECTED: dict[str, dict] = {
         "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
+    # Part D (5.A, 5.C 1.11.0): each frame is opened as a page of its own on
+    # the replay and read with ANDI there (Abby, 2026-11-14). The same site
+    # and another site (localhost against 127.0.0.1) read alike; each PASS
+    # has a twin in a frame from another site that FAILs.
+    "f50-frame-same-site-labelled": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    "f51-frame-other-site-labelled": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    # f51's twin for 5.A: the field's only text is its placeholder.
+    "f52-frame-other-site-placeholder-only": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # f51's twin for 5.C: the text above the field is not its name.
+    "f53-frame-other-site-unnamed": {
+        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Email address")},
+        "5.C": {"outcome": "FAIL", "rows": ["M3"]},
+    },
     "f03-date-format-outside-label": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
         "5.C": {

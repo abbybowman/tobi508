@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
-from tobi508.labels import AX_SOURCE, Comp, LabelsPass, labels_pass
+from tobi508.labels import AX_SOURCE, Comp, LabelsPass, frame_name, labels_pass
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -81,12 +81,18 @@ def label_of(c: Comp) -> str:
 
 
 def how_to_reach(c: Comp) -> str:
+    # Inside a frame, say which (fix 7): its title, else its host.
+    where = (
+        f"in the frame {frame_name(c.frame_title, c.frame_url)}, "
+        if c.frame_chain
+        else ""
+    )
     if c.tab_index is not None:
         n = c.tab_index + 1
-        return f"press Tab {n} time{'s' if n > 1 else ''}"
+        return f"{where}press Tab {n} time{'s' if n > 1 else ''}"
     if c.origin != "load":
-        return f"{c.origin}, then find it"
-    return "find it on the page"
+        return f"{where}{c.origin}, then find it"
+    return f"{where}find it on the page" if where else "find it on the page"
 
 
 def rel_images(evidence_refs: list[str], paths: list[str | None]) -> list[str]:

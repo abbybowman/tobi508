@@ -469,9 +469,9 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
-- **5.A, 5.C, 5.F, 5.G:** fields in frames are not read (a NEEDS REVIEW
-  note; fix 7, now part D). Fields in shadow roots are not read either
-  and get no note (above). 5.F and 5.G leave `time`,
+- **5.F, 5.G:** fields in frames and in shadow roots are not read
+  (guard CN holds PASS and DOES NOT APPLY; step 8 reader 4). 5.A-5.C read
+  both since step 8 (5.A 1.11.0, 5.C 1.11.0). 5.F and 5.G leave `time`,
   `datetime-local`, `month` and `week` fields as loaded in attempt 2.
 - **5.F, 5.G, 5.H:** a form that is only a button is not seen (M-02);
   5.H's consequence words are English only, and no match is DOES NOT

@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><title>Subscribe</title></head><body>
+<h1>Subscribe</h1>
+<div id="slot"></div>
+<script>
+// A frame from another site: the fixture server answers to localhost as well
+// as 127.0.0.1, which Chrome counts as two sites.
+var f = document.createElement('iframe');
+f.title = 'Newsletter form';
+f.width = 600; f.height = 300;
+f.src = new URL('frames/labelled.html', location.href).href.replace('127.0.0.1', 'localhost');
+document.getElementById('slot').appendChild(f);
+</script>
+</body></html>

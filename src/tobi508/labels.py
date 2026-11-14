@@ -12,11 +12,13 @@ decided here (CLAUDE.md principle 2).
 from __future__ import annotations
 
 from typing import Any
+from urllib.parse import urlsplit
 
 from pydantic import BaseModel, Field
 
 from tobi508.andi import andi_output, inject_andi, install_andi_routes
-from tobi508.jslib import JSLIB, PATH_JS
+from tobi508.browser import NavigationGuard
+from tobi508.jslib import JSLIB, PATH_JS, FrameDoc, frame_docs
 from tobi508.traverse import Session, screenshot
 
 COMPONENT_MAX = 60
@@ -361,6 +363,13 @@ class Comp(BaseModel):
     # (an open shadow root), whose tag is `host` (part D).
     where: str = "light"
     host: str = ""
+    # Inside a frame: the iframe elements' CSS paths, top first (the walk's
+    # frame chain), the frame's address and title. Pass L reads a frame on a
+    # page of its own (TT 12.D; Abby, 2026-11-14), so `css` is its path in
+    # the frame's document.
+    frame_chain: list[str] = Field(default_factory=list)
+    frame_url: str = ""
+    frame_title: str = ""
     # The page's inventory counts it as a field (count.py, `J.field`); radio
     # buttons by group, as the inventory counts them.
     counted: bool = False
@@ -466,9 +475,11 @@ async def read_session(
             f"The form fields could not be read ({type(exc).__name__})."
         )
         return out
-    # Forms inside frames are not read yet: say so, never treat them as absent.
+    # Pass L reads the page's frames as pages of their own (labels_pass).
+    # On a replay that revealed content they are not read: say so, never
+    # treat them as absent.
     framed = 0
-    for fr in page.frames[1:]:
+    for fr in page.frames[1:] if origin != "load" else []:
         try:
             framed += await fr.evaluate(
                 "document.querySelectorAll('input:not([type=hidden]),select,textarea,button').length"
@@ -578,6 +589,73 @@ async def read_session(
     return out
 
 
+async def _read_frames(ctx, s: Session, docs: list[FrameDoc], lp: LabelsPass) -> None:
+    """Each frame the page shows, opened as a page of its own on this replay
+    and read like the page: the inventory, the visible labels, the pictures
+    and ANDI (TT 12.D "test in new tab"; Appendix D; Abby, 2026-11-14: ANDI
+    inside an embedded frame is not accurate). Only addresses this replay
+    showed as frames (principle 5's frame-page exception); at most
+    `FRAME_PAGES_MAX`. A frame not read is said, never left out."""
+    from tobi508.traverse import open_session
+
+    guard = NavigationGuard.of(s.traversal.context)
+    context = s.traversal.context
+    skipped = 0
+    for k, d in enumerate(d for d in docs if d.shown and not d.missing and d.url):
+        if ctx.out_of_time() or guard is None or not guard.allow_frame_page(d.url):
+            skipped += 1
+            continue
+        page = None
+        try:
+            page = await context.new_page()
+            await guard.goto(page, d.url)
+
+            async def opener(p=page):
+                return context, p
+
+            fs = await open_session(opener, ctx.quiet_ms)
+            got = await read_session(ctx, fs, "load", True, f"lf{k + 1}")
+        except Exception:
+            skipped += 1
+            continue
+        finally:
+            if page is not None:
+                await page.close()
+        for c in got.components:
+            lp.components.append(
+                c.model_copy(
+                    update={
+                        "n": len(lp.components) + 1,
+                        "frame_chain": d.chain,
+                        "frame_url": d.url,
+                        "frame_title": d.title,
+                    }
+                )
+            )
+        lp.incomplete += [
+            f"In the frame {frame_name(d.title, d.url)}: {x}" for x in got.incomplete
+        ]
+        lp.notes += [
+            f"In the frame {frame_name(d.title, d.url)}: {x}" for x in got.notes
+        ]
+        if ctx.third_party is not None and not got.andi_ran:
+            lp.incomplete.append(
+                f"ANDI could not run in the frame {frame_name(d.title, d.url)}."
+            )
+    if skipped:
+        lp.incomplete.append(
+            f"{skipped} frame{'' if skipped == 1 else 's'} could not be opened as a "
+            "page of its own, so the form fields inside "
+            f"{'it' if skipped == 1 else 'them'} were not checked."
+        )
+
+
+def frame_name(title: str, url: str) -> str:
+    """How a person is told which frame: its title, and its host."""
+    host = urlsplit(url).hostname or url
+    return f"'{title}' ({host})" if title else f"at {host}"
+
+
 def wanted(ctx) -> bool:
     return bool({"5.A", "5.B", "5.C"} & set(ctx.selected))
 
@@ -605,6 +683,7 @@ async def read_revealed(ctx, s: Session, origin: str) -> bool | None:
 def _signature(c: Comp) -> tuple:
     """What makes a control the same control across opened states."""
     return (
+        tuple(c.frame_chain),
         c.tag,
         c.type,
         c.role,
@@ -626,10 +705,16 @@ async def labels_pass(ctx, walk) -> LabelsPass:
 
     s = await open_session(ctx.new_page, ctx.quiet_ms)
     try:
+        # The frames as loaded, before ANDI changes the page.
+        try:
+            docs = await frame_docs(s.traversal.page)
+        except Exception:
+            docs = []
         lp = await read_session(ctx, s, "load", True, "l")
+        await _read_frames(ctx, s, docs, lp)
     finally:
         await s.close()
-    seen = {c.css for c in lp.components}
+    seen = {(tuple(c.frame_chain), c.css) for c in lp.components}
     # The same control read in another opened state has another path (a list
     # that grew above it moved its position): it is the same control when its
     # kind, text, group, heading and row are the same. Compared with what was
@@ -639,9 +724,9 @@ async def labels_pass(ctx, walk) -> LabelsPass:
         fresh: set[tuple] = set()
         for c in extra.components:
             sig = _signature(c)
-            if c.css in seen or sig in sigs:
+            if (tuple(c.frame_chain), c.css) in seen or sig in sigs:
                 continue
-            seen.add(c.css)
+            seen.add((tuple(c.frame_chain), c.css))
             fresh.add(sig)
             lp.components.append(c.model_copy(update={"n": len(lp.components) + 1}))
             if c.origin not in lp.revealed_from:
@@ -650,12 +735,12 @@ async def labels_pass(ctx, walk) -> LabelsPass:
     if walk is not None:
         # The first time the walk reached it: the walk goes round to the
         # first stop again, which is not how a person reaches it.
-        idx: dict[str | None, int] = {}
+        idx: dict[tuple, int] = {}
         for i, st in enumerate(walk.p1.steps):
-            if st.stop.kind == "element" and not st.stop.frame_chain:
-                idx.setdefault(st.stop.css_path, i)
+            if st.stop.kind == "element":
+                idx.setdefault((tuple(st.stop.frame_chain), st.stop.css_path), i)
         for c in lp.components:
-            c.tab_index = idx.get(c.css)
+            c.tab_index = idx.get((tuple(c.frame_chain), c.css))
     lp.read = {"page": what_was_read(lp, ctx.cache.get("count"))}
     ctx.cache["labels-pass"] = lp
     return lp.model_copy(deep=True)
@@ -671,11 +756,19 @@ def what_was_read(lp: LabelsPass, count) -> dict[str, int]:
     shadow = {
         c.radio_key or f"#{c.n}"
         for c in lp.components
-        if c.where == "shadow" and c.counted and c.origin == "load"
+        if c.where == "shadow"
+        and c.counted
+        and c.origin == "load"
+        and not c.frame_chain
+    }
+    framed = {
+        (tuple(c.frame_chain), c.radio_key or f"#{c.n}")
+        for c in lp.components
+        if c.frame_chain and c.counted and c.origin == "load"
     }
     return {
         "fields.shadow": len(shadow),
-        "fields.frames": 0,
+        "fields.frames": len(framed),
         "contenteditable": 0,
         "fields_hidden": len(hidden & opened),
     }

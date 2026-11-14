@@ -148,9 +148,11 @@ def _frame_cells() -> dict[str, Cell]:
         "4.D": walk,
         "4.E": walk,
         "4.F": walk,
-        "5.A": nr(),
+        # Pass L opens the frame as a page of its own and reads it with ANDI
+        # (5.A, 5.C 1.11.0; part D): both fields are labelled.
+        "5.A": passes("5a/f52-frame-other-site-placeholder-only.html"),
         "5.B": nr(),
-        "5.C": nr(),
+        "5.C": passes("5a/f53-frame-other-site-unnamed.html"),
         "5.D": walk,
         "5.F": nr(),
         "5.G": nr(),
