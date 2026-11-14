@@ -54,6 +54,16 @@ EXPECTED: dict[str, dict] = {
     # where the changed pixels sit.
     "f16-faint-color-and-counter": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
     "f08-focusable-iframe": {"outcome": "PASS"},
+    # F-02 (1.8.0): the page shifts while link 1 (outline: none) is pictured.
+    # The move is not a focus style, since the link is not shown only on
+    # focus: NEEDS REVIEW (PASS before). f03 above is the nearest case that
+    # must still PASS: a skip link shown only on focus.
+    "f22-page-shifts-link-without-outline": {"outcome": "NEEDS_REVIEW"},
+    # C-07 (1.7.0): a script moves focus off link 3 at once, so the walk never
+    # stops on it: 4.D checked 10 of the page's 11 elements and may not say
+    # PASS. f21 is the same page with every element reached: still PASS.
+    "f20-script-moves-focus-off-one-link": {"outcome": "NEEDS_REVIEW"},
+    "f21-eleven-links-all-reached": {"outcome": "PASS"},
     # F-01 (Abby approved, 2026-11-12): a menubar of 8 items with a clear
     # outline on each. The loop stopped on item 7 with no "after" picture, so
     # it was NEEDS REVIEW for any menu of 7 or more; the first five items
@@ -146,8 +156,14 @@ def test_a_link_moved_by_the_page_while_pictured_is_not_failed():
     link that slides in)."""
     from tobi508.checks.t4d import Attempt, Inst4D, _best
 
-    def inst(px: float) -> Inst4D:
-        e = {"moved": True, "changed": [], "on": "on.png", "off": "off.png"}
+    def inst(px: float, only: bool = False) -> Inst4D:
+        e = {
+            "moved": True,
+            "shown_only_on_focus": only,
+            "changed": [],
+            "on": "on.png",
+            "off": "off.png",
+        }
         a = Attempt(
             pass_name="P1",
             step=1,
@@ -163,8 +179,13 @@ def test_a_link_moved_by_the_page_while_pictured_is_not_failed():
     stuck = inst(0.0)
     assert _best(stuck) is None
     assert "moved on the page" in stuck.attempts[0].extras["incomplete"]
-    slid_in = inst(3600.0)
+    slid_in = inst(3600.0, only=True)
     assert _best(slid_in) is slid_in.attempts[0]
+    # F-02 (1.8.0): not shown only on focus and no style change: the move
+    # proves nothing and the pixels may be the page's shift: no clear view.
+    shifted = inst(3600.0, only=False)
+    assert _best(shifted) is None
+    assert "moved on the page" in shifted.attempts[0].extras["incomplete"]
 
 
 def test_the_reason_a_last_step_has_no_after_picture_is_kept(monkeypatch, tmp_path):

@@ -100,7 +100,7 @@ below; "run" means I ran a page and got the outcome shown.
 | E-02 | 4.A | PASS | a mouse-only `<a href="#">` beside any other `href="#"` | run. **Fixed** |
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run · fixed (part B) |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run · fixed (part B) |
-| M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run |
+| M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run · fixed (step 6b) |
 | H-01 | 5.A | PASS | a label whose words are hidden | run |
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
@@ -111,21 +111,21 @@ below; "run" means I ran a page and got the outcome shown.
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
-| H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run |
+| H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run · 5.D fixed (part B); 5.F, 5.G, 5.H fixed (step 6b) |
 | F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run · fixed (part B) |
-| F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run |
+| F-02 | 4.D | PASS | a link with no focus indicator on a page that shifts | run · fixed (step 6b) |
 | W-02 | 3.A | DOES NOT APPLY | flashing below the first screen | run |
 | W-07 | 2.B | DOES NOT APPLY | motion that fills most of the screen | run |
 | N-03 | 2.B | DOES NOT APPLY | text blinking by `visibility` | run |
 | N-08 | 2.B | DOES NOT APPLY | an autoplaying YouTube embed | run. **Fixed** |
 | E-03 | 4.A | DOES NOT APPLY | a page that is only a canvas or drag content | run · fixed |
-| E-08 | 4.A | PASS | a button that answers only `mousedown` | run |
-| C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run |
+| E-08 | 4.A | PASS | a button that answers only `mousedown` | run · fixed (step 6b) |
+| C-01 | 4.A | PASS | a mouse-only control whose only effect is `alert()` | run · fixed (step 6b) |
 | M-02 | 5.H | DOES NOT APPLY | a form that is only a button ("Delete my account") | run · fixed (part B) |
-| M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read |
+| M-08 | 5.H | PASS | a multi-step form whose next step says "required" | read · fixed (step 6b) |
 | M-03 | 5.H, 4.B | DOES NOT APPLY, PASS | a page not in English | run (5.H) |
-| H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run |
-| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address and, for a byte-identical copy, by content) |
+| H-02 | 5.C | PASS | a field whose visible text is not in Latin letters | run · fixed (step 6b) |
+| K-01 | 9.B, 9.C (9.A: FAIL or DOES NOT APPLY) | PASS | the tested page named again as the other page | run. **Fixed** (by address; byte-identical copy by content; near copy by unit text, step 6b) |
 | B-01 | server judge | reads a file outside the run | a page with a crafted `run://` link in its text | script. **Fixed** |
 | A-01 | hosted sign-in | shows one user another's run | any two signed-in users | read. **Fixed** |
 
@@ -260,6 +260,17 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). Two fields and a `type="button"` whose
   handler writes "Email: enter a valid email address" into a
   `role="alert"`: 5.F and 5.G DOES NOT APPLY, no question.
+- **Fixed (M-01):** commit "5.F, 5.G: a form checked by a type=button control is
+  pressed, and a press that may not send it is never DOES NOT APPLY (M-01)",
+  specs 5.F 1.7.0, 5.G 1.5.0, 5.H 1.5.0 (5.H reads 5.F's list of what was
+  not tested). Abby chose option A and accepted DOES NOT APPLY to PASS where
+  the pressed control really runs the check and the error is described
+  (2026-11-13). Every other visible button of the form is offered, submit
+  buttons always first (`_choose`); `incomplete_of` adds the new sentence
+  only when no error showed for that form. Fixtures `5f/f26` (a described
+  error: PASS; DOES NOT APPLY before) and `5f/f27` (an "Add another" button
+  that shows nothing: NEEDS REVIEW, the nearest case that must not become a
+  PASS or a DNA).
 
 #### H-01 5.A passes a label whose words nobody can see
 
@@ -543,6 +554,10 @@ different checks, and some of those ways do not hold back an outcome.
   `src/tobi508/checks/t5f.py:1233`. Verified (run): a form, a trap,
   then a second form with a broken error message: 5.F PASS. Without
   the trap the same page is FAIL. 5.G and 5.H read the same pass.
+- **Fixed (M-05):** commit "5.F: a walk that ends in a trap before the last
+  field is not complete (M-05)", no spec change (5.F's G3 already says it;
+  5.G and 5.H read the same pass). Fixtures `5f/f24` (NEEDS REVIEW) and
+  `5f/f25` (trap after the last field, still PASS).
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 
@@ -585,6 +600,17 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). Three links, the first with
   `outline: none`; focusing the second grows a spacer above them. 4.D
   PASS, rows d1:M6, d2:M6, d3:M6, G4.
+- **Fixed (F-02):** commit "4.D: a box that moved is a focus style only when the
+  element is shown only on focus (F-02)", spec 4.D 1.8.0. Abby chose
+  option A (2026-11-13), with option B kept as an *Open* line in the spec and
+  ROADMAP "Known limits" (trigger: more than 1 in 5 of a round's stops at
+  this M4). Not every changed property counts: a shift also changes
+  heights, origins and `outline-offset` on the page around the link, so
+  the rule asks for a paint property (`PAINT_PROPS`); that keeps ACT
+  oj04fd Passed Example 3 (a border on the link's parent) and plain links
+  with a ring PASS (`f10-100-links`: 76 of 100 links "moved" by scroll
+  alone). Fixtures `4d/f22` (the review's page: NEEDS REVIEW, PASS before);
+  `4d/f03` (skip link) is the nearest case that must still PASS.
 
 #### W-02 3.A says nothing flashes when the flashing is below the first screen
 
@@ -695,6 +721,13 @@ different checks, and some of those ways do not hold back an outcome.
   turns a PASS into a FAIL or a review, so it needs Abby and a spec row.
 - **Checked:** verified (run). `<button onmousedown=...>Open panel
   </button>`: 4.A PASS, rows A3, G4.
+- **Fixed (E-08):** commit "4.A: a native button that answers only mousedown gets the
+  Enter and Space check (E-08)", spec 4.A 1.10.0. Abby chose option A
+  (2026-11-13). `StopHook` marks a native control (not `a`/`area`) with a
+  pointer-down listener and no click listener `pointer_only`; it is
+  executed after the custom controls. Fixtures `4a/f26` (FAIL, M10; no
+  instance and PASS before), `4a/f27` (a click handler too: PASS) and
+  `4a/f28` (a link with a mousedown listener: Enter follows it, PASS).
 
 #### C-01 4.A passes a mouse-only control whose only effect is `alert()`
 
@@ -713,6 +746,11 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). A `<div onclick="alert('Help text')">`
   beside one link: 4.A PASS, row k1:M2. The reviewer's control, where
   the click unhides a paragraph, is NEEDS REVIEW.
+- **Fixed (C-01):** commit "4.A: an alert() or a download is an effect of the
+  action (C-01)", spec 4.A 1.9.0 (Terms: *pop-up*, 4.A only; 4.B and 5.D
+  read neither). `observe(popups=True)`, used by 4.A's click and key
+  checks. Fixtures `4a/f23` (alert), `4a/f24` (download), and `4a/f25`
+  (a click that does nothing: still PASS, M2).
 
 #### M-02 5.H cannot see a form that is only a button
 
@@ -748,6 +786,13 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (read): the rule is as described. The reviewer
   ran a two-step page, saw `checked: true` in the evidence, and got
   PASS from `evaluate` on the saved state.
+- **Fixed (M-08):** commit "5.H: a form is still there only if the same fields
+  are shown (M-08)", spec 5.H 1.4.0. Pass E's field read now says whether
+  each field is shown; M1 needs one shown and none lost. Fixture `5h/f08`
+  is the review's wizard with step 1 hidden but kept and step 2 added by
+  script (PASS on M1 before the fix; FAIL after J2 = none). The review's
+  own page has step 2 hidden at load, so guard CN already made it NEEDS
+  REVIEW. The nearest case that must still PASS is `5h/f01`.
 
 #### M-03 English word lists decide DOES NOT APPLY in 5.H and PASS in 4.B
 
@@ -785,6 +830,12 @@ different checks, and some of those ways do not hold back an outcome.
 - **Checked:** verified (run). Fields labelled "Имя пользователя" and
   "必須の住所を入力してください" with `aria-label="f1"` and `"x1"`:
   both on row M5 (pass), not asked.
+- **Fixed (H-02):** commit "5.C: words in any script; visible text with no
+  word never matches (H-02)", specs 5.C 1.9.0 and 5.A 1.9.0 (the same
+  `words`; 5.A's M2o no longer reads non-Latin text beside an option as no
+  text, which was a wrong FAIL, now the question is asked). Fixtures
+  `5a/f42` (not announced: FAIL after J1) and `5a/f43` (announced in
+  full: still PASS, M5).
 
 ### What the caller passes in
 
@@ -824,6 +875,16 @@ different checks, and some of those ways do not hold back an outcome.
   spec 9.A 1.2.0, 9.B 1.2.0, 9.C 1.3.0, 19.A 1.2.0). A single-page app whose
   routes serve one shell is warned, never refused outright. Not caught: a
   page whose bytes change on each request.
+- **Fixed (K-01, the rest):** commit "9.A-9.C, 19.A: a near copy of the
+  tested page is not compared (K-01)", specs 9.A 1.5.0, 9.B 1.4.0, 9.C 1.7.0,
+  19.A 1.8.0 (A2; numbers after merging `main`, which had used 9.A 1.4.0,
+  9.C 1.6.0 and 19.A 1.7.0 for the read cap). `site.near_copy`: the same host and path apart from the
+  query string and at least 0.9 of the units' text keys shared. Bar set from
+  live NASA search pages (same page 1.00; the highest different page 0.44;
+  see `docs/plans/2026-11-13-spec-decisions-drafts.md`). Fixtures: the test
+  server's `/stamp` (bytes change per request; NEEDS REVIEW on all four,
+  and 9.A said FAIL before) and `/listing?page=1` against `?page=2` (the
+  nearest case that is still compared: PASS).
 
 ### Security, in modes the demo plan turns on
 
@@ -1318,6 +1379,12 @@ a narrower page or an agent's wrong answer than the P0 items do.
 - **Checked:** verified (run). Two pages, each with the same nameless
   icon button and nameless icon link in the header: 9.C PASS, four pairs,
   all C1.
+- **Fixed (K-05):** commit "9.C: a pair with no name on either page is left out
+  (K-05)", spec 9.C 1.7.0 (row C0; G3u). Abby chose option B with one change
+  (2026-11-13): when the unnamed pair is the only one compared the result
+  is NEEDS REVIEW, not DOES NOT APPLY. Fixtures `9x/i1`+`i2` (the pair alone:
+  NEEDS REVIEW) and `9x/i3`+`i4` (beside a named pair that agrees: PASS).
+  The nearest case that must still FAIL is the existing `renamed`.
 
 #### K-04 9.C pairs every `javascript:` link with every other, and FAILs unrelated controls
 
@@ -1393,6 +1460,11 @@ a narrower page or an agent's wrong answer than the P0 items do.
 - **Checked:** verified (run). A do-nothing button, a header, then
   `<main id="main">`: with `#main` on the address 9.A PASS ("the noop
   button lets keyboard users skip it"); without it, FAIL.
+- **Fixed (M-10):** commit "9.A: a fragment's target counts only if the press
+  changed it (M-10)", spec 9.A 1.5.0 (wording: the code's `LANDING_JS`
+  now says what the spec's landing says). Fixtures
+  `9x/h1-noop-button-alpha#main` (FAIL), the same page without the
+  fragment (FAIL) and `a1-home#main` (a real skip link: still PASS).
 
 #### M-04, M-09 5.H forgets the forms it could not test
 
@@ -1873,6 +1945,13 @@ not checked.
   while 4.E and 4.A on the same page do object (`traverse.py:906-962`).
   Whether an element Tab can never rest on belongs in 4.D is a spec
   question.
+  **C-07 fixed** (step 6b), commit "4.D: more focusable elements than the
+  walk reached is NEEDS REVIEW (C-07)", spec 4.D 1.7.0 (guard CN,
+  `count: focusable`; Abby chose option A, 2026-11-13). Fixtures `4d/f20`
+  (the review's page: NEEDS REVIEW, PASS before) and `4d/f21` (every
+  element reached: still PASS). PASS is held here, unlike 4.F's
+  `focusable@dna`; the spec says to revisit if the round figures show it
+  is too wide.
 - **G-04** A run stopped at the default limit (1,800 s) is told it
   "reached its time limit (600 s)" and to "run again with
   no_time_limit=true", which it already was; an agent that obeys

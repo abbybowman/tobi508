@@ -260,6 +260,47 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "Please"}},
         },
     },
+    # M-05: a walk that ends in a trap is complete only when it reached
+    # every field. The first page has two fields past the trap and a broken
+    # error message there (FAIL when nothing stops the walk); the second has
+    # the trap after the last field, so its outcome is unchanged.
+    "f24-trap-before-second-form": {
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
+        "5.G": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
+        },
+    },
+    # M-01 (5.F 1.7.0, 5.G 1.5.0): a form checked by a type=button control.
+    # f26 shows a described error when it is pressed (PASS: DOES NOT APPLY
+    # before). f27 is the nearest case that must not become a PASS or a DNA:
+    # the only button adds a row and shows nothing, so the press proves
+    # nothing about whether the page checks for errors (NEEDS REVIEW).
+    "f26-type-button-checks-the-form": {
+        "5.F": {
+            "outcome": "PASS",
+            "rows": ["M6", "M6", "M6", "M6"],
+            "answers": {"J1": {"choice": "described", "quote": "valid email"}},
+        },
+        "5.G": {
+            "outcome": "PASS",
+            "rows": ["N4", "N4", "N4", "N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "valid email"}},
+        },
+    },
+    "f27-type-button-only-adds-a-row": {
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
+    },
+    "f25-trap-after-last-field": {
+        "5.F": {"outcome": "PASS", "rows": ["M2"]},
+        "5.G": {
+            "outcome": "PASS",
+            "rows": ["N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
+        },
+    },
 }
 
 

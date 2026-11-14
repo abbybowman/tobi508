@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F24 Forms with a trap between them</title></head><body><main><h1>Forms</h1>
+<form onsubmit="event.preventDefault()"><label>Name <input name="c" required></label><button>Send</button></form>
+<div tabindex="0" id="trap" role="textbox" aria-label="editor">trap</div>
+<form onsubmit="event.preventDefault();document.getElementById('z').setAttribute('aria-invalid','true')"><label>Phone <input name="p"></label><label>Zip <input name="z" id="z"></label><button>Save</button></form>
+<script>document.addEventListener('keydown',function(e){if(e.key==='Tab'&&document.activeElement.id==='trap'){e.preventDefault();}},true);</script>
+</main></body></html>

@@ -1,7 +1,7 @@
 ---
 tt_test: 5.C
 tt_name: 1.3.1-programmatic-label
-spec_version: 1.8.0
+spec_version: 1.9.0
 guards: reveal
 count: fields.shadow, fields.frames, fields_hidden, contenteditable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -53,7 +53,7 @@ Each form component is an *instance*.
 | M3h | Radio buttons or checkboxes of one set (the same field name, two or more) under one visible heading that sits *directly over* the set: no visible text between the heading and the set's first option (a button with no text, such as a help icon, may sit there); and this option's announced text does not include the heading | FAIL: the heading is the question the set answers, and screen readers do not hear it (1.7.0) | p. 27 Note 4; H71; ARIA17; Abby, 2026-11-08 (post-round 2 fix 9c: svs.gsfc.nasa.gov Home's "NASA Science category" and "Page type" filters, where the judge's "missing" answers were right) |
 | M3o | A radio button or checkbox in a set (5.A section 3: two or more under one legend or group label) whose only programmatic text is the group label: no name, description, table header or list context of its own | FAIL: screen readers announce the question, not which choice it is (1.1.0) | p. 27 ER 1; Understanding 3.3.2 (each option needs a label); Abby, 2026-11-02 |
 | M4 | (A part of a multi-part field with no name and no description, F86: M3 covers it, FAIL) | — | F86 |
-| M5 | The programmatic text contains every word of the nearby visible text (a button: its own text), including any required cue ("*", "required"), and, for a radio button or checkbox in a set of two or more, a group label; and the component is not a button in a set of same-named buttons (1.5.0, below) | PASS: whether the wording describes the purpose is 5.B's (p. 25 Note 3; Abby, 2026-11-01), so TC10.E-1-pass-1's "The sky is blue" passes here and is 5.B's failure | p. 27 ER 1, 3; Note 4 |
+| M5 | The programmatic text contains every word of the nearby visible text (a button: its own text; a *word* is a run of letters or digits in any script, lower-cased, so "Имя" is a word and a Japanese phrase is one word per unbroken run, 1.9.0, review H-02; visible text that has a symbol in it and no word, such as "★", has nothing to compare and never matches), including any required cue ("*", "required"), and, for a radio button or checkbox in a set of two or more, a group label; and the component is not a button in a set of same-named buttons (1.5.0, below) | PASS: whether the wording describes the purpose is 5.B's (p. 25 Note 3; Abby, 2026-11-01), so TC10.E-1-pass-1's "The sky is blue" passes here and is 5.B's failure | p. 27 ER 1, 3; Note 4 |
 | J1? | Otherwise, J1 not answered | NEEDS REVIEW | Open question |
 | M6 | J1 = complete | PASS | p. 27 ER 1–4 |
 | M7 | J1 = missing, its quote found in the nearby visible text (or, for an option, in its heading, 1.3.0) and not in the programmatic text | FAIL | p. 26 Condition ("includes all relevant instructions and cues"); p. 27 ER 1 ("including when fields are required"), Note 4 (radio and checkbox question) |

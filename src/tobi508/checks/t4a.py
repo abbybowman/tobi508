@@ -51,6 +51,9 @@ ARROW_MAX = 5
 ARROW_PRESSES = 20
 HOOK = "keys4a"
 
+# A native control that answers only these (and has no click listener of its
+# own) does nothing on Enter or Space: WCAG failure F54 (E-08).
+POINTER_DOWN_TYPES = {"mousedown", "mouseup", "pointerdown", "pointerup"}
 CLICK_TYPES = {"click", "mousedown", "mouseup", "dblclick", "pointerdown", "pointerup"}
 ODD_TYPES = {
     "dragstart",
@@ -315,6 +318,12 @@ class StopHook:
             types = await _own_listener_types(t, step)
             if types & CLICK_TYPES:
                 info["reason"] = "listener"
+        elif info.get("reason") == "native" and step.stop.tag not in ("a", "area"):
+            # A pointer-only native control (E-08): Tab reaches it, but only
+            # the mouse works it. A link with an address is followed by Enter.
+            types = await _own_listener_types(t, step)
+            if types & POINTER_DOWN_TYPES and "click" not in types:
+                info["pointer_only"] = True
         return info
 
 
@@ -701,6 +710,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
         if (_hook(p1, sr) or {}).get("reason") not in (None, "native")
         and not _native_part(p1, sr)
     ]
+    # Pointer-only native controls (E-08) are tried after the custom ones.
+    customs += [
+        sr
+        for sr in st.stop_list
+        if (_hook(p1, sr) or {}).get("pointer_only") and not _native_part(p1, sr)
+    ]
     for done, sr in enumerate(customs):
         inst = Inst4A(
             id=f"x{done + 1}",
@@ -777,7 +792,9 @@ def _target(p1: PassResult, sr: StopRef) -> dict[str, Any]:
         "role": stop.role,
         "name": stop.name,
         "tag": stop.tag,
-        "reason": (_hook(p1, sr) or {}).get("reason"),
+        "reason": "pointer_only"
+        if (_hook(p1, sr) or {}).get("pointer_only")
+        else (_hook(p1, sr) or {}).get("reason"),
     }
 
 
@@ -882,7 +899,9 @@ async def _click_check(ctx: RunContext, st: State4A, inst: Inst4A) -> Effect | N
         async def act() -> None:
             await s.page.mouse.click(pt["x"], pt["y"])
 
-        return await observe(s, ctx.quiet_ms, act, inst.target["path_key"], media=True)
+        return await observe(
+            s, ctx.quiet_ms, act, inst.target["path_key"], media=True, popups=True
+        )
     except Exception:
         inst.unreliable = True
         return None
@@ -957,6 +976,7 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
             lambda: s.page.keyboard.press("Enter"),
             sr.path_key,
             media=True,
+            popups=True,
         )
         if not inst.enter.any:
             inst.space = await observe(
@@ -965,6 +985,7 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
                 lambda: s.page.keyboard.press(" "),
                 sr.path_key,
                 media=True,
+                popups=True,
             )
     except Exception:
         inst.unreliable = True
@@ -985,7 +1006,9 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
         async def act() -> None:
             await s.page.mouse.click(pt["x"], pt["y"])
 
-        inst.click = await observe(s, ctx.quiet_ms, act, sr.path_key, media=True)
+        inst.click = await observe(
+            s, ctx.quiet_ms, act, sr.path_key, media=True, popups=True
+        )
     except Exception:
         inst.unreliable = True
     finally:
@@ -1002,8 +1025,13 @@ def _goes_to(inst: Inst4A) -> dict[str, str]:
 
 
 def _click_words(kinds: list[str]) -> list[str]:
-    """What a click did, for J1's input: a media start reads as what it is."""
-    return ["started a video or audio" if k == "media_start" else k for k in kinds]
+    """What a click did, for J1's input: each effect in plain words."""
+    words = {
+        "media_start": "started a video or audio",
+        "js_dialog": "showed a pop-up message",
+        "download": "started a download",
+    }
+    return [words.get(k, k) for k in kinds]
 
 
 # ── Questions and answers ────────────────────────────────────────────────────

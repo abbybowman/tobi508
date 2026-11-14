@@ -37,6 +37,43 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.C": "PASS"},
         {},
     ),
+    # M-10: an address that already ends in #main has its target before any
+    # press, so a do-nothing button is not a skip control. The control: a
+    # real skip link to #main on the same kind of address still passes.
+    "noop-button-address-with-fragment": (
+        "h1-noop-button-alpha#main",
+        ["h2-beta"],
+        {"9.A": "FAIL"},
+        {},
+    ),
+    "noop-button-address-without-fragment": (
+        "h1-noop-button-alpha",
+        ["h2-beta"],
+        {"9.A": "FAIL"},
+        {},
+    ),
+    "skip-link-address-with-fragment": (
+        "a1-home#main",
+        ["a2-benefits"],
+        {"9.A": "PASS"},
+        {},
+    ),
+    # K-05 (9.C 1.7.0): a pair with no name on either page has nothing to
+    # compare. Alone it is NEEDS REVIEW (not DOES NOT APPLY, never PASS);
+    # beside a named pair that agrees the named pair decides ("renamed" above
+    # is the nearest case that must still FAIL).
+    "unnamed-controls-only": (
+        "i1-unnamed-only-a",
+        ["i2-unnamed-only-b"],
+        {"9.C": "NEEDS_REVIEW"},
+        {},
+    ),
+    "unnamed-controls-beside-named": (
+        "i3-unnamed-and-named-a",
+        ["i4-unnamed-and-named-b"],
+        {"9.C": "PASS"},
+        {},
+    ),
     "two-pages-one-reordered": (
         "a1-home",
         ["a2-benefits", "a3-nav-reordered"],
@@ -174,15 +211,18 @@ ROWS = {
     ("nav-css-order", "9.B"): ["N4"],
     ("renamed", "9.C"): ["C1"] * 10 + ["C4", "C4"],
     ("paging", "9.C"): ["C1", "C3", "C3"],
+    ("unnamed-controls-only", "9.C"): ["C0", "C0"],
+    ("unnamed-controls-beside-named", "9.C"): ["C1", "C1", "C0"],
 }
 
 
 @pytest.mark.parametrize("case", sorted(EXPECTED))
 async def test_case(case, settings, server, drafts):  # noqa: F811
     page, others, want, answers = EXPECTED[case]
+    page, hash_, frag = page.partition("#")  # "name#main": the tested address
     got = await run_tests(
         settings,
-        f"{server.base}/9x/{page}.html",
+        f"{server.base}/9x/{page}.html{hash_}{frag}",
         list(want),
         answers,
         other_pages=[f"{server.base}/9x/{o}.html" for o in others],
@@ -357,3 +397,71 @@ def test_9c_pairs_by_destination_only_inside_a_repeated_block():
     side = AndiPage(n=0, ran=True, comps=[comp(0, "complementary", "Related guide")])
     side2 = AndiPage(n=1, ran=True, comps=[comp(0, "complementary", "Learn more")])
     assert make_pairs(side, side2) == []
+
+
+async def test_the_tested_page_again_with_other_bytes_is_not_compared(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """K-01 (A2 1.4.0 / 1.6.0): the same address apart from the query, nearly
+    the same text, bytes that change on every request. 9.A, 9.B, 9.C and
+    19.A are NEEDS REVIEW and say why."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/stamp",
+        ["9.A", "9.B", "9.C", "19.A"],
+        {},
+        other_pages=[f"{server.base}/stamp?x=1"],
+    )
+    for t, f in got.items():
+        assert f.outcome.value == "NEEDS_REVIEW", (t, f.rows, f.summary)
+        assert "A2" in f.rows, (t, f.rows)
+        assert "nearly the same page" in f.summary, (t, f.summary)
+
+
+async def test_the_same_address_with_other_content_is_still_compared(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """The nearest case that must still be compared: one path, a query that
+    changes the content (a listing's page 2). Its share of text is far below
+    the bar, so 9.B and 9.C compare it and do not stop at A2."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/listing?page=1",
+        ["9.B", "9.C"],
+        {},
+        other_pages=[f"{server.base}/listing?page=2"],
+    )
+    for t, f in got.items():
+        assert "A2" not in f.rows, (t, f.rows, f.summary)
+        assert f.outcome.value == "PASS", (t, f.rows, f.summary)
+
+
+def test_text_share_and_near_copy():
+    from tobi508.site import NEAR_COPY, PageRead, Unit, near_copy, text_share
+
+    def page(url, texts):
+        return PageRead(
+            n=0,
+            url=url,
+            units=[
+                Unit(i=i, kind="control", role="link", text=t, css=f"a{i}")
+                for i, t in enumerate(texts)
+            ],
+        )
+
+    base = [f"link {i}" for i in range(20)]
+    a = page("https://x.gov/p", base)
+    assert NEAR_COPY == 0.9
+    assert text_share(a, page("https://x.gov/p?x=1", base + ["stamp 1"])) > 0.9
+    # a different path is never a near copy, whatever its text
+    assert not near_copy(a, page("https://x.gov/q?x=1", base))
+    # the same path, half the text different: compared
+    assert not near_copy(a, page("https://x.gov/p?x=1", base[:10] + ["z"] * 10))
+    # a trailing slash, the scheme's default port and host case are not paths
+    assert near_copy(a, page("https://X.gov:443/p/?x=1", base))
+    # no text at all is not a copy
+    assert text_share(page("u", []), page("u", [])) == 0.0

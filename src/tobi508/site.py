@@ -17,6 +17,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 from typing import Any
+from urllib.parse import urlsplit
 
 from pydantic import BaseModel, Field
 
@@ -237,6 +238,9 @@ class PageRead(BaseModel):
     count: Count | None = None
     # The same document as the tested page, under another address (K-01).
     identical: bool = False
+    # Nearly the same page: the same address apart from the query string, and
+    # at least NEAR_COPY of its text keys shared (K-01, spec A2).
+    near_copy: bool = False
 
 
 class SiteRead(BaseModel):
@@ -279,6 +283,12 @@ class SiteRead(BaseModel):
             "comparing them would compare the page with itself"
             for p in self.others
             if p.identical
+        ]
+        out += [
+            f"{page_label(p)} is nearly the same page as the tested page, so "
+            "comparing them would compare the page with itself"
+            for p in self.others
+            if p.near_copy and not p.identical
         ]
         return out
 
@@ -338,6 +348,40 @@ async def _cached_read(p: Any) -> PageRead:
     return got
 
 
+NEAR_COPY = 0.9  # the share of text keys two pages share to be "nearly the same"
+
+
+def _address_no_query(url: str) -> tuple[str, int | None, str]:
+    p = urlsplit(url)
+    try:
+        port = p.port
+    except ValueError:
+        port = None
+    if port in (80, 443):
+        port = None
+    return ((p.hostname or "").lower().rstrip("."), port, p.path.rstrip("/") or "/")
+
+
+def text_share(a: PageRead, b: PageRead) -> float:
+    """The share of text keys two pages have in common: |A and B| / |A or B|
+    over the keys of their units (frame units apart). 0.0 with no text."""
+    ka = {u.text for u in a.units if u.text and u.kind != "frame"}
+    kb = {u.text for u in b.units if u.text and u.kind != "frame"}
+    both = ka | kb
+    return len(ka & kb) / len(both) if both else 0.0
+
+
+def near_copy(main: PageRead, other: PageRead) -> bool:
+    """The other page is the tested page again with another query string and
+    nearly the same content (K-01; a server that changes the page on every
+    request defeats the byte comparison)."""
+    if main.error or other.error or not main.url or not other.url:
+        return False
+    if _address_no_query(main.url) != _address_no_query(other.url):
+        return False
+    return text_share(main, other) >= NEAR_COPY
+
+
 async def site_read(ctx: Any) -> SiteRead:
     """The tested page and every other page, read once per run (cached)."""
     if "site" not in ctx.cache:
@@ -350,6 +394,8 @@ async def site_read(ctx: Any) -> SiteRead:
         for i, ref in enumerate(ctx.pages, 1):
             if getattr(ref, "same_content_as_tested", False):
                 pages[i] = pages[i].model_copy(update={"identical": True})
+            elif near_copy(pages[0], pages[i]):
+                pages[i] = pages[i].model_copy(update={"near_copy": True})
         ctx.cache["site"] = SiteRead(pages=pages)
     return ctx.cache["site"]
 

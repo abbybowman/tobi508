@@ -24,6 +24,7 @@ def labeled(q: str) -> dict:
 
 NOT_LABELED = {"J1": {"choice": "not_labeled"}}
 COMPLETE = {"J1": {"choice": "complete"}}
+NOT_PURPOSE = {"J1": {"choice": "not_purpose"}}
 
 
 def missing(q: str) -> dict:
@@ -55,6 +56,18 @@ EXPECTED: dict[str, dict] = {
     "f41-continue-below-several-fields": {
         "5.A": {"outcome": "FAIL", "rows": ["M2", "M2", "M5"], "answers": NOT_LABELED},
         "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M5", "M5"]},
+    },
+    # H-02 (5.C 1.9.0): a label in Cyrillic or Japanese gave no words, so
+    # M5 passed whatever the field announced. f43 is the nearest page that
+    # must still PASS: the same labels, announced in full (the label is the
+    # name, so the words match in any script).
+    "f42-non-latin-labels-not-announced": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "FAIL", "rows": ["M8", "M8"], "answers": NOT_PURPOSE},
+    },
+    "f43-non-latin-labels-announced": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
     },
     "f03-date-format-outside-label": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},

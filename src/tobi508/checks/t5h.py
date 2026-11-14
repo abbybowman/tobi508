@@ -64,6 +64,24 @@ class State5H(BaseModel):
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
 
 
+def _same_fields_shown(base: Any, last: Any, ns: list[int]) -> bool:
+    """The form is still there after a submit (M-08): at least one of its
+    fields is shown, and every field that was shown before still is. A next
+    step that hides the first step's fields and shows others is not the
+    same form, and its "required" text is not a check. A read that does not
+    say which fields were shown is not evidence that they stayed."""
+    if base is None:
+        return False
+    shown_after = [(last.fields.get(str(n)) or {}).get("shown") for n in ns]
+    if not any(x is True for x in shown_after):
+        return False
+    for n, after in zip(ns, shown_after):
+        before = (base.fields.get(str(n)) or {}).get("shown")
+        if before is True and after is not True:
+            return False
+    return True
+
+
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
     if walk is None:
         return State5H(ran=False, incomplete=["The keyboard walk did not run."])
@@ -107,9 +125,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
             # Checked only when this attempt stayed on the form: not sent, and
             # its fields still there (a next step's "required" text is not a
             # check; spec 1.1.0, Abby 2026-11-02).
-            stayed = not a.sent and any(
-                last.fields.get(str(n)) is not None for n in f.fields
-            )
+            stayed = not a.sent and _same_fields_shown(a.base, last, f.fields)
             if stayed and (
                 any(ERROR.search(t) for t in new)
                 or any(ERROR.search(m) for m in a.js)

@@ -355,6 +355,11 @@ class FocusHook:
         out["changed"] = changed
         a0, b0 = prev["snap"]["parts"][0]["rect"], off["parts"][0]["rect"]
         out["moved"] = any(abs(a0[k] - b0[k]) > 1 for k in range(4))
+        # Shown only on focus (a skip link): its box with focus off is empty or
+        # off screen. Only then is a move a sign of a focus style (F-02).
+        out["shown_only_on_focus"] = bool(
+            b0[2] <= 1 or b0[3] <= 1 or b0[0] + b0[2] <= 0 or b0[1] + b0[3] <= 0
+        )
         # Mask: the next subject's box (the next stop, or for an active
         # descendant the next active item, not the whole widget).
         cur = step.stop
@@ -443,9 +448,17 @@ class State4D(BaseModel):
     stops: int
     inventory: int
     different_traps: bool = False
+    # Distinct element stops of P1 and P2 (guard CN, C-07).
+    reached: int = 0
     instances: list[Inst4D] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
+
+    @property
+    def read(self) -> dict[str, dict[str, int]]:
+        """Guard CN (count.py): the distinct stops 4.D checked. An element a
+        script moves focus off at once is never a stop (C-07)."""
+        return {"page": {"focusable": self.reached}}
 
 
 def _region_boxes(e: dict[str, Any]) -> list[list[float]]:
@@ -815,12 +828,27 @@ async def _widget_pass(
                 break
 
 
+def _reached(p1: Any, p2: Any) -> int:
+    """The distinct element stops of both passes, plus each frame the walk went
+    into once: the walk reads the deepest focused element, so a focusable frame
+    is never a stop of its own, and the inventory counts it (guard CN)."""
+    steps = [s for p in (p1, p2) for s in p.steps if s.stop.kind == "element"]
+    stops = {s.stop.path_key for s in steps}
+    frames = {
+        tuple(s.stop.frame_chain[: i + 1])
+        for s in steps
+        for i in range(len(s.stop.frame_chain))
+    }
+    return len(stops) + len(frames)
+
+
 async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
     p1, p2 = walk.p1, walk.p2
     st = State4D(
         p1={"end": p1.end, "presses": len(p1.steps)},
         p2={"end": p2.end, "presses": len(p2.steps)},
         stops=walk.stops,
+        reached=_reached(p1, p2),
         inventory=walk.inventory,
     )
     for p in (p1, p2):
@@ -867,11 +895,18 @@ def _best(inst: Inst4D) -> Attempt | None:
                 "pictures did not show where it is"
             )
             continue
-        if e.get("moved") and a.changed_px < MIN_CHANGED_PX:
+        if e.get("moved") and (
+            a.changed_px < MIN_CHANGED_PX
+            or not (e.get("shown_only_on_focus") or _paint_change(e))
+        ):
             # The page moved it between its measure and the pictures (a
             # layout shift), so the region compared was not where it was
             # drawn: no clear view, not "nothing changed" (1.2.0; post-round
             # 1 fix 11: NASA's Artemis III links failed at 0 px this way).
+            # And when its move is the only sign of a focus style, and it is
+            # not shown only on focus, the pixels that changed may be the
+            # shift's: no clear view (1.8.0, review F-02). A real style change
+            # on it or around it (a ring, a border on its parent) still counts.
             e["incomplete"] = "it moved on the page while we took the pictures"
             continue
         return a
@@ -930,8 +965,38 @@ def _draws(e: dict[str, Any]) -> bool:
     return False
 
 
+# Properties that change what is painted. A page that shifts changes sizes,
+# heights and origins around the element, and an outline-offset: those are
+# not a focus style (F-02).
+PAINT_PROPS = (
+    "outline-color",
+    "outline-style",
+    "outline-width",
+    "box-shadow",
+    "border",
+    "background",
+    "color",
+    "text-decoration",
+    "filter",
+    "fill",
+    "stroke",
+    "opacity",
+)
+
+
+def _paint_change(e: dict[str, Any]) -> bool:
+    """A part on or around the element changed a property that paints."""
+    return any(
+        p.startswith(PAINT_PROPS)
+        for c in e.get("changed", [])
+        for p in [*c.get("props", []), *c.get("pseudo", [])]
+    )
+
+
 def _style_signal(e: dict[str, Any]) -> bool:
-    return bool(e.get("changed")) or bool(e.get("moved"))
+    return bool(e.get("changed")) or (
+        bool(e.get("moved")) and bool(e.get("shown_only_on_focus"))
+    )
 
 
 def questions_for(st: State4D, evidence_refs: list[str]) -> list[OpenQuestion]:

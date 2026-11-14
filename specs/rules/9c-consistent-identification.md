@@ -1,7 +1,7 @@
 ---
 tt_test: 9.C
 tt_name: 3.2.4-consistent-identification
-spec_version: 1.6.0
+spec_version: 1.7.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -28,7 +28,7 @@ Names and descriptions *agree* when they are equal after collapsing spaces and i
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to compare" | Abby, 2026-11-02 (Q1) |
-| A2 | ANDI did not run, or a page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.3.0; Abby, 2026-11-12) | p. 44 HtT 1; Spec rule |
+| A2 | ANDI did not run, or a page could not be read, or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (1.7.0; `site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.3.0; Abby, 2026-11-12) | p. 44 HtT 1; Spec rule |
 | A3o | No pair, every other page shares almost nothing with the tested page and the tested page has navigation of its own | NEEDS REVIEW, not performed: the pages given look like another template (1.2.0) | Abby, 2026-11-09 (bundle 2 decision 3); round 2 (CILab, 14592: pages of different templates); p. 42 Applicability |
 | A3 | No pair, and every page was read in full (with a page over the read cap: G3, 1.1.0) | DOES NOT APPLY | p. 44 Identify Content, Note |
 | A4 | Otherwise | Applies; go to section 3 | |
@@ -47,6 +47,7 @@ Each pair is an *instance*.
 
 | # | Evidence pattern | Instance outcome | Source |
 | --- | --- | --- | --- |
+| C0 | Neither side has an accessible name (1.7.0, review K-05, Abby 2026-11-13: two controls with no name "agree" only because there is nothing to compare; a control with no name is 5.C's FAIL, row M3, not 9.C's) | Not an instance (left out, with a note) | Abby, 2026-11-13; 5.C M3 |
 | C1 | Names agree and descriptions agree | PASS | p. 44 ER 1 |
 | C2 | Matched by destination or id, and one of the two has no name | FAIL: identified on one page and not on the other | p. 44 ER 1; G197 step 1 |
 | J1? | Otherwise, J1 not answered | NEEDS REVIEW | Open question |
@@ -62,6 +63,7 @@ Each pair is an *instance*.
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing each pair |
 | G3 | Any instance is NEEDS REVIEW, or J1 questions were capped (at most 12 per run), or a page was over the read cap of 5,000 pieces of content (1.6.0; 600 before), so its later controls were never paired (1.1.0; 9.A Terms: "a page over the cap is incomplete") | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
+| G3u | Every pair that was compared was left out, and at least one by C0 (the only controls the pages share have no name; 1.7.0). Never DOES NOT APPLY: there were shared components, and they were not compared; never PASS | NEEDS REVIEW, with the note "This test could not be performed": "The only controls the two pages share have no name, so nothing could be compared." |
 | G4 | Every pair was dropped by C5 | DOES NOT APPLY |
 | G5 | Every instance is PASS | PASS |
 
