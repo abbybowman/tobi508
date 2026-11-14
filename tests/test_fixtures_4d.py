@@ -70,6 +70,14 @@ EXPECTED: dict[str, dict] = {
     # stand for the rest (spec, widget pass W), and the cap now steps back
     # once so the last item reached has its picture too.
     "f17-menubar-of-eight-items": {"outcome": "PASS", "rows": ["M6"]},
+    # A radio group counts once (Tab lands on one radio of it; P1 on the
+    # first, P2 on the last). f23 has three: 2 of the page's 4 radios and
+    # link are stops, and the group is one candidate, so every element was
+    # reached: PASS (guard CN said NEEDS REVIEW). f24 is the nearest page that
+    # must stay NEEDS REVIEW: a script moves focus off every radio at once, so
+    # the group is never a stop and the guard holds.
+    "f23-radio-group-of-three": {"outcome": "PASS"},
+    "f24-radio-group-focus-moved-off": {"outcome": "NEEDS_REVIEW", "page_rows": ["CN"]},
     "f09-faint-outline": {"outcome": "NEEDS_REVIEW", "choice": "unsure"},
     # Fix 26 (4.D 1.4.0): small round icons. The pictures carry context and
     # are scaled up for the judge, and J1's input says the changed pixels
@@ -142,6 +150,8 @@ async def test_fixture(name, settings, server):
     assert f.outcome.value == e["outcome"], (f.rows, f.summary)
     if "rows" in e:
         assert set(e["rows"]) <= set(instance_rows(f)), f.rows
+    if "page_rows" in e:  # the finding's own rows (a guard), not an instance's
+        assert set(e["page_rows"]) <= set(f.rows), f.rows
     if "max_s" in e:
         assert took < e["max_s"], took
     if name in ASKED:

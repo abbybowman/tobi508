@@ -209,6 +209,25 @@ async def test_dom_inventory(browser, settings):
     await ctx.close()
 
 
+async def test_inventory_counts_a_radio_group_once(browser, settings):
+    """Tab lands on one radio of a group: the group is one candidate. A group
+    is one name in one form (or none) in one document or shadow root; radios
+    with no name, or in another form, are their own."""
+    ctx = await new_context(browser, settings)
+    page = await ctx.new_page()
+    await page.set_content(
+        "<input type=radio name=a><input type=radio name=a><input type=radio name=a>"
+        "<form><input type=radio name=a><input type=radio name=a></form>"
+        "<form><input type=radio name=a></form>"
+        "<input type=radio><input type=radio>"
+        "<input type=radio name=b disabled><input type=radio name=b>"
+        "<input type=radio name=c tabindex=-1><input type=radio name=c tabindex=-1>"
+    )
+    # page group a, form 1 group a, form 2 group a, two unnamed, b (one enabled).
+    assert (await dom_inventory(page)).candidates == 6
+    await ctx.close()
+
+
 async def test_inventory_counts_a_frame_that_detaches_mid_read(
     browser, settings, monkeypatch
 ):
