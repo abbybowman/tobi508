@@ -64,6 +64,43 @@ def _decided(rep: dict) -> dict[str, bool]:
     return decided_tests(g0._Rep(rep))
 
 
+def _rows_diff(a: list[str], b: list[str]) -> list[str]:
+    """The rule's own rows (`A3`, `G2`) and the per-instance rows (`d57:M4`)
+    apart; instance rows are listed by what changed, not whole."""
+    out = []
+    ra, rb = [x for x in a if ":" not in x], [x for x in b if ":" not in x]
+    if ra != rb:
+        out.append(f"rule rows {ra} -> {rb}")
+    ia = {x.split(":")[0]: x.split(":")[1] for x in a if ":" in x}
+    ib = {x.split(":")[0]: x.split(":")[1] for x in b if ":" in x}
+    moved = [f"{k} {ia[k]}->{ib[k]}" for k in ia if k in ib and ia[k] != ib[k]]
+    gone = [k for k in ia if k not in ib]
+    new = [k for k in ib if k not in ia]
+    if moved or gone or new:
+        out.append(
+            f"instance rows differ: {len(ia)} -> {len(ib)}; "
+            f"changed {', '.join(moved[:6]) or 'none'}"
+            f"{' ...' if len(moved) > 6 else ''}; "
+            f"only dry {len(gone)}, only real {len(new)}"
+        )
+    return out
+
+
+def _text_diff(a: str, b: str) -> str:
+    """The part of two texts that differs (common start and end cut)."""
+    i = 0
+    while i < min(len(a), len(b)) and a[i] == b[i]:
+        i += 1
+    j = 0
+    while j < min(len(a), len(b)) - i and a[-1 - j] == b[-1 - j]:
+        j += 1
+    lo = max(i - 15, 0)
+    out = f"'...{a[lo : len(a) - j]}' -> '...{b[lo : len(b) - j]}'"
+    return out[:300]
+        :300
+    ]
+
+
 def dry_vs_real(real: dict[str, dict], dry: dict[str, dict]) -> dict:
     """Every cell no judge answer decided in the real run, set against the dry
     run's: outcome, rows, ran out of time, and time (a difference over 50% and
@@ -88,10 +125,9 @@ def dry_vs_real(real: dict[str, dict], dry: dict[str, dict]) -> dict:
             else:
                 if g["outcome"] != f["outcome"]:
                     what.append(f"outcome {g['outcome']} -> {f['outcome']}")
-                if g.get("rows") != f.get("rows"):
-                    what.append(f"rows {g.get('rows')} -> {f.get('rows')}")
+                what += _rows_diff(g.get("rows") or [], f.get("rows") or [])
                 if g["summary"] != f["summary"] and not what:
-                    what.append("summary only")
+                    what.append("summary: " + _text_diff(g["summary"], f["summary"]))
             if tt_r.get("ran_out") != tt_d.get("ran_out"):
                 what.append(f"ran out {tt_d.get('ran_out')} -> {tt_r.get('ran_out')}")
             sr, sd = tt_r.get("seconds"), tt_d.get("seconds")
@@ -148,8 +184,10 @@ def main_round(rnd: int) -> None:
     dry_dirs = sorted((gd / "dry").glob("p*"))
     sides = {"real": side(real_dirs, keys), "dry": side(dry_dirs, keys)}
     if rnd == 2:
-        s6 = JUD / "gate-2026-11-13" / "r1" / "results"
-        sides["step6"] = side(sorted(s6.glob("p*")), keys)
+        # Step 6's per-cell verdicts, as its own compare.json recorded them
+        # (its results folder is not in git).
+        s6 = json.loads((JUD / "gate-2026-11-13" / "compare.json").read_text())
+        sides["step6"] = s6["sides"]["gate-2026-11-13"]
         for a in (1, 2, 3):
             arm = keys / "results" / f"arm-c-{a}"
             sides[f"round2-c{a}"] = side(
