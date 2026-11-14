@@ -19,8 +19,8 @@ from typing import Any
 
 from playwright.async_api import Page
 
-from tobi508.models import Count, Part
 from tobi508.jslib import JSLIB, PATH_JS
+from tobi508.models import Count, Part
 
 PATHS_MAX = 200
 
