@@ -156,3 +156,33 @@ expression. Check `git diff` after scripted edits.
 - **Model calls cost real tokens.** Use the Claude Code CLI route only;
   run the judge eval only for the question types a change touched; count
   requests with dry mode first and record measured tokens.
+
+## A cloud container: make the browser trust its connections
+
+**Problem.** In a Claude Code cloud container, a direct connection from
+the egress proxy (`egress.py`) gets a certificate from the container's
+gateway, which Chromium does not trust (`net::ERR_CERT_AUTHORITY_INVALID`).
+The top-level page still loads (the navigation guard fetches it another
+way), so the failure is silent: CSS, fonts and scripts fail (status -1 in
+the recording). Step 6 (2026-11-13) lost six 19.A cells to it: the live
+site search's results page never ran its scripts, so no search showed
+results.
+
+**What we do.** Tunnel through the container's own proxy, which hands the
+browser the site's real certificate (checked: `cdn.jsdelivr.net` arrives
+signed by Sectigo, verified against the system store). The egress proxy
+still checks every address first; the upstream resolves the name again
+(weaker against DNS rebinding, so it is off by default):
+
+```bash
+printf 'UPSTREAM_PROXY=%s\n' "$HTTPS_PROXY" >> .env
+```
+
+`.env` is git-ignored and the proxy's port changes with the container, so
+set it in each new container. The test suite builds its settings without
+`.env` (`_env_file=None`) and never needs it; the eval scripts (freeze,
+`judging.py`, the gate) read it. Check: 19.A on round 2's 14194 in
+`tested_frozen` mode found the page through the live search with no
+script failed (without it: 13 scripts refused, W4). A recording made in a
+new environment must have its CSS and scripts at status 200; the freeze
+calls a page whose CSS, fonts and scripts mostly failed suspect.

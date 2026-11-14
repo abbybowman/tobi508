@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A long page</title>
+<style>.gap{height:2500px}</style></head><body>
+<h1>A long page</h1>
+<div class="gap"></div>
+<!-- Shown by script only when it comes into view, as many sites do. -->
+<img id="seen" data-src="/lazy/l07-middle.svg" alt="A picture in the middle" width="40" height="40">
+<div class="gap"></div>
+<p>The end.</p>
+<script>
+new IntersectionObserver((es, io) => es.forEach((e) => {
+  if (e.isIntersecting) { e.target.src = e.target.dataset.src; io.disconnect(); }
+})).observe(document.getElementById('seen'));
+</script>
+</body></html>

@@ -47,6 +47,10 @@ def collect_versions(
         run_settings={
             "settle_quiet_ms": settings.settle_quiet_ms,
             "record_scroll_passes": settings.record_scroll_passes,
+            # Scrolled one window at a time while recording (lazy content).
+            "record_scroll_steps": settings.record_scroll_steps,
+            # The media store kept each player's chosen file first.
+            "media_chosen_first": settings.media_chosen_first,
             "run_limit_s": settings.run_limit_s,
             "other_page_s": settings.other_page_s,
             # The caller turned the run limit off for this run (tobi_run_tt_tests).

@@ -77,6 +77,8 @@ async def record(
         page = await ctx.new_page()
         final_url = await guard.goto(page, url)
         await _idle(page, log, 10_000)
+        if settings.record_scroll_steps:
+            await _scroll_steps(page, log)
         # Scroll to the bottom so content loaded on scroll is recorded (4.C spec
         # section 2, Recording).
         for i in range(settings.record_scroll_passes):
@@ -108,6 +110,33 @@ async def record(
     )
 
 
+SCROLL_STEP_MAX = 60  # windows scrolled one at a time (a very long page stops)
+SCROLL_STEP_WAIT_MS = 250
+
+
+async def _scroll_steps(page, log: LogFn) -> None:
+    """Scroll down one window at a time, waiting briefly at each, then back
+    to the top; what came into view has had the chance to load."""
+    steps = 0
+    try:
+        while steps < SCROLL_STEP_MAX:
+            at_end = await page.evaluate(
+                """() => { const before = scrollY;
+                  scrollBy(0, Math.max(200, innerHeight * 0.9));
+                  return scrollY === before; }"""
+            )
+            steps += 1
+            await page.wait_for_timeout(SCROLL_STEP_WAIT_MS)
+            if at_end:
+                break
+        await _idle(page, log, 5_000)
+        await page.evaluate("window.scrollTo(0, 0)")
+    except Exception as exc:
+        log("capture_scroll_steps", "error", error=type(exc).__name__)
+        return
+    log("capture_scroll_steps", steps=steps, cut=steps >= SCROLL_STEP_MAX)
+
+
 # ── Media store (2.A-2.D plan items 13-14, Q9) ─────────────────────────────
 # A large video is fetched in byte ranges; the browser cancels the open
 # ended request when it seeks, so the HAR keeps ranges with no body and the
@@ -116,10 +145,15 @@ async def record(
 # HAR zip; on replay its byte ranges are served from there.
 
 MEDIA_INDEX = "a11y-media.json"
-_MEDIA_JS = """() => Array.from(document.querySelectorAll('video, audio'))
-  .flatMap((m) => [m.currentSrc, m.src,
-    ...Array.from(m.querySelectorAll('source')).map((s) => s.src)])
-  .filter((u) => /^https?:/.test(u || ''))"""
+_MEDIA_JS = """(chosenFirst) => {
+  const els = Array.from(document.querySelectorAll('video, audio'));
+  const all = (m) => [m.currentSrc, m.src,
+    ...Array.from(m.querySelectorAll('source')).map((s) => s.src)];
+  const list = chosenFirst
+    ? [...els.map((m) => m.currentSrc), ...els.flatMap(all)]
+    : els.flatMap(all);
+  return list.filter((u) => /^https?:/.test(u || ''));
+}"""
 
 
 async def _media_size(ctx, url: str) -> tuple[int | None, str, int | None]:
@@ -156,7 +190,7 @@ async def _fetch_media(
     urls: list[str] = []
     for frame in page.frames:
         try:
-            for u in await frame.evaluate(_MEDIA_JS):
+            for u in await frame.evaluate(_MEDIA_JS, settings.media_chosen_first):
                 # Requests never carry the #fragment (#t=8,10): keyed without
                 # it, so the range route matches and the media can seek.
                 u = u.split("#", 1)[0]

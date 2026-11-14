@@ -156,6 +156,10 @@ what is planned.
      Round 2's and round 1's frozen pages cannot be recorded again (the
      keys describe the pages as they were), so for step 9 the fix is
      the container: a browser that trusts the egress proxy.
+     **Built 2026-11-13:** the freeze scrolls window by window, stores each
+     player's chosen file first (500 MB a page) and records 19.A's
+     searches; in a cloud container, `UPSTREAM_PROXY` in `.env`
+     (`docs/solutions/environment.md`).
 7. **The grid of hard pages** (part I): nine shared pages (a shadow
    root, a frame, more than a cap, a trap, a late start, text not in
    English, hidden text, a form behind a button, a failed reading) run
