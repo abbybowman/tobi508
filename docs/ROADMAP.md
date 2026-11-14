@@ -273,6 +273,14 @@ the remaining checks).
    checks' shared base goes in with it (one finding builder, one "out
    of time" helper), which is what "Tidy the checks" was. Every outcome
    stays the same except where a gap now holds one back.
+14b. **P6's stops to 4.D and 4.E** (from step 6d, 2026-11-14). 4.C's mouse
+   bypass (P6) reaches stops that neither the Tab nor the Shift+Tab walk
+   reached when the two end in different traps, and 4.C's spec said they
+   are "tagged so 4.D and 4.E can still test them". They are not passed
+   today: 4.D and 4.E are NEEDS REVIEW for that part of the page (4.C
+   1.13.1 says so). Build: share P6's steps with 4.D and 4.E, run their own
+   readings (focus pictures, focus-event check) on them, and only then
+   count them as reached (step 6d's walk-coverage rule).
 15. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
    guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
    first six triggers) walk the keyboard through opened content, which
