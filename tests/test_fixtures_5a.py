@@ -9,7 +9,7 @@ import re
 
 import pytest
 
-from tobi508.models import Answer, ChoiceAnswer, TestId
+from tobi508.models import Answer, ChoiceAnswer, Outcome, TestId
 from tobi508.pipeline import answer_questions, run_tt_tests
 
 from .conftest import FIXTURES
@@ -540,3 +540,18 @@ async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, dr
         [["Earth"], ["Sun"]],
         [["Visualization"], ["Animation"]],
     ]
+
+
+async def test_a_star_quoted_as_the_label_is_no_label(settings, server, drafts):  # noqa: F811
+    """5.A 1.11.0 (H-01): the judge eval of 2026-11-14 answered "labeled"
+    quoting the "*" a field shows while its words are hidden. A quote with no
+    word is no label: never PASS on it."""
+    got = await run_both(
+        settings,
+        f"{server.base}/5a/f44-label-words-hidden.html",
+        {"5.A": labeled("*"), "5.C": COMPLETE},
+        [],
+    )
+    f = got["5.A"]
+    assert f.outcome is not Outcome.PASS, f.summary
+    assert "M4" not in instance_rows(f), (instance_rows(f), f.rationale)
