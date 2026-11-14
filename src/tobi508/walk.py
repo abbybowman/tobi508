@@ -278,3 +278,38 @@ def walk_coverage(
         if causes:
             cov.sentence += " " + "; ".join(causes) + "."
     return cov
+
+
+def field_coverage(
+    walk: KeyboardWalk, passes: tuple[str, ...] = ("P1",)
+) -> WalkCoverage:
+    """Row WK for the 5.x tests: the form fields the page has when the last
+    pass named ended (`PassResult.form_fields_end`, radio groups once), against
+    the fields a pass stopped on (a radio group once, not read-only, not
+    disabled: the same stops `forms._fields` lists). 5.D and 5.F read P1."""
+    read = [p for name, p in (("P1", walk.p1), ("P2", walk.p2)) if name in passes]
+    last = read[-1]
+    cov = WalkCoverage(causes=[c for p in read if (c := _cause(p))])
+    if last.form_fields_end is None:
+        return cov  # not counted: no sentence (the check's own lines stand)
+    seen = {
+        s.stop.group or s.stop.path_key
+        for p in read
+        for s in p.steps
+        if s.stop.kind == "element"
+        and s.stop.control
+        and not s.stop.readonly
+        and not s.stop.disabled
+    }
+    cov.counted = last.form_fields_end
+    cov.not_reached = max(0, cov.counted - len(seen))
+    cov.reached = cov.counted - cov.not_reached
+    if cov.not_reached:
+        cov.sentence = (
+            f"The keyboard reached {cov.reached} of the {cov.counted} form fields "
+            f"on this page, so {cov.not_reached} "
+            f"{'was' if cov.not_reached == 1 else 'were'} not checked."
+        )
+        if cov.causes:
+            cov.sentence += " " + "; ".join(cov.causes) + "."
+    return cov

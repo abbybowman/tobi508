@@ -27,6 +27,17 @@ NOT_TOLD = {"J1": {"choice": "not_told"}}
 # Scripted answers stand in for the calling agent (test data, never in a
 # page). J1 "told" answers carry the quote the mechanical check looks for.
 EXPECTED: dict[str, dict] = {
+    # Row WK (5.D 1.7.0, step 6d): a script skips the second field in both
+    # directions, so the walk wraps having reached 1 of the page's 2 fields
+    # and 5.D filled in only that one: NEEDS REVIEW. f24 is the same page
+    # without the script: 2 of 2, PASS.
+    "f23-field-skipped-by-script": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page_rows": ["WK"],
+        "walk": (1, 2),
+    },
+    "f24-two-fields-all-reached": {"outcome": "PASS", "rows": [], "walk": (2, 2)},
     "f01-jump-menu": {"outcome": "FAIL", "rows": ["M9"], "answers": NOT_TOLD},
     "f02-jump-menu-notice-before": {
         "outcome": "PASS",
@@ -149,6 +160,11 @@ async def test_outcome(name, settings, server, drafts):  # noqa: F811
         f.rationale,
         f.summary,
     )
+    if "page_rows" in e:
+        assert set(e["page_rows"]) <= set(f.rows), f.rows
+    if "walk" in e:  # row WK's evidence: fields reached of fields counted
+        r, c = e["walk"]
+        assert f"Walk: reached {r} of {c} fields" in f.rationale, f.rationale
     if name in COVERS:
         # 1.2.0: J2's input gives the share of the window that changed (or a
         # new dialog or layer covers) and whether a new dialog is modal.

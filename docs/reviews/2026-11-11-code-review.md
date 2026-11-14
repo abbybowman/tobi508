@@ -576,6 +576,11 @@ different checks, and some of those ways do not hold back an outcome.
   fa27b588: a modal dialog open on load) showed the count held elements
   behind a modal, which Tab cannot reach: the inventory and the focusable
   count now leave them out (traverse.py, count.py).
+- **Step 6d, 5.D (1.7.0):** 5.D reads the field coverage (`walk.field_coverage`,
+  P1's fields against the page's fields when P1 ended) beside guard CN
+  (`count: fields`), which stays. A field a script skips with the walk
+  wrapped is NEEDS REVIEW (`5d/f23`); the same page without the script
+  is PASS (`5d/f24`).
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 
