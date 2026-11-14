@@ -142,13 +142,15 @@ A fix removes its line here in the same commit.
   minutes. Tests not finished in time come back NEEDS REVIEW, with the
   reason.
 - **One test:** each test also has its own time for collecting its
-  evidence, inside the run's limit: 60 s for most, up to 10 min for 5.D
-  (`TEST_BUDGET_S` in `checks/base.py`, about twice the longest seen on
-  real pages). A test that runs out of its time is NEEDS REVIEW ("ran out
-  of its time") and the tests after it still run. Round 2's ten pages took
-  17 s to 15.5 min each with every test (66 min in all; 2026-11-13, judge
-  off); the longest single tests were 5.D on a page with 98 form fields
-  (8 min) and 4.F on a long page (4.5 min).
+  evidence: its budget (60 s for most, up to 10 min for 5.D; provisional,
+  about twice the longest seen on round 2's pages; setting
+  `TEST_BUDGETS_S`) or half of what is left of the run, whichever is
+  smaller. A test that runs out of its time is NEEDS REVIEW ("ran out of
+  its time") and the tests after it still run, cheapest first. The report
+  lists each test's time (`test_times`). Round 2's ten pages took 17 s to
+  15.5 min each with every test (66 min in all; 2026-11-13, judge off);
+  the longest single tests were 5.D on a page with 98 form fields (8 min)
+  and 4.F on a long page (4.5 min).
 - **One call:** at most 45 s (`CALL_WAIT_S`), under common MCP client
   timeouts. A run not done by then goes on in the server: the result says
   `"status": "running"` with a `job_id`, and `tobi_run_status` waits for it

@@ -53,12 +53,23 @@ D65_UV = (0.1978, 0.4683)
 SERIES_MAX = 400  # frames kept in the plotted series
 
 
-def linear(rgb: np.ndarray) -> np.ndarray:
-    """sRGB 0-255 to linear 0-1 (WCAG 2.0's formula)."""
+def _linear(rgb: np.ndarray) -> np.ndarray:
     c = rgb.astype(np.float32) / 255.0
     return np.where(c <= 0.03928, c / 12.92, ((c + 0.055) / 1.055) ** 2.4).astype(
         np.float32
     )
+
+
+# The same formula for each of the 256 values of an 8-bit channel: a lookup
+# instead of a power per pixel (code review W-01: about ten times faster).
+_LINEAR_U8 = _linear(np.arange(256, dtype=np.uint8))
+
+
+def linear(rgb: np.ndarray) -> np.ndarray:
+    """sRGB 0-255 to linear 0-1 (WCAG 2.0's formula)."""
+    if rgb.dtype == np.uint8:
+        return _LINEAR_U8[rgb]
+    return _linear(rgb)
 
 
 def luminance(lin: np.ndarray) -> np.ndarray:

@@ -45,7 +45,13 @@ from tobi508.browser import (
 )
 from tobi508.capture import Capture, document_sha, replay_context, unrecorded_code
 from tobi508.checks import REGISTRY, RunContext
-from tobi508.checks.base import PageRef, budget_s, out_of_budget_reason
+from tobi508.checks.base import (
+    AFTER,
+    PageRef,
+    budget_s,
+    out_of_budget_reason,
+    time_for,
+)
 from tobi508.config import Settings
 from tobi508.egress import EgressProxy
 from tobi508.engine import apply_guards
@@ -67,6 +73,7 @@ from tobi508.models import (
     Report,
     RunResult,
     TestId,
+    TestTime,
     unsure_by_server,
     utcnow,
     waiting_head,
@@ -270,6 +277,29 @@ def _limit(settings: Settings, pages: int) -> int:
     """The run limit: `run_limit_s`, plus `other_page_s` for each other page
     recorded (Abby, 2026-11-02: the limit is set per page)."""
     return settings.run_limit_s + pages * settings.other_page_s
+
+
+BUDGET_GRACE_S = 10  # a test stops starting work this long before its end
+
+
+def run_order(checks: list, settings: Settings) -> list:
+    """Cheapest budget first (step 6c), each test after the selected tests
+    its collect reads (checks.base.AFTER); ties keep the registry's order."""
+    left = list(checks)
+    ids = {c.test_id.value for c in left}
+    done: set[str] = set()
+    out: list = []
+    while left:
+        ready = [
+            c
+            for c in left
+            if all(d in done or d not in ids for d in AFTER.get(c.test_id.value, ()))
+        ]
+        nxt = min(ready or left, key=lambda c: budget_s(settings, c.test_id.value))
+        out.append(nxt)
+        left.remove(nxt)
+        done.add(nxt.test_id.value)
+    return out
 
 
 def uses_pages(check) -> bool:
@@ -933,10 +963,9 @@ async def run_tt_tests(
         if no_time_limit
         else t_start + _limit(settings, len(others)) - HARD_MARGIN_S
     )
-    # Checks whose replays others reuse (4.D's arrows, 4.F's Enter presses,
-    # for 4.A) collect first; 5.A and 5.C (shares -1) collect last, after the
-    # replays that may reveal fields for them. Findings keep the report's order.
-    checks.sort(key=lambda c: -getattr(c, "shares", 0))
+    # Cheapest budget first, each after the tests whose replays it reads
+    # (checks.base.AFTER; step 6c). Findings keep the report's order.
+    checks = run_order(checks, settings)
     states: dict[TestId, Any] = {}
     skipped: dict[TestId, str] = {}  # tests left out, and why (fix 12)
     ran_out: dict[TestId, str] = {}  # tests past their own budget (step 6c)
@@ -1265,26 +1294,42 @@ async def run_tt_tests(
                 if needs_walk(c, ctx) and walk is None:
                     continue  # NEEDS REVIEW: the run did not complete (errors say why)
                 await say(2, f"Checking {c.test_id.value}")
-                # The test's own budget, inside the run limit (step 6c).
+                # The test's own time, inside the run limit (step 6c): its
+                # budget or a share of what is left, whichever is smaller. It
+                # stops starting work a little before (ctx.out_of_time) and is
+                # cancelled at the end.
+                tid = c.test_id.value
+                t0 = time.monotonic()
                 limit = hard + allowance[0]
-                own = time.monotonic() + budget_s(c.test_id.value)
+                own_s = time_for(settings, tid, limit - t0)
+                own = t0 + own_s
+                ctx.test_deadline = own - min(BUDGET_GRACE_S, own_s / 6)
+                times = report.test_times[tid] = TestTime(
+                    budget_s=budget_s(settings, tid), limit_s=round(own_s, 1)
+                )
                 try:
                     with metered() as cost:
                         state = await _bounded(c.collect(ctx, walk), min(limit, own))
                 except TimeoutError:
                     if own < limit:
-                        ran_out[c.test_id] = out_of_budget_reason(c.test_id.value)
-                        msg = f"ran out of its time ({budget_s(c.test_id.value)} s)"
+                        ran_out[c.test_id] = out_of_budget_reason(own_s)
+                        times.ran_out = True
+                        msg = f"ran out of its time ({own_s:.0f} s)"
                     else:
                         msg = "the run reached its time limit before this test finished"
-                    run.log("check_error", "error", test=c.test_id.value, error=msg)
-                    report.errors.append(f"{c.test_id.value}: {msg}")
+                    run.log("check_error", "error", test=tid, error=msg)
+                    report.errors.append(f"{tid}: {msg}")
                     continue
                 except Exception as exc:
                     err = safe_error(exc)
-                    run.log("check_error", "error", test=c.test_id.value, error=err)
-                    report.errors.append(f"{c.test_id.value}: {err}")
+                    run.log("check_error", "error", test=tid, error=err)
+                    report.errors.append(f"{tid}: {err}")
                     continue
+                finally:
+                    if time.monotonic() > ctx.test_deadline:
+                        times.ran_out = True  # stopped early, or cancelled
+                    ctx.test_deadline = math.inf
+                    times.seconds = round(time.monotonic() - t0, 1)
                 states[c.test_id] = state
                 run.write_json(run.evidence_dir / evidence_name(c.test_id), state)
                 run.log("collected", test=c.test_id.value, cost=asdict(cost))

@@ -104,13 +104,19 @@ flag, never the deadline's value.
 **A budget per test (2026-11-14, roadmap step 6c).** One slow test used
 to cost every test after it: on step 6's run of 14194, 3.A took about 17
 min and the run cap (`MAX_RUN_S`) left 5.A-5.H not performed. Each test
-now has its own budget (`checks/base.TEST_BUDGET_S`); past it, that test is
-NEEDS REVIEW and the next starts. Two traps:
+now has its own time: its budget (setting `test_budgets_s`, provisional) or
+half of what is left of the run, whichever is smaller; past it, that test
+is NEEDS REVIEW and the next starts (cheapest budget first). Three traps:
 - A test awaiting a task other tests share must shield it
   (`asyncio.shield`): cancelling the awaiting test cancels the task.
   `motion.collect` does; `test_budgets.py` fails without it.
 - A budget of 0 never starts the coroutine (`_bounded` closes it), so a
   test of what happens mid-await needs a budget the work outlasts.
+- A timeout cannot interrupt code that never yields: 3.A's flash counting
+  (numpy, 15-19 s on 181 frames, review W-01) blocked the whole server.
+  It runs in `asyncio.to_thread` now (the await ends at once; the thread
+  finishes on its own), with a 256-value table for the sRGB power, and the
+  stepped capture checks the time at every step.
 
 Measured on round 2's ten frozen pages (2026-11-13, Linux headless, 4 CPUs,
 replay mode, judge off), seconds of each test's own collect:

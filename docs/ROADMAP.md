@@ -143,8 +143,9 @@ what is planned.
      runs long costs its own cell: 3.A's capture took 17 min on 14194
      (55 s in the dry run) and cost 5.A-5.H there. Find the cause as
      well as adding the budget.
-     **Built 2026-11-14:** `checks/base.TEST_BUDGET_S` (60 s to 600 s,
-     about twice the longest seen on round 2's pages); the 17 min was not
+     **Built 2026-11-14:** budgets as settings (60 s to 600 s, about twice
+     the longest seen on round 2's pages, provisional until step 9), each
+     capped at half of what is left of the run, cheapest first; the 17 min was not
      reproduced (3.A on 14194: 56 s, 117 s with its stepped capture
      forced; `docs/solutions/time-budget.md`).
    - **19.A: a search whose results page did not finish** (its own

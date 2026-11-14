@@ -1,7 +1,7 @@
 ---
 tt_test: 3.A
 tt_name: 2.3.1-flashing
-spec_version: 1.2.0
+spec_version: 1.2.1
 count: images, players
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -70,7 +70,7 @@ A page with no trigger is A4 with no capture.
 - **Video:** decoded from the recorded bytes in a tool page, played at 0.5× with `requestVideoFrameCallback` (every frame), the first 10 s, drawn at full screen on a 256 × 192 canvas (one pixel per 4 × 4 CSS px cell; the canvas averages in sRGB, an approximation). No fine-pattern check. Chromium cannot decode H.264: such a video is A3. When the first file of an element cannot be read or decoded, its next `<source>` file is tried (1.1.0); the reason named is the first one's.
 - **Not steppable** (V7): `<marquee>` runs by the wall clock: A3. SMIL steps.
 
-**Time budget.** Only when a trigger fires: the screencast about 3 s (load and 2 s); the stepped capture about 6-7 s of wall time; each video up to 20 s; images under a second. It comes out of the moving-content allowance (`MOVING_ALLOWANCE_S`, 2.x plan Q2) when the run is held to a limit. `ctx.out_of_time()` is checked before the screencast, the capture, every 30 steps, each image and each video; work cut by time is A3.
+**Time budget.** Only when a trigger fires: the screencast about 3 s (load and 2 s); the stepped capture about 6-7 s of wall time; each video up to 20 s; images under a second. It comes out of the moving-content allowance (`MOVING_ALLOWANCE_S`, 2.x plan Q2) when the run is held to a limit. `ctx.out_of_time()` is checked before the screencast, the capture, every step of the capture, each image and each video, against the run limit and the test's own budget (1.2.1; roadmap step 6c); the counting runs off the server's event loop; work cut by time is A3.
 
 ## 3. The assessment (WCAG 2.0 SC 2.3.1)
 

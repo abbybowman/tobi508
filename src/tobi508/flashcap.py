@@ -55,7 +55,6 @@ IMAGE_MAX_FRAMES = 500
 IMAGE_MAX_BYTES = 5_000_000
 VIDEO_MAX_BYTES = 50_000_000
 CLOCK_T0 = 1_700_000_000_000  # an arbitrary fixed epoch: the same every run
-CHECK_EVERY = 30  # steps between time checks
 STRIP_FRAMES = 8
 
 
@@ -173,7 +172,7 @@ class Stepped(BaseModel):
     page_ms: float = 0.0
     wall_s: float = 0.0
     lead_ms: int = LEAD_MS
-    cut: bool = False  # stopped for the run's time limit
+    cut: bool = False  # stopped for the run's or the test's time limit
     masked: list[dict[str, Any]] = Field(default_factory=list)
     window: dict[str, Any] = Field(default_factory=dict)  # viewport, DPR
 
@@ -235,7 +234,8 @@ async def stepped(
     start = time.monotonic()
     t = lead_ms
     for k, ms in enumerate([0, *flash.steps_ms(STEP_S, FPS)]):
-        if k and k % CHECK_EVERY == 0 and out_of_time():
+        # Every step (step 6c): the test's own budget can end mid-capture.
+        if k and out_of_time():
             info.cut = True
             break
         if ms:
