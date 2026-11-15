@@ -15,9 +15,9 @@ is listed here is what is left to start or still running.
 #60 to #62 merged, #64 open).
 
 **Order to start them** (at most three threads at once, beside step
-8's thread while it finishes): 6e and 6f now; 6g and round 3
+8's thread while it finishes): 6e, 6f and 12a now; 6g and round 3
 (step 10) when PR #64 is merged; 9b and round 4 (step 10b) by midday
-on Nov 17.
+on Nov 17. If usage limits bite, hold 6f.
 
 ## Starting a thread
 
@@ -235,6 +235,66 @@ on Nov 17.
 > test and in all, and list apart the cells inside a web component or
 > a frame. Keep each page's report and pre-SCRT file out of git.
 > Change no code from what you find: list it for after the demo.
+
+**Step 12a, Opus: hosted on VAST, the part that needs no VAST** (now)
+
+> Read `CLAUDE.md` ("Hosting, time and concurrency"),
+> `docs/plans/2026-11-06-hosted-auth.md`, `SECURITY.md` ("Before a
+> hosted deployment"), the `Dockerfile`, `.github/workflows/container.yml`,
+> `src/tobi508/app.py` and `access.py`, and `tests/test_access_signin.py`.
+> Your work is step 12a of `docs/ROADMAP.md`: make the first deployment
+> on VAST a matter of following a page, and prove as much of it as can
+> be proved without VAST. Three things, each its own pull request.
+>
+> (1) `docs/how-to/deploy-on-vast.md`: the one-line Containerfile that
+> pulls the image CI builds; every setting a hosted server needs, with
+> what each does and which are secrets (`AUTH`, the OIDC settings,
+> `OIDC_AUDIENCE`, `REQUIRED_GROUPS`, `PUBLIC_BASE_URL`, `RUNS_DIR`,
+> `FASTMCP_HOME`, `UPSTREAM_PROXY`, the `JUDGE_*` settings and what
+> happens with no gateway); where runs live and for how long; the
+> health route; how a user connects from Claude Code; and a checklist
+> of what to confirm on the first deployment. Take every value from
+> the code and `.env.example`, never from memory, and list what you
+> could not confirm as questions for the VAST admin beside the plan's
+> four.
+>
+> (2) A smoke test, `scripts/smoke_hosted.py`, that takes a base URL:
+> the health route answers; `/mcp` without a token is 401 with the
+> metadata link; a sign-in gets a token; `tobi_run_tt_tests` on one
+> page runs to done through `tobi_run_status`; the report is read
+> through its `run://` link; a second signed-in person cannot read
+> that run; the audit lines name the caller. It prints one line per
+> check and exits non-zero on the first failure.
+>
+> (3) That smoke test in CI against the built image and a real
+> Keycloak (a service container in dev mode with a realm, a client,
+> two users and a group, set up by script), not the stand-in provider
+> the tests use, on a fixture page served inside the job (`DEV_MODE`
+> must stay off in the image under test: say how the page is allowed).
+> This is where token contents get checked before VAST: whether the
+> access token carries `sub`, the groups claim and the audience the
+> server expects, and what to configure in Keycloak when it does not.
+> Write what you learn into the how-to and the plan's "Verified and
+> not".
+>
+> Do not weaken any control to make the smoke test pass (the
+> allowlist, the loopback rule without sign-in, the Host and Origin
+> checks): if one blocks the test, stop and tell me. Do not remove a
+> [PENDING] marker: an end-to-end sign-in on VAST is still not done.
+> Also tell me, from reading the code, anything that works over stdio
+> and would not work for a signed-in user over HTTP (a path in a
+> result, a file only on the server, state lost between calls).
+
+**Step 12b, Opus: the first deployment** (when the VAST environment exists)
+
+> Read `docs/how-to/deploy-on-vast.md` and follow it with me: I run
+> the VAST commands and paste what they print. Deploy, sign in from
+> Claude Code, run `scripts/smoke_hosted.py` against the app's
+> address, then one real page. Record what differed from the how-to
+> and fix the how-to. Only when the smoke test passes on VAST, remove
+> the two [PENDING] markers about the end-to-end sign-in
+> (`docs/hackathon/evaluation.md`, `docs/hackathon/deck.md`) and
+> update `SECURITY.md`'s status.
 
 **Step 11, Sonnet: the second look's trial** (if the days allow)
 
