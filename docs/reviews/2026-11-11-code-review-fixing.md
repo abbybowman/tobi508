@@ -8,16 +8,50 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 7, 6b, 6c, 6d's phase 1, 6f, 6h, 8, 9a and 12a
-(PRs #39 to #89; `docs/archive/2026-11-14-roadmap-to-the-demo.md`).
-The threads of 6e and 6g are running (their prompts are no longer
-needed here).
+**Done:** steps 1 to 9a, 6b to 6h and 12a (PRs #39 to #93;
+`docs/archive/2026-11-14-roadmap-to-the-demo.md`).
 
-**Order to start them:** round 3 (step 10) and 9b when 6e and 6g are
-merged; 12b when the VAST environment exists; round 4 (step 10b) if I
-key one.
+**Order to start them:** 10a now; round 3 (step 10) and 9b when 10a
+is merged; 12b when the VAST environment exists; round 4 (step 10b)
+if I key one.
 
 ## Starting a thread
+
+**Step 10a, Sonnet: two things before round 3's freeze** (now)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "Working rules". Your work is step 10a of
+> `docs/ROADMAP.md` "Order of work", two items, each its own pull
+> request. Round 3's pages are not frozen yet and you will not be
+> told what they are.
+>
+> (1) The freeze's scroll. `capture._scroll_steps` (PR #52) scrolls
+> with `scrollBy` and stops when the position has not moved yet, so
+> on a page that sets `scroll-behavior: smooth` (Bootstrap 5; round
+> 2's svs pages) it stops after one step and lazy content below is
+> never recorded (`docs/KNOWN-LIMITS.md`). Make a page that shows it
+> (smooth scrolling, an image that loads only when scrolled to, three
+> windows down), see the test fail, then fix the scroll so it reaches
+> the end of the page whatever the page's scroll behaviour, and say
+> how you know it reached the end. Also make the freeze list, in its
+> output, every frame it saw whose address was not recorded or
+> differs between two loads (reCAPTCHA, a lazy video embed): a
+> report, not a fix. No spec changes and no outcome changes.
+>
+> (2) 19.A on CILab (round 2). Step 6h's rerun gave PASS, as my key
+> does; step 6g's rerun gave FAIL, with `main`'s code too
+> (`evals/README.md`, the 2026-11-15 reruns). Both of my key's ways
+> are on the live site today: the home page links to
+> `/cilab/index.html`, which is the same document as `/cilab/`, and
+> `/cilab/information.html`'s top row links back. So the difference
+> is in what each rerun gave the test (its other pages) or in how the
+> pages loaded. Rerun 19.A on CILab's frozen copy both ways (ask me
+> for the archive; never fetch the tested page live) and show me,
+> for each: the other pages given, every page 19.A loaded itself and
+> whether it loaded, each alias checked and its result, each way
+> found and its kind, and the rows. Tell me the cause before changing
+> anything. If the outcome depends on which other pages are given,
+> say what round 3's runner should give every page.
 
 **Step 9b, Sonnet: the third check** (at round 3's commit)
 
@@ -68,7 +102,7 @@ key one.
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze and the run in one thread, when steps 6e and 6g are merged; I give the pages then)
+**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze and the run in one thread, when step 10a is merged; I give the pages then)
 
 > Read `docs/how-to/run-a-judging-round.md` and
 > `evals/agent/README.md`. This is round 3, a formal judging round
@@ -80,8 +114,11 @@ key one.
 > no other thread has seen the page list, and none may before then.
 > Keep each page's report and pre-SCRT file out of git.
 >
-> The freeze (the fuller freeze of PR #52). Check each recording
-> against its manifest. Then, for each page, compare one replay with
+> The freeze (the fuller freeze of PR #52, with step 10a's scroll
+> fix). Check each recording against its manifest, and its
+> `capture_scroll_steps` log lines: the scroll must have reached the
+> end of every page. List the frames the freeze reports as not
+> recorded. Then, for each page, compare one replay with
 > the live page before you run any test: the requests that fail in
 > the replay, and anything a visitor sees in the first 30 s that the
 > replay does not show (a popup, a banner, a player). On round 1's
@@ -89,7 +126,7 @@ key one.
 > replay. Tell me what you find before the run; do not change the
 > freeze yourself.
 >
-> The run. On `main`'s head, after steps 6e and 6g are merged; tell
+> The run. On `main`'s head; tell
 > me the commit before you start, since 9b runs at the same one. Run
 > in tested_frozen mode, each page with the round's other pages on
 > its host and the site's home page as other pages (19.A loads

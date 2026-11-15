@@ -32,6 +32,7 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.site import PageRead, norm_href, page_label, read_page, site_read
+from tobi508.traverse import settle
 from tobi508.walk import KeyboardWalk
 
 SUGGEST_MAX = 10  # 1.13.0 (5 before; Abby, 2026-11-15)
@@ -108,6 +109,12 @@ class State19A(BaseModel):
     # What the site read covered, per page (site.SiteRead.read; guard CN).
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
     links: list[LinkTo] = Field(default_factory=list)
+    # Links to T shown by opening the one visible button that controls them
+    # in a closed navigation menu (W9, 1.15.0; step 6g): navigation links.
+    menu_links: list[LinkTo] = Field(default_factory=list)
+    # Each closed menu tried: page n, url, the link, the button, how it was
+    # opened, whether the link was then shown, or why not.
+    menus_opened: list[dict[str, Any]] = Field(default_factory=list)
     search_forms: int = 0
     # T is the address a search form submits to (W5, 1.4.0)
     search_target: str = ""
@@ -130,7 +137,7 @@ class State19A(BaseModel):
 
     @property
     def kinds(self) -> list[str]:
-        k = {x.kind for x in self.links}
+        k = {x.kind for x in self.links} | {x.kind for x in self.menu_links}
         if self.search.status == "found" or self.search_target:
             k.add("search")
         return [x for x in KIND_WORDS if x in k]
@@ -513,14 +520,18 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     )
     st.search_target = search_target(forms, both)
     read = list(site.others)
+    # How to load each page read again (its own recording): W9's menus.
+    loaders = {p.n: p.new_page for p in ctx.pages}
     if len(st.kinds) < 2:
         await _check_aliases(ctx, st, read, maps)
     if len(st.kinds) < 2:
         given = {p.url for p in site.pages} | {ctx_p.final_url for ctx_p in ctx.pages}
         st.checked = suggested_pages(st.t_url, main, site.pages, given, st.spares)
-        await _check_suggested(ctx, st, main, read)
+        await _check_suggested(ctx, st, main, read, loaders)
     if len(st.kinds) < 2 and st.search_forms and not st.search_target:
         await _live_search(ctx, st, main, forms)
+    if len(st.kinds) < 2 and "navigation" not in st.kinds:
+        await _open_menus(ctx, st, read, loaders)
     st.hidden_nav = [
         {
             "page": p.n,
@@ -555,6 +566,107 @@ def _load_reason(exc: Exception) -> str:
     if isinstance(exc, ValueError):
         return "it is not on this page's site, before or after redirects"
     return "it could not be loaded"
+
+
+# W9's closed menus (1.15.0): on a page read whose links in navigation,
+# banner or contentinfo regions hidden on load include one to T, the one
+# visible button that controls such a link: it names an ancestor of the link
+# in aria-controls, or it is the toggle (aria-expanded, aria-haspopup, a
+# summary) of the list item or details that holds the link. None when no
+# link has exactly one. The link and button are marked for the opening.
+MENUS_MAX = 5  # pages whose closed menu is opened, in a run
+MENU_FN = r"""(hrefs) => {
+  const NAV = 'nav, header, footer, [role=navigation], [role=banner], [role=contentinfo]';
+  const vis = (el) => el.checkVisibility ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0;
+  const name = (el) => ((el.getAttribute('aria-label') || el.innerText || el.textContent || '') + '').trim().replace(/\s+/g, ' ').slice(0, 80);
+  const links = Array.from(document.querySelectorAll('a[href]')).filter((a) => hrefs.includes(a.href) && a.closest(NAV) && !vis(a));
+  const toggles = Array.from(document.querySelectorAll('button, [role=button], summary, a[aria-expanded], [aria-haspopup], [aria-expanded]'));
+  for (const a of links) {
+    const by = toggles.filter((b) => {
+      if (b === a || b.contains(a) || !vis(b)) return false;
+      const ids = (b.getAttribute('aria-controls') || '').split(/\s+/).filter(Boolean);
+      if (ids.some((id) => { const c = document.getElementById(id); return c && c.contains(a); })) return true;
+      const item = b.closest('li, details');
+      const toggle = b.hasAttribute('aria-expanded') || b.hasAttribute('aria-haspopup') || b.tagName === 'SUMMARY';
+      return toggle && !!item && item.contains(a);
+    });
+    if (by.length !== 1) continue;
+    a.setAttribute('data-tobi-19a', 'link');
+    by[0].setAttribute('data-tobi-19a', 'button');
+    return { href: a.href, link: name(a), button: name(by[0]) };
+  }
+  return null;
+}"""
+SHOWN_FN = """() => {
+  const a = document.querySelector('[data-tobi-19a=link]');
+  return !!a && (a.checkVisibility ? a.checkVisibility({ visibilityProperty: true }) : a.getClientRects().length > 0);
+}"""
+
+
+async def _open_menus(
+    ctx: RunContext, st: State19A, read: list[PageRead], loaders: dict[int, Any]
+) -> None:
+    """W9 (1.15.0): open the closed menu that holds a link to T, on each
+    page read that has one (at most MENUS_MAX), until a link to T is shown.
+    A link no visible button controls (a mobile copy) is not a way."""
+    tried = 0
+    for p in read:
+        if st.menu_links or tried >= MENUS_MAX:
+            return
+        hrefs = [h for h in p.hidden_nav if _to_t(h, _targets(st))]
+        if not hrefs or p.n not in loaders:
+            continue
+        if ctx.out_of_time():
+            st.menus_opened.append(
+                {
+                    "page": p.n,
+                    "url": p.url,
+                    "shown": False,
+                    "reason": "no time was left",
+                }
+            )
+            return
+        tried += 1
+        rec: dict[str, Any] = {"page": p.n, "url": p.url, "shown": False}
+        st.menus_opened.append(rec)
+        context = None
+        try:
+            context, page = await loaders[p.n]()
+            await settle(page, ctx.quiet_ms)
+            got = await page.evaluate(MENU_FN, hrefs)
+            if not got:
+                rec["reason"] = "no single visible button controls the link"
+                continue
+            rec.update(got)
+            button = page.locator("[data-tobi-19a=button]").first
+            await button.focus()
+            await page.keyboard.press("Enter")
+            await settle(page, ctx.quiet_ms)
+            rec["by"] = "Enter"
+            if not await page.evaluate(SHOWN_FN):
+                await button.click()
+                await settle(page, ctx.quiet_ms)
+                rec["by"] = "a click"
+            rec["shown"] = bool(await page.evaluate(SHOWN_FN))
+            if rec["shown"]:
+                st.menu_links.append(
+                    LinkTo(
+                        page=p.n,
+                        name=got["link"],
+                        region="navigation",
+                        kind="navigation",
+                    )
+                )
+            else:
+                rec["reason"] = "the link was not shown when its menu was opened"
+        except Exception as exc:
+            rec["reason"] = f"opening the menu failed ({type(exc).__name__})"
+        finally:
+            if context is not None:
+                try:
+                    await context.close()
+                except Exception:
+                    pass
 
 
 def _targets(st: State19A) -> tuple[str, ...]:
@@ -607,7 +719,11 @@ async def _check_aliases(
 
 
 async def _check_suggested(
-    ctx: RunContext, st: State19A, main: PageRead, read: list[PageRead]
+    ctx: RunContext,
+    st: State19A,
+    main: PageRead,
+    read: list[PageRead],
+    loaders: dict[int, Any] | None = None,
 ) -> None:
     """The suggested pages, one at a time, each loaded as a caller's other
     page is, until two kinds are found (spec Terms, 1.11.0; Abby,
@@ -623,6 +739,8 @@ async def _check_suggested(
         try:
             ref = await ctx.record_live(c.url, "suggested")
             got = await read_page(ref.n, ref.final_url, ref.new_page)
+            if loaders is not None:
+                loaders[ref.n] = ref.new_page
         except Exception as exc:
             c.status, c.reason = "not_checked", _load_reason(exc)
             continue
@@ -879,6 +997,7 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
         f"Kinds: {kinds}; links: {len(st.links)}; search {st.search.status}; "
         f"aliases: {[(a.url, a.status, a.how or a.reason) for a in st.aliases]}; "
         f"suggested: {[(c.role, c.url, c.status) for c in st.checked]}; "
+        f"menus opened: {[(m['url'], m.get('by'), m['shown'], m.get('reason')) for m in st.menus_opened]}; "
         f"pages: {pages}."
     )
     if not short:

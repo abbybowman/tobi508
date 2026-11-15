@@ -144,6 +144,11 @@ class Stop(BaseModel):
     tab_unselected: bool = Field(
         default=False, description="A tab that is not the selected one."
     )
+    media: bool = Field(
+        default=False,
+        description="Inside a video or audio element's built-in controls (the "
+        "browser's player, not page content; never a trigger, reveal.py).",
+    )
 
     @property
     def path_key(self) -> str:
@@ -623,6 +628,12 @@ class Count(BaseModel):
     # Paths (light DOM of the page's own document, first 200 of each), so a
     # check can say which of these it read.
     hidden_field_paths: list[str] = Field(default_factory=list)
+    # Hidden fields nothing a careful tester does shows (hidden.py: the
+    # reveal pass, a wait and scroll, a choice and typing sweep of their
+    # form): hidden from everyone, not counted by guard CN (Abby,
+    # 2026-11-15). `hidden_check` says what ran, or why nothing was decided.
+    hidden_never_shown: list[str] = Field(default_factory=list)
+    hidden_check: str = ""
     form_paths: list[str] = Field(default_factory=list)
 
     def get(self, key: str) -> int:

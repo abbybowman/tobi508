@@ -290,11 +290,16 @@ _DESCRIBE_FN = (
     .map((id) => this.ownerDocument.getElementById(id)).filter(Boolean);
   const controlsHidden = ctl.length > 0 && ctl.every((e) => !(e.checkVisibility
     ? e.checkVisibility({ visibilityProperty: true }) : e.getClientRects().length > 0));
+  // Inside a <video> or <audio> element's own built-in controls (its user
+  // agent shadow root): the browser's player, not page content (reveal.py:
+  // never a trigger; Abby, 2026-11-15, step 6g).
+  let media = false;
+  for (let h = uaHost; h; h = h.getRootNode().host) if (h.tagName === 'VIDEO' || h.tagName === 'AUDIO') { media = true; break; }
   const dlg = this.closest('dialog, [role=dialog], [role=alertdialog]');
   const modal = !!dlg && ((dlg.tagName === 'DIALOG' && dlg.matches(':modal')) || dlg.getAttribute('aria-modal') === 'true');
   return { css: path(this), tag, x: r.x, y: r.y, w: r.width, h: r.height,
            isBody: this === document.body || this === document.documentElement,
-           widget, control, readonly, disabled, group, collapsed, modal, haspopup, controls, controlsHidden, tabUnselected };
+           widget, control, readonly, disabled, group, collapsed, modal, haspopup, controls, controlsHidden, tabUnselected, media };
 }"""
 )
 
@@ -875,6 +880,7 @@ class FocusReader:
             controls=info.get("controls"),
             controls_hidden=bool(info.get("controlsHidden")),
             tab_unselected=bool(info.get("tabUnselected")),
+            media=bool(info.get("media")),
             modal=info["modal"],
         )
 
@@ -1025,6 +1031,12 @@ class Traversal:
                 await hook.on_start(self)
         m, f, _, _, q = await _read_logs(self.page)
         self._last_mutations, self._last_focus_total, self._last_q = m, f, q
+        await _focus_events(self.page, self._seen_focus)
+
+    async def forget_focus_events(self) -> None:
+        """Take the focus events logged so far as read, so the next press
+        reports only its own (opened.py: the opener's own focus on the
+        trigger, and the opening, are not the first Tab's)."""
         await _focus_events(self.page, self._seen_focus)
 
     async def resync(self) -> None:

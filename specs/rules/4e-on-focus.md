@@ -1,8 +1,8 @@
 ---
 tt_test: 4.E
 tt_name: 3.2.1-on-focus
-spec_version: 1.7.0
-guards: unrecorded-code, reveal, reveal-content
+spec_version: 1.8.0
+guards: unrecorded-code, reveal, reveal-walk
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -33,6 +33,8 @@ The same evidence as 4.C and 4.D: 4.E is DOES NOT APPLY only when nothing on the
 
 **From the shared keyboard walk** (`walk.py`): every P1 and P2 step's stop, top URL, open page count, DOM mutation count, unsettled and unresolved flags, focus log, and each pass's end. The walk already ends a pass on navigation or a new page, so those steps are its last. A tester watching each element receive focus (HtT 2) sees exactly these events; 4.E adds no passes.
 
+**From 4.C's P8** (1.8.0; Abby, 2026-11-15, step 6g): every Tab step of each P8 walk through what a menu or section opened ([4c-no-keyboard-trap.md](4c-no-keyboard-trap.md), section 2), with the same walk extras. Opening the trigger (Enter or a click) is not a step this test judges: what pressing a control does is 4.A's and 5.D's, not focus (HtT 2: "when the interface component receives focus"). For a P8 step, the reproduce replay is a fresh load with the trigger opened the same way, followed by the same Tabs; the control replay and the before image are the same without the last Tab. The 10-replay limit covers walk and P8 steps together.
+
 **Walk extras** (collected only when 4.E is selected; cheap, no images):
 
 1. **Richer focus log.** For each focus-in and focus-out: whether the event is trusted, the element's CSS path, and for focus-out whether the element receiving focus (`relatedTarget`) is inside the one losing it. The current log records only tag and id.
@@ -44,7 +46,7 @@ The same evidence as 4.C and 4.D: 4.E is DOES NOT APPLY only when nothing on the
 
 ## 3. Mechanical checks
 
-Each step with a context signal is an *instance*. Focus *moves on its own* when, after one key press and with no further key, the focus log shows the target losing focus to another element or to the page body. It does not count when focus moves into the target (a widget handing focus to its active item), or back to the stop focus was on before the key (that is the element being left pulling focus back: 4.C's evidence, initiated by its blur, not by the target receiving focus).
+Each step of P1, P2 or P8 (1.8.0) with a context signal is an *instance*. Focus *moves on its own* when, after one key press and with no further key, the focus log shows the target losing focus to another element or to the page body. It does not count when focus moves into the target (a widget handing focus to its active item), or back to the stop focus was on before the key (that is the element being left pulling focus back: 4.C's evidence, initiated by its blur, not by the target receiving focus). Nor does it count when the step ends inside an open modal dialog (4.C's Terms) and the element that first took focus is outside that dialog: the dialog keeping focus inside it until it is closed, as TT asks (p. 23, 4.F HtT 3), not a jump (1.8.0; round 2's Search, Bootstrap's focus trap). Focus that moves from one element to another inside the dialog still counts (F18, F19).
 
 **3a. Instance rules (first match wins)**
 
@@ -73,8 +75,8 @@ Each step with a context signal is an *instance*. Focus *moves on its own* when,
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
-| G3 | Any instance is NEEDS REVIEW; or P1 or P2 is incomplete (cap, time limit, error); or P1 and P2 ended in different traps, so stops between them were not reached; or the walk did not reach every element (row WK, 1.5.0); or more than 10 steps needed replays; or the run limit was reached before every confirmation replay ran (1.1.0) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
-| G4 | P1 and P2 each ended in a wrap or at the same trap, and there is no instance | PASS |
+| G3 | Any instance is NEEDS REVIEW; or P1 or P2 is incomplete (cap, time limit, error); or P1 and P2 ended in different traps, so stops between them were not reached; or the walk did not reach every element (row WK, 1.5.0); or more than 10 steps needed replays; or the run limit was reached before every confirmation replay ran (1.1.0); or a P8 walk is incomplete (cap, time limit, error; 1.8.0) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
+| G4 | P1 and P2 each ended in a wrap or at the same trap, every P8 walk left the opened content or ended in a trap event (1.8.0), and there is no instance | PASS |
 | G5 | Anything else | NEEDS REVIEW |
 
 **Row WK: the walk did not reach every element** (1.5.0; Abby, 2026-11-14; review H-03, M-05, F-11). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every element this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. G4's "ended in a wrap or at the same trap" no longer settles it alone: a trap that left an element unreached (before 1.5.0, a PASS on "each element we could reach") is NEEDS REVIEW, and one where the other pass reached everything stays PASS.
@@ -106,7 +108,7 @@ A pass that ends on navigation is complete for 4.E only when that navigation is 
 
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
-**Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test's focus walk does not go through opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
+**Guard RC: opened content the walk did not go through** (`guards: reveal-walk`; Abby, 2026-11-09, fix 9b; narrowed 1.8.0, Abby, 2026-11-15, step 6g). When `reveal.py` opened a trigger whose opened content holds elements that take keyboard focus, and 4.C's P8 walk did not reach every one Tab is expected to reach (it left the content first, met a trap or its cap, ran out of time or failed to run; one behind an open modal dialog is not expected), a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and the Tab key did not reach every control inside some of them (<names>), so a person needs to check what they hold." Trace row `RC`. A trigger that was not opened or not read is guard RV's, unchanged (the controls of a video or audio element's built-in player are the browser's, never a trigger). FAIL and DOES NOT APPLY are unchanged.
 
 ## 4. Judgment questions
 
@@ -142,6 +144,7 @@ Only cases that need a rule of their own; everything else follows sections 2–3
 | Focus moving into a dialog that the target opened | M6 (focus moved to another element) | V2 |
 | Stops past a keyboard trap | Reached by P2 where possible; between two different traps: G3 | — |
 | Change of context on mouse focus | Out of scope: 4.E continues from the keyboard tests (HtT 1) | — |
+| Opening a menu or section moves focus into what it opened (a menu focusing its first item) | Not an instance: activation, not focus (1.8.0) | F16 |
 
 **"Unexpected" (ER 1).** Every change of context on focus counts as unexpected, including one the page warns about beforehand: WCAG 3.2.1 has no exception for warnings (unlike 3.2.2 On Input), and the PDF's examples have none (Abby, 2026-10-31).
 

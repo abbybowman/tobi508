@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F45 Topics menu</title></head><body>
+<header><nav aria-label="Main">
+<a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<div id="panel" hidden><a href="#earth" id="a1">Earth</a> <a href="#sun" id="a2">Sun</a></div>
+<a href="#contact">Contact</a>
+</nav></header>
+<main><h1>Topics</h1><p>Pick a topic from the menu.</p><a href="#more">More about topics</a></main>
+<script>
+const b = document.getElementById("b"), panel = document.getElementById("panel");
+const a1 = document.getElementById("a1"), a2 = document.getElementById("a2");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+// Once open, Tab and Shift+Tab only move between the two links; no key leaves.
+panel.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") { e.preventDefault(); (document.activeElement === a1 ? a2 : a1).focus(); }
+});
+</script></body></html>

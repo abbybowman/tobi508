@@ -8,7 +8,8 @@ A *trigger* is a stop of the Tab walk that announces it opens something: a
 collapsed control (`aria-expanded` false, a closed `<summary>`), one with
 `aria-haspopup`, one that names a region in `aria-controls` that is hidden, or
 a tab that is not the selected one. Form fields (including the parts of a
-native date input) are not triggers. A plain button with no such hint is not a trigger.
+native date input) are not triggers. Nor are the controls of a video or audio
+element's built-in player (the browser's, not the page's). A plain button with no such hint is not a trigger.
 Each is opened on its own fresh load: focus is put on it directly and Enter is
 pressed (a click when Enter did nothing). What was not visible before and is
 now is what it opened. When the opened content holds sets of check boxes or
@@ -28,11 +29,12 @@ something a test checks is itself a reason for review (guard
 from __future__ import annotations
 
 import json
+import time
 from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508 import labels
+from tobi508 import labels, opened
 from tobi508.jslib import JSLIB
 from tobi508.observe import observe
 from tobi508.traverse import PATH_JS, Session, open_session, screenshot, settle
@@ -96,14 +98,16 @@ STATE_FN = (
 # Put focus on the element at a path in this frame (its chain must be the
 # one asked for): its aria-expanded and where its box is.
 FOCUS_FN = (
-    "(chain, css) => {"
+    "(chain, css, peek) => {"
     + _COMMON_JS
     + """
   if (chainOf().join(' >> ') !== chain) return null;
   const el = find(css);
   if (!el || !vis(el)) return { found: false };
-  el.scrollIntoView({ block: 'center', inline: 'center' });
-  el.focus({ preventScroll: true });
+  if (!peek) {  // peek: read it where it is, focus left where it was
+    el.scrollIntoView({ block: 'center', inline: 'center' });
+    el.focus({ preventScroll: true });
+  }
   const r = el.getBoundingClientRect();
   return { found: true, focused: document.activeElement === el || el.contains(document.activeElement),
            expanded: el.getAttribute('aria-expanded'), x: r.x + r.width / 2, y: r.y + r.height / 2 };
@@ -161,10 +165,16 @@ class Opened(BaseModel):
     new_elements: int = 0
     new_focusable: int = 0  # what a keyboard user could reach in it
     new_fields: int = 0
+    # Paths (top document) of the form fields opening it showed, and those
+    # choosing its options showed: what was hidden and a person's action
+    # reveals (guard CN's hidden fields; hidden.py).
+    new_field_paths: list[str] = Field(default_factory=list)
     dialog: bool = False
     read: bool | None = None  # ANDI read the opened state (None: not asked)
     picture: str | None = None
     options: list[Option] = Field(default_factory=list)
+    # The Tab walk through what it opened (opened.py; 4.C and 4.E).
+    walked: opened.Walked | None = None
 
     @property
     def not_opened(self) -> bool:
@@ -199,6 +209,16 @@ class Reveal(BaseModel):
             "opened_with_focusable": sum(
                 t.status == OPENED and t.new_focusable > 0 for t in self.triggers
             ),
+            # Guard RC for the tests that walk opened content (4.C, 4.E; spec
+            # 4.C P8): opened with controls, and the walk did not reach every
+            # control Tab is expected to reach (step 6g).
+            "not_walked": [
+                t.name or t.css_path
+                for t in self.triggers
+                if t.status == OPENED
+                and t.new_focusable > 0
+                and (t.walked is None or not t.walked.complete)
+            ],
         }
 
 
@@ -209,6 +229,13 @@ def reasons(stop) -> list[str]:
     # a spinbutton updates a total: 5.D's matter), and the parts of a native
     # date input open the browser's own picker, which is not page content.
     if stop.control or stop.group:
+        return out
+    # A video or audio element's built-in controls are the browser's player:
+    # its menu button ("show more media controls", aria-haspopup) opens the
+    # browser's own menu, not page content (Abby, 2026-11-15; round 2's
+    # 14194, 14592 and 4914, where the page also renames the video on every
+    # load, so the button could never be found again).
+    if getattr(stop, "media", False):
         return out
     if stop.collapsed:
         out.append("summary" if stop.tag == "summary" else "collapsed")
@@ -252,13 +279,17 @@ async def _state(s: Session) -> dict[str, tuple[bool, bool]]:
     return out
 
 
-async def _focus(s: Session, frame_chain: list[str], css: str) -> dict | None:
-    """Focus the trigger directly; its aria-expanded and centre."""
+async def _focus(
+    s: Session, frame_chain: list[str], css: str, peek: bool = False
+) -> dict | None:
+    """Focus the trigger directly; its aria-expanded and centre. `peek`: read
+    them without moving focus (after opening, focus stays where the opening
+    left it: in a dialog it opened, say, where the walk then starts)."""
     r = s.traversal.reader
     chain = " >> ".join(frame_chain)
     for _, sess, ctx in await r.frames():
         try:
-            got = await r.call_in(sess, ctx, FOCUS_FN, [chain, css])
+            got = await r.call_in(sess, ctx, FOCUS_FN, [chain, css, peek])
         except Exception:
             continue
         if got is not None:
@@ -295,13 +326,16 @@ def _chain(chain: str) -> list[str]:
 
 
 async def _open_to(
-    ctx, stop, choose: list[tuple[str, str]] | None = None
+    ctx, stop, choose: list[tuple[str, str]] | None = None, hooks: list | None = None
 ) -> tuple[Session, dict[str, Any]]:
     """A fresh load with the trigger opened and, when `choose` (frame chain,
     path of each) is given, those options chosen in turn with Space. Returns the session (the
     caller closes it) and what was seen: `status` is set when nothing opened
     (not found, navigated, an error)."""
-    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    # `hooks`: the walk extras' factories; each load gets its own hooks.
+    s = await open_session(
+        ctx.new_page, ctx.quiet_ms, hooks=[f("O", None) for f in hooks or []]
+    )
     info: dict[str, Any] = {}
     try:
         before = await _state(s)
@@ -331,7 +365,7 @@ async def _open_to(
             info["status"] = NAVIGATED
             return s, info
         new = sorted(set(after) - set(before))
-        again = await _focus(s, stop.frame_chain, stop.css_path)
+        again = await _focus(s, stop.frame_chain, stop.css_path, peek=True)
         info |= {
             "by": by,
             "before": before,
@@ -358,6 +392,16 @@ async def _open_to(
         return s, info
 
 
+def _top_fields(keys: list[str], after: dict[str, Any]) -> list[str]:
+    """Paths of the fields among `keys` that are in the top document (a key
+    is "<frame chain>|<path>"; the top document's chain is empty)."""
+    return [
+        k.split("|", 1)[1]
+        for k in keys
+        if k.startswith("|") and after.get(k) and after[k][1]
+    ][:200]
+
+
 def _counts(info: dict[str, Any]) -> tuple[int, int, int]:
     """New elements, new focusable ones, new fields among what opened."""
     after = info["after"]
@@ -368,13 +412,15 @@ def _counts(info: dict[str, Any]) -> tuple[int, int, int]:
     )
 
 
-async def collect(ctx, walk) -> Reveal:
+async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
     """Open every trigger the walk found (up to MAX_TRIGGERS), each on a fresh
     load, and record what it showed. For 5.A-5.C each opened state is read
     with ANDI, and up to two options of each opened set are chosen."""
     trigs = triggers(walk)
     out = Reveal(over_cap=max(0, len(trigs) - MAX_TRIGGERS))
     read = labels.wanted(ctx)
+    # The Tab walk through opened content, for the tests that read it.
+    walking = bool({"4.C", "4.E"} & set(ctx.selected))
     for n, (stop, why) in enumerate(trigs[:MAX_TRIGGERS], 1):
         rec = Opened(
             n=n,
@@ -391,13 +437,14 @@ async def collect(ctx, walk) -> Reveal:
             continue
         s = None
         try:
-            s, info = await _open_to(ctx, stop)
+            s, info = await _open_to(ctx, stop, hooks=hooks if walking else None)
             if "status" in info:
                 rec.status = info["status"]
                 rec.reason = WHY.get(rec.status, "")
                 continue
             rec.by = info["by"]
             rec.new_elements, rec.new_focusable, rec.new_fields = _counts(info)
+            rec.new_field_paths = _top_fields(info["new"], info["after"])
             rec.dialog = bool(info["dialog"])
             if not (info["new"] or info["dialog"] or info["flipped"]):
                 rec.status, rec.reason = NOTHING, WHY[NOTHING]
@@ -411,6 +458,19 @@ async def collect(ctx, walk) -> Reveal:
                 rec.picture = shot.resolve().relative_to(ctx.rel.resolve()).as_posix()
             except Exception:
                 pass
+            new_foc = [k for k in info["new"] if info["after"][k][0]]
+            if walking and new_foc and not read:
+                # Nothing reads this load after the walk: walk it here.
+                rec.walked = await opened.walk(
+                    s,
+                    info["new"],
+                    new_foc,
+                    stop.path_key,
+                    rec.by,
+                    True,
+                    ctx.deadline,
+                    ctx.quiet_ms,
+                )
             if read:
                 # Last on this session: ANDI changes the page.
                 rec.read = await labels.read_revealed(
@@ -422,6 +482,9 @@ async def collect(ctx, walk) -> Reveal:
         finally:
             if s is not None:
                 await s.close()
+        if walking and read and rec.status == OPENED and rec.new_focusable:
+            # ANDI changed the load it read: the walk opens its own.
+            rec.walked = await _walk_own_load(ctx, stop, rec, hooks)
         if not read or rec.status != OPENED:
             continue
         # Options: choosing one can add controls (Home's filter adds a remove
@@ -446,7 +509,13 @@ async def collect(ctx, walk) -> Reveal:
                 )
                 if "status" in info2 or not info2.get("chosen"):
                     continue
-                gained = len(set(info2["after_choice"]) - set(info2["after"]))
+                gained_keys = set(info2["after_choice"]) - set(info2["after"])
+                gained = len(gained_keys)
+                rec.new_field_paths += [
+                    p
+                    for p in _top_fields(list(gained_keys), info2["after_choice"])
+                    if p not in rec.new_field_paths
+                ]
                 for o in opts:
                     o.chosen = True
                     o.new_elements = gained  # of the set's choices together
@@ -471,6 +540,56 @@ async def collect(ctx, walk) -> Reveal:
             f"{MAX_TRIGGERS} were opened."
         )
     return out
+
+
+async def _walk_own_load(ctx, stop, rec: Opened, hooks) -> opened.Walked:
+    """A fresh load opened as reveal.py opened it, then the walk (opened.py)."""
+    if ctx.out_of_time():
+        return opened.Walked(by=rec.by, end="time")
+    s2 = None
+    t0 = time.monotonic()
+    try:
+        s2, info = await _open_to(ctx, stop, hooks=hooks)
+        if "status" in info:
+            return opened.Walked(by=rec.by, end="error", error=info["status"])
+        new_foc = [k for k in info["new"] if info["after"][k][0]]
+        if not new_foc:
+            return opened.Walked(by=info["by"], end="error", error="nothing opened")
+        w = await opened.walk(
+            s2,
+            info["new"],
+            new_foc,
+            stop.path_key,
+            info["by"],
+            False,
+            ctx.deadline,
+            ctx.quiet_ms,
+        )
+        w.seconds = round(time.monotonic() - t0, 2)  # the load's opening too
+        return w
+    except Exception as exc:
+        return opened.Walked(by=rec.by, end="error", error=type(exc).__name__)
+    finally:
+        if s2 is not None:
+            await s2.close()
+
+
+async def reopen(
+    s: Session, frame_chain: list[str], css_path: str, by: str, quiet_ms: int
+) -> bool:
+    """Open a trigger on a fresh load as `collect` opened it (focus it, then
+    Enter, or a click when that is how it opened), and wait until focus has
+    stopped moving: where the opening left it is where the walk starts."""
+    got = await _focus(s, frame_chain, css_path)
+    if got is None:
+        return False
+    if by == "a click":
+        await s.page.mouse.click(got["x"], got["y"])
+    else:
+        await s.page.keyboard.press("Enter")
+    await settle(s.page, quiet_ms)
+    await opened.focus_still(s, quiet_ms)
+    return True
 
 
 def write(ctx, rv: Reveal, path) -> None:

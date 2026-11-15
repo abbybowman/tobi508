@@ -185,6 +185,7 @@ flowchart LR
 - Step 6e: an analytics timer held 2.C and 2.D on every round 2 page; running the page's clock past it decided 8 cells, all agreeing with the key, and a test page caught the one false Does Not Apply on the way.
 - Step 6e, images: reading every image (not the first 30) decided 6 more round 2 cells, all agreeing with the key, and finds a strobing image the old cap missed.
 - Step 6e, hidden forms: 5.H reads a form hidden behind a button for whether it applies, as a person would, without submitting it: 8 more cells decided, all agreeing with the key.
+- Step 6e, anti-spam fields: a hidden field nothing a tester does can show is out of scope, decided by behaviour; it moves no cell on our pages, and its test pages caught two wrong results before they shipped.
 - **[FILL: the main disagreements in the scored run and whether any is a false PASS.]**
 - Unless each test has about 60 true failures, say "promising, not proven".
 
@@ -237,7 +238,7 @@ flowchart LR
 **On the slide**
 
 - Fewer false FAILs and fewer "unsure" answers: the rule and question fixes round 2 pointed to
-- Fields inside frames, and the keyboard walk through everything a page can open
+- Fields inside frames, and the rest of the keyboard tests walking through everything a page can open (the keyboard-trap and on-focus tests do now)
 - A person's answer from TOBI's own signed-in page, kept so the same question is answered once per site
 - A third round on a site not used before, with a second certified tester if one is available
 - More of the 61 tests: images, contrast, headings, resize, where scanners and people disagree most

@@ -33,7 +33,17 @@ from urllib.parse import urlsplit
 
 from playwright.async_api import Browser, async_playwright
 
-from tobi508 import config, flashcap, jobs, motion, pagecache, reveal, rules, scrt
+from tobi508 import (
+    config,
+    flashcap,
+    hidden,
+    jobs,
+    motion,
+    pagecache,
+    reveal,
+    rules,
+    scrt,
+)
 from tobi508 import count as inventory
 from tobi508.browser import (
     MOTION_BROWSER,
@@ -119,6 +129,13 @@ OTHER_PAGES_NO_LIMIT_MAX = 50
 class RunRefused(Exception):
     """The page was never tested (not allowed, or it could not be loaded), or
     the run does not exist. A tool error, not a finding."""
+
+
+# The tests whose specs count hidden fields (front matter `count:`
+# fields_hidden): the hidden-field check runs only for them.
+HIDDEN_FIELD_TESTS = frozenset(
+    TestId(t) for t in ("5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H")
+)
 
 
 def evidence_name(test_id: TestId) -> str:
@@ -1376,7 +1393,8 @@ async def run_tt_tests(
                 try:
                     with metered() as cost:
                         rv = await _bounded(
-                            reveal.collect(ctx, walk), hard + allowance[0]
+                            reveal.collect(ctx, walk, _walk_extras(checks)),
+                            hard + allowance[0],
                         )
                     ctx.cache["reveal"] = rv
                     report.reveal = rv.summary()
@@ -1406,6 +1424,26 @@ async def run_tt_tests(
                     ctx.cache["count"] = await _bounded(_own_count(ctx), hard)
                 except TimeoutError:
                     ctx.cache["count"] = Count(where="own load", error="time limit")
+            count = ctx.cache["count"]
+            if (
+                not count.error
+                and count.openers > 0
+                and count.hidden_field_paths
+                and any(c.test_id in HIDDEN_FIELD_TESTS for c in checks)
+            ):
+                # Hidden fields nothing a careful tester does shows (hidden.py;
+                # guard CN; Abby, 2026-11-15).
+                await say(1.9, "Checking which hidden fields can ever be shown")
+                hc = await hidden.bounded(
+                    ctx, count.hidden_field_paths, ctx.cache.get("reveal"), hard
+                )
+                count.hidden_never_shown = hc.never_shown
+                count.hidden_check = hc.why_not or (
+                    f"{len(hc.never_shown)} of {len(count.hidden_field_paths)} "
+                    f"never shown ({hc.seconds:g} s)"
+                )
+                run.write_json(run.evidence_dir / "hidden.json", hc)
+                run.log("hidden", never_shown=len(hc.never_shown), why_not=hc.why_not)
             report.counts["page"] = ctx.cache["count"]
             run.write_json(run.evidence_dir / "count.json", ctx.cache["count"])
             for c in checks:

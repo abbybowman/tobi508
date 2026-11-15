@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F18 See all keywords</title>
+<style>#dlg{position:fixed;top:10%;left:10%;width:60%;background:#fff;border:1px solid #333;padding:1em}</style></head><body>
+<header><a href="#home">Home</a></header>
+<main><h1>Search results</h1>
+<button id="b" type="button" aria-haspopup="dialog">See all keywords</button>
+<p>Results.</p><a href="#r1" id="r1">First result</a></main>
+<div id="dlg" hidden><h2 id="t">Keywords</h2><button id="close" type="button">Close</button> <a href="#k1">Earth</a> <a href="#k2" id="last">Sun</a></div>
+<script>
+// A modal dialog that keeps focus inside it as Bootstrap's focus trap does:
+// Tab past its last control goes on to the page, and the dialog sends focus
+// back to its first control.
+const b = document.getElementById("b"), dlg = document.getElementById("dlg"), close = document.getElementById("close");
+function shut() { dlg.hidden = true; dlg.removeAttribute("role"); dlg.removeAttribute("aria-modal"); b.focus(); }
+b.addEventListener("click", () => {
+  dlg.hidden = false; dlg.setAttribute("role", "dialog"); dlg.setAttribute("aria-modal", "true");
+  dlg.setAttribute("aria-labelledby", "t"); close.focus();
+});
+close.addEventListener("click", shut);
+dlg.addEventListener("keydown", (e) => { if (e.key === "Escape") shut(); });
+document.addEventListener("focusin", (e) => {
+  if (!dlg.hidden && !dlg.contains(e.target)) close.focus();
+});
+</script></body></html>

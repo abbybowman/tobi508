@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F49 Topics menu</title></head><body>
+<header><nav aria-label="Main">
+<a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<div id="panel" hidden><a href="#earth">Earth</a></div>
+<a href="#contact">Contact</a>
+</nav></header>
+<main><h1>Topics</h1><p>Pick a topic from the menu.</p><a href="#more">More about topics</a></main>
+<footer><p id="extra" hidden><a href="#all">All topics</a></p></footer>
+<script>
+// Not a dialog: opening the menu also shows an "All topics" link in the
+// footer, far from the button in the Tab order.
+const b = document.getElementById("b"), panel = document.getElementById("panel"), extra = document.getElementById("extra");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open; extra.hidden = open;
+});
+</script></body></html>

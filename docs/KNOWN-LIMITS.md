@@ -50,9 +50,37 @@ headed Chrome) are in
   hidden form is never submitted, so one that J1 finds consequential and
   multi-step stays NEEDS REVIEW (no after-submit view, M4). A hidden field
   inside a frame is not read (the inventory's paths are the page's own
-  document). When pass E takes no form at all, the page's own text is not
-  scanned for consequence words (only the forms' words are): seen while
-  building 1.9.0, not changed.
+  document). (Since 1.10.0 the page's own text is read with the hidden
+  forms when pass E takes no form.)
+- **Fields hidden from everyone (guard CN; 5.A to 5.H, Abby 2026-11-15):**
+  only a hidden part of a form shown on load can be out of scope, and only
+  when nothing a careful tester does shows it (the reveal pass, every
+  opener pressed, a 15 s watch and a scroll, a choice and typing sweep of
+  its form, then its buttons pressed with values typed). A field whose
+  whole form is hidden on load (a popup, a panel, a mobile copy) stays
+  counted. Accepted limits, each a rare wrong DOES NOT APPLY or PASS: a
+  field shown only by typing a particular value, by hovering, after more
+  than 15 s, or by leaving the page. Waiting for a positive test (Abby's
+  decision that a mobile copy is out of scope, built when a test reads the
+  popup): a form hidden at the tested window and shown on load at a
+  phone-width window. The check adds about 17 s a page with hidden fields;
+  nothing is decided when the reveal pass did not run (a run with none of
+  5.A to 5.C, 4.x), left a trigger unopened, or the page has more than 40
+  openers.
+- **Round 1's "Was this page helpful?" popup never opens, live or
+  recorded** (checked live 2026-11-15, full Chromium): the page loads
+  jQuery in `defer` bundles but Popup Maker's `site.js` as a blocking
+  script at the end of the body, so it runs first and throws "jQuery is
+  not defined". The run's report does not say so: guard GU sees no
+  unrecorded code, and page script errors are not recorded as a note.
+- **The freeze's window-by-window scroll stops after one step on a page
+  with smooth scrolling** (`capture._scroll_steps`, PR #52: it scrolls
+  with `scrollBy` and stops when the position has not moved yet;
+  Bootstrap 5 sets `scroll-behavior: smooth`, as round 2's svs pages
+  have). Lazy content further down is then not recorded. Round 1 and 2
+  were frozen before #52; a round frozen with it should check its
+  `capture_scroll_steps` log lines. Found 2026-11-15, not fixed (the image
+  read's own scroll jumps instead).
 - **3.A's screencast net varies between runs on some pages:** on round
   2's 5340 the same code gave DOES NOT APPLY in two runs and NEEDS REVIEW
   (row A3: flashing the capture did not show) in another; `main` gave A3

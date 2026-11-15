@@ -55,10 +55,9 @@ is merged. At most three threads at once. Each thread branches from
 
 | Step | What | Model | When |
 | --- | --- | --- | --- |
-| 1-9a, 6f, 6h, 12a | Done: PRs #39 to #89 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
-| 6e | Guard CN on real pages: the timer, the images and 5.H on hidden forms are done (PRs #78, #80, #83); fields hidden from everyone is being built | Opus | running |
-| 6g | 4.C and 4.E read the content that menus and sections open; then 19.A opens the one closed menu that hides a link to the page | Opus | running |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 6e and 6g are merged |
+| 1-9a, 6e-6h, 12a | Done: PRs #39 to #93 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
+| 10a | Before round 3's freeze: the freeze scrolls a smooth-scrolling page to its end; why 19.A on CILab differs between two reruns | Sonnet | now |
+| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 10a is merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
@@ -67,39 +66,37 @@ is merged. At most three threads at once. Each thread branches from
 
 ### What each open step covers
 
-- **6e.** Guard CN made 58 cells NEEDS REVIEW on 19 real pages and the
-  keys fail none; each change is approved by Abby before it is built.
-  Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
-  decided, all agreeing with the key) and the images (up to 300 read;
-  6 cells, all agreeing) and 5.H reading a hidden form to say whether
-  it is the kind 5.H is about (8 cells, all agreeing). To research:
-  fields hidden from everyone (honeypots, reCAPTCHA).
-- **6h is done** (19.A 1.14.0, PRs #85 to #89). 19.A now checks a
-  suspected alias of the page, and while it has fewer than two ways it
-  loads further pages itself, one at a time (the site map, the page
-  above, pages below, previous and next, related links, the home
-  page; at most 10), so no follow-up call is needed. Rerun on the
-  frozen pages: round 2, 8 of 10 agree (5 before) and CILab's wrong
-  FAIL is gone; round 1, 4 of 9 agree (1 before); no PASS the key
-  fails. Left: round 1's other 5 are NEEDS REVIEW because a link to
-  the page sits in a closed menu (step 6g's second part), and round
-  2's two keyed FAILs wait on a site search that could not finish
-  loading in that container.
-- **6g.** Guard RC holds a PASS when a menu or section opened and the
-  test did not walk it: 37 cells in step 9a, 25 of them 4.C and 4.E,
-  all keyed Pass. Decided (Abby, 2026-11-15): one opener, not three.
-  `reveal.py` already opens each trigger on a fresh load (its wider
-  list, at most 20, Enter first and a click when Enter shows
-  nothing); the walk through what opened hangs on that opening and is
-  made once per page, for 4.C and 4.E now. 4.F's pass R (its own
-  list, 6 triggers, one Tab) moves onto it after the demo. The
-  wording and the moved cells go to Abby first. 4.D and 5.D only if
-  the days allow. Then, for 19.A only (Abby, 2026-11-15): when a way
-  is missing and a link hidden on load in a navigation, banner or
-  footer region leads to the page, the one visible button that
-  controls it is opened and the link counts only if it then shows.
-  9.A, 9.B and 9.C do not open menus (9.B's TT text: "Do not initiate
-  changes to the content").
+- **What steps 6e, 6g and 6h left** (all merged 2026-11-15; each
+  rerun on the frozen pages gave no PASS or DOES NOT APPLY where the
+  key fails):
+  - **6e, guard CN:** the timer (2.C, 2.D), the images (up to 300),
+    5.H on hidden forms, and fields hidden from everyone (a hidden
+    part of a form shown on load that nothing shows). Still NEEDS
+    REVIEW: nasa.gov's feedback popup and mobile search box (about 22
+    cells; the popup never opens for anyone, live or recorded, because
+    of a script error on the site), and the home page's filter panels.
+  - **6g, opened content:** 4.C and 4.E walk what menus and sections
+    open (`opened.py`). Agreement on the frozen pages: 4.C 9 of 10 and
+    6 of 9 (2 and 0 before); 4.E 8 of 10 and 6 of 9 (2 and 0 before).
+    19.A opens the one closed menu that hides a link to the page.
+    Skipped for the cut: 4.D and 5.D.
+  - **6h, 19.A:** aliases and further pages loaded by the test itself.
+    Round 2, 9 of 10 agree; round 1, 4 of 9, the other 5 NEEDS REVIEW
+    on closed menus whose links do not lead to the page.
+- **10a. Before round 3's freeze** (found by steps 6e and 6g):
+  - **The freeze stops scrolling after one step on a page that sets
+    smooth scrolling** (Bootstrap 5 does), so lazy content below is
+    not recorded. Fix it, with a page that shows it. Frames whose
+    address changes on every load (reCAPTCHA, a lazy video embed) are
+    not recorded either: report them at freeze time.
+  - **19.A on CILab** passed in step 6h's rerun and FAILs in step
+    6g's, on `main`'s code as well, with the pages loaded live. Both
+    of the key's ways are still on the live site (checked 2026-11-15:
+    the home page links to `/cilab/index.html`, which is the same
+    document as `/cilab/`, and the subpage's top row links back), so
+    the cause is in what the two reruns gave the test or in how it
+    loaded them. Find it before round 3, where every page is given
+    other pages the same way.
 - **10 and 10b.** A blind round is run by
   [the how-to](how-to/run-a-judging-round.md): keys locked before the
   tool runs, the run locked before the keys are opened. Until a
@@ -111,8 +108,7 @@ is merged. At most three threads at once. Each thread branches from
   what step 6e found on round 1's pages (a popup a visitor sees at 5 s
   never opens in the replay; 12 requests fail). The scorer fixes are
   merged (PR #73).
-  Its run waits for 6e and 6g, so that it is run once on the
-  code as it will be shown. 9b runs at the same commit, so the two can be read together.
+  Its freeze waits for step 10a. 9b runs at the same commit, so the two can be read together.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
   - **12a is built** (PRs #70 to #72, #74):
     [the deployment guide](how-to/deploy-on-vast.md), a smoke test
@@ -180,9 +176,13 @@ the remaining checks).
    readings (focus pictures, focus-event check) on them, and only then
    count them as reached (step 6d's walk-coverage rule).
 15. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
-   guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
-   first six triggers) walk the keyboard through opened content, which
-   removes guard RC. Phase 3: 5.D fills fields in opened content. Also
+   guards RV and RC). Phase 2 is started (step 6g, 2026-11-15): a shared
+   walk through what each trigger opened (`opened.py`), read by 4.C
+   (1.14.0) and 4.E, where guard RC holds only what the walk did not
+   reach. Still to do: 4.A and 4.D read it; **4.F's pass R moves onto the
+   shared walk** (4.F keeps pass R until then; Abby, 2026-11-15); and a
+   menu that opened only by a click joins 4.A's execute check, ahead of
+   its cap, with 4.A's rows deciding (Abby, 2026-11-15). Phase 3: 5.D fills fields in opened content. Also
    nested triggers, a combobox's list, buttons that need a key other than
    Enter, and phase 1's caps (20 triggers, 3 sets). From the review: a
    trigger is "opened" only by what appears in the region it controls

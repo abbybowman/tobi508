@@ -160,6 +160,23 @@ def apply_guards(
             f" Guard RC: {rv['opened_with_focusable']} opened section(s) hold "
             "controls that were not checked."
         )
+    # RC narrowed (`reveal-walk`; 4.C 1.14.0, 4.E 1.7.0; step 6g): for a test
+    # whose walk goes through opened content, only the opened content the
+    # walk did not reach holds a PASS. A trigger not opened or read is RV's.
+    if "reveal-walk" in guards and f.outcome is Outcome.PASS and rv.get("not_walked"):
+        f.outcome = Outcome.NEEDS_REVIEW
+        f.rows = [*f.rows, "RC"]
+        f.summary = (
+            f"{REVIEW_HEAD} The page has menus or sections that open to show "
+            "more controls, and the Tab key did not reach every control inside "
+            f"some of them ({_names(rv['not_walked'])}), so a person needs to "
+            "check what they hold."
+        )
+        f.note = TEST_NOT_PERFORMED_NOTE
+        f.rationale += (
+            f" Guard RC: {len(rv['not_walked'])} opened section(s) were not "
+            "walked to the end."
+        )
     return _count_guard(f, report, state, count)
 
 
@@ -281,6 +298,10 @@ def _count_guard(f: Finding, report: Any, state: Any, keys: tuple[str, ...]) -> 
                 # Nothing on the page could show them: hidden for everyone,
                 # as DHS's Baseline TC10.A-ic-dna-1 and -2 (Abby, 2026-11-12).
                 there = 0
+            elif key in ("fields_hidden", "fields_hidden.light"):
+                # Hidden fields nothing a careful tester does shows (hidden.py;
+                # Abby, 2026-11-15): hidden from everyone, not counted.
+                there = max(0, there - len(c.hidden_never_shown))
             if there > done:
                 s = count_sentence(key, there, done)
                 if page != "page":
