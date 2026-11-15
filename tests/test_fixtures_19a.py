@@ -32,12 +32,23 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G2"],
         {},
     ),
-    "nav-and-live-search": ("t-benefits", ["home"], "PASS", ["W1", "W2", "G2"], {}),
-    "search-finds-nothing": (
+    # 19.A 1.11.0 (Abby, 2026-11-15): the site map the home page links to is
+    # checked by the test itself, before the site search, and the test stops
+    # at two kinds. Before 1.11.0 these were PASS by the live search (W2) and
+    # NEEDS REVIEW naming the site map (G3). The search stays covered by the
+    # quoted-search cases below, whose pages link no site map.
+    "nav-and-site-map-found-by-the-test": (
+        "t-benefits",
+        ["home"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    "search-finds-nothing-site-map-found-by-the-test": (
         "t2-status",
         ["home"],
-        "NEEDS_REVIEW",
-        ["W1", "W3", "G3"],
+        "PASS",
+        ["W1", "G2"],
         {},
     ),
     "search-finds-nothing-site-map-given": (
@@ -128,6 +139,34 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W7", "G3"],
         {},
     ),
+    # 19.A 1.11.0 (Abby, 2026-11-15): a tester goes down to a child page.
+    # The section home is linked only in the agency's content; its first
+    # project's breadcrumb links back to it (navigation).
+    "second-way-on-a-child-page": (
+        "sec/",
+        ["hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # ... and up to the parent: the funding page links the grants page in
+    # its content; the agency's menu links it too.
+    "second-way-on-the-parent": (
+        "par/item",
+        ["hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # A child page that leaves the site after a redirect is not checked: the
+    # test cannot FAIL on a set it did not finish (W8, G3).
+    "child-page-not-checked": (
+        "gone/",
+        ["hub"],
+        "NEEDS_REVIEW",
+        ["W1", "W8", "G3"],
+        {},
+    ),
     "process-step": (
         "step2",
         ["home"],
@@ -153,8 +192,9 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     assert [r for r in f.rows if r != "A5"] == rows, f.rows
     if case == "alias-index-html-is-another-page":
         assert "thin/index.html is this page under another address" in f.summary
-    if case == "search-finds-nothing":
-        assert "sitemap.html" in f.summary  # suggested, never visited
+    if f.outcome.value == "FAIL":  # names what was checked (Abby, 2026-11-15)
+        assert "We checked the 1 other page you gave" in f.summary, f.summary
+        assert "search the web for pages that link to" in f.summary
 
 
 async def test_without_other_pages_nothing_runs(settings, server, drafts):  # noqa: F811
@@ -237,69 +277,81 @@ def test_links_to_the_requested_url_count_after_a_redirect():
     ]
 
 
-async def test_the_result_names_the_call_that_adds_the_suggested_pages(
+async def test_the_test_checks_the_suggested_pages_itself(
     settings,
     server,
     drafts,  # noqa: F811
 ):
-    """Post-round 1 fix 18: an agent named the suggestion but never made the
-    call. next_step now spells it out: 19.A alone, the pages given before
-    plus the suggested ones, made without asking the user."""
+    """19.A 1.11.0 (Abby, 2026-11-15): the site map, parent, child pages and
+    home page are loaded by the test itself, one at a time, each recorded as
+    a page it loaded (purpose "suggested"), and it stops at two kinds. No
+    follow-up call is left for 19.A (before 1.11.0, none was ever made in the
+    eval runs, and the call carried no suggested page when 5 were given)."""
     from tobi508.models import TestId
     from tobi508.pipeline import run_tt_tests
 
-    page, others = EXPECTED["search-finds-nothing"][:2]
-    given = [f"{server.base}/19a/{o}.html" for o in others]
+    url = f"{server.base}/19a/t2-status.html"
     out = await run_tt_tests(
-        settings, f"{server.base}/19a/{page}.html", [TestId.T19A], other_pages=given
+        settings, url, [TestId.T19A], other_pages=[f"{server.base}/19a/home.html"]
     )
-    assert "follow_up_calls" in out.next_step
-    assert "finish=true" in out.next_step
-    [call] = out.follow_up_calls
-    assert call["tests"] == ["19.A"] and call["url"].endswith(f"/{page}.html")
-    assert any(p.endswith("sitemap.html") for p in call["other_pages"])
-    assert all(g in call["other_pages"] for g in given)  # kept
+    assert out.follow_up_calls == []
+    loaded = [(p.purpose, p.url) for p in out.report.live_pages]
+    assert loaded == [("suggested", f"{server.base}/19a/sitemap.html")], loaded
+    f = next(x for x in out.report.findings if x.test_id.value == "19.A")
+    assert f.outcome.value == "PASS"
 
 
-async def test_finish_makes_the_suggested_pages_call_once(
-    settings,
-    server,
-    drafts,  # noqa: F811
-):
-    """Agent follow-through plan, change 1: tobi_run_status finish=true makes
-    19.A's follow-up call itself (Abby, 2026-11-06: the server may visit
-    the suggested pages), records it in the report, and never makes it
-    twice."""
-    from tobi508 import jobs
-    from tobi508.models import Report, TestId
-    from tobi508.pipeline import run_tt_tests
-    from tobi508.runlog import RunRecorder
-    from tobi508.tools.run_status import _start_follow_ups
+def test_suggested_pages_in_order():
+    """19.A 1.11.0 Terms: the site map, the parent (from T's address), up to
+    2 child pages under T's directory, the home page; never a page given, T
+    or a suspected alias of T; no child pages for a T at the site root."""
+    from tobi508.checks.t19a import parent_of, suggested_pages
+    from tobi508.site import PageRead, Unit
 
-    page, others = EXPECTED["search-finds-nothing"][:2]
-    url = f"{server.base}/19a/{page}.html"
-    given = [f"{server.base}/19a/{o}.html" for o in others]
-    job = jobs.start(
-        settings,
-        url,
-        lambda p: run_tt_tests(settings, url, [TestId.T19A], p, False, given),
+    def link(href, name="x"):
+        return Unit(
+            i=0,
+            kind="control",
+            role="link",
+            text=name.lower(),
+            name=name,
+            css="a",
+            href=href,
+        )
+
+    t = "https://ex.gov/a/b/"
+    main = PageRead(
+        n=0,
+        url=t,
+        units=[
+            link("https://ex.gov/a/b/index.html"),  # an alias: never suggested
+            link("https://ex.gov/a/b/report.pdf"),  # not a page
+            link("https://ex.gov/a/b/one/"),
+            link("https://ex.gov/a/b/two.html"),
+            link("https://ex.gov/a/b/three.html"),  # past the 2 children
+            link("https://ex.gov/elsewhere/"),  # not under T's directory
+        ],
     )
-    first = await jobs.wait(job, 300)
-    assert first.work == "incomplete" and first.remaining.follow_up_calls == 1
-
-    started = [j for j in _start_follow_ups(settings) if j.url == url]
-    assert len(started) == 1 and started[0].tests == ["19.A"]
-    second = await jobs.wait(started[0], 300)
-    assert second.run_id != first.run_id
-    assert any(p.url.endswith("sitemap.html") for p in second.report.other_pages)
-
-    run = RunRecorder.open(settings.runs_dir, first.run_id)
-    report = Report.model_validate_json(run.report_path.read_text("utf-8"))
-    assert report.follow_up_calls == []
-    assert report.follow_ups_made[0]["job_id"] == started[0].id
-    _start_follow_ups(settings)  # a second finish: nothing more from the first run
-    report = Report.model_validate_json(run.report_path.read_text("utf-8"))
-    assert len(report.follow_ups_made) == 1
+    other = PageRead(
+        n=1, url="https://ex.gov/x/", units=[link("https://ex.gov/map/", "Site map")]
+    )
+    got = suggested_pages(t, main, [main, other], {"https://ex.gov/x/"})
+    assert [(c.role, c.url) for c in got] == [
+        ("site_map", "https://ex.gov/map/"),
+        ("parent", "https://ex.gov/a/"),
+        ("child", "https://ex.gov/a/b/one/"),
+        ("child", "https://ex.gov/a/b/two.html"),
+        ("home", "https://ex.gov/"),
+    ]
+    assert parent_of("https://ex.gov/a/b/c.html") == "https://ex.gov/a/b/"
+    assert parent_of("https://ex.gov/a/b/index.html") == "https://ex.gov/a/"
+    assert parent_of("https://ex.gov/") is None
+    root = PageRead(n=0, url="https://ex.gov/", units=[link("https://ex.gov/a/")])
+    assert suggested_pages("https://ex.gov/", root, [root], set()) == []
+    query = PageRead(n=0, url="https://ex.gov/?q=1", units=[link("https://ex.gov/a/")])
+    assert [
+        c.role for c in suggested_pages("https://ex.gov/?q=1", query, [query], set())
+    ] == ["home"]
 
 
 def test_failed_scripts_reads_the_recording(tmp_path):

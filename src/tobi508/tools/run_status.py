@@ -49,8 +49,8 @@ def register(mcp: FastMCP) -> None:
             bool,
             Field(
                 description="Without a job_id only: also make every follow-up "
-                "call the server may make by itself (19.A with the pages it "
-                "suggested; all but no_time_limit calls), as new runs, and wait "
+                "call the server may make by itself (all but no_time_limit "
+                "calls), as new runs, and wait "
                 "for them like any run. Calls that need the user's choice are "
                 "listed in for_the_user instead. Use it after answering the open "
                 "questions, then call again until nothing is left.",

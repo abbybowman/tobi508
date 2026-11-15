@@ -50,7 +50,8 @@ by TT test ID. Package: `tobi508`.
    visit, a tool to call or an outcome. Six approved exceptions (Abby), each
    with its limits:
    - **19.A's live site search** (2026-11-02), under "Pages and URLs" below.
-   - **19.A's suggested pages** (2026-11-06), also below.
+   - **19.A's suggested pages** (2026-11-06; widened 2026-11-15), also
+     below.
    - **A key combination that page text names** as a way to stop moving
      content or audio (2.A-2.C J2; 2026-11-03): on a fresh replay, modifiers
      plus one key, never one the browser itself uses, one combination per
@@ -131,12 +132,16 @@ by TT test ID. Package: `tobi508`.
   whose action passes the allowlist and is on the tested page's host
   (every redirect hop checked); the term is the tested page's own heading;
   each recorded as its own HAR.
-- **19.A's suggested pages** (links on the caller's pages to a site map,
-  the home page or a breadcrumb, on the tested page's host; at most 5) go
-  in a follow-up call, which the server makes itself when the agent calls
-  `tobi_run_status` with `finish=true`. They are other pages like the
-  caller's: allowlisted, on the tested page's host before and after
-  redirects, each its own HAR. No other URL found on a page is visited.
+- **19.A's suggested pages** (widened 2026-11-15): the site map a page
+  read links to, the tested page's parent (one level up, from the tested
+  page's own address), up to 2 child pages (links on the tested page under
+  its own directory; none for a page at the site root) and the home page;
+  on the tested page's host; at most 5. While fewer than two kinds of way
+  are found, 19.A loads them itself, one at a time, and stops at two. Each
+  is loaded exactly as a caller's other page is (`pipeline.capture_other`):
+  allowlisted, on the tested page's host before and after redirects, its
+  own HAR. One that cannot be loaded leaves 19.A at NEEDS REVIEW, never
+  FAIL. No other URL found on a page is visited.
 - **19.A's suspected aliases**: while the pages read show fewer than
   two kinds of way, a link on another page the test read whose address
   differs from the tested page's only by a last segment named `index.*`
