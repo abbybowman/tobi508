@@ -304,6 +304,21 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     return st
 
 
+def _load_reason(exc: Exception) -> str:
+    """Why a page 19.A loads itself could not be loaded, in plain words
+    (principle 8: no exception names)."""
+    name = type(exc).__name__
+    if isinstance(exc, TimeoutError):
+        return "it took longer than its share of the time"
+    if name == "NotFrozen":
+        return "no saved copy of it was available to load"
+    if name == "NavigationBlocked":
+        return "its address is not one the tool may visit"
+    if isinstance(exc, ValueError):
+        return "it is not on this page's site, before or after redirects"
+    return "it could not be loaded"
+
+
 def _targets(st: State19A) -> tuple[str, ...]:
     """T, the address the caller gave and every verified alias (W6)."""
     return (st.t_url, st.t_requested) + tuple(
@@ -340,11 +355,7 @@ async def _check_aliases(
         try:
             ref = await ctx.record_live(a.url, "alias")
         except Exception as exc:
-            a.reason = (
-                "it took longer than its share of the time"
-                if isinstance(exc, TimeoutError)
-                else f"it could not be loaded ({type(exc).__name__})"
-            )
+            a.reason = _load_reason(exc)
             continue
         a.final_url = ref.final_url
         if _same(ref.final_url, st.t_url):

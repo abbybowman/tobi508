@@ -369,3 +369,13 @@ def test_suspected_alias():
     assert suspected_alias(
         "https://svs.example.gov/cilab/", "https://svs.example.gov/cilab/index.html"
     )
+
+
+def test_alias_reasons_are_plain_words():
+    """Principle 8: why an alias was not loaded, without exception names."""
+    from tobi508.checks.t19a import _load_reason
+    from tobi508.frozen import NotFrozen
+
+    assert _load_reason(NotFrozen("x")) == "no saved copy of it was available to load"
+    assert "time" in _load_reason(TimeoutError())
+    assert "Error" not in _load_reason(RuntimeError("boom"))
