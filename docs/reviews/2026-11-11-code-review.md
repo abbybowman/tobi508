@@ -105,7 +105,7 @@ below; "run" means I ran a page and got the outcome shown.
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
-| D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
+| D-03 | 4.A | PASS | a mouse-only control in a shadow root | run · fixed (step 8) |
 | D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
 | K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · fixed (step 8: read) |
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B); read (step 8) |
@@ -412,6 +412,7 @@ them.
 - **Checked:** verified (run). Two one-control pages, same handler: in
   the ordinary DOM, 4.A is NEEDS REVIEW with question `4.A-k1-J1`; in a
   shadow root, 4.A is PASS (rows A3, G4).
+- **Fixed:** step 8 reader 8, spec 4.A 1.12.0: listeners are read with `pierce` (`traverse.FocusReader.listeners`); the review's page asks J1 (`4a/f29`, PASS on `main`), and its keyboard-ready twin still PASSes (`4a/f30`).
 
 #### D-01 5.A, 5.B and 5.C say "no form fields" when the form is in a shadow root
 
@@ -504,6 +505,7 @@ them.
 - **Checked:** verified (run) for two of the three: error text in a
   shadow root, and a red border on a wrapper, both 5.F DOES NOT APPLY.
   The 60 ms message is the reviewer's run.
+- **Partly fixed:** step 8 reader 4, specs 5.F 1.9.0, 5.G 1.7.0, 5.H 1.7.0: pass E reads text, live regions, dialogs and fields inside web components (`jslib`), so the error in a shadow root is new text and asks J1 (`5f/f28`, FAIL on "Error."; its twin `5f/f29` PASS). Open: the red border on a wrapper, and the message gone within 150 ms.
 
 ### A walk cut short by a trap or the clock
 
@@ -1854,6 +1856,7 @@ not checked.
   shadowrootmode>`) are invisible to the settle rule and to "what did
   this action change". `traverse.py:110-113`. The reviewer confirmed it
   with a script.
+  - **Fixed:** step 8 reader 8, spec 4.A 1.12.0: the walk's change log sweeps for open shadow roots no script attached (`INIT_JS` `log.sweep`), and pass T observes them (reader 3); `4a/f31` was PASS on `main`.
 - **D-16** Two failed reads compare as equal, so an action that could
   not be observed reads as "no effect"; dialogs in frames or shadow
   roots are not counted; `#nav` matches `#nav-link`.
@@ -1933,6 +1936,7 @@ not checked.
   failed dialog read is taken as "none" (`observe.py:51-77`,
   `t4e.py:86-88`). An unreliable step with no signal found does not
   hold back a PASS; that follows the spec, and is a question for Abby.
+  - **F-08 fixed:** step 8 reader 5, specs 4.E 1.6.0, 5.D 1.8.0: dialogs are read in the page, its web components and its frames (`observe.open_dialogs`), and a failed read keeps the last state instead of making every dialog new. `4e/f13` (web component) and `f14` (frame) were PASS on `main` and now ask J1 (FAIL with changes_context).
 - **4.F gaps (F-13, F-14, F-16)** A backward pass that gets stuck is not
   "incomplete", so the backward order goes unchecked
   (`t4f.py:597-606`). In the dialog check, focus landing on the page
@@ -2258,6 +2262,7 @@ Cleanup. All reviewers' claims unless marked.
   page is counted as a link (D-22). The 300 ms noise window and a Chrome
   session are repeated per action (D-23, D-24). Past 20 nested frames
   focus reads as "body" instead of "unknown" (D-25).
+  - **D-21 fixed:** step 8 reader 6, spec 5.D 1.8.0: `forms.py` looks ids up in the field's own tree, takes the text before a field inside a web component from that component, and its change signature reads text and dialogs inside web components (`5d/f23`: PASS on `main`, now asks J2 and J1). **D-19 (in part):** `jslib` holds the shared rules; reveal's field list is reader 7.
 - **4.A-4.C cleanup:** the specs give "exact wording" for the questions
   and the code words them differently; 4.C's rows J1? and J2? are not
   in its spec table (E-17). `_label`, `_norm` and the key-text helper
