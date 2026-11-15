@@ -50,6 +50,21 @@ EXPECTED: dict[str, tuple[str, list[str], dict]] = {
         ["A6", "f1:M3", "G2"],
         {"J1": MULTI, "J2": {"choice": "none"}},
     ),
+    # 1.9.0: a form hidden behind a button is read for applicability, never
+    # submitted. Its own words ask what to "change", a consequence hint, so
+    # J1 is asked; it is a "Was this page helpful?" form.
+    "f09-hidden-feedback": (
+        "DNA",
+        ["A4", "G1"],
+        {"J1": {"choice": "not_consequential", "element": 1}},
+    ),
+    # The nearest that must stay: a hidden payment form that says it is step
+    # 1 of 2. It was never submitted, so there is nothing after it to see.
+    "f10-hidden-payment-steps": (
+        "NEEDS_REVIEW",
+        ["A6", "f1:M4", "G3"],
+        {"J1": MULTI, "J2": {"choice": "unsure"}},
+    ),
 }
 
 

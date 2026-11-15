@@ -60,6 +60,10 @@ EXPECTED: dict[str, dict] = {
     "f37-timeline-view-loops": {
         "outcome": "FAIL",
         "rows": ["M12", "M12"],
+        # The error pass in the frame and the second view's loop take about a
+        # minute alone; under a loaded suite 4.C's share of the tests' 120 s
+        # run ran out (twice, 2026-11-15). The rule is not about time.
+        "no_limit": True,
         "j2": {"gate": "no", "fields": []},
     },
     "f38-done-removes-the-frame": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},

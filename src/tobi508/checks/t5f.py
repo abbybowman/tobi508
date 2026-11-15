@@ -35,6 +35,7 @@ from tobi508.models import (
 from tobi508.traverse import (
     PATH_JS,
     Session,
+    _read_logs,
     invalid_events,
     screenshot,
     settle,
@@ -335,6 +336,11 @@ class AttemptE(BaseModel):
     # Tab in attempt 2, hit the settle rule's limit, so an error shown later
     # was not seen.
     unsettled: bool = False
+    # DOM changes during the submit press (the settle log, content pass T
+    # found changing by itself left out): a change no read took as an error
+    # (a coloured box around a field, a message gone at once) is not "the
+    # page did not check" (row A3c; review M-06).
+    changed: int = 0
     shot_before: str | None = None
     shot_after: str | None = None
 
@@ -578,10 +584,19 @@ async def _press_submit(
     sub0 = len(await submissions(page))
     inv0 = len(await invalid_events(page))
     url0 = page.url
+    try:
+        q0 = (await _read_logs(page))[4]
+    except Exception:
+        q0 = None
     await page.keyboard.press("Enter")
     if not await settle(page, ctx.quiet_ms):
         a.unsettled = True
     await page.wait_for_timeout(150)  # an alert's handler, a late re-render
+    if q0 is not None:
+        try:
+            a.changed = max(0, (await _read_logs(page))[4] - q0)
+        except Exception:
+            a.changed = 1  # not read: never "nothing changed"
     subs = (await submissions(page))[sub0:]
     inv = (await invalid_events(page))[inv0:]
     a.invalid = len(inv)
@@ -1306,6 +1321,20 @@ def applicability(ps: PassE, insts: list[Inst5F]) -> str:
     return "A5"
 
 
+CHANGED_NR = (
+    "When we tried to send the form with mistakes, the page changed, but not in "
+    "a way we could read as an error message (for example a colour on a box "
+    "around a field, or a message that disappeared at once). A person needs to "
+    "look: load the page, make the same mistakes and send it."
+)
+
+
+def changed_unread(ps: PassE) -> bool:
+    """Row A3c: an attempt's submit press changed the page, no form left
+    for its server, and no read found an error (review M-06)."""
+    return any(a.changed > 0 and a.reached and not a.sent for a in ps.attempts)
+
+
 def sent_searches(ps: PassE) -> bool:
     """Some attempt sent its form, and it was a site search (A3s)."""
     return any(a.sent and site_search(ps, a.form) for a in ps.attempts)
@@ -1570,6 +1599,9 @@ def evaluate(st: State5F, evidence_refs: list[str]) -> Finding:
     if not results and not incomplete and not pending_j0 and sent_searches(ps):
         trace += ["A3s", "G1"]
         return finding(Outcome.DNA, SEARCH_DNA, trace)
+    if not results and not incomplete and not pending_j0 and changed_unread(ps):
+        trace += ["A3c", "G1"]
+        return finding(Outcome.NEEDS_REVIEW, CHANGED_NR, trace)
     if not results and not incomplete and not pending_j0:
         trace += ["A3", "G1"]
         return finding(

@@ -211,7 +211,13 @@ def classify(
             (
                 e
                 for e in events[start + 1 :]
-                if e["type"] == "focusout" and e.get("css") == target_css
+                if e["type"] == "focusout"
+                and (
+                    e.get("css") == target_css
+                    # focus left an element inside the target web component:
+                    # the target named by its host (relatedTarget is retargeted)
+                    or (e.get("css") or "").startswith(target_css + " ")
+                )
             ),
             None,
         )
