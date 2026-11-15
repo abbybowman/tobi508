@@ -15,8 +15,9 @@ is listed here is what is left to start or still running.
 #60 to #62 merged, #64 open).
 
 **Order to start them** (at most three threads at once, beside step
-8's thread while it finishes): 6e, 6f and step 10's freeze now; 6g
-when PR #64 is merged; 9b and step 10's run by midday on Nov 17.
+8's thread while it finishes): 6e and 6f now; 6g and round 3
+(step 10) when PR #64 is merged; 9b and round 4 (step 10b) by midday
+on Nov 17.
 
 ## Starting a thread
 
@@ -198,25 +199,41 @@ when PR #64 is merged; 9b and step 10's run by midday on Nov 17.
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3** (two threads: the freeze now, the run on Nov 17)
+**Step 10, Sonnet: round 3, a development round** (when PR #64 is merged)
 
-> The freeze, now. Read `docs/how-to/run-a-judging-round.md` and
-> `evals/agent/README.md`. My keys for round 3 are locked; do not
-> open them. Freeze the pages I name with the fuller freeze (PR #52:
-> it scrolls, stores media and records 19.A's searches), check each
+> Read `docs/how-to/run-a-judging-round.md` and
+> `evals/agent/README.md`. First do scorer fixes 15, 16 and 17 of
+> `docs/plans/2026-11-08-post-round2-fixes.md`, each with its test,
+> as their own pull request. Then round 3, on the pages I give you
+> in this thread, with the server judge answering, exactly as the
+> how-to describes: freeze (the fuller freeze of PR #52; check each
+> recording against its manifest and tell me anything that did not
+> record), run on `main`'s head (record the commit), lock, then score
+> against my keys. Never open my keys before the lock. Work on your
+> own branch and do not open a pull request or merge anything of the
+> round until the run is locked: other threads must not see the page
+> list before then. Keep each page's report and pre-SCRT file out of
+> git. Report per test and in all; list apart the cells inside a web
+> component or a frame; and list every NEEDS REVIEW and wrong cell by
+> cause, as a list of findings for the other threads. Change no code
+> yourself.
+
+**Step 10b, Sonnet: round 4, the held-out round** (two threads: the freeze the day I key the pages, the run on Nov 17)
+
+> The freeze. Read `docs/how-to/run-a-judging-round.md`. Freeze the
+> pages I give you in this thread with the fuller freeze, check each
 > recording against its manifest, and tell me anything that did not
-> record. Then do scorer fixes 15, 16 and 17 of
-> `docs/plans/2026-11-08-post-round2-fixes.md`, each with its test.
-> Do not run the tool on the pages and do not score anything.
+> record. Do not run the tool on the pages, do not open my keys, and
+> keep your branch unmerged with no pull request: no other thread may
+> see the page list.
 
-> The run, on Nov 17. Read the same two files. Run round 3 once on
-> `main`'s head (record the commit; it should be 9b's), with the
-> server judge answering, exactly as the how-to describes: run, lock,
-> then score against my keys. Never open my keys before the lock.
-> Report per test and in all, and list apart the cells that are
-> inside a web component or a frame. Keep each page's report and
-> pre-SCRT file out of git as 9b does. Change no code from what you
-> find: list it for after the demo.
+> The run, on Nov 17. Read the how-to and `evals/agent/README.md`.
+> Run round 4 once on `main`'s head (record the commit; it should be
+> 9b's), with the server judge answering: run, lock, then score
+> against my keys. Never open my keys before the lock. Report per
+> test and in all, and list apart the cells inside a web component or
+> a frame. Keep each page's report and pre-SCRT file out of git.
+> Change no code from what you find: list it for after the demo.
 
 **Step 11, Sonnet: the second look's trial** (if the days allow)
 

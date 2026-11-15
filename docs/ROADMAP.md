@@ -116,7 +116,8 @@ ran three to four times longer than the work took.
 | 8 | One library for reading the page: web components and frames | Opus | readers 1 to 3 done Nov 14 (PRs #58, #60 to #62); readers 4 to 8 in PR #64; the form error tests in frames next | Plan part D; fix 7 |
 | 9a | The second check: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | done Nov 14; its branch waits to merge (see "Where things stand") | `evals/README.md`, "Gate 2026-11-14" |
 | 9b | The third check: the same pages after 8, 6d, 6e and 6f | Sonnet | Nov 17, started by midday | As 9a, a new folder, one repeat |
-| 10 | Round 3, small: a NASA site not used before. Abby's keys are locked (2026-11-15) | Sonnet | freeze the pages now; run and score once, on Nov 17, at 9b's commit | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
+| 10 | Round 3: a NASA site not used before, as a development round. Abby's keys are locked (2026-11-14) | Sonnet | when PR #64 is merged | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
+| 10b | Round 4: the held-out round, keyed by Abby after round 3, run once and last | Abby's keys; Sonnet | frozen the day it is keyed; run on Nov 17 at 9b's commit | As step 10 |
 | 11 | If the days allow: the second look's trial | Sonnet | after 6, beside 8 | Plan part F, "Trial" |
 | 12 | If the days allow: sign in on VAST from Claude Code and run one page | Opus | when the admin's answers arrive | [Hosted sign-in plan](plans/2026-11-06-hosted-auth.md). The demo for reviewers is recorded (Abby, 2026-11-12), so this is not needed for it |
 | 13 | The pitch: the submission commit fixed on Nov 17, one scored run, rehearsal, fallback video | Abby, with a Sonnet thread for the run | Nov 18-19 | [docs/hackathon/](hackathon/README.md) |
@@ -227,12 +228,12 @@ what is planned.
    `walk.field_coverage`; guard CN stays). 5.F 1.8.0, 5.G 1.6.0 and 5.H 1.6.0 (they
    read 5.F's list). Phase 1 is built; phase 2 (4.A, 4.B, 4.F, 5.x reading
    the union of the passes) is step 14c, after the demo (Abby,
-   2026-11-15: step 9a's NEEDS REVIEW cells name no forward trap, so
+   2026-11-14: step 9a's NEEDS REVIEW cells name no forward trap, so
    it would move no measured cell; step 6g is where those cells are). 4.B, 4.C and 4.F keep their own decisions. Left open by
    the step: the grid's `frame-other` test failed once without a
    cause found, and the modal-dialog rule is not yet in `jslib`
    (step 8's thread).
-6e. **Guard CN on real pages, and the timer** (Abby, 2026-11-15;
+6e. **Guard CN on real pages, and the timer** (Abby, 2026-11-14;
    each change turns NEEDS REVIEW into an outcome, so Abby approves
    each before it is built). Step 9a: 58 guard CN cells on 19 real
    pages and no failure among them.
@@ -251,7 +252,7 @@ what is planned.
    - Every change comes with the nearest page that must stay NEEDS
      REVIEW, and the grid rerun: its hidden-form and late-start pages
      are the guard's own cases.
-6f. **Three smaller findings of step 9a** (Abby, 2026-11-15):
+6f. **Three smaller findings of step 9a** (Abby, 2026-11-14):
    - **9.C:** on 8 of round 1's 9 pages the judge fails the pair
      "Home" and "NASA, return to the homepage", and the key passes
      all 8. Find whether the pair should have been made at all (a
@@ -262,7 +263,7 @@ what is planned.
      looked at.
    - **9.B's budget** is 60 s and its longest run was 41.5 s (51.6 s
      in a dry run, where it ran out): 180 s, as 9.A and 9.C.
-6g. **Opened content in 4.C and 4.E** (Abby, 2026-11-15: the largest
+6g. **Opened content in 4.C and 4.E** (Abby, 2026-11-14: the largest
    cause of NEEDS REVIEW in step 9a). Guard RC holds a PASS whenever a
    menu or section opened to show controls the test did not walk: 45
    cells over the two rounds (4.C 14, 4.E 16, 5.D 9, the rest 4.D,
@@ -323,16 +324,24 @@ what is planned.
    that it finishes inside the cut. A gate run's reports and pre-SCRT
    files stay out of git (about 70 MB a run with their screenshots);
    the scores, the comparison and the README sections go in.
-10. **Round 3, small.** A site the tool has not been developed against,
-    Abby's blind SCRT files locked on 2026-11-15. Two parts:
-    - **Now:** freeze the pages (a live page drifts from what the keys
-      describe), and the scorer fixes (15 to 17). The tool is not run
-      and the keys are not opened.
-    - **Nov 17:** one run at the same commit as 9b, then the lock and
-      the score. Run once, last, with no fix made from it before the
-      demo: the moment a result from it changes the code, it is a
-      development site like the other two, and the pitch loses its one
-      figure from pages the tool was never tuned on.
+10. **Rounds 3 and 4** (Abby, 2026-11-14: she can key one more round
+    before the cut).
+    - **Round 3 is a development round,** run as soon as PR #64 is
+      merged, so that what a site the tool has never seen shows can
+      still change the code: freeze, run, lock, score, and its
+      findings go to the threads. After that it is a development site
+      like the other two.
+    - **Round 4 is the held-out round.** Abby keys it after round 3.
+      Its pages are frozen the day she keys them (a live page drifts
+      from what the keys describe). It is run once, last, on Nov 17 at
+      9b's commit, and nothing is fixed from it before the demo: it is
+      the pitch's one figure from pages the tool was never tuned on.
+    - **Keeping a round blind to the threads.** Until a round's run is
+      locked, its page list, keys and freeze stay off `main`: the
+      freeze is made on a branch that is not merged, and no other
+      thread is told the pages. Threads do visit live NASA pages while
+      they work (step 6b set a bar from live search pages), so a page
+      list on `main` could be read or probed by one of them.
 11. **The second look's trial:** one request per frozen round 2 page,
     with the rules as they were at round 2's lock, asking the server's
     model to look again at the rules' PASS and DOES NOT APPLY results.
