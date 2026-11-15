@@ -103,7 +103,7 @@ class State19A(BaseModel):
     search: Search = Field(default_factory=Search)
     # Suspected aliases of T, in the order their links were read (1.10.0).
     aliases: list[Alias] = Field(default_factory=list)
-    # Pages read with links in closed menus (W9, 1.11.0): page n, its url,
+    # Pages read with links in closed menus (W9, 1.12.0): page n, its url,
     # how many, and how many lead to T or a verified alias.
     hidden_nav: list[dict[str, Any]] = Field(default_factory=list)
     # The suggested pages, in the order they are checked (1.11.0).

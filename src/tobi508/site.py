@@ -209,7 +209,7 @@ UNITS_FN = (
                field: field && field.name ? field.name : '', hidden, css: path(f) };
     }).filter(Boolean);
     // Links in navigation, banner or footer regions not shown on load (closed
-    // menus): 19.A 1.11.0 W9 cannot say the site navigation does not lead to
+    // menus): 19.A 1.12.0 W9 cannot say the site navigation does not lead to
     // a page while these were not read (Abby, 2026-11-15).
     const NAV_REGION = 'nav, header, footer, [role=navigation], [role=banner], [role=contentinfo]';
     const hiddenNav = J.all('a[href]').filter((a) => a.closest(NAV_REGION) && !shown(a))
@@ -267,7 +267,7 @@ class PageRead(BaseModel):
     # the inventory's keys, so guard CN compares them.
     shadow_read: dict[str, int] = Field(default_factory=dict)
     # Addresses of links in navigation, banner or footer regions that were
-    # not shown on load (closed menus; 19.A W9).
+    # not shown on load (closed menus; 19.A W9, 1.12.0).
     hidden_nav: list[str] = Field(default_factory=list)
     # The same document as the tested page, under another address (K-01).
     identical: bool = False

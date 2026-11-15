@@ -1,7 +1,7 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.11.0
+spec_version: 1.12.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -72,7 +72,7 @@ Order (1.10.0, 1.11.0): W1 and W5, then the alias check (W6, W7) while fewer tha
 | W6 | The alias check found a verified alias | Its links count as links to T: W1 again with it, and W2 and W3 read the search results for it too (1.10.0) | p. 75 HtT 2.a ("lead to the web page"); Abby, 2026-11-14 (round 2 p05, CILab: one way is a link to `/cilab/index.html`; key Pass) |
 | W7 | A suspected alias was not verified | Alias not verified: a way may be missed (1.10.0) | Spec rule; Abby, 2026-11-14: "never FAIL and never a match" |
 | W8 | A suggested page could not be loaded or read, or no time was left to load it | Page not checked: a way may be missed (1.11.0) | Spec rule (principle 3); Abby, 2026-11-15: FAIL only when the set was checked |
-| W9 | No navigation link to T was found, and a page read (a caller's page or a suggested page) has links in a navigation, banner or contentinfo region that were not shown on load (a closed menu, dropdown or mega menu; `site.PageRead.hidden_nav`) | The site navigation was not read in full: a navigation way may be missed (1.11.0). The links' addresses are in the markup, but a link counts only when the read shows it, so until the menus are opened (roadmap 6g) none of them counts as a way, and those that lead to T are named | p. 75 HtT 1 ("navigation menus or dropdowns"); Abby, 2026-11-15: "we can't say we've checked for nav links as a way if we haven't read the nav"; round 1's nasa.gov pages hide 25 to 44 of 60 to 83 links there on load |
+| W9 | (1.12.0) No navigation link to T was found, and a page read (a caller's page or a suggested page) has links in a navigation, banner or contentinfo region that were not shown on load (a closed menu, dropdown or mega menu; `site.PageRead.hidden_nav`) | The site navigation was not read in full: a navigation way may be missed (1.12.0). The links' addresses are in the markup, but a link counts only when the read shows it, so until the menus are opened (roadmap 6g) none of them counts as a way, and those that lead to T are named | p. 75 HtT 1 ("navigation menus or dropdowns"); Abby, 2026-11-15: "we can't say we've checked for nav links as a way if we haven't read the nav"; round 1's nasa.gov pages hide 25 to 44 of 60 to 83 links there on load |
 | W4 | The search form cannot be run (POST, script only, off host, blocked, time, or longer than a caller-named page's 20 s share), or its results page was over the read cap and did not link to T (1.1.0), or its results page did not link to T and a script it asked for did not load (no response, or an error status, in its recording; 1.7.0) | Search not verified | Spec rule; roadmap step 6c (Abby, 2026-11-13): in step 6 the browser refused the results page's scripts from cdn.jsdelivr.net and the site's `/static/` (its proxy certificate was not trusted), so no search showed results and W3 gave six false FAILs. A results page drawn by script shows nothing when its scripts fail, so finding nothing there says nothing |
 
 **3b. Page outcome (first match wins)**
@@ -81,8 +81,8 @@ Order (1.10.0, 1.11.0): W1 and W5, then the alias check (W6, W7) while fewer tha
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Two or more kinds | PASS, naming them |
-| G3 | Fewer than two kinds, and something was not checked: a suggested page (W8), an alias (W7), the search (W4) or closed menus (W9) (1.11.0) | NEEDS REVIEW, naming the ways found and what was not checked ("This test could not be performed" note) |
-| G4 | Fewer than two kinds, every suggested page checked, no alias left unverified, no closed menu left unread (W9), and no search form or the search does not lead to T (W3) | FAIL, naming what was checked (Abby, 2026-11-02 and 2026-11-15) |
+| G3 | Fewer than two kinds, and something was not checked: a suggested page (W8), an alias (W7), the search (W4) (1.11.0) or closed menus (W9, 1.12.0) | NEEDS REVIEW, naming the ways found and what was not checked ("This test could not be performed" note) |
+| G4 | Fewer than two kinds, every suggested page checked, no alias left unverified, no closed menu left unread (W9, 1.12.0), and no search form or the search does not lead to T (W3) | FAIL, naming what was checked (Abby, 2026-11-02 and 2026-11-15) |
 | G5 | Anything else | NEEDS REVIEW |
 
 **Plain-language sentences.**

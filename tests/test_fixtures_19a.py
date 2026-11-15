@@ -167,7 +167,7 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W8", "G3"],
         {},
     ),
-    # 19.A 1.11.0 W9 (Abby, 2026-11-15: "we can't say we've checked for nav
+    # 19.A 1.12.0 W9 (Abby, 2026-11-15: "we can't say we've checked for nav
     # links as a way if we haven't read the nav"). The other page links the
     # grants page in its content and inside a menu that is closed on load:
     # NEEDS REVIEW, not FAIL. Its twin with the menu open PASSes.
