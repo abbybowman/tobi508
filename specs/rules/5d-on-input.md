@@ -1,7 +1,7 @@
 ---
 tt_test: 5.D
 tt_name: 3.2.2-on-input
-spec_version: 1.6.0
+spec_version: 1.7.0
 guards: unrecorded-code, reveal, reveal-content
 count: fields, fields_hidden, contenteditable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -17,6 +17,8 @@ The tool gives each page one 5.D outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 **Other sources.** [Understanding 3.2.2](https://www.w3.org/WAI/WCAG22/Understanding/on-input.html) and the definition of *change of context* ("a change of content is not always a change of context"; "activating a link or a button does not" change a setting); [G13](https://www.w3.org/WAI/WCAG22/Techniques/general/G13) (the notice precedes the control in reading order); failures [F36](https://www.w3.org/WAI/WCAG22/Techniques/failures/F36) (a form submitted when its last field is given a value or left) and [F37](https://www.w3.org/WAI/WCAG22/Techniques/failures/F37) (a radio, checkbox or select opening a new window); the ICT Testing Baseline 3.1 test [10.C-OnInput](https://ictbaseline.access-board.gov/web-baselines/10Forms/) ("Enter data in all form fields, and exit (tab out of) the field") and its Baseline Alignment cases TC10.C. No ACT rule covers 3.2.2, and DHS publishes no ACT results for it. These inform rules and fixtures; the PDF stays the authority.
 
 **Terms.** *Stop*, passes P1 and P2, stop identity, the settle rule and replays to a stop are defined in [4c-no-keyboard-trap.md](4c-no-keyboard-trap.md) (Terms, section 2). An *effect* (navigation, frame navigation, new page, dialog, focus change, DOM change) is defined in [4a-keyboard-access.md](4a-keyboard-access.md) (Terms). A *field* is a stop that is a text field (`input` of a text-entry type, `textarea`, role textbox, searchbox or combobox), a select (`select`, role listbox when it is a single control), a checkbox or switch, a radio button, a date or time input, or a custom widget with a value (role slider or spinbutton), and is not disabled or read-only. Chrome focuses a date input's parts (month, day, year, picker button) one by one, inside the input's own shadow root; they are one field, read through the input (V3). Radio buttons with the same `name` in the same form (or the same role radiogroup) are one field. A field's *own widget* is the field, the elements it names in `aria-controls`, `aria-owns`, `list`, `aria-describedby` and `aria-errormessage`, and for a radio group its other buttons. A *change of context* is one of: the top URL changes (ignoring the fragment) or the page reloads; a new page or window opens; a form is submitted (a `submit` event, or a form submission request, whether or not the recording can answer it); focus goes somewhere other than the expected stop (section 3).
+
+**Terms for row WK.** A form field is *reached* when P1 stopped on it (not read-only, not disabled; a radio group once; P2's stops are not read by this test, since its fields come from P1). The *fields to reach* are the form fields the page has when P1 ended (`PassResult.form_fields_end`: rendered, not disabled, not read-only; a radio group once). A pass that ended in a trap, a loop, a cap or out of time matters here only through what is left unreached. The sentence is built by `walk.field_coverage`, for example: "The keyboard reached 1 of the 2 form fields on this page, so 1 was not checked. Tab got stuck at "Search" (textbox)." It names only what ran.
 
 ## 1. Applicability
 
@@ -99,9 +101,12 @@ Each completed field is an *instance*. After the Tab that leaves a field, focus 
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
-| G3 | Any instance is NEEDS REVIEW; or P1 is incomplete (cap, time limit, error) or ended in a trap before the last field; or more than `FIELD_MAX` fields (no time limit off); or the run limit stopped pass F | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
+| G3 | Any instance is NEEDS REVIEW; or P1 is incomplete (cap, time limit, error) or a field no pass read (row WK, 1.7.0); or more than `FIELD_MAX` fields (no time limit off); or the run limit stopped pass F | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
 | G4 | Every field P1 reached was completed, and every instance is PASS or no instance | PASS |
 | G5 | Anything else | NEEDS REVIEW |
+
+**Row WK: the walk did not reach every field** (1.7.0; Abby, 2026-11-14; review H-03, M-05). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every form field this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. Guard CN (`count: fields`) stays beside it.
+
 
 **Plain-language sentences.** Row IDs stay in the evidence trace; M14 instances (nothing happened) are not listed. `<field>` is the field's label and kind in plain words; `<keys>` is how to reproduce it from a fresh load ("Tab 6 times, type Test, then Tab").
 

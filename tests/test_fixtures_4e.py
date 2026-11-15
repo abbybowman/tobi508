@@ -51,6 +51,23 @@ EXPECTED: dict[str, dict] = {
     # events again because it counted them per address with the fragment (M6).
     "f11-hash-change-on-focus": {"outcome": "PASS", "rows": []},
     "f12-pushstate-on-focus": {"outcome": "PASS", "rows": []},
+    # Row WK (1.5.0, step 6d): a script moves focus past link 2 in both
+    # directions, so no pass ever stops on it: 4.E checked 3 of the page's 4
+    # elements and may not say PASS ("each element we could reach").
+    # f14 is the nearest page that must still PASS: a trap in the search
+    # field, and Shift+Tab from the end reaches the 3 elements behind it, so
+    # every element was reached by some pass.
+    "f13-link-skipped-by-script": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page_rows": ["WK"],
+        "walk": (3, 4),
+    },
+    "f14-trap-other-pass-reaches-the-rest": {
+        "outcome": "PASS",
+        "rows": [],
+        "walk": (5, 5),
+    },
 }
 HELPERS = {"f02-other"}
 # Pages from other tests that prove a "not an instance" rule for 4.E.
@@ -80,6 +97,15 @@ async def test_outcome(name, settings, server):
         f.rationale,
         f.summary,
     )
+    if "page_rows" in e:
+        assert set(e["page_rows"]) <= set(f.rows), f.rows
+    if "walk" in e:
+        # Row WK's evidence, not only its sentence: elements reached against
+        # elements counted (the finding's rationale records them).
+        reached, counted = e["walk"]
+        assert f"Walk: reached {reached} of {counted}" in f.rationale, f.rationale
+        if e["outcome"] == "NEEDS_REVIEW":
+            assert f"reached {reached} of the {counted} elements" in f.summary
     if name in COVERS:
         # 1.2.0: J1's input gives the dialog's share of the window and whether
         # it is modal, read from the DOM (checked on this run's questions).

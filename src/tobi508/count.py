@@ -77,8 +77,16 @@ COUNT_JS = (
     + PATH_JS
     + """
   const { FIELD, inert, rendered, focusable, off } = J;
-  const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
-    '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
+  // While a modal dialog (showModal) is open, the rest of the page, frames
+  // included, cannot take focus: not something Tab should land on (the same
+  // rule as traverse's inventory; jslib's `focusable` is left as it is).
+  const modal = (() => { try { return window.top.document.querySelector('dialog:modal'); } catch (e) { return null; } })();
+  const behindModal = (el) => {
+    if (!modal) return false;
+    for (let n = el; n; n = n.parentNode || n.host || null) if (n === modal) return false;
+    return true;
+  };
+  const { LANDMARK, LINK } = J;
   // What could show hidden content: a button, a disclosure, a same-page or
   // script link, an element with an inline click handler (Abby, 2026-11-12:
   // hidden fields with nothing that can open them do not hold an outcome).
@@ -125,7 +133,7 @@ COUNT_JS = (
         const u = (el.currentSrc || '').split('#')[0];
         if (/^https?:/.test(u) && imgs[where].size < 1000) imgs[where].add(u);
       }
-      if (focusable(el)) {
+      if (focusable(el) && !behindModal(el)) {
         // Tab lands on one radio of a group: a group counts once.
         if (el.matches('input[type=radio]') && el.name) {
           if (el.form && !formIds.has(el.form)) formIds.set(el.form, formIds.size + 1);
@@ -134,7 +142,7 @@ COUNT_JS = (
         } else add('focusable');
       }
       if (el.matches(LANDMARK)) add('landmarks');
-      if (el.matches('a[href], area[href]')) add('links');
+      if (el.matches(LINK)) add('links');
       if (el.shadowRoot) { out.shadow_roots += 1; walk(el.shadowRoot, 'shadow'); }
       else if (el.tagName.includes('-') && window.customElements && customElements.get(el.tagName.toLowerCase())) out.closed_hosts += 1;
     }
@@ -236,22 +244,28 @@ async def take(page: Page, where: str) -> Count:
     return count
 
 
-# What played on this load, in one frame; `listed`: those pass T's media read
-# (`motion.M.media`: the document's first 20 `video`/`audio`) also lists.
-# Speech and Web Audio sources count as played from a script.
-PLAYED_JS = """() => {
+# What played on this load, in one frame; `listed` and `listed_shadow`:
+# those pass T's media read (`motion.M.media`: the first 20 `video`/`audio`
+# of the document and its open shadow roots, `J.all`) also lists. Speech and
+# Web Audio sources count as played from a script.
+PLAYED_JS = (
+    "() => {"
+    + JSLIB
+    + """
   const hook = window.__tobiPlayed;
   if (!hook) return null;
-  const out = { light: 0, shadow: 0, detached: 0, listed: 0 };
-  const listed = new Set(Array.from(document.querySelectorAll('video, audio')).slice(0, 20));
+  const out = { light: 0, shadow: 0, detached: 0, listed: 0, listed_shadow: 0 };
+  const listed = new Set(J.all('video, audio').slice(0, 20));
   for (const el of hook.list()) {
     const root = el.isConnected ? el.getRootNode() : null;
-    out[root === document ? 'light' : root ? 'shadow' : 'detached'] += 1;
-    if (listed.has(el)) out.listed += 1;
+    const where = root === document ? 'light' : root ? 'shadow' : 'detached';
+    out[where] += 1;
+    if (listed.has(el)) out[where === 'shadow' ? 'listed_shadow' : 'listed'] += 1;
   }
   out.detached += hook.audio() + hook.speech();
   return out;
 }"""
+)
 
 
 async def played(page: Page) -> tuple[Part, Part] | None:
@@ -274,9 +288,10 @@ async def played(page: Page) -> tuple[Part, Part] | None:
             part.shadow += got["shadow"]
             part.detached += got["detached"]
             listed.light += got["listed"]
+            listed.shadow += got.get("listed_shadow", 0)
         else:
             part.frames += got["light"] + got["shadow"] + got["detached"]
-            listed.frames += got["listed"]
+            listed.frames += got["listed"] + got.get("listed_shadow", 0)
     return part, listed
 
 

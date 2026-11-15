@@ -259,6 +259,13 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## Run 35, 2026-11-14: 5.A 1.11.0 and 5.C 1.11.0 (and 5.A 1.12.0's M4) (step 8: web components, frames, hidden label words), the new pages' packets
+
+Step 8 changed 5.A's and 5.C's inputs for fields inside web components and frames (the location names the frame; inside a web component the name comes from Chrome's accessibility tree) and what a visible label is (H-01). `prepare` ran every 5.A and 5.C case (31 ask questions); one fresh agent (general-purpose, told to open nothing outside its packets; it listed only packet files) answered the 4 packets of the new pages: f44 (hidden label words, 5.A and 5.C), f48 (`aria-labelledby` out of a web component, 5.A) and f53 (a field in a frame from another site, 5.A). **4/4 match** on the page outcome, no false PASS.
+- **Found:** on f44 it answered 5.A J1 "labeled" quoting the "*" that is all a label shows while its words are hidden, so that field passed on M4. 5.A 1.12.0's M4 now needs a quote with a word (a "*" alone goes to NEEDS REVIEW); `test_a_star_quoted_as_the_label_is_no_label`.
+- **Its other answers:** f44's drop-down with no label not_labeled (it called this close: the default option "Choose one" read as a placeholder), the off-screen label's field not_labeled; f44 5.C missing "*" (the required cue not announced); f48 and f53 labeled by the visible words.
+- The other 27 cases' packets were not answered this run: their questions did not change.
+
 ## Run 34, 2026-11-13: 5.A 1.8.0 and 5.B 1.6.0 (a button with words labels its field), their packets
 
 Abby, 2026-11-13: a button that is part of a field labels it whatever its words (TT p. 25 Note 3, "regardless of accuracy"), so 5.A 1.8.0 drops 1.1.0's rule that "Go", "Find" or "Subscribe" do not label a field (the rubric and question now say accuracy is another test's), and a text button in the field's input group or search form is row M2i like an icon. 5.B 1.6.0 judges the button's words as the field's near text. Rubric examples are on no fixture page (checked). 44 cases (5.A and 5.B), one fresh Sonnet agent, Read/Write/Glob only, inside the packets: **43/44 match**, no false PASS.

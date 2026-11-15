@@ -56,7 +56,7 @@ from tobi508.traverse import (
     screenshot,
     settle,
 )
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, field_coverage
 
 FIELD_MAX = 40
 # Per-field cost of pass F, for the early stop's estimate (measured with
@@ -218,6 +218,8 @@ class State5D(BaseModel):
     fields: list[Field5D] = Field(default_factory=list)
     instances: list[Inst5D] = Field(default_factory=list)
     skip: list[str] = Field(default_factory=list)  # path keys that changed context
+    walk_gap: str | None = None  # row WK's sentence, when a field was not reached
+    walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
     # What pass F read, by the page inventory's keys (count.py; guard CN).
@@ -622,6 +624,14 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State5D:
         field_stops=_field_stops(walk),
         inventory_fields=walk.p1.form_fields,
     )
+    # Row WK (1.7.0): a field no pass read was not checked, whatever the walk
+    # ended in; guard CN (count: fields) stays beside it.
+    cov = field_coverage(walk)
+    if cov.counted is not None:
+        st.walk_reached = (cov.reached, cov.counted)
+    if cov.sentence:
+        st.walk_gap = cov.sentence
+        st.incomplete.append(cov.sentence)
     fields = _fields(walk)
     limit = len(fields) if ctx.no_time_limit else FIELD_MAX
     known = {s.stop.path_key for s in walk.p1.steps if s.stop.kind == "element"}
@@ -1112,6 +1122,8 @@ def evaluate(st: State5D, evidence_refs: list[str]) -> Finding:
         incomplete.append(f"{len(missing)} form field(s) were not filled in.")
     ev = {"results": results, "incomplete": incomplete, "complete": not incomplete}
     page = first_match(PAGE_ROWS, ev)
+    if st.walk_gap and page.outcome is Outcome.NEEDS_REVIEW:
+        trace.append("WK")
     trace.append(page.id)
     order = {Outcome.FAIL: 0, Outcome.NEEDS_REVIEW: 1}
     body = [t for _, t in sorted(sentences, key=lambda x: order.get(x[0], 2))]
@@ -1134,6 +1146,10 @@ def evaluate(st: State5D, evidence_refs: list[str]) -> Finding:
         parts += incomplete
     parts += notes
     rationale = f"Spec {page.id}. " + "; ".join(trace[1:-1] or ["no changes"])
+    if st.walk_reached:
+        rationale += (
+            f". Walk: reached {st.walk_reached[0]} of {st.walk_reached[1]} fields"
+        )
     if incomplete:
         rationale += ". Incomplete: " + "; ".join(incomplete)
     f = Finding(

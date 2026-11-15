@@ -1,7 +1,7 @@
 ---
 tt_test: 4.E
 tt_name: 3.2.1-on-focus
-spec_version: 1.4.0
+spec_version: 1.5.0
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -16,6 +16,8 @@ The tool gives each page one 4.E outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 **W3C sources.** [Understanding 3.2.1](https://www.w3.org/WAI/WCAG22/Understanding/on-focus.html) (its examples: a form submitted, a new window launched, or focus changed to another component when a component receives focus), the definition of *change of context* (changes of user agent, viewport, focus, or content that changes the meaning of the page; "a change of content is not always a change of context", e.g. an expanding outline, dynamic menu or tab control), technique G107, and failure [F55](https://www.w3.org/WAI/WCAG22/Techniques/failures/F55) (script removes focus when focus is received). No ACT rule covers 3.2.1, so fixtures are custom. These inform OPEN items and fixtures only; the PDF stays the authority.
 
 **Terms.** *Stop*, *OUT*, *BODY*, passes P1 and P2, stop identity and the settle rule are defined in [4c-no-keyboard-trap.md](4c-no-keyboard-trap.md) (Terms, section 2). The *target* of a step is the element that first receives focus after the key press: the first focus-in in the step's focus log or, if the element blurs inside its own focus handler (Chrome then fires no focus-in), the element the first focus-out says focus was going to. A *context signal* is one of: the top URL changes (ignoring the fragment) or the page reloads; a new page or window opens; focus moves on its own (below); a dialog becomes visible.
+
+**Terms for row WK.** An element is *reached* when a pass this test has evidence from stopped on it: P1 and P2 (P6's stops are not passed to this test; 4.C spec section 6). The *elements to reach* are the elements Tab lands on when the last of those passes ended (`PassResult.inventory_end`: focusable, rendered, not disabled, not inert, not `tabindex="-1"`; a radio group, a date input and a frame the walk went into count once each). A pass that ended in a trap, a loop, a cap or out of time matters here only through what is left unreached: a page that grew is complete if everything present when the last pass ended was reached. The sentence is built by `walk.walk_coverage`, for example: "The keyboard reached 5 of the 6 elements on this page that take focus, so "Two" (a) was not checked. Tab got stuck at "Search" (textbox)." It names only what ran.
 
 ## 1. Applicability
 
@@ -71,9 +73,11 @@ Each step with a context signal is an *instance*. Focus *moves on its own* when,
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
-| G3 | Any instance is NEEDS REVIEW; or P1 or P2 is incomplete (cap, time limit, error); or P1 and P2 ended in different traps, so stops between them were not reached; or more than 10 steps needed replays; or the run limit was reached before every confirmation replay ran (1.1.0) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
+| G3 | Any instance is NEEDS REVIEW; or P1 or P2 is incomplete (cap, time limit, error); or P1 and P2 ended in different traps, so stops between them were not reached; or the walk did not reach every element (row WK, 1.5.0); or more than 10 steps needed replays; or the run limit was reached before every confirmation replay ran (1.1.0) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
 | G4 | P1 and P2 each ended in a wrap or at the same trap, and there is no instance | PASS |
 | G5 | Anything else | NEEDS REVIEW |
+
+**Row WK: the walk did not reach every element** (1.5.0; Abby, 2026-11-14; review H-03, M-05, F-11). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every element this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. G4's "ended in a wrap or at the same trap" no longer settles it alone: a trap that left an element unreached (before 1.5.0, a PASS on "each element we could reach") is NEEDS REVIEW, and one where the other pass reached everything stays PASS.
 
 A pass that ends on navigation is complete for 4.E only when that navigation is an M4 instance; G2 then decides the page.
 

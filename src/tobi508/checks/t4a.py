@@ -39,7 +39,7 @@ from tobi508.traverse import (
     screenshot,
     settle,
 )
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, walk_coverage
 
 HOVER_MAX = 40
 REVEAL_REPLAYS = 10
@@ -394,6 +394,8 @@ class State4A(BaseModel):
     stop_list: list[StopRef] = Field(default_factory=list)
     instances: list[Inst4A] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
+    walk_gap: str | None = None  # row WK's sentence, when an element was not reached
+    walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     notes: list[str] = Field(default_factory=list)
     shot: str | None = None
     browser: str | None = None
@@ -508,7 +510,16 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
     )
     # With no stops there is nothing past a trap to miss (judge eval: the note
     # made agents doubt an empty stop list).
-    if p1.end != "wrap" and walk.stops > 0:
+    # Row WK (1.11.0): an element no pass reached was not checked; its
+    # sentence says what the generic line below only implies.
+    cov = walk_coverage(walk)
+    if cov.counted is not None:
+        st.walk_reached = (cov.reached, cov.counted)
+    if not cov.complete and cov.sentence:
+        st.walk_gap = cov.sentence
+    if st.walk_gap:
+        st.incomplete.append(st.walk_gap)
+    elif p1.end != "wrap" and walk.stops > 0:
         st.incomplete.append(
             "The Tab walk did not get through the whole page, so elements past "
             "that point were not checked."
@@ -1415,6 +1426,8 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
     }
     page = first_match(PAGE_ROWS, ev)
     trace.append(page.id)
+    if st.walk_gap and page.outcome is Outcome.NEEDS_REVIEW:
+        trace.insert(-1, "WK")
     order = {Outcome.FAIL: 0, Outcome.NEEDS_REVIEW: 1}
     body = [t for _, t in sorted(sentences, key=lambda x: order.get(x[0], 2))]
     if page.outcome is Outcome.PASS:
@@ -1441,6 +1454,8 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
     parts += st.notes
     parts.append(LOOKED_FOR.format(browser=browser))
     rationale = f"Spec {page.id}. " + "; ".join(trace[1:-1] or ["no instances"])
+    if st.walk_reached:
+        rationale += f". Walk: reached {st.walk_reached[0]} of {st.walk_reached[1]}"
     if incomplete:
         rationale += ". Incomplete: " + "; ".join(incomplete)
     f = Finding(

@@ -42,6 +42,7 @@ from pydantic import BaseModel, Field
 
 from tobi508 import count as inventory
 from tobi508.browser import AUTOPLAY_ARG, MOTION_BROWSER  # noqa: F401
+from tobi508.jslib import JSLIB
 from tobi508.models import Part
 from tobi508.observe import DIALOGS_JS
 from tobi508.redact import safe_error
@@ -85,6 +86,7 @@ CAROUSEL_SELECTOR = (
 MOTION_INIT_JS = (
     (
         "(() => {"
+        + JSLIB
         + PATH_JS
         + """
   if (window.__a11yMotion) return;
@@ -182,21 +184,39 @@ MOTION_INIT_JS = (
         after: kind === 'text' || kind === 'children' ? textOf(el) : '' });
     }
   });
-  obs.observe(document, { subtree: true, childList: true, attributes: true, characterData: true, characterDataOldValue: true });
+  const OBS = { subtree: true, childList: true, attributes: true, characterData: true, characterDataOldValue: true };
+  obs.observe(document, OBS);
+  // Changes inside web components too (part D; the cause of review D-04):
+  // each open shadow root as it is attached, and those already in the page
+  // when the watch starts (a server-rendered root attaches none).
+  const watched = new WeakSet();
+  const watchRoot = (r) => {
+    if (!r || watched.has(r)) return;
+    watched.add(r);
+    try { obs.observe(r, OBS); fx.observe(r, { subtree: true, childList: true, attributes: true, characterData: true }); } catch (e) {}
+  };
+  const oas = Element.prototype.attachShadow;
+  Element.prototype.attachShadow = function (...a) {
+    const r = oas.apply(this, a);
+    if (a[0] && a[0].mode === 'open') watchRoot(r);
+    return r;
+  };
+  M.watchRoots = () => { for (const r of J.roots()) if (r !== document) watchRoot(r); };
   // Focus moves with no key pressed (2.D N4), as element references.
   addEventListener('focusin', (e) => { if (M.focus.length < 100) M.focus.push({ at: now(), el: e.composedPath()[0] }); }, true);
   // Pass T's start: live regions present and rendered now (2.D: a region
   // added with the change does not count).
   M.mark0 = () => {
     M.t0 = now();
+    M.watchRoots();
     const vis = (e) => e.checkVisibility ? e.checkVisibility({ visibilityProperty: true }) : e.getClientRects().length > 0;
     const out = [];
-    for (const e of document.querySelectorAll(LIVE)) {
+    for (const e of J.all(LIVE)) {
       if (!isLive(e) || !vis(e)) continue;
       M.live0.add(e);
       out.push({ css: path(e), role: e.getAttribute('role') || '', live: norm(e.getAttribute('aria-live')) });
     }
-    const car = Array.from(document.querySelectorAll(CAROUSEL)).slice(0, 10).map((e) => path(e));
+    const car = J.all(CAROUSEL).slice(0, 10).map((e) => path(e));
     return { t0: M.t0, live: out, carousels: car };
   };
   // What each element shows (2.C Terms, kind): a hash of its visible text,
@@ -392,8 +412,9 @@ MOTION_INIT_JS = (
     } catch (e) {}
     return { live_off: liveOff, sigs, colors, transforms, moved, changes, attr_list: attrList, attrs, focus_in: focusIn, anims, text: textOf(el), connected: el.isConnected };
   };
-  M.media = () => Array.from(document.querySelectorAll('video, audio')).slice(0, 20).map((m) => ({
-    css: path(m), tag: m.tagName.toLowerCase(), paused: m.paused, muted: m.muted, volume: m.volume,
+  // Inside web components too (part D; review N-01): J.all.
+  M.media = () => J.all('video, audio').slice(0, 20).map((m) => ({
+    css: path(m), tag: m.tagName.toLowerCase(), shadow: J.where(m) === 'shadow', paused: m.paused, muted: m.muted, volume: m.volume,
     time: m.currentTime, duration: isFinite(m.duration) ? m.duration : null, loop: m.loop, autoplay: m.autoplay,
     controls: m.controls, error: m.error ? m.error.code : null,
     decoded: typeof m.webkitAudioDecodedByteCount === 'number' ? m.webkitAudioDecodedByteCount : null,
@@ -402,7 +423,7 @@ MOTION_INIT_JS = (
     // for 3.A, which reads a video that never played from its file.
     urls: [m.getAttribute('src') ? m.src : '', ...Array.from(m.querySelectorAll('source')).map((x) => x.src)]
       .filter((u) => /^https?:/.test(u || '')).map((u) => u.slice(0, 500)).slice(0, 6),
-    total: document.querySelectorAll('video, audio').length }));
+    total: J.all('video, audio').length }));
   // <blink> and text-decoration: blink do not blink in Chrome (plan item 9):
   // a note for 2.B only.
   const blinkMarkup = () => {
@@ -460,7 +481,7 @@ MOTION_INIT_JS = (
   M.below = (known) => {
     const inside = (e) => known.some((css) => { const r = M.held.get(css); return r && (r === e || r.contains(e)); });
     const out = [];
-    const cand = [...M.io, ...document.querySelectorAll(CAROUSEL)];
+    const cand = [...M.io, ...J.all(CAROUSEL)];
     for (const e of cand) {
       if (!e.isConnected || inside(e)) continue;
       const r = e.getBoundingClientRect();
@@ -491,7 +512,7 @@ MOTION_INIT_JS = (
       const active = t.iterations === Infinity ? Infinity : (t.iterations || 0) * (typeof t.duration === 'number' ? t.duration : 0);
       if (active > 5000) add(a.effect.target, 'animation', (a.animationName || a.transitionProperty || '') + (active === Infinity ? ' (infinite)' : ' ' + Math.round(active) + ' ms'));
     }
-    for (const m of document.querySelectorAll('marquee')) add(m, 'marquee', 'marquee');
+    for (const m of J.all('marquee')) add(m, 'marquee', 'marquee');
     // Animated images over 5 s in all, by G152 (frames x delays x loops,
     // decoded from the recording in the tool page), wherever they are.
     for (const i of document.images) {
@@ -516,7 +537,7 @@ MOTION_INIT_JS = (
     for (const [e, v] of byEl) {
       if (v.n >= 3 && v.last - M.t0 >= 5000) add(e, 'dom', v.n + ' changes');
     }
-    for (const v of document.querySelectorAll('video')) {
+    for (const v of J.all('video')) {
       if (!v.paused && (v.loop || (isFinite(v.duration) && v.duration - v.currentTime > 5))) add(v, 'video', v.loop ? 'playing, looping' : 'playing');
     }
     return out;
@@ -577,7 +598,7 @@ ELEMENTS_JS = (
   });
   // A media element's own controls (V1): one control element, at its place
   // in document order; the walk focuses its play button inside it.
-  for (const m of document.querySelectorAll('audio[controls], video[controls]')) {
+  for (const m of J.all('audio[controls], video[controls]')) {
     if (!shown(m) || m.closest('[aria-hidden="true"]')) continue;
     let at = keep.findIndex((e) => m.compareDocumentPosition(e) & Node.DOCUMENT_POSITION_FOLLOWING);
     if (at < 0) at = keep.length;
@@ -749,6 +770,7 @@ class Media(BaseModel):
     at: float  # read time, seconds from the start of the watch
     css: str
     tag: str
+    shadow: bool = False  # inside a web component (an open shadow root)
     paused: bool
     muted: bool
     volume: float
@@ -790,14 +812,18 @@ class Dialog(BaseModel):
     keyboard: bool = False  # focus is in it, or it holds a focusable element
 
 
-_DIALOG_FACTS_JS = """(css) => {
-  const d = document.querySelector(css);
+_DIALOG_FACTS_JS = (
+    "(css) => {"
+    + JSLIB
+    + """
+  const d = J.find(css);
   if (!d) return null;
   const f = 'a[href], button, input:not([type=hidden]), select, textarea, [tabindex]:not([tabindex^="-"])';
   return { role: d.getAttribute('role') || (d.tagName === 'DIALOG' ? 'dialog' : ''),
     text: (d.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 300),
-    keyboard: d.contains(document.activeElement) || !!d.querySelector(f) };
+    keyboard: d.contains(J.active()) || !!d.querySelector(f) };
 }"""
+)
 
 
 # A video player from another site that streams its video: no recording can
@@ -1045,8 +1071,9 @@ async def pass_t(
     try:
         if scroll_to:
             await page.evaluate(
-                "(css) => { const e = document.querySelector(css); "
-                "if (e) e.scrollIntoView({ block: 'center' }); }",
+                "(css) => {"
+                + JSLIB
+                + " const e = J.find(css); if (e) e.scrollIntoView({ block: 'center' }); }",
                 scroll_to,
             )
             await page.wait_for_timeout(300)

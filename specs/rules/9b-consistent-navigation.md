@@ -1,7 +1,7 @@
 ---
 tt_test: 9.B
 tt_name: 3.2.3-consistent-navigation
-spec_version: 1.5.0
+spec_version: 1.6.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -71,7 +71,7 @@ Each other page is an *instance* (the tested page compared with it).
 | A3 | "No navigation on this page appears on the other pages you gave, so this test does not apply." |
 | N5 | "Only one link or control is shared with <page>, so there is no order to compare. A person should check the navigation." |
 
-**Guard CN: navigation inside web components** (1.3.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows element children in each page's own document and reads none of them (`site.SiteRead.read`). When a page the test read has any, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
+**Guard CN: navigation inside web components** (1.3.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review K-02, M-12). The page's inventory (`count.py`, `Report.counts`) is taken on every page the site read loads, the tested page and each other page. It counts landmarks (`header`, `nav`, `main`, `footer`, `aside` and their roles) and links inside web components (open shadow roots). The site read follows each page as rendered, into open shadow roots at any depth (a web component's children, a slot's assigned content), so it reads the landmarks and links of every web component it reaches; a web component inside content that is hidden counts as read, since nothing in it is on the page (1.6.0; plan 2026-11-12 part D; `site.SiteRead.read`). A frame stays one unit. When a page the test read has more of them than the read reached (a read cut by the unit cap), a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap and page ("3 links inside web components were not checked", "On other page 1, 1 page region (landmark) inside a web component was not checked"). Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

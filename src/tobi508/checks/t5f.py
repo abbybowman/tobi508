@@ -39,7 +39,7 @@ from tobi508.traverse import (
     settle,
     submissions,
 )
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, field_coverage
 
 WRONG_VALUE = "abc"
 FORM_MAX = 5
@@ -308,6 +308,8 @@ class PassE(BaseModel):
     attempts: list[AttemptE] = Field(default_factory=list)
     looks: dict[str, str] = Field(default_factory=dict)  # n -> look, unfocused, at load
     incomplete: list[str] = Field(default_factory=list)
+    walk_gap: str | None = None  # row WK's sentence, when a field was not reached
+    walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     notes: list[str] = Field(default_factory=list)
     # What pass E read, by the page inventory's keys (count.py; guard CN).
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
@@ -742,6 +744,10 @@ async def error_pass(ctx: RunContext, walk: KeyboardWalk) -> PassE:
         field_stops=field_stops(walk),
         inventory_fields=walk.p1.form_fields,
     )
+    cov = field_coverage(walk)
+    if cov.counted is not None:
+        ps.walk_reached = (cov.reached, cov.counted)
+    ps.walk_gap = cov.sentence
     fields = [f for f in _fields(walk) if f.index >= 0]
     limit = len(fields) if ctx.no_time_limit else FIELD_MAX
     if len(fields) > limit:
@@ -1294,11 +1300,10 @@ def incomplete_of(ps: PassE) -> list[str]:
     # A walk that ended in a trap is complete only when it reached every
     # field the page has (M-05; spec G3 "ended in a trap before the last
     # field"). The count comes from the DOM inventory, not from the walk.
-    if ps.p1["end"] in ("stuck", "loop") and ps.inventory_fields > len(ps.fields):
-        n = ps.inventory_fields - len(ps.fields)
-        out.append(
-            f"The keyboard walk ended in a trap, so {n} form field(s) were never reached and not checked."
-        )
+    # Row WK (1.8.0): a field no pass read was not checked, whatever the walk
+    # ended in; the sentence is walk.field_coverage's.
+    if ps.walk_gap:
+        out.append(ps.walk_gap)
     # A form that showed no error, whose pressed control may not send it
     # (M-01): DOES NOT APPLY would say the page does not check for errors.
     shown_for = {ps.attempts[i.attempt].form for i in instances(ps)}
@@ -1470,6 +1475,8 @@ def evaluate(st: State5F, evidence_refs: list[str]) -> Finding:
         head = "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form. Each error the page found was named and explained in text."
     else:
         gid, outcome, head = "G5", Outcome.NEEDS_REVIEW, REVIEW_HEAD
+    if ps.walk_gap and outcome is Outcome.NEEDS_REVIEW:
+        trace.append("WK")
     trace.append(gid)
     order = {Outcome.FAIL: 0, Outcome.NEEDS_REVIEW: 1}
     body = [t for _, t in sorted(sentences, key=lambda x: order.get(x[0], 2))]
@@ -1478,6 +1485,10 @@ def evaluate(st: State5F, evidence_refs: list[str]) -> Finding:
         parts += incomplete
     parts += notes
     rationale = f"Spec {gid}. " + "; ".join(trace[1:-1] or ["no instances"])
+    if ps.walk_reached:
+        rationale += (
+            f". Walk: reached {ps.walk_reached[0]} of {ps.walk_reached[1]} fields"
+        )
     if incomplete:
         rationale += ". Incomplete: " + "; ".join(incomplete)
     return finding(outcome, " ".join(p for p in parts if p), trace, out_inst, rationale)

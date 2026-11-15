@@ -198,7 +198,29 @@ JSLIB = (
       return el;
     } catch (e) { return null; }
   };
-  return { roots, all, where, rendered, seen, texts, text, FIELD, inert, off, field, NATIVE, tabindex,
+  const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
+    '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
+  const LINK = 'a[href], area[href]';
+  // The children as rendered: a host's shadow root's children, a slot's
+  // assigned elements (else its fallback), else the element's children.
+  const kids = (el) => {
+    if (el.shadowRoot) return Array.from(el.shadowRoot.children);
+    if (el.tagName === 'SLOT') {
+      const got = el.assignedElements({ flatten: true });
+      return got.length ? got : Array.from(el.children);
+    }
+    return Array.from(el.children);
+  };
+  // Its own text nodes as rendered (a slot's assigned text, a host's root's).
+  const ownText = (el) => {
+    const nodes = el.shadowRoot ? el.shadowRoot.childNodes
+      : el.tagName === 'SLOT' && el.assignedNodes({ flatten: true }).length ? el.assignedNodes({ flatten: true })
+      : el.childNodes;
+    let t = '';
+    for (const c of nodes) if (c.nodeType === 3) t += ' ' + c.textContent;
+    return t;
+  };
+  return { LANDMARK, LINK, kids, ownText, roots, all, where, rendered, seen, texts, text, FIELD, inert, off, field, NATIVE, tabindex,
     focusable, byId, scope, active, hostOf, path, find };
 })();
 """
@@ -277,4 +299,47 @@ async def frame_docs(page) -> list[FrameDoc]:
                 missing=missing,
             )
         )
+    return out
+
+
+async def ax_names(
+    page, expression: str, indices: list[int]
+) -> dict[int, dict[str, str]]:
+    """Chrome's accessible name and description (its accessibility tree, the
+    tree a screen reader reads) of elements a main-world expression lists:
+    `expression` is a JS array, read as `(<expression>)[i]` for each index.
+    Used where ANDI analyses nothing: inside web components (ANDI 29.2.2 has
+    no shadow-root code; Abby, 2026-11-14). An element with no node is left
+    out."""
+    out: dict[int, dict[str, str]] = {}
+    if not indices:
+        return out
+    cdp = await page.context.new_cdp_session(page)
+    try:
+        for i in indices:
+            try:
+                res = await cdp.send(
+                    "Runtime.evaluate", {"expression": f"({expression})[{int(i)}]"}
+                )
+                oid = res["result"].get("objectId")
+                if not oid:
+                    continue
+                ax = await cdp.send(
+                    "Accessibility.getPartialAXTree",
+                    {"objectId": oid, "fetchRelatives": False},
+                )
+                await cdp.send("Runtime.releaseObject", {"objectId": oid})
+                if ax.get("nodes"):
+                    node = ax["nodes"][0]
+                    out[i] = {
+                        "name": (node.get("name") or {}).get("value") or "",
+                        "desc": (node.get("description") or {}).get("value") or "",
+                    }
+            except Exception:
+                continue
+    finally:
+        try:
+            await cdp.detach()
+        except Exception:
+            pass
     return out

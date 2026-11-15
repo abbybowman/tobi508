@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 from tobi508.andi import andi_output, inject_andi, install_andi_routes
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
+from tobi508.jslib import ax_names
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -50,11 +51,15 @@ MARK_JS = (
     + """
   const r = units(cap);
   const out = [];
+  // The marked elements, for Chrome's names where ANDI reads nothing.
+  window.__a11yMarked = [];
   r.units.forEach((u, k) => {
     if (u.kind !== 'control') return;
     r.els[k].setAttribute('data-a11y-c', String(out.length));
+    window.__a11yMarked.push(r.els[k]);
     out.push({ mark: String(out.length), css: u.css, role: u.role, href: u.dest, id: u.id,
-               region_role: u.region_role, regions: u.regions, name: u.name });
+               region_role: u.region_role, regions: u.regions, name: u.name,
+               shadow: J.where(r.els[k]) === 'shadow' });
   });
   return { comps: out, url: location.href, truncated: r.truncated };
 }"""
@@ -71,6 +76,9 @@ class Comp(BaseModel):
     regions: list[str] = Field(default_factory=list)
     andi_name: str | None = None  # None: ANDI did not analyse it
     andi_desc: str = ""
+    # Inside a web component: its name and description are Chrome's
+    # accessibility tree's, not ANDI's (ANDI reads nothing there).
+    shadow: bool = False
 
 
 class AndiPage(BaseModel):
@@ -135,9 +143,15 @@ async def andi_page(n: int, new_page, third_party) -> AndiPage:
                 id=c["id"],
                 region_role=c["region_role"],
                 regions=c["regions"],
+                shadow=bool(c.get("shadow")),
             )
             for k, c in enumerate(got["comps"])
         ]
+        # Inside a web component ANDI analyses nothing: Chrome's own name
+        # (9.C 1.9.0; Abby, 2026-11-14, as 5.C 1.10.0).
+        ax = await ax_names(
+            page, "window.__a11yMarked || []", [c.k for c in out.comps if c.shadow]
+        )
         if third_party is None:
             out.error = "ANDI is not available"
             return out
@@ -151,6 +165,11 @@ async def andi_page(n: int, new_page, third_party) -> AndiPage:
         out.ran = True
         by_mark = {r.get("mark"): r for r in rows if r.get("mark") is not None}
         for c in out.comps:
+            if c.shadow:
+                if c.k in ax:
+                    c.andi_name = ax[c.k]["name"]
+                    c.andi_desc = ax[c.k]["desc"]
+                continue
             r = by_mark.get(str(c.k))
             if r is not None:
                 c.andi_name = r.get("name") or ""

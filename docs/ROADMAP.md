@@ -176,36 +176,42 @@ what is planned.
      pages share (9.A 1.6.0, 9.B 1.5.0, 9.C 1.8.0); with none of its
      own it stays DOES NOT APPLY.
 6d. **The walk was complete, checked in one place** (Abby,
-   2026-11-14). "Complete" is coverage, not how a pass ended: every
-   element a test checks was reached by some pass it may read (the
-   forward walk, the backward walk, or the walk after a click past a
-   trap). TT p. 21's note says to keep testing after a trap, and 4.C's
-   spec already walks backwards and clicks past one; a trap is 4.C's
-   finding, not a reason for other tests to stop. Two phases:
-   - **Phase 1:** one shared answer, "every element was reached, or
-     here is what was not", read by 4.A, 4.D, 4.E, 5.D and 5.F-5.H (the
-     5.x tests count fields). PASS or DOES NOT APPLY with an element
-     never reached becomes NEEDS REVIEW with the sentence. 4.B and 4.C
-     get no such check, 5.A-5.C do not read the walk, and 4.F keeps its
-     2026-11-13 rule. It is the first conversion of step 14 (part C),
-     pulled up.
-   - **Phase 2** (approved, Abby 2026-11-14; a proposal and its moved
-     cells shown first): 4.A, 4.B and 4.F read only the forward walk
-     and so give up at a forward trap; they read what the other passes
-     reached instead. 4.C's outcome is untouched, and 4.F does not PASS
-     on the backward walk alone where a forward trap whose only exit
-     is the opposite direction was logged for it.
-   It touches `walk.py` and the checks, not the readers step 8
-   replaces.
+   2026-11-14). A walk that ends in a trap, a loop, a cap or out of
+   time has been handled test by test (5.D, 5.F; 4.D and 4.F by guard
+   CN). One shared
+   answer, "the walk reached every stop it could have, or here is what
+   it did not reach", read by every test that uses the walk (4.A-4.F,
+   5.A-5.H): PASS or DOES NOT APPLY on an incomplete walk becomes
+   NEEDS REVIEW with the sentence. It is the first conversion of step
+   14 (part C), pulled up; the coverage record for the other readers
+   stays there. It touches `walk.py` and the checks, not the readers
+   step 8 replaces.
+   **Decided 2026-11-14 (Abby):** "complete" is coverage, not how a pass
+   ended: every element the test checks was reached by some pass the
+   test may read (P1, P2; P6's stops only once a test has its readings on
+   them, item 14b), counted when the last pass ended. A trap, loop, cap
+   or time limit matters only through what it left unreached. A radio
+   group, a date input and an entered frame count once. 4.D's loop page
+   (7 of 7 reached by the two passes) stays PASS; so does the grid's
+   trap page for 4.E. `walk.walk_coverage` is the one answer.
+   **Built 2026-11-14:** the function and 4.E 1.5.0 (the grid's NEW-3
+   is withdrawn: its trap page reached 7 of 7; the new fixture 4e/f13
+   leaves an element unreached), then 4.D 1.9.0 (guard CN stays beside
+   it) and 4.A 1.11.0. What Tab should land on leaves out a radio group's
+   other radios and whatever an open modal dialog covers. 5.D 1.7.0 (by fields,
+   `walk.field_coverage`; guard CN stays). 5.F 1.8.0, 5.G 1.6.0 and 5.H 1.6.0 (they
+   read 5.F's list). Phase 1 is built; phase 2 (4.A, 4.B, 4.F, 5.x reading
+   the union of the passes) is a proposal to Abby first. 4.B, 4.C and 4.F keep their own decisions.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the
    suite when it stops being wrong, so each fix updates its cell. It
    found four cases the review has no item for (`UNFILED` in the test
-   file; the three that are wrong outcomes are in the README's table):
-   4.B does not read instructions inside a web component, 4.E passes
-   after a keyboard trap, and 4.A and 4.C-4.F pass a page whose only
-   form opens from a plain button.
+   file; the wrong outcomes are in the README's table): 4.B does not
+   read instructions inside a web component, and 4.A and 4.C-4.F pass a
+   page whose only form opens from a plain button. (A third, "4.E passes
+   after a keyboard trap", was withdrawn in step 6d: the page's two
+   passes reached every element, so the PASS was right.)
 8. **One library for reading the page, frames included** (part D).
    - **8a:** one `jslib` in front of every script; shadow roots and
      same-origin frames are read in place by every reader, in the
