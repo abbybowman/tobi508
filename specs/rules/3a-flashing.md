@@ -1,7 +1,7 @@
 ---
 tt_test: 3.A
 tt_name: 2.3.1-flashing
-spec_version: 1.3.0
+spec_version: 1.4.0
 count: images, players
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -13,7 +13,7 @@ The tool gives each page one 3.A outcome: DOES NOT APPLY, NOT TESTED or NEEDS RE
 
 When flashing is found, the finding also carries the tool's own *assessment* against WCAG 2.0 SC 2.3.1: fails, does not fail, or could not assess, with the evidence. It is kept in the report and in the SCRT export's comment, so the results stay on record (Abby, 2026-11-03, research O1). The assessment is never an outcome.
 
-Approved at 1.0.0 (Abby, 2026-11-07); built in `checks/t3a.py`, `flashcap.py` (capture) and `flash.py` (counting). Browser checks: [_browser-checks.md](_browser-checks.md#3a). Research: [research/2026-11-03-3a-flashing.md](../../docs/research/2026-11-03-3a-flashing.md) ("research" below).
+1.4.0 (Abby, 2026-11-15; roadmap step 6e): pass T reads every image as [2.B 1.5.0](2b-blinking-moving-scrolling.md) section 2 says (not the first 30; lazy images after a scroll; type before size; redirects followed), and guard CN counts only the inventory's addresses it read; review N-06's page, a strobing GIF after the 31st image, is now NOT TESTED (flashing found). An animated image whose frames at the size shown would come to more than 100 MB of pixels is not measured, nor one whose measurement takes more than 60 s (A3: a capture time cut short); round 2's 14194 has a 192-frame GIF shown large, which reading every image found, and fetching its frames jammed the browser connection for the rest of the test. Approved at 1.0.0 (Abby, 2026-11-07); built in `checks/t3a.py`, `flashcap.py` (capture) and `flash.py` (counting). Browser checks: [_browser-checks.md](_browser-checks.md#3a). Research: [research/2026-11-03-3a-flashing.md](../../docs/research/2026-11-03-3a-flashing.md) ("research" below).
 
 **Citations.** Printed pages of TT 5.1.3 (text also in `tt://5.1.3/tests/3.A`). Identify Content, p. 18: "Visually identify any content that flashes. Flashing is content that rapidly alternates between two or more states that vary significantly in contrast. When flashing content IS found, the result for Test ID 3.A ... is NOT TESTED." Test condition, p. 18: "If NO flashing content is found, then this Test Condition DOES NOT APPLY (DNA). If flashing content IS found, then this test should be recorded as NOT TESTED." Note, p. 18: "a testing tool would be very helpful but is not available at this time. The test process will be updated when a testing tool is identified." Applicable Standards, p. 19 (Conformance Requirement 5: "no definitive statement can be made ... if any flashing content is present"). Test 1.D, p. 11: 3.A must be DOES NOT APPLY for 1.D; NOT TESTED does not meet it.
 
@@ -101,7 +101,7 @@ The page's assessment is fails if any source fails; else could not assess if any
 
 **Notes (no outcome).** Flashing slower than 3 per second that lasts more than 5 s is 2.B's concern.
 
-**Guard CN: images past the read's limit, and video players** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-06). The page's inventory (`count.py`, `Report.counts`) counts the distinct image addresses (`http` or `https`) of every document, web component and frame, and frames whose address is a video player from another site (YouTube, Vimeo and a few others). Pass T examines at most 30 image addresses for animation, and skips one that is not in the recording or is over 5 MB (`MotionPass.images_read`); it cannot look inside a player. When the inventory has more of either than pass T read, a DOES NOT APPLY or PASS becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("32 images: only the first 30 were checked for animation", "1 video player in a frame was not checked"). Trace row `CN`. NOT TESTED (flashing found) and FAIL are unchanged.
+**Guard CN: images past the read's limit, and video players** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-06). The page's inventory (`count.py`, `Report.counts`) counts the distinct image addresses (`http` or `https`) of every document, web component and frame, and frames whose address is a video player from another site (YouTube, Vimeo and a few others). Pass T reads image addresses as [2.B 1.5.0](2b-blinking-moving-scrolling.md) section 2 says, and only the inventory's addresses among them count as read (1.4.0); it cannot look inside a player. An animated image only the late read found is unread here too, though its frames still go to the triggers above. When the inventory has more of either than pass T read, a DOES NOT APPLY or PASS becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ("11 images: 10 were checked for animation, and 1 could not be", "1 video player in a frame was not checked"). Trace row `CN`. NOT TESTED (flashing found) and FAIL are unchanged.
 
 ## 4. Judgment questions
 

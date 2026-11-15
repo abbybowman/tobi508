@@ -1,7 +1,7 @@
 ---
 tt_test: 2.C
 tt_name: 2.2.2-auto-updating
-spec_version: 1.1.0
+spec_version: 1.2.0
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -14,7 +14,7 @@ NEEDS REVIEW. It never emits NOT TESTED (p. 6). **PASS is gated** (Abby,
 can apply to it is built (G4 and section 3c). This spec also defines what
 2.A, 2.B and 2.D share: pass T, regions, elements and the mechanism probe.
 
-1.0.0 (Abby, 2026-11-05): approved and built, from draft 0.3.0. 0.2.0 (2026-11-04) defines regions over the whole watch and adds polling seen during the watch (Terms, section 2), from building pass T. 0.3.0 (2026-11-04): the mechanism probe as built (section 2: what is pressed, how "slowed" is judged, the caps), K2 and K3 on the focus-only probe, O1 decided. Order of work and research:
+1.2.0 (Abby, 2026-11-15; roadmap step 6e): a timer longer than the watch is no sign of updates once the *clock check* (section 2) has run the page's clock past it and nothing changed; on round 2's pages these timers were analytics heartbeats (Parse.ly, about 150 s; Google Analytics, 24 hours) and webpack's script-load watchdog, which change nothing on screen. 1.0.0 (Abby, 2026-11-05): approved and built, from draft 0.3.0. 0.2.0 (2026-11-04) defines regions over the whole watch and adds polling seen during the watch (Terms, section 2), from building pass T. 0.3.0 (2026-11-04): the mechanism probe as built (section 2: what is pressed, how "slowed" is judged, the caps), K2 and K3 on the focus-only probe, O1 decided. Order of work and research:
 [research/2026-11-03-auto-updating-2a-2d.md](../../docs/research/2026-11-03-auto-updating-2a-2d.md)
 ("plan" below; "item N" means its numbered "Verified" items).
 
@@ -95,7 +95,7 @@ can apply to it is built (G4 and section 3c). This spec also defines what
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | Pass T could not run or read the page (load, frames or reads failed) | NEEDS REVIEW, not performed, with the reason | p. 5; spec rule |
-| A2 | No instance (an auto-updating region still changing at 5 s; OPEN O1 below), but a *hint* that updates exist: the HAR has repeated requests to one address after load (polling, item 10); a timer with a period longer than the watch (item 7); carousel markup that did not change; an auto-updating region that stopped changing before 5 s; or the walk kept finding the page changing (built: at least three walk steps whose DOM never settled; a menu a press opens settles, so it is not counted) | NEEDS REVIEW, not performed: "the page may update more slowly than we watched, or with data a recording cannot replay; a person should watch it" | p. 15 Identify Content; plan risks 4–5 |
+| A2 | No instance (an auto-updating region still changing at 5 s; OPEN O1 below), but a *hint* that updates exist: the HAR has repeated requests to one address after load (polling, item 10); a timer with a period longer than the watch (item 7), unless the clock check cleared it (1.2.0, section 2); carousel markup that did not change; an auto-updating region that stopped changing before 5 s; or the walk kept finding the page changing (built: at least three walk steps whose DOM never settled; a menu a press opens settles, so it is not counted) | NEEDS REVIEW, not performed: "the page may update more slowly than we watched, or with data a recording cannot replay; a person should watch it" | p. 15 Identify Content; plan risks 4–5 |
 | A3 | No instance | DOES NOT APPLY | p. 15 Applicability |
 | A4 | Every element of the page (all read) is inside an instance and its box overlaps pixels that changed there (0.3.0: inside alone is not enough, since a focus ring once made a region of `<main>` whose heading never changed; a tag rule instead failed ACT efbfc7 inapplicable 5, a page that is only a changing number) | DOES NOT APPLY: it is the only content | p. 15 Applicability |
 | A5 | Otherwise | Applies; go to section 3. A hint (A2) about other content is a note | |
@@ -139,6 +139,41 @@ and names each content that changed and when it stopped.
   [2d-change-notify-auto.md](2d-change-notify-auto.md)), the focus log and
   open dialogs.
 - **Elements** of the page (Terms), read once at 0 s.
+- **Clock check** (1.2.0; Abby, 2026-11-15): when pass T found no
+  instance and the only hint is timers longer than the watch, one more
+  fresh load of the recording runs the page's clock past them
+  (`motion.timer_check`; `RunContext.open_clock`: pass T's browser and
+  window, Playwright's clock installed and paused before page scripts, a
+  timer hook and a count of every change to each document, attributes
+  and styles included, added after it). The page's clock runs 3 s; then
+  the screenshot, each document's visible text, its number of elements,
+  its image sources and the change count are read; the clock jumps past
+  the longest of the page's timers (each due timer fires once) and runs
+  1 s more in uneven steps (170, 230, 290 and 310 ms) with a screenshot
+  after each, so content that repeats is not seen at the same point twice
+  (the grid's late page: a flash every 125 ms toggled an even number of
+  times in 1 s and looked unchanged in one screenshot); then everything is
+  read again. The timers stop being a hint (*cleared*) only when all hold:
+  - every timer longer than the watch that pass T saw was set again on
+    this load (same kind, within 5% of its length: Parse.ly adds up to
+    2.5 s of jitter to 150 s); one that was not is still a hint;
+  - none is longer than a day;
+  - the page has no `<canvas>` in any document (what a canvas draws is no
+    element and no text, and may be off screen);
+  - no request was made while the clock ran (a timer that fetches new
+    data cannot show it from a recording);
+  - no screenshot differs from the first; the text, elements, image
+    sources and number of playing videos and sounds are the same; and no
+    change was counted while the clock ran (changes made while a
+    screenshot is taken are not counted: on round 2's help page a
+    screenshot alone changed two attributes) (content that changes by itself
+    for any reason keeps the hint).
+  Anything else, or a check that could not run (no time left, a load or
+  read that failed), keeps the hint, and the A2 note says why. The note on
+  A3 says the clock was run, and for how long. TT gives 2.C no duration
+  (p. 15): a tester watches the page for a while; running the clock past a
+  timer watches longer than a tester would, and decides only what the
+  watch could see.
 - **Scrolled watch** (plan Q3): when a hint points to content below the
   first viewport, one more 6.5 s watch with that content scrolled into
   view, on a fresh load. Built (0.3.0): the hints are elements the page
@@ -275,7 +310,7 @@ A built test's FAIL at the mechanism is named in the note.
 | E1 | "<mechanism> pauses <content>, but it is not clear that it does (its name or icon does not say so). Give it a clear name like "Pause"." |
 | K2 | "<content> stops while <mechanism> has focus, which may be a pause-on-focus rather than a real pause. A person should check that the control itself pauses it." |
 | A2 | "We saw signs that this page updates by itself (<hint>), but nothing changed while we watched. A person should watch the page for a minute." |
-| A3 | "Nothing on this page changed by itself while we watched, so this test does not apply." |
+| A3 | "Nothing on this page changed by itself while we watched, so this test does not apply." When the clock check cleared the page's timers (1.2.0), it adds: "We also ran the page's clock past its timers (<durations>), and nothing on the page changed." When it ran and kept a timer as a hint, A2's <hint> says why in brackets ("when we ran the page's clock past it, the page's text changed"). |
 | A4 | "The changing content is the only content on this page, so this test does not apply." |
 
 ## 4. Judgment questions

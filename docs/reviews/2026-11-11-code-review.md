@@ -212,7 +212,7 @@ gallery, a form behind a button, a script-checked form.
   small images before it: 3.A DOES NOT APPLY and 2.B DOES NOT APPLY.
   The reviewer's control with one image before it gave 3.A NOT TESTED
   (8.5 flashes a second).
-- **Fixed:** 76b8f24 (guard CN, part B), specs 2.B 1.2.0, 3.A 1.2.0: "32 images: only the first 30 were checked for animation", NEEDS REVIEW. Decoding every image is still open.
+- **Fixed:** 76b8f24 (guard CN, part B), specs 2.B 1.2.0, 3.A 1.2.0: "32 images: only the first 30 were checked for animation", NEEDS REVIEW. Decoding every image: step 6e, specs 2.B 1.5.0, 3.A 1.4.0 (up to 300 images, lazy ones after a scroll, type before size, redirects followed); the strobing GIF after the 31st image is now NOT TESTED (`tests/fixtures/count/many-images-strobe.html`).
 
 #### H-08, M-07 A form behind a plain button is "no form fields" (needs Abby)
 

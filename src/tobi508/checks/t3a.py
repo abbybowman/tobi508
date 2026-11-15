@@ -208,9 +208,19 @@ def _pictures(ctx, src: flashcap.Source, n: int, frames, scale: float = 1.0) -> 
         pass  # pictures are evidence for a person; the counts stand
 
 
+# One animated image's measurement (decoding its frames at the size shown,
+# then counting flashes) stops after this long; the image is then not
+# measured (A3), and the test goes on (3.A 1.4.0).
+IMAGE_MEASURE_S = 60
+# Nor is one measured whose frames at the size shown would come to more than
+# this many bytes of pixels (frames x width x height x 3).
+IMAGE_MEASURE_BYTES = 100_000_000
+
+
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
     mp = await motion.collect(ctx, keep_shots=False)
-    st = State3A(read={"page": {"images": mp.images_read, "players": 0}})
+    motion.match_inventory(ctx, mp)
+    st = State3A(read={"page": {"images": motion.images_read(mp), "players": 0}})
     if not mp.ok:
         st.motion_ok, st.error = False, mp.error or "the page could not be watched"
         return st
@@ -357,15 +367,70 @@ async def _measure(
             b = max(boxes, key=lambda x: x["w"] * x["h"])
             w = max(1, min(flashcap.VIEWPORT[0], round(b["w"])))
             h = max(1, min(flashcap.VIEWPORT[1], round(b["h"])))
+            n = next(
+                (
+                    a.get("frames", 0)
+                    for a in mp.animated_images
+                    if a["src"] == src_url[:500]
+                ),
+                0,
+            )
+            if min(n, flashcap.IMAGE_MAX_FRAMES) * w * h * 3 > IMAGE_MEASURE_BYTES:
+                # A3 (1.4.0): every frame at the size shown would be sent back
+                # from the browser; at round 2's 14194 GIF (192 frames, shown
+                # large) that jammed the browser connection.
+                st.unmeasured.append(
+                    flashcap.Unmeasured(
+                        what="an animated image",
+                        why=f"it has {n} frames at {w} by {h} pixels, more than we "
+                        "can measure",
+                        src=src_url[:200],
+                    )
+                )
+                continue
             if tool is None:
                 tool_ctx, tool = await motion._secure_tool_page(page)
             try:
-                frames, durations, reps = await flashcap.image_frames(
-                    tool, body, kind, w, h
+                # Not wait_for: cancelling waits for the browser call to end,
+                # and a busy tool page never ends it. Closing the tool page's
+                # context makes the call fail at once.
+                job = asyncio.ensure_future(
+                    flashcap.image_frames(tool, body, kind, w, h)
                 )
-                a, span, total = await asyncio.to_thread(
-                    flashcap.analyze_image, frames, durations, reps, (b["x"], b["y"])
+                done, _ = await asyncio.wait({job}, timeout=IMAGE_MEASURE_S)
+                if not done:
+                    # Closed without waiting: a jammed connection does not
+                    # answer a close either.
+                    asyncio.ensure_future(tool_ctx.close())
+                    tool_ctx = tool = None
+                    job.cancel()
+                    raise TimeoutError
+                frames, durations, reps = job.result()
+                a, span, total = await asyncio.wait_for(
+                    asyncio.to_thread(
+                        flashcap.analyze_image,
+                        frames,
+                        durations,
+                        reps,
+                        (b["x"], b["y"]),
+                    ),
+                    IMAGE_MEASURE_S,
                 )
+            except TimeoutError:
+                # A3 (1.4.0): a measurement time cut short. Round 2's 14194 has
+                # a 192-frame GIF shown large; decoding every frame at that size
+                # took the whole test's time once every image was read.
+                st.unmeasured.append(
+                    flashcap.Unmeasured(
+                        what="an animated image",
+                        why=f"measuring it took longer than {IMAGE_MEASURE_S} seconds",
+                        src=src_url[:200],
+                    )
+                )
+                if tool_ctx is not None:
+                    asyncio.ensure_future(tool_ctx.close())
+                    tool_ctx = tool = None
+                continue
             except Exception as exc:
                 st.unmeasured.append(
                     flashcap.Unmeasured(

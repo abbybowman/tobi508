@@ -7,6 +7,7 @@ Tests use Playwright's bundled Chromium, headless, unless overridden:
 
 from __future__ import annotations
 
+import functools
 import http.server
 import json
 import os
@@ -83,6 +84,21 @@ async def browser(settings: Settings):
         b = await launch_browser(pw, settings, proxy)
         yield b
         await b.close()
+
+
+@functools.lru_cache(maxsize=1)
+def _big_jpeg() -> bytes:
+    """A JPEG over 5 MB: noise at full quality (2.B 1.5.0)."""
+    import io
+    import os
+
+    from PIL import Image
+
+    img = Image.frombytes("RGB", (1800, 1800), os.urandom(1800 * 1800 * 3))
+    out = io.BytesIO()
+    img.save(out, "JPEG", quality=100)
+    assert out.tell() > 5_000_000
+    return out.getvalue()
 
 
 def _gif(forever: bool) -> bytes:
@@ -228,6 +244,14 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             )
         if self.path.split("?")[0] == "/dot.png":  # one tiny PNG, any query (count)
             return self._send(200, _DOT_PNG, "image/png")
+        if self.path == "/big.jpg":  # a JPEG over 5 MB (2.B 1.5.0: read by type)
+            return self._send(200, _big_jpeg(), "image/jpeg")
+        if self.path == "/moved-dot.png":  # a 302 to the dot (2.B 1.5.0)
+            self.send_response(302)
+            self.send_header("Location", "/dot.png?n=moved")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         if self.path == "/data.json":
             return self._send(
                 200, json.dumps({"n": nonce}).encode(), "application/json"

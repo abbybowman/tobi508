@@ -184,6 +184,7 @@ def _merge_images(count: Count, got: dict[str, Any], main: bool, seen: set) -> N
     for where in ("light", "shadow"):
         fresh = [u for u in got["image_srcs"][where] if u not in seen]
         seen.update(fresh)
+        count.image_srcs += fresh[: max(0, 1000 - len(count.image_srcs))]
         part = where if main else "frames"
         setattr(count.images, part, getattr(count.images, part) + len(fresh))
 

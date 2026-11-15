@@ -182,6 +182,8 @@ flowchart LR
 
 - Round 1 taught us agents leave judgment work undone, so results now end with the work left, pictures come attached, and long runs outlive a client's timeout.
 - Round 2 taught us a recording can hide a failure, that a person opens every menu and the tool had not, and that the judge belongs in the server.
+- Step 6e: an analytics timer held 2.C and 2.D on every round 2 page; running the page's clock past it decided 8 cells, all agreeing with the key, and a test page caught the one false Does Not Apply on the way.
+- Step 6e, images: reading every image (not the first 30) decided 6 more round 2 cells, all agreeing with the key, and finds a strobing image the old cap missed.
 - **[FILL: the main disagreements in the scored run and whether any is a false PASS.]**
 - Unless each test has about 60 true failures, say "promising, not proven".
 

@@ -253,7 +253,12 @@ EXPECTED.update(
             "2.B": nr(),
             "2.C": NOTHING_MOVES["2.C"],
             "2.D": NOTHING_MOVES["2.D"],
-            "3.A": nr(),
+            # 3.A 1.4.0 reads every image: the animated one after the 31st
+            # only fades from one colour to the next, so nothing flashes.
+            "3.A": dna(
+                "every image was read for animation (3.A 1.4.0); the animated "
+                "one after the 31st fades, it does not flash"
+            ),
             **_plain(
                 "the cap is on images; the page has no mouse-only control, "
                 "trap, menu or hidden text",
