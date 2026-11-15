@@ -55,11 +55,10 @@ is merged. At most three threads at once. Each thread branches from
 
 | Step | What | Model | When |
 | --- | --- | --- | --- |
-| 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
-| 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
-| 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
-| 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0); then the rounds' rerun | Opus | running |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 6e, 6g and 6h are merged |
+| 1-9a, 6f, 6h, 12a | Done: PRs #39 to #89 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
+| 6e | Guard CN on real pages: the timer, the images and 5.H on hidden forms are done (PRs #78, #80, #83); fields hidden from everyone is being built | Opus | running |
+| 6g | 4.C and 4.E read the content that menus and sections open; then 19.A opens the one closed menu that hides a link to the page | Opus | running |
+| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 6e and 6g are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
@@ -75,20 +74,17 @@ is merged. At most three threads at once. Each thread branches from
   6 cells, all agreeing) and 5.H reading a hidden form to say whether
   it is the kind 5.H is about (8 cells, all agreeing). To research:
   fields hidden from everyone (honeypots, reCAPTCHA).
-- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14 and
-  15; [draft](plans/2026-11-15-19a-finds-ways.md)). Today 19.A reads
-  only the pages the caller gave and one site search, and the eval
-  runners never make the follow-up call (which also drops the suggested
-  pages when 5 or more were given), so it is NEEDS REVIEW or a wrong
-  FAIL where a tester finds two ways. PR 1, built (19.A 1.10.0; the
-  sixth exception to principle 5): a link to the page as `index.html`
-  (or `default.*`, another scheme, `www.`) is loaded as an other page
-  and counts when it is the same document. PR 2 (1.11.0), built: 19.A itself
-  checks the site map, the page's parent, up to two child pages and the
-  home page one by one, stops at two ways, and FAILs, naming what it
-  checked, only when all were checked; no follow-up call for 19.A is
-  left, so the runners need none. Then 19.A is rerun on rounds 1 and
-  2's frozen pages, every moved cell shown beside the key.
+- **6h is done** (19.A 1.14.0, PRs #85 to #89). 19.A now checks a
+  suspected alias of the page, and while it has fewer than two ways it
+  loads further pages itself, one at a time (the site map, the page
+  above, pages below, previous and next, related links, the home
+  page; at most 10), so no follow-up call is needed. Rerun on the
+  frozen pages: round 2, 8 of 10 agree (5 before) and CILab's wrong
+  FAIL is gone; round 1, 4 of 9 agree (1 before); no PASS the key
+  fails. Left: round 1's other 5 are NEEDS REVIEW because a link to
+  the page sits in a closed menu (step 6g's second part), and round
+  2's two keyed FAILs wait on a site search that could not finish
+  loading in that container.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
   test did not walk it: 37 cells in step 9a, 25 of them 4.C and 4.E,
   all keyed Pass. Decided (Abby, 2026-11-15): one opener, not three.
@@ -98,7 +94,12 @@ is merged. At most three threads at once. Each thread branches from
   made once per page, for 4.C and 4.E now. 4.F's pass R (its own
   list, 6 triggers, one Tab) moves onto it after the demo. The
   wording and the moved cells go to Abby first. 4.D and 5.D only if
-  the days allow.
+  the days allow. Then, for 19.A only (Abby, 2026-11-15): when a way
+  is missing and a link hidden on load in a navigation, banner or
+  footer region leads to the page, the one visible button that
+  controls it is opened and the link counts only if it then shows.
+  9.A, 9.B and 9.C do not open menus (9.B's TT text: "Do not initiate
+  changes to the content").
 - **10 and 10b.** A blind round is run by
   [the how-to](how-to/run-a-judging-round.md): keys locked before the
   tool runs, the run locked before the keys are opened. Until a
@@ -110,9 +111,8 @@ is merged. At most three threads at once. Each thread branches from
   what step 6e found on round 1's pages (a popup a visitor sees at 5 s
   never opens in the replay; 12 requests fail). The scorer fixes are
   merged (PR #73).
-  Its run waits for 6e, 6g and 6h, so that it is run once on the
-  code as it will be shown: without 6h, 19.A is undecided on every
-  page. 9b runs at the same commit, so the two can be read together.
+  Its run waits for 6e and 6g, so that it is run once on the
+  code as it will be shown. 9b runs at the same commit, so the two can be read together.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
   - **12a is built** (PRs #70 to #72, #74):
     [the deployment guide](how-to/deploy-on-vast.md), a smoke test

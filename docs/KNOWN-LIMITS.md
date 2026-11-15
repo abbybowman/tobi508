@@ -132,6 +132,14 @@ headed Chrome) are in
   9.B N1, N5; 9.C C2, C5; a page or ANDI that cannot be read, end to
   end; an other page that redirects off the host). Add fixtures for
   whatever real templates show.
+- **A stuck download can run past its time limit.** An other page's
+  media download once ran 342 s past a 20 s limit (step 6h). The cause
+  there is gone (other pages no longer record media), but a time limit
+  still cannot always stop a page load that is stuck.
+- **19.A's site search depends on where the tool runs.** Where the
+  results page cannot load its scripts, the search is "not verified"
+  and 19.A stays NEEDS REVIEW where a search that loaded would decide
+  (round 2's two keyed FAILs, in one container).
 - **9.C compares less than the TT text covers** (read against the TT
   text, 2026-11-15; not run). TT: "components that have the same
   functionality within a set of web pages", whatever they look like or
