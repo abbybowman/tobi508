@@ -21,10 +21,12 @@ or a click when Enter showed nothing), and the record says which.
 from __future__ import annotations
 
 import asyncio
+import json
 import time
 
 from pydantic import BaseModel, Field
 
+from tobi508.jslib import JSLIB
 from tobi508.models import Step
 from tobi508.traverse import Session, detect_p1_end, drive, settle
 
@@ -43,6 +45,10 @@ class Walked(BaseModel):
     by: str = ""  # how it was opened: "Enter" or "a click"
     same_load: bool = False  # walked on reveal.py's own load
     opened: list[str] = Field(default_factory=list)  # stop keys to reach
+    # Shown by the opening but behind the modal dialog it opened: Tab is not
+    # expected to reach them while the dialog is open (step 6g, Abby
+    # 2026-11-15; as step 6d's walk coverage leaves out what a modal covers).
+    behind_modal: list[str] = Field(default_factory=list)
     reached: list[str] = Field(default_factory=list)
     end: str = ""  # left | stuck | loop | navigation | cap | time | error
     trap: list[str] = Field(default_factory=list)  # stop keys of a trap event
@@ -54,6 +60,24 @@ class Walked(BaseModel):
     def complete(self) -> bool:
         """Every opened element was reached (facts; the guard reads it)."""
         return bool(self.opened) and set(self.opened) <= set(self.reached)
+
+
+# Which of the given top-document paths are inside the open modal dialog, in
+# 4.C's terms (Terms, modal dialog): a <dialog> opened with showModal, or role
+# dialog or alertdialog with aria-modal="true". null when none is open.
+MODAL_FN = (
+    "(() => {"
+    + JSLIB
+    + """
+  const m = document.querySelector('dialog:modal') ||
+    Array.from(document.querySelectorAll('[role=dialog][aria-modal=true],[role=alertdialog][aria-modal=true]'))
+      .find((e) => J.rendered(e));
+  if (!m) return null;
+  return PATHS.map((p) => { const e = J.find(p); if (!e) return false;
+    for (let n = e; n; n = n.parentNode || n.host || null) if (n === m) return true;
+    return false; });
+})()"""
+)
 
 
 FOCUS_STILL_MS = 300  # focus unchanged this long before the first Tab
@@ -108,6 +132,14 @@ async def walk(
 
     try:
         await _focus_still(s, quiet_ms)
+        top = [k for k in targets if " >> " not in k]
+        if top:
+            inside_modal = await s.traversal.reader.evaluate_top(
+                MODAL_FN.replace("PATHS", json.dumps(top))
+            )
+            if inside_modal is not None:
+                w.behind_modal = [k for k, i in zip(top, inside_modal) if not i]
+                w.opened = [k for k in targets if k not in set(w.behind_modal)]
         end, trap, own = await drive(
             s, "Tab", min(2 * len(targets) + 3, WALK_CAP_MAX), left, deadline
         )
