@@ -132,6 +132,22 @@ headed Chrome) are in
   9.B N1, N5; 9.C C2, C5; a page or ANDI that cannot be read, end to
   end; an other page that redirects off the host). Add fixtures for
   whatever real templates show.
+- **9.C compares less than the TT text covers** (read against the TT
+  text, 2026-11-15; not run). TT: "components that have the same
+  functionality within a set of web pages", whatever they look like or
+  link to. The spec pairs links by address only inside the header,
+  menus, search and footer, and otherwise by `id`, by an equal name, or
+  by place outside the main content. So two controls in the pages' own
+  content that do the same thing under different names (a "Download"
+  button on one page, "Get the file" on another) are not paired
+  unless they share an `id`, and 9.C can PASS or say DOES NOT APPLY
+  without comparing them. Pictures that are not controls (a status
+  icon) are not compared either: the PDF's how-to is ANDI's focusable
+  elements. Roadmap, "Next".
+- **9.B compares only navigation outside the main content.** A
+  breadcrumb or section menu inside `main` that repeats on other pages
+  is left out as content. With one matched component it says NEEDS
+  REVIEW, where there is no order to get wrong.
 - **2.A-2.D:** a working mechanism is NEEDS REVIEW (E3), never PASS,
   until ER 3's shortlist is built (6.A, 7.A, 7.E, 12.D, 13.A, 13.B, 13.C,
   18.A). 2.C J1's wording when the mechanism is page text naming a key.

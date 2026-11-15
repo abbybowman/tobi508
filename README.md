@@ -107,6 +107,7 @@ A fix removes its line here in the same commit.
 | 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
 | 5.H | Does Not Apply | a payment form not in English |
+| 9.C | PASS or Does Not Apply | controls in the pages' own content that do the same thing under different names on different pages, unless they share an `id` (read) |
 
 ## Tools
 

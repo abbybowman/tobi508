@@ -207,6 +207,14 @@ the remaining checks).
 19. **The second look as a guard** (part F), shaped by its trial (not a
    gate: Abby, 2026-11-12). Its README line says what the trial caught
    and missed.
+19b. **9.C pairs by function, not only by address and place** (Abby,
+    2026-11-15). Candidates in the pages' own content: controls with
+    the same picture, the same action word, or the same place in a
+    template both pages share; every candidate goes to J1, which can
+    already answer "different function". Each candidate rule comes
+    with a pair that must not FAIL (round 2: prose links to one address
+    in different words, which the key passes), and a judge eval. Also
+    9.B: repeated navigation inside `main`.
 20. **SCRT files, phases 2 and 3**
     ([plan](plans/2026-11-02-scrt-io.md)): TT review, merging a partial
     file (which is also how to verify a fix: `verify_fix` on
