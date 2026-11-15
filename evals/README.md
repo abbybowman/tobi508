@@ -169,8 +169,8 @@ run) and 9a is the measurement before step 8. `apijudge_gate.py` got a
 `--round 1|2` option (`7bf5c5d`) and `--pages` reruns that add to the page
 list (`2cdcbc4`); neither changes what a run does. Folder
 `evals/judging/gate-2026-11-14/`: `roundN/dry-r1.json` (the count),
-`roundN/dry/pNN/` (each dry run's report and pre-SCRT), `roundN/r1/results/pNN/`
-(the real run's), `roundN/gate.json` (`apijudge_gate.py score --round N`),
+`roundN/dry/pNN/` (each dry run's report and pre-SCRT) and `roundN/r1/results/pNN/`
+(the real run's) **kept out of git** (`.gitignore`; Abby holds a copy), `roundN/gate.json` (`apijudge_gate.py score --round N`),
 `compare-roundN.md` and `.json`, `combined.md` (`compare.py`), `testpages/`
 (the judge eval's results). Scored with the rounds' own scorer
 (`evals.scoring.score` on `compare`, each round's keys and adjudication);
@@ -273,7 +273,7 @@ development sites, one repeat.
   Does Not Apply, with a person, and none where the key fails.
 - **Dry run against real run, on cells no judge answer decided** (the dry
   run's reports were not kept by the script; the run folders were still on
-  disk and are archived in `roundN/dry/`). Round 2: 164 cells, 144 same,
+  disk and were copied to `roundN/dry/`, out of git). Round 2: 164 cells, 144 same,
   **20 differ**; round 1: 161 cells, 142 same, **19 differ**. **None
   differs in outcome.** The rest of the differences:
   - **Text only, a number inside the summary: 28.** 2.C and 2.D on both
