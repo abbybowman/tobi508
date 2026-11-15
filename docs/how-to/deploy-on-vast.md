@@ -201,8 +201,9 @@ Not confirmed from the code or VAST's documentation:
 7. What is the app's host name (`PUBLIC_BASE_URL`), and can the client's
    redirect URI be `https://<app host>/auth/callback`?
 8. Can the pod reach public `.gov` and `.mil` sites on ports 80 and 443?
-   Directly, or through a proxy (`UPSTREAM_PROXY`), and does that proxy
-   re-sign certificates?
+   Partly answered (Abby, 2026-11-15): yes, from a personal VAST sandbox.
+   Still open: directly, or through a proxy (`UPSTREAM_PROXY`), and does
+   that proxy re-sign certificates?
 9. Which path survives restarts for `/data`, and how large may it be? A
    run with recordings and screenshots is tens of MB; a page with video
    more.
