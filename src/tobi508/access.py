@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -197,6 +198,22 @@ def build_auth(s: Settings) -> GatedOIDCProxy:
 
 
 # ── Audit ─────────────────────────────────────────────────────────────────────
+
+
+def send_audit_to_stderr() -> None:
+    """Give the audit logger a handler of its own: each line as it is, on
+    stderr, where the platform collects it. Without one the lines went
+    nowhere, since nothing else configures this logger and Python's
+    last-resort handler prints WARNING and above only (found by
+    scripts/smoke_hosted.py, 2026-11-15; the tests read lines through
+    pytest's caplog, which hid it). Called once at startup with sign-in."""
+    if any(getattr(h, "tobi_audit", False) for h in AUDIT.handlers):
+        return
+    handler = logging.StreamHandler(sys.stderr)
+    handler.tobi_audit = True
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    AUDIT.addHandler(handler)
+    AUDIT.setLevel(logging.INFO)
 
 
 def audit(action: str, **fields: Any) -> None:

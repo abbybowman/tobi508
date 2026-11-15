@@ -1,9 +1,9 @@
 ---
 tt_test: 5.F
 tt_name: 3.3.1-error-identification
-spec_version: 1.9.0
+spec_version: 1.10.0
 guards: unrecorded-code
-count: fields_hidden, fields.shadow, fields.frames
+count: fields_hidden, fields.shadow, fields.frames, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -63,7 +63,7 @@ A user name, a file name or a company name is not a person's name here: only the
 
 **Time budget:** two replays per form, one Tab and one read per text field, one submit press per attempt. Estimated 0.4 s a text field plus about 4 s a form; measured on the budget pages before 1.0.0 (plan step 7). No attempt starts after the checks' deadline (`ctx.out_of_time()`).
 
-**Run limits.** Fields inside frames are not checked yet, and a field the page reads cannot find is not checked either: both are a NEEDS REVIEW note, never DOES NOT APPLY. Fields count toward 5.D's `FIELD_MAX` (40); the early stop and `no_time_limit` are 5.D's (5.D spec section 2). At most `FORM_MAX` (5) forms, the rest a NEEDS REVIEW note.
+**Run limits.** A field the page reads cannot find (in a frame that could not be read, too) is not checked: a NEEDS REVIEW note, never DOES NOT APPLY. Fields inside frames are read in their frame (1.10.0). Fields count toward 5.D's `FIELD_MAX` (40); the early stop and `no_time_limit` are 5.D's (5.D spec section 2). At most `FORM_MAX` (5) forms, the rest a NEEDS REVIEW note.
 
 ## 3. Mechanical checks
 
@@ -120,7 +120,7 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 
 **Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
-**Guard CN: forms and fields pass E could not read** (1.6.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review M-07, D-01). The page's inventory (`count.py`, `Report.counts`) counts form fields hidden when the page loads, and form fields inside web components (open shadow roots) and frames. Pass E reads only fields the walk reached, so no hidden field, and, since part D (1.9.0), the fields and forms inside web components it reaches, with the page's text and its live regions there, so an error shown inside a web component is new text like any other (review M-06), but nothing in frames (`t5f.what_was_read`). When the inventory has more of any of these than pass E read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ( "2 form fields are hidden until something opens them, and were not checked"). Hidden fields count only when the page has something that could show them (a button, a disclosure, a same-page or script link, an inline click handler); on a page with none, a hidden field is hidden from everyone and holds nothing, as DHS's Baseline cases TC10.A-ic-dna-1 and -2 expect (Abby, 2026-11-12). Trace row `CN`. FAIL is unchanged. So a form a plain button shows is left for a person, not DOES NOT APPLY.
+**Guard CN: forms and fields pass E could not read** (1.6.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review M-07, D-01). The page's inventory (`count.py`, `Report.counts`) counts form fields hidden when the page loads, and form fields inside web components (open shadow roots) and frames. Pass E reads only fields the walk reached, so no hidden field, and, since part D (1.9.0), the fields and forms inside web components it reaches, with the page's text and its live regions there, so an error shown inside a web component is new text like any other (review M-06), and the fields and forms inside each shown frame, read in place in the frame's own document, its new text, live regions and focus there too (1.10.0; part D, 8b: a frame the recording lacks is `frames_missing`, below) (`t5f.what_was_read`). When the inventory has more of any of these than pass E read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ( "2 form fields are hidden until something opens them, and were not checked"). Hidden fields count only when the page has something that could show them (a button, a disclosure, a same-page or script link, an inline click handler); on a page with none, a hidden field is hidden from everyone and holds nothing, as DHS's Baseline cases TC10.A-ic-dna-1 and -2 expect (Abby, 2026-11-12). A frame shown on the page whose page the recording lacks is `frames_missing`: "1 frame on this page was not recorded, so what is inside it was not checked" (Abby, 2026-11-14). Trace row `CN`. FAIL is unchanged. So a form a plain button shows is left for a person, not DOES NOT APPLY.
 
 ## 4. Judgment questions
 

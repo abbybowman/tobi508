@@ -54,9 +54,12 @@ EXPECTED: dict[str, dict] = {
     # leaving it. f37: the view change is another loop. f38: Done closes the
     # frame (a dismissed container). f39: only Enter on "View timeline" frees
     # Tab, and nothing says so (M4o), so the loop fails.
+    # Since step 8 (8b) pass E reads the frame's fields and presses its
+    # button, and 4.C checks that state: the swapped-in view's own loop
+    # (Back, Share, Menu) is found too, a second real trap.
     "f37-timeline-view-loops": {
         "outcome": "FAIL",
-        "rows": ["M12"],
+        "rows": ["M12", "M12"],
         "j2": {"gate": "no", "fields": []},
     },
     "f38-done-removes-the-frame": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},
