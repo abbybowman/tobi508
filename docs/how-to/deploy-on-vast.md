@@ -8,7 +8,8 @@ end is what to confirm on the first deployment.
 code (`src/tobi508/config.py`, `app.py`, `access.py`, `routes.py`,
 `runlog.py`), the `Dockerfile` and `.env.example`, not from memory. The
 sign-in is tested against a stand-in provider (`tests/test_access_signin.py`);
-`scripts/smoke_hosted.py` checks a deployed server end to end. Not yet
+`scripts/smoke_hosted.py` checks a deployed server end to end, and CI runs
+it on every image build against a real Keycloak (section 8). Not yet
 against VAST's Keycloak and NASA Launchpad (step 12b). Design and
 reasons: [the hosted sign-in plan](../plans/2026-11-06-hosted-auth.md).
 
@@ -186,7 +187,7 @@ From the plan (question 1 is answered):
 3. Is a service that drives Chromium acceptable in the namespace (4 CPU,
    16 GB was the dev container)?
 4. Can the app's access tokens include `sub` and the groups claim, and an
-   audience mapper for this server?
+   audience mapper for this server? (What it takes in Keycloak: section 8.)
 5. Can Anthropic's outbound IP ranges reach the app, for Claude Desktop
    custom connectors? If not, Claude Code is the demo client.
 
@@ -249,3 +250,56 @@ Not confirmed from the code or VAST's documentation:
 10. Then step 12b is done: the [PENDING] markers in
     `docs/hackathon/evaluation.md` and `deck.md` can go, and the plan's
     "Verified and not" says so.
+
+## 8. What a real Keycloak showed
+
+CI runs the smoke test on every image build
+(`.github/workflows/container.yml`, `scripts/smoke_hosted_ci.sh`; anyone
+with Docker can run the script): the image under test, signed in through
+Keycloak 26.8.2 in dev mode, behind nginx terminating TLS as VAST's
+ingress does. `scripts/smoke_keycloak.py` makes what VAST provisions for an
+app (a confidential client with redirect `{PUBLIC_BASE_URL}/auth/callback`,
+a group named `VAST--tobi508--smoke`, two users in it) and reads an access
+token before and after configuring the client.
+
+**How the page is allowed with DEV_MODE off.** The page is served inside
+the job, at a private address; the server's egress proxy refuses private
+addresses unless `DEV_MODE` is on, and nothing about that is changed. So a
+separate recorder container of the same image, with `DEV_MODE` on and that
+one address let through, records the page first
+(`scripts/smoke_record_page.py`, which records as a live run does). The
+server under test keeps `DEV_MODE` off and the default allowlist; its URL
+is under `.gov` (`page.tobi508-smoke.gov`, a name that exists only inside
+the job) and it replays the recording (`FROZEN_PAGES_DIR`,
+`FROZEN_PAGES_MODE=replay`: a URL with no recording is a tool error and
+nothing is fetched live). The report records `frozen_pages: replay`. So CI
+proves sign-in, a run, the report and ownership, not the server's live
+egress: that is checked on VAST with a real `.gov` page.
+
+**What an access token carries** (Keycloak 26.8.2, scopes
+`openid email profile`):
+
+| Claim | As the client is created | What to configure |
+| --- | --- | --- |
+| `sub` | present (Keycloak's `basic` client scope) | Nothing, unless the client uses lightweight access tokens or lacks the `basic` scope: then every token is refused (`authn.no_subject` in the log). |
+| `claim_groups` | absent | A **Group Membership** mapper on the client: token claim name `claim_groups` (`GROUP_CLAIM`), "Full group path" off, "Add to access token" on. Without it `REQUIRED_GROUPS` refuses everyone (`authz.denied`). |
+| `aud` | `["account"]` only | An **Audience** mapper: included client audience = the client's ID, "Add to access token" on; then `OIDC_AUDIENCE` = the client's ID. Without it, setting `OIDC_AUDIENCE` refuses every token. |
+| `email`, `preferred_username` | present | Nothing; the audit line's `who` is the first of `nasaPrimaryEmail`, `email`, `preferred_username`, `AgencyUID`. |
+
+VAST's realm may differ (its Launchpad claims, its own mappers); question 4
+asks. On VAST, the smoke test's sign-in answers it: a 401 after signing in,
+with `authn.no_subject` or `authz.denied` in the log, names what is
+missing.
+
+**Behind TLS, the server must know the scheme.** Without
+`FORWARDED_ALLOW_IPS` naming the proxy, the consent page's "Allow Access"
+gets 403 Forbidden Origin: the server sees `http://<host>`, the browser's
+Origin is `https://<host>`, and FastMCP's Origin check (on, and left on)
+calls them different. With the proxy's address in `FORWARDED_ALLOW_IPS`
+and `X-Forwarded-Proto: https` from the proxy, sign-in works. CI checks
+both: the full smoke test with the setting, and the 403 without it.
+
+**The audit lines were not reaching the log** until 2026-11-15 (no
+handler on the audit logger); the smoke test found it, and the fix is
+tested (`tests/test_access.py`).
+

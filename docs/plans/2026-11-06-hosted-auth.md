@@ -94,10 +94,29 @@ admins.
   and the audit line names them; a second person's run reads as missing;
   a person outside REQUIRED_GROUPS gets 401 after signing in. The consent
   page is off in that test; it stays on in the server.
-- Not verified: a sign-in with VAST's Keycloak and a real client;
-  whether VAST's access tokens carry `sub` and `claim_groups` (the gate and
-  ownership need them; FastMCP's `verify_id_token` option is the fallback
-  if only the ID token has them); the audience Keycloak puts in tokens.
+- Verified (`scripts/smoke_hosted.py` in CI, `container.yml`, through
+  `scripts/smoke_hosted_ci.sh`; also by hand on 2026-11-15): the built
+  image, with `DEV_MODE` off and the default allowlist, signed in through
+  a real Keycloak (26.8.2, dev mode, HTTPS) behind nginx terminating TLS;
+  the consent page left on and submitted as a browser submits it; a run
+  done through `tobi_run_status`, its report read through `run://`; a
+  second person refused the report and the job; audit lines naming both
+  people by `sub` and email, and no token in the log. The page is
+  replayed from a recording (frozen pages), so live egress is not part of
+  it ([how-to](../how-to/deploy-on-vast.md), section 8).
+- Learned there: Keycloak's access token carries `sub` by default, but no
+  groups claim and only `aud: ["account"]`; a Group Membership mapper
+  (claim `claim_groups`, full path off) and an Audience mapper (the
+  client's ID) give the gate and `OIDC_AUDIENCE` what they need. Behind
+  TLS, the server must trust the proxy's `X-Forwarded-Proto`
+  (`FORWARDED_ALLOW_IPS`), or its Origin check refuses the consent page
+  (403), so nobody can sign in. And the audit lines were never printed:
+  the logger had no handler (fixed, `tests/test_access.py`).
+- Not verified: a sign-in with VAST's Keycloak, NASA Launchpad and a real
+  client; whether VAST's access tokens carry `sub` and `claim_groups`
+  (FastMCP's `verify_id_token` option is the fallback if only the ID token
+  has them) and which audience; VAST's ingress headers and addresses; live
+  egress from VAST's pods to public `.gov` sites.
 
 ## Open questions for the VAST admin
 

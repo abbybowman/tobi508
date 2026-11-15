@@ -93,7 +93,8 @@ is merged. At most three threads at once. Each thread branches from
   `main`, on an unmerged branch, and no other thread is told the
   pages. Scorer fixes 15 to 17 come first.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
-  - **12a, now, no VAST needed:** a deployment guide
+  - **12a, built 2026-11-15** (how-to, smoke test, the smoke test in CI
+    against Keycloak; what it found is in the how-to's section 8): a deployment guide
     (`docs/how-to/deploy-on-vast.md`: the one-line Containerfile, every
     setting, where runs are stored, what to check); a smoke test that
     signs in, runs one page, reads its report and shows a second
