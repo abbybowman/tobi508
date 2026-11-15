@@ -522,7 +522,7 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
         st.search.reason = (
             "the search took longer than its share of the time limit"
             if isinstance(exc, TimeoutError)
-            else f"the search could not be run ({type(exc).__name__})"
+            else f"the search could not be run: {_load_reason(exc)}"
         )
         return
     if res.error:
