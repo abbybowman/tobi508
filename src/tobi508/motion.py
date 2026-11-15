@@ -492,7 +492,7 @@ MOTION_INIT_JS = (
     return out.slice(0, 10);
   };
   M.images = () => Array.from(new Set(Array.from(document.images)
-    .map((i) => (i.currentSrc || '').split('#')[0]).filter((u) => /^https?:/.test(u)))).slice(0, 30);
+    .map((i) => (i.currentSrc || '').split('#')[0]).filter((u) => /^https?:/.test(u)))).slice(0, 1000);
   M.extras = (known, longImages) => {
     const inside = (e) => known.some((css) => { const r = M.held.get(css); return r && (r === e || r.contains(e)); });
     const out = [];
@@ -888,9 +888,14 @@ class MotionPass(BaseModel):
     # hook, count.py), and how many of them `media` lists (guard CN, N-01).
     played: Part | None = None
     played_listed: Part = Field(default_factory=Part)
-    # Image addresses the animated-image read examined (at most 30, each
-    # in the recording and small enough to decode), for guard CN.
+    # Image addresses the animated-image read examined (at most
+    # IMAGE_READ_MAX, each in the recording, and decoded or known not to
+    # animate), for guard CN; `image_srcs_read` lists them, and
+    # `inventory_images_read` is how many of the inventory's addresses are
+    # among them (set by 2.B and 3.A once the inventory exists; 2.B 1.5.0).
     images_read: int = 0
+    image_srcs_read: list[str] = Field(default_factory=list)
+    inventory_images_read: int | None = None
     polls: list[Poll] = Field(default_factory=list)
     carousels: list[str] = Field(default_factory=list)  # "<frame>|<css>" at 0 s
     blink_markup: bool = False  # <blink> or text-decoration: blink (2.B note)
@@ -1107,6 +1112,11 @@ async def pass_t(
 
             out.media_store = media_index(har)
             await _loudness(context, har, out)
+            if not scroll_to:
+                try:
+                    await _late_images(page, har, out)
+                except Exception:
+                    pass  # images left unread: guard CN holds 2.B and 3.A
     except Exception as exc:  # recorded, never raised (A1)
         out.ok, out.error = False, f"the page could not be read: {safe_error(exc)}"
     finally:
@@ -1507,46 +1517,180 @@ def _image_type(body: bytes) -> str | None:
     return None
 
 
-async def _long_images(page, har: Path, out: MotionPass) -> dict[str, str]:
-    """Animated images that play for more than 5 s in all (G152), by URL,
-    with the figures as a detail. Recorded in `out.animated_images`."""
-    import base64
+# At most this many image addresses are read per page (2.B 1.5.0; was 30).
+# Most are known not to animate from their first bytes and cost a zip read;
+# only GIFs and animated PNG or WebP files are decoded.
+IMAGE_READ_MAX = 300
 
-    from tobi508.capture import media_body
 
+def _png_animated(body: bytes) -> bool:
+    """A PNG is animated (APNG) when an `acTL` chunk comes before the first
+    `IDAT`. A file that cannot be walked counts as animated (it is decoded,
+    or left unread when too large)."""
+    i = 8
+    while i + 8 <= len(body):
+        n = int.from_bytes(body[i : i + 4], "big")
+        kind = body[i + 4 : i + 8]
+        if kind == b"acTL":
+            return True
+        if kind == b"IDAT":
+            return False
+        i += 12 + n
+    return True
+
+
+def _webp_animated(body: bytes) -> bool:
+    """A WebP is animated when its extended header sets the animation flag
+    or it has an `ANIM` chunk; a simple (VP8 or VP8L) file is not."""
+    if body[12:16] in (b"VP8 ", b"VP8L"):
+        return False
+    if body[12:16] == b"VP8X":
+        return bool(body[20] & 0x02) or b"ANIM" in body[:4096]
+    return True
+
+
+def _can_animate(body: bytes) -> str | None:
+    """The type to decode when the file may animate, else None: JPEG, SVG
+    and the like, a PNG with no `acTL` and a WebP with no animation are done
+    from their first bytes, whatever their size (2.B 1.5.0: a 14 MB JPEG was
+    skipped on 8 of round 1's pages for its size alone)."""
+    kind = _image_type(body)
+    if kind == "image/png" and not _png_animated(body):
+        return None
+    if kind == "image/webp" and not _webp_animated(body):
+        return None
+    return kind
+
+
+async def _page_images(page) -> list[str]:
     srcs: list[str] = []
     for _, _, got in await _each_frame(
         page, "() => window.__a11yMotion ? window.__a11yMotion.images() : []"
     ):
         srcs += [s for s in got or [] if s not in srcs]
+    return srcs
+
+
+async def _read_images(
+    page, har: Path, out: MotionPass, srcs: list[str], late: bool = False
+) -> dict[str, str]:
+    """Read each address once: from the recording (redirects followed), done
+    when its type cannot animate, decoded in a tool page otherwise. Returns
+    the animated images that play for more than 5 s in all (G152), with the
+    figures as a detail, and records every decoded one in
+    `out.animated_images`. `late`: read after the end-of-pass scroll, when no
+    region can be made for an image: one that plays more than 5 s is then
+    left unread, so guard CN holds 2.B and 3.A for it."""
+    import base64
+
+    from tobi508.capture import media_body
+
     found: dict[str, str] = {}
     tool = tool_ctx = None
     try:
-        for src in srcs[:30]:
+        for src in srcs:
+            if src in out.image_srcs_read or len(out.image_srcs_read) >= IMAGE_READ_MAX:
+                continue
             body = media_body(har, src)
-            if not body or len(body) > IMAGE_MAX_BYTES:
+            if not body:
+                continue  # not in the recording: unread (guard CN)
+            kind = _can_animate(body)
+            if kind is None:
+                out.image_srcs_read.append(src)
                 continue
-            out.images_read += 1  # read: a type that cannot animate is done
-            kind = _image_type(body)
-            if not kind:
-                continue
+            if len(body) > IMAGE_MAX_BYTES:
+                continue  # may animate, too large to decode: unread
             if tool is None:
                 tool_ctx, tool = await _secure_tool_page(page)
             got = await tool.evaluate(
                 _IMAGE_JS, [base64.b64encode(body).decode(), kind]
             )
-            if not got or got["frames"] < 2:
+            if got is None:
+                continue  # could not be decoded: unread
+            if got["frames"] < 2:
+                out.image_srcs_read.append(src)
                 continue
             total = None if got["reps"] < 0 else got["once_ms"] * (got["reps"] + 1)
             out.animated_images.append({"src": src[:500], **got, "total_ms": total})
-            if total is None or total > MOVING_IMAGE_MS:
+            long = total is None or total > MOVING_IMAGE_MS
+            if long and late:
+                continue  # no region for it: unread
+            out.image_srcs_read.append(src)
+            if long:
                 found[src] = f"animated image, {got['frames']} frames, " + (
                     "loops forever" if total is None else f"{total / 1000:g} s in all"
                 )
     finally:
         if tool_ctx is not None:
             await tool_ctx.close()
+        out.images_read = len(out.image_srcs_read)
     return found
+
+
+async def _long_images(page, har: Path, out: MotionPass) -> dict[str, str]:
+    """Animated images on the page at the end of the watch that play for
+    more than 5 s in all (G152), by URL. Recorded in `out.animated_images`."""
+    return await _read_images(page, har, out, await _page_images(page))
+
+
+def match_inventory(ctx: Any, mp: MotionPass) -> None:
+    """How many of the inventory's image addresses pass T read (2.B 1.5.0):
+    guard CN compares that, not pass T's own count, so addresses pass T read
+    that the inventory never saw cannot stand in for ones it did."""
+    count = getattr(ctx, "cache", {}).get("count")
+    srcs = getattr(count, "image_srcs", None)
+    if not srcs:
+        return
+    # An address the inventory saw that pass T's page never showed (a slide
+    # never shown, an image another browser loads sooner): read from the
+    # recording. A type that cannot animate is done from its first bytes; one
+    # that can is left unread, so guard CN holds the page (2.B 1.5.0).
+    har = getattr(ctx, "rel", None)
+    har = har / "evidence" / "page.har.zip" if har is not None else None
+    if har is not None and har.exists():
+        from tobi508.capture import media_body
+
+        for src in srcs:
+            if src in mp.image_srcs_read or len(mp.image_srcs_read) >= IMAGE_READ_MAX:
+                continue
+            body = media_body(har, src)
+            if body and _can_animate(body) is None:
+                mp.image_srcs_read.append(src)
+        mp.images_read = len(mp.image_srcs_read)
+    mp.inventory_images_read = len(set(srcs) & set(mp.image_srcs_read))
+
+
+def images_read(mp: MotionPass) -> int:
+    """Image addresses read, for guard CN: of the inventory's when matched."""
+    return (
+        mp.images_read if mp.inventory_images_read is None else mp.inventory_images_read
+    )
+
+
+# The late read's scroll: one window at a time, jumping (a page with smooth
+# scrolling did not move before the next read, so the recorder's own scroll
+# stopped after one step on round 2's home page), then a wait for loads.
+LATE_SCROLL_STEPS = 60
+LATE_SCROLL_WAIT_MS = 150
+LATE_SCROLL_SETTLE_MS = 1500
+_SCROLL_DOWN_JS = """async ([steps, wait]) => {
+  for (let i = 0; i < steps; i++) {
+    const before = window.scrollY;
+    window.scrollTo({ top: before + Math.max(200, innerHeight * 0.9), behavior: 'instant' });
+    await new Promise((r) => setTimeout(r, wait));
+    if (window.scrollY === before) break;
+  }
+}"""
+
+
+async def _late_images(page, har: Path, out: MotionPass) -> None:
+    """After every other read of pass T: scroll down the page one window at
+    a time, as the recording did, so lazy images load from the recording,
+    then read the addresses not read yet (2.B 1.5.0: on round 2's galleries
+    page 23 images were on the page at load and 119 after a scroll)."""
+    await page.evaluate(_SCROLL_DOWN_JS, [LATE_SCROLL_STEPS, LATE_SCROLL_WAIT_MS])
+    await page.wait_for_timeout(LATE_SCROLL_SETTLE_MS)
+    await _read_images(page, har, out, await _page_images(page), late=True)
 
 
 TOOL_URL = "http://localhost/a11y-tool"

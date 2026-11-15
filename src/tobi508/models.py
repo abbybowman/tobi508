@@ -594,6 +594,10 @@ class Count(BaseModel):
     canvases: Part = Field(default_factory=Part)
     draggable: Part = Field(default_factory=Part)
     images: Part = Field(default_factory=Part)
+    # The distinct image addresses `images` counts (at most 1000), kept for
+    # 2.B and 3.A, which count as read only the ones pass T read (2.B 1.5.0).
+    # Not in the report: the number is.
+    image_srcs: list[str] = Field(default_factory=list, exclude=True)
     focusable: Part = Field(default_factory=Part)
     landmarks: Part = Field(default_factory=Part)
     links: Part = Field(default_factory=Part)

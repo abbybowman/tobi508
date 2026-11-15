@@ -265,8 +265,13 @@ def media_index(har_path: Path) -> list[dict[str, Any]]:
         return []
 
 
+REDIRECT_HOPS = 3
+
+
 def media_body(har_path: Path, url: str) -> bytes | None:
-    """A media file's bytes: from the media store, else the HAR's own body."""
+    """A media file's bytes: from the media store, else the HAR's own body,
+    following redirects the recording holds (at most REDIRECT_HOPS; 2.B
+    1.5.0: an avatar answered with a 302 on round 1's max-power page)."""
     url = url.split("#", 1)[0]
     try:
         with zipfile.ZipFile(har_path) as z:
@@ -274,12 +279,30 @@ def media_body(har_path: Path, url: str) -> bytes | None:
                 if m["url"] == url and m.get("file"):
                     return z.read(m["file"])
             name = next(n for n in z.namelist() if n.endswith(".har"))
-            for e in json.loads(z.read(name))["log"]["entries"]:
-                if e["request"]["url"] != url or e["response"].get("status") != 200:
-                    continue
-                c = e["response"].get("content", {})
-                if c.get("_file"):
-                    return z.read(c["_file"])
+            entries = json.loads(z.read(name))["log"]["entries"]
+            for _ in range(REDIRECT_HOPS + 1):
+                nxt = None
+                for e in entries:
+                    if e["request"]["url"] != url:
+                        continue
+                    status = e["response"].get("status")
+                    c = e["response"].get("content", {})
+                    if status == 200 and c.get("_file"):
+                        return z.read(c["_file"])
+                    if status in (301, 302, 303, 307, 308) and nxt is None:
+                        loc = e["response"].get("redirectURL") or next(
+                            (
+                                h["value"]
+                                for h in e["response"].get("headers", [])
+                                if h["name"].lower() == "location"
+                            ),
+                            "",
+                        )
+                        if loc:
+                            nxt = urljoin(url, loc).split("#", 1)[0]
+                if nxt is None or nxt == url:
+                    return None
+                url = nxt
     except (KeyError, OSError, ValueError, StopIteration, zipfile.BadZipFile):
         return None
     return None

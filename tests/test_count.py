@@ -116,7 +116,7 @@ def test_sentences_name_the_number_and_the_thing():
         "1 form field is hidden until something opens it, and was not checked."
     )
     assert count_sentence("images", 31, 30) == (
-        "31 images: only the first 30 were checked for animation."
+        "31 images: 30 were checked for animation, and 1 could not be."
     )
     assert count_sentence("media_played.detached", 1, 0) == (
         "1 sound or video played from a script, and was not checked."

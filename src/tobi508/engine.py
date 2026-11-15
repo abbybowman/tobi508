@@ -214,7 +214,10 @@ def count_sentence(key: str, there: int, read: int) -> str:
         )
     if name == "images":
         if read:
-            return f"{there} images: only the first {read} were checked for animation."
+            return (
+                f"{there} images: {read} were checked for animation, and "
+                f"{gap} could not be."
+            )
         return f"{gap} image{'' if one else 's'} {was} not checked for animation."
     if name == "frames_missing":
         return (
