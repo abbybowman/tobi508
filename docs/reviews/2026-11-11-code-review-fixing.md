@@ -199,13 +199,13 @@ on Nov 17.
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3, a development round** (when PR #64 is merged)
+**Step 10, Sonnet: round 3, a formal blind judging round** (when PR #64 is merged)
 
 > Read `docs/how-to/run-a-judging-round.md` and
 > `evals/agent/README.md`. First do scorer fixes 15, 16 and 17 of
 > `docs/plans/2026-11-08-post-round2-fixes.md`, each with its test,
-> as their own pull request. Then round 3, on the pages I give you
-> in this thread, with the server judge answering, exactly as the
+> as their own pull request. Then round 3, a formal judging round
+> like rounds 1 and 2, on the pages I give you in this thread, with the server judge answering, exactly as the
 > how-to describes: freeze (the fuller freeze of PR #52; check each
 > recording against its manifest and tell me anything that did not
 > record), run on `main`'s head (record the commit), lock, then score
@@ -216,9 +216,10 @@ on Nov 17.
 > git. Report per test and in all; list apart the cells inside a web
 > component or a frame; and list every NEEDS REVIEW and wrong cell by
 > cause, as a list of findings for the other threads. Change no code
-> yourself.
+> yourself, and change nothing between the freeze and the lock: the
+> score is the blind result for that commit.
 
-**Step 10b, Sonnet: round 4, the held-out round** (two threads: the freeze the day I key the pages, the run on Nov 17)
+**Step 10b, Sonnet: round 4, a second blind round, if I key one** (two threads: the freeze the day I key the pages, the run on Nov 17)
 
 > The freeze. Read `docs/how-to/run-a-judging-round.md`. Freeze the
 > pages I give you in this thread with the fuller freeze, check each

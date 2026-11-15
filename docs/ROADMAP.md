@@ -116,8 +116,8 @@ ran three to four times longer than the work took.
 | 8 | One library for reading the page: web components and frames | Opus | readers 1 to 3 done Nov 14 (PRs #58, #60 to #62); readers 4 to 8 in PR #64; the form error tests in frames next | Plan part D; fix 7 |
 | 9a | The second check: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | done Nov 14; its branch waits to merge (see "Where things stand") | `evals/README.md`, "Gate 2026-11-14" |
 | 9b | The third check: the same pages after 8, 6d, 6e and 6f | Sonnet | Nov 17, started by midday | As 9a, a new folder, one repeat |
-| 10 | Round 3: a NASA site not used before, as a development round. Abby's keys are locked (2026-11-14) | Sonnet | when PR #64 is merged | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
-| 10b | Round 4: the held-out round, keyed by Abby after round 3, run once and last | Abby's keys; Sonnet | frozen the day it is keyed; run on Nov 17 at 9b's commit | As step 10 |
+| 10 | Round 3: a formal blind judging round, like rounds 1 and 2, on a NASA site not used before. Abby's keys are locked (2026-11-14) | Sonnet | when PR #64 is merged | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
+| 10b | Round 4, if Abby has the time to key it: a second blind round, run last | Abby's keys; Sonnet | frozen the day it is keyed; run on Nov 17 at 9b's commit | As step 10 |
 | 11 | If the days allow: the second look's trial | Sonnet | after 6, beside 8 | Plan part F, "Trial" |
 | 12 | If the days allow: sign in on VAST from Claude Code and run one page | Opus | when the admin's answers arrive | [Hosted sign-in plan](plans/2026-11-06-hosted-auth.md). The demo for reviewers is recorded (Abby, 2026-11-12), so this is not needed for it |
 | 13 | The pitch: the submission commit fixed on Nov 17, one scored run, rehearsal, fallback video | Abby, with a Sonnet thread for the run | Nov 18-19 | [docs/hackathon/](hackathon/README.md) |
@@ -324,18 +324,21 @@ what is planned.
    that it finishes inside the cut. A gate run's reports and pre-SCRT
    files stay out of git (about 70 MB a run with their screenshots);
    the scores, the comparison and the README sections go in.
-10. **Rounds 3 and 4** (Abby, 2026-11-14: she can key one more round
-    before the cut).
-    - **Round 3 is a development round,** run as soon as PR #64 is
-      merged, so that what a site the tool has never seen shows can
-      still change the code: freeze, run, lock, score, and its
-      findings go to the threads. After that it is a development site
-      like the other two.
-    - **Round 4 is the held-out round.** Abby keys it after round 3.
-      Its pages are frozen the day she keys them (a live page drifts
-      from what the keys describe). It is run once, last, on Nov 17 at
-      9b's commit, and nothing is fixed from it before the demo: it is
-      the pitch's one figure from pages the tool was never tuned on.
+10. **Rounds 3 and 4** (Abby, 2026-11-14).
+    - **Round 3 is a formal judging round,** as valid as rounds 1 and
+      2: a site the tool was never developed against, Abby's blind
+      SCRT files locked before the tool ran, the run locked before the
+      keys are opened, scored by the how-to. Its score is a blind
+      result for the commit it ran at, and it may be the last blind
+      round before Nov 20, so it is reported as one. It runs as soon
+      as PR #64 is merged. Once it is scored, what it shows may change
+      the code, as rounds 1 and 2 did; from then its pages are
+      development pages for any later run, and a later run on them is
+      reported as a rerun, never in place of the blind score.
+    - **Round 4,** if Abby has the time to key it: a second blind
+      round, frozen the day she keys it and run once, last, on Nov 17
+      at 9b's commit. It would show whether the fixes made after round
+      3 hold on pages they were not made from.
     - **Keeping a round blind to the threads.** Until a round's run is
       locked, its page list, keys and freeze stay off `main`: the
       freeze is made on a branch that is not merged, and no other
