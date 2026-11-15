@@ -24,7 +24,8 @@ keep their own schedule.
   round 2's pages and 12 on round 1's; decided cells 91 of 220 on
   round 2's pages (68 in step 6, about 132 in the blind round).
 - **Where NEEDS REVIEW comes from** (step 9a, 223 cells over both
-  sites): menus and sections that open and were not walked, about 45;
+  sites): menus and sections that open and were not walked (guard RC), 37, and
+  ones that did not open or could not be read (guard RV), about 10;
   guard CN (a hidden form, more than 30 images), 44; the judge unsure,
   29; frames, 28; 2.C and 2.D's timer, 20; 19.A, 12. The keys fail
   few of them. Steps 6e, 6g and 8 are aimed at these.
@@ -86,10 +87,15 @@ is merged. At most three threads at once. Each thread branches from
   pages join the suggested pages; and the runners make the follow-up
   call an agent would.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
-  test did not walk it. 4.F's pass R already opens each trigger and
-  Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
-  The wording and the moved cells go to Abby first. 4.D and 5.D only
-  if the days allow.
+  test did not walk it: 37 cells in step 9a, 25 of them 4.C and 4.E,
+  all keyed Pass. Decided (Abby, 2026-11-15): one opener, not three.
+  `reveal.py` already opens each trigger on a fresh load (its wider
+  list, at most 20, Enter first and a click when Enter shows
+  nothing); the walk through what opened hangs on that opening and is
+  made once per page, for 4.C and 4.E now. 4.F's pass R (its own
+  list, 6 triggers, one Tab) moves onto it after the demo. The
+  wording and the moved cells go to Abby first. 4.D and 5.D only if
+  the days allow.
 - **10 and 10b.** A blind round is run by
   [the how-to](how-to/run-a-judging-round.md): keys locked before the
   tool runs, the run locked before the keys are opened. Until a

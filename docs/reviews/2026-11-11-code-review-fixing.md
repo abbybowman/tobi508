@@ -12,43 +12,12 @@ is listed here is what is left to start or still running.
 (PRs #39 to #80; `docs/archive/2026-11-14-roadmap-to-the-demo.md`).
 Step 6e's thread is running (its prompt is no longer needed here).
 
-**Order to start them** (at most three threads at once): 6g and 6h
-now, beside 6e's thread; round 3's run (step 10) and 9b when 6e, 6g
+**Order to start them** (at most three threads at once): 6h now,
+beside the threads of 6e and 6g; round 3's run (step 10) and 9b when 6e, 6g
 and 6h are merged; 12b when the VAST environment exists; round 4
 (step 10b) if I key one.
 
 ## Starting a thread
-
-**Step 6g, Opus: opened content in 4.C and 4.E** (now)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 6g of
-> `docs/ROADMAP.md` "Order of work". Read `docs/solutions/opening-triggers.md`,
-> guard RC in 4.C's and 4.E's specs, pass R in 4.F's spec, and step
-> 9a's cells with row `RC`
-> (`evals/judging/gate-2026-11-14/compare-round1.md` and
-> `compare-round2.md`): 45 cells, my keys pass 44.
->
-> First, no code: tell me what pass R records today for each trigger
-> it opens (which stops, what a trap or a change of context inside
-> the opened content would look like in it), what 4.C and 4.E would
-> need from it that it lacks, and what a tester does here by the TT
-> text. Then the spec wording for 4.C and 4.E: their own rows applied
-> to the stops inside opened content, and guard RC narrowed to what
-> pass R did not open (past `REVEAL_MAX`, a trigger that did not
-> open, content with controls pass R did not reach). Show me both
-> before building: this turns NEEDS REVIEW into PASS.
->
-> Then build 4.C, then 4.E, one pull request each: a fixture where
-> opened content traps Tab (4.C FAIL) and one where focus inside it
-> changes context (4.E FAIL), the nearest page that must stay NEEDS
-> REVIEW (a seventh trigger; a trigger that does not open), the grid
-> rerun, and the README rows. Then rerun 4.C and 4.E on the frozen
-> pages of rounds 1 and 2 (ask me for the archives; never fetch them
-> live) and show me every moved cell beside my key: if any is a PASS
-> where my key fails, stop. 4.D and 5.D only if I say so after that.
-> Merge `main` before each spec version. Whatever is not merged by
-> the end of Nov 17 stops there.
 
 **Step 6h, Opus: 19.A finds its ways as a tester does** (now)
 
