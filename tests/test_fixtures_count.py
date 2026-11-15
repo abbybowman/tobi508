@@ -94,6 +94,34 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
             "1 form field is hidden until something opens it, and was not checked.",
         ),
     },
+    # Fields hidden from everyone (Abby, 2026-11-15; hidden.py): an
+    # Akismet-style trap, a Gravity Forms-style honeypot and a reCAPTCHA-
+    # style box, on a page with a menu button (so something could show
+    # fields). Nothing a careful tester does shows them: not counted, and the
+    # tests decide.
+    "antispam-form": {
+        "5.A": ("PASS", None),
+        "5.C": ("PASS", None),
+        "5.F": ("PASS", None),
+        "5.H": ("DNA", None),
+    },
+    # The nearest that must stay: the same form with an "Other, please
+    # specify" field a list choice shows, and with a popup form that opens by
+    # itself after 5 s. Each is counted; the guard holds.
+    "antispam-other": {
+        t: (
+            "NEEDS_REVIEW",
+            "1 form field is hidden until something opens it, and was not checked.",
+        )
+        for t in ("5.A", "5.F")
+    },
+    "antispam-popup": {
+        t: (
+            "NEEDS_REVIEW",
+            "1 form field is hidden until something opens it, and was not checked.",
+        )
+        for t in ("5.A", "5.F")
+    },
     # M-02: a form that is only a button.
     # 5.H 1.9.0 reads the form pass E did not take: "Delete my account" is a
     # consequence hint, so J1 is asked (open here).

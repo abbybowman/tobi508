@@ -281,6 +281,10 @@ def _count_guard(f: Finding, report: Any, state: Any, keys: tuple[str, ...]) -> 
                 # Nothing on the page could show them: hidden for everyone,
                 # as DHS's Baseline TC10.A-ic-dna-1 and -2 (Abby, 2026-11-12).
                 there = 0
+            elif key in ("fields_hidden", "fields_hidden.light"):
+                # Hidden fields nothing a careful tester does shows (hidden.py;
+                # Abby, 2026-11-15): hidden from everyone, not counted.
+                there = max(0, there - len(c.hidden_never_shown))
             if there > done:
                 s = count_sentence(key, there, done)
                 if page != "page":

@@ -161,6 +161,10 @@ class Opened(BaseModel):
     new_elements: int = 0
     new_focusable: int = 0  # what a keyboard user could reach in it
     new_fields: int = 0
+    # Paths (top document) of the form fields opening it showed, and those
+    # choosing its options showed: what was hidden and a person's action
+    # reveals (guard CN's hidden fields; hidden.py).
+    new_field_paths: list[str] = Field(default_factory=list)
     dialog: bool = False
     read: bool | None = None  # ANDI read the opened state (None: not asked)
     picture: str | None = None
@@ -358,6 +362,16 @@ async def _open_to(
         return s, info
 
 
+def _top_fields(keys: list[str], after: dict[str, Any]) -> list[str]:
+    """Paths of the fields among `keys` that are in the top document (a key
+    is "<frame chain>|<path>"; the top document's chain is empty)."""
+    return [
+        k.split("|", 1)[1]
+        for k in keys
+        if k.startswith("|") and after.get(k) and after[k][1]
+    ][:200]
+
+
 def _counts(info: dict[str, Any]) -> tuple[int, int, int]:
     """New elements, new focusable ones, new fields among what opened."""
     after = info["after"]
@@ -398,6 +412,7 @@ async def collect(ctx, walk) -> Reveal:
                 continue
             rec.by = info["by"]
             rec.new_elements, rec.new_focusable, rec.new_fields = _counts(info)
+            rec.new_field_paths = _top_fields(info["new"], info["after"])
             rec.dialog = bool(info["dialog"])
             if not (info["new"] or info["dialog"] or info["flipped"]):
                 rec.status, rec.reason = NOTHING, WHY[NOTHING]
@@ -446,7 +461,13 @@ async def collect(ctx, walk) -> Reveal:
                 )
                 if "status" in info2 or not info2.get("chosen"):
                     continue
-                gained = len(set(info2["after_choice"]) - set(info2["after"]))
+                gained_keys = set(info2["after_choice"]) - set(info2["after"])
+                gained = len(gained_keys)
+                rec.new_field_paths += [
+                    p
+                    for p in _top_fields(list(gained_keys), info2["after_choice"])
+                    if p not in rec.new_field_paths
+                ]
                 for o in opts:
                     o.chosen = True
                     o.new_elements = gained  # of the set's choices together
