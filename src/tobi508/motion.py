@@ -1848,6 +1848,16 @@ async def _clock_state(page: Page) -> list[dict[str, Any]]:
     return out
 
 
+async def _mutation_count(page: Page) -> int:
+    n = 0
+    for frame in page.frames:
+        try:
+            n += int(await frame.evaluate("() => window.__tobiMutations || 0"))
+        except Exception:
+            continue
+    return n
+
+
 def _and_list(items: list[str]) -> str:
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
 
@@ -1906,22 +1916,34 @@ async def timer_check(open_page: OpenPage, mp: MotionPass) -> TimerCheck:
         context.on("request", lambda r: requests.append(r.url))
         out.ran = True
         out.advanced_ms = longest + CLOCK_AFTER_MS
-        await page.clock.fast_forward(longest + CLOCK_AFTER_STEPS_MS[0])
+        # Changes are counted only while the clock runs: a screenshot alone
+        # made a real page change two attributes (round 2's help page).
+        counted = 0
+
+        async def run(step) -> None:
+            nonlocal counted
+            m0 = await _mutation_count(page)
+            await step
+            counted += await _mutation_count(page) - m0
+
+        before = await _clock_state(page)
+        await run(page.clock.fast_forward(longest + CLOCK_AFTER_STEPS_MS[0]))
         shots = [await page.screenshot()]
         for step in CLOCK_AFTER_STEPS_MS[1:]:
-            await page.clock.run_for(step)
+            await run(page.clock.run_for(step))
             shots.append(await page.screenshot())
-        await page.wait_for_timeout(CLOCK_REAL_WAIT_MS)
+        await run(page.wait_for_timeout(CLOCK_REAL_WAIT_MS))
         after = await _clock_state(page)
         shots.append(await page.screenshot())
         out.requests = len(requests)
+        if counted:
+            out.changed.append("content")
         if not all(_same_screen(shot_a, s) for s in shots):
             out.changed.append("screen")
         for key, name in (
             ("text", "text"),
             ("nodes", "elements"),
             ("images", "images"),
-            ("mutations", "content"),
             ("playing", "media"),
         ):
             if len(before) != len(after) or any(

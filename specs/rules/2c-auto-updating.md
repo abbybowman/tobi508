@@ -162,9 +162,11 @@ and names each content that changed and when it stopped.
     element and no text, and may be off screen);
   - no request was made while the clock ran (a timer that fetches new
     data cannot show it from a recording);
-  - no screenshot differs from the first, and the text, elements, image
-    sources, change count and number of playing videos and sounds are the
-    same (content that changes by itself
+  - no screenshot differs from the first; the text, elements, image
+    sources and number of playing videos and sounds are the same; and no
+    change was counted while the clock ran (changes made while a
+    screenshot is taken are not counted: on round 2's help page a
+    screenshot alone changed two attributes) (content that changes by itself
     for any reason keeps the hint).
   Anything else, or a check that could not run (no time left, a load or
   read that failed), keeps the hint, and the A2 note says why. The note on
