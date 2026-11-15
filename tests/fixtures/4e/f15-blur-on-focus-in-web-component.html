@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><title>F15 blur on focus inside a web component</title></head><body>
+<h1>Form</h1>
+<a href="#a" id="before">Before</a>
+<x-send></x-send>
+<a href="#c" id="after">After</a>
+<script>
+// f04's button, inside a web component (an open shadow root).
+customElements.define('x-send', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML = '<input type="submit" id="send" value="Send" onfocus="this.blur();">';
+  }
+});
+</script>
+</body></html>
