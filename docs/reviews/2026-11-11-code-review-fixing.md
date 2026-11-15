@@ -8,117 +8,50 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 7, 6b, 6c, 6d's phase 1, 6f, 8, 9a and 12a
-(PRs #39 to #80; `docs/archive/2026-11-14-roadmap-to-the-demo.md`).
-Step 6e's thread is running (its prompt is no longer needed here).
+**Done:** steps 1 to 9a, 6b to 6h and 12a (PRs #39 to #93;
+`docs/archive/2026-11-14-roadmap-to-the-demo.md`).
 
-**Order to start them** (at most three threads at once): 6g and 6h
-now, beside 6e's thread; round 3's run (step 10) and 9b when 6e, 6g
-and 6h are merged; 12b when the VAST environment exists; round 4
-(step 10b) if I key one.
+**Order to start them:** 10a now; round 3 (step 10) and 9b when 10a
+is merged; 12b when the VAST environment exists; round 4 (step 10b)
+if I key one.
 
 ## Starting a thread
 
-**Step 6g, Opus: opened content in 4.C and 4.E** (now)
+**Step 10a, Sonnet: two things before round 3's freeze** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 6g of
-> `docs/ROADMAP.md` "Order of work". Read `docs/solutions/opening-triggers.md`,
-> guard RC in 4.C's and 4.E's specs, pass R in 4.F's spec, and step
-> 9a's cells with row `RC`
-> (`evals/judging/gate-2026-11-14/compare-round1.md` and
-> `compare-round2.md`): 45 cells, my keys pass 44.
+> and follow its "Working rules". Your work is step 10a of
+> `docs/ROADMAP.md` "Order of work", two items, each its own pull
+> request. Round 3's pages are not frozen yet and you will not be
+> told what they are.
 >
-> First, no code: tell me what pass R records today for each trigger
-> it opens (which stops, what a trap or a change of context inside
-> the opened content would look like in it), what 4.C and 4.E would
-> need from it that it lacks, and what a tester does here by the TT
-> text. Then the spec wording for 4.C and 4.E: their own rows applied
-> to the stops inside opened content, and guard RC narrowed to what
-> pass R did not open (past `REVEAL_MAX`, a trigger that did not
-> open, content with controls pass R did not reach). Show me both
-> before building: this turns NEEDS REVIEW into PASS.
+> (1) The freeze's scroll. `capture._scroll_steps` (PR #52) scrolls
+> with `scrollBy` and stops when the position has not moved yet, so
+> on a page that sets `scroll-behavior: smooth` (Bootstrap 5; round
+> 2's svs pages) it stops after one step and lazy content below is
+> never recorded (`docs/KNOWN-LIMITS.md`). Make a page that shows it
+> (smooth scrolling, an image that loads only when scrolled to, three
+> windows down), see the test fail, then fix the scroll so it reaches
+> the end of the page whatever the page's scroll behaviour, and say
+> how you know it reached the end. Also make the freeze list, in its
+> output, every frame it saw whose address was not recorded or
+> differs between two loads (reCAPTCHA, a lazy video embed): a
+> report, not a fix. No spec changes and no outcome changes.
 >
-> Then build 4.C, then 4.E, one pull request each: a fixture where
-> opened content traps Tab (4.C FAIL) and one where focus inside it
-> changes context (4.E FAIL), the nearest page that must stay NEEDS
-> REVIEW (a seventh trigger; a trigger that does not open), the grid
-> rerun, and the README rows. Then rerun 4.C and 4.E on the frozen
-> pages of rounds 1 and 2 (ask me for the archives; never fetch them
-> live) and show me every moved cell beside my key: if any is a PASS
-> where my key fails, stop. 4.D and 5.D only if I say so after that.
-> Merge `main` before each spec version. Whatever is not merged by
-> the end of Nov 17 stops there.
-
-**Step 6h, Opus: 19.A finds its ways as a tester does** (now)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 6h of
-> `docs/ROADMAP.md` "Order of work". Read 19.A's spec whole
-> (`specs/rules/19a-multiple-ways.md`: the Terms "Suggested pages" and
-> the live search, rows W1 to W5 and G1 to G5), CLAUDE.md principle 5
-> and "Pages and URLs", `src/tobi508/site.py` (`near_copy`), and how
-> the follow-up call is made (`tobi_run_status` with `finish=true`).
->
-> The problem. 19.A reads only the pages the caller gave, plus one
-> site search. When I test 19.A by hand I also go down to a child
-> page and look for a breadcrumb or a link back, up to the parent
-> page, and to the home page; and I treat `/cilab/index.html` as
-> `/cilab/`. On round 2's CILab page the tool FAILs where my key
-> passes: one way is a link to `/cilab/index.html`, the other is the
-> top navigation of CILab's own subpages, which nobody gave it. And in
-> our eval runs nothing makes the follow-up call an agent would make,
-> so 19.A stops at NEEDS REVIEW with pages it has already named. A
-> round 3 run would have 19.A undecided on every page. I have approved
-> the three changes below with their limits. Show me the spec wording
-> and the two exception texts for CLAUDE.md before you build; then
-> each is its own pull request.
->
-> (1) A suspected alias of the tested page T, checked live. Only when
-> 19.A would have fewer than two kinds AND a link on a page it read
-> is a suspected alias: same host, and differing from T only by a
-> last segment named `index.*` or `default.*` (either way round), by
-> scheme or a leading `www.`, or by its query string. At most 3
-> candidates a run. Load each exactly as a caller's other page is
-> loaded (the same code path: the allowlist, the same host before and
-> after redirects, every hop checked, its own HAR, the page cache);
-> write no new HTTP client. It is the same page as T when its final
-> address equals T's (fragment and trailing slash aside) or when the
-> text comparison `near_copy` uses says so (generalise it to this
-> pair). Its links then count as links to T. One that cannot be
-> loaded or compared is "not verified": NEEDS REVIEW, as row W4,
-> never FAIL and never a match. This is a sixth exception to
-> principle 5.
->
-> (2) Suggested pages, widened. Add T's parent (the address one level
-> up from T's own path, same host: it comes from T's address, not
-> from page content) and up to 2 child pages (links on T, same host,
-> under T's own directory). The cap of 5 stays; propose the order
-> they are taken in and tell me if the cap bites on real pages. They
-> are read only by the follow-up call, as the others are, for links
-> back to T or to a verified alias of T. Row G4 ("nothing is left to
-> try") applies only when these are used up. G3's and G4's sentences
-> also tell a person they can search the web for pages that link to
-> this address. This widens the existing suggested-pages exception.
->
-> (3) The eval runners make the follow-up call. `evals/apijudge_gate.py`
-> and the round runner (`evals/judging.py`) make, once per page, the
-> call `tobi_run_status` with `finish=true` would make, and record
-> it. In tested_frozen mode the pages it reads load live under the
-> usual rules; in replay mode a page with no recording is "not
-> verified". Say how many of step 9a's 19.A cells on row G3 this
-> would have changed (`evals/judging/gate-2026-11-14/`).
->
-> Fixtures: a microsite home whose only link from the site goes to
-> `.../index.html` (now found); the nearest page that must not match
-> (an `index.html` that is a different page); a home page whose
-> second way is on a child page; a page whose parent links to it;
-> and a page where none of this finds a second way (still FAIL).
-> Then rerun 19.A on the frozen pages of rounds 1 and 2 (ask me for
-> the archives; never fetch the tested pages live) and show me every
-> moved cell beside my key: a PASS where my key fails stops the work.
-> Say what the follow-up adds to a run's time. Round 3's run waits
-> for you.
+> (2) 19.A on CILab (round 2). Step 6h's rerun gave PASS, as my key
+> does; step 6g's rerun gave FAIL, with `main`'s code too
+> (`evals/README.md`, the 2026-11-15 reruns). Both of my key's ways
+> are on the live site today: the home page links to
+> `/cilab/index.html`, which is the same document as `/cilab/`, and
+> `/cilab/information.html`'s top row links back. So the difference
+> is in what each rerun gave the test (its other pages) or in how the
+> pages loaded. Rerun 19.A on CILab's frozen copy both ways (ask me
+> for the archive; never fetch the tested page live) and show me,
+> for each: the other pages given, every page 19.A loaded itself and
+> whether it loaded, each alias checked and its result, each way
+> found and its kind, and the rows. Tell me the cause before changing
+> anything. If the outcome depends on which other pages are given,
+> say what round 3's runner should give every page.
 
 **Step 9b, Sonnet: the third check** (at round 3's commit)
 
@@ -169,29 +102,42 @@ and 6h are merged; 12b when the VAST environment exists; round 4
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3, a formal blind judging round** (frozen; the run when steps 6e, 6g and 6h are merged)
+**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze and the run in one thread, when step 10a is merged; I give the pages then)
 
 > Read `docs/how-to/run-a-judging-round.md` and
-> `evals/agent/README.md`. The scorer fixes are merged (PR #73).
-> Round 3, a formal judging round
-> like rounds 1 and 2, on the pages I give you in this thread, with the server judge answering, exactly as the
-> how-to describes: freeze (the fuller freeze of PR #52; check each
-> recording against its manifest and tell me anything that did not
-> record), run on `main`'s head (record the commit), lock, then score
-> against my keys. Never open my keys before the lock. Work on your
-> own branch and do not open a pull request or merge anything of the
-> round until the run is locked: other threads must not see the page
-> list before then. Keep each page's report and pre-SCRT file out of
-> git. Do not run the tool before steps 6e, 6g and 6h are merged
-> (without 6h, 19.A cannot be decided on any page), and tell me the
-> commit before you start: 9b runs at the same one. Run in tested_frozen mode, each
-> page with the round's other pages on its host and the site's home
-> page as other pages, and with the follow-up call step 6h adds.
-> Report per test and in all; list apart the cells inside a web
-> component or a frame; and list every NEEDS REVIEW and wrong cell by
-> cause, as a list of findings for the other threads. Change no code
-> yourself, and change nothing between the freeze and the lock: the
-> score is the blind result for that commit.
+> `evals/agent/README.md`. This is round 3, a formal judging round
+> like rounds 1 and 2, on the pages I give you in this thread, with
+> the server judge answering, exactly as the how-to describes:
+> freeze, run, lock, then score against my keys. Never open my keys
+> before the lock. Work on your own branch and do not open a pull
+> request or merge anything of the round until the run is locked:
+> no other thread has seen the page list, and none may before then.
+> Keep each page's report and pre-SCRT file out of git.
+>
+> The freeze (the fuller freeze of PR #52, with step 10a's scroll
+> fix). Check each recording against its manifest, and its
+> `capture_scroll_steps` log lines: the scroll must have reached the
+> end of every page. List the frames the freeze reports as not
+> recorded. Then, for each page, compare one replay with
+> the live page before you run any test: the requests that fail in
+> the replay, and anything a visitor sees in the first 30 s that the
+> replay does not show (a popup, a banner, a player). On round 1's
+> pages a feedback popup that opens at 5 s never opened in the
+> replay. Tell me what you find before the run; do not change the
+> freeze yourself.
+>
+> The run. On `main`'s head; tell
+> me the commit before you start, since 9b runs at the same one. Run
+> in tested_frozen mode, each page with the round's other pages on
+> its host and the site's home page as other pages (19.A loads
+> further pages itself). Before the run, check that the site's own
+> search loads in your container: run one search by hand through the
+> tool's browser and tell me if its results page fails to load any
+> script (19.A cannot FAIL where it does not). Report per test and in all; list apart
+> the cells inside a web component or a frame; and list every NEEDS
+> REVIEW and wrong cell by cause, as findings for the other threads.
+> Change no code yourself, and change nothing between the freeze and
+> the lock: the score is the blind result for that commit.
 
 **Step 10b, Sonnet: round 4, a second blind round, if I key one** (two threads: the freeze the day I key the pages, the run on Nov 17)
 

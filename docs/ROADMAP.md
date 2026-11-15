@@ -24,10 +24,12 @@ keep their own schedule.
   round 2's pages and 12 on round 1's; decided cells 91 of 220 on
   round 2's pages (68 in step 6, about 132 in the blind round).
 - **Where NEEDS REVIEW comes from** (step 9a, 223 cells over both
-  sites): menus and sections that open and were not walked, about 45;
+  sites): menus and sections that open and were not walked (guard RC), 37, and
+  ones that did not open or could not be read (guard RV), about 10;
   guard CN (a hidden form, more than 30 images), 44; the judge unsure,
   29; frames, 28; 2.C and 2.D's timer, 20; 19.A, 12. The keys fail
-  few of them. Steps 6e, 6g and 8 are aimed at these.
+  few of them. Steps 6e, 6g, 6h and 8 went after these (all merged
+  2026-11-15); what they won back on real pages is measured by 9b.
 - **Hosting:** sign-in, run ownership and audit lines are built, and
   the built image passes a smoke test in CI behind a real Keycloak.
   Nothing has run in the tobi-508 environment on VAST yet (step 12b).
@@ -54,11 +56,9 @@ is merged. At most three threads at once. Each thread branches from
 
 | Step | What | Model | When |
 | --- | --- | --- | --- |
-| 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
-| 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
-| 6g | 4.C and 4.E read the content that menus and sections open; 19.A opens the closed menu that holds a link to the page | Opus | done 2026-11-15 (#90, #92; 19.A in this PR) |
-| 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0); repeated link rows as navigation, non-pages set aside (1.14.0); then the rounds' rerun | Opus | running |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
+| 1-9a, 6e-6h, 12a | Done: PRs #39 to #93 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
+| 10a | Before round 3's freeze: the freeze scrolls a smooth-scrolling page to its end; why 19.A on CILab differs between two reruns | Sonnet | now |
+| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 10a is merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
@@ -67,48 +67,48 @@ is merged. At most three threads at once. Each thread branches from
 
 ### What each open step covers
 
-- **6e.** Guard CN made 58 cells NEEDS REVIEW on 19 real pages and the
-  keys fail none; each change is approved by Abby before it is built.
-  Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
-  decided, all agreeing with the key) and the images (up to 300 read;
-  6 cells, all agreeing) and 5.H reading a hidden form to say whether
-  it is the kind 5.H is about (8 cells, all agreeing). Done: fields hidden from everyone
-  (honeypots, reCAPTCHA), decided by behaviour inside a form shown on
-  load (5.A 1.13.0 to 5.H 1.10.0; no cell on the frozen pages, by
-  design). Later: a mobile copy out of scope, once a positive test exists;
-  the freeze recording frames whose address varies per load, and its
-  scroll on smooth-scrolling pages (round 3).
-- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14 and
-  15; [draft](plans/2026-11-15-19a-finds-ways.md)). Today 19.A reads
-  only the pages the caller gave and one site search, and the eval
-  runners never make the follow-up call (which also drops the suggested
-  pages when 5 or more were given), so it is NEEDS REVIEW or a wrong
-  FAIL where a tester finds two ways. PR 1, built (19.A 1.10.0; the
-  sixth exception to principle 5): a link to the page as `index.html`
-  (or `default.*`, another scheme, `www.`) is loaded as an other page
-  and counts when it is the same document. PR 2 (1.11.0), built: 19.A itself
-  checks the site map, the page's parent, up to two child pages and the
-  home page one by one, stops at two ways, and FAILs, naming what it
-  checked, only when all were checked; no follow-up call for 19.A is
-  left, so the runners need none. Then 19.A is rerun on rounds 1 and
-  2's frozen pages, every moved cell shown beside the key.
-- **6g, done 2026-11-15.** A shared walk through what each menu or
-  section opens (`opened.py`, on `reveal.py`'s opening; pass R only
-  pressed Tab once). 4.C 1.14.0 (#90) and 4.E 1.8.0 (#92) read it; guard
-  RC holds only what the walk did not reach. A video's built-in controls
-  are not a trigger. Frozen rerun: 4.C R2 9/10, R1 6/9; 4.E R2 8/10, R1
-  6/9 agree; no PASS the key fails. 19.A 1.15.0 opens the one visible
-  button that controls a hidden navigation link to the page. Not done:
-  4.D and 5.D (Abby: skipped for the cut).
+- **What steps 6e, 6g and 6h left** (all merged 2026-11-15; each
+  rerun on the frozen pages gave no PASS or DOES NOT APPLY where the
+  key fails):
+  - **6e, guard CN:** the timer (2.C, 2.D), the images (up to 300),
+    5.H on hidden forms, and fields hidden from everyone (a hidden
+    part of a form shown on load that nothing shows). Still NEEDS
+    REVIEW: nasa.gov's feedback popup and mobile search box (about 22
+    cells; the popup never opens for anyone, live or recorded, because
+    of a script error on the site), and the home page's filter panels.
+  - **6g, opened content:** 4.C and 4.E walk what menus and sections
+    open (`opened.py`). Agreement on the frozen pages: 4.C 9 of 10 and
+    6 of 9 (2 and 0 before); 4.E 8 of 10 and 6 of 9 (2 and 0 before).
+    19.A opens the one closed menu that hides a link to the page.
+    Skipped for the cut: 4.D and 5.D.
+  - **6h, 19.A:** aliases and further pages loaded by the test itself.
+    Round 2, 9 of 10 agree; round 1, 4 of 9, the other 5 NEEDS REVIEW
+    on closed menus whose links do not lead to the page.
+- **10a. Before round 3's freeze** (found by steps 6e and 6g):
+  - **The freeze stops scrolling after one step on a page that sets
+    smooth scrolling** (Bootstrap 5 does), so lazy content below is
+    not recorded. Fix it, with a page that shows it. Frames whose
+    address changes on every load (reCAPTCHA, a lazy video embed) are
+    not recorded either: report them at freeze time.
+  - **19.A on CILab** passed in step 6h's rerun and FAILs in step
+    6g's, on `main`'s code as well, with the pages loaded live. Both
+    of the key's ways are still on the live site (checked 2026-11-15:
+    the home page links to `/cilab/index.html`, which is the same
+    document as `/cilab/`, and the subpage's top row links back), so
+    the cause is in what the two reruns gave the test or in how it
+    loaded them. Find it before round 3, where every page is given
+    other pages the same way.
 - **10 and 10b.** A blind round is run by
   [the how-to](how-to/run-a-judging-round.md): keys locked before the
   tool runs, the run locked before the keys are opened. Until a
   round's run is locked, its page list, keys and freeze stay off
   `main`, on an unmerged branch, and no other thread is told the
-  pages. Round 3 is frozen and the scorer fixes are merged (PR #73).
-  Its run waits for 6e, 6g and 6h, so that it is run once on the
-  code as it will be shown: without 6h, 19.A is undecided on every
-  page. 9b runs at the same commit, so the two can be read together.
+  pages. Round 3's pages are not frozen yet and no thread has been
+  told what they are (Abby, 2026-11-15): the freeze and the run are
+  one thread, started when step 10a is merged. The thread compares
+  each replay with the live page before any test runs. The scorer
+  fixes are merged (PR #73). 9b runs at the same commit, so the two
+  can be read together.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
   - **12a is built** (PRs #70 to #72, #74):
     [the deployment guide](how-to/deploy-on-vast.md), a smoke test
@@ -212,6 +212,14 @@ the remaining checks).
 19. **The second look as a guard** (part F), shaped by its trial (not a
    gate: Abby, 2026-11-12). Its README line says what the trial caught
    and missed.
+19b. **9.C pairs by function, not only by address and place** (Abby,
+    2026-11-15). Candidates in the pages' own content: controls with
+    the same picture, the same action word, or the same place in a
+    template both pages share; every candidate goes to J1, which can
+    already answer "different function". Each candidate rule comes
+    with a pair that must not FAIL (round 2: prose links to one address
+    in different words, which the key passes), and a judge eval. Also
+    9.B: repeated navigation inside `main`.
 20. **SCRT files, phases 2 and 3**
     ([plan](plans/2026-11-02-scrt-io.md)): TT review, merging a partial
     file (which is also how to verify a fix: `verify_fix` on
@@ -243,8 +251,9 @@ itself, one bundle a thread; they are not repeated here.
   ([browser checks](../specs/rules/_browser-checks.md)).
 - **`JUDGE_TYPES`:** 4.B alone meets the gate in step 9a; decided after
   9b.
-- **Each change of steps 6e and 6g** that turns NEEDS REVIEW into an
-  outcome, shown before it is built.
+- **The image cap's timing** (step 6e raised it from 30 to 300
+  without the timed run against 2.B's budget it had promised; no 2.B
+  ran out on the frozen pages): 9b's test times will show it.
 
 **After the demo: each shapes a step of "Next".**
 
