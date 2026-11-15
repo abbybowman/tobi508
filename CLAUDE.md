@@ -133,10 +133,11 @@ by TT test ID. Package: `tobi508`.
   (every redirect hop checked); the term is the tested page's own heading;
   each recorded as its own HAR.
 - **19.A's suggested pages** (widened 2026-11-15): the site map a page
-  read links to, the tested page's parent (one level up, from the tested
-  page's own address), up to 2 child pages (links on the tested page under
-  its own directory; none for a page at the site root) and the home page;
-  on the tested page's host; at most 5. While fewer than two kinds of way
+  read links to, the tested page's parent (one level up, from its own
+  address), up to 2 child pages (links on it under its own directory; none
+  for a page at the site root), its previous and next pages (links on it
+  so named, at most 2), up to 3 other links in its content, and the home
+  page; on the tested page's host; at most 10. While fewer than two kinds of way
   are found, 19.A loads them itself, one at a time, and stops at two. Each
   is loaded exactly as a caller's other page is (`pipeline.capture_other`):
   allowlisted, on the tested page's host before and after redirects, its

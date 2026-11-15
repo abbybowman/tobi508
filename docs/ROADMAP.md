@@ -57,7 +57,7 @@ is merged. At most three threads at once. Each thread branches from
 | 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
 | 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
 | 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
-| 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0) | Opus | running |
+| 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0); repeated link rows as navigation, non-pages set aside (1.14.0); then the rounds' rerun | Opus | running |
 | 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
@@ -72,8 +72,12 @@ is merged. At most three threads at once. Each thread branches from
   Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
   decided, all agreeing with the key) and the images (up to 300 read;
   6 cells, all agreeing) and 5.H reading a hidden form to say whether
-  it is the kind 5.H is about (8 cells, all agreeing). To research:
-  fields hidden from everyone (honeypots, reCAPTCHA).
+  it is the kind 5.H is about (8 cells, all agreeing). Done: fields hidden from everyone
+  (honeypots, reCAPTCHA), decided by behaviour inside a form shown on
+  load (5.A 1.13.0 to 5.H 1.10.0; no cell on the frozen pages, by
+  design). Later: a mobile copy out of scope, once a positive test exists;
+  the freeze recording frames whose address varies per load, and its
+  scroll on smooth-scrolling pages (round 3).
 - **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14 and
   15; [draft](plans/2026-11-15-19a-finds-ways.md)). Today 19.A reads
   only the pages the caller gave and one site search, and the eval
@@ -319,7 +323,7 @@ Moved to [KNOWN-LIMITS.md](KNOWN-LIMITS.md) (2026-11-14).
   page of the batch in one go: one site map read answers 19.A for all
   ten. Today the page cache (`pagecache.py`) already records and reads a
   page once per server session, so the loads are shared, but each page's
-  run still decides alone and loads in its own order.
+  run still decides alone and loads in its own order. With the batch pass, 19.A can search more widely and deeply (a site map's sub-pages, more related pages, every page's previous and next) because what one page's check finds is reused for the others instead of loaded again (Abby, 2026-11-15).
 - **A "test a page" prompt** for operators who are not Trusted Testers.
 - **The local runner** (part J; the pivot plan's decision 6): the
   browser on the user's machine for pages that are not public, the

@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><title>Order</title></head><body>
+<nav aria-label="Site"><button type="button" aria-expanded="false" aria-controls="menu" onclick="var m=document.getElementById('menu');m.hidden=!m.hidden;this.setAttribute('aria-expanded',String(!m.hidden))">Menu</button>
+<ul id="menu" hidden><li><a href="#about">About</a></li></ul></nav>
+<main><h1>Order a print</h1>
+<form onsubmit="event.preventDefault()">
+<div id="s1"><p>Step 1 of 2: your details</p>
+<p><label>Name <input name="name"></label></p>
+<p><button type="button" onclick="if(!document.querySelector('input[name=name]').value){alert('Enter your name.');return;}document.getElementById('s1').style.display='none';document.getElementById('s2').style.display='block'">Next</button></p></div>
+<div id="s2" style="display: none;"><p>Step 2 of 2: delivery</p>
+<p><label>Street address <input name="street"></label></p>
+<p><button type="submit">Place order</button></p></div>
+</form></main>
+</body></html>

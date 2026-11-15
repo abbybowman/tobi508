@@ -2,8 +2,9 @@
 
 Reads the site read (`site.py`): links to the tested page on the caller's
 other pages, by kind of way. While they show fewer than two kinds, it
-checks suspected aliases of the page (1.10.0), then the site map, the
-page's parent, up to two child pages and the home page one by one (1.11.0;
+checks suspected aliases of the page (1.10.0), then the site map, its
+previous and next pages, its parent, up to two child pages, up to three
+pages it links to (1.13.0) and the home page one by one (1.11.0;
 Abby, 2026-11-15), each loaded as a caller's other page, then the site's
 own search on the live site, once more with the heading quoted if that
 finds nothing (CLAUDE.md, Abby 2026-11-02; fix 11). It stops at two kinds.
@@ -20,7 +21,7 @@ from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel, Field
 
-from tobi508.capture import failed_scripts
+from tobi508.capture import document_type, failed_scripts
 from tobi508.checks.base import RunContext
 from tobi508.models import (
     REVIEW_HEAD,
@@ -33,8 +34,17 @@ from tobi508.models import (
 from tobi508.site import PageRead, norm_href, page_label, read_page, site_read
 from tobi508.walk import KeyboardWalk
 
-SUGGEST_MAX = 5
+SUGGEST_MAX = 10  # 1.13.0 (5 before; Abby, 2026-11-15)
 CHILD_MAX = 2
+PREV_NEXT_MAX = 2
+RELATED_MAX = 3  # Abby, 2026-11-15: start with 3
+# Related links loaded in all, when some turn out not to be pages (1.14.0).
+RELATED_LOAD_MAX = 6
+HTML_TYPES = {"text/html", "application/xhtml+xml"}
+# A link group repeated on T is the site's shared navigation (1.14.0).
+GROUP_MIN = 3
+GROUP_SHARE = 0.8
+PREV_NEXT = re.compile(r"^(previous|prev|next)(\s+page)?$", re.I)
 KIND_WORDS = {
     "navigation": "the site navigation",
     "toc": "a table of contents",
@@ -83,7 +93,8 @@ class Suggested(BaseModel):
 
     url: str
     role: str  # site_map | parent | child | home
-    status: str = "pending"  # checked | not_checked | is_this_page | not_needed
+    # checked | not_checked | is_this_page | not_needed | not_a_page (1.14.0)
+    status: str = "pending"
     final_url: str = ""
     reason: str = ""  # why not checked
 
@@ -106,6 +117,11 @@ class State19A(BaseModel):
     # Pages read with links in closed menus (W9, 1.12.0): page n, its url,
     # how many, and how many lead to T or a verified alias.
     hidden_nav: list[dict[str, Any]] = Field(default_factory=list)
+    # The destinations of each link group on T (1.14.0): a link to T in a
+    # group repeated here is navigation.
+    t_groups: list[list[str]] = Field(default_factory=list)
+    # Related links held back, taking the place of one not a page (1.14.0).
+    spares: list[str] = Field(default_factory=list)
     # The suggested pages, in the order they are checked (1.11.0).
     checked: list[Suggested] = Field(default_factory=list)
     hint: bool = False
@@ -199,11 +215,50 @@ def _site_map_pages(pages: list[PageRead]) -> set[int]:
 TEMPLATE = ("navigation", "banner", "contentinfo")
 
 
-def _kind(u, page: PageRead, maps: set[int]) -> str:
+def link_groups(page: PageRead, targets: tuple[str, ...] = ()) -> dict[str, set[str]]:
+    """Each link group's destinations on a page (site.Unit.group). A link to
+    T or a verified alias of T (`targets`, T first) is T: round 2's CILab
+    subpage links its home as index.html in the row its home has."""
+    out: dict[str, set[str]] = {}
+    for u in page.units:
+        if u.role == "link" and u.group and u.href:
+            d = (
+                norm_href(targets[0])
+                if targets and _to_t(u.href, targets)
+                else norm_href(u.href)
+            )
+            if d:
+                out.setdefault(u.group, set()).add(d)
+    return out
+
+
+def template_groups(main: PageRead) -> list[list[str]]:
+    return [sorted(g) for g in link_groups(main).values() if len(g) >= GROUP_MIN]
+
+
+def repeated_on_t(dests: set[str], t_groups: list[list[str]]) -> bool:
+    """A link group repeated on T (spec Terms, 1.14.0): 3 or more links, and
+    at least GROUP_SHARE of their destinations in one group on T itself."""
+    if len(dests) < GROUP_MIN:
+        return False
+    return any(len(dests & set(g)) >= GROUP_SHARE * len(dests) for g in t_groups)
+
+
+def _kind(
+    u,
+    page: PageRead,
+    maps: set[int],
+    groups: dict[str, set[str]] | None = None,
+    t_groups: list[list[str]] = (),
+) -> str:
     # The site's menus, header and footer come first: on a site map page they
     # are the shared template, not the site map's list (spec 1.1.0, Abby
     # 2026-11-02).
     if u.region_role in TEMPLATE:
+        return "navigation"
+    # A group of links repeated on T, outside those regions (1.14.0; Abby,
+    # 2026-11-15: CILab's subpages' "top nav" is a row of icon links).
+    if u.group and groups and repeated_on_t(groups.get(u.group, set()), t_groups):
         return "navigation"
     if page.n in maps:
         return "site_map"
@@ -223,10 +278,19 @@ def results_link_to(res: PageRead, t_url: str | tuple[str, ...]) -> bool:
 
 
 def links_to(
-    t_url: str | tuple[str, ...], pages: list[PageRead], maps: set[int]
+    t_url: str | tuple[str, ...],
+    pages: list[PageRead],
+    maps: set[int],
+    t_groups: list[list[str]] = (),
 ) -> list[LinkTo]:
     out = []
     for p in pages:
+        targets = (t_url,) if isinstance(t_url, str) else t_url
+        groups = link_groups(p, targets) if t_groups else None
+        mapped = [
+            sorted({norm_href(targets[0]) if _to_t(x, targets) else x for x in g})
+            for g in t_groups
+        ]
         for u in p.units:
             if u.role == "link" and _to_t(u.href, t_url):
                 out.append(
@@ -234,7 +298,7 @@ def links_to(
                         page=p.n,
                         name=u.name[:80],
                         region=u.region_role,
-                        kind=_kind(u, p, maps),
+                        kind=_kind(u, p, maps, groups, mapped),
                     )
                 )
     return out
@@ -313,12 +377,71 @@ def children_of(t_url: str, main: PageRead) -> list[str]:
     return out
 
 
+def _page_link(u, t_url: str) -> str | None:
+    """A link on T to another page of T's host (a page, not a file), its
+    fragment dropped; None otherwise."""
+    if u.role != "link" or not u.href:
+        return None
+    h, t = urlsplit(u.href), urlsplit(t_url)
+    if h.hostname != t.hostname or h.scheme not in ("http", "https", "file"):
+        return None
+    last = h.path.rsplit("/", 1)[-1]
+    if (last.rpartition(".")[2].lower() if "." in last else "") not in PAGE_EXT:
+        return None
+    url = urlunsplit((h.scheme, h.netloc, h.path, h.query, ""))
+    if _same(url, t_url) or suspected_alias(url, t_url):
+        return None
+    return url
+
+
+def linked_pages(
+    t_url: str,
+    main: PageRead,
+    skip: tuple[str, ...] = (),
+    related_max: int = RELATED_MAX,
+) -> list[tuple[str, str]]:
+    """Pages T itself links to that may link back (spec Terms, 1.13.0): its
+    previous and next pages (links so named, or rel prev or next; at most
+    2), then the first RELATED_MAX other links in its content (outside
+    navigation, banner and contentinfo regions), in reading order. A link
+    that differs from another only by its query string counts once; pages in
+    `skip` (given, the site map, the child pages) take no place."""
+    seen: set[tuple[str, str]] = set()
+    pn: list[tuple[str, str]] = []
+    rel: list[tuple[str, str]] = []
+
+    def key(url: str) -> tuple[str, str]:
+        s = urlsplit(url)
+        return ((s.hostname or ""), s.path.rstrip("/"))
+
+    for u in main.units:
+        url = _page_link(u, t_url)
+        if url is None or key(url) in seen or any(_same(url, x) for x in skip):
+            continue
+        rels = set(u.rel.lower().split())
+        if PREV_NEXT.match(u.name.strip()) or rels & {"prev", "next"}:
+            if len(pn) < PREV_NEXT_MAX:
+                pn.append(("prev_next", url))
+                seen.add(key(url))
+            continue
+        if u.region_role in TEMPLATE or len(rel) >= related_max:
+            continue
+        rel.append(("related", url))
+        seen.add(key(url))
+    return pn + rel
+
+
 def suggested_pages(
-    t_url: str, main: PageRead, pages: list[PageRead], given: set[str]
+    t_url: str,
+    main: PageRead,
+    pages: list[PageRead],
+    given: set[str],
+    spares: list[str] | None = None,
 ) -> list[Suggested]:
     """The suggested pages, in the order they are checked (spec Terms,
-    1.11.0): the site map, T's parent, up to 2 child pages, the home page;
-    at most SUGGEST_MAX, never a page given, T or a suspected alias of T."""
+    1.11.0, 1.13.0): the site map, T's previous and next pages, its parent,
+    up to 2 child pages, up to 3 related pages, the home page; at most
+    SUGGEST_MAX, never a page given, T or a suspected alias of T."""
     t = urlsplit(t_url)
     found: list[tuple[str, str]] = []
     site_map = next(
@@ -335,10 +458,24 @@ def suggested_pages(
     )
     if site_map:
         found.append(("site_map", site_map))
+    children = children_of(t_url, main)
     parent = parent_of(t_url)
+    skip = (
+        *given,
+        *children,
+        *([site_map] if site_map else []),
+        *([parent] if parent else []),
+    )
+    linked = linked_pages(t_url, main, skip, RELATED_LOAD_MAX)
+    rel = [x for x in linked if x[0] == "related"]
+    if spares is not None:  # past the 3, to take a non-page's place (1.14.0)
+        spares.extend(u for _, u in rel[RELATED_MAX:])
+    linked = [x for x in linked if x[0] == "prev_next"] + rel[:RELATED_MAX]
+    found += [x for x in linked if x[0] == "prev_next"]
     if parent:
         found.append(("parent", parent))
-    found += [("child", c) for c in children_of(t_url, main)]
+    found += [("child", c) for c in children]
+    found += [x for x in linked if x[0] == "related"]
     if t.scheme in ("http", "https"):
         found.append(("home", urlunsplit((t.scheme, t.netloc, "/", "", ""))))
     out: list[Suggested] = []
@@ -368,7 +505,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         st.t_requested = ctx.requested_url
     both = (st.t_url, st.t_requested)
     maps = _site_map_pages(site.pages)
-    st.links = links_to(both, site.others, maps)
+    st.t_groups = template_groups(main)
+    st.links = links_to(both, site.others, maps, st.t_groups)
     forms = [f for p in site.pages for f in p.forms]
     st.search_forms = len(forms) + sum(
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
@@ -379,7 +517,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         await _check_aliases(ctx, st, read, maps)
     if len(st.kinds) < 2:
         given = {p.url for p in site.pages} | {ctx_p.final_url for ctx_p in ctx.pages}
-        st.checked = suggested_pages(st.t_url, main, site.pages, given)
+        st.checked = suggested_pages(st.t_url, main, site.pages, given, st.spares)
         await _check_suggested(ctx, st, main, read)
     if len(st.kinds) < 2 and st.search_forms and not st.search_target:
         await _live_search(ctx, st, main, forms)
@@ -465,7 +603,7 @@ async def _check_aliases(
         else:
             a.status, a.reason = "not_verified", "it loaded a different document"
             continue
-        st.links = links_to(_targets(st), pages, maps)
+        st.links = links_to(_targets(st), pages, maps, st.t_groups)
 
 
 async def _check_suggested(
@@ -489,6 +627,17 @@ async def _check_suggested(
             c.status, c.reason = "not_checked", _load_reason(exc)
             continue
         c.final_url = ref.final_url
+        kind = document_type(ref.har, ref.final_url) if ref.har else ""
+        if kind and kind not in HTML_TYPES:
+            # Not a page (an API's JSON, XML): it shows no way and takes no
+            # place; a related link held back takes it (1.14.0).
+            c.status, c.reason = "not_a_page", f"it is not a web page ({kind})"
+            while c.role == "related" and st.spares:
+                url = st.spares.pop(0)
+                if not any(_same(url, x.url) for x in st.checked):
+                    st.checked.append(Suggested(url=url, role="related"))
+                    break
+            continue
         if got.error:
             c.status, c.reason = "not_checked", "it could not be read"
             continue
@@ -498,7 +647,7 @@ async def _check_suggested(
         c.status = "checked"
         read.append(got)
         maps = _site_map_pages([main, *read])
-        st.links = links_to(_targets(st), read, maps)
+        st.links = links_to(_targets(st), read, maps, st.t_groups)
         await _check_aliases(ctx, st, read, maps)
 
 
@@ -646,6 +795,8 @@ ROLE_WORDS = {
     "site_map": "the site map",
     "parent": "the page above this one",
     "child": "a page below this one",
+    "prev_next": "the previous or next page",
+    "related": "a page this one links to",
     "home": "the home page",
 }
 
@@ -657,9 +808,14 @@ def _checked_words(st: State19A) -> list[str]:
     done = [c for c in st.checked if c.status in ("checked", "is_this_page")]
     for role in ("site_map", "parent", "home"):
         out += [ROLE_WORDS[role] for c in done if c.role == role]
-    kids = sum(1 for c in done if c.role == "child")
-    if kids:
-        out.append(f"{kids} page{'s' if kids != 1 else ''} below it")
+    for role, one, many in (
+        ("prev_next", "its previous or next page", "its previous and next pages"),
+        ("child", "1 page below it", "{n} pages below it"),
+        ("related", "1 page it links to", "{n} pages it links to"),
+    ):
+        n = sum(1 for c in done if c.role == role)
+        if n:
+            out.append(one if n == 1 else many.format(n=n))
     if st.search.tries:
         k = len(st.search.tries)
         out.append(f"the site search ({k} search{'es' if k != 1 else ''})")
@@ -811,9 +967,23 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             evidence_refs,
             rationale,
         )
+    # G5 (1.13.0, Abby 2026-11-15): everything was checked and one way was
+    # found (in practice the site search); a tester may still find a second
+    # way on a related page the tool cannot reach, so NEEDS REVIEW, naming
+    # what was found and what was checked.
     return _finding(
         Outcome.NEEDS_REVIEW,
-        REVIEW_HEAD,
+        " ".join(
+            x
+            for x in [
+                f"We found {found}, and no second way.",
+                f"We checked {_list(_checked_words(st))}.",
+                "A person should look for a second way, such as a link to this "
+                "page on a related page of the site.",
+                web + ".",
+            ]
+            if x
+        ),
         trace + ["G5"],
         evidence_refs,
         rationale,
@@ -835,8 +1005,9 @@ class Check19A:
         "table of contents, links in other pages' content. Two kinds pass. If "
         "it finds fewer, it checks whether a link to this page's address with "
         "index.html (or similar) is the same page, then looks at the site map, "
-        "the page above this one, two pages below it and the home page, one at "
-        "a time, then tries the site's own search for the page's heading "
+        "the previous and next pages, the page above this one, two pages below "
+        "it, three pages it links to and the home page, one at a time, then "
+        "tries the site's own search for the page's heading "
         "(again in quotation marks if that finds nothing). It stops as soon "
         "as it has two kinds, and fails only when all of these were checked."
     )

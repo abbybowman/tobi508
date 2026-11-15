@@ -122,6 +122,20 @@ UNITS_FN = (
     return el.matches('a[href], button, input:not([type="hidden"]), select, textarea, summary') ||
       (ti !== null && ti.trim() !== '' && parseInt(ti, 10) >= 0);
   };
+  // The group a link sits in (19.A 1.14.0): its nearest ancestor, at most 4
+  // levels up, that holds 3 or more links; an id per ancestor, '' when none.
+  const groupIds = new Map();
+  const groupOf = (el) => {
+    let a = el.parentElement;
+    for (let k = 0; a && k < 4; k++, a = a.parentElement) {
+      if (a === document.body) break;
+      if (a.querySelectorAll('a[href]').length >= 3) {
+        if (!groupIds.has(a)) groupIds.set(a, 'g' + groupIds.size);
+        return groupIds.get(a);
+      }
+    }
+    return '';
+  };
   const units = (cap) => {
     const out = [], regions = [], counts = {}, els = [];
     let truncated = false;
@@ -163,6 +177,8 @@ UNITS_FN = (
         push(el, { kind: 'control', role: controlRole(el), name, text: name.toLowerCase().slice(0, 200),
           href: t === 'A' && raw !== null ? el.href : '', href_attr: raw === null ? null : raw,
           dest: t === 'A' && raw !== null ? destHref(el) : '',
+          rel: t === 'A' ? norm(el.getAttribute('rel')) : '',
+          group: t === 'A' ? groupOf(el) : '',
           submit: !!el.form && (el.type || '').toLowerCase() === 'submit', stop: tabbable(el),
           id: el.id || '' }, chain);
         return;
@@ -238,6 +254,10 @@ class Unit(BaseModel):
     # Where the link goes, '' when nowhere (DEST_JS): the pairing key of 9.C.
     dest: str = ""
     href_attr: str | None = None
+    rel: str = ""  # a link's rel attribute (19.A 1.13.0: prev, next)
+    # The group a link sits in: its nearest ancestor (4 levels at most) with
+    # 3 or more links, an id on its page; "" when none (19.A 1.14.0).
+    group: str = ""
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
     id: str = ""

@@ -94,6 +94,54 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
             "1 form field is hidden until something opens it, and was not checked.",
         ),
     },
+    # Fields hidden from everyone (Abby, 2026-11-15; hidden.py): an
+    # Akismet-style trap, a Gravity Forms-style honeypot and a reCAPTCHA-
+    # style box, on a page with a menu button (so something could show
+    # fields). Nothing a careful tester does shows them: not counted, and the
+    # tests decide.
+    "antispam-form": {
+        "5.A": ("PASS", None),
+        "5.C": ("PASS", None),
+        "5.F": ("PASS", None),
+        "5.H": ("DNA", None),
+    },
+    # The nearest that must stay: the same form with an "Other, please
+    # specify" field a list choice shows, and with a popup form that opens by
+    # itself after 5 s. Each is counted; the guard holds.
+    "antispam-other": {
+        t: (
+            "NEEDS_REVIEW",
+            "1 form field is hidden until something opens it, and was not checked.",
+        )
+        for t in ("5.A", "5.F")
+    },
+    "antispam-popup": {
+        t: (
+            "NEEDS_REVIEW",
+            "1 form field is hidden until something opens it, and was not checked.",
+        )
+        for t in ("5.A", "5.F")
+    },
+    # 5.H: a hidden form whose own words ("Amount", "Continue") hold no
+    # consequence word, on a page that says "Pay your bill". Pass E takes no
+    # form, so the page's text is read with the hidden form: J1 is asked.
+    "pay-page-hidden-form": {"5.H": ("NEEDS_REVIEW", None)},
+    # A visible form with a field that appears only on an unusual choice
+    # (Abby, 2026-11-15): the third radio button of a set, or step 2 of a
+    # form. The behaviour check shows each (a choice; pressing Next), so it
+    # stays counted and the guard holds. The twin later-step-checked moves
+    # on only once step 1 is filled: before the sweep pressed the form's
+    # buttons after typing, its step 2 was called hidden from everyone and
+    # 5.A gave a wrong PASS.
+    **{
+        page: {
+            "5.A": (
+                "NEEDS_REVIEW",
+                "1 form field is hidden until something opens it, and was not checked.",
+            )
+        }
+        for page in ("choice-third", "later-step", "later-step-checked")
+    },
     # M-02: a form that is only a button.
     # 5.H 1.9.0 reads the form pass E did not take: "Delete my account" is a
     # consequence hint, so J1 is asked (open here).

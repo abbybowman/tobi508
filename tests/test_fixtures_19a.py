@@ -185,6 +185,35 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G2"],
         {},
     ),
+    # 19.A 1.13.0 (Abby, 2026-11-15: "previous and next ... almost certain
+    # to result in a valid way"; round 2's leaf pages): the next story links
+    # back in its content. Its twin's next story does not: FAIL, naming it.
+    "next-page-links-back": ("nb/b/", ["hub2"], "PASS", ["W1", "G2"], {}),
+    "next-page-does-not-link-back": ("nb/d/", ["hub2"], "FAIL", ["W1", "G4"], {}),
+    # ... and a related page T links to in its content (round 1's ISS hub).
+    "related-page-links-back": ("rel/x/", ["hub2"], "PASS", ["W1", "G2"], {}),
+    # 19.A 1.14.0 (Abby, 2026-11-15, option 1; round 2's CILab): a lab's
+    # subpages repeat its home page's row of icon links, outside any
+    # navigation region. The row is on T too, so the link back (to
+    # index.html, a verified alias) is navigation. Its twin's subpage links
+    # back only from a paragraph of links T does not have: one kind, FAIL.
+    "repeated-link-row-is-navigation": (
+        "lab2/",
+        ["hub3"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    "content-links-not-on-t-are-not-navigation": (
+        "lab3/",
+        ["hub3"],
+        "FAIL",
+        ["W1", "W6", "G4"],
+        {},
+    ),
+    # ... and a related link that is an API's JSON is not a page: it takes
+    # no place, and a link held back is checked instead.
+    "json-is-not-a-page": ("rel/y/", ["hub3"], "PASS", ["W1", "G2"], {}),
     "process-step": (
         "step2",
         ["home"],
@@ -208,6 +237,8 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     f = got["19.A"]
     assert f.outcome.value == outcome, (f.rows, f.summary, f.rationale)
     assert [r for r in f.rows if r != "A5"] == rows, f.rows
+    if case == "next-page-does-not-link-back":
+        assert "its previous or next page" in f.summary, f.summary
     if case == "closed-menu-not-read":
         assert "inside a closed menu on" in f.summary, f.summary
     if case == "alias-index-html-is-another-page":
@@ -361,17 +392,46 @@ def test_suggested_pages_in_order():
         ("parent", "https://ex.gov/a/"),
         ("child", "https://ex.gov/a/b/one/"),
         ("child", "https://ex.gov/a/b/two.html"),
+        ("related", "https://ex.gov/a/b/three.html"),
+        ("related", "https://ex.gov/elsewhere/"),
+        ("home", "https://ex.gov/"),
+    ]
+    # 1.13.0: previous and next first after the site map, related pages after
+    # the children (3 at most; a query-only variant counts once).
+    seq = PageRead(
+        n=0,
+        url=t,
+        units=[
+            link("https://ex.gov/topic/"),
+            link("https://ex.gov/topic/?page=2"),
+            link("https://ex.gov/a/b/one/"),
+            link("https://ex.gov/a/c/", "Next page"),
+            link("https://ex.gov/t2/"),
+            link("https://ex.gov/t3/"),
+            link("https://ex.gov/t4/"),
+        ],
+    )
+    got = suggested_pages(t, seq, [seq], set())
+    assert [(c.role, c.url) for c in got] == [
+        ("prev_next", "https://ex.gov/a/c/"),
+        ("parent", "https://ex.gov/a/"),
+        ("child", "https://ex.gov/a/b/one/"),
+        ("related", "https://ex.gov/topic/"),
+        ("related", "https://ex.gov/t2/"),
+        ("related", "https://ex.gov/t3/"),
         ("home", "https://ex.gov/"),
     ]
     assert parent_of("https://ex.gov/a/b/c.html") == "https://ex.gov/a/b/"
     assert parent_of("https://ex.gov/a/b/index.html") == "https://ex.gov/a/"
     assert parent_of("https://ex.gov/") is None
+    # A T at the root has no child pages; a link in its content is a related
+    # page (1.13.0), never a child.
     root = PageRead(n=0, url="https://ex.gov/", units=[link("https://ex.gov/a/")])
-    assert suggested_pages("https://ex.gov/", root, [root], set()) == []
+    got = suggested_pages("https://ex.gov/", root, [root], set())
+    assert [(c.role, c.url) for c in got] == [("related", "https://ex.gov/a/")]
     query = PageRead(n=0, url="https://ex.gov/?q=1", units=[link("https://ex.gov/a/")])
-    assert [
-        c.role for c in suggested_pages("https://ex.gov/?q=1", query, [query], set())
-    ] == ["home"]
+    got = suggested_pages("https://ex.gov/?q=1", query, [query], set())
+    assert [c.role for c in got] == ["related", "home"]
 
 
 def test_failed_scripts_reads_the_recording(tmp_path):
@@ -451,3 +511,27 @@ def test_alias_reasons_are_plain_words():
     assert _load_reason(NotFrozen("x")) == "no saved copy of it was available to load"
     assert "time" in _load_reason(TimeoutError())
     assert "Error" not in _load_reason(RuntimeError("boom"))
+
+
+def test_g5_names_what_was_found_and_checked():
+    """19.A 1.13.0 G5 (Abby, 2026-11-15): one way found (the site search) and
+    everything checked is NEEDS REVIEW, saying what was found and checked."""
+    from tobi508.checks.t19a import Search, State19A, Suggested, evaluate
+
+    st = State19A(
+        t_url="https://ex.gov/a/",
+        pages=[{"n": 1, "url": "https://ex.gov/b/"}],
+        search_forms=1,
+        search=Search(status="found", tries=["A"]),
+        checked=[Suggested(url="https://ex.gov/", role="home", status="checked")],
+    )
+    f = evaluate(st, [])
+    assert f.outcome.value == "NEEDS_REVIEW" and f.rows[-1] == "G5"
+    assert (
+        "We found 1 way to reach this page (the site search), and no second way"
+        in f.summary
+    )
+    assert (
+        "We checked the 1 other page you gave, the home page and the site "
+        "search (1 search)" in f.summary
+    )
