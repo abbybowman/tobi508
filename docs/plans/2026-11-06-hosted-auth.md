@@ -117,6 +117,8 @@ admins.
 
 ## Next
 
-Deploy on VAST once the prototype exists, sign in from Claude Code, run one
+The steps, settings and checklist are in
+[how-to/deploy-on-vast.md](../how-to/deploy-on-vast.md), with the
+questions for the VAST admin beyond the four above. Deploy on VAST once the prototype exists, sign in from Claude Code, run one
 page, confirm the audit lines and that a second user cannot open the run;
 then remove the [PENDING] in the evaluation document and deck.
