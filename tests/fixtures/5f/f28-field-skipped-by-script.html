@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F28 A script skips the second field</title></head><body><main><h1>Form</h1>
+<form onsubmit="event.preventDefault()"><label>Name <input id="a" name="a" required></label> <label>Email <input id="b" name="b" required></label> <button id="s">Send</button></form>
+<script>
+const a=document.getElementById("a"),s=document.getElementById("s");
+a.addEventListener("keydown",e=>{if(e.key==="Tab"&&!e.shiftKey){e.preventDefault();s.focus()}});
+s.addEventListener("keydown",e=>{if(e.key==="Tab"&&e.shiftKey){e.preventDefault();a.focus()}});</script>
+</main></body></html>

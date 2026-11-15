@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><title>F29 a script skips one link in both directions</title></head><body><h1>Skip</h1>
+<p><a id="l1" href="/p/1.html">Link one</a> <a id="l2" href="/p/2.html">Link two</a> <a id="l3" href="/p/3.html">Link three</a></p>
+<button type="button">Last button</button>
+<script>
+const l1=document.getElementById("l1"),l3=document.getElementById("l3");
+l1.addEventListener("keydown",e=>{if(e.key==="Tab"&&!e.shiftKey){e.preventDefault();l3.focus()}});
+l3.addEventListener("keydown",e=>{if(e.key==="Tab"&&e.shiftKey){e.preventDefault();l1.focus()}});</script></body></html>

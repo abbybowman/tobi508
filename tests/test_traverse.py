@@ -228,6 +228,24 @@ async def test_inventory_counts_a_radio_group_once(browser, settings):
     await ctx.close()
 
 
+async def test_inventory_leaves_out_what_an_open_modal_dialog_covers(browser, settings):
+    """While a modal dialog (showModal) is open the rest of the page, frames
+    included, cannot take focus: only the dialog's own controls are candidates.
+    A dialog opened with show() blocks nothing."""
+    ctx = await new_context(browser, settings)
+    page = await ctx.new_page()
+    html = (
+        "<a href='#'>behind</a><button>behind too</button>"
+        "<dialog id=d><button>ok</button><button>cancel</button></dialog>"
+        "<script>document.getElementById('d').%s()</script>"
+    )
+    await page.set_content(html % "showModal")
+    assert (await dom_inventory(page)).candidates == 2  # the dialog's two
+    await page.set_content(html % "show")
+    assert (await dom_inventory(page)).candidates == 4  # nothing is blocked
+    await ctx.close()
+
+
 async def test_inventory_counts_a_frame_that_detaches_mid_read(
     browser, settings, monkeypatch
 ):
