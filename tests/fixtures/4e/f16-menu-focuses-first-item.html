@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F16 Topics menu</title></head><body>
+<header><nav aria-label="Main">
+<a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<ul id="panel" hidden><li><a href="#earth" id="first">Earth</a></li><li><a href="#sun">Sun</a></li></ul>
+<a href="#contact">Contact</a>
+</nav></header>
+<main><h1>Topics</h1><p>Pick a topic from the menu.</p></main>
+<script>
+// Opening the menu moves focus to its first item.
+const b = document.getElementById("b"), panel = document.getElementById("panel");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+  if (!open) document.getElementById("first").focus();
+});
+</script></body></html>

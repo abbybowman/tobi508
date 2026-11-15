@@ -13,6 +13,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from tobi508 import reveal
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
 from tobi508.models import (
@@ -153,6 +154,9 @@ class Inst4E(BaseModel):
     before_shot: str | None = None
     after_shot: str | None = None
     j1: dict[str, Any] | None = None
+    # Found in opened content (4.C's P8, 1.8.0): how to open it again before
+    # the Tabs ({frame_chain, css_path, by, name}); None for P1 and P2.
+    opened: dict[str, Any] | None = None
 
 
 class State4E(BaseModel):
@@ -305,6 +309,50 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
                     after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
                 )
             )
+    # Opened content (4.C's P8; 1.8.0): every Tab step of the shared walk
+    # through what each trigger opened (opened.py). Opening it is not a step
+    # this test judges (activation, not focus).
+    rv = ctx.cache.get("reveal")
+    for trig in rv.triggers if rv is not None else []:
+        w = trig.walked
+        if w is None:
+            continue
+        what = f'opening "{trig.name or "a control"}"'
+        if w.end in ("cap", "time", "error"):
+            st.incomplete.append(
+                f"Tabbing through what {what} showed did not finish ({w.end})."
+            )
+        opener = {
+            "frame_chain": list(trig.frame_chain),
+            "css_path": trig.css_path,
+            "by": w.by,
+            "name": trig.name or "the control",
+        }
+        prev = None
+        for i, step in enumerate(w.steps):
+            sig, unreliable = classify(step, prev, p1.start_url or "", p1.start_pages)
+            prev = step
+            if sig is None:
+                continue
+            target = _target(step, sig)
+            ident = (target.get("css_path") or "", sig.kind)
+            if ident in seen:
+                continue
+            seen.add(ident)
+            st.instances.append(
+                Inst4E(
+                    id=f"e{len(st.instances) + 1}",
+                    pass_name="P8",
+                    step=i + 1,
+                    key="Tab",
+                    keys=["Tab"] * (i + 1),
+                    target=target,
+                    signal=sig,
+                    unreliable=unreliable,
+                    after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
+                    opened=opener,
+                )
+            )
     replays = 0
     for inst in st.instances:
         if inst.unreliable:
@@ -332,8 +380,40 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
     return st
 
 
+async def _opened_at(
+    ctx: RunContext, inst: Inst4E, keys: list[str], hooks=None, shots=False
+):
+    """A fresh load with the trigger opened as reveal.py opened it, then
+    `keys` (an instance in opened content, 1.8.0)."""
+    o = inst.opened or {}
+    s = await open_session(
+        ctx.new_page,
+        ctx.quiet_ms,
+        ctx.shots if shots else None,
+        ctx.rel if shots else None,
+        hooks,
+    )
+    try:
+        if not await reveal.reopen(
+            s, o["frame_chain"], o["css_path"], o["by"], ctx.quiet_ms
+        ):
+            raise RuntimeError("the menu or section could not be opened again")
+        for k in keys:
+            await s.traversal.press(k)
+    except BaseException:
+        await s.close()
+        raise
+    return s
+
+
 async def _reproduce(ctx: RunContext, inst: Inst4E) -> bool:
-    s = await open_session(ctx.new_page, ctx.quiet_ms, hooks=[ContextHook("R")])
+    if inst.opened:
+        try:
+            s = await _opened_at(ctx, inst, [], hooks=[ContextHook("R")])
+        except Exception:
+            return False
+    else:
+        s = await open_session(ctx.new_page, ctx.quiet_ms, hooks=[ContextHook("R")])
     try:
         prev = None
         for k in inst.keys:
@@ -354,7 +434,11 @@ async def _reproduce(ctx: RunContext, inst: Inst4E) -> bool:
 async def _control(ctx: RunContext, inst: Inst4E) -> bool:
     """Same keys except the last, then wait: does the page change anyway?"""
     try:
-        s = await ctx.replay(inst.keys[:-1])
+        s = (
+            await _opened_at(ctx, inst, inst.keys[:-1])
+            if inst.opened
+            else await ctx.replay(inst.keys[:-1])
+        )
     except Exception:
         return False
     try:
@@ -372,7 +456,11 @@ async def _control(ctx: RunContext, inst: Inst4E) -> bool:
 
 async def _before_shot(ctx: RunContext, inst: Inst4E) -> str | None:
     try:
-        s = await ctx.replay(inst.keys[:-1], shots=True)
+        s = (
+            await _opened_at(ctx, inst, inst.keys[:-1], shots=True)
+            if inst.opened
+            else await ctx.replay(inst.keys[:-1], shots=True)
+        )
     except Exception:
         return None
     try:
@@ -526,12 +614,20 @@ def _label(info: dict[str, Any]) -> str:
     )
 
 
-def _keys_text(keys: list[str]) -> str:
-    return f"{keys[0]} {len(keys)} times" if len(keys) > 1 else keys[0]
+def _keys_text(keys: list[str], opened: dict[str, Any] | None = None) -> str:
+    tabs = f"{keys[0]} {len(keys)} times" if len(keys) > 1 else keys[0]
+    if not opened:
+        return tabs
+    how = (
+        f'Enter on "{opened["name"]}"'
+        if opened.get("by") != "a click"
+        else f'(click "{opened["name"]}" to open it)'
+    )
+    return f"{how}, then {tabs}"
 
 
 def _sentence(inst: Inst4E, rid: str) -> str:
-    el, keys = _label(inst.target), _keys_text(inst.keys)
+    el, keys = _label(inst.target), _keys_text(inst.keys, inst.opened)
     see = f"To see it, load the page and press {keys}."
     kinds = {
         "navigation": "the page went to another address",
@@ -595,7 +691,7 @@ def evaluate(st: State4E, evidence_refs: list[str]) -> Finding:
                 selector=inst.target.get("css_path"),
                 frame_path=inst.target.get("frame_chain") or [],
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.signal.kind} "
-                f"after {_keys_text(inst.keys)}: {_label(inst.target)}",
+                f"after {_keys_text(inst.keys, inst.opened)}: {_label(inst.target)}",
                 evidence_refs=[p for p in (inst.before_shot, inst.after_shot) if p],
             )
         )

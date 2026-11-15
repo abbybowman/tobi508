@@ -104,6 +104,7 @@ async def focus_still(s: Session, quiet_ms: int) -> None:
         await asyncio.sleep(FOCUS_STILL_MS / 1000)
         waited += FOCUS_STILL_MS
     await s.traversal.resync()
+    await s.traversal.forget_focus_events()
 
 
 async def walk(
@@ -153,11 +154,18 @@ async def walk(
             if inside_modal is not None:
                 w.behind_modal = [k for k, i in zip(top, inside_modal) if not i]
                 w.opened = [k for k in targets if k not in set(w.behind_modal)]
+        # Where the opening left focus (a menu's first item, say) is reached:
+        # the walk starts there.
+        here, _ = await s.traversal.reader.read()
+        start = here.path_key if here.kind == "element" else None
         end, trap, own = await drive(
             s, "Tab", min(2 * len(targets) + 3, WALK_CAP_MAX), left, deadline
         )
         w.end, w.trap, w.steps = end, list(trap), list(own)
-        w.reached = sorted({x.stop.path_key for x in own if x.stop.path_key in inside})
+        w.reached = sorted(
+            {x.stop.path_key for x in own if x.stop.path_key in inside}
+            | ({start} & set(targets))
+        )
     except Exception as exc:
         w.end, w.error = "error", f"{type(exc).__name__}: {exc}"[:300]
     w.seconds = round(time.monotonic() - t0, 2)
