@@ -55,9 +55,10 @@ is merged. At most three threads at once. Each thread branches from
 | 1-7, 9a | Done: PRs #39 to #63 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
 | 8 | One library for reading the page: web components and frames | Opus | readers 1 to 3 merged; 4 to 8 in PR #64; the form error tests in frames next |
 | 6e | Guard CN on real pages; 2.C and 2.D's timer | Opus | now |
-| 6f | 9.C's "Home" pairs; 19.A on CILab; 9.B's budget | Sonnet | now |
+| 6f | 9.C's "Home" pairs; 9.B's budget | Sonnet | now |
 | 6g | 4.C and 4.E read the content that menus and sections open | Opus | when PR #64 is merged |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | when PR #64 is merged |
+| 6h | 19.A finds its ways as a tester does: an alias of the page, its parent and child pages, the follow-up call | Opus | now; before round 3 runs |
+| 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when PR #64 and step 6h are merged |
 | 12 | Hosted on VAST | Opus | 12a now; 12b when the environment exists |
 | 9b | Rerun of rounds 1 and 2's pages after the steps above | Sonnet | Nov 17, by midday |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17, at 9b's commit |
@@ -83,8 +84,19 @@ is merged. At most three threads at once. Each thread branches from
   forms. To research: fields hidden from everyone (honeypots, reCAPTCHA).
 - **6f.** The judge fails "Home" against "NASA, return to the
   homepage" in 9.C on 8 of round 1's pages, and the key passes them:
-  the pairing or the rubric. 19.A's FAIL on CILab, not yet looked at.
-  9.B's budget from 60 s to 180 s.
+  the pairing or the rubric. 9.B's budget from 60 s to 180 s.
+- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14).
+  Today 19.A reads only the pages the caller gave and one site
+  search, and the eval runners never make the follow-up call, so it
+  is NEEDS REVIEW or a wrong FAIL where a tester finds two ways.
+  Three changes, approved by Abby with their limits (a sixth exception
+  to principle 5; the suggested-pages exception widened), wording
+  shown first: a link to the page under another address (`index.html`
+  for its directory) is checked by loading the suspected alias as an
+  other page is loaded; the page's parent and up to two of its child
+  pages join the suggested pages; and the runners make the follow-up
+  call an agent would. It is done before round 3 runs, or 19.A is
+  undecided on every page of the blind round.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
   test did not walk it. 4.F's pass R already opens each trigger and
   Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
