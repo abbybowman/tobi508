@@ -57,7 +57,7 @@ is merged. At most three threads at once. Each thread branches from
 | 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
 | 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
 | 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
-| 6h | 19.A finds its ways as a tester does: an alias of the page, its parent and child pages, the follow-up call | Opus | now |
+| 6h | 19.A finds its ways as a tester does: an alias of the page (PR 1 built), then its site map, parent, child and home pages checked one by one | Opus | running |
 | 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
@@ -74,17 +74,20 @@ is merged. At most three threads at once. Each thread branches from
   6 cells, all agreeing) and 5.H reading a hidden form to say whether
   it is the kind 5.H is about (8 cells, all agreeing). To research:
   fields hidden from everyone (honeypots, reCAPTCHA).
-- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14).
-  Today 19.A reads only the pages the caller gave and one site
-  search, and the eval runners never make the follow-up call, so it
-  is NEEDS REVIEW or a wrong FAIL where a tester finds two ways.
-  Three changes, approved by Abby with their limits (a sixth exception
-  to principle 5; the suggested-pages exception widened), wording
-  shown first: a link to the page under another address (`index.html`
-  for its directory) is checked by loading the suspected alias as an
-  other page is loaded; the page's parent and up to two of its child
-  pages join the suggested pages; and the runners make the follow-up
-  call an agent would.
+- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14 and
+  15; [draft](plans/2026-11-15-19a-finds-ways.md)). Today 19.A reads
+  only the pages the caller gave and one site search, and the eval
+  runners never make the follow-up call (which also drops the suggested
+  pages when 5 or more were given), so it is NEEDS REVIEW or a wrong
+  FAIL where a tester finds two ways. PR 1, built (19.A 1.10.0; the
+  sixth exception to principle 5): a link to the page as `index.html`
+  (or `default.*`, another scheme, `www.`) is loaded as an other page
+  and counts when it is the same document. PR 2 (1.11.0): 19.A itself
+  checks the site map, the page's parent, up to two child pages and the
+  home page one by one, stops at two ways, and FAILs, naming what it
+  checked, only when all were checked; no follow-up call for 19.A is
+  left, so the runners need none. Then 19.A is rerun on rounds 1 and
+  2's frozen pages, every moved cell shown beside the key.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
   test did not walk it. 4.F's pass R already opens each trigger and
   Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
