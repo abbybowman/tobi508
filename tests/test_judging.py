@@ -390,3 +390,122 @@ def test_a_lock_scores_on_a_clone_without_the_ignored_recordings(tmp_path):
     (rd / "results" / "p01" / "extra.har.zip").write_bytes(b"new")
     with pytest.raises(judging.JudgingError, match="Archived files that differ"):
         judging.score(rd)
+
+
+# ── Post-round 2 fixes 15 and 17: what score.md lists apart ────────────────
+
+
+def _key_without(tmp_path: Path, test_id: str) -> Path:
+    """The sample key with one test's tester comments removed."""
+    data = json.loads(SAMPLE.read_text("utf-8"))
+    for row in data[0]["Criteria"]:
+        if row["TestID"].strip() == test_id:
+            row["TesterComment"] = ""
+    out = tmp_path / "key-no-reason.json"
+    out.write_text(json.dumps(data))
+    return out
+
+
+def test_a_key_cell_with_no_reason_is_listed_and_scored_the_same(tmp_path):
+    """Fix 15: a Pass (or Fail) with no tester comment is listed for the
+    tester; Does Not Apply and Not Tested need none; the score is unchanged."""
+    rd = _round(tmp_path)
+    judging.lock(rd)
+    _reveal(rd)
+    before = judging.score(rd)
+    assert before["key_cells_without_a_reason"] == {}  # 2.A DNA and 3.A NT have none
+    assert "## Answer key cells with no reason\n" in (rd / "score.md").read_text()
+
+    rd2 = _round(tmp_path / "second")
+    key = _key_without(tmp_path, "4.A")
+    (rd2 / "pages.txt").write_text(f"https://example.gov/a {judging.sha256(key)}\n")
+    judging.lock(rd2)
+    (rd2 / "keys").mkdir()
+    shutil.copyfile(key, rd2 / "keys" / "k.json")
+    after = judging.score(rd2)
+    assert after["key_cells_without_a_reason"] == {
+        "p01": [{"test_id": "4.A", "result": "Pass"}]
+    }
+    assert after["counts"] == before["counts"]
+    assert "- p01: 4.A (Pass)" in (rd2 / "score.md").read_text()
+
+
+def _with_answer(rd: Path, tmp_path: Path, test_id: str, by: str) -> None:
+    """Give p01 a report.json with one answer in force for `test_id`."""
+    from tobi508.models import Answer, ChoiceAnswer, OpenQuestion, RecordedAnswer
+
+    t = datetime(2026, 11, 2, tzinfo=timezone.utc)
+    qid = f"{test_id}-J1-x"
+    q = OpenQuestion(
+        question_id=qid,
+        test_id=TestId(test_id),
+        kind="choice",
+        choices=["yes", "unsure"],
+        instance="x",
+        question="q",
+        rubric="r",
+        input={},
+    )
+    a = Answer(
+        question_id=qid,
+        choice=ChoiceAnswer(choice="yes", reasons="r"),
+        rationale="r",
+        answered_by=by,
+    )
+    report = Report(
+        run_id="r1",
+        target="https://example.gov/a",
+        started_at=t,
+        versions=Versions(
+            tobi508="0",
+            andi="1",
+            jquery="1",
+            playwright="1",
+            browser_channel="chromium",
+            browser=None,
+            os="t",
+            python="3",
+            rules_spec={},
+            judging_model="none",
+        ),
+        evidence_dir="evidence",
+        answers=[RecordedAnswer(question=q, answer=a, recorded_at=t)],
+    )
+    (rd / "results" / "p01" / "report.json").write_text(report.model_dump_json())
+
+
+@pytest.mark.parametrize("by", ["server:claude-sonnet-5-5", "client"])
+def test_cells_an_answer_decided_are_counted_apart_from_the_rules(tmp_path, by):
+    """Fix 17: a cell where any judge's answer is in force (4.A here) is
+    counted with the judge's cells; the rest (1.A's false PASS) with the
+    rules', so a judge is neither credited nor blamed for a rule."""
+    rd = _round(tmp_path)
+    _with_answer(rd, tmp_path, "4.A", by)
+    judging.lock(rd)
+    _reveal(rd)
+    out = judging.score(rd)
+    assert out["judge_decided"] == {
+        "4.A": {
+            "cells": 1,
+            "agree": 1,
+            "wrong_pass": 0,
+            "wrong_dna": 0,
+            "wrong_fail": 0,
+            "pass_vs_dna": 0,
+            "unsure": 0,
+            "other": 0,
+        }
+    }
+    assert out["rule_decided"] == {"1.A": {"false_pass": 1}}
+    md = (rd / "score.md").read_text()
+    assert "## Cells a judge's answer decided" in md and "| 4.A | 1 | 1 |" in md
+    assert "| 1.A | 0 | 0 | 1 | 0 | 0 | 0 | 0 |" in md
+
+
+def test_with_no_report_every_cell_is_the_rules(tmp_path):
+    rd = _round(tmp_path)
+    judging.lock(rd)
+    _reveal(rd)
+    out = judging.score(rd)
+    assert out["judge_decided"] == {}
+    assert out["rule_decided"] == {"1.A": {"false_pass": 1}, "4.A": {"agree": 1}}

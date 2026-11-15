@@ -104,6 +104,52 @@ def verdict(
     return Verdict.OTHER
 
 
+def with_adjudication(v: Verdict, tool: object, adjudicated: object) -> Verdict:
+    """`v`, or a validated catch where the tool differed from the key and
+    matches what the tester confirmed after the reveal (`adjudicated`, None
+    when nothing was confirmed). One rule for a TT test and for a WCAG
+    criterion (post-round 2 fix 16)."""
+    if v in (Verdict.AGREE, Verdict.NOT_SCORED, Verdict.NOT_PERFORMED):
+        return v
+    if adjudicated is not None and tool == adjudicated:
+        return Verdict.VALIDATED_CATCH
+    return v
+
+
+def criterion_keys(
+    key: dict[str, ScrtResult | None],
+    adjudicated: dict[str, ScrtResult] | None,
+    tests: list[str],
+) -> tuple[ScrtResult | None, ScrtResult | None]:
+    """(the key rolled up to one criterion, the same with the tester's
+    adjudications in place of the key's rows; None when no adjudication
+    touches the criterion's tests). Post-round 2 fix 16: an adjudication
+    counts for the arms' per-criterion rows as it does per TT test."""
+    kv = rollup([key.get(t) for t in tests])
+    adjudicated = adjudicated or {}
+    if not any(t in adjudicated for t in tests):
+        return kv, None
+    return kv, rollup([adjudicated.get(t, key.get(t)) for t in tests])
+
+
+def unexplained(ref) -> list[dict[str, str]]:
+    """A key's Pass and Fail cells whose rows carry no tester comment
+    (post-round 2 fix 15: a key should give the reason for a Pass as well as
+    a Fail, above all for judgment calls; round 2's 5144 5.D read Fail with
+    a pass reason). Listed for the tester; the score is unchanged and the
+    key file is never edited. Does Not Apply and Not Tested need none."""
+    from tobi508.compare import summary
+
+    out = []
+    for tid, rows in ref.results().items():
+        got = summary(rows)
+        if got not in (ScrtResult.PASS, ScrtResult.FAIL):
+            continue
+        if not any((r.TesterComment or "").strip() for r in rows):
+            out.append({"test_id": tid, "result": got.value})
+    return out
+
+
 class ScoredTest(BaseModel):
     test: TestComparison
     verdict: Verdict
@@ -130,12 +176,7 @@ def score(c: Comparison, adjudicated: dict[str, ScrtResult] | None = None) -> Sc
 
     def one(t):
         v = verdict(t.first.result, t.second.result, t.second.performed)
-        a = adjudicated.get(t.test_id)
-        if v not in (Verdict.AGREE, Verdict.NOT_SCORED, Verdict.NOT_PERFORMED) and (
-            a is not None and t.second.result == a
-        ):
-            return Verdict.VALIDATED_CATCH
-        return v
+        return with_adjudication(v, t.second.result, adjudicated.get(t.test_id))
 
     tests = [ScoredTest(test=t, verdict=one(t)) for t in c.tests]
     counts = {v.value: 0 for v in Verdict}
@@ -217,17 +258,20 @@ GATE_WORDS = {
 }
 
 
-def decided_tests(report) -> dict[str, int]:
-    """Per TT test id: how many of its questions an answer of the server's
-    judge is in force for (the latest answer to each question). A cell whose
-    outcome no answer touched is not the judge's to be scored on."""
+def decided_tests(report, who: str = "server") -> dict[str, int]:
+    """Per TT test id: how many of its questions an answer is in force for
+    (the latest answer to each question). `who`: "server" counts the
+    server's judge only (the gate); "any" counts any judge's answer, the
+    server's or the calling agent's (a judging round, post-round 2 fix 17).
+    A cell whose outcome no answer touched is not the judge's to be scored
+    on."""
     latest: dict[str, tuple[str, str]] = {}
     for r in report.answers:
         a = r.answer
         latest[a.question_id] = (a.question_id.split("-")[0], a.answered_by)
     out: dict[str, int] = {}
     for _, (test, by) in latest.items():
-        if by.startswith("server:"):
+        if who == "any" or by.startswith("server:"):
             out[test] = out.get(test, 0) + 1
     return out
 
@@ -272,6 +316,27 @@ def _gate_word(t) -> str:
         if key is ScrtResult.DNA and tool is ScrtResult.PASS:
             return "pass_vs_dna"
     return GATE_WORDS.get(t.verdict, "other")
+
+
+def rule_cells(
+    scores: dict[str, "Score"], decided: dict[str, dict[str, int]]
+) -> dict[str, dict[str, int]]:
+    """The other side of `split_cells`: per TT test id, verdict counts over
+    the cells no judge's answer touched, which the rules alone decided
+    (post-round 2 fix 17). Cells with no key answer or not performed are
+    left out, as in the rates."""
+    out: dict[str, dict[str, int]] = {}
+    for page, sc in scores.items():
+        for t in sc.tests:
+            test = t.test.test_id
+            if decided.get(page, {}).get(test) or t.verdict in (
+                Verdict.NOT_SCORED,
+                Verdict.NOT_PERFORMED,
+            ):
+                continue
+            row = out.setdefault(test, {})
+            row[t.verdict.value] = row.get(t.verdict.value, 0) + 1
+    return out
 
 
 def decided_cells(row: dict[str, int]) -> int:

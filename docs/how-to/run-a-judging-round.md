@@ -165,7 +165,18 @@ recording against the lock.
 - agreement;
 - false PASS (the worst error) and false FAIL;
 - NEEDS REVIEW;
-- tests the tool does not perform, counted apart.
+- tests the tool does not perform, counted apart;
+- the cells an answer to an open question decided (the server's judge or
+  the agent's), apart from the cells the rules decided alone, so a judge
+  is neither credited nor blamed for a rule;
+- your Pass and Fail cells that carry no comment. Give the reason for a
+  Pass as well as a Fail, above all where it was a judgment call; the
+  list is for you, and the score does not change.
+
+Where you confirm after the reveal that the tool was right and your file
+was not, write it in the round's `adjudications.json` (round 2's is an
+example); never edit the key. It counts as a validated catch per TT test
+and, in an agent round, per WCAG criterion.
 
 ## 8. Contribute it
 
