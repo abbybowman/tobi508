@@ -28,11 +28,12 @@ something a test checks is itself a reason for review (guard
 from __future__ import annotations
 
 import json
+import time
 from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508 import labels
+from tobi508 import labels, opened
 from tobi508.jslib import JSLIB
 from tobi508.observe import observe
 from tobi508.traverse import PATH_JS, Session, open_session, screenshot, settle
@@ -165,6 +166,8 @@ class Opened(BaseModel):
     read: bool | None = None  # ANDI read the opened state (None: not asked)
     picture: str | None = None
     options: list[Option] = Field(default_factory=list)
+    # The Tab walk through what it opened (opened.py; 4.C and 4.E).
+    walked: opened.Walked | None = None
 
     @property
     def not_opened(self) -> bool:
@@ -295,13 +298,16 @@ def _chain(chain: str) -> list[str]:
 
 
 async def _open_to(
-    ctx, stop, choose: list[tuple[str, str]] | None = None
+    ctx, stop, choose: list[tuple[str, str]] | None = None, hooks: list | None = None
 ) -> tuple[Session, dict[str, Any]]:
     """A fresh load with the trigger opened and, when `choose` (frame chain,
     path of each) is given, those options chosen in turn with Space. Returns the session (the
     caller closes it) and what was seen: `status` is set when nothing opened
     (not found, navigated, an error)."""
-    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    # `hooks`: the walk extras' factories; each load gets its own hooks.
+    s = await open_session(
+        ctx.new_page, ctx.quiet_ms, hooks=[f("O", None) for f in hooks or []]
+    )
     info: dict[str, Any] = {}
     try:
         before = await _state(s)
@@ -368,13 +374,15 @@ def _counts(info: dict[str, Any]) -> tuple[int, int, int]:
     )
 
 
-async def collect(ctx, walk) -> Reveal:
+async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
     """Open every trigger the walk found (up to MAX_TRIGGERS), each on a fresh
     load, and record what it showed. For 5.A-5.C each opened state is read
     with ANDI, and up to two options of each opened set are chosen."""
     trigs = triggers(walk)
     out = Reveal(over_cap=max(0, len(trigs) - MAX_TRIGGERS))
     read = labels.wanted(ctx)
+    # The Tab walk through opened content, for the tests that read it.
+    walking = bool({"4.C", "4.E"} & set(ctx.selected))
     for n, (stop, why) in enumerate(trigs[:MAX_TRIGGERS], 1):
         rec = Opened(
             n=n,
@@ -391,7 +399,7 @@ async def collect(ctx, walk) -> Reveal:
             continue
         s = None
         try:
-            s, info = await _open_to(ctx, stop)
+            s, info = await _open_to(ctx, stop, hooks=hooks if walking else None)
             if "status" in info:
                 rec.status = info["status"]
                 rec.reason = WHY.get(rec.status, "")
@@ -411,6 +419,12 @@ async def collect(ctx, walk) -> Reveal:
                 rec.picture = shot.resolve().relative_to(ctx.rel.resolve()).as_posix()
             except Exception:
                 pass
+            new_foc = [k for k in info["new"] if info["after"][k][0]]
+            if walking and new_foc and not read:
+                # Nothing reads this load after the walk: walk it here.
+                rec.walked = await opened.walk(
+                    s, new_foc, stop.path_key, rec.by, True, ctx.deadline
+                )
             if read:
                 # Last on this session: ANDI changes the page.
                 rec.read = await labels.read_revealed(
@@ -422,6 +436,9 @@ async def collect(ctx, walk) -> Reveal:
         finally:
             if s is not None:
                 await s.close()
+        if walking and read and rec.status == OPENED and rec.new_focusable:
+            # ANDI changed the load it read: the walk opens its own.
+            rec.walked = await _walk_own_load(ctx, stop, rec, hooks)
         if not read or rec.status != OPENED:
             continue
         # Options: choosing one can add controls (Home's filter adds a remove
@@ -471,6 +488,31 @@ async def collect(ctx, walk) -> Reveal:
             f"{MAX_TRIGGERS} were opened."
         )
     return out
+
+
+async def _walk_own_load(ctx, stop, rec: Opened, hooks) -> opened.Walked:
+    """A fresh load opened as reveal.py opened it, then the walk (opened.py)."""
+    if ctx.out_of_time():
+        return opened.Walked(by=rec.by, end="time")
+    s2 = None
+    t0 = time.monotonic()
+    try:
+        s2, info = await _open_to(ctx, stop, hooks=hooks)
+        if "status" in info:
+            return opened.Walked(by=rec.by, end="error", error=info["status"])
+        new_foc = [k for k in info["new"] if info["after"][k][0]]
+        if not new_foc:
+            return opened.Walked(by=info["by"], end="error", error="nothing opened")
+        w = await opened.walk(
+            s2, new_foc, stop.path_key, info["by"], False, ctx.deadline
+        )
+        w.seconds = round(time.monotonic() - t0, 2)  # the load's opening too
+        return w
+    except Exception as exc:
+        return opened.Walked(by=rec.by, end="error", error=type(exc).__name__)
+    finally:
+        if s2 is not None:
+            await s2.close()
 
 
 def write(ctx, rv: Reveal, path) -> None:
