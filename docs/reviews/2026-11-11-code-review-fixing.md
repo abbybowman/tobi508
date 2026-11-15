@@ -8,91 +8,18 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 5 (PRs #39 to #44), step 6 (PR #46), step 6b
-(PR #53), step 6c (PRs #49, #51, #52, #54, #55), step 6d's phase 1
-(PRs #59, #63), step 7 (PRs #48, #50) and step 9a (results in
-`evals/README.md`, "Gate 2026-11-14"). Step 8 is running (PRs #58,
-#60 to #62 merged, #64 open).
+**Done:** steps 1 to 7, 6b, 6c, 6d's phase 1, 6f, 8, 9a and 12a
+(PRs #39 to #80; `docs/archive/2026-11-14-roadmap-to-the-demo.md`).
+Step 6e's thread is running (its prompt is no longer needed here).
 
-**Order to start them** (at most three threads at once, beside step
-8's thread while it finishes): 6e, 6h and 12a now (6f is running);
-6g when PR #64 is merged; round 3's run (step 10) when PR #64 and
-step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
+**Order to start them** (at most three threads at once): 6g and 6h
+now, beside 6e's thread; round 3's run (step 10) and 9b when 6e, 6g
+and 6h are merged; 12b when the VAST environment exists; round 4
+(step 10b) if I key one.
 
 ## Starting a thread
 
-**Step 6e, Opus: guard CN on real pages, and 2.C and 2.D's timer** (now)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 6e of
-> `docs/ROADMAP.md` "Order of work". Read step 9a's results first:
-> `evals/README.md` ("Gate 2026-11-14") and
-> `evals/judging/gate-2026-11-14/compare-round1.md` and
-> `compare-round2.md` (their "Guard CN cells" and per-test tables).
-> Guard CN made 58 cells NEEDS REVIEW on 19 real pages and my keys
-> fail none of them; 2.C and 2.D are NEEDS REVIEW on all 10 of round
-> 2's pages.
->
-> First, no code: a table of every CN cell by the sentence that made
-> it (a form hidden until opened, a form that is only a button, more
-> than 30 images, anything else), with my key beside it and the page.
-> The per-page reports are not in git: ask me for them, or for the
-> frozen archives to rerun the pages (never fetch them live). And for
-> 2.C and 2.D: what sets the timer on round 2's pages, and what, if
-> anything, it changes on screen.
->
-> Then, for each cause, propose the smallest change that decides the
-> cell without guessing, and show me before building: every one turns
-> NEEDS REVIEW into an outcome, so each is mine to approve, one at a
-> time. Candidates to weigh, not instructions: 5.H reads a hidden
-> form's own fields and words for its applicability rows (it does not
-> need to fill the form); 5.F and 5.G test a form that the reveal pass
-> already opened; the 30-image cap measured and raised, as step 6c did
-> for the 600-item cap; for 2.C and 2.D, advancing the page's clock
-> past the timer with the stepped clock 3.A's capture has, to see
-> whether anything visible changes. Say for each what a careful
-> tester does at that point in the TT text (principle 7).
->
-> Each approved change: a MINOR spec version, the fixture that now
-> decides, the nearest page that must stay NEEDS REVIEW, the grid
-> rerun (its hidden-form and late-start pages are the guard's own
-> cases; a cell may move only where the content was really read), and
-> the README rows. Then rerun the changed tests on the frozen pages
-> and show me each moved cell beside my key: if any is a PASS or a
-> DOES NOT APPLY where my key fails, stop. Step 8's thread is working
-> in `forms.py`, `reveal.py` and `checks/t5f.py`: merge `main` before
-> each change and say if you need the same lines. Whatever is not
-> merged by the end of Nov 17 stops there.
-
-**Step 6f, Sonnet: three findings of step 9a** (now)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is step 6f of `docs/ROADMAP.md` "Order of
-> work", three items, each its own pull request.
->
-> (1) 9.C on round 1: on 8 of 9 pages the judge answers
-> "inconsistent" for the pair "Home" and "NASA, return to the
-> homepage", and my key passes all 8
-> (`evals/judging/gate-2026-11-14/compare-round1.md`). Show me the
-> two elements of that pair (what each is, where it sits) and say
-> which is wrong: the pairing (a logo and a menu link that go to one
-> address are two components, not one component named two ways; see
-> fix 14 in `docs/plans/2026-11-08-post-round2-fixes.md`) or the
-> rubric. Propose the fix before building. It removes FAILs my key
-> says are wrong; add the nearest pair that must still FAIL, and run
-> the judge eval for 9.C before and after.
->
-> (2) 19.A is not yours: step 6h has it. Leave 19.A's spec, its
-> check and the gate script alone.
->
-> (3) 9.B's budget: 60 s to 180 s (`config.TEST_BUDGETS_DEFAULT`), as
-> 9.A and 9.C; its longest run was 41.5 s and it ran out once in a
-> dry run. No spec change.
->
-> The per-page reports of step 9a are not in git: ask me for them or
-> for the frozen archives (never fetch the pages live).
-
-**Step 6g, Opus: opened content in 4.C and 4.E** (when PR #64 is merged)
+**Step 6g, Opus: opened content in 4.C and 4.E** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow its "Working rules". Your work is step 6g of
@@ -123,7 +50,7 @@ step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
 > Merge `main` before each spec version. Whatever is not merged by
 > the end of Nov 17 stops there.
 
-**Step 6h, Opus: 19.A finds its ways as a tester does** (now; before round 3 runs)
+**Step 6h, Opus: 19.A finds its ways as a tester does** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow its "Working rules". Your work is step 6h of
@@ -190,37 +117,10 @@ step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
 > Then rerun 19.A on the frozen pages of rounds 1 and 2 (ask me for
 > the archives; never fetch the tested pages live) and show me every
 > moved cell beside my key: a PASS where my key fails stops the work.
-> Say what the follow-up adds to a run's time. Step 6f's thread has
-> been told to leave 19.A alone; round 3's run waits for you.
+> Say what the follow-up adds to a run's time. Round 3's run waits
+> for you.
 
-**Step 8, Opus: one library for reading the page, frames included** (running)
-
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is step 8 of `docs/ROADMAP.md` "Order of
-> work": part D of
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`, which
-> absorbs fix 7 of `docs/plans/2026-11-08-post-round2-fixes.md`. First
-> a short design note in the plan's part D (what `jslib` exports, how
-> a reader names an element across shadow roots and frames, how a
-> frame from another site is recorded, loaded and located) and the
-> spec wording for the three decisions the roadmap lists under step 8.
-> Show me both before code: this step turns NEEDS REVIEW into PASS
-> inside web components and frames, and I decide that. Then 8a, reader
-> by reader in the plan's order, one pull request per reader with its
-> fixtures and step 7's grid rerun: a grid cell may move from NEEDS
-> REVIEW to an outcome only when the page's content was really read,
-> and for every cell that becomes PASS add the nearest page that must
-> still FAIL. Then 8b, the frame from another site. Guard CN stays; it
-> stops firing where the readers and the count agree. Update each
-> test's README status line and the "Known wrong outcomes" table in
-> the commit that changes it. Merge `main` before every spec version
-> and before editing `tests/test_fixtures_grid.py`: step 6d is running
-> beside you in `walk.py` and the checks' use of the walk (whether it
-> was complete), so leave that to it.
-> Whatever is not merged by the end of Nov 17 stops there: leave
-> `main` whole and write down where you stopped.
-
-**Step 9b, Sonnet: the third check** (by midday on Nov 17, on `main` as it stands then)
+**Step 9b, Sonnet: the third check** (at round 3's commit)
 
 > Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
 > ("The gate"), the docstring of `evals/apijudge_gate.py`, and step 6's
@@ -269,12 +169,11 @@ step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze now; the run when PR #64 and step 6h are merged)
+**Step 10, Sonnet: round 3, a formal blind judging round** (frozen; the run when steps 6e, 6g and 6h are merged)
 
 > Read `docs/how-to/run-a-judging-round.md` and
-> `evals/agent/README.md`. First do scorer fixes 15, 16 and 17 of
-> `docs/plans/2026-11-08-post-round2-fixes.md`, each with its test,
-> as their own pull request. Then round 3, a formal judging round
+> `evals/agent/README.md`. The scorer fixes are merged (PR #73).
+> Round 3, a formal judging round
 > like rounds 1 and 2, on the pages I give you in this thread, with the server judge answering, exactly as the
 > how-to describes: freeze (the fuller freeze of PR #52; check each
 > recording against its manifest and tell me anything that did not
@@ -283,8 +182,9 @@ step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
 > own branch and do not open a pull request or merge anything of the
 > round until the run is locked: other threads must not see the page
 > list before then. Keep each page's report and pre-SCRT file out of
-> git. Do not run the tool before step 6h is merged: until then
-> 19.A cannot be decided on any page. Run in tested_frozen mode, each
+> git. Do not run the tool before steps 6e, 6g and 6h are merged
+> (without 6h, 19.A cannot be decided on any page), and tell me the
+> commit before you start: 9b runs at the same one. Run in tested_frozen mode, each
 > page with the round's other pages on its host and the site's home
 > page as other pages, and with the follow-up call step 6h adds.
 > Report per test and in all; list apart the cells inside a web
@@ -309,55 +209,6 @@ step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
 > test and in all, and list apart the cells inside a web component or
 > a frame. Keep each page's report and pre-SCRT file out of git.
 > Change no code from what you find: list it for after the demo.
-
-**Step 12a, Opus: hosted on VAST, the part that needs no VAST** (now)
-
-> Read `CLAUDE.md` ("Hosting, time and concurrency"),
-> `docs/plans/2026-11-06-hosted-auth.md`, `SECURITY.md` ("Before a
-> hosted deployment"), the `Dockerfile`, `.github/workflows/container.yml`,
-> `src/tobi508/app.py` and `access.py`, and `tests/test_access_signin.py`.
-> Your work is step 12a of `docs/ROADMAP.md`: make the first deployment
-> on VAST a matter of following a page, and prove as much of it as can
-> be proved without VAST. Three things, each its own pull request.
->
-> (1) `docs/how-to/deploy-on-vast.md`: the one-line Containerfile that
-> pulls the image CI builds; every setting a hosted server needs, with
-> what each does and which are secrets (`AUTH`, the OIDC settings,
-> `OIDC_AUDIENCE`, `REQUIRED_GROUPS`, `PUBLIC_BASE_URL`, `RUNS_DIR`,
-> `FASTMCP_HOME`, `UPSTREAM_PROXY`, the `JUDGE_*` settings and what
-> happens with no gateway); where runs live and for how long; the
-> health route; how a user connects from Claude Code; and a checklist
-> of what to confirm on the first deployment. Take every value from
-> the code and `.env.example`, never from memory, and list what you
-> could not confirm as questions for the VAST admin beside the plan's
-> four.
->
-> (2) A smoke test, `scripts/smoke_hosted.py`, that takes a base URL:
-> the health route answers; `/mcp` without a token is 401 with the
-> metadata link; a sign-in gets a token; `tobi_run_tt_tests` on one
-> page runs to done through `tobi_run_status`; the report is read
-> through its `run://` link; a second signed-in person cannot read
-> that run; the audit lines name the caller. It prints one line per
-> check and exits non-zero on the first failure.
->
-> (3) That smoke test in CI against the built image and a real
-> Keycloak (a service container in dev mode with a realm, a client,
-> two users and a group, set up by script), not the stand-in provider
-> the tests use, on a fixture page served inside the job (`DEV_MODE`
-> must stay off in the image under test: say how the page is allowed).
-> This is where token contents get checked before VAST: whether the
-> access token carries `sub`, the groups claim and the audience the
-> server expects, and what to configure in Keycloak when it does not.
-> Write what you learn into the how-to and the plan's "Verified and
-> not".
->
-> Do not weaken any control to make the smoke test pass (the
-> allowlist, the loopback rule without sign-in, the Host and Origin
-> checks): if one blocks the test, stop and tell me. Do not remove a
-> [PENDING] marker: an end-to-end sign-in on VAST is still not done.
-> Also tell me, from reading the code, anything that works over stdio
-> and would not work for a signed-in user over HTTP (a path in a
-> result, a file only on the server, state lost between calls).
 
 **Step 12b, Opus: the first deployment** (when the VAST environment exists)
 
