@@ -9,7 +9,7 @@ import re
 
 import pytest
 
-from tobi508.models import Answer, ChoiceAnswer, TestId
+from tobi508.models import Answer, ChoiceAnswer, Outcome, TestId
 from tobi508.pipeline import answer_questions, run_tt_tests
 
 from .conftest import FIXTURES
@@ -68,6 +68,64 @@ EXPECTED: dict[str, dict] = {
     "f43-non-latin-labels-announced": {
         "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
+    # H-01 (5.A 1.10.0): a label's text is what a person can see. A label
+    # showing only "*" (its words in a screen-reader-only span), an empty
+    # label wrapping a drop-down, and a label pushed off screen with
+    # text-indent are no visible label: J1 asks, and "not labeled" FAILs.
+    "f44-label-words-hidden": {
+        "5.A": {"outcome": "FAIL", "rows": ["M5", "M5", "M5"], "answers": NOT_LABELED},
+        "5.C": {"outcome": "FAIL", "rows": ["M3", "M5", "M6"], "answers": COMPLETE},
+    },
+    # Part D (5.A and 5.C 1.10.0): fields inside web components are read like
+    # any field; inside one, the name comes from Chrome's accessibility tree
+    # (ANDI does not analyse shadow roots). Each PASS has a twin that FAILs.
+    "f45-shadow-labelled": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    # f45's twin for 5.A: the field's only text is its placeholder.
+    "f46-shadow-placeholder-only": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # A label filled through a slot is the field's label, seen and announced.
+    "f47-shadow-slotted-label": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # f45's twin for 5.C: aria-labelledby cannot reach out of a shadow root,
+    # so the field has no name although the text is right there.
+    "f48-shadow-labelledby-outside": {
+        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Search terms")},
+        "5.C": {"outcome": "FAIL", "rows": ["M3"]},
+    },
+    # Web components inside a web component, the same tag twice.
+    "f49-shadow-nested": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5"]},
+    },
+    # Part D (5.A, 5.C 1.11.0): each frame is opened as a page of its own on
+    # the replay and read with ANDI there (Abby, 2026-11-14). The same site
+    # and another site (localhost against 127.0.0.1) read alike; each PASS
+    # has a twin in a frame from another site that FAILs.
+    "f50-frame-same-site-labelled": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    "f51-frame-other-site-labelled": {
+        "5.A": {"outcome": "PASS", "rows": ["M2", "M2"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
+    },
+    # f51's twin for 5.A: the field's only text is its placeholder.
+    "f52-frame-other-site-placeholder-only": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # f51's twin for 5.C: the text above the field is not its name.
+    "f53-frame-other-site-unnamed": {
+        "5.A": {"outcome": "PASS", "rows": ["M4"], "answers": labeled("Email address")},
+        "5.C": {"outcome": "FAIL", "rows": ["M3"]},
     },
     "f03-date-format-outside-label": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
@@ -482,3 +540,18 @@ async def test_result_cards_do_not_reach_a_filter_boxs_text(settings, server, dr
         [["Earth"], ["Sun"]],
         [["Visualization"], ["Animation"]],
     ]
+
+
+async def test_a_star_quoted_as_the_label_is_no_label(settings, server, drafts):  # noqa: F811
+    """5.A 1.12.0 (H-01): the judge eval of 2026-11-14 answered "labeled"
+    quoting the "*" a field shows while its words are hidden. A quote with no
+    word is no label: never PASS on it."""
+    got = await run_both(
+        settings,
+        f"{server.base}/5a/f44-label-words-hidden.html",
+        {"5.A": labeled("*"), "5.C": COMPLETE},
+        [],
+    )
+    f = got["5.A"]
+    assert f.outcome is not Outcome.PASS, f.summary
+    assert "M4" not in instance_rows(f), (instance_rows(f), f.rationale)

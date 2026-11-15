@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><title>Contact</title></head><body>
+<h1>Contact us</h1>
+<x-card></x-card>
+<script>
+customElements.define('x-input', class extends HTMLElement {
+  constructor() {
+    super();
+    const l = this.getAttribute('label');
+    this.attachShadow({ mode: 'open' }).innerHTML =
+      '<label for="i">' + l + '</label> <input id="i" name="' + this.getAttribute('name') + '">';
+  }
+});
+customElements.define('x-card', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML =
+      '<x-input label="Phone number" name="phone"></x-input> <x-input label="City" name="city"></x-input>';
+  }
+});
+</script>
+</body></html>

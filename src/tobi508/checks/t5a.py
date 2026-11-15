@@ -8,6 +8,8 @@ tables decide outcomes.
 
 from __future__ import annotations
 
+import re
+
 from pydantic import BaseModel, Field
 
 from tobi508.checks.base import RunContext
@@ -45,7 +47,9 @@ def in_set(c: Comp) -> bool:
 def _shown_label(c: Comp) -> bool:
     return any(
         x.get("shown")
-        and (x.get("text") or "").strip()
+        # A word, not only a symbol: a label that shows "*" while its words
+        # are hidden is no visible label (5.A 1.10.0, review H-01).
+        and re.search(r"[^\W_]", x.get("text") or "")
         and not (x.get("group") and in_set(c))
         for x in c.label_shown
     )
@@ -66,8 +70,12 @@ def _j(st: State5A, c: Comp) -> str | None:
     return (st.j.get(f"c{c.n}-J1") or {}).get("choice")
 
 
+def _quote(st: State5A, c: Comp) -> str:
+    return (st.j.get(f"c{c.n}-J1") or {}).get("quote", "") or ""
+
+
 def _quote_ok(st: State5A, c: Comp) -> bool:
-    q = (st.j.get(f"c{c.n}-J1") or {}).get("quote", "")
+    q = _quote(st, c)
     near = c.nearby_own if in_set(c) else c.nearby
     texts = near + c.nearby_other + c.nearby_buttons
     # A label's punctuation can be its own piece of text ("Official Name"
@@ -120,7 +128,13 @@ def instance_rows(st: State5A) -> list[Row]:
         Row(
             "M4",
             lambda c: (
-                (_j(st, c) == "labeled" and _quote_ok(st, c))
+                # The quote holds a word: "*" alone is a required marker,
+                # not a label (5.A 1.12.0, review H-01; judge eval 2026-11-14).
+                (
+                    _j(st, c) == "labeled"
+                    and _quote_ok(st, c)
+                    and re.search(r"[^\W_]", _quote(st, c))
+                )
                 or (
                     _j(st, c) == "graphic"
                     and bool((st.j.get(f"c{c.n}-J1") or {}).get("reasons", "").strip())

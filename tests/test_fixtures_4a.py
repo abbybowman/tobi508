@@ -58,6 +58,17 @@ EXPECTED: dict[str, dict] = {
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
     "f12-roving-tabs": {"outcome": "PASS", "rows": []},
+    # Row WK (1.11.0, step 6d): a script skips link 2 in both directions, so
+    # no pass stops on it: 3 of the page's 4 elements reached, NEEDS REVIEW.
+    # f30 is the same page without the script: 4 of 4, PASS.
+    "f29-link-skipped-by-script-both-ways": {
+        "outcome": "NEEDS_REVIEW",
+        "choice": "unsure",
+        "rows": ["M7"],
+        "page_rows": ["WK"],
+        "walk": (3, 4),
+    },
+    "f30-links-all-reached": {"outcome": "PASS", "rows": [], "walk": (4, 4)},
     # Media start (1.4.0): a click that starts a video is an effect. The row's
     # click handler is added by script, which the main-world listener read
     # finds (CILab, round 2).
@@ -125,6 +136,11 @@ async def test_outcome(name, settings, server):
         f.rationale,
         f.summary,
     )
+    if "page_rows" in e:
+        assert set(e["page_rows"]) <= set(f.rows), f.rows
+    if "walk" in e:  # row WK's evidence: elements reached of elements counted
+        r, c = e["walk"]
+        assert f"Walk: reached {r} of {c}" in f.rationale, f.rationale
 
 
 @pytest.mark.parametrize("case_id", sorted(ACT))

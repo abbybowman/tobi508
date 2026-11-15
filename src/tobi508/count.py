@@ -19,8 +19,8 @@ from typing import Any
 
 from playwright.async_api import Page
 
+from tobi508.jslib import JSLIB, PATH_JS, frame_docs
 from tobi508.models import Count, Part
-from tobi508.traverse import PATH_JS
 
 PATHS_MAX = 200
 
@@ -73,41 +73,26 @@ PLAY_HOOK_JS = """(() => {
 # itself, `shadow` everything inside a shadow root at any depth.
 COUNT_JS = (
     "(pathsMax) => {"
+    + JSLIB
     + PATH_JS
     + """
-  const FIELD = 'input:not([type=hidden]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image])' +
-    ':not([type=color]):not([type=file]), select, textarea, [role=textbox], [role=searchbox], [role=combobox], ' +
-    '[role=checkbox], [role=switch], [role=radio], [role=slider], [role=spinbutton]';
-  const NATIVE = 'a[href], area[href], button, input:not([type="hidden"]), select, textarea, ' +
-    'iframe, frame, summary, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"])';
-  const LANDMARK = 'header, nav, main, footer, aside, [role=banner], [role=navigation], [role=main], ' +
-    '[role=contentinfo], [role=complementary], [role=search], [role=region], [role=form]';
+  const { FIELD, inert, rendered, focusable, off } = J;
+  // While a modal dialog (showModal) is open, the rest of the page, frames
+  // included, cannot take focus: not something Tab should land on (the same
+  // rule as traverse's inventory; jslib's `focusable` is left as it is).
+  const modal = (() => { try { return window.top.document.querySelector('dialog:modal'); } catch (e) { return null; } })();
+  const behindModal = (el) => {
+    if (!modal) return false;
+    for (let n = el; n; n = n.parentNode || n.host || null) if (n === modal) return false;
+    return true;
+  };
+  const { LANDMARK, LINK } = J;
   // What could show hidden content: a button, a disclosure, a same-page or
   // script link, an element with an inline click handler (Abby, 2026-11-12:
   // hidden fields with nothing that can open them do not hold an outcome).
   const OPENER = 'button, [role=button], input[type=button], summary, a[href^="#"], ' +
     'a[href^="javascript:" i], [onclick], [aria-expanded], [aria-controls]';
   const BUTTON = 'button, input[type=submit], input[type=button], input[type=image], [role=button]';
-  const inert = (el) => {
-    for (let n = el; n; n = n.parentNode || n.host || null) if (n.nodeType === 1 && n.hasAttribute('inert')) return true;
-    return false;
-  };
-  const rendered = (el) => el.checkVisibility
-    ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0;
-  const tabindex = (el) => {
-    const v = el.getAttribute('tabindex');
-    return v !== null && v.trim() !== '' && !isNaN(v) ? parseInt(v, 10) : null;
-  };
-  const focusable = (el) => {
-    const ti = tabindex(el);
-    if (ti !== null && ti < 0) return false;
-    if (!(el.matches(NATIVE) || ti !== null)) return false;
-    if (el.tagName === 'SUMMARY' && !(el.parentElement && el.parentElement.tagName === 'DETAILS' &&
-        el.parentElement.querySelector(':scope > summary') === el)) return false;
-    return !el.matches(':disabled') && !inert(el) && rendered(el);
-  };
-  const off = (el) => el.matches(':disabled') || el.readOnly === true || el.getAttribute('aria-disabled') === 'true'
-    || el.getAttribute('aria-readonly') === 'true' || inert(el);
   const part = () => ({ light: 0, shadow: 0 });
   const out = { fields: part(), fields_hidden: part(), contenteditable: part(), forms_with_button: part(),
     media: part(), canvases: part(), draggable: part(), images: part(), focusable: part(),
@@ -115,6 +100,8 @@ COUNT_JS = (
     hidden_field_paths: [], form_paths: [], played: { light: 0, shadow: 0, detached: 0 },
     speech: 0, audio: 0 };
   const radios = { light: new Set(), shadow: new Set() };
+  const tabRadios = { light: new Set(), shadow: new Set() };
+  const formIds = new Map();
   const imgs = { light: new Set(), shadow: new Set() };
   const walk = (root, where) => {
     for (const el of root.querySelectorAll('*')) {
@@ -146,9 +133,16 @@ COUNT_JS = (
         const u = (el.currentSrc || '').split('#')[0];
         if (/^https?:/.test(u) && imgs[where].size < 1000) imgs[where].add(u);
       }
-      if (focusable(el)) add('focusable');
+      if (focusable(el) && !behindModal(el)) {
+        // Tab lands on one radio of a group: a group counts once.
+        if (el.matches('input[type=radio]') && el.name) {
+          if (el.form && !formIds.has(el.form)) formIds.set(el.form, formIds.size + 1);
+          const k = (el.form ? formIds.get(el.form) : '') + ':' + el.name;
+          if (!tabRadios[where].has(k)) { tabRadios[where].add(k); add('focusable'); }
+        } else add('focusable');
+      }
       if (el.matches(LANDMARK)) add('landmarks');
-      if (el.matches('a[href], area[href]')) add('links');
+      if (el.matches(LINK)) add('links');
       if (el.shadowRoot) { out.shadow_roots += 1; walk(el.shadowRoot, 'shadow'); }
       else if (el.tagName.includes('-') && window.customElements && customElements.get(el.tagName.toLowerCase())) out.closed_hosts += 1;
     }
@@ -224,6 +218,12 @@ async def take(page: Page, where: str) -> Count:
     own document cannot be read, `error` says so (guard CN then holds a PASS
     or DOES NOT APPLY)."""
     count = Count(where=where, played_from=where)
+    try:
+        count.frames_missing = sum(
+            1 for d in await frame_docs(page) if d.missing and d.shown
+        )
+    except Exception:
+        pass  # the frames are counted below; a missing one cannot be told apart
     images: set[str] = set()
     for frame in [page.main_frame, *(f for f in page.frames if f != page.main_frame)]:
         main = frame == page.main_frame
@@ -244,22 +244,28 @@ async def take(page: Page, where: str) -> Count:
     return count
 
 
-# What played on this load, in one frame; `listed`: those pass T's media read
-# (`motion.M.media`: the document's first 20 `video`/`audio`) also lists.
-# Speech and Web Audio sources count as played from a script.
-PLAYED_JS = """() => {
+# What played on this load, in one frame; `listed` and `listed_shadow`:
+# those pass T's media read (`motion.M.media`: the first 20 `video`/`audio`
+# of the document and its open shadow roots, `J.all`) also lists. Speech and
+# Web Audio sources count as played from a script.
+PLAYED_JS = (
+    "() => {"
+    + JSLIB
+    + """
   const hook = window.__tobiPlayed;
   if (!hook) return null;
-  const out = { light: 0, shadow: 0, detached: 0, listed: 0 };
-  const listed = new Set(Array.from(document.querySelectorAll('video, audio')).slice(0, 20));
+  const out = { light: 0, shadow: 0, detached: 0, listed: 0, listed_shadow: 0 };
+  const listed = new Set(J.all('video, audio').slice(0, 20));
   for (const el of hook.list()) {
     const root = el.isConnected ? el.getRootNode() : null;
-    out[root === document ? 'light' : root ? 'shadow' : 'detached'] += 1;
-    if (listed.has(el)) out.listed += 1;
+    const where = root === document ? 'light' : root ? 'shadow' : 'detached';
+    out[where] += 1;
+    if (listed.has(el)) out[where === 'shadow' ? 'listed_shadow' : 'listed'] += 1;
   }
   out.detached += hook.audio() + hook.speech();
   return out;
 }"""
+)
 
 
 async def played(page: Page) -> tuple[Part, Part] | None:
@@ -282,9 +288,10 @@ async def played(page: Page) -> tuple[Part, Part] | None:
             part.shadow += got["shadow"]
             part.detached += got["detached"]
             listed.light += got["listed"]
+            listed.shadow += got.get("listed_shadow", 0)
         else:
             part.frames += got["light"] + got["shadow"] + got["detached"]
-            listed.frames += got["listed"]
+            listed.frames += got["listed"] + got.get("listed_shadow", 0)
     return part, listed
 
 

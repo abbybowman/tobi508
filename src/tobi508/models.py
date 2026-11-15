@@ -183,6 +183,19 @@ class Step(BaseModel):
     )
 
 
+class Candidate(BaseModel):
+    """One element Tab should land on, in a pass's end inventory (traverse.py)."""
+
+    key: str = Field(description="Frame chain plus CSS path: Stop.path_key.")
+    group: str | None = Field(
+        default=None,
+        description="Frame chain, '|', then the Stop.group its stops carry: a radio "
+        "group (listed once) or a date input whose parts take focus one by one.",
+    )
+    label: str = ""
+    kind: str = Field(default="", description="Role, or tag (and input type).")
+
+
 class PassResult(BaseModel):
     name: str = Field(description='e.g. "P1", "P2", "P3 #2 Escape+Tab".')
     keys: list[str] = Field(default_factory=list, description="Prefix keys replayed.")
@@ -194,6 +207,15 @@ class PassResult(BaseModel):
     cap: int
     inventory: int
     inventory_end: int | None = None
+    inventory_end_items: list[Candidate] | None = Field(
+        default=None,
+        description="The candidates counted in inventory_end, one per radio group; "
+        "None past 200 (the count alone), or when the end inventory was not read.",
+    )
+    form_fields_end: int | None = Field(
+        default=None,
+        description="Form fields in the DOM inventory when the pass ended.",
+    )
     form_fields: int = Field(
         default=0, description="Form fields in the DOM inventory at load (5.D)."
     )
@@ -577,6 +599,9 @@ class Count(BaseModel):
     links: Part = Field(default_factory=Part)
     frames: int = 0
     frames_unread: int = 0
+    # Frames shown on the page whose document did not load from the recording
+    # (decision 3, Abby 2026-11-14): what is inside them was never seen.
+    frames_missing: int = 0
     players: int = 0
     shadow_roots: int = 0
     closed_hosts: int = 0

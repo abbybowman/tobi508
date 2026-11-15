@@ -101,14 +101,14 @@ below; "run" means I ran a page and got the outcome shown.
 | N-06 | 3.A, 2.B | DOES NOT APPLY | a flashing GIF after the 30th image | run · fixed (part B) |
 | H-08, M-07 | 5.A, 5.D, 5.F-5.H | DOES NOT APPLY | a form that a plain button opens | run · fixed (part B) |
 | M-01 | 5.F, 5.G | DOES NOT APPLY | a form whose button is `type="button"` | run · fixed (step 6b) |
-| H-01 | 5.A | PASS | a label whose words are hidden | run |
+| H-01 | 5.A | PASS | a label whose words are hidden | run · fixed (step 8) |
 | C-03 | 5.A and every test behind the reveal guard | PASS | a menu whose trigger is `<a href="#">` | run. **Fixed** |
 | N-02, N-04, N-07, N-09 | 2.A, 2.B, 2.C, 3.A | DOES NOT APPLY | sound, motion or flashing that starts after 6.5 s | run |
 | W-09 | 2.B | DOES NOT APPLY | a blink or jump 2.5 times a second | run |
 | D-03 | 4.A | PASS | a mouse-only control in a shadow root | run |
-| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B) |
-| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · 9.x fixed; 19.A open |
-| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B) |
+| D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
+| K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · fixed (step 8: read) |
+| N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B); read (step 8) |
 | M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
 | H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run · 5.D fixed (part B); 5.F, 5.G, 5.H fixed (step 6b) |
@@ -292,6 +292,7 @@ gallery, a form behind a button, a script-checked form.
 - **Checked:** verified (run). Three fields: a label of a hidden span
   plus "*", an empty label wrapping a select, a label with
   `text-indent: -9999px`. 5.A PASS, all three on row M2.
+- **Fixed:** 607db8b (step 8, reader 1), spec 5.A 1.10.0: a label's text is the words a person can see (`jslib` `J.text`), and M2 needs a word; all three fields now go to J1 (`tests/fixtures/5a/f44-label-words-hidden.html`, the grid's `hidden-text`).
 
 #### C-03 A menu opened by `<a href="#">` is dropped unread, and the page still passes
 
@@ -434,6 +435,7 @@ them.
   fields, and 5.F, 5.G and 5.H are NEEDS REVIEW ("2 form field(s) could
   not be read"), which is the safe answer.
 - **Fixed:** 76b8f24 and 6c16bec (guard CN, part B), specs 5.A 1.4.0, 5.B 1.4.0, 5.C 1.6.0: NEEDS REVIEW, "2 form fields inside web components were not checked". Reading them is part D.
+- **Fixed (read):** 607db8b (step 8, reader 1), specs 5.A 1.10.0, 5.B 1.7.0, 5.C 1.10.0: pass L reads fields inside web components; 5.C names them from Chrome's accessibility tree. The review's page: 5.A FAIL (placeholder only), 5.C FAIL (unnamed field), 5.B asks.
 
 #### K-02 Navigation inside a shadow root or a frame is invisible to 9.B, 9.C and 19.A
 
@@ -455,6 +457,7 @@ them.
   `<site-header>` web component with a three-link menu gave 9.B DNA,
   9.C DNA and 19.A FAIL. Frames: verified (read) only.
 - **Partly fixed:** 76b8f24 (guard CN, part B), specs 9.A 1.3.0, 9.B 1.3.0, 9.C 1.4.0, 19.A 1.3.0: 9.A, 9.B and 9.C are NEEDS REVIEW on the shared web-component header (M-12 too). 19.A still FAILs it: a guard never moves a FAIL; accepted as a known limit until part D reads web components (Abby, 2026-11-12). Frames are not counted for these tests (a player's own links would hold every page with an embed).
+- **Fixed (read):** step 8 reader 2, specs 9.A 1.7.0, 9.B 1.6.0, 9.C 1.9.0, 19.A 1.9.0: the site read follows the page as rendered into web components; on the review's two pages 19.A now finds the shared navigation (FAIL as "only one way", as on the same pages without a web component) and 9.A-9.C decide as they do there (`test_navigation_inside_a_web_component_is_read`, `9x/j*`, `19a/w-*`).
 - **Also 9.A (M-12):** it uses the same read. The reviewer's run of a
   shadow-root header with no other landmark gave 9.A DOES NOT APPLY.
 
@@ -481,6 +484,7 @@ them.
   APPLY. The watchers reviewer found the same independently (W-03)
   and adds that `speechSynthesis.speak()` is not hooked either.
 - **Fixed:** 76b8f24 (play hook and guard CN, part B), spec 2.A 1.1.0: `new Audio()` and autoplay inside a web component are NEEDS REVIEW ("1 sound or video played from a script, and was not checked").
+- **Fixed (read):** step 8 reader 3, specs 2.A 1.2.0, 2.B 1.4.0, 2.C 1.1.0, 2.D 1.2.0, 3.A 1.3.0: pass T reads media, live regions, carousels and marquees inside web components and watches their changes; 2.A's probe finds media by path into them (`J.find`: `document.querySelector` would have read shadow audio as gone, so as stopped). The review's page: 2.A FAIL, as a plain `<audio autoplay>`; the grid's shadow page: 2.A FAIL, 2.B NEEDS REVIEW (was a wrong DOES NOT APPLY).
 
 #### M-06 5.F and 5.G read "no error seen" as "the page did not check"
 
@@ -558,6 +562,32 @@ different checks, and some of those ways do not hold back an outcome.
   field is not complete (M-05)", no spec change (5.F's G3 already says it;
   5.G and 5.H read the same pass). Fixtures `5f/f24` (NEEDS REVIEW) and
   `5f/f25` (trap after the last field, still PASS).
+
+- **Step 6d (2026-11-14):** the same cause in 4.E (a trap counted as a
+  complete walk), found by the grid as NEW-3, is closed by coverage, not
+  by treating a trap as incomplete: 4.E 1.5.0 reads `walk.walk_coverage`
+  (an element no pass reached is NEEDS REVIEW). The grid's page reached
+  7 of 7 elements, so its PASS stands; fixture `4e/f13`.
+- **Step 6d, 4.D (1.9.0):** 4.D reads the same coverage (row WK) beside guard
+  CN, which stays: removing it could let a NEEDS REVIEW become a PASS.
+  A loop whose other pass reached every element stays PASS (`4d/f25`); a
+  link skipped in both directions is NEEDS REVIEW (`4d/f26`).
+- **Step 6d, 4.A (1.11.0):** 4.A reads the coverage too; its sentence replaces
+  the generic "did not get through the whole page" line when an element was
+  unreached (P1's own condition is unchanged). Two ACT cases (c88fcaf4,
+  fa27b588: a modal dialog open on load) showed the count held elements
+  behind a modal, which Tab cannot reach: the inventory and the focusable
+  count now leave them out (traverse.py, count.py).
+- **Step 6d, 5.D (1.7.0):** 5.D reads the field coverage (`walk.field_coverage`,
+  P1's fields against the page's fields when P1 ended) beside guard CN
+  (`count: fields`), which stays. A field a script skips with the walk
+  wrapped is NEEDS REVIEW (`5d/f23`); the same page without the script
+  is PASS (`5d/f24`).
+- **Step 6d, 5.F, 5.G, 5.H (1.8.0, 1.6.0, 1.6.0):** 5.F's trap-specific line
+  ("ended in a trap, so N form fields were never reached") is replaced by
+  the field coverage sentence; a trap after the last field is still
+  complete, and a field a script skips with the walk wrapped is now NEEDS
+  REVIEW too (`5f/f28`). 5.G and 5.H read 5.F's list.
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 

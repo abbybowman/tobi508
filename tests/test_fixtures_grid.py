@@ -4,7 +4,9 @@ One table: page by TT test. Every page of `tests/fixtures/grid/` is run
 against all 22 checks in one call, with no answers to open questions, and
 each cell says what the run gives today. The rule the table obeys:
 
-* never PASS, and
+* PASS only where the test really read the content (roadmap step 8:
+  inside a web component or a frame too; guard CN is quiet there) and a
+  fixture page, the same with one defect, must still FAIL (`fails_on`), and
 * DOES NOT APPLY only with a written reason.
 
 A cell that breaks the rule today is not hidden and not fixed here: it is
@@ -16,7 +18,7 @@ found that the review has no item for is `NEW-n`, described in `UNFILED`.
 
 Expected outcomes live here, never in a page (CLAUDE.md, "Fixtures"). Pages
 are served from `tests/fixtures/` by the shared fixture server (conftest).
-This file adds tests only: no spec and no outcome changed.
+Step 8 (part D) moves a cell from NEEDS REVIEW to PASS only with its twin.
 """
 
 from __future__ import annotations
@@ -49,10 +51,28 @@ class Cell:
     nothing_for_it: str | None = None
     # A cell that breaks the rule today: (review item, what is wrong).
     known_wrong: tuple[str, str] | None = None
+    # PASS only: the nearest fixture page (under tests/fixtures/) that must
+    # still FAIL, read the same way; its own test file asserts the FAIL.
+    fails_on: str | None = None
+    # PASS earned by coverage (step 6d), instead of `fails_on`: the evidence
+    # the reason names, (elements reached, elements counted), which the run's
+    # rationale must show ("Walk: reached 7 of 7"), and the nearest fixture
+    # page (under tests/fixtures/) that must still be NEEDS REVIEW because an
+    # element was never reached; its own test file asserts that.
+    reached: tuple[int, int] | None = None
+    holds_on: str | None = None
 
 
 def nr() -> Cell:
     return Cell(Outcome.NEEDS_REVIEW)
+
+
+def passes(fails_on: str) -> Cell:
+    return Cell(Outcome.PASS, fails_on=fails_on)
+
+
+def earned(reached: tuple[int, int], holds_on: str) -> Cell:
+    return Cell(Outcome.PASS, reached=reached, holds_on=holds_on)
 
 
 def fail() -> Cell:
@@ -92,13 +112,7 @@ UNFILED = {
     ),
 }
 
-NEW3_AND_4 = {
-    "NEW-3": (
-        "4.E PASSes after a keyboard trap: the walk stopped inside the trap "
-        'and 4.C says NEEDS REVIEW, but 4.E reads "each element we could '
-        'reach" as all of them. The same cause as H-03, M-05 and F-11 (a '
-        "trap counted as a complete walk), in a test they do not name."
-    ),
+NEW4 = {
     "NEW-4": (
         "4.A, 4.C, 4.D, 4.E and 4.F PASS on a page whose only form opens "
         "from a plain button: the walk reached the page's own 4 stops and "
@@ -106,7 +120,7 @@ NEW3_AND_4 = {
         "only; the 5.x tests say NEEDS REVIEW for the same page)."
     ),
 }
-UNFILED.update(NEW3_AND_4)
+UNFILED.update(NEW4)
 
 
 def _site_cells() -> dict[str, Cell]:
@@ -139,9 +153,11 @@ def _frame_cells() -> dict[str, Cell]:
         "4.D": walk,
         "4.E": walk,
         "4.F": walk,
-        "5.A": nr(),
+        # Pass L opens the frame as a page of its own and reads it with ANDI
+        # (5.A, 5.C 1.11.0; part D): both fields are labelled.
+        "5.A": passes("5a/f52-frame-other-site-placeholder-only.html"),
         "5.B": nr(),
-        "5.C": nr(),
+        "5.C": passes("5a/f53-frame-other-site-unnamed.html"),
         "5.D": walk,
         "5.F": nr(),
         "5.G": nr(),
@@ -155,17 +171,12 @@ EXPECTED: dict[str, dict[str, Cell]] = {
     # An open shadow root with a form, a navigation block, a mouse-only
     # control, a sentence about holding a key, audio and a video.
     "shadow": {
-        # N-01 (fixed for 2.A: guard CN, "2 sounds or videos played inside a
-        # web component, and were not checked").
-        "2.A": nr(),
-        "2.B": wrong(
-            Outcome.DNA,
-            "N-01",
-            "2.B's watcher reads media with the same document-only query as "
-            "2.A did (`M.media`), so the looping video inside the shadow "
-            'root is never seen: "Nothing on it moved". On the same page '
-            "outside the root, or in a frame, 2.B is NEEDS REVIEW.",
-        ),
+        # N-01 (part D, 2.A 1.2.0): pass T reads the audio inside the web
+        # component: it plays by itself with no control first, a real FAIL.
+        "2.A": fail(),
+        # N-01 (part D, 2.B 1.4.0): pass T reads media inside web
+        # components; the looping video moves, essential or not is a question.
+        "2.B": nr(),
         "2.C": dna(
             "no text, counter or feed on the page updates by itself; the "
             "looping video is 2.B's"
@@ -186,10 +197,12 @@ EXPECTED: dict[str, dict[str, Cell]] = {
         "4.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.E": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.F": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        # D-01: no longer "no form fields"; guard CN holds them.
-        "5.A": nr(),
+        # D-01: pass L reads the web component (5.A, 5.C 1.10.0; part D):
+        # both fields are labelled, so 5.A and 5.C PASS on their rows; 5.B
+        # asks whether the labels describe the fields.
+        "5.A": passes("5a/f46-shadow-placeholder-only.html"),
         "5.B": nr(),
-        "5.C": nr(),
+        "5.C": passes("5a/f48-shadow-labelledby-outside.html"),
         "5.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "5.F": nr(),
         "5.G": nr(),
@@ -261,7 +274,11 @@ EXPECTED.update(
             "4.B": nr(),
             "4.C": nr(),
             "4.D": nr(),
-            "4.E": wrong(Outcome.PASS, "NEW-3", UNFILED["NEW-3"]),
+            # NEW-3 withdrawn (step 6d): the walk stops inside the trap in both
+            # directions, yet every one of the page's 7 elements is reached by
+            # one of them (P1: 4, P2: 4 from the end), so "each element we could
+            # reach" is all of them. 4e/f13 is the page where one was not.
+            "4.E": earned((7, 7), "4e/f13-link-skipped-by-script.html"),
             "4.F": nr(),
             "5.A": na(
                 "5.A read all 3 fields, the 2 after the trap too (rows c1 to "
@@ -352,13 +369,9 @@ EXPECTED.update(
         "hidden-text": {
             **NO_MEDIA,
             **_plain("no mouse-only control, trap, menu or timing text", WALK),
-            "5.A": wrong(
-                Outcome.PASS,
-                "H-01",
-                "both labels' words are hidden from people (a clipped span, "
-                "text-indent: -9999px) and still count as a visible label "
-                "(rows c1, c2 on M2).",
-            ),
+            # H-01 (5.A 1.10.0): a label's text is what people see, so
+            # neither label counts and J1 asks.
+            "5.A": nr(),
             "5.B": nr(),
             "5.C": nr(),
             "5.D": na("two plain text fields; nothing on the page changes on input"),
@@ -414,7 +427,7 @@ def test_every_grid_page_has_a_row_and_every_row_a_cell_for_every_test():
         assert set(cells) == tests, (page, tests ^ set(cells))
 
 
-def test_the_table_never_passes_and_does_not_apply_only_with_a_reason():
+def test_the_table_passes_only_with_a_twin_and_does_not_apply_only_with_a_reason():
     for page, cells in EXPECTED.items():
         for test, c in cells.items():
             where = (page, test)
@@ -428,7 +441,16 @@ def test_the_table_never_passes_and_does_not_apply_only_with_a_reason():
                 assert c.nothing_for_it is None, where
                 assert len(c.known_wrong[1]) > 20, where
                 continue
-            assert c.outcome is not Outcome.PASS, ("PASS is not a cell", where)
+            if c.outcome is Outcome.PASS and c.reached:
+                assert c.holds_on and c.fails_on is None, where
+                assert c.reached[0] == c.reached[1] > 0, where
+                assert (GRID.parent / c.holds_on).is_file(), where
+                continue
+            if c.outcome is Outcome.PASS:
+                assert c.fails_on, ("PASS needs a page that must FAIL", where)
+                assert (GRID.parent / c.fails_on).is_file(), where
+                continue
+            assert c.fails_on is None, where
             if c.outcome is Outcome.DNA:
                 assert c.nothing_for_it and len(c.nothing_for_it) > 20, where
             else:
@@ -472,11 +494,21 @@ async def test_each_page_gives_each_cell_its_outcome(page, settings, server):
                 c.known_wrong
             )
             got = f"{test}: {f.outcome.value}, table says {c.outcome.value}"
+            got += " :: " + f.summary[:400] + " :: " + f.rationale[:200]
             off.append(got + fixed)
         # The only outcomes that need no reason; never PASS on this page unless
         # the table says it is a known wrong outcome.
         if f.outcome is Outcome.PASS:
-            assert c.known_wrong, (test, "a PASS the table does not own up to")
+            assert c.known_wrong or c.fails_on or c.reached, (
+                test,
+                "a PASS the table does not own up to",
+            )
+            if c.reached:  # the evidence the reason names, not only a sentence
+                assert (
+                    f"Walk: reached {c.reached[0]} of {c.reached[1]}" in f.rationale
+                ), (test, f.rationale)
+            if c.fails_on:
+                assert "CN" not in f.rows, (test, "a PASS on content not read")
         if f.outcome is Outcome.DNA:
             assert c.nothing_for_it or c.known_wrong, (test, f.summary)
     assert not off, off

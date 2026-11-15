@@ -16,20 +16,23 @@ from tobi508.pipeline import run_tt_tests
 # page -> test -> (outcome, a sentence the summary holds, or None when CN must
 # stay quiet). Review IDs in the comments.
 EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
+    # Decision 3 (Abby, 2026-11-14): a frame whose page the recording lacks.
+    "frame-missing": {
+        t: (
+            "NEEDS_REVIEW",
+            "1 frame on this page was not recorded, so what is inside it was not "
+            "checked.",
+        )
+        for t in ("5.A", "5.B", "5.C")
+    },
     # D-01: a form inside a web component.
     "shadow-form": {
-        "5.A": (
-            "NEEDS_REVIEW",
-            "2 form fields inside web components were not checked.",
-        ),
-        "5.B": (
-            "NEEDS_REVIEW",
-            "2 form fields inside web components were not checked.",
-        ),
-        "5.C": (
-            "NEEDS_REVIEW",
-            "2 form fields inside web components were not checked.",
-        ),
+        # Part D (5.A, 5.C 1.10.0, 5.B 1.7.0): pass L reads the web component,
+        # so its rows decide and the guard is quiet: the placeholder-only
+        # "Name" FAILs 5.A, the unnamed email field FAILs 5.C, and 5.B asks.
+        "5.A": ("FAIL", None),
+        "5.B": ("NEEDS_REVIEW", None),
+        "5.C": ("FAIL", None),
     },
     # H-08: a form a plain button shows.
     "hidden-form-button": {
@@ -76,12 +79,10 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
         ),
     },
     # N-01: autoplaying audio inside a web component.
-    "audio-shadow": {
-        "2.A": (
-            "NEEDS_REVIEW",
-            "1 sound or video played inside a web component, and was not checked.",
-        ),
-    },
+    # Part D (2.A 1.2.0): pass T reads media inside web components, so the
+    # rows decide: audio that plays by itself with no control, as a plain
+    # <audio autoplay>.
+    "audio-shadow": {"2.A": ("FAIL", None)},
     # N-06: an animated image after the 30th image.
     "many-images": {
         "2.B": ("NEEDS_REVIEW", "32 images: only the first 30 were checked"),
@@ -135,10 +136,13 @@ async def test_the_guard_stays_quiet_when_the_readings_agree(settings, server):
         assert "CN" not in f.rows, (f.test_id, f.rows, f.summary)
 
 
-async def test_navigation_inside_a_web_component_is_not_does_not_apply(
-    settings, server
-):
-    """K-02, M-12: two pages share a header built as a web component."""
+async def test_navigation_inside_a_web_component_is_read(settings, server):
+    """K-02, M-12: two pages share a header built as a web component. Since
+    step 8 (part D, reader 2) the site read goes into it, so guard CN is
+    quiet and the tests decide as they do on the same pages built without a
+    web component (checked 2026-11-14): 9.A DOES NOT APPLY (three links
+    repeated), 9.B PASS (same order), 9.C PASS (named alike, from Chrome's
+    accessibility tree), 19.A FAIL (the navigation is the only way)."""
     out = await run_tt_tests(
         settings,
         f"{server.base}/count/site-header-a.html",
@@ -147,16 +151,10 @@ async def test_navigation_inside_a_web_component_is_not_does_not_apply(
     )
     by = {f.test_id.value: f for f in out.report.findings}
     assert set(out.report.counts) == {"page", "p1"}
-    for t in ("9.B", "9.C"):
+    want = {"9.A": "DNA", "9.B": "PASS", "9.C": "PASS", "19.A": "FAIL"}
+    for t, outcome in want.items():
         f = by[t]
-        assert f.outcome is Outcome.NEEDS_REVIEW, (t, f.outcome, f.summary)
-        assert "CN" in f.rows, (t, f.rows)
-        assert "3 links inside web components were not checked." in f.summary
-        assert "On other page 1, 3 links inside web components" in f.rationale or (
-            "On other page 1" in f.summary
-        )
-    # 9.A is not DOES NOT APPLY or PASS on it either.
-    assert by["9.A"].outcome not in (Outcome.PASS, Outcome.DNA), by["9.A"].summary
-    # The guard never moves a FAIL: 19.A's "no way to reach this page" here is
-    # a wrong FAIL the guard cannot touch (left for a spec decision).
-    assert by["19.A"].outcome is not Outcome.PASS
+        assert f.outcome is Outcome(outcome), (t, f.outcome, f.summary)
+        assert "CN" not in f.rows, (t, f.rows)
+    # 19.A's FAIL is "only one way", no longer K-02's "no way to reach it".
+    assert "only the site navigation" in by["19.A"].summary

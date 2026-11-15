@@ -22,6 +22,7 @@ from urllib.parse import urlsplit
 from pydantic import BaseModel, Field
 
 from tobi508 import count as inventory
+from tobi508.jslib import JSLIB
 from tobi508.models import Count
 from tobi508.traverse import DEST_JS, PATH_JS, NewPage
 
@@ -37,7 +38,8 @@ RESULTS_SETTLE_MS = 5000
 # Defines units(cap): the page's rendered content in reading order. Shared by
 # the site read and 9.A's landing read, so both number units the same way.
 UNITS_FN = (
-    PATH_JS
+    JSLIB
+    + PATH_JS
     + DEST_JS
     + r"""
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim();
@@ -64,10 +66,11 @@ UNITS_FN = (
       return t === 'HEADER' ? 'banner' : 'contentinfo';
     return null;
   };
-  const textOf = (ids) => norm(ids.split(/\s+/).map((i) => document.getElementById(i))
+  // Ids in the element's own tree (a web component's ids stay inside it).
+  const textOf = (el, ids) => norm(ids.split(/\s+/).map((i) => J.byId(el, i))
     .filter(Boolean).map((e) => e.textContent).join(' '));
   const label = (el) => norm(el.getAttribute('aria-label')) ||
-    (el.getAttribute('aria-labelledby') ? textOf(el.getAttribute('aria-labelledby')) : '');
+    (el.getAttribute('aria-labelledby') ? textOf(el, el.getAttribute('aria-labelledby')) : '');
   const controlRole = (el) => {
     const r = (el.getAttribute('role') || '').trim().split(/\s+/)[0];
     if (r) return r;
@@ -103,7 +106,11 @@ UNITS_FN = (
       if (n.tagName === 'svg' || n.tagName === 'SVG') {
         const tl = n.querySelector('title'); if (tl) parts.push(tl.textContent); return;
       }
-      for (const c of n.childNodes) visit(c);
+      // As rendered: into a web component, and a slot's assigned nodes.
+      const kidNodes = n.shadowRoot ? n.shadowRoot.childNodes
+        : n.tagName === 'SLOT' && n.assignedNodes({ flatten: true }).length ? n.assignedNodes({ flatten: true })
+        : n.childNodes;
+      for (const c of kidNodes) visit(c);
     };
     visit(el);
     return norm(parts.join(' ')) || norm(el.title);
@@ -132,8 +139,15 @@ UNITS_FN = (
         keys: norm(el.getAttribute('accesskey') || el.getAttribute('aria-keyshortcuts')) }, u));
       return true;
     };
+    // Web components the walk went into (part D), and those inside content
+    // that is hidden: both read (nothing hidden is on the page for anyone).
+    const roots = new Set();
+    const hiddenRoots = (el) => { for (const r of J.roots(el)) if (r instanceof ShadowRoot) roots.add(r);
+      if (el.shadowRoot) for (const r of J.roots(el.shadowRoot)) roots.add(r); };
     const walk = (el, chain) => {
-      if (truncated || !shown(el)) return;
+      if (truncated) return;
+      if (!shown(el)) { hiddenRoots(el); return; }
+      if (el.shadowRoot) roots.add(el.shadowRoot);
       const rr = regionRole(el);
       if (rr) {
         counts[rr] = (counts[rr] || 0) + 1;
@@ -166,16 +180,22 @@ UNITS_FN = (
         return;
       }
       if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE' || t === 'NOSCRIPT') return;
-      let own = '';
-      for (const c of el.childNodes) if (c.nodeType === 3) own += ' ' + c.textContent;
-      own = norm(own);
+      const own = norm(J.ownText(el));
       if (own) push(el, { kind: 'text', role: 'text', name: own.slice(0, 300), text: own.toLowerCase().slice(0, 200) }, chain);
-      for (const c of el.children) walk(c, chain);
+      for (const c of J.kids(el)) walk(c, chain);
     };
     if (document.body) walk(document.body, []);
+    // What it read inside web components, by the inventory's keys (count.py
+    // counts every landmark and link in open shadow roots): each root's own
+    // tree, once. A read cut by the cap reads only the roots it reached.
+    const shadowRead = { landmarks: 0, links: 0 };
+    for (const r of roots) {
+      shadowRead.landmarks += r.querySelectorAll(J.LANDMARK).length;
+      shadowRead.links += r.querySelectorAll(J.LINK).length;
+    }
     // Search forms (19.A): a GET submission the tool can make itself.
     const SEARCH_NAME = /^(q|query|search|s|k|keyword|keywords|searchterm|term)$/i;
-    const forms = Array.from(document.querySelectorAll('form')).filter(shown).map((f) => {
+    const forms = J.all('form').filter(shown).map((f) => {
       const fields = Array.from(f.elements);
       const named = fields.find((e) => e.name && SEARCH_NAME.test(e.name) && e.tagName === 'INPUT');
       const typed = fields.find((e) => e.tagName === 'INPUT' && (e.type || '').toLowerCase() === 'search');
@@ -188,7 +208,7 @@ UNITS_FN = (
                explicit: !!(f.getAttribute('action') || '').trim(),
                field: field && field.name ? field.name : '', hidden, css: path(f) };
     }).filter(Boolean);
-    return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms };
+    return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms, shadow_read: shadowRead };
   };
 """
 )
@@ -236,6 +256,9 @@ class PageRead(BaseModel):
     error: str = ""
     # The page's inventory, on this same load (count.py; guard CN).
     count: Count | None = None
+    # Landmarks and links inside web components the read covered (part D):
+    # the inventory's keys, so guard CN compares them.
+    shadow_read: dict[str, int] = Field(default_factory=dict)
     # The same document as the tested page, under another address (K-01).
     identical: bool = False
     # Nearly the same page: the same address apart from the query string, and
@@ -257,16 +280,16 @@ class SiteRead(BaseModel):
     @property
     def read(self) -> dict[str, dict[str, int]]:
         """What the site read covered on each page it read, for guard CN
-        (count.py): `walk` follows element children in the page's own
-        document, so no landmark or link inside a web component or frame."""
-        none = {
-            "landmarks.shadow": 0,
-            "links.shadow": 0,
-            "landmarks.frames": 0,
-            "links.frames": 0,
-        }
+        (count.py): `walk` follows the page as rendered, into open shadow
+        roots (part D), so the landmarks and links of every web component it
+        reached; a frame is one unit, its content not read."""
         return {
-            ("page" if p.n == 0 else f"p{p.n}"): dict(none)
+            ("page" if p.n == 0 else f"p{p.n}"): {
+                "landmarks.shadow": p.shadow_read.get("landmarks", 0),
+                "links.shadow": p.shadow_read.get("links", 0),
+                "landmarks.frames": 0,
+                "links.frames": 0,
+            }
             for p in self.pages
             if not p.error
         }
@@ -328,6 +351,7 @@ async def read_page(
             truncated=data["truncated"],
             title=data.get("title") or "",
             forms=data.get("forms") or [],
+            shadow_read=data.get("shadow_read") or {},
         )
     except Exception as exc:
         return PageRead(n=n, url=url, error=type(exc).__name__)

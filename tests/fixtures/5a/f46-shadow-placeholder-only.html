@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><title>Subscribe</title></head><body>
+<h1>Subscribe</h1>
+<x-signup style="display:block;margin-top:300px"></x-signup>
+<script>
+customElements.define('x-signup', class extends HTMLElement {
+  constructor() {
+    super();
+    // The field's only text is its placeholder, which goes away on typing.
+    this.attachShadow({ mode: 'open' }).innerHTML =
+      '<form onsubmit="return false"><input type="email" name="e" placeholder="Email address"></form>';
+  }
+});
+</script>
+</body></html>

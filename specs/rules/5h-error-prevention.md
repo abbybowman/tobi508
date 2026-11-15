@@ -1,7 +1,7 @@
 ---
 tt_test: 5.H
 tt_name: 3.3.4-error-prevention
-spec_version: 1.5.0
+spec_version: 1.6.0
 guards: unrecorded-code
 count: forms_with_button, fields_hidden, fields.shadow, fields.frames
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -17,6 +17,8 @@ The tool gives each page one 5.H outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 **Other sources.** [Understanding 3.3.4](https://www.w3.org/WAI/WCAG22/Understanding/error-prevention-legal-financial-data.html): legal commitments are "transactions where the person incurs a legally binding obligation or benefit" (marriage license, stock trade, will, loan, contract); input errors include information "omitted by the user" or outside "the required data format or values"; examples: an order summary to inspect and confirm or change; a stock sale alert with cancel or confirm. [G98](https://www.w3.org/WAI/WCAG22/Techniques/general/G98) (review and confirm; return to previous steps; a summary before committing), [G99](https://www.w3.org/WAI/WCAG22/Techniques/general/G99) (deleted data can be recovered), [G164](https://www.w3.org/WAI/WCAG22/Techniques/general/G164) (a stated period to cancel or change an order), [G155](https://www.w3.org/WAI/WCAG22/Techniques/general/G155) (a confirm checkbox beside the submit button: unticked, the input is rejected and the user prompted to review), [G168](https://www.w3.org/WAI/WCAG22/Techniques/general/G168) (a confirmation request naming the action, which can be confirmed or cancelled). No ACT rule; no DHS data. ICT Testing Baseline 3.1 10.G-ErrorPrevention: "Complete the form components necessary to submit. Include errors"; at least one of reversible, checked, confirmed; advisory: a simple one-page form needs no other review. Baseline Alignment TC10.G (six one-page scripted order forms): Baseline expects PASS or FAIL on them; the TT makes a one-page form DNA, and the TT governs (Abby, 2026-11-02), so ours are DNA except where the page itself shows a step (TC10.G-2.c: "Add to Cart" shows a cart to review before "Submit Payment").
 
 **Terms.** *Error pass E*: [5f-error-identification.md](5f-error-identification.md) section 2 (HtT 1 exactly: attempt 1 presses the submit control as loaded, attempt 2 with wrong values; reads before and after). 5.H reads it from the run cache; it presses nothing of its own (1.5.0: it reads 5.F's list of what was not tested too, so a form whose only pressed control may not send it, 5.F's M-01 sentence, is NEEDS REVIEW here as there). A *consequence hint*: the tested page's text, a form's button names or field labels contain pay, payment, purchase, order, checkout, cart, buy, donate, transfer, credit card, card number, agree, terms, sign and submit, delete, remove, exam, quiz, test answers, legal, contract, application, or (1.1.0, Abby 2026-11-02: changes to saved data and benefits) update, change, save changes, apply, claim, renew, enroll, withdraw, deposit. The page's text is all of its visible text, not only the first 60 strings J1 sees (1.1.0). A form *shows a step* when submitting it shows another stage before the end (a summary or review with a further submit control, "Step 2 of 3", a "Next" or "Continue" control), or the page says it is one step of several. *Checked* (Abby, 2026-11-02): after a pass E submit that stayed on the form (not sent, and the form still there: at least one of its fields is shown and every field that was shown before still is, so a next step that hides the first step's fields is not the form and its "required" text is not a check; 1.1.0, and 1.4.0 for shown: review M-08, which had counted a hidden field as there) the page showed new error text (error, invalid, required, must, incorrect, missing, "please enter/select/choose/provide"), an alert with such words, or native validation (`invalid` events).
+
+**Terms for row WK.** A form field is *reached* when P1 stopped on it (not read-only, not disabled; a radio group once; P2's stops are not read by this test, since its fields come from P1). The *fields to reach* are the form fields the page has when P1 ended (`PassResult.form_fields_end`: rendered, not disabled, not read-only; a radio group once). A pass that ended in a trap, a loop, a cap or out of time matters here only through what is left unreached. The sentence is built by `walk.field_coverage`, for example: "The keyboard reached 1 of the 2 form fields on this page, so 1 was not checked. Tab got stuck at "Search" (textbox)." It names only what ran.
 
 ## 1. Applicability
 
@@ -58,6 +60,9 @@ The instance is the form J1 named (or every hinted form).
 | G2 | Any instance is FAIL | FAIL |
 | G3 | Any instance is NEEDS REVIEW | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
 | G4 | Every instance is PASS | PASS |
+
+**Row WK: the walk did not reach every field** (1.6.0; Abby, 2026-11-14; review H-03, M-05). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every form field this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. 5.H reads 5.F's whole list (A2), so its sentence is 5.F's.
+
 
 **Plain-language sentences.**
 
