@@ -79,8 +79,8 @@ is merged. At most three threads at once. Each thread branches from
   that holds 2.C and 2.D on every svs page. Done: the timer (2.C 1.2.0,
   the clock check; 8 of round 2's cells decided, all agreeing with the
   key). Done: the images (2.B 1.5.0, 3.A 1.4.0; 6 of round 2's cells
-  decided, all agreeing with the key). Approved, next: 5.H reading hidden
-  forms. To research: fields hidden from everyone (honeypots, reCAPTCHA).
+  decided, all agreeing with the key). Done: 5.H reading hidden forms
+  (5.H 1.9.0; 8 cells decided, all agreeing with the key). To research: fields hidden from everyone (honeypots, reCAPTCHA).
 - **6f.** The judge fails "Home" against "NASA, return to the
   homepage" in 9.C on 8 of round 1's pages, and the key passes them:
   the pairing or the rubric. 19.A's FAIL on CILab, not yet looked at.

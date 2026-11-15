@@ -184,6 +184,7 @@ flowchart LR
 - Round 2 taught us a recording can hide a failure, that a person opens every menu and the tool had not, and that the judge belongs in the server.
 - Step 6e: an analytics timer held 2.C and 2.D on every round 2 page; running the page's clock past it decided 8 cells, all agreeing with the key, and a test page caught the one false Does Not Apply on the way.
 - Step 6e, images: reading every image (not the first 30) decided 6 more round 2 cells, all agreeing with the key, and finds a strobing image the old cap missed.
+- Step 6e, hidden forms: 5.H reads a form hidden behind a button for whether it applies, as a person would, without submitting it: 8 more cells decided, all agreeing with the key.
 - **[FILL: the main disagreements in the scored run and whether any is a false PASS.]**
 - Unless each test has about 60 true failures, say "promising, not proven".
 
