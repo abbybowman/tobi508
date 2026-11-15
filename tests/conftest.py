@@ -278,6 +278,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             )
             return self._send(200, body.encode())
         route = self.path.split("?")[0]
+        if route.startswith("/19a/api/"):  # 19.A 1.14.0: an API, not a page
+            return self._send(200, b'{"items": []}', "application/json")
         if route in ("/stamp", "/listing"):  # K-01 (9.A-9.C, 19.A)
             # /stamp: one page whose bytes change on every request (a stamp),
             # whatever the query. /listing: one path, other content per
