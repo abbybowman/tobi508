@@ -3,8 +3,8 @@
 19a-multiple-ways.md 1.9.0 c910bb3bfbcb53cf52e8c15dddffb1c6697d995cc9b88d52ef72fea6ab58994c
 2a-audio-control.md 1.2.0 bd3212ad9e1aba9cdefa05b6fb4cee2ca29e5ef5837114e72228adfc68409357
 2b-blinking-moving-scrolling.md 1.4.0 c946a4227a1a0b22802e6aa89fec2aea5438d4e30484bf3a9a7cc48de2c0b3a3
-2c-auto-updating.md 1.1.0 6ddeb837e7152676d010a67e963dcb409f3dbb00659e4a3d1bd3eade9b7fb199
-2d-change-notify-auto.md 1.2.0 9d5e6fa2576d3bf83e942b570845a15bbed1fb49f1e2d6b2ba632ce9612fe39f
+2c-auto-updating.md 1.2.0 09c78b5427526b32566572be60ca0b06b630dd117a30c22d587fa233f02a0b5a
+2d-change-notify-auto.md 1.3.0 1c2aa28c176224b1aa98afb92b490d56d8b346c5e478b326c03f9d3c0fcc8074
 3a-flashing.md 1.3.0 efcda0708255ea71f3630098140e3b0f00d2361d2b755baa317af5c48be886bc
 4a-keyboard-access.md 1.12.0 9ab6fb4211d018ac5df7b8aa93a6fdb3905c507015097849f2776e14baeabe0a
 4b-no-keystroke-timing.md 1.4.0 6516a49bf24b61a37eb282c05e6a70500735e11c411346084e7dbafb85ddb7d4

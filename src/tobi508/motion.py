@@ -847,6 +847,23 @@ def streaming_players(mp: "MotionPass", autoplay_only: bool = True) -> list[str]
     return [src for src in mp.iframes if pat.match(src)]
 
 
+class TimerCheck(BaseModel):
+    """The clock check (2.C spec 1.2.0, section 2): timers longer than the
+    watch, run past on one more fresh load with the page's clock installed.
+    Facts only; 2.C's hints read `cleared`."""
+
+    ran: bool = False
+    # True only when every long timer pass T saw was set again, the clock ran
+    # past the longest, no request was made, and nothing on the page changed.
+    cleared: bool = False
+    why: str = ""  # plain words: why the timers stay a sign ("" when cleared)
+    timers_ms: list[int] = Field(default_factory=list)  # pass T's, run past
+    advanced_ms: int = 0
+    requests: int = 0
+    changed: list[str] = Field(default_factory=list)  # screen, text, ...
+    seconds: float = 0.0
+
+
 class MotionPass(BaseModel):
     ok: bool = True
     error: str = ""
@@ -906,6 +923,8 @@ class MotionPass(BaseModel):
     # than 3 times a second.
     fast_callbacks: list[dict[str, Any]] = Field(default_factory=list)
     fast_animations: list[dict[str, Any]] = Field(default_factory=list)
+    # The clock check (2.C 1.2.0), when it ran: set by timer_check_shared.
+    timer_check: TimerCheck | None = None
 
 
 def changed_tiles(
@@ -1756,3 +1775,224 @@ async def collect(ctx: Any, keep_shots: bool = True) -> MotionPass:
     mp.browser = getattr(ctx, "motion_browser", "")
     ctx.cache["motion"] = mp
     return mp
+
+
+# ── The clock check (2.C spec 1.2.0, section 2) ───────────────────────────
+# A timer longer than the watch is a sign the page may update (A2). The
+# check runs the page's clock past it on one more fresh load and looks at
+# what changed. Abby, 2026-11-15 (roadmap step 6e): round 2's long timers
+# were analytics heartbeats that change nothing on screen.
+
+# The page settles on the paused clock before the first look.
+CLOCK_SETTLE_MS = 3000
+# A timer pass T saw counts as set again within 5% of its length (Parse.ly
+# adds up to 2.5 s of jitter to 150 s).
+CLOCK_MATCH = 0.05
+# No timer longer than a day is run past: such a timer stays a sign.
+CLOCK_MAX_MS = 86_400_000
+# After the jump, the clock runs 1 s more in uneven steps, with a screenshot
+# after each, so a change that repeats cannot look like none (the grid's
+# late page: a flash every 125 ms toggled an even number of times in 1 s);
+# then the real wait lets paints and requests show.
+CLOCK_AFTER_STEPS_MS = (170, 230, 290, 310)
+CLOCK_AFTER_MS = sum(CLOCK_AFTER_STEPS_MS)
+CLOCK_REAL_WAIT_MS = 500
+
+# Every change to a document after the hook starts, attributes and styles
+# too: any change after the jump keeps the timers a sign.
+MUTATION_COUNT_JS = """(() => {
+  if (window.__tobiMutations !== undefined) return;
+  window.__tobiMutations = 0;
+  new MutationObserver((recs) => { window.__tobiMutations += recs.length; })
+    .observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+})();"""
+
+# Added after the page's clock is installed (pipeline open_clock), so it
+# wraps the clock's own timers: every timer of 1 s or more, per document.
+TIMER_HOOK_JS = """(() => {
+  if (window.__tobiTimers) return;
+  const L = (window.__tobiTimers = []);
+  for (const [name, kind] of [['setTimeout', 'timeout'], ['setInterval', 'interval']]) {
+    const orig = window[name];
+    window[name] = function (fn, ms, ...rest) {
+      const v = Number(ms) || 0;
+      if (v >= 1000 && L.length < 200) L.push({ kind, ms: Math.round(v) });
+      return orig.call(this, fn, ms, ...rest);
+    };
+  }
+})();"""
+
+_CLOCK_STATE_JS = """() => ({
+  mutations: window.__tobiMutations || 0,
+  canvases: document.getElementsByTagName('canvas').length,
+  playing: Array.from(document.querySelectorAll('video, audio')).filter((m) => !m.paused).length,
+  text: document.body ? document.body.innerText : '',
+  nodes: document.getElementsByTagName('*').length,
+  images: Array.from(document.images).map((i) => i.currentSrc || i.src || ''),
+  timers: window.__tobiTimers || [],
+})"""
+
+
+def slow_timers(mp: MotionPass) -> list[Timer]:
+    """Timers longer than the watch (2.C A2's timer sign)."""
+    return [t for t in mp.timers if t.ms > mp.watch_s * 1000]
+
+
+async def _clock_state(page: Page) -> list[dict[str, Any]]:
+    out = []
+    for frame in page.frames:
+        try:
+            out.append(await frame.evaluate(_CLOCK_STATE_JS))
+        except Exception:
+            out.append({"error": True})
+    return out
+
+
+async def _mutation_count(page: Page) -> int:
+    n = 0
+    for frame in page.frames:
+        try:
+            n += int(await frame.evaluate("() => window.__tobiMutations || 0"))
+        except Exception:
+            continue
+    return n
+
+
+def _and_list(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def _same_screen(a: bytes, b: bytes) -> bool:
+    ia = Image.open(io.BytesIO(a)).convert("RGB")
+    ib = Image.open(io.BytesIO(b)).convert("RGB")
+    return ia.size == ib.size and ImageChops.difference(ia, ib).getbbox() is None
+
+
+async def timer_check(open_page: OpenPage, mp: MotionPass) -> TimerCheck:
+    """Run the page's clock past the long timers pass T saw (2.C 1.2.0).
+    Never raises; anything that goes wrong leaves the timers a sign."""
+    t0 = time.monotonic()
+    want = slow_timers(mp)
+    out = TimerCheck(timers_ms=sorted({t.ms for t in want}))
+    try:
+        context, page = await open_page()
+    except Exception as exc:
+        out.why = f"the page could not be loaded again ({safe_error(exc)})"
+        return out
+    requests: list[str] = []
+    try:
+        await page.clock.run_for(CLOCK_SETTLE_MS)
+        before = await _clock_state(page)
+        shot_a = await page.screenshot()
+        seen = [
+            (t["kind"], t["ms"])
+            for f in before
+            for t in f.get("timers", [])
+            if t["ms"] > mp.watch_s * 1000
+        ]
+        missing = [
+            t
+            for t in want
+            if not any(
+                k == t.kind and abs(ms - t.ms) <= CLOCK_MATCH * t.ms for k, ms in seen
+            )
+        ]
+        if missing:
+            out.why = (
+                f"the timer of {missing[0].ms / 1000:g} s was not set again when we "
+                "loaded the page again, so we could not run past it"
+            )
+            return out
+        if any(f.get("canvases") for f in before):
+            out.why = (
+                "the page draws on a canvas, and we cannot read a canvas for "
+                "changes when the page's clock runs"
+            )
+            return out
+        longest = max(ms for _, ms in seen)
+        if longest > CLOCK_MAX_MS:
+            out.why = f"a timer of {longest / 1000:g} s is longer than we run the clock"
+            return out
+        context.on("request", lambda r: requests.append(r.url))
+        out.ran = True
+        out.advanced_ms = longest + CLOCK_AFTER_MS
+        # Changes are counted only while the clock runs: a screenshot alone
+        # made a real page change two attributes (round 2's help page).
+        counted = 0
+
+        async def run(step) -> None:
+            nonlocal counted
+            m0 = await _mutation_count(page)
+            await step
+            counted += await _mutation_count(page) - m0
+
+        before = await _clock_state(page)
+        await run(page.clock.fast_forward(longest + CLOCK_AFTER_STEPS_MS[0]))
+        shots = [await page.screenshot()]
+        for step in CLOCK_AFTER_STEPS_MS[1:]:
+            await run(page.clock.run_for(step))
+            shots.append(await page.screenshot())
+        await run(page.wait_for_timeout(CLOCK_REAL_WAIT_MS))
+        after = await _clock_state(page)
+        shots.append(await page.screenshot())
+        out.requests = len(requests)
+        if counted:
+            out.changed.append("content")
+        if not all(_same_screen(shot_a, s) for s in shots):
+            out.changed.append("screen")
+        for key, name in (
+            ("text", "text"),
+            ("nodes", "elements"),
+            ("images", "images"),
+            ("playing", "media"),
+        ):
+            if len(before) != len(after) or any(
+                a.get(key) != b.get(key) for a, b in zip(before, after)
+            ):
+                out.changed.append(name)
+        if out.changed:
+            out.why = (
+                "when we ran the page's clock past it, the page's "
+                + _and_list(list(dict.fromkeys(out.changed)))
+                + " changed"
+            )
+        elif out.requests:
+            out.why = (
+                "when we ran the page's clock past it, the page asked its server "
+                "for something, and our copy of the page cannot show what the "
+                "server would send"
+            )
+        else:
+            out.cleared = True
+    except Exception as exc:
+        out.cleared = False
+        out.why = f"the clock could not be run ({safe_error(exc)})"
+    finally:
+        out.seconds = round(time.monotonic() - t0, 1)
+        try:
+            await context.close()
+        except Exception:
+            pass
+    return out
+
+
+async def timer_check_shared(ctx: Any, mp: MotionPass) -> None:
+    """The clock check once per run, shared by 2.C and 2.D: sets
+    `mp.timer_check`. The checks decide when it is worth running."""
+    if mp.timer_check is not None:
+        return
+    task = ctx.cache.get("timer_check_task")
+    if task is None:
+        opener = getattr(ctx, "open_clock", None)
+        if opener is None or ctx.out_of_time():
+            mp.timer_check = TimerCheck(
+                why="there was no time left in this run to run the page's clock"
+                if opener is not None
+                else "the page's clock could not be run in this run",
+                timers_ms=sorted({t.ms for t in slow_timers(mp)}),
+            )
+            return
+        task = asyncio.ensure_future(timer_check(opener, mp))
+        ctx.cache["timer_check_task"] = task
+    # Shielded: a test out of its own time must not cancel the shared check.
+    mp.timer_check = await asyncio.shield(task)

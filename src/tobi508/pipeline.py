@@ -144,7 +144,8 @@ def _opener(
     `autoplay`: pass T's browser (full Chromium, headless, autoplay allowed;
     plan Q1 and Q11). `viewport` and `paused_clock`: 3.A's flash capture
     (flashcap.py), at 1024 x 768 with Playwright's clock installed and paused
-    before the page loads, so the capture steps the page's time."""
+    before the page loads, so the capture steps the page's time; 2.C's clock
+    check uses the paused clock too, with `init_scripts` added after it."""
     full = autoplay or replay_in_full_chromium(settings, frames)
 
     async def new_page():
@@ -154,11 +155,15 @@ def _opener(
             settings,
             har,
             run.log,
-            init_scripts=init_scripts,
+            init_scripts=() if paused_clock else init_scripts,
             viewport=viewport,
         )
         if paused_clock:
             await flashcap.pause_clock(replay.context)
+            # After the clock: Playwright's clock replaces the timer functions,
+            # so a hook added before it would see none (2.C's clock check).
+            for script in init_scripts:
+                await replay.context.add_init_script(script)
         page = await replay.context.new_page()
         await replay.guard.goto(page, final_url)
         if ignore is not None:
@@ -253,6 +258,19 @@ def _context(
             frames,
             autoplay=True,
             viewport=dict(zip(("width", "height"), flashcap.VIEWPORT)),
+            paused_clock=True,
+        ),
+        # 2.C's clock check (2.C spec 1.2.0): pass T's browser and window, the
+        # page's clock paused before it loads, and a timer hook added after it.
+        open_clock=_opener(
+            get_browser,
+            settings,
+            har,
+            final_url,
+            run,
+            frames,
+            (motion.TIMER_HOOK_JS, motion.MUTATION_COUNT_JS),
+            autoplay=True,
             paused_clock=True,
         ),
         settle_ignore=ignore,

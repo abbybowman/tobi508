@@ -17,6 +17,15 @@ CASES = {
     "t-only-clock.html": ("DNA", ["A4"], "DNA", ["A2"]),
     "t-polling.html": ("NEEDS_REVIEW", ["A2"], "NEEDS_REVIEW", ["A1"]),
     "t-spinner.html": ("NEEDS_REVIEW", ["A2"], "NEEDS_REVIEW", ["A1"]),
+    # The clock check (2.C 1.2.0): a 150 s timer and a day-long interval
+    # that change nothing on the page are no sign; the same timer changing
+    # the text, or asking the server, still is.
+    "t-timer-quiet.html": ("DNA", ["A3"], "DNA", ["A2", "2.C-A3"]),
+    "t-timer-headline.html": ("NEEDS_REVIEW", ["A2"], "NEEDS_REVIEW", ["A1"]),
+    "t-timer-fetch.html": ("NEEDS_REVIEW", ["A2"], "NEEDS_REVIEW", ["A1"]),
+    # A canvas below the first screen, redrawn by the timer: no element or
+    # text changes and no screenshot shows it, so the timer stays a sign.
+    "t-timer-canvas.html": ("NEEDS_REVIEW", ["A2"], "NEEDS_REVIEW", ["A1"]),
     # No control near the content or at the top of the page: K6.
     "t-live-ticker.html": ("FAIL", ["K6"], "PASS", ["N2"]),
     "t-no-control.html": ("FAIL", ["K6"], "FAIL", ["N5"]),
@@ -135,3 +144,22 @@ async def test_2d_explains_a_carousel_with_announcements_off(settings, server, d
     f = got["2.D"]
     assert f.outcome.value == "FAIL", (f.rows, f.summary)
     assert 'aria-live="off"' in f.summary, f.summary
+
+
+# The clock check says what it did, in the summary a person reads.
+CLOCK_SAYS = {
+    "t-timer-quiet.html": (
+        "ran the page's clock past its timers (2.5 minutes, 24 hours)"
+    ),
+    "t-timer-headline.html": "text",
+    "t-timer-fetch.html": "the page asked its server for something",
+    "t-timer-canvas.html": "the page draws on a canvas",
+}
+
+
+@pytest.mark.parametrize("page", sorted(CLOCK_SAYS))
+async def test_clock_check_says_what_it_did(page, settings, server, drafts):  # noqa: F811
+    got = await run_tests(settings, f"{server.base}/2x/{page}", ["2.C", "2.D"], {})
+    for f in (got["2.C"], got["2.D"]):
+        assert CLOCK_SAYS[page] in f.summary, f.summary
+        assert "Clock check:" in f.rationale, f.rationale
