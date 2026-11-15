@@ -97,14 +97,16 @@ STATE_FN = (
 # Put focus on the element at a path in this frame (its chain must be the
 # one asked for): its aria-expanded and where its box is.
 FOCUS_FN = (
-    "(chain, css) => {"
+    "(chain, css, peek) => {"
     + _COMMON_JS
     + """
   if (chainOf().join(' >> ') !== chain) return null;
   const el = find(css);
   if (!el || !vis(el)) return { found: false };
-  el.scrollIntoView({ block: 'center', inline: 'center' });
-  el.focus({ preventScroll: true });
+  if (!peek) {  // peek: read it where it is, focus left where it was
+    el.scrollIntoView({ block: 'center', inline: 'center' });
+    el.focus({ preventScroll: true });
+  }
   const r = el.getBoundingClientRect();
   return { found: true, focused: document.activeElement === el || el.contains(document.activeElement),
            expanded: el.getAttribute('aria-expanded'), x: r.x + r.width / 2, y: r.y + r.height / 2 };
@@ -202,6 +204,16 @@ class Reveal(BaseModel):
             "opened_with_focusable": sum(
                 t.status == OPENED and t.new_focusable > 0 for t in self.triggers
             ),
+            # Guard RC for the tests that walk opened content (4.C, 4.E; spec
+            # 4.C P8): opened with controls, and the walk did not reach every
+            # control Tab is expected to reach (step 6g).
+            "not_walked": [
+                t.name or t.css_path
+                for t in self.triggers
+                if t.status == OPENED
+                and t.new_focusable > 0
+                and (t.walked is None or not t.walked.complete)
+            ],
         }
 
 
@@ -255,13 +267,17 @@ async def _state(s: Session) -> dict[str, tuple[bool, bool]]:
     return out
 
 
-async def _focus(s: Session, frame_chain: list[str], css: str) -> dict | None:
-    """Focus the trigger directly; its aria-expanded and centre."""
+async def _focus(
+    s: Session, frame_chain: list[str], css: str, peek: bool = False
+) -> dict | None:
+    """Focus the trigger directly; its aria-expanded and centre. `peek`: read
+    them without moving focus (after opening, focus stays where the opening
+    left it: in a dialog it opened, say, where the walk then starts)."""
     r = s.traversal.reader
     chain = " >> ".join(frame_chain)
     for _, sess, ctx in await r.frames():
         try:
-            got = await r.call_in(sess, ctx, FOCUS_FN, [chain, css])
+            got = await r.call_in(sess, ctx, FOCUS_FN, [chain, css, peek])
         except Exception:
             continue
         if got is not None:
@@ -337,7 +353,7 @@ async def _open_to(
             info["status"] = NAVIGATED
             return s, info
         new = sorted(set(after) - set(before))
-        again = await _focus(s, stop.frame_chain, stop.css_path)
+        again = await _focus(s, stop.frame_chain, stop.css_path, peek=True)
         info |= {
             "by": by,
             "before": before,
@@ -527,6 +543,24 @@ async def _walk_own_load(ctx, stop, rec: Opened, hooks) -> opened.Walked:
     finally:
         if s2 is not None:
             await s2.close()
+
+
+async def reopen(
+    s: Session, frame_chain: list[str], css_path: str, by: str, quiet_ms: int
+) -> bool:
+    """Open a trigger on a fresh load as `collect` opened it (focus it, then
+    Enter, or a click when that is how it opened), and wait until focus has
+    stopped moving: where the opening left it is where the walk starts."""
+    got = await _focus(s, frame_chain, css_path)
+    if got is None:
+        return False
+    if by == "a click":
+        await s.page.mouse.click(got["x"], got["y"])
+    else:
+        await s.page.keyboard.press("Enter")
+    await settle(s.page, quiet_ms)
+    await opened.focus_still(s, quiet_ms)
+    return True
 
 
 def write(ctx, rv: Reveal, path) -> None:

@@ -16,6 +16,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from tobi508 import opened, reveal
 from tobi508.checks.base import OUT_OF_TIME_MSG, RunContext
 from tobi508.engine import PageEvidence, Row, first_match, page_outcome
 from tobi508.models import (
@@ -277,6 +278,12 @@ class Collector:
     async def _via(self, s: Session, via: dict[str, Any]) -> None:
         if via.get("outer"):
             await self._via(s, via["outer"])
+        if via.get("open"):  # P8: the trigger opened as reveal.py opened it
+            o = via["open"]
+            if not await reveal.reopen(
+                s, o["frame_chain"], o["css_path"], o["by"], self.quiet_ms
+            ):
+                raise RuntimeError("the menu or section could not be opened again")
         for k in via["keys"]:
             await s.traversal.press(k)
         if via["paths"]:  # an error state (E) is reached by keys alone
@@ -646,6 +653,70 @@ class Collector:
                 if s is not None:
                     await s.close()
 
+    async def p8(self, rv) -> None:
+        """Opened content (spec section 2, P8; 1.14.0): the shared walk through
+        what each trigger opened (opened.py). A trap it ended in is confirmed
+        by the same walk on a second fresh load (1.9.0) and becomes an event
+        like any other, replayed for the probes by opening the trigger again
+        (`via["open"]`); a walk that did not finish is incomplete (G3)."""
+        for t in rv.triggers:
+            w = t.walked
+            if w is None:
+                continue
+            label = f'opening "{t.name or "a control"}"'
+            if w.end in ("navigation", "cap", "time", "error"):
+                self.state.incomplete.append(
+                    f"Tabbing through what {label} showed did not finish ({w.end})."
+                )
+                continue
+            if w.end not in ("stuck", "loop") or self.out_of_time():
+                continue
+            via = {
+                "outer": None,
+                "keys": [],
+                "paths": [],
+                "open": {
+                    "frame_chain": list(t.frame_chain),
+                    "css_path": t.css_path,
+                    "by": w.by,
+                    "name": t.name or "the control",
+                },
+            }
+            again = None
+            s = None
+            try:
+                s = await self.session()
+                if await reveal.reopen(
+                    s, t.frame_chain, t.css_path, w.by, self.quiet_ms
+                ):
+                    again = await opened.walk(
+                        s,
+                        w.source_all,
+                        w.source_focusable,
+                        " >> ".join([*t.frame_chain, t.css_path]),
+                        w.by,
+                        False,
+                        self.deadline,
+                        self.quiet_ms,
+                    )
+            except Exception:
+                again = None
+            finally:
+                if s is not None:
+                    await s.close()
+            same = (
+                again is not None
+                and again.end == w.end
+                and set(_members_at_end(again.steps, again.end))
+                == set(_members_at_end(w.steps, w.end))
+            )
+            new = self.add_event(
+                w.end, "Tab", f"P8 {label}", ["Tab"] * len(w.steps), w.steps
+            )
+            if new is not None:
+                new.via = via
+                new.once = not same
+
     async def p6(self, inst: Inst) -> None:
         """Bypass P1's trap with the mouse, then resume Tab (spec section 6)."""
         top_paths = sorted(
@@ -752,11 +823,6 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
             )
     if st.stops == 0:
         return st  # section 1 decides
-    if st.collapsed:
-        st.notes.append(
-            f"{st.collapsed} collapsed control(s) (menus, accordions) were not opened; "
-            "content behind them was not checked for traps."
-        )
     s = await c.session()
     try:
         st.texts = await page_text(s.page)
@@ -827,6 +893,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
                 await work()  # instances found by pass E
         except Exception as exc:
             st.incomplete.append(f"The error states were not checked: {exc!r}")
+    # Opened content (P8, 1.14.0): the shared walk through what menus and
+    # sections opened (reveal.py, opened.py).
+    rv = ctx.cache.get("reveal")
+    if rv is not None:
+        await c.p8(rv)
+        await work()  # instances found by P8
     return st
 
 
@@ -1441,7 +1513,11 @@ _KEY_NAMES = {
 
 def _reach_keys(inst: Inst) -> list[str]:
     """The keys from a fresh load to the trap: for one found in an error state
-    (reached by keys alone), the keys that show the error come first."""
+    (reached by keys alone), the keys that show the error come first; for one
+    in opened content (P8), opening the trigger."""
+    if inst.via and inst.via.get("open"):
+        o = inst.via["open"]
+        return [f"Open:{o['by']}:{o['name']}", *inst.prefix]
     if inst.via and not inst.via.get("paths"):
         return [*inst.via["keys"], *inst.prefix]
     return inst.prefix
@@ -1457,6 +1533,13 @@ def _steps_text(keys: list[str]) -> str:
             return f'type "{k.removeprefix("Type:")}"'
         if k.startswith("Insert:"):
             return f'enter "{k.removeprefix("Insert:")}"'
+        if k.startswith("Open:"):
+            by, _, name = k.removeprefix("Open:").partition(":")
+            return (
+                f'Enter on "{name}"'
+                if by == "Enter"
+                else f'(click "{name}" to open it)'
+            )
         return k
 
     out, prev, n = [], keys[0], 0

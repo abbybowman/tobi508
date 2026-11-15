@@ -1,8 +1,8 @@
 ---
 tt_test: 4.C
 tt_name: 2.1.2-no-keyboard-trap
-spec_version: 1.13.1
-guards: unrecorded-code, reveal, reveal-content
+spec_version: 1.14.0
+guards: unrecorded-code, reveal, reveal-walk
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
 ---
@@ -60,11 +60,14 @@ The tool does what p. 21 asks a human tester to do, and no more: walk the page w
 
 **A trap event is confirmed by a second pass** (1.9.0). When P1 or P2 ends stuck or in a loop, the same pass runs again from a fresh load. If it ends in the same trap event (the same kind, with the same stops matched by frame chain and CSS path), the trap is *confirmed* and the first pass stands. Otherwise the second pass is the walk's pass, whatever its end, and the first pass's trap is kept as *seen once*: an instance that M1 leaves for a person. It is never probed, because a replay would not reach it, and no question is asked about it. Why: some pages differ from load to load. NASA's Artemis III page opens a survey dialog on about one load in ten (the site rolls a random number per session), 5 s after load. The dialog takes focus and keeps Tab and Shift+Tab inside it, so P1 ended "loop" after 9-13 presses on those loads, every test that reads the walk went to NEEDS REVIEW, and the probes, each on its own fresh load, would meet the dialog on about one load in ten (ROADMAP, 2026-11-07; [solutions/trap-seen-once.md](../../docs/solutions/trap-seen-once.md)). A real trap repeats on the second load, so it is found as before at the cost of one more pass up to the trap. A trap seen once is never a PASS. The PDF asks a tester to look for traps on the page (p. 21 HtT 1, 2); a person who meets such a dialog checks it when it appears, which is what the M1 sentence asks.
 
-There is no P5. Content behind disclosure controls (menus, accordions, dialogs opened by a button) is not opened by 4.C; the finding carries a note with the number of collapsed controls. 4.F (p. 23, HtT 2.b) asks for revealing hidden content, and that step will be shared with 4.C once 4.F is specified.
+There is no P5. Content behind disclosure controls (menus, accordions, dialogs opened by a button) is walked by P8 (1.14.0), below.
 
 | P7 Error states | After P1-P6 and their probes. The error pass of 5.F (`t5f.error_pass`, run here too when 5.F is not selected and shared when it is; spec 5.F section 2) types a wrong value for each field's kind and presses the submit control. Every state in which the page showed something new (new text, a live region or a dialog) is replayed from a fresh load by the keys that made it, typed text included: at most `ERROR_STATES_MAX` (6), each reached by up to the first `Read.at` presses of an attempt. From each, press Tab up to `ERROR_WALK` (24) times with P1's stuck and loop rules. A trap found here is an event like any other: it gets P3's exit probes, replayed by the same keys (reached "by keys alone", `via` with no mouse bypass), and the same rows | As P1 | As P1 |
+| P8 Opened content (1.14.0) | After P1–P7; shared with 4.E (`opened.py`). Each trigger `reveal.py` opens (guard RV: a collapsed control, `aria-haspopup`, a tab that is not selected, a hidden region named in `aria-controls`; at most 20; Enter first, a click when Enter showed nothing) whose *opened content* (the elements that take keyboard focus after opening and did not before) is not empty. Once focus has stopped moving (at most 1.5 s), press Tab from where the opening left it (the trigger, or inside a dialog it opened) with P1's stuck and loop rules until focus reaches a stop outside what opened, OUT, a navigation or new page, or a trap event. When the opening leaves a modal dialog open (Terms), what it showed outside the dialog is not expected to be reached (as the walk's coverage leaves out what a modal dialog covers). The walk runs on the load the trigger was opened in, or on a fresh load opened the same way when that load is read with ANDI, and records how it was opened. A trap found here is confirmed by a second P8 for that trigger on a fresh load (1.9.0; not repeated: seen once, M1), gets P3's exit probes on loads opened the same way followed by the same Tabs, and is judged by the same rows | Leaves the opened content, or a trap event | 2 × (opened elements) + 3 presses, at most 60, per trigger |
 
 **Why pass E (1.13.0; Abby's decision 2, 2026-11-09).** An error message or popup is content that exists only after a mistake, so the walk at load never meets it. NASA's Climate Legacies tool (5340) shows a popup for a year before 1900 that takes focus and keeps it: the person cannot get back to the field to fix the value (TT p. 21 notes 1 and 2; the key: a trap). A popup the keyboard can leave (Escape returns to the field) is not a trap (M2), and an inline message that does not move focus is not an event at all. A JS `alert()` is out of scope: the browser handles it, not the page. A state the error pass could not reach (a form it did not complete) is not tested here; the page's own NEEDS REVIEW from 5.F says so. Page content never chooses what is typed: the values come from the field's kind (5.F, section 2).
+
+**Why P8 (1.14.0; Abby, 2026-11-15, step 6g).** TT asks a tester to navigate through all keyboard focusable elements (p. 21 HtT 1), drop-down menus and revealing content among them (p. 19 Identify Content). A menu's controls exist for the keyboard only once it is open, so the walk at load never meets them. P8 Tabs through what each trigger opened, as P7 does through error states; P3's probes try the other directions. A trigger opened only by a click is walked the same way: that it needs a click is 4.A's evidence, not 4.C's. Measured on round 2's frozen pages: a median of about 2 s per trigger on the opener's load and 10 s on a load of its own; no test ran out of its time. Triggers past `reveal.py`'s 20, or that could not be opened or read, are guard RV's; opened content the walk did not reach is guard RC's.
 
 **Why P6 is enough.** An element P2 leaves backward can be left by Shift+Tab, so it passes M2 or M3; the same holds for P1 and Tab. Only stops that neither pass reaches need the bypass, and those exist only when both passes end in different traps.
 
@@ -109,8 +112,8 @@ Each trap event is an *instance* judged by the first matching row of table 3a. T
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
-| G3 | Any instance is NEEDS REVIEW; or any pass, probe or P4 is incomplete | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
-| G4 | P1 and P2 each ended in a wrap, or in a trap event whose instance is PASS; every P6 bypass ran to its end; every P7 error state was Tabbed through; every instance is PASS | PASS |
+| G3 | Any instance is NEEDS REVIEW; or any pass, probe, P4 or P8 walk is incomplete (cap, time limit, error, navigation; 1.14.0) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5). Never NOT TESTED (p. 6) |
+| G4 | P1 and P2 each ended in a wrap, or in a trap event whose instance is PASS; every P6 bypass ran to its end; every P7 error state was Tabbed through; every P8 walk left the opened content or ended in a trap event (1.14.0); every instance is PASS | PASS |
 | G5 | Anything else | NEEDS REVIEW |
 
 A page with a confirmed FAIL stays FAIL even when other instances need review: one confirmed trap fails the condition (p. 21 ER: "ALL of the following").
@@ -119,7 +122,7 @@ A page with a confirmed FAIL stays FAIL even when other instances need review: o
 
 **Guard RV: something that opens was not opened** (front matter `guards: reveal`; defined in [_template.md](_template.md); Abby, 2026-11-09, fix 9b). The menus, tabs, accordions and filters the keyboard walk found (a collapsed control, `aria-haspopup`, `aria-controls`, a tab that is not selected, a closed `<summary>`) are each opened on a fresh load (`reveal.py`, `Report.reveal`; at most 20, Enter first and a click when Enter showed nothing). When one was not opened (it showed nothing, could not be found again, failed to run, was over the limit or out of time) or what it opened could not be read, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open, and some could not be opened or read (...), so what is inside them was not checked." Trace row `RV`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
-**Guard RC: opened content not checked yet** (`guards: reveal-content`; Abby, 2026-11-09, fix 9b phase 1). This test's keyboard walk and exit probes do not go through opened content (phase 2). When a trigger opened content that holds controls a keyboard user can reach, a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and this test has not checked inside them yet, so a person needs to check what they hold." Trace row `RC`. It goes when phase 2 is built (ROADMAP).
+**Guard RC: opened content the walk did not go through** (`guards: reveal-walk`; Abby, 2026-11-09, fix 9b; narrowed 1.14.0, Abby, 2026-11-15, step 6g). When `reveal.py` opened a trigger whose opened content holds elements that take keyboard focus, and P8's walk did not reach every one Tab is expected to reach (it left the content first, met a trap or its cap, ran out of time or failed to run; one behind an open modal dialog is not expected), a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page has menus or sections that open to show more controls, and the Tab key did not reach every control inside some of them (<names>), so a person needs to check what they hold." Trace row `RC`. A trigger that was not opened or not read is guard RV's, unchanged. FAIL and DOES NOT APPLY are unchanged.
 
 ## 4. Judgment questions
 
@@ -182,7 +185,7 @@ Only cases that need a rule of their own; everything else follows sections 2–3
 | Focus lost to the page body | BODY counts as a stop. Tab resuming after the lost element is no event; BODY leading back into earlier stops is a loop | V7 |
 | Navigation, reload or new tab during a pass | Not an exit (M5). Logged for 4.E. The pass is incomplete (resume is not implemented) | — |
 | A dialog that opens by itself on some loads only (a survey shown to some visitors, a prompt after a delay) | A trap event a second pass from a fresh load does not repeat is *seen once*: the second pass is the walk's pass, and M1 leaves the trap for a person with the keys that reached it (section 2, 1.9.0) | F36 |
-| Content behind disclosure controls | Not opened by 4.C (no P5). Note: "N collapsed controls (aria-expanded=false) were not opened; content behind them was not checked for traps" | — |
+| Content behind disclosure controls | Opened by `reveal.py` and walked by P8 (1.14.0); what a walk did not reach is guard RC, what was not opened is guard RV | F45–F50 |
 
 ## 6. What a FAIL records
 

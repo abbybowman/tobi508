@@ -6,7 +6,8 @@ the specs.
 
 The *opened content* of a trigger is the elements that take keyboard focus
 after it was opened and did not before (reveal.py's `new`, focusable ones).
-From the opened state, with focus on the trigger, Tab is pressed with P1's
+From the opened state, with focus where the opening left it (the trigger, or
+inside a dialog it opened), Tab is pressed with P1's
 stuck and loop rules (4.C spec section 2) until focus reaches a stop that is
 neither in the opened content nor the trigger (the walk *left* it), OUT, a
 navigation or new page, a trap event, the cap (2 x opened elements + 3, at
@@ -55,11 +56,16 @@ class Walked(BaseModel):
     steps: list[Step] = Field(default_factory=list)
     error: str | None = None
     seconds: float = 0.0
+    # reveal.py's keys for what opened ("chain|path"), so the walk can be
+    # made again on a fresh load (4.C's confirmation and probes).
+    source_all: list[str] = Field(default_factory=list)
+    source_focusable: list[str] = Field(default_factory=list)
 
     @property
     def complete(self) -> bool:
-        """Every opened element was reached (facts; the guard reads it)."""
-        return bool(self.opened) and set(self.opened) <= set(self.reached)
+        """Every opened element Tab is expected to reach was reached (facts;
+        guard RC reads it). One behind an open modal dialog is not expected."""
+        return self.end != "error" and set(self.opened) <= set(self.reached)
 
 
 # Which of the given top-document paths are inside the open modal dialog, in
@@ -84,7 +90,7 @@ FOCUS_STILL_MS = 300  # focus unchanged this long before the first Tab
 FOCUS_WAIT_MS = 1500  # at most this long
 
 
-async def _focus_still(s: Session, quiet_ms: int) -> None:
+async def focus_still(s: Session, quiet_ms: int) -> None:
     """Settle, then wait until focus stops moving: a dialog can move focus
     to itself after its opening animation (round 2's Search page: the first
     Tab, pressed at once, landed on the dialog's own box)."""
@@ -110,10 +116,17 @@ async def walk(
     deadline: float | None,
     quiet_ms: int,
 ) -> Walked:
-    """Tab through the opened content from the trigger (module docstring)."""
+    """Tab through the opened content from where the opening left focus
+    (module docstring)."""
     t0 = time.monotonic()
     targets = sorted({stop_key(k) for k in new_focusable})
-    w = Walked(by=by, same_load=same_load, opened=targets)
+    w = Walked(
+        by=by,
+        same_load=same_load,
+        opened=targets,
+        source_all=list(new_all),
+        source_focusable=list(new_focusable),
+    )
     # Inside: anything that opened, a dialog's own box too; to reach: the
     # new elements that take focus.
     inside = set(targets) | {stop_key(k) for k in new_all}
@@ -131,7 +144,7 @@ async def walk(
         return detect_p1_end(own, None)
 
     try:
-        await _focus_still(s, quiet_ms)
+        await focus_still(s, quiet_ms)
         top = [k for k in targets if " >> " not in k]
         if top:
             inside_modal = await s.traversal.reader.evaluate_top(
