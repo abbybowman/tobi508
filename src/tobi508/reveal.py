@@ -423,7 +423,14 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
             if walking and new_foc and not read:
                 # Nothing reads this load after the walk: walk it here.
                 rec.walked = await opened.walk(
-                    s, new_foc, stop.path_key, rec.by, True, ctx.deadline
+                    s,
+                    info["new"],
+                    new_foc,
+                    stop.path_key,
+                    rec.by,
+                    True,
+                    ctx.deadline,
+                    ctx.quiet_ms,
                 )
             if read:
                 # Last on this session: ANDI changes the page.
@@ -504,7 +511,14 @@ async def _walk_own_load(ctx, stop, rec: Opened, hooks) -> opened.Walked:
         if not new_foc:
             return opened.Walked(by=info["by"], end="error", error="nothing opened")
         w = await opened.walk(
-            s2, new_foc, stop.path_key, info["by"], False, ctx.deadline
+            s2,
+            info["new"],
+            new_foc,
+            stop.path_key,
+            info["by"],
+            False,
+            ctx.deadline,
+            ctx.quiet_ms,
         )
         w.seconds = round(time.monotonic() - t0, 2)  # the load's opening too
         return w

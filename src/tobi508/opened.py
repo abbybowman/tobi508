@@ -20,12 +20,13 @@ or a click when Enter showed nothing), and the record says which.
 
 from __future__ import annotations
 
+import asyncio
 import time
 
 from pydantic import BaseModel, Field
 
 from tobi508.models import Step
-from tobi508.traverse import Session, detect_p1_end, drive
+from tobi508.traverse import Session, detect_p1_end, drive, settle
 
 WALK_CAP_MAX = 60
 
@@ -55,19 +56,43 @@ class Walked(BaseModel):
         return bool(self.opened) and set(self.opened) <= set(self.reached)
 
 
+FOCUS_STILL_MS = 300  # focus unchanged this long before the first Tab
+FOCUS_WAIT_MS = 1500  # at most this long
+
+
+async def _focus_still(s: Session, quiet_ms: int) -> None:
+    """Settle, then wait until focus stops moving: a dialog can move focus
+    to itself after its opening animation (round 2's Search page: the first
+    Tab, pressed at once, landed on the dialog's own box)."""
+    await settle(s.page, quiet_ms)
+    last, waited = None, 0
+    while waited < FOCUS_WAIT_MS:
+        here, _ = await s.traversal.reader.read()
+        if here.path_key == last:
+            break
+        last = here.path_key
+        await asyncio.sleep(FOCUS_STILL_MS / 1000)
+        waited += FOCUS_STILL_MS
+    await s.traversal.resync()
+
+
 async def walk(
     s: Session,
+    new_all: list[str],
     new_focusable: list[str],
     trigger_key: str,
     by: str,
     same_load: bool,
     deadline: float | None,
+    quiet_ms: int,
 ) -> Walked:
     """Tab through the opened content from the trigger (module docstring)."""
     t0 = time.monotonic()
     targets = sorted({stop_key(k) for k in new_focusable})
     w = Walked(by=by, same_load=same_load, opened=targets)
-    inside = set(targets)
+    # Inside: anything that opened, a dialog's own box too; to reach: the
+    # new elements that take focus.
+    inside = set(targets) | {stop_key(k) for k in new_all}
 
     def left(own: list[Step], first: str | None):
         st = own[-1].stop
@@ -82,6 +107,7 @@ async def walk(
         return detect_p1_end(own, None)
 
     try:
+        await _focus_still(s, quiet_ms)
         end, trap, own = await drive(
             s, "Tab", min(2 * len(targets) + 3, WALK_CAP_MAX), left, deadline
         )
