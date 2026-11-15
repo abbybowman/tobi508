@@ -8,6 +8,7 @@ Only evaluate() and the row tables decide outcomes.
 
 from __future__ import annotations
 
+import copy
 import re
 from typing import Any
 
@@ -16,6 +17,7 @@ from pydantic import BaseModel, Field
 from tobi508.checks.base import RunContext
 from tobi508.checks.t5f import error_pass, incomplete_of
 from tobi508.engine import Row, first_match
+from tobi508.jslib import JSLIB, PATH_JS
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -39,6 +41,84 @@ ERROR = re.compile(
 )
 TEXT_MAX = 60
 
+# Forms and hidden fields pass E did not read, by the inventory's paths
+# (1.9.0): their fields' names, their buttons and their own words, read on
+# one fresh load without opening or submitting anything. A field outside any
+# form is read alone, with the words around it.
+HIDDEN_FORMS_JS = (
+    "([formPaths, fieldPaths]) => {"
+    + JSLIB
+    + PATH_JS
+    + """
+  const BUTTON = 'button, input[type=submit], input[type=button], input[type=image], [role=button]';
+  const words = (el) => {
+    const out = [];
+    const visit = (n) => {
+      if (n.nodeType === 3) { out.push(n.textContent); return; }
+      if (n.nodeType !== 1 || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(n.tagName)) return;
+      for (const c of (n.shadowRoot ? n.shadowRoot.childNodes : n.childNodes)) visit(c);
+    };
+    visit(el);
+    return out.join(' ').replace(/\s+/g, ' ').trim();
+  };
+  const name = (el) => {
+    const ids = (el.getAttribute('aria-labelledby') || '').split(/\s+/).filter(Boolean);
+    const by = ids.map((id) => { const r = el.getRootNode(); const e = r.getElementById ? r.getElementById(id) : null; return e ? words(e) : ''; }).join(' ');
+    return (el.getAttribute('aria-label') || by || (el.labels && el.labels.length ? words(el.labels[0]) : '')
+      || el.getAttribute('placeholder') || el.getAttribute('title') || el.name || el.type || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  };
+  const seenForms = new Map();
+  const out = { forms: [], forms_found: [], fields_found: [] };
+  const readForm = (f, key) => {
+    if (seenForms.has(f)) return;
+    seenForms.set(f, true);
+    out.forms.push({ key, hidden: !J.rendered(f),
+      fields: Array.from(f.querySelectorAll(J.FIELD)).map(name).slice(0, 30),
+      buttons: Array.from(f.querySelectorAll(BUTTON)).map((b) => (words(b) || b.value || b.getAttribute('aria-label') || '').trim()).filter(Boolean).slice(0, 15),
+      text: words(f).slice(0, 600) });
+  };
+  for (const p of formPaths) {
+    const f = J.find(p);
+    if (f && f.tagName === 'FORM') { readForm(f, p); out.forms_found.push(p); }
+  }
+  for (const p of fieldPaths) {
+    const el = J.find(p);
+    if (!el) continue;
+    const f = el.form || el.closest('form');
+    if (f) readForm(f, path(f));
+    else out.forms.push({ key: p, hidden: true, fields: [name(el)], buttons: [],
+      text: words(el.closest('fieldset, section, div') || el).slice(0, 300) });
+    out.fields_found.push(p);
+  }
+  return out;
+}"""
+)
+
+
+async def read_hidden_forms(ctx: RunContext, ps: Any) -> dict[str, Any] | None:
+    """The inventory's forms and hidden fields pass E did not read, read on
+    one fresh load (1.9.0). None when there is nothing to read or the load
+    failed (guard CN then holds the page as before)."""
+    count = ctx.cache.get("count")
+    if count is None or getattr(ctx, "new_page", None) is None:
+        return None
+    taken = {f.key for f in ps.forms if f.key}
+    reached = {f.css_path for f in ps.fields if f.css_path}
+    forms = [p for p in count.form_paths if p not in taken]
+    fields = [p for p in count.hidden_field_paths if p not in reached]
+    if not forms and not fields:
+        return None
+    try:
+        context, page = await ctx.new_page()
+    except Exception:
+        return None
+    try:
+        return await page.evaluate(HIDDEN_FORMS_JS, [forms, fields])
+    except Exception:
+        return None
+    finally:
+        await context.close()
+
 
 class Form5H(BaseModel):
     n: int
@@ -51,6 +131,11 @@ class Form5H(BaseModel):
     left: bool = False  # the page left on submit: nothing to see after
     checked: bool = False
     hint: bool = False
+    # Hidden when the page loaded and not taken by pass E (1.9.0): read from
+    # the page's elements for applicability only, never submitted.
+    hidden: bool = False
+    text: str = ""  # a hidden form's own words (scripts left out)
+    key: str = ""  # its path, as the inventory names forms
 
 
 class State5H(BaseModel):
@@ -87,7 +172,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
         return State5H(ran=False, incomplete=["The keyboard walk did not run."])
     ps = await error_pass(ctx, walk)
     # 5.F's whole list: a cut walk, unread forms or reads (spec A2, 1.1.0).
-    st = State5H(incomplete=incomplete_of(ps), read=ps.read)
+    # A copy: 5.H counts the hidden forms it reads below; 5.F and 5.G, which
+    # share pass E, never read them.
+    st = State5H(incomplete=incomplete_of(ps), read=copy.deepcopy(ps.read))
     base_texts: list[str] = []
     all_text = ""
     for f in ps.forms:
@@ -95,6 +182,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
         form = Form5H(
             n=len(st.forms) + 1,
             id=f.id,
+            key=f.key or "",
             fields=[
                 (ps.info.get(str(n)) or {}).get("label") or f"field {n}"
                 for n in f.fields
@@ -138,6 +226,40 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
         )
         form.hint = bool(HINT.search(words))
         st.forms.append(form)
+    # Forms and hidden fields pass E did not read (1.9.0): read for
+    # applicability, counted as read for guard CN only when found.
+    got = await read_hidden_forms(ctx, ps)
+    if got:
+        by_id = {f.key: f for f in st.forms if f.key}
+        for h in got["forms"]:
+            known = by_id.get(h["key"])
+            if known is not None:
+                # A form pass E took that also holds hidden fields: its hidden
+                # fields' names and its words join that form, not a second one.
+                known.fields = list(dict.fromkeys([*known.fields, *h["fields"]]))[:20]
+                known.text = h["text"][:600]
+                known.hint = known.hint or bool(
+                    HINT.search(" ".join([*known.fields, known.text]))
+                )
+                continue
+            form = Form5H(
+                n=len(st.forms) + 1,
+                id=h["key"],
+                fields=h["fields"][:20],
+                buttons=h["buttons"][:10],
+                hidden=True,
+                text=h["text"][:600],
+                key=h["key"],
+            )
+            form.hint = bool(
+                HINT.search(" ".join([*form.fields, *form.buttons, form.text]))
+            )
+            st.forms.append(form)
+        page = st.read.setdefault("page", {})
+        page["forms_with_button"] = page.get("forms_with_button", 0) + len(
+            got["forms_found"]
+        )
+        page["fields_hidden"] = page.get("fields_hidden", 0) + len(got["fields_found"])
     st.page_text = [t[:200] for t in base_texts][:TEXT_MAX]
     # The hint reads all of the page's text; the 60 strings are J1's input.
     if HINT.search(all_text) or any(HINT.search(t) for t in base_texts):
@@ -232,6 +354,14 @@ def _view(f: Form5H) -> dict[str, Any]:
         "after_submit": f.after,
         "alerts": f.alerts or None,
         "left_the_page": f.left or None,
+        **(
+            {
+                "hidden": "not shown when the page loaded; not submitted",
+                "words": f.text,
+            }
+            if f.hidden
+            else {}
+        ),
     }
 
 
