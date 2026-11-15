@@ -47,7 +47,7 @@ TEST_BUDGETS_DEFAULT: dict[str, int] = {
     "5.G": 120,
     "5.H": 120,
     "9.A": 180,  # (56 s, home)
-    "9.B": 60,
+    "9.B": 180,  # (41.5 s longest in step 9a; ran out of 60 s once in a dry run)
     "9.C": 180,  # (62 s, home)
     "19.A": 120,  # (two live searches of up to 20 s each, and their reads)
 }
