@@ -57,7 +57,7 @@ is merged. At most three threads at once. Each thread branches from
 | 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
 | 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
 | 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
-| 6h | 19.A finds its ways as a tester does: an alias of the page (PR 1 built), then its site map, parent, child and home pages checked one by one | Opus | running |
+| 6h | 19.A finds its ways as a tester does: an alias of the page (PR 1, #85), its site map, parent, child and home pages checked one by one (PR 2); then the rerun of rounds 1 and 2 | Opus | running |
 | 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
@@ -82,7 +82,7 @@ is merged. At most three threads at once. Each thread branches from
   FAIL where a tester finds two ways. PR 1, built (19.A 1.10.0; the
   sixth exception to principle 5): a link to the page as `index.html`
   (or `default.*`, another scheme, `www.`) is loaded as an other page
-  and counts when it is the same document. PR 2 (1.11.0): 19.A itself
+  and counts when it is the same document. PR 2 (1.11.0), built: 19.A itself
   checks the site map, the page's parent, up to two child pages and the
   home page one by one, stops at two ways, and FAILs, naming what it
   checked, only when all were checked; no follow-up call for 19.A is

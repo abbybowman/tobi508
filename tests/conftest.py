@@ -175,6 +175,14 @@ _DOT_PNG = bytes.fromhex(
 )
 
 
+_NOT_FOUND = (
+    b"<!doctype html><html lang=en><head><title>Page not found</title></head>"
+    b"<body><main><h1>Page not found</h1>"
+    + b"<p>The page you asked for is not on this site.</p>" * 12
+    + b"</main></body></html>"
+)
+
+
 class _Handler(http.server.BaseHTTPRequestHandler):
     hits: Counter  # set per server
 
@@ -200,6 +208,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             "/redir-bad": (302, {"Location": f"http://localhost:{port}/landed"}),
             "/redir-bad-2": (302, {"Location": "/hop-bad"}),
             "/hop-bad": (302, {"Location": f"http://localhost:{port}/landed"}),
+            # 19.A 1.11.0: a child page that leaves the site (not checked).
+            "/19a/gone/away.html": (
+                302,
+                {"Location": f"http://localhost:{port}/landed"},
+            ),
         }
         if self.path in routes:
             status, headers = routes[self.path]
@@ -308,7 +321,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             return self._send(200, fixture.read_bytes(), "text/javascript")
         if path.endswith(".json") and fixture is not None:  # 19a/ search results
             return self._send(200, fixture.read_bytes(), "application/json")
-        self._send(404, b"not found")
+        # A full "not found" page, as real sites send: Chrome replaces a
+        # bare one with its own error page, and the HAR of that load never
+        # finishes writing (19.A 1.11.0 loads a site's parent and home page;
+        # docs/solutions/multi-page.md).
+        self._send(404, _NOT_FOUND)
 
 
 class LocalServer:

@@ -62,3 +62,14 @@ other page records within its own share; one that runs over leaves the tests tha
 not performed (never run on fewer pages than the caller named) and the
 other tests run in full (Abby, 2026-11-02;
 `test_time_budget.py::test_slow_other_page_drops_only_the_page_tests`).
+
+## A bare 404 never finishes recording (step 6h, 2026-11-15)
+
+19.A 1.11.0 loads a page's parent and the site's home page, which may not
+exist. On the test fixture server a 404 answered with a 9-byte body took
+the whole 20 s share and then counted as "not checked": Chrome replaces a
+bare error answer with its own error page, and closing the context, which
+writes the HAR, then never returns. A 404 with a real page body (what
+sites send) records in under a second. The fixture server now answers a
+full "not found" page. On a live site that sends a bare error, the page
+is "not checked" after its share (NEEDS REVIEW), never a FAIL.

@@ -451,8 +451,9 @@ def _live_recorder(
     browser, settings, run, report, proxy, final_url, get_browser, tested_har=None
 ):
     """Pages 19.A loads itself, each by the code a caller's other page uses
-    (`capture_other`): its live site search (CLAUDE.md, Abby 2026-11-02) and
-    its suspected aliases of the tested page (19.A 1.10.0, Abby 2026-11-14).
+    (`capture_other`): its live site search (CLAUDE.md, Abby 2026-11-02),
+    its suspected aliases of the tested page (19.A 1.10.0, Abby 2026-11-14)
+    and its suggested pages (1.11.0, Abby 2026-11-15).
     Allowlisted on every hop and on the tested page's host after redirects;
     an alias may be asked for under the host with or without a leading
     "www." (its definition), and must still end on the tested page's host."""
@@ -488,7 +489,7 @@ def _live_recorder(
         if not _same_site(lc.final_url, final_url):
             raise ValueError("it ended on another host after redirects")
         same = False
-        if purpose == "alias" and tested_har is not None:
+        if purpose in ("alias", "suggested") and tested_har is not None:
             mine = document_sha(tested_har, final_url)
             same = mine is not None and mine == document_sha(
                 run.dir / rel, lc.final_url
@@ -1555,7 +1556,7 @@ def follow_ups(
     report: Report, states: dict[TestId, Any], skipped: dict[TestId, str] | None
 ) -> list[dict]:
     """Tool calls that would let a NEEDS_REVIEW test decide: a check's own
-    `follow_up` (19.A's suggested pages) and a test left out over a cap
+    `follow_up`, if it has one, and a test left out over a cap
     (5.D, with no_time_limit). For next_step; never made by the server."""
     review = {f.test_id for f in report.findings if f.outcome is Outcome.NEEDS_REVIEW}
     out: list[dict] = []
@@ -1813,10 +1814,9 @@ async def answer_questions(
 
 def server_may_make(call: dict) -> bool:
     """A follow-up call the server makes by itself (agent follow-through plan,
-    change 1). 19.A's suggested pages may be visited (Abby, 2026-11-06):
-    they are other pages like any caller's, checked by the allowlist and the
-    tested page's host before and after redirects. no_time_limit stays the
-    user's choice (CLAUDE.md)."""
+    change 1): any call but one that needs no_time_limit, which stays the
+    user's choice (CLAUDE.md). (19.A's suggested pages were made this way
+    until 1.11.0; 19.A now checks them itself.)"""
     return not call.get("no_time_limit")
 
 
