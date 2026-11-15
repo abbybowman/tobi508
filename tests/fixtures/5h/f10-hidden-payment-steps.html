@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><title>Your bill</title></head>
+<body>
+<main>
+<h1>Your bill</h1>
+<p>Your balance is $42.00.</p>
+<button type="button" id="b" onclick="document.getElementById('d').hidden=false">Pay your bill</button>
+<div id="d" hidden>
+<form onsubmit="event.preventDefault()">
+<p>Step 1 of 2: payment details</p>
+<label>Card number <input name="card" autocomplete="cc-number"></label>
+<label>Amount <input name="amount" value="42.00"></label>
+<button type="submit">Next</button>
+</form>
+</div>
+</main>
+</body>
+</html>
