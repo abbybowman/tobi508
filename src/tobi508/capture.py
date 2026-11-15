@@ -272,6 +272,36 @@ def media_index(har_path: Path) -> list[dict[str, Any]]:
 REDIRECT_HOPS = 3
 
 
+def document_type(har_path: Path, url: str) -> str:
+    """The media type of the document a recording loaded at `url` (its
+    final address), lower case without parameters; "" when unknown. 19.A
+    1.14.0: a suggested page that is not HTML (an API's JSON, XML) is not a
+    page."""
+    url = url.split("#", 1)[0]
+    try:
+        with zipfile.ZipFile(har_path) as z:
+            name = next(n for n in z.namelist() if n.endswith(".har"))
+            entries = json.loads(z.read(name))["log"]["entries"]
+    except (KeyError, OSError, ValueError, StopIteration, zipfile.BadZipFile):
+        return ""
+    for e in entries:
+        if e["request"]["url"].split("#", 1)[0] != url:
+            continue
+        r = e["response"]
+        if r.get("status") != 200:
+            continue
+        mime = r.get("content", {}).get("mimeType") or next(
+            (
+                h["value"]
+                for h in r.get("headers", [])
+                if h["name"].lower() == "content-type"
+            ),
+            "",
+        )
+        return mime.split(";", 1)[0].strip().lower()
+    return ""
+
+
 def media_body(har_path: Path, url: str) -> bytes | None:
     """A media file's bytes: from the media store, else the HAR's own body,
     following redirects the recording holds (at most REDIRECT_HOPS; 2.B
