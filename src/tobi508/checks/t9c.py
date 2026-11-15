@@ -185,6 +185,26 @@ def _norm(s: str | None) -> str:
     return " ".join((s or "").split()).lower()
 
 
+def _block_name(c: Comp) -> str:
+    """The name a link's innermost region (other than main) carries, from its
+    label or id; "" when it has none or only a position ("@2": it shifts
+    between templates, so it says nothing)."""
+    inner = [k for k in c.regions if not k.startswith("main|")]
+    name = inner[-1].partition("|")[2] if inner else ""
+    return "" if name.startswith("@") else _norm(name)
+
+
+def same_block(x: Comp, y: Comp) -> bool:
+    """Two links to one address are one component only when they sit in the
+    same kind of block (a footer link and a header logo are two components,
+    spec 1.10.0) and, when both blocks are named, under the same name (a
+    breadcrumb and a story bar are both navigation)."""
+    if x.region_role != y.region_role:
+        return False
+    nx, ny = _block_name(x), _block_name(y)
+    return not (nx and ny and nx != ny)
+
+
 def make_pairs(
     main: AndiPage, other: AndiPage, by_name_and_place: bool = True
 ) -> list[Pair]:
@@ -225,6 +245,8 @@ def make_pairs(
     # 1. Same destination: equal names first, then in order. Only inside a
     # repeated block (header, menu, search, footer; spec 1.5.0): the same
     # address from the pages' own content says nothing about a component.
+    # And only within the same block (1.10.0): a footer link and a header
+    # logo that go to one address are two components, not one named two ways.
     ga, gb = group(
         lambda c: (
             c.href if c.role == "link" and c.href and c.region_role in NAV_ROLES else ""
@@ -237,7 +259,9 @@ def make_pairs(
                 (
                     y
                     for y in ys
-                    if y.k not in used_b and _norm(y.andi_name) == _norm(x.andi_name)
+                    if y.k not in used_b
+                    and same_block(x, y)
+                    and _norm(y.andi_name) == _norm(x.andi_name)
                 ),
                 None,
             )
@@ -246,7 +270,7 @@ def make_pairs(
         for x in xs:
             if x.k in used_a:
                 continue
-            y = next((y for y in ys if y.k not in used_b), None)
+            y = next((y for y in ys if y.k not in used_b and same_block(x, y)), None)
             if y is not None:
                 add(x, y, "destination")
     # 2. Same id.
