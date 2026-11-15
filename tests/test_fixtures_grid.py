@@ -94,8 +94,7 @@ def wrong(outcome: Outcome, item: str, what: str) -> Cell:
 # Findings of the grid that the code review has no item for. Each needs a
 # line in the review's list (or a fix) from whoever takes it up; none is
 # fixed here.
-UNFILED = {
-}
+UNFILED = {}
 
 NEW4 = {
     "NEW-4": (
