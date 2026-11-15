@@ -50,9 +50,18 @@ headed Chrome) are in
   hidden form is never submitted, so one that J1 finds consequential and
   multi-step stays NEEDS REVIEW (no after-submit view, M4). A hidden field
   inside a frame is not read (the inventory's paths are the page's own
-  document). When pass E takes no form at all, the page's own text is not
-  scanned for consequence words (only the forms' words are): seen while
-  building 1.9.0, not changed.
+  document). (Since 1.10.0 the page's own text is read with the hidden
+  forms when pass E takes no form.)
+- **Fields hidden from everyone (guard CN; 5.A to 5.H, Abby 2026-11-15):**
+  decided by what a careful tester does (the reveal pass, every opener
+  pressed, a 15 s watch and a scroll, a choice and typing sweep of the
+  field's form). Accepted limits, each a rare wrong DOES NOT APPLY or
+  PASS: a field shown only by typing a particular value, by hovering,
+  after more than 15 s, or by leaving the page. A field shown only at
+  another window width is out of scope at the tested window. The check
+  adds about 17 s a page with hidden fields; nothing is decided when the
+  reveal pass did not run (a run with none of 5.A to 5.C, 4.x), left a
+  trigger unopened, or the page has more than 40 openers.
 - **3.A's screencast net varies between runs on some pages:** on round
   2's 5340 the same code gave DOES NOT APPLY in two runs and NEEDS REVIEW
   (row A3: flashing the capture did not show) in another; `main` gave A3

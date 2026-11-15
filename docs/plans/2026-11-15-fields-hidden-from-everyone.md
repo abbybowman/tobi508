@@ -1,6 +1,6 @@
 # Fields hidden from everyone (draft rule, step 6e)
 
-Status: **draft for Abby's decision**, nothing built. Agent-assisted
+Status: **approved and built** (Abby, 2026-11-15: behaviour only; mobile-only fields out of scope at the tested window; the limits accepted). Built differences: step 1 also presses every opener the inventory counts, not only the reveal pass's triggers (the first build gave a wrong DOES NOT APPLY on a form behind a plain button, review H-08); step 2's fill-and-send is a value typed in each text box, nothing submitted. Agent-assisted
 results, not certified Trusted Tester results.
 
 ## The question
