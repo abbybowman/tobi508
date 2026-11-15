@@ -16,9 +16,14 @@ markup or a plugin's name:
    (a popup that opens by itself), then scrolled down a window at a time.
 3. **Choose and type:** per form that holds such a field, one fresh load on
    which each option of each list box, each radio button and each checkbox
-   of the form is chosen in turn, then a value is typed into each text box
-   (nothing is submitted), with a read after each.
+   of the form is chosen in turn, then a value is typed into each text box,
+   then each of the form's buttons is pressed with those values in place (a
+   later step of a form that checks the first), with a read after each.
 
+Only a field inside a form that is shown on load can be hidden from
+everyone (Abby, 2026-11-15): a field whose whole form is hidden on load (a
+popup, a panel, a mobile copy) stays counted, because a recording may not
+reproduce what shows it (round 1's feedback popup never opened on replay).
 A field any step shows stays counted (guard CN holds the tests until a
 reader reads it). A field outside any form, a load or read that failed, or
 a run out of time leaves its fields counted. Facts only; the guard row is
@@ -54,7 +59,8 @@ _SHOWN_JS = (
 }"""
 )
 
-# The form (by path) of each field; "" for a field outside any form.
+# The form (by path) of each field, and whether that form is shown now
+# (read right after a fresh load); "" for a field outside any form.
 _FORMS_JS = (
     "(paths) => {"
     + JSLIB
@@ -64,7 +70,7 @@ _FORMS_JS = (
   for (const p of paths) {
     const el = J.find(p);
     const f = el && (el.form || el.closest('form'));
-    out[p] = f ? path(f) : '';
+    out[p] = f ? [path(f), J.rendered(f)] : ['', false];
   }
   return out;
 }"""
@@ -162,6 +168,20 @@ _CLICK_JS = (
 }"""
 )
 
+# The buttons of a form a person can press now (top document).
+_BUTTONS_JS = (
+    "(formPath) => {"
+    + JSLIB
+    + PATH_JS
+    + """
+  const f = J.find(formPath);
+  if (!f) return [];
+  const sel = 'button, input[type=submit], input[type=button], [role=button]';
+  return Array.from(f.querySelectorAll(sel))
+    .filter((b) => J.rendered(b) && !b.matches(':disabled')).map((b) => path(b));
+}"""
+)
+
 _SCROLL_JS = """async ([steps, wait]) => {
   for (let i = 0; i < steps; i++) {
     const before = window.scrollY;
@@ -247,13 +267,22 @@ async def _check(ctx: Any, paths: list[str], rv: Any, out: HiddenCheck) -> None:
             out.shown_by[p] = "scrolling"
     finally:
         await context.close()
-    for p in [p for p in left if not forms.get(p)]:
-        left.discard(p)
-        out.kept[p] = "it is not in a form"
+    for p in sorted(left):
+        form, shown = forms.get(p) or ["", False]
+        if not form:
+            left.discard(p)
+            out.kept[p] = "it is not in a form"
+        elif not shown:
+            # Only a hidden part of a form shown on load can be hidden from
+            # everyone (Abby, 2026-11-15): a whole form that is hidden (a
+            # popup, a panel, a mobile copy) stays counted, since a recording
+            # may not reproduce what shows it (round 1's feedback popup).
+            left.discard(p)
+            out.kept[p] = "its whole form is hidden on load"
     # 3. Choose and type, one fresh load per form.
     by_form: dict[str, list[str]] = {}
     for p in sorted(left):
-        by_form.setdefault(forms[p], []).append(p)
+        by_form.setdefault(forms[p][0], []).append(p)
     for n, (form, fields) in enumerate(by_form.items()):
         if n >= FORMS_MAX or ctx.out_of_time():
             for p in fields:
@@ -332,6 +361,24 @@ async def _sweep(
                     if c["kind"] == "type"
                     else "a choice in its form"
                 )
+        # Then press each of the form's buttons with those values in place: a
+        # later step of a form that checks the first step appears only after
+        # its fields are filled (fixture later-step-checked).
+        if any(p in left for p in fields):
+            for b in await page.evaluate(_BUTTONS_JS, form) or []:
+                if not any(p in left for p in fields):
+                    break
+                try:
+                    await page.evaluate(_CLICK_JS, b)
+                    await page.wait_for_timeout(STEP_WAIT_MS)
+                    shown = await page.evaluate(
+                        _SHOWN_JS, [p for p in fields if p in left]
+                    )
+                except Exception:
+                    break  # the page left: what was shown so far stands
+                for p in shown:
+                    left.discard(p)
+                    out.shown_by[p] = "pressing a button of its form after typing"
         if len(controls) > CHOICES_MAX:
             for p in fields:
                 if p in left:

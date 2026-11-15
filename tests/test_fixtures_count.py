@@ -126,6 +126,22 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
     # consequence word, on a page that says "Pay your bill". Pass E takes no
     # form, so the page's text is read with the hidden form: J1 is asked.
     "pay-page-hidden-form": {"5.H": ("NEEDS_REVIEW", None)},
+    # A visible form with a field that appears only on an unusual choice
+    # (Abby, 2026-11-15): the third radio button of a set, or step 2 of a
+    # form. The behaviour check shows each (a choice; pressing Next), so it
+    # stays counted and the guard holds. The twin later-step-checked moves
+    # on only once step 1 is filled: before the sweep pressed the form's
+    # buttons after typing, its step 2 was called hidden from everyone and
+    # 5.A gave a wrong PASS.
+    **{
+        page: {
+            "5.A": (
+                "NEEDS_REVIEW",
+                "1 form field is hidden until something opens it, and was not checked.",
+            )
+        }
+        for page in ("choice-third", "later-step", "later-step-checked")
+    },
     # M-02: a form that is only a button.
     # 5.H 1.9.0 reads the form pass E did not take: "Delete my account" is a
     # consequence hint, so J1 is asked (open here).
