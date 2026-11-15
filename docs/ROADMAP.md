@@ -303,7 +303,16 @@ Moved to [KNOWN-LIMITS.md](KNOWN-LIMITS.md) (2026-11-14).
   first.
 - **Testing a batch of pages:** each page tested in full in its own call,
   the multi-page tests run once at the end, pages added to an existing
-  run. Plan it with the store (Next, 4).
+  run. Plan it with the store (Next, 4). Detail (Abby, 2026-11-15, for
+  later, not built): with several pages of one site (a round's 8 to 10),
+  9.A-9.C and 19.A run as a second pass across the batch, not per page.
+  Each page of the site that any of them needs (the batch's pages, and
+  19.A's site map, parents, children, home page and suspected aliases)
+  is loaded and read once, and every link on it is matched against every
+  page of the batch in one go: one site map read answers 19.A for all
+  ten. Today the page cache (`pagecache.py`) already records and reads a
+  page once per server session, so the loads are shared, but each page's
+  run still decides alone and loads in its own order.
 - **A "test a page" prompt** for operators who are not Trusted Testers.
 - **The local runner** (part J; the pivot plan's decision 6): the
   browser on the user's machine for pages that are not public, the
