@@ -212,6 +212,9 @@ def _pictures(ctx, src: flashcap.Source, n: int, frames, scale: float = 1.0) -> 
 # then counting flashes) stops after this long; the image is then not
 # measured (A3), and the test goes on (3.A 1.4.0).
 IMAGE_MEASURE_S = 60
+# Nor is one measured whose frames at the size shown would come to more than
+# this many bytes of pixels (frames x width x height x 3).
+IMAGE_MEASURE_BYTES = 100_000_000
 
 
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
@@ -364,6 +367,27 @@ async def _measure(
             b = max(boxes, key=lambda x: x["w"] * x["h"])
             w = max(1, min(flashcap.VIEWPORT[0], round(b["w"])))
             h = max(1, min(flashcap.VIEWPORT[1], round(b["h"])))
+            n = next(
+                (
+                    a.get("frames", 0)
+                    for a in mp.animated_images
+                    if a["src"] == src_url[:500]
+                ),
+                0,
+            )
+            if min(n, flashcap.IMAGE_MAX_FRAMES) * w * h * 3 > IMAGE_MEASURE_BYTES:
+                # A3 (1.4.0): every frame at the size shown would be sent back
+                # from the browser; at round 2's 14194 GIF (192 frames, shown
+                # large) that jammed the browser connection.
+                st.unmeasured.append(
+                    flashcap.Unmeasured(
+                        what="an animated image",
+                        why=f"it has {n} frames at {w} by {h} pixels, more than we "
+                        "can measure",
+                        src=src_url[:200],
+                    )
+                )
+                continue
             if tool is None:
                 tool_ctx, tool = await motion._secure_tool_page(page)
             try:
@@ -375,12 +399,11 @@ async def _measure(
                 )
                 done, _ = await asyncio.wait({job}, timeout=IMAGE_MEASURE_S)
                 if not done:
-                    await tool_ctx.close()
+                    # Closed without waiting: a jammed connection does not
+                    # answer a close either.
+                    asyncio.ensure_future(tool_ctx.close())
                     tool_ctx = tool = None
-                    try:
-                        await asyncio.wait_for(job, 10)
-                    except BaseException:
-                        pass
+                    job.cancel()
                     raise TimeoutError
                 frames, durations, reps = job.result()
                 a, span, total = await asyncio.wait_for(
@@ -405,7 +428,7 @@ async def _measure(
                     )
                 )
                 if tool_ctx is not None:
-                    await tool_ctx.close()
+                    asyncio.ensure_future(tool_ctx.close())
                     tool_ctx = tool = None
                 continue
             except Exception as exc:
