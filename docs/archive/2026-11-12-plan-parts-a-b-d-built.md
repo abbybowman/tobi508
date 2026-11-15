@@ -526,11 +526,12 @@ every new PASS: reader 1 and frames as pages of their own for pass L (PRs
 in frames (5.F 1.10.0, 5.G 1.8.0, 5.H 1.8.0; fixtures `5f/f30`, `f31`) (#68);
 then the grid's NEW-2 cells closed with twins (`4d/f27`, `f28`, `4f/f24`,
 `f25` new) and 5.D 1.9.0's `frames_missing`. Pages that PASSed on `main` and
-now ask or FAIL: `4e/f13`, `f14`, `5d/f23`, `4a/f29`, `f31`. Not done:
-M-06's red border on a wrapper and a message gone within 150 ms (part C's
-error pass); a control that drops focus on focus inside a web component or
-frame is not reached by the walk (4.D NEEDS REVIEW); the walk's one capped
-end on `frame-other` in CI, not reproduced (`docs/KNOWN-LIMITS.md`).
+now ask or FAIL: `4e/f13`, `f14`, `5d/f23`, `4a/f29`, `f31`. After #79:
+M-06's red box and fleeting message (5.F 1.11.0, 5.G 1.9.0, row A3c;
+`5f/f32`, `f33`) and focus dropped on focus inside a web component (4.D
+1.10.0, 4.E 1.7.0; `4d/f29`, `4e/f15`). Not done: the same inside a frame
+from another site is not reached by the walk (NEEDS REVIEW); the walk's one
+capped end on `frame-other` in CI, not reproduced (`docs/KNOWN-LIMITS.md`).
 
 ### Spec wording for step 8's three decisions (draft, for Abby)
 

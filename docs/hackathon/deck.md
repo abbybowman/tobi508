@@ -185,6 +185,7 @@ flowchart LR
 - Step 6e: an analytics timer held 2.C and 2.D on every round 2 page; running the page's clock past it decided 8 cells, all agreeing with the key, and a test page caught the one false Does Not Apply on the way.
 - Step 6e, images: reading every image (not the first 30) decided 6 more round 2 cells, all agreeing with the key, and finds a strobing image the old cap missed.
 - Step 6e, hidden forms: 5.H reads a form hidden behind a button for whether it applies, as a person would, without submitting it: 8 more cells decided, all agreeing with the key.
+- Step 6e, anti-spam fields: a hidden field nothing a tester does can show is out of scope, decided by behaviour; it moves no cell on our pages, and its test pages caught two wrong results before they shipped.
 - **[FILL: the main disagreements in the scored run and whether any is a false PASS.]**
 - Unless each test has about 60 true failures, say "promising, not proven".
 
@@ -205,7 +206,7 @@ flowchart LR
 **Notes:**
 
 - The template's unauthenticated HTTP port on all interfaces is gone: stdio by default, HTTP only on loopback with Host and Origin checks unless sign-in is on.
-- The four exceptions, each capped: one site search (tried again in quotation marks when it finds nothing) and up to five site-map, home or breadcrumb pages for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
+- The five exceptions, each capped: one site search (tried again in quotation marks when it finds nothing), up to ten pages (the site map, previous and next, the page above, two pages below, three pages it links to, the home page) checked one at a time, and up to three links to the page under another address (`index.html`), for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
 - Page text reaches the server's judge only inside a block marked untrusted, escaped so the text cannot close it.
 - An answer sent through MCP is always recorded as the calling agent's: it cannot claim to be a person's.
 - The server's judge reads a picture only through the guarded evidence reader, and only one the question names as a whole value; page text cannot point it at another file or another person's run.
@@ -237,7 +238,7 @@ flowchart LR
 **On the slide**
 
 - Fewer false FAILs and fewer "unsure" answers: the rule and question fixes round 2 pointed to
-- Fields inside frames, and the keyboard walk through everything a page can open
+- Fields inside frames, and the rest of the keyboard tests walking through everything a page can open (the keyboard-trap test does now)
 - A person's answer from TOBI's own signed-in page, kept so the same question is answered once per site
 - A third round on a site not used before, with a second certified tester if one is available
 - More of the 61 tests: images, contrast, headings, resize, where scanners and people disagree most

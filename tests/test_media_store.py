@@ -48,3 +48,21 @@ async def test_media_over_the_cap_is_marked(settings, browser, server, tmp_path)
     )
     [m] = cap.media
     assert m["over_cap"] and m["file"] is None and m["size"] > 10_000
+
+
+async def test_other_pages_are_recorded_without_the_media_store(
+    settings, browser, server, tmp_path
+):
+    """Step 6h: other pages and the pages 19.A loads itself are read only for
+    their links and text, so `obtain(tested=False)` keeps no media; on svs
+    pages of large videos the store ran 342 s past a 20 s share. The tested
+    page keeps its media (2.A-2.D)."""
+    from tobi508.frozen import obtain
+
+    url = f"{server.base}/2x/t-autoplay.html"
+    other = await obtain(
+        browser, settings, url, tmp_path / "o.har.zip", noop_log, tested=False
+    )
+    tested = await obtain(browser, settings, url, tmp_path / "t.har.zip", noop_log)
+    assert other.media == [] and media_index(tmp_path / "o.har.zip") == []
+    assert [m["url"].endswith("/tone.wav") for m in tested.media] == [True]

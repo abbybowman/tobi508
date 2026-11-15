@@ -57,7 +57,7 @@ is merged. At most three threads at once. Each thread branches from
 | 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
 | 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
 | 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
-| 6h | 19.A finds its ways as a tester does: an alias of the page, its parent and child pages, the follow-up call | Opus | now |
+| 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0); repeated link rows as navigation, non-pages set aside (1.14.0); then the rounds' rerun | Opus | running |
 | 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
@@ -72,19 +72,26 @@ is merged. At most three threads at once. Each thread branches from
   Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
   decided, all agreeing with the key) and the images (up to 300 read;
   6 cells, all agreeing) and 5.H reading a hidden form to say whether
-  it is the kind 5.H is about (8 cells, all agreeing). To research:
-  fields hidden from everyone (honeypots, reCAPTCHA).
-- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14).
-  Today 19.A reads only the pages the caller gave and one site
-  search, and the eval runners never make the follow-up call, so it
-  is NEEDS REVIEW or a wrong FAIL where a tester finds two ways.
-  Three changes, approved by Abby with their limits (a sixth exception
-  to principle 5; the suggested-pages exception widened), wording
-  shown first: a link to the page under another address (`index.html`
-  for its directory) is checked by loading the suspected alias as an
-  other page is loaded; the page's parent and up to two of its child
-  pages join the suggested pages; and the runners make the follow-up
-  call an agent would.
+  it is the kind 5.H is about (8 cells, all agreeing). Done: fields hidden from everyone
+  (honeypots, reCAPTCHA), decided by behaviour inside a form shown on
+  load (5.A 1.13.0 to 5.H 1.10.0; no cell on the frozen pages, by
+  design). Later: a mobile copy out of scope, once a positive test exists;
+  the freeze recording frames whose address varies per load, and its
+  scroll on smooth-scrolling pages (round 3).
+- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14 and
+  15; [draft](plans/2026-11-15-19a-finds-ways.md)). Today 19.A reads
+  only the pages the caller gave and one site search, and the eval
+  runners never make the follow-up call (which also drops the suggested
+  pages when 5 or more were given), so it is NEEDS REVIEW or a wrong
+  FAIL where a tester finds two ways. PR 1, built (19.A 1.10.0; the
+  sixth exception to principle 5): a link to the page as `index.html`
+  (or `default.*`, another scheme, `www.`) is loaded as an other page
+  and counts when it is the same document. PR 2 (1.11.0), built: 19.A itself
+  checks the site map, the page's parent, up to two child pages and the
+  home page one by one, stops at two ways, and FAILs, naming what it
+  checked, only when all were checked; no follow-up call for 19.A is
+  left, so the runners need none. Then 19.A is rerun on rounds 1 and
+  2's frozen pages, every moved cell shown beside the key.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
   test did not walk it. 4.F's pass R already opens each trigger and
   Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
@@ -166,9 +173,13 @@ the remaining checks).
    readings (focus pictures, focus-event check) on them, and only then
    count them as reached (step 6d's walk-coverage rule).
 15. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
-   guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
-   first six triggers) walk the keyboard through opened content, which
-   removes guard RC. Phase 3: 5.D fills fields in opened content. Also
+   guards RV and RC). Phase 2 is started (step 6g, 2026-11-15): a shared
+   walk through what each trigger opened (`opened.py`), read by 4.C
+   (1.14.0) and 4.E, where guard RC holds only what the walk did not
+   reach. Still to do: 4.A and 4.D read it; **4.F's pass R moves onto the
+   shared walk** (4.F keeps pass R until then; Abby, 2026-11-15); and a
+   menu that opened only by a click joins 4.A's execute check, ahead of
+   its cap, with 4.A's rows deciding (Abby, 2026-11-15). Phase 3: 5.D fills fields in opened content. Also
    nested triggers, a combobox's list, buttons that need a key other than
    Enter, and phase 1's caps (20 triggers, 3 sets). From the review: a
    trigger is "opened" only by what appears in the region it controls
@@ -303,7 +314,16 @@ Moved to [KNOWN-LIMITS.md](KNOWN-LIMITS.md) (2026-11-14).
   first.
 - **Testing a batch of pages:** each page tested in full in its own call,
   the multi-page tests run once at the end, pages added to an existing
-  run. Plan it with the store (Next, 4).
+  run. Plan it with the store (Next, 4). Detail (Abby, 2026-11-15, for
+  later, not built): with several pages of one site (a round's 8 to 10),
+  9.A-9.C and 19.A run as a second pass across the batch, not per page.
+  Each page of the site that any of them needs (the batch's pages, and
+  19.A's site map, parents, children, home page and suspected aliases)
+  is loaded and read once, and every link on it is matched against every
+  page of the batch in one go: one site map read answers 19.A for all
+  ten. Today the page cache (`pagecache.py`) already records and reads a
+  page once per server session, so the loads are shared, but each page's
+  run still decides alone and loads in its own order. With the batch pass, 19.A can search more widely and deeply (a site map's sub-pages, more related pages, every page's previous and next) because what one page's check finds is reused for the others instead of loaded again (Abby, 2026-11-15).
 - **A "test a page" prompt** for operators who are not Trusted Testers.
 - **The local runner** (part J; the pivot plan's decision 6): the
   browser on the user's machine for pages that are not public, the

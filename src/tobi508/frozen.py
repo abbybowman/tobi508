@@ -78,7 +78,9 @@ async def obtain(
     are recorded live when they are on a frozen page's host."""
     folder = settings.frozen_pages_dir
     if folder is None:
-        return await record(browser, settings, url, har_path, log, egress)
+        return await record(
+            browser, settings, url, har_path, log, egress, with_media=tested
+        )
     index = load(folder)
     hit = index.get(_key(url))
     if hit is not None:
@@ -99,7 +101,9 @@ async def obtain(
         }
         if _host(url) in hosts:
             log("frozen_page", url=safe_url(url), live=True)
-            return await record(browser, settings, url, har_path, log, egress)
+            return await record(
+                browser, settings, url, har_path, log, egress, with_media=tested
+            )
         log("frozen_page", "error", url=safe_url(url), error="not the tested site")
         raise NotFrozen(
             "This server tests frozen copies of pages; other pages may be "

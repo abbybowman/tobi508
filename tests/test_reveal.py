@@ -36,6 +36,9 @@ def stop(**kw) -> Stop:
         ({"controls": "p", "controls_hidden": False}, []),
         ({"collapsed": True, "control": "combobox"}, []),
         ({"haspopup": "dialog", "control": "date", "group": "input:#d"}, []),
+        # a video's built-in "show more media controls" button (round 2's
+        # 14194, 14592, 4914; Abby, 2026-11-15): the browser's menu
+        ({"haspopup": "menu", "tag": "input", "media": True}, []),
     ],
 )
 def test_what_makes_a_stop_a_trigger(kw, why):

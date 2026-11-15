@@ -56,8 +56,12 @@ async def record(
     har_path: Path,
     log: LogFn,
     egress: EgressProxy | None = None,
+    with_media: bool = True,
 ) -> Capture:
-    """Load `url` live in a fresh context and save every response to `har_path`."""
+    """Load `url` live in a fresh context and save every response to `har_path`.
+    `with_media` False: no media store. Other pages and 19.A's own loads are
+    read only for their links and text (no test plays their media), and on a
+    page of large videos the store took 342 s past a 20 s share (step 6h)."""
     ctx = await new_context(
         browser, settings, record_har_path=str(har_path), record_har_mode="full"
     )
@@ -93,7 +97,7 @@ async def record(
         frames = cross_site_frames(page.url, [f.url for f in page.frames[1:]])
         if frames:
             log("capture_cross_site_frames", count=len(frames))
-        media = await _fetch_media(ctx, page, settings, log)
+        media = await _fetch_media(ctx, page, settings, log) if with_media else []
         chunks = await _fetch_chunks(ctx, scripts, seen, settings, log)
     finally:
         await ctx.close()  # writes the HAR
@@ -266,6 +270,36 @@ def media_index(har_path: Path) -> list[dict[str, Any]]:
 
 
 REDIRECT_HOPS = 3
+
+
+def document_type(har_path: Path, url: str) -> str:
+    """The media type of the document a recording loaded at `url` (its
+    final address), lower case without parameters; "" when unknown. 19.A
+    1.14.0: a suggested page that is not HTML (an API's JSON, XML) is not a
+    page."""
+    url = url.split("#", 1)[0]
+    try:
+        with zipfile.ZipFile(har_path) as z:
+            name = next(n for n in z.namelist() if n.endswith(".har"))
+            entries = json.loads(z.read(name))["log"]["entries"]
+    except (KeyError, OSError, ValueError, StopIteration, zipfile.BadZipFile):
+        return ""
+    for e in entries:
+        if e["request"]["url"].split("#", 1)[0] != url:
+            continue
+        r = e["response"]
+        if r.get("status") != 200:
+            continue
+        mime = r.get("content", {}).get("mimeType") or next(
+            (
+                h["value"]
+                for h in r.get("headers", [])
+                if h["name"].lower() == "content-type"
+            ),
+            "",
+        )
+        return mime.split(";", 1)[0].strip().lower()
+    return ""
 
 
 def media_body(har_path: Path, url: str) -> bytes | None:

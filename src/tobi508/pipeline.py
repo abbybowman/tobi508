@@ -419,43 +419,130 @@ def check_other_pages(
     return out
 
 
-def _live_recorder(browser, settings, run, report, proxy, final_url, get_browser):
-    """19.A's live site search (CLAUDE.md, Abby 2026-11-02): one more page
-    recorded live, allowlisted on every hop and on the tested page's host."""
+async def capture_other(
+    browser,
+    settings: Settings,
+    run,
+    url: str,
+    rel: str,
+    proxy,
+    hard: float,
+    use_cache: bool = True,
+) -> tuple[Capture, Any]:
+    """Record one other page of the site as its own HAR at `rel`, cancelled
+    at `hard` (monotonic; TimeoutError): the one code path for the caller's
+    other pages and the pages 19.A loads itself (its suspected aliases and,
+    without the page cache, its site search). `obtain` checks the allowlist
+    on every redirect hop; the caller checks the host after redirects.
+    Returns the capture and the page cache's hit (None when recorded now)."""
+    (run.dir / rel).parent.mkdir(parents=True, exist_ok=True)
+    hit = pagecache.reused(settings, url, run.dir / rel) if use_cache else None
+    if hit:
+        return (
+            Capture(
+                target_url=url,
+                final_url=hit.final_url,
+                har_path=run.dir / rel,
+                cross_site_frames=list(hit.cross_site_frames),
+                frozen=hit.frozen,
+            ),
+            hit,
+        )
+    oc = await _bounded(
+        obtain(browser, settings, url, run.dir / rel, run.log, proxy, tested=False),
+        hard,
+    )
+    if use_cache:
+        pagecache.keep(
+            settings, url, run.dir / rel, oc.final_url, oc.cross_site_frames, oc.frozen
+        )
+    return oc, None
 
-    async def record_live(url: str) -> PageRef:
+
+def _www(host: str) -> str:
+    host = (host or "").lower().rstrip(".")
+    return host[4:] if host.startswith("www.") else host
+
+
+def _live_recorder(
+    browser, settings, run, report, proxy, final_url, get_browser, tested_har=None
+):
+    """Pages 19.A loads itself, each by the code a caller's other page uses
+    (`capture_other`): its live site search (CLAUDE.md, Abby 2026-11-02),
+    its suspected aliases of the tested page (19.A 1.10.0, Abby 2026-11-14)
+    and its suggested pages (1.11.0, Abby 2026-11-15).
+    Allowlisted on every hop and on the tested page's host after redirects;
+    an alias may be asked for under the host with or without a leading
+    "www." (its definition), and must still end on the tested page's host."""
+
+    async def record_live(url: str, purpose: str = "search") -> PageRef:
         d = check_url(url, settings.allowed_domains, settings.dev_mode)
-        if not d.allowed or not _same_site(url, final_url):
+        if purpose == "alias":
+            host_ok = _same_site(url, final_url) or (
+                urlsplit(url).scheme in ("http", "https")
+                and _www(urlsplit(url).hostname or "")
+                == _www(urlsplit(final_url).hostname or "")
+            )
+        else:
+            host_ok = _same_site(url, final_url)
+        if not d.allowed or not host_ok:
             raise ValueError("not on the tested page's host or not allowed")
         n = len(report.live_pages) + 1
         rel = f"evidence/pages/live{n}.har.zip"
-        (run.dir / rel).parent.mkdir(parents=True, exist_ok=True)
         t1 = time.monotonic()
-        # The same share a caller-named page gets, so a slow search cannot
-        # take the later checks' time (19.A W4 on a timeout).
-        lc = await asyncio.wait_for(
-            obtain(browser, settings, url, run.dir / rel, run.log, proxy, tested=False),
-            settings.other_page_s,
+        # The same share a caller-named page gets, so a slow load cannot take
+        # the later checks' time (19.A W4 or W7 on a timeout). The search is
+        # never taken from the page cache: its results are read as they are.
+        lc, hit = await capture_other(
+            browser,
+            settings,
+            run,
+            url,
+            rel,
+            proxy,
+            time.monotonic() + settings.other_page_s,
+            use_cache=purpose != "search",
         )
         if not _same_site(lc.final_url, final_url):
             raise ValueError("it ended on another host after redirects")
+        same = False
+        if purpose in ("alias", "suggested") and tested_har is not None:
+            mine = document_sha(tested_har, final_url)
+            same = mine is not None and mine == document_sha(
+                run.dir / rel, lc.final_url
+            )
         report.live_pages.append(
             OtherPage(
                 n=n,
                 url=url,
                 final_url=lc.final_url,
                 har=rel,
+                purpose=purpose,
+                same_content_as_tested=same,
                 cross_site_frames=lc.cross_site_frames,
                 frozen=lc.frozen if settings.frozen_pages_dir else None,
+                reused_from=(
+                    datetime.fromtimestamp(hit.recorded_at, timezone.utc).isoformat(
+                        timespec="seconds"
+                    )
+                    if hit
+                    else None
+                ),
                 replay_browser=replay_browser_name(settings, lc.cross_site_frames),
             )
         )
-        run.log("captured_live", n=n, seconds=round(time.monotonic() - t1, 2))
+        run.log(
+            "captured_live",
+            n=n,
+            purpose=purpose,
+            seconds=round(time.monotonic() - t1, 2),
+        )
         return PageRef(
             n=100 + n,
             url=url,
             final_url=lc.final_url,
             har=run.dir / rel,
+            same_content_as_tested=same,
             new_page=_opener(
                 get_browser,
                 settings,
@@ -1105,43 +1192,13 @@ async def run_tt_tests(
                 await say(0.5, f"Recording other page {i} of {len(others)}")
                 rel = f"evidence/pages/p{i}.har.zip"
                 t1 = time.monotonic()
-                (run.dir / rel).parent.mkdir(parents=True, exist_ok=True)
-                hit = pagecache.reused(settings, other, run.dir / rel)
                 try:
                     # Each other page records within its own share of the
                     # limit, so a slow one cannot eat the other tests' time.
                     share = hard if no_time_limit else t1 + settings.other_page_s
-                    oc = (
-                        Capture(
-                            target_url=other,
-                            final_url=hit.final_url,
-                            har_path=run.dir / rel,
-                            cross_site_frames=list(hit.cross_site_frames),
-                            frozen=hit.frozen,
-                        )
-                        if hit
-                        else await _bounded(
-                            obtain(
-                                browser,
-                                settings,
-                                other,
-                                run.dir / rel,
-                                run.log,
-                                proxy,
-                                tested=False,
-                            ),
-                            min(hard, share),
-                        )
+                    oc, hit = await capture_other(
+                        browser, settings, run, other, rel, proxy, min(hard, share)
                     )
-                    if hit is None:
-                        pagecache.keep(
-                            settings,
-                            other,
-                            run.dir / rel,
-                            oc.final_url,
-                            oc.cross_site_frames,
-                            oc.frozen,
-                        )
                 except TimeoutError:
                     # The single-page tests still run; the tests that compare
                     # pages are not performed rather than run on fewer pages.
@@ -1243,7 +1300,14 @@ async def run_tt_tests(
             ctx.requested_url = url
             ctx.pages = _page_refs(get_browser, settings, run, report)
             ctx.record_live = _live_recorder(
-                browser, settings, run, report, proxy, cap.final_url, get_browser
+                browser,
+                settings,
+                run,
+                report,
+                proxy,
+                cap.final_url,
+                get_browser,
+                tested_har=har,
             )
             if any(getattr(c, "uses_motion", False) for c in checks) or any(
                 needs_walk(c, ctx) for c in checks
@@ -1329,7 +1393,8 @@ async def run_tt_tests(
                 try:
                     with metered() as cost:
                         rv = await _bounded(
-                            reveal.collect(ctx, walk), hard + allowance[0]
+                            reveal.collect(ctx, walk, _walk_extras(checks)),
+                            hard + allowance[0],
                         )
                     ctx.cache["reveal"] = rv
                     report.reveal = rv.summary()
@@ -1529,7 +1594,7 @@ def follow_ups(
     report: Report, states: dict[TestId, Any], skipped: dict[TestId, str] | None
 ) -> list[dict]:
     """Tool calls that would let a NEEDS_REVIEW test decide: a check's own
-    `follow_up` (19.A's suggested pages) and a test left out over a cap
+    `follow_up`, if it has one, and a test left out over a cap
     (5.D, with no_time_limit). For next_step; never made by the server."""
     review = {f.test_id for f in report.findings if f.outcome is Outcome.NEEDS_REVIEW}
     out: list[dict] = []
@@ -1787,10 +1852,9 @@ async def answer_questions(
 
 def server_may_make(call: dict) -> bool:
     """A follow-up call the server makes by itself (agent follow-through plan,
-    change 1). 19.A's suggested pages may be visited (Abby, 2026-11-06):
-    they are other pages like any caller's, checked by the allowlist and the
-    tested page's host before and after redirects. no_time_limit stays the
-    user's choice (CLAUDE.md)."""
+    change 1): any call but one that needs no_time_limit, which stays the
+    user's choice (CLAUDE.md). (19.A's suggested pages were made this way
+    until 1.11.0; 19.A now checks them itself.)"""
     return not call.get("no_time_limit")
 
 

@@ -32,12 +32,23 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G2"],
         {},
     ),
-    "nav-and-live-search": ("t-benefits", ["home"], "PASS", ["W1", "W2", "G2"], {}),
-    "search-finds-nothing": (
+    # 19.A 1.11.0 (Abby, 2026-11-15): the site map the home page links to is
+    # checked by the test itself, before the site search, and the test stops
+    # at two kinds. Before 1.11.0 these were PASS by the live search (W2) and
+    # NEEDS REVIEW naming the site map (G3). The search stays covered by the
+    # quoted-search cases below, whose pages link no site map.
+    "nav-and-site-map-found-by-the-test": (
+        "t-benefits",
+        ["home"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    "search-finds-nothing-site-map-found-by-the-test": (
         "t2-status",
         ["home"],
-        "NEEDS_REVIEW",
-        ["W1", "W3", "G3"],
+        "PASS",
+        ["W1", "G2"],
         {},
     ),
     "search-finds-nothing-site-map-given": (
@@ -106,6 +117,103 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W4", "G3"],
         {},
     ),
+    # Step 6h (19.A 1.10.0; round 2 p05, svs.gsfc.nasa.gov/cilab/, key Pass):
+    # every link to the microsite's home goes to its index.html. Loaded, it
+    # is the same document, so those links count: the agency's labs page
+    # (content) and the lab's own menu (navigation).
+    "alias-index-html-is-the-page": (
+        "micro/",
+        ["lab-home", "micro/people"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    # The nearest case that must never PASS: thin/index.html is another page
+    # under the same heavy template (same title and heading, one paragraph
+    # apart). Its bytes differ, so it is not verified: NEEDS REVIEW, where
+    # before this the page FAILed with no way found.
+    "alias-index-html-is-another-page": (
+        "thin/",
+        ["lab-home"],
+        "NEEDS_REVIEW",
+        ["W1", "W7", "G3"],
+        {},
+    ),
+    # 19.A 1.11.0 (Abby, 2026-11-15): a tester goes down to a child page.
+    # The section home is linked only in the agency's content; its first
+    # project's breadcrumb links back to it (navigation).
+    "second-way-on-a-child-page": (
+        "sec/",
+        ["hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # ... and up to the parent: the funding page links the grants page in
+    # its content; the agency's menu links it too.
+    "second-way-on-the-parent": (
+        "par/item",
+        ["hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # A child page that leaves the site after a redirect is not checked: the
+    # test cannot FAIL on a set it did not finish (W8, G3).
+    "child-page-not-checked": (
+        "gone/",
+        ["hub"],
+        "NEEDS_REVIEW",
+        ["W1", "W8", "G3"],
+        {},
+    ),
+    # 19.A 1.12.0 W9 (Abby, 2026-11-15: "we can't say we've checked for nav
+    # links as a way if we haven't read the nav"). The other page links the
+    # grants page in its content and inside a menu that is closed on load:
+    # NEEDS REVIEW, not FAIL. Its twin with the menu open PASSes.
+    "closed-menu-not-read": (
+        "t7-grants",
+        ["menu-closed"],
+        "NEEDS_REVIEW",
+        ["W1", "W9", "G3"],
+        {},
+    ),
+    "open-menu-read": (
+        "t7-grants",
+        ["menu-open"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # 19.A 1.13.0 (Abby, 2026-11-15: "previous and next ... almost certain
+    # to result in a valid way"; round 2's leaf pages): the next story links
+    # back in its content. Its twin's next story does not: FAIL, naming it.
+    "next-page-links-back": ("nb/b/", ["hub2"], "PASS", ["W1", "G2"], {}),
+    "next-page-does-not-link-back": ("nb/d/", ["hub2"], "FAIL", ["W1", "G4"], {}),
+    # ... and a related page T links to in its content (round 1's ISS hub).
+    "related-page-links-back": ("rel/x/", ["hub2"], "PASS", ["W1", "G2"], {}),
+    # 19.A 1.14.0 (Abby, 2026-11-15, option 1; round 2's CILab): a lab's
+    # subpages repeat its home page's row of icon links, outside any
+    # navigation region. The row is on T too, so the link back (to
+    # index.html, a verified alias) is navigation. Its twin's subpage links
+    # back only from a paragraph of links T does not have: one kind, FAIL.
+    "repeated-link-row-is-navigation": (
+        "lab2/",
+        ["hub3"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    "content-links-not-on-t-are-not-navigation": (
+        "lab3/",
+        ["hub3"],
+        "FAIL",
+        ["W1", "W6", "G4"],
+        {},
+    ),
+    # ... and a related link that is an API's JSON is not a page: it takes
+    # no place, and a link held back is checked instead.
+    "json-is-not-a-page": ("rel/y/", ["hub3"], "PASS", ["W1", "G2"], {}),
     "process-step": (
         "step2",
         ["home"],
@@ -121,7 +229,7 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     page, others, outcome, rows, answers = EXPECTED[case]
     got = await run_tests(
         settings,
-        f"{server.base}/19a/{page}.html",
+        f"{server.base}/19a/{page}" + ("" if page.endswith("/") else ".html"),
         ["19.A"],
         {"19.A": answers},
         other_pages=[f"{server.base}/19a/{o}.html" for o in others],
@@ -129,8 +237,15 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     f = got["19.A"]
     assert f.outcome.value == outcome, (f.rows, f.summary, f.rationale)
     assert [r for r in f.rows if r != "A5"] == rows, f.rows
-    if case == "search-finds-nothing":
-        assert "sitemap.html" in f.summary  # suggested, never visited
+    if case == "next-page-does-not-link-back":
+        assert "its previous or next page" in f.summary, f.summary
+    if case == "closed-menu-not-read":
+        assert "inside a closed menu on" in f.summary, f.summary
+    if case == "alias-index-html-is-another-page":
+        assert "thin/index.html is this page under another address" in f.summary
+    if f.outcome.value == "FAIL":  # names what was checked (Abby, 2026-11-15)
+        assert "We checked the 1 other page you gave" in f.summary, f.summary
+        assert "search the web for pages that link to" in f.summary
 
 
 async def test_without_other_pages_nothing_runs(settings, server, drafts):  # noqa: F811
@@ -213,69 +328,110 @@ def test_links_to_the_requested_url_count_after_a_redirect():
     ]
 
 
-async def test_the_result_names_the_call_that_adds_the_suggested_pages(
+async def test_the_test_checks_the_suggested_pages_itself(
     settings,
     server,
     drafts,  # noqa: F811
 ):
-    """Post-round 1 fix 18: an agent named the suggestion but never made the
-    call. next_step now spells it out: 19.A alone, the pages given before
-    plus the suggested ones, made without asking the user."""
+    """19.A 1.11.0 (Abby, 2026-11-15): the site map, parent, child pages and
+    home page are loaded by the test itself, one at a time, each recorded as
+    a page it loaded (purpose "suggested"), and it stops at two kinds. No
+    follow-up call is left for 19.A (before 1.11.0, none was ever made in the
+    eval runs, and the call carried no suggested page when 5 were given)."""
     from tobi508.models import TestId
     from tobi508.pipeline import run_tt_tests
 
-    page, others = EXPECTED["search-finds-nothing"][:2]
-    given = [f"{server.base}/19a/{o}.html" for o in others]
+    url = f"{server.base}/19a/t2-status.html"
     out = await run_tt_tests(
-        settings, f"{server.base}/19a/{page}.html", [TestId.T19A], other_pages=given
+        settings, url, [TestId.T19A], other_pages=[f"{server.base}/19a/home.html"]
     )
-    assert "follow_up_calls" in out.next_step
-    assert "finish=true" in out.next_step
-    [call] = out.follow_up_calls
-    assert call["tests"] == ["19.A"] and call["url"].endswith(f"/{page}.html")
-    assert any(p.endswith("sitemap.html") for p in call["other_pages"])
-    assert all(g in call["other_pages"] for g in given)  # kept
+    assert out.follow_up_calls == []
+    loaded = [(p.purpose, p.url) for p in out.report.live_pages]
+    assert loaded == [("suggested", f"{server.base}/19a/sitemap.html")], loaded
+    f = next(x for x in out.report.findings if x.test_id.value == "19.A")
+    assert f.outcome.value == "PASS"
 
 
-async def test_finish_makes_the_suggested_pages_call_once(
-    settings,
-    server,
-    drafts,  # noqa: F811
-):
-    """Agent follow-through plan, change 1: tobi_run_status finish=true makes
-    19.A's follow-up call itself (Abby, 2026-11-06: the server may visit
-    the suggested pages), records it in the report, and never makes it
-    twice."""
-    from tobi508 import jobs
-    from tobi508.models import Report, TestId
-    from tobi508.pipeline import run_tt_tests
-    from tobi508.runlog import RunRecorder
-    from tobi508.tools.run_status import _start_follow_ups
+def test_suggested_pages_in_order():
+    """19.A 1.11.0 Terms: the site map, the parent (from T's address), up to
+    2 child pages under T's directory, the home page; never a page given, T
+    or a suspected alias of T; no child pages for a T at the site root."""
+    from tobi508.checks.t19a import parent_of, suggested_pages
+    from tobi508.site import PageRead, Unit
 
-    page, others = EXPECTED["search-finds-nothing"][:2]
-    url = f"{server.base}/19a/{page}.html"
-    given = [f"{server.base}/19a/{o}.html" for o in others]
-    job = jobs.start(
-        settings,
-        url,
-        lambda p: run_tt_tests(settings, url, [TestId.T19A], p, False, given),
+    def link(href, name="x"):
+        return Unit(
+            i=0,
+            kind="control",
+            role="link",
+            text=name.lower(),
+            name=name,
+            css="a",
+            href=href,
+        )
+
+    t = "https://ex.gov/a/b/"
+    main = PageRead(
+        n=0,
+        url=t,
+        units=[
+            link("https://ex.gov/a/b/index.html"),  # an alias: never suggested
+            link("https://ex.gov/a/b/report.pdf"),  # not a page
+            link("https://ex.gov/a/b/one/"),
+            link("https://ex.gov/a/b/two.html"),
+            link("https://ex.gov/a/b/three.html"),  # past the 2 children
+            link("https://ex.gov/elsewhere/"),  # not under T's directory
+        ],
     )
-    first = await jobs.wait(job, 300)
-    assert first.work == "incomplete" and first.remaining.follow_up_calls == 1
-
-    started = [j for j in _start_follow_ups(settings) if j.url == url]
-    assert len(started) == 1 and started[0].tests == ["19.A"]
-    second = await jobs.wait(started[0], 300)
-    assert second.run_id != first.run_id
-    assert any(p.url.endswith("sitemap.html") for p in second.report.other_pages)
-
-    run = RunRecorder.open(settings.runs_dir, first.run_id)
-    report = Report.model_validate_json(run.report_path.read_text("utf-8"))
-    assert report.follow_up_calls == []
-    assert report.follow_ups_made[0]["job_id"] == started[0].id
-    _start_follow_ups(settings)  # a second finish: nothing more from the first run
-    report = Report.model_validate_json(run.report_path.read_text("utf-8"))
-    assert len(report.follow_ups_made) == 1
+    other = PageRead(
+        n=1, url="https://ex.gov/x/", units=[link("https://ex.gov/map/", "Site map")]
+    )
+    got = suggested_pages(t, main, [main, other], {"https://ex.gov/x/"})
+    assert [(c.role, c.url) for c in got] == [
+        ("site_map", "https://ex.gov/map/"),
+        ("parent", "https://ex.gov/a/"),
+        ("child", "https://ex.gov/a/b/one/"),
+        ("child", "https://ex.gov/a/b/two.html"),
+        ("related", "https://ex.gov/a/b/three.html"),
+        ("related", "https://ex.gov/elsewhere/"),
+        ("home", "https://ex.gov/"),
+    ]
+    # 1.13.0: previous and next first after the site map, related pages after
+    # the children (3 at most; a query-only variant counts once).
+    seq = PageRead(
+        n=0,
+        url=t,
+        units=[
+            link("https://ex.gov/topic/"),
+            link("https://ex.gov/topic/?page=2"),
+            link("https://ex.gov/a/b/one/"),
+            link("https://ex.gov/a/c/", "Next page"),
+            link("https://ex.gov/t2/"),
+            link("https://ex.gov/t3/"),
+            link("https://ex.gov/t4/"),
+        ],
+    )
+    got = suggested_pages(t, seq, [seq], set())
+    assert [(c.role, c.url) for c in got] == [
+        ("prev_next", "https://ex.gov/a/c/"),
+        ("parent", "https://ex.gov/a/"),
+        ("child", "https://ex.gov/a/b/one/"),
+        ("related", "https://ex.gov/topic/"),
+        ("related", "https://ex.gov/t2/"),
+        ("related", "https://ex.gov/t3/"),
+        ("home", "https://ex.gov/"),
+    ]
+    assert parent_of("https://ex.gov/a/b/c.html") == "https://ex.gov/a/b/"
+    assert parent_of("https://ex.gov/a/b/index.html") == "https://ex.gov/a/"
+    assert parent_of("https://ex.gov/") is None
+    # A T at the root has no child pages; a link in its content is a related
+    # page (1.13.0), never a child.
+    root = PageRead(n=0, url="https://ex.gov/", units=[link("https://ex.gov/a/")])
+    got = suggested_pages("https://ex.gov/", root, [root], set())
+    assert [(c.role, c.url) for c in got] == [("related", "https://ex.gov/a/")]
+    query = PageRead(n=0, url="https://ex.gov/?q=1", units=[link("https://ex.gov/a/")])
+    got = suggested_pages("https://ex.gov/?q=1", query, [query], set())
+    assert [c.role for c in got] == ["related", "home"]
 
 
 def test_failed_scripts_reads_the_recording(tmp_path):
@@ -315,3 +471,67 @@ def test_failed_scripts_reads_the_recording(tmp_path):
         "https://cdn.example/app.js",
         "https://example.gov/static/r.js",
     ]
+
+
+def test_suspected_alias():
+    """19.A 1.10.0 Terms (Abby, 2026-11-14 and 2026-11-15): an index.* or
+    default.* last segment either way round, the scheme and a leading www.
+    make a suspected alias; a query string, another directory or another
+    file name do not; neither does T itself."""
+    from tobi508.checks.t19a import suspected_alias
+
+    t = "https://svs.example.gov/cilab/"
+    yes = [
+        "https://svs.example.gov/cilab/index.html",
+        "https://svs.example.gov/cilab/default.aspx",
+        "http://svs.example.gov/cilab/index.html#top",
+        "https://www.svs.example.gov/cilab/",
+    ]
+    no = [
+        "https://svs.example.gov/cilab/",
+        "https://svs.example.gov/cilab",
+        "https://svs.example.gov/cilab/?page=2",
+        "https://svs.example.gov/cilab/information.html",
+        "https://svs.example.gov/index.html",
+        "https://other.example.gov/cilab/index.html",
+        "mailto:lab@example.gov",
+    ]
+    assert [u for u in yes if not suspected_alias(u, t)] == []
+    assert [u for u in no if suspected_alias(u, t)] == []
+    assert suspected_alias(
+        "https://svs.example.gov/cilab/", "https://svs.example.gov/cilab/index.html"
+    )
+
+
+def test_alias_reasons_are_plain_words():
+    """Principle 8: why an alias was not loaded, without exception names."""
+    from tobi508.checks.t19a import _load_reason
+    from tobi508.frozen import NotFrozen
+
+    assert _load_reason(NotFrozen("x")) == "no saved copy of it was available to load"
+    assert "time" in _load_reason(TimeoutError())
+    assert "Error" not in _load_reason(RuntimeError("boom"))
+
+
+def test_g5_names_what_was_found_and_checked():
+    """19.A 1.13.0 G5 (Abby, 2026-11-15): one way found (the site search) and
+    everything checked is NEEDS REVIEW, saying what was found and checked."""
+    from tobi508.checks.t19a import Search, State19A, Suggested, evaluate
+
+    st = State19A(
+        t_url="https://ex.gov/a/",
+        pages=[{"n": 1, "url": "https://ex.gov/b/"}],
+        search_forms=1,
+        search=Search(status="found", tries=["A"]),
+        checked=[Suggested(url="https://ex.gov/", role="home", status="checked")],
+    )
+    f = evaluate(st, [])
+    assert f.outcome.value == "NEEDS_REVIEW" and f.rows[-1] == "G5"
+    assert (
+        "We found 1 way to reach this page (the site search), and no second way"
+        in f.summary
+    )
+    assert (
+        "We checked the 1 other page you gave, the home page and the site "
+        "search (1 search)" in f.summary
+    )

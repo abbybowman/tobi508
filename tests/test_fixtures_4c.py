@@ -60,6 +60,10 @@ EXPECTED: dict[str, dict] = {
     "f37-timeline-view-loops": {
         "outcome": "FAIL",
         "rows": ["M12", "M12"],
+        # The error pass in the frame and the second view's loop take about a
+        # minute alone; under a loaded suite 4.C's share of the tests' 120 s
+        # run ran out (twice, 2026-11-15). The rule is not about time.
+        "no_limit": True,
         "j2": {"gate": "no", "fields": []},
     },
     "f38-done-removes-the-frame": {"outcome": "NEEDS_REVIEW", "rows": ["M4d"]},
@@ -78,6 +82,28 @@ EXPECTED: dict[str, dict] = {
     "f41-error-popup-traps": {"outcome": "FAIL", "rows": ["M11"]},
     "f42-error-popup-escape": {"outcome": "PASS", "rows": ["M2"]},
     "f43-error-inline-text": {"outcome": "PASS", "rows": []},
+    # 1.14.0, P8 (step 6g): the walk through what a menu or section opened.
+    # A menu panel that keeps Tab inside it fails like any loop; with Escape
+    # closing it, it passes. A plain menu and a modal dialog that shows a link
+    # behind it are not held by guard RC; a link the walk did not reach outside
+    # a non-modal panel holds RC, and a trigger that opens nothing holds RV.
+    "f45-menu-panel-traps": {"outcome": "FAIL", "rows": ["M12"], "not": ["RC"]},
+    "f46-menu-panel-escape": {"outcome": "PASS", "rows": ["M3"], "not": ["RC"]},
+    "f47-menu-opens-plain": {"outcome": "PASS", "rows": [], "not": ["RC", "RV"]},
+    "f48-modal-dialog-escape": {"outcome": "PASS", "rows": ["M3"], "not": ["RC"]},
+    "f49-panel-unreached-control": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page": ["RC"],
+    },
+    "f50-trigger-opens-nothing": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page": ["RV"],
+    },
+    # A video's built-in controls are the browser's, never a trigger, even
+    # when the page renames the video on every load (Abby, 2026-11-15).
+    "f51-video-beside-menu": {"outcome": "PASS", "rows": [], "not": ["RC", "RV"]},
     "f35-radio-gate": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8"],
@@ -170,6 +196,10 @@ async def test_fixture_outcome(name, settings, server):
     )
     if e.get("note"):
         assert e["note"] in f.rationale or e["note"] in f.summary
+    for row in e.get("page", []):
+        assert row in f.rows, (row, f.rows, f.rationale)
+    for row in e.get("not", []):
+        assert row not in f.rows, (row, f.rows, f.rationale)
 
 
 async def _survey_cookie(context, url: str) -> None:

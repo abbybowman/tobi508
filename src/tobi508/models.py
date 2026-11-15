@@ -144,6 +144,11 @@ class Stop(BaseModel):
     tab_unselected: bool = Field(
         default=False, description="A tab that is not the selected one."
     )
+    media: bool = Field(
+        default=False,
+        description="Inside a video or audio element's built-in controls (the "
+        "browser's player, not page content; never a trigger, reveal.py).",
+    )
 
     @property
     def path_key(self) -> str:
@@ -557,6 +562,13 @@ class OtherPage(BaseModel):
         description="With frozen pages (an eval): true if this page came from "
         "the frozen copies, false if it was recorded live.",
     )
+    purpose: Literal["search", "alias", "suggested"] | None = Field(
+        default=None,
+        description="A page 19.A loaded itself: its site search's results "
+        "(search), a suspected alias of the tested page (alias) or a "
+        "suggested page (suggested: the site map, the parent, a child page "
+        "or the home page). None for the caller's pages.",
+    )
 
 
 class Part(BaseModel):
@@ -668,7 +680,9 @@ class Report(BaseModel):
     )
     live_pages: list[OtherPage] = Field(
         default_factory=list,
-        description="Pages the tool loaded live itself: 19.A's site search only.",
+        description="Pages the tool loaded itself, each by the code a caller's "
+        "other page uses: 19.A's site search and its suspected aliases of the "
+        "tested page and its suggested pages (`purpose`).",
     )
     cross_site_frames: list[str] = Field(
         default_factory=list,
@@ -937,8 +951,8 @@ class RunResult(BaseModel):
     follow_up_calls: list[dict[str, Any]] = Field(
         default_factory=list,
         description="tobi_run_tt_tests arguments, ready to send as they are, "
-        "that let tests left for review decide (19.A with the pages it "
-        "suggests; a test left out over a cap, with no_time_limit). After "
+        "that let tests left for review decide (a test left out over a cap, "
+        "with no_time_limit). After "
         "answering the open questions, call tobi_run_status with finish=true: "
         "the server makes the calls it may make itself (all but no_time_limit, "
         "the user's choice). Replace those tests' results in the saved report.",
@@ -1071,8 +1085,8 @@ class AnswerResult(BaseModel):
     follow_up_calls: list[dict[str, Any]] = Field(
         default_factory=list,
         description="tobi_run_tt_tests arguments, ready to send as they are, "
-        "that let tests left for review decide (19.A with the pages it "
-        "suggests; a test left out over a cap, with no_time_limit). After "
+        "that let tests left for review decide (a test left out over a cap, "
+        "with no_time_limit). After "
         "answering the open questions, call tobi_run_status with finish=true: "
         "the server makes the calls it may make itself (all but no_time_limit, "
         "the user's choice). Replace those tests' results in the saved report.",

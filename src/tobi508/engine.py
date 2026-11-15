@@ -160,6 +160,23 @@ def apply_guards(
             f" Guard RC: {rv['opened_with_focusable']} opened section(s) hold "
             "controls that were not checked."
         )
+    # RC narrowed (`reveal-walk`; 4.C 1.14.0, 4.E 1.7.0; step 6g): for a test
+    # whose walk goes through opened content, only the opened content the
+    # walk did not reach holds a PASS. A trigger not opened or read is RV's.
+    if "reveal-walk" in guards and f.outcome is Outcome.PASS and rv.get("not_walked"):
+        f.outcome = Outcome.NEEDS_REVIEW
+        f.rows = [*f.rows, "RC"]
+        f.summary = (
+            f"{REVIEW_HEAD} The page has menus or sections that open to show "
+            "more controls, and the Tab key did not reach every control inside "
+            f"some of them ({_names(rv['not_walked'])}), so a person needs to "
+            "check what they hold."
+        )
+        f.note = TEST_NOT_PERFORMED_NOTE
+        f.rationale += (
+            f" Guard RC: {len(rv['not_walked'])} opened section(s) were not "
+            "walked to the end."
+        )
     return _count_guard(f, report, state, count)
 
 

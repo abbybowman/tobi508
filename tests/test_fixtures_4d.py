@@ -107,6 +107,9 @@ EXPECTED: dict[str, dict] = {
     # the twins of the grid's PASSes.
     "f27-no-focus-indicator-in-web-component": {"outcome": "FAIL", "rows": ["M8"]},
     "f28-no-focus-indicator-in-frame": {"outcome": "FAIL", "rows": ["M8"]},
+    # 4.D 1.10.0: f11's focus dropped on focus, inside a web component: the
+    # focus log names it by its host, so M3 sees it (it was WK, NEEDS REVIEW).
+    "f29-blur-on-focus-in-web-component": {"outcome": "FAIL", "rows": ["M3"]},
     "f12-listbox-activedescendant": {"outcome": "PASS"},
     "f13-listbox-no-highlight": {"outcome": "FAIL"},
     "f14-menubar-roving-no-indicator": {"outcome": "FAIL"},

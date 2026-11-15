@@ -122,6 +122,20 @@ UNITS_FN = (
     return el.matches('a[href], button, input:not([type="hidden"]), select, textarea, summary') ||
       (ti !== null && ti.trim() !== '' && parseInt(ti, 10) >= 0);
   };
+  // The group a link sits in (19.A 1.14.0): its nearest ancestor, at most 4
+  // levels up, that holds 3 or more links; an id per ancestor, '' when none.
+  const groupIds = new Map();
+  const groupOf = (el) => {
+    let a = el.parentElement;
+    for (let k = 0; a && k < 4; k++, a = a.parentElement) {
+      if (a === document.body) break;
+      if (a.querySelectorAll('a[href]').length >= 3) {
+        if (!groupIds.has(a)) groupIds.set(a, 'g' + groupIds.size);
+        return groupIds.get(a);
+      }
+    }
+    return '';
+  };
   const units = (cap) => {
     const out = [], regions = [], counts = {}, els = [];
     let truncated = false;
@@ -163,6 +177,8 @@ UNITS_FN = (
         push(el, { kind: 'control', role: controlRole(el), name, text: name.toLowerCase().slice(0, 200),
           href: t === 'A' && raw !== null ? el.href : '', href_attr: raw === null ? null : raw,
           dest: t === 'A' && raw !== null ? destHref(el) : '',
+          rel: t === 'A' ? norm(el.getAttribute('rel')) : '',
+          group: t === 'A' ? groupOf(el) : '',
           submit: !!el.form && (el.type || '').toLowerCase() === 'submit', stop: tabbable(el),
           id: el.id || '' }, chain);
         return;
@@ -208,7 +224,14 @@ UNITS_FN = (
                explicit: !!(f.getAttribute('action') || '').trim(),
                field: field && field.name ? field.name : '', hidden, css: path(f) };
     }).filter(Boolean);
-    return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms, shadow_read: shadowRead };
+    // Links in navigation, banner or footer regions not shown on load (closed
+    // menus): 19.A 1.12.0 W9 cannot say the site navigation does not lead to
+    // a page while these were not read (Abby, 2026-11-15).
+    const NAV_REGION = 'nav, header, footer, [role=navigation], [role=banner], [role=contentinfo]';
+    const hiddenNav = J.all('a[href]').filter((a) => a.closest(NAV_REGION) && !shown(a))
+      .map((a) => a.href).slice(0, 2000);
+    return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms,
+             shadow_read: shadowRead, hidden_nav: hiddenNav };
   };
 """
 )
@@ -231,6 +254,10 @@ class Unit(BaseModel):
     # Where the link goes, '' when nowhere (DEST_JS): the pairing key of 9.C.
     dest: str = ""
     href_attr: str | None = None
+    rel: str = ""  # a link's rel attribute (19.A 1.13.0: prev, next)
+    # The group a link sits in: its nearest ancestor (4 levels at most) with
+    # 3 or more links, an id on its page; "" when none (19.A 1.14.0).
+    group: str = ""
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
     id: str = ""
@@ -259,6 +286,9 @@ class PageRead(BaseModel):
     # Landmarks and links inside web components the read covered (part D):
     # the inventory's keys, so guard CN compares them.
     shadow_read: dict[str, int] = Field(default_factory=dict)
+    # Addresses of links in navigation, banner or footer regions that were
+    # not shown on load (closed menus; 19.A W9, 1.12.0).
+    hidden_nav: list[str] = Field(default_factory=list)
     # The same document as the tested page, under another address (K-01).
     identical: bool = False
     # Nearly the same page: the same address apart from the query string, and
@@ -352,6 +382,7 @@ async def read_page(
             title=data.get("title") or "",
             forms=data.get("forms") or [],
             shadow_read=data.get("shadow_read") or {},
+            hidden_nav=data.get("hidden_nav") or [],
         )
     except Exception as exc:
         return PageRead(n=n, url=url, error=type(exc).__name__)

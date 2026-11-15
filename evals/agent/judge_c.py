@@ -28,8 +28,9 @@ and applied before its others. Answers go through
 pipeline.answer_questions (record_answers and every guard), with
 answered_by "server:<model>", so outcomes come only from the specs; new
 questions are answered the same way until none is open. Then the follow-up
-calls the server may make (19.A's suggested pages, live, as finish=true makes
-them) are made and their questions answered too.
+calls the server may make (as finish=true makes them) are made and their
+questions answered too. (19.A's suggested pages were such calls until 19.A
+1.11.0, which checks them itself.)
 
 C's result per WCAG criterion is rolled up from its tool files by the
 scorer's own functions (tool_files, rollup), so it relays the tool exactly.
