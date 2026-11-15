@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F51 Topics and a film</title></head><body>
+<header><nav aria-label="Main">
+<a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<ul id="panel" hidden><li><a href="#earth">Earth</a></li><li><a href="#sun">Sun</a></li></ul>
+<a href="#contact">Contact</a>
+</nav></header>
+<main><h1>A short film</h1>
+<video controls width="900" preload="auto" src="../3a/media/video-grey-2.webm"></video>
+<p>About the film.</p><a href="#more">More films</a></main>
+<script>
+const b = document.getElementById("b"), panel = document.getElementById("panel");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+for (const v of document.querySelectorAll("video")) v.id = "media_" + Math.random().toString(36).slice(2);
+</script></body></html>

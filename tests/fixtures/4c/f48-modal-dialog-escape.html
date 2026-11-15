@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F48 See all keywords</title>
+<style>#top{position:fixed;bottom:8px;right:8px;display:none}#dlg{position:fixed;top:10%;left:10%;width:60%;background:#fff;border:1px solid #333;padding:1em}</style></head><body>
+<header><a href="#home">Home</a></header>
+<main><h1>Search results</h1>
+<button id="b" type="button" aria-haspopup="dialog">See all keywords</button>
+<p>Results.</p><a href="#r1">First result</a></main>
+<div id="dlg" hidden><h2 id="t">Keywords</h2><button id="close" type="button">Close</button> <a href="#k1" id="k1">Earth</a></div>
+<p id="top"><a href="#">Back to top</a></p>
+<script>
+// The dialog keeps Tab inside it (as Bootstrap's focus trap does) and is
+// marked modal; Escape closes it and returns focus to its button. Opening it
+// also shows a "Back to top" link behind it.
+const b = document.getElementById("b"), dlg = document.getElementById("dlg");
+const close = document.getElementById("close"), k1 = document.getElementById("k1"), top_ = document.getElementById("top");
+function shut() { dlg.hidden = true; dlg.removeAttribute("role"); dlg.removeAttribute("aria-modal"); b.focus(); }
+b.addEventListener("click", () => {
+  dlg.hidden = false; dlg.setAttribute("role", "dialog"); dlg.setAttribute("aria-modal", "true");
+  dlg.setAttribute("aria-labelledby", "t"); top_.style.display = "block"; close.focus();
+});
+close.addEventListener("click", shut);
+dlg.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") { e.preventDefault(); (document.activeElement === close ? k1 : close).focus(); }
+  if (e.key === "Escape") shut();
+});
+</script></body></html>

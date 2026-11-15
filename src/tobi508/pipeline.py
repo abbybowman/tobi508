@@ -1376,7 +1376,8 @@ async def run_tt_tests(
                 try:
                     with metered() as cost:
                         rv = await _bounded(
-                            reveal.collect(ctx, walk), hard + allowance[0]
+                            reveal.collect(ctx, walk, _walk_extras(checks)),
+                            hard + allowance[0],
                         )
                     ctx.cache["reveal"] = rv
                     report.reveal = rv.summary()

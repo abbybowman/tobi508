@@ -144,6 +144,11 @@ class Stop(BaseModel):
     tab_unselected: bool = Field(
         default=False, description="A tab that is not the selected one."
     )
+    media: bool = Field(
+        default=False,
+        description="Inside a video or audio element's built-in controls (the "
+        "browser's player, not page content; never a trigger, reveal.py).",
+    )
 
     @property
     def path_key(self) -> str:
