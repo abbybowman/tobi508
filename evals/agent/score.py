@@ -28,11 +28,13 @@ from evals.scoring import (
     SEVERITY,
     Verdict,
     adjudications,
+    criterion_keys,
     rates,
     rollup,
     totals,
     verdict,
     weighted,
+    with_adjudication,
 )
 from evals.scoring import score as score_page
 from tobi508 import scrt
@@ -169,6 +171,7 @@ def score(rd: Path) -> dict:
         url: {tid: summary(rows) for tid, rows in ref.results().items()}
         for url, (_, ref) in keys.items()
     }
+    adjudicated = adjudications(rd)
     for arm_dir in sorted((rd / "results").glob("arm-*")):
         s = json.loads((arm_dir / "summary.json").read_text())
         final = (arm_dir / "final.md").read_text("utf-8")
@@ -187,14 +190,18 @@ def score(rd: Path) -> dict:
             if url in not_given:
                 continue
             for c in cs:
-                kv = rollup([key_tt[url].get(t) for t in c["tests"]])
+                # Post-round 2 fix 16: the tester's adjudications count per
+                # criterion as they do per TT test.
+                kv, ka = criterion_keys(
+                    key_tt[url], adjudicated.get(page_key(url)), c["tests"]
+                )
                 got, els = relayed(result, url, c["id"])
                 if kv is None:
                     v = Verdict.NOT_SCORED
                 elif got == MISSING:
                     v = Verdict.NO_ANSWER
                 else:
-                    v = verdict(kv, got, True)
+                    v = with_adjudication(verdict(kv, got, True), got, ka)
                 verdicts.append(v)
                 rows.append(
                     {
@@ -269,11 +276,17 @@ def _server(rd, arm_dir, keys, key_tt, cs) -> dict:
                 reasons[r] = reasons.get(r, 0) + 1
         side = {t.test_id: t.second for t in sc.comparison.tests}
         for c in cs:
-            kv = rollup([key_tt[url].get(t) for t in c["tests"]])
+            kv, ka = criterion_keys(
+                key_tt[url], adjudicated.get(page_key(url)), c["tests"]
+            )
             tv = rollup(
                 [side[t].result if side[t].performed else None for t in c["tests"]]
             )
-            crit.append(Verdict.NOT_SCORED if kv is None else verdict(kv, tv, True))
+            crit.append(
+                Verdict.NOT_SCORED
+                if kv is None
+                else with_adjudication(verdict(kv, tv, True), tv, ka)
+            )
     tt_counts = totals(per_tt)
     c_counts = _counts(crit)
     return {
