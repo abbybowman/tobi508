@@ -102,6 +102,11 @@ EXPECTED: dict[str, dict] = {
     # log around 4.D's own screenshots costs ~2 s here (solutions/time-budget.md).
     "f10-100-links": {"outcome": "PASS", "max_s": 75},
     "f11-blur-on-focus": {"outcome": "FAIL", "rows": ["M3"]},
+    # Step 8 (the grid's NEW-2): a link whose focus shows nothing, inside a
+    # web component and inside a frame from another site, still FAILs (M8):
+    # the twins of the grid's PASSes.
+    "f27-no-focus-indicator-in-web-component": {"outcome": "FAIL", "rows": ["M8"]},
+    "f28-no-focus-indicator-in-frame": {"outcome": "FAIL", "rows": ["M8"]},
     "f12-listbox-activedescendant": {"outcome": "PASS"},
     "f13-listbox-no-highlight": {"outcome": "FAIL"},
     "f14-menubar-roving-no-indicator": {"outcome": "FAIL"},

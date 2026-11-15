@@ -45,10 +45,26 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   stable identity (Abby, 2026-11-12).
 - **The watch is 6.5 seconds:** what starts later is DOES NOT APPLY in
   2.A, 2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second
-  can be missed; flashing below the first screen and an animated image
-  past the 30th are not measured (N-02 to N-09, W-02, W-09); an
-  animated image past the 30th now makes 2.B and 3.A NEEDS REVIEW
-  (N-06, guard CN). Parts C and J.
+  can be missed; flashing below the first screen that is not an image is
+  not measured (N-02 to N-09, W-02, W-09). Images (2.B 1.5.0, 3.A
+  1.4.0): up to 300 per page are read, lazy ones after a scroll; one the
+  recording lacks, an animated one only the scroll found (no region can be
+  made for it), or one whose frames at the size shown exceed 100 MB keeps
+  2.B and 3.A at NEEDS REVIEW (guard CN or 3.A's A3). Parts C and J.
+- **3.A's screencast net varies between runs on some pages:** on round
+  2's 5340 the same code gave DOES NOT APPLY in two runs and NEEDS REVIEW
+  (row A3: flashing the capture did not show) in another; `main` gave A3
+  twice. The key says Does Not Apply, so no run is wrong, but the cell is
+  not stable. Not yet looked into.
+- **2.C's clock check (2.C 1.2.0, 2.D 1.3.0)** clears a timer longer
+  than the watch only when one more load sets it again, runs the page's
+  clock past it, and sees nothing change: the screen in five
+  screenshots, the text, the elements, the image sources, a count of
+  every change to the page and what is playing. It sees only the first
+  screen in its screenshots (elements and text are read for the whole
+  page); a page with a canvas keeps the timer as a sign; a timer longer
+  than a day, or one that asks the server for data, keeps the page NEEDS
+  REVIEW.
 - **A walk that stops at a trap, or runs out of time,** can still PASS
   in 5.D, 5.F and 4.C (H-03, M-05, E-07). Parts A and C.
 
@@ -75,6 +91,21 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
+- **4.D, focus dropped on focus inside a web component or a frame:** a
+  control that blurs itself as it gets focus is M3 (FAIL) on a plain page
+  (`4d/f11`), but inside a web component or a frame the walk never reaches
+  it, so 4.D is NEEDS REVIEW there (row WK; found in step 8, 2026-11-15).
+  Safe, not a decided FAIL.
+- **The walk on a page with a frame from another site, on a slow CI
+  runner:** once (PR #64's CI, 2026-11-15) the walk on the grid's
+  `frame-other` page reached all 7 stops but never saw focus wrap back to
+  the first within its press limit (50 presses), so 4.C-4.F and 5.D were
+  NEEDS REVIEW (an incomplete walk, step 6d) and the grid failed; the rerun
+  passed. Not reproduced here: 12 runs of 4.C on that page under heavy CPU
+  load all ended normally (2026-11-15). Safe (NEEDS REVIEW), not wrong. If
+  it recurs, keep the failing run's `steps.jsonl` to see the stop keys
+  after the last stop (`traverse.detect_p1_end` needs OUT, then the first
+  stop's key).
 - **5.A-5.C, 5.F-5.H:** read fields inside web components and frames
   since step 8 (5.A 1.11.0, 5.C 1.11.0, 5.F 1.10.0); a frame the recording
   lacks holds PASS and DOES NOT APPLY (`frames_missing`). Found in step

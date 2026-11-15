@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><title>Mission notes</title></head>
+<body>
+<main>
+<h1>Mission notes</h1>
+<p>Static text about the mission.</p>
+<p>More static text.</p>
+</main>
+<script>
+// An analytics-style heartbeat: every 150 s it stores a time, and shows nothing.
+window.beats = [];
+function beat() { window.beats.push(Date.now()); setTimeout(beat, 150000); }
+setTimeout(beat, 150000);
+setInterval(() => { window.dayMark = Date.now(); }, 86400000);
+</script>
+</body>
+</html>

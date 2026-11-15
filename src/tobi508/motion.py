@@ -492,7 +492,7 @@ MOTION_INIT_JS = (
     return out.slice(0, 10);
   };
   M.images = () => Array.from(new Set(Array.from(document.images)
-    .map((i) => (i.currentSrc || '').split('#')[0]).filter((u) => /^https?:/.test(u)))).slice(0, 30);
+    .map((i) => (i.currentSrc || '').split('#')[0]).filter((u) => /^https?:/.test(u)))).slice(0, 1000);
   M.extras = (known, longImages) => {
     const inside = (e) => known.some((css) => { const r = M.held.get(css); return r && (r === e || r.contains(e)); });
     const out = [];
@@ -847,6 +847,23 @@ def streaming_players(mp: "MotionPass", autoplay_only: bool = True) -> list[str]
     return [src for src in mp.iframes if pat.match(src)]
 
 
+class TimerCheck(BaseModel):
+    """The clock check (2.C spec 1.2.0, section 2): timers longer than the
+    watch, run past on one more fresh load with the page's clock installed.
+    Facts only; 2.C's hints read `cleared`."""
+
+    ran: bool = False
+    # True only when every long timer pass T saw was set again, the clock ran
+    # past the longest, no request was made, and nothing on the page changed.
+    cleared: bool = False
+    why: str = ""  # plain words: why the timers stay a sign ("" when cleared)
+    timers_ms: list[int] = Field(default_factory=list)  # pass T's, run past
+    advanced_ms: int = 0
+    requests: int = 0
+    changed: list[str] = Field(default_factory=list)  # screen, text, ...
+    seconds: float = 0.0
+
+
 class MotionPass(BaseModel):
     ok: bool = True
     error: str = ""
@@ -871,9 +888,14 @@ class MotionPass(BaseModel):
     # hook, count.py), and how many of them `media` lists (guard CN, N-01).
     played: Part | None = None
     played_listed: Part = Field(default_factory=Part)
-    # Image addresses the animated-image read examined (at most 30, each
-    # in the recording and small enough to decode), for guard CN.
+    # Image addresses the animated-image read examined (at most
+    # IMAGE_READ_MAX, each in the recording, and decoded or known not to
+    # animate), for guard CN; `image_srcs_read` lists them, and
+    # `inventory_images_read` is how many of the inventory's addresses are
+    # among them (set by 2.B and 3.A once the inventory exists; 2.B 1.5.0).
     images_read: int = 0
+    image_srcs_read: list[str] = Field(default_factory=list)
+    inventory_images_read: int | None = None
     polls: list[Poll] = Field(default_factory=list)
     carousels: list[str] = Field(default_factory=list)  # "<frame>|<css>" at 0 s
     blink_markup: bool = False  # <blink> or text-decoration: blink (2.B note)
@@ -906,6 +928,8 @@ class MotionPass(BaseModel):
     # than 3 times a second.
     fast_callbacks: list[dict[str, Any]] = Field(default_factory=list)
     fast_animations: list[dict[str, Any]] = Field(default_factory=list)
+    # The clock check (2.C 1.2.0), when it ran: set by timer_check_shared.
+    timer_check: TimerCheck | None = None
 
 
 def changed_tiles(
@@ -1088,6 +1112,11 @@ async def pass_t(
 
             out.media_store = media_index(har)
             await _loudness(context, har, out)
+            if not scroll_to:
+                try:
+                    await _late_images(page, har, out)
+                except Exception:
+                    pass  # images left unread: guard CN holds 2.B and 3.A
     except Exception as exc:  # recorded, never raised (A1)
         out.ok, out.error = False, f"the page could not be read: {safe_error(exc)}"
     finally:
@@ -1488,46 +1517,180 @@ def _image_type(body: bytes) -> str | None:
     return None
 
 
-async def _long_images(page, har: Path, out: MotionPass) -> dict[str, str]:
-    """Animated images that play for more than 5 s in all (G152), by URL,
-    with the figures as a detail. Recorded in `out.animated_images`."""
-    import base64
+# At most this many image addresses are read per page (2.B 1.5.0; was 30).
+# Most are known not to animate from their first bytes and cost a zip read;
+# only GIFs and animated PNG or WebP files are decoded.
+IMAGE_READ_MAX = 300
 
-    from tobi508.capture import media_body
 
+def _png_animated(body: bytes) -> bool:
+    """A PNG is animated (APNG) when an `acTL` chunk comes before the first
+    `IDAT`. A file that cannot be walked counts as animated (it is decoded,
+    or left unread when too large)."""
+    i = 8
+    while i + 8 <= len(body):
+        n = int.from_bytes(body[i : i + 4], "big")
+        kind = body[i + 4 : i + 8]
+        if kind == b"acTL":
+            return True
+        if kind == b"IDAT":
+            return False
+        i += 12 + n
+    return True
+
+
+def _webp_animated(body: bytes) -> bool:
+    """A WebP is animated when its extended header sets the animation flag
+    or it has an `ANIM` chunk; a simple (VP8 or VP8L) file is not."""
+    if body[12:16] in (b"VP8 ", b"VP8L"):
+        return False
+    if body[12:16] == b"VP8X":
+        return bool(body[20] & 0x02) or b"ANIM" in body[:4096]
+    return True
+
+
+def _can_animate(body: bytes) -> str | None:
+    """The type to decode when the file may animate, else None: JPEG, SVG
+    and the like, a PNG with no `acTL` and a WebP with no animation are done
+    from their first bytes, whatever their size (2.B 1.5.0: a 14 MB JPEG was
+    skipped on 8 of round 1's pages for its size alone)."""
+    kind = _image_type(body)
+    if kind == "image/png" and not _png_animated(body):
+        return None
+    if kind == "image/webp" and not _webp_animated(body):
+        return None
+    return kind
+
+
+async def _page_images(page) -> list[str]:
     srcs: list[str] = []
     for _, _, got in await _each_frame(
         page, "() => window.__a11yMotion ? window.__a11yMotion.images() : []"
     ):
         srcs += [s for s in got or [] if s not in srcs]
+    return srcs
+
+
+async def _read_images(
+    page, har: Path, out: MotionPass, srcs: list[str], late: bool = False
+) -> dict[str, str]:
+    """Read each address once: from the recording (redirects followed), done
+    when its type cannot animate, decoded in a tool page otherwise. Returns
+    the animated images that play for more than 5 s in all (G152), with the
+    figures as a detail, and records every decoded one in
+    `out.animated_images`. `late`: read after the end-of-pass scroll, when no
+    region can be made for an image: one that plays more than 5 s is then
+    left unread, so guard CN holds 2.B and 3.A for it."""
+    import base64
+
+    from tobi508.capture import media_body
+
     found: dict[str, str] = {}
     tool = tool_ctx = None
     try:
-        for src in srcs[:30]:
+        for src in srcs:
+            if src in out.image_srcs_read or len(out.image_srcs_read) >= IMAGE_READ_MAX:
+                continue
             body = media_body(har, src)
-            if not body or len(body) > IMAGE_MAX_BYTES:
+            if not body:
+                continue  # not in the recording: unread (guard CN)
+            kind = _can_animate(body)
+            if kind is None:
+                out.image_srcs_read.append(src)
                 continue
-            out.images_read += 1  # read: a type that cannot animate is done
-            kind = _image_type(body)
-            if not kind:
-                continue
+            if len(body) > IMAGE_MAX_BYTES:
+                continue  # may animate, too large to decode: unread
             if tool is None:
                 tool_ctx, tool = await _secure_tool_page(page)
             got = await tool.evaluate(
                 _IMAGE_JS, [base64.b64encode(body).decode(), kind]
             )
-            if not got or got["frames"] < 2:
+            if got is None:
+                continue  # could not be decoded: unread
+            if got["frames"] < 2:
+                out.image_srcs_read.append(src)
                 continue
             total = None if got["reps"] < 0 else got["once_ms"] * (got["reps"] + 1)
             out.animated_images.append({"src": src[:500], **got, "total_ms": total})
-            if total is None or total > MOVING_IMAGE_MS:
+            long = total is None or total > MOVING_IMAGE_MS
+            if long and late:
+                continue  # no region for it: unread
+            out.image_srcs_read.append(src)
+            if long:
                 found[src] = f"animated image, {got['frames']} frames, " + (
                     "loops forever" if total is None else f"{total / 1000:g} s in all"
                 )
     finally:
         if tool_ctx is not None:
             await tool_ctx.close()
+        out.images_read = len(out.image_srcs_read)
     return found
+
+
+async def _long_images(page, har: Path, out: MotionPass) -> dict[str, str]:
+    """Animated images on the page at the end of the watch that play for
+    more than 5 s in all (G152), by URL. Recorded in `out.animated_images`."""
+    return await _read_images(page, har, out, await _page_images(page))
+
+
+def match_inventory(ctx: Any, mp: MotionPass) -> None:
+    """How many of the inventory's image addresses pass T read (2.B 1.5.0):
+    guard CN compares that, not pass T's own count, so addresses pass T read
+    that the inventory never saw cannot stand in for ones it did."""
+    count = getattr(ctx, "cache", {}).get("count")
+    srcs = getattr(count, "image_srcs", None)
+    if not srcs:
+        return
+    # An address the inventory saw that pass T's page never showed (a slide
+    # never shown, an image another browser loads sooner): read from the
+    # recording. A type that cannot animate is done from its first bytes; one
+    # that can is left unread, so guard CN holds the page (2.B 1.5.0).
+    har = getattr(ctx, "rel", None)
+    har = har / "evidence" / "page.har.zip" if har is not None else None
+    if har is not None and har.exists():
+        from tobi508.capture import media_body
+
+        for src in srcs:
+            if src in mp.image_srcs_read or len(mp.image_srcs_read) >= IMAGE_READ_MAX:
+                continue
+            body = media_body(har, src)
+            if body and _can_animate(body) is None:
+                mp.image_srcs_read.append(src)
+        mp.images_read = len(mp.image_srcs_read)
+    mp.inventory_images_read = len(set(srcs) & set(mp.image_srcs_read))
+
+
+def images_read(mp: MotionPass) -> int:
+    """Image addresses read, for guard CN: of the inventory's when matched."""
+    return (
+        mp.images_read if mp.inventory_images_read is None else mp.inventory_images_read
+    )
+
+
+# The late read's scroll: one window at a time, jumping (a page with smooth
+# scrolling did not move before the next read, so the recorder's own scroll
+# stopped after one step on round 2's home page), then a wait for loads.
+LATE_SCROLL_STEPS = 60
+LATE_SCROLL_WAIT_MS = 150
+LATE_SCROLL_SETTLE_MS = 1500
+_SCROLL_DOWN_JS = """async ([steps, wait]) => {
+  for (let i = 0; i < steps; i++) {
+    const before = window.scrollY;
+    window.scrollTo({ top: before + Math.max(200, innerHeight * 0.9), behavior: 'instant' });
+    await new Promise((r) => setTimeout(r, wait));
+    if (window.scrollY === before) break;
+  }
+}"""
+
+
+async def _late_images(page, har: Path, out: MotionPass) -> None:
+    """After every other read of pass T: scroll down the page one window at
+    a time, as the recording did, so lazy images load from the recording,
+    then read the addresses not read yet (2.B 1.5.0: on round 2's galleries
+    page 23 images were on the page at load and 119 after a scroll)."""
+    await page.evaluate(_SCROLL_DOWN_JS, [LATE_SCROLL_STEPS, LATE_SCROLL_WAIT_MS])
+    await page.wait_for_timeout(LATE_SCROLL_SETTLE_MS)
+    await _read_images(page, har, out, await _page_images(page), late=True)
 
 
 TOOL_URL = "http://localhost/a11y-tool"
@@ -1756,3 +1919,224 @@ async def collect(ctx: Any, keep_shots: bool = True) -> MotionPass:
     mp.browser = getattr(ctx, "motion_browser", "")
     ctx.cache["motion"] = mp
     return mp
+
+
+# ── The clock check (2.C spec 1.2.0, section 2) ───────────────────────────
+# A timer longer than the watch is a sign the page may update (A2). The
+# check runs the page's clock past it on one more fresh load and looks at
+# what changed. Abby, 2026-11-15 (roadmap step 6e): round 2's long timers
+# were analytics heartbeats that change nothing on screen.
+
+# The page settles on the paused clock before the first look.
+CLOCK_SETTLE_MS = 3000
+# A timer pass T saw counts as set again within 5% of its length (Parse.ly
+# adds up to 2.5 s of jitter to 150 s).
+CLOCK_MATCH = 0.05
+# No timer longer than a day is run past: such a timer stays a sign.
+CLOCK_MAX_MS = 86_400_000
+# After the jump, the clock runs 1 s more in uneven steps, with a screenshot
+# after each, so a change that repeats cannot look like none (the grid's
+# late page: a flash every 125 ms toggled an even number of times in 1 s);
+# then the real wait lets paints and requests show.
+CLOCK_AFTER_STEPS_MS = (170, 230, 290, 310)
+CLOCK_AFTER_MS = sum(CLOCK_AFTER_STEPS_MS)
+CLOCK_REAL_WAIT_MS = 500
+
+# Every change to a document after the hook starts, attributes and styles
+# too: any change after the jump keeps the timers a sign.
+MUTATION_COUNT_JS = """(() => {
+  if (window.__tobiMutations !== undefined) return;
+  window.__tobiMutations = 0;
+  new MutationObserver((recs) => { window.__tobiMutations += recs.length; })
+    .observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+})();"""
+
+# Added after the page's clock is installed (pipeline open_clock), so it
+# wraps the clock's own timers: every timer of 1 s or more, per document.
+TIMER_HOOK_JS = """(() => {
+  if (window.__tobiTimers) return;
+  const L = (window.__tobiTimers = []);
+  for (const [name, kind] of [['setTimeout', 'timeout'], ['setInterval', 'interval']]) {
+    const orig = window[name];
+    window[name] = function (fn, ms, ...rest) {
+      const v = Number(ms) || 0;
+      if (v >= 1000 && L.length < 200) L.push({ kind, ms: Math.round(v) });
+      return orig.call(this, fn, ms, ...rest);
+    };
+  }
+})();"""
+
+_CLOCK_STATE_JS = """() => ({
+  mutations: window.__tobiMutations || 0,
+  canvases: document.getElementsByTagName('canvas').length,
+  playing: Array.from(document.querySelectorAll('video, audio')).filter((m) => !m.paused).length,
+  text: document.body ? document.body.innerText : '',
+  nodes: document.getElementsByTagName('*').length,
+  images: Array.from(document.images).map((i) => i.currentSrc || i.src || ''),
+  timers: window.__tobiTimers || [],
+})"""
+
+
+def slow_timers(mp: MotionPass) -> list[Timer]:
+    """Timers longer than the watch (2.C A2's timer sign)."""
+    return [t for t in mp.timers if t.ms > mp.watch_s * 1000]
+
+
+async def _clock_state(page: Page) -> list[dict[str, Any]]:
+    out = []
+    for frame in page.frames:
+        try:
+            out.append(await frame.evaluate(_CLOCK_STATE_JS))
+        except Exception:
+            out.append({"error": True})
+    return out
+
+
+async def _mutation_count(page: Page) -> int:
+    n = 0
+    for frame in page.frames:
+        try:
+            n += int(await frame.evaluate("() => window.__tobiMutations || 0"))
+        except Exception:
+            continue
+    return n
+
+
+def _and_list(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def _same_screen(a: bytes, b: bytes) -> bool:
+    ia = Image.open(io.BytesIO(a)).convert("RGB")
+    ib = Image.open(io.BytesIO(b)).convert("RGB")
+    return ia.size == ib.size and ImageChops.difference(ia, ib).getbbox() is None
+
+
+async def timer_check(open_page: OpenPage, mp: MotionPass) -> TimerCheck:
+    """Run the page's clock past the long timers pass T saw (2.C 1.2.0).
+    Never raises; anything that goes wrong leaves the timers a sign."""
+    t0 = time.monotonic()
+    want = slow_timers(mp)
+    out = TimerCheck(timers_ms=sorted({t.ms for t in want}))
+    try:
+        context, page = await open_page()
+    except Exception as exc:
+        out.why = f"the page could not be loaded again ({safe_error(exc)})"
+        return out
+    requests: list[str] = []
+    try:
+        await page.clock.run_for(CLOCK_SETTLE_MS)
+        before = await _clock_state(page)
+        shot_a = await page.screenshot()
+        seen = [
+            (t["kind"], t["ms"])
+            for f in before
+            for t in f.get("timers", [])
+            if t["ms"] > mp.watch_s * 1000
+        ]
+        missing = [
+            t
+            for t in want
+            if not any(
+                k == t.kind and abs(ms - t.ms) <= CLOCK_MATCH * t.ms for k, ms in seen
+            )
+        ]
+        if missing:
+            out.why = (
+                f"the timer of {missing[0].ms / 1000:g} s was not set again when we "
+                "loaded the page again, so we could not run past it"
+            )
+            return out
+        if any(f.get("canvases") for f in before):
+            out.why = (
+                "the page draws on a canvas, and we cannot read a canvas for "
+                "changes when the page's clock runs"
+            )
+            return out
+        longest = max(ms for _, ms in seen)
+        if longest > CLOCK_MAX_MS:
+            out.why = f"a timer of {longest / 1000:g} s is longer than we run the clock"
+            return out
+        context.on("request", lambda r: requests.append(r.url))
+        out.ran = True
+        out.advanced_ms = longest + CLOCK_AFTER_MS
+        # Changes are counted only while the clock runs: a screenshot alone
+        # made a real page change two attributes (round 2's help page).
+        counted = 0
+
+        async def run(step) -> None:
+            nonlocal counted
+            m0 = await _mutation_count(page)
+            await step
+            counted += await _mutation_count(page) - m0
+
+        before = await _clock_state(page)
+        await run(page.clock.fast_forward(longest + CLOCK_AFTER_STEPS_MS[0]))
+        shots = [await page.screenshot()]
+        for step in CLOCK_AFTER_STEPS_MS[1:]:
+            await run(page.clock.run_for(step))
+            shots.append(await page.screenshot())
+        await run(page.wait_for_timeout(CLOCK_REAL_WAIT_MS))
+        after = await _clock_state(page)
+        shots.append(await page.screenshot())
+        out.requests = len(requests)
+        if counted:
+            out.changed.append("content")
+        if not all(_same_screen(shot_a, s) for s in shots):
+            out.changed.append("screen")
+        for key, name in (
+            ("text", "text"),
+            ("nodes", "elements"),
+            ("images", "images"),
+            ("playing", "media"),
+        ):
+            if len(before) != len(after) or any(
+                a.get(key) != b.get(key) for a, b in zip(before, after)
+            ):
+                out.changed.append(name)
+        if out.changed:
+            out.why = (
+                "when we ran the page's clock past it, the page's "
+                + _and_list(list(dict.fromkeys(out.changed)))
+                + " changed"
+            )
+        elif out.requests:
+            out.why = (
+                "when we ran the page's clock past it, the page asked its server "
+                "for something, and our copy of the page cannot show what the "
+                "server would send"
+            )
+        else:
+            out.cleared = True
+    except Exception as exc:
+        out.cleared = False
+        out.why = f"the clock could not be run ({safe_error(exc)})"
+    finally:
+        out.seconds = round(time.monotonic() - t0, 1)
+        try:
+            await context.close()
+        except Exception:
+            pass
+    return out
+
+
+async def timer_check_shared(ctx: Any, mp: MotionPass) -> None:
+    """The clock check once per run, shared by 2.C and 2.D: sets
+    `mp.timer_check`. The checks decide when it is worth running."""
+    if mp.timer_check is not None:
+        return
+    task = ctx.cache.get("timer_check_task")
+    if task is None:
+        opener = getattr(ctx, "open_clock", None)
+        if opener is None or ctx.out_of_time():
+            mp.timer_check = TimerCheck(
+                why="there was no time left in this run to run the page's clock"
+                if opener is not None
+                else "the page's clock could not be run in this run",
+                timers_ms=sorted({t.ms for t in slow_timers(mp)}),
+            )
+            return
+        task = asyncio.ensure_future(timer_check(opener, mp))
+        ctx.cache["timer_check_task"] = task
+    # Shielded: a test out of its own time must not cancel the shared check.
+    mp.timer_check = await asyncio.shield(task)

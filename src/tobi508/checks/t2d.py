@@ -14,7 +14,14 @@ from pydantic import BaseModel, Field
 
 from tobi508 import motion
 from tobi508.checks.base import RunContext
-from tobi508.checks.t2c import a2_note, applicability, content_name
+from tobi508.checks.t2c import (
+    a2_note,
+    applicability,
+    clock_sentence,
+    clock_trace,
+    content_name,
+    needs_clock_check,
+)
 from tobi508.engine import PageEvidence, Row, page_outcome
 from tobi508.models import (
     REVIEW_HEAD,
@@ -181,6 +188,7 @@ def evaluate(st: State2D, evidence_refs: list[str]) -> Finding:
             DecidedBy.RULE,
             evidence_refs,
         )
+        f.rationale += clock_trace(st.mp)
         return f
     if row.id in ("A3", "A4"):
         why = (
@@ -190,9 +198,10 @@ def evaluate(st: State2D, evidence_refs: list[str]) -> Finding:
         )
         return _finding(
             Outcome.DNA,
-            f"{why}, so this test does not apply.",
+            f"{why}, so this test does not apply." + clock_sentence(st.mp),
             ["A2", f"2.C-{row.id}", "G1"],
             evidence_refs,
+            rationale=f"Spec G1.{clock_trace(st.mp)}",
         )
     trace = ["A3"]
     results, sentences, inst = [], [], []
@@ -340,6 +349,8 @@ def apply_answers(st: State2D, report) -> None:
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State2D:
     mp = await motion.collect(ctx)
     mp.walk_unsettled = ctx.cache.get("walk_unsettled", mp.walk_unsettled)
+    if needs_clock_check(mp):
+        await motion.timer_check_shared(ctx, mp)
     return State2D(mp=mp)
 
 

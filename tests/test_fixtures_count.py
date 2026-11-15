@@ -23,7 +23,7 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
             "1 frame on this page was not recorded, so what is inside it was not "
             "checked.",
         )
-        for t in ("5.A", "5.B", "5.C", "5.F", "5.G", "5.H")
+        for t in ("5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H")
     },
     # D-01: a form inside a web component.
     "shadow-form": {
@@ -83,10 +83,49 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
     # rows decide: audio that plays by itself with no control, as a plain
     # <audio autoplay>.
     "audio-shadow": {"2.A": ("FAIL", None)},
-    # N-06: an animated image after the 30th image.
-    "many-images": {
-        "2.B": ("NEEDS_REVIEW", "32 images: only the first 30 were checked"),
-        "3.A": ("NEEDS_REVIEW", "32 images: only the first 30 were checked"),
+    # N-06: an animated image after the 30th image. Since 2.B 1.5.0 and 3.A
+    # 1.4.0 every image is read: 2.B finds the looping GIF (it applies; J1
+    # is open), and 3.A reads it and finds no flash (it only fades).
+    "many-images": {"2.B": ("NEEDS_REVIEW", None), "3.A": ("DNA", None)},
+    # N-06 as the review ran it: a strobing GIF after the 31st image, below
+    # the first screen. 3.A finds the flashing.
+    "many-images-strobe": {"2.B": ("NEEDS_REVIEW", None), "3.A": ("NOT_TESTED", None)},
+    # 2.B 1.5.0: 45 still images, 15 of them lazy below the first screen, a
+    # JPEG over 5 MB and one behind a redirect: every one read, so the tests
+    # decide.
+    "images-read": {"2.B": ("DNA", None), "3.A": ("DNA", None)},
+    # The nearest that must stay: an image the recording does not have.
+    "images-missing": {
+        "2.B": (
+            "NEEDS_REVIEW",
+            "11 images: 10 were checked for animation, and 1 could not be.",
+        ),
+        "3.A": (
+            "NEEDS_REVIEW",
+            "11 images: 10 were checked for animation, and 1 could not be.",
+        ),
+    },
+    # An animated image that loads only when scrolled to: found by the late
+    # read, where no region can be made for it, so it stays unread.
+    "images-late-gif": {
+        "2.B": (
+            "NEEDS_REVIEW",
+            "6 images: 5 were checked for animation, and 1 could not be.",
+        ),
+        "3.A": (
+            "NEEDS_REVIEW",
+            "6 images: 5 were checked for animation, and 1 could not be.",
+        ),
+    },
+    "images-late-strobe": {
+        "2.B": (
+            "NEEDS_REVIEW",
+            "6 images: 5 were checked for animation, and 1 could not be.",
+        ),
+        "3.A": (
+            "NEEDS_REVIEW",
+            "6 images: 5 were checked for animation, and 1 could not be.",
+        ),
     },
     # E-03: a page that is only a canvas and a dragged box. Row A1 itself
     # (4.A 1.6.0) now leaves it for review, before the guard is reached.

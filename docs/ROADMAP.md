@@ -76,7 +76,11 @@ is merged. At most three threads at once. Each thread branches from
   keys fail none. First a table of those cells by cause; then, per
   cause, the smallest change that decides the cell without guessing,
   each approved by Abby before it is built. The same for the timer
-  that holds 2.C and 2.D on every svs page.
+  that holds 2.C and 2.D on every svs page. Done: the timer (2.C 1.2.0,
+  the clock check; 8 of round 2's cells decided, all agreeing with the
+  key). Done: the images (2.B 1.5.0, 3.A 1.4.0; 6 of round 2's cells
+  decided, all agreeing with the key). Approved, next: 5.H reading hidden
+  forms. To research: fields hidden from everyone (honeypots, reCAPTCHA).
 - **6f.** The judge fails "Home" against "NASA, return to the
   homepage" in 9.C on 8 of round 1's pages, and the key passes them:
   the pairing or the rubric. 19.A's FAIL on CILab, not yet looked at.
