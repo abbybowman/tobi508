@@ -12,6 +12,7 @@ import asyncio
 import http.server
 import ipaddress
 import json
+import re
 import threading
 from collections import Counter
 
@@ -163,6 +164,11 @@ def _dns(monkeypatch, answers):
     return dns
 
 
+def _names_host(text: str, host: str) -> bool:
+    """True when an error message names `host` (a message check, not URL sanitizing)."""
+    return re.search(rf"(?<![\w.-]){re.escape(host)}(?![\w-])", text) is not None
+
+
 async def _run(url: str):
     async with Client(mcp) as client:
         return await client.call_tool(
@@ -197,7 +203,7 @@ async def test_gov_name_resolving_inside_is_never_tested(
     result = await _run(f"http://inside.gov:{port}/page.html")
     assert result.is_error
     msg = result.content[0].text
-    assert "inside.gov" in msg and reason in msg
+    assert _names_host(msg, "inside.gov") and reason in msg
     assert not hits and not sentinel  # nothing reached either server
     assert not gov_settings.runs_dir.exists() or not any(
         gov_settings.runs_dir.iterdir()
@@ -232,7 +238,7 @@ async def test_redirect_to_a_private_address_is_refused(
     result = await _run(f"http://good.gov:{port}/redirect")
     assert result.is_error
     msg = result.content[0].text
-    assert "inside.gov" in msg and "loopback" in msg
+    assert _names_host(msg, "inside.gov") and "loopback" in msg
     assert hits["/redirect"] == 1 and not sentinel
 
 
@@ -273,7 +279,9 @@ async def test_rebinding_mid_run_is_refused(gov_settings, servers, monkeypatch):
     assert hits["/rebind.html"] >= 1
     assert dns.calls["flip.gov"] >= 2
     assert not sentinel  # never connected to the rebound address
-    assert "flip.gov" in json.dumps(json.loads(result.content[0].text)["errors"])
+    assert _names_host(
+        json.dumps(json.loads(result.content[0].text)["errors"]), "flip.gov"
+    )
 
 
 async def _connect_via(proxy: EgressProxy, target: str) -> bytes:

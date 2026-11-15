@@ -42,12 +42,17 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from evals.scoring import (  # noqa: E402
+    CELL_WORDS,
     SEVERITY,
     Score,
     ScoredTest,
     adjudications,
+    decided_tests,
     rates,
+    rule_cells,
+    split_cells,
     totals,
+    unexplained,
 )
 from evals.scoring import score as score_page  # noqa: E402
 from tobi508 import scrt  # noqa: E402
@@ -417,6 +422,8 @@ def score(rd: Path) -> dict:
     state = _state(rd)
     keys = read_keys(rd, pages)
     comparisons: list[tuple[str, str, Score | None, str]] = []
+    by_page: dict[str, Score] = {}
+    decided: dict[str, dict[str, int]] = {}
     for n, (url, h) in enumerate(pages, 1):
         pid = f"p{n:02d}"
         key, ref = keys.get(url, (None, None))
@@ -434,6 +441,8 @@ def score(rd: Path) -> dict:
             adjudications(rd).get(page_key(url)),
         )
         comparisons.append((pid, url, c, ""))
+        by_page[pid] = c
+        decided[pid] = _decided(rd / "results" / pid / "report.json")
     done = [c for _, _, c, _ in comparisons if c]
     tot = totals(done)
     # A skipped page leaves the rates silently otherwise: "no false PASS" on
@@ -449,6 +458,17 @@ def score(rd: Path) -> dict:
             **rates(tot),
         },
         "counts": tot,
+        # Post-round 2 fix 17: the cells an answer decided apart from those
+        # the rules alone decided, so a judge is neither credited nor blamed
+        # for a rule. A page with no report.json counts as rule-decided.
+        "judge_decided": split_cells(by_page, decided),
+        "rule_decided": rule_cells(by_page, decided),
+        # Post-round 2 fix 15: key cells (Pass or Fail) with no reason given.
+        "key_cells_without_a_reason": {
+            pid: got
+            for pid, url, _, _ in comparisons
+            if url in keys and (got := unexplained(keys[url][1]))
+        },
         "pages": [
             {
                 "page": pid,
@@ -466,6 +486,18 @@ def score(rd: Path) -> dict:
     (rd / "score.md").write_text(_markdown(out, comparisons, done))
     print("\n".join(f"{k}: {v}" for k, v in out["rates"].items()))
     return out
+
+
+def _decided(report: Path) -> dict[str, int]:
+    """Per TT test, the questions any judge's answer (the server's or an
+    agent's) is in force for, from the page's report; none without one."""
+    if not report.is_file():
+        return {}
+    from tobi508.models import Report
+
+    return decided_tests(
+        Report.model_validate_json(report.read_text("utf-8")), who="any"
+    )
 
 
 def _flat(t: ScoredTest) -> dict:
@@ -515,6 +547,55 @@ def _markdown(out: dict, comparisons, done: list[Score]) -> str:
             f"{r.get('missed_fail', 0)} | {r.get('false_fail', 0)} | {other} | "
             f"{r.get('needs_review', 0)} |"
         )
+    lines += [
+        "",
+        "## Cells a judge's answer decided",
+        "",
+        "A cell (page, test) where an answer to one of the test's open "
+        "questions is in force, from the server's judge or the calling "
+        "agent. The rest the rules decided alone.",
+        "",
+    ]
+    jd = out["judge_decided"]
+    if jd:
+        lines += [
+            "| Test | " + " | ".join(w.replace("_", " ") for w in CELL_WORDS) + " |",
+            "| --- " * (len(CELL_WORDS) + 1) + "|",
+        ]
+        for tid in sorted(jd, key=_tt_order):
+            lines.append(
+                f"| {tid} | " + " | ".join(str(jd[tid][w]) for w in CELL_WORDS) + " |"
+            )
+    else:
+        lines.append("None.")
+    lines += [
+        "",
+        "## Cells the rules alone decided",
+        "",
+        "| Test | Agree | Validated catch | False PASS | Missed fail | False FAIL "
+        "| Other | Needs review |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
+    for tid, r in sorted(out["rule_decided"].items(), key=lambda x: _tt_order(x[0])):
+        other = r.get("fail_vs_dna", 0) + r.get("other_mismatch", 0)
+        lines.append(
+            f"| {tid} | {r.get('agree', 0)} | {r.get('validated_catch', 0)} | "
+            f"{r.get('false_pass', 0)} | {r.get('missed_fail', 0)} | "
+            f"{r.get('false_fail', 0)} | {other} | {r.get('needs_review', 0)} |"
+        )
+    lines += [
+        "",
+        "## Answer key cells with no reason",
+        "",
+        "Pass or Fail cells whose rows carry no tester comment. Listed for "
+        "the tester; the score does not change.",
+        "",
+    ]
+    why = out["key_cells_without_a_reason"]
+    lines += [
+        f"- {pid}: " + ", ".join(f"{c['test_id']} ({c['result']})" for c in cs)
+        for pid, cs in why.items()
+    ] or ["None."]
     lines += ["", "## Pages", ""]
     for pid, url, c, why in comparisons:
         page = next(p for p in out["pages"] if p["page"] == pid)
@@ -545,6 +626,12 @@ def _markdown(out: dict, comparisons, done: list[Score]) -> str:
         lines.append("")
     lines.append("Verdicts, worst first: " + ", ".join(v.value for v in SEVERITY) + ".")
     return "\n".join(lines) + "\n"
+
+
+def _tt_order(tid: str) -> tuple[int, str]:
+    """TT ids in catalog order: 2.A before 10.A."""
+    num, _, letter = tid.partition(".")
+    return (int(num) if num.isdigit() else 0, letter)
 
 
 def main(argv: list[str]) -> None:

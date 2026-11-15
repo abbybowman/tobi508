@@ -94,10 +94,31 @@ admins.
   and the audit line names them; a second person's run reads as missing;
   a person outside REQUIRED_GROUPS gets 401 after signing in. The consent
   page is off in that test; it stays on in the server.
-- Not verified: a sign-in with VAST's Keycloak and a real client;
-  whether VAST's access tokens carry `sub` and `claim_groups` (the gate and
-  ownership need them; FastMCP's `verify_id_token` option is the fallback
-  if only the ID token has them); the audience Keycloak puts in tokens.
+- Verified (`scripts/smoke_hosted.py` in CI, `container.yml`, through
+  `scripts/smoke_hosted_ci.sh`; also by hand on 2026-11-15): the built
+  image, with `DEV_MODE` off and the default allowlist, signed in through
+  a real Keycloak (26.8.2, dev mode, HTTPS) behind nginx terminating TLS;
+  the consent page left on and submitted as a browser submits it; a run
+  done through `tobi_run_status`, its report read through `run://`; a
+  second person refused the report and the job; audit lines naming both
+  people by `sub` and email, and no token in the log. The page is
+  replayed from a recording (frozen pages), so live egress is not part of
+  it ([how-to](../how-to/deploy-on-vast.md), section 8).
+- Learned there: Keycloak's access token carries `sub` by default, but no
+  groups claim and only `aud: ["account"]`; a Group Membership mapper
+  (claim `claim_groups`, full path off) and an Audience mapper (the
+  client's ID) give the gate and `OIDC_AUDIENCE` what they need. Behind
+  TLS, the server must trust the proxy's `X-Forwarded-Proto`
+  (`FORWARDED_ALLOW_IPS`), or its Origin check refuses the consent page
+  (403), so nobody can sign in. And the audit lines were never printed:
+  the logger had no handler (fixed, `tests/test_access.py`).
+- Not verified: a sign-in with VAST's Keycloak, NASA Launchpad and a real
+  client; whether VAST's access tokens carry `sub` and `claim_groups`
+  (FastMCP's `verify_id_token` option is the fallback if only the ID token
+  has them) and which audience; VAST's ingress headers and addresses; live
+  egress from the app's own environment (from a personal VAST sandbox it
+  works directly, with real certificates: Abby, 2026-11-15; the how-to's
+  question 8).
 
 ## Open questions for the VAST admin
 
@@ -106,10 +127,13 @@ admins.
    unless `vastdev down` is run. The image keeps runs and the proxy's client
    registrations under `/data` (`RUNS_DIR`, `FASTMCP_HOME`); point them at
    the persistent path if `/data` is not on it.
-2. Can the build pipeline pull `ghcr.io/abbybowman/tobi508`, so the
-   Containerfile is one `FROM` line (no apt under FIPS)?
-3. Is a service that drives Chromium acceptable in the namespace (4 CPU,
-   16 GB was the dev container)?
+2. ~~Can the build pipeline pull `ghcr.io/abbybowman/tobi508`, so the
+   Containerfile is one `FROM` line (no apt under FIPS)?~~ Answered (Abby,
+   2026-11-15): yes. The package is public, and the image has been pulled
+   from GitHub and installed in a personal VAST sandbox.
+3. ~~Is a service that drives Chromium acceptable in the namespace (4 CPU,
+   16 GB was the dev container)?~~ Answered (Abby, 2026-11-15): yes. A
+   Chromium container has been run on VAST as a test.
 4. Can the app's access tokens include `sub` and the groups claim, and an
    audience mapper for this server?
 5. Can Anthropic's outbound IP ranges reach the app, for Claude Desktop
@@ -117,6 +141,8 @@ admins.
 
 ## Next
 
-Deploy on VAST once the prototype exists, sign in from Claude Code, run one
+The steps, settings and checklist are in
+[how-to/deploy-on-vast.md](../how-to/deploy-on-vast.md), with the
+questions for the VAST admin beyond the four above. Deploy on VAST once the prototype exists, sign in from Claude Code, run one
 page, confirm the audit lines and that a second user cannot open the run;
 then remove the [PENDING] in the evaluation document and deck.

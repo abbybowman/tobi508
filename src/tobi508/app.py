@@ -109,9 +109,10 @@ def http_options(s=None) -> dict:
         return opts
     from urllib.parse import urlsplit
 
-    from tobi508.access import AuditMiddleware, build_auth
+    from tobi508.access import AuditMiddleware, build_auth, send_audit_to_stderr
 
     mcp.auth = build_auth(s)
+    send_audit_to_stderr()
     mcp.add_middleware(AuditMiddleware())
     opts["allowed_hosts"] = [urlsplit(s.public_base_url).netloc]
     return opts

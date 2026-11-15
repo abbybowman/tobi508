@@ -67,12 +67,26 @@ def test_sign_in_serves_publicly_with_audit_and_public_host(monkeypatch):
     monkeypatch.setattr(access, "build_auth", lambda s: built.append(s) or "AUTH")
     monkeypatch.setattr(app.mcp, "auth", None)
     monkeypatch.setattr(app.mcp, "add_middleware", added.append)
+    monkeypatch.setattr(access.AUDIT, "handlers", [])
     opts = app.http_options(_settings(**OIDC))
     assert app.mcp.auth == "AUTH" and len(built) == 1
     assert [type(m) for m in added] == [access.AuditMiddleware]
+    assert [h.tobi_audit for h in access.AUDIT.handlers] == [True]
     assert opts["host"] == "0.0.0.0"
     assert opts["host_origin_protection"] is True
     assert opts["allowed_hosts"] == ["tobi.example.gov"]
+
+
+def test_audit_lines_reach_stderr(monkeypatch, capsys):
+    # Without its own handler the logger's INFO lines were dropped: caplog
+    # (below) reads records, not what the server prints.
+    monkeypatch.setattr(access.AUDIT, "handlers", [])
+    monkeypatch.setattr(access.AUDIT, "level", logging.NOTSET)
+    access.send_audit_to_stderr()
+    access.send_audit_to_stderr()  # once only
+    access.audit("tool.call", tool="tobi_run_tt_tests")
+    [line] = capsys.readouterr().err.splitlines()
+    assert json.loads(line)["tool"] == "tobi_run_tt_tests"
 
 
 def test_secrets_never_print():

@@ -204,3 +204,46 @@ def test_a_result_the_tester_later_confirmed_is_a_validated_catch(tmp_path):
     assert t.verdict is Verdict.VALIDATED_CATCH
     assert judged.counts["false_fail"] == plain.counts["false_fail"] - 1
     assert weighted(judged.counts) == weighted(plain.counts) + 2
+
+
+def test_an_adjudication_counts_per_criterion_too(tmp_path):
+    """Post-round 2 fix 16: the tester's adjudication (the key said Fail,
+    the tester confirmed Pass after the reveal) turns an arm's matching
+    per-criterion answer into a validated catch, as it does per TT test.
+    19.A is 2.4.5's only test."""
+    from evals.scoring import Verdict, criterion_keys, verdict, with_adjudication
+
+    key, adj = {"19.A": R.FAIL}, {"19.A": R.PASS}
+    kv, ka = criterion_keys(key, adj, ["19.A"])
+    assert (kv, ka) == (R.FAIL, R.PASS)
+    assert criterion_keys(key, {"4.A": R.PASS}, ["19.A"]) == (R.FAIL, None)
+    v = with_adjudication(verdict(kv, R.PASS, True), R.PASS, ka)
+    assert v is Verdict.VALIDATED_CATCH
+    # A needs-review answer is not a catch; nor is one that differs from both.
+    assert with_adjudication(verdict(kv, None, True), None, ka) is (
+        Verdict.NEEDS_REVIEW
+    )
+    assert with_adjudication(verdict(kv, R.DNA, True), R.DNA, ka) is (
+        Verdict.MISSED_FAIL
+    )
+
+    # End to end: one page, Agent B's RESULT line, the round's adjudication.
+    url = "https://example.gov/a"
+    k = _key({"19.A": "Fail"})
+    rd = tmp_path / "round"
+    arm = rd / "results" / "arm-b"
+    arm.mkdir(parents=True)
+    (rd / "pages.txt").write_text(f"{url} {hashlib.sha256(k).hexdigest()}\n")
+    (arm / "summary.json").write_text(json.dumps({"pages": [url]}))
+    line = {url: {"2.4.5": {"result": "PASS", "elements": []}}}
+    (arm / "final.md").write_text("RESULT: " + json.dumps(line) + "\n")
+    lock(rd)
+    (rd / "keys").mkdir()
+    (rd / "keys" / "k.json").write_bytes(k)
+    plain = score(rd)["arms"]["arm-b"]["per_criterion"]["counts"]
+    assert plain["false_pass"] == 1
+    (rd / "adjudications.json").write_text(
+        json.dumps({"pages": {url: {"19.A": {"result": "Pass"}}}})
+    )
+    got = score(rd)["arms"]["arm-b"]["per_criterion"]["counts"]
+    assert got["false_pass"] == 0 and got["validated_catch"] == 1
