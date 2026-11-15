@@ -203,7 +203,7 @@ itself, one bundle a thread; they are not repeated here.
 **Soon: each holds up a step of "Now".**
 
 - **VAST** (step 12): whether the tobi-508 environment exists, and the
-  admin's four answers
+  admin's answers to questions 4 and 5 (2 and 3 answered, 2026-11-15)
   ([hosted sign-in plan](plans/2026-11-06-hosted-auth.md), "Open
   questions for the VAST admin").
 - **The judge on VAST** (step 12): the CLI route is not in the image.
