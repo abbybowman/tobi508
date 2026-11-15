@@ -367,9 +367,22 @@ async def _measure(
             if tool is None:
                 tool_ctx, tool = await motion._secure_tool_page(page)
             try:
-                frames, durations, reps = await asyncio.wait_for(
-                    flashcap.image_frames(tool, body, kind, w, h), IMAGE_MEASURE_S
+                # Not wait_for: cancelling waits for the browser call to end,
+                # and a busy tool page never ends it. Closing the tool page's
+                # context makes the call fail at once.
+                job = asyncio.ensure_future(
+                    flashcap.image_frames(tool, body, kind, w, h)
                 )
+                done, _ = await asyncio.wait({job}, timeout=IMAGE_MEASURE_S)
+                if not done:
+                    await tool_ctx.close()
+                    tool_ctx = tool = None
+                    try:
+                        await asyncio.wait_for(job, 10)
+                    except BaseException:
+                        pass
+                    raise TimeoutError
+                frames, durations, reps = job.result()
                 a, span, total = await asyncio.wait_for(
                     asyncio.to_thread(
                         flashcap.analyze_image,
@@ -392,7 +405,7 @@ async def _measure(
                     )
                 )
                 if tool_ctx is not None:
-                    await tool_ctx.close()  # stop the tool page's work
+                    await tool_ctx.close()
                     tool_ctx = tool = None
                 continue
             except Exception as exc:
