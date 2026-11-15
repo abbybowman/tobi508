@@ -116,7 +116,9 @@ admins.
   client; whether VAST's access tokens carry `sub` and `claim_groups`
   (FastMCP's `verify_id_token` option is the fallback if only the ID token
   has them) and which audience; VAST's ingress headers and addresses; live
-  egress from VAST's pods to public `.gov` sites.
+  egress from the app's own environment (from a personal VAST sandbox it
+  works directly, with real certificates: Abby, 2026-11-15; the how-to's
+  question 8).
 
 ## Open questions for the VAST admin
 

@@ -91,7 +91,7 @@ case-insensitive; lists are JSON.
 | `ALLOWED_DOMAINS` | `[".gov", ".mil"]` | The pages that may be tested, on every navigation and redirect hop. |
 | `DEV_MODE` | `false` | Must stay `false` on VAST: `true` allows `file://` pages and `DEV_ALLOWED_ADDRESSES`. |
 | `EGRESS_PORTS` | `[80, 443]` | Ports the browser may connect to. Every connection goes through the server's own egress proxy, which refuses any host that resolves to a private, loopback, link-local or metadata address. |
-| `UPSTREAM_PROXY` | unset | Only if the pod's outbound HTTPS passes through a gateway that re-signs certificates with a CA Chromium does not trust: an `http://` proxy URL. The egress proxy checks each address as usual, then tunnels by name through it (weaker against DNS rebinding, since the gateway resolves the name again). Leave unset if pods reach public sites directly. |
+| `UPSTREAM_PROXY` | unset | Only if the pod's outbound HTTPS passes through a gateway that re-signs certificates with a CA Chromium does not trust: an `http://` proxy URL. The egress proxy checks each address as usual, then tunnels by name through it (weaker against DNS rebinding, since the gateway resolves the name again). Leave unset if pods reach public sites directly, as a VAST sandbox does (question 8). |
 
 ### Open questions (the judge)
 
@@ -201,9 +201,15 @@ Not confirmed from the code or VAST's documentation:
 7. What is the app's host name (`PUBLIC_BASE_URL`), and can the client's
    redirect URI be `https://<app host>/auth/callback`?
 8. Can the pod reach public `.gov` and `.mil` sites on ports 80 and 443?
-   Partly answered (Abby, 2026-11-15): yes, from a personal VAST sandbox.
-   Still open: directly, or through a proxy (`UPSTREAM_PROXY`), and does
-   that proxy re-sign certificates?
+   Answered for a personal VAST sandbox (Abby, 2026-11-15): yes, directly,
+   with the sites' own certificates; leave `UPSTREAM_PROXY` unset. No proxy
+   setting in the shell; `curl -v https://www.section508.gov/` connected
+   straight to the site's public address, with or without `--noproxy`,
+   and showed Let's Encrypt as issuer. The image (TOBI's egress proxy and
+   Chromium, `DEV_MODE` off) recorded that page live: 42 requests, none
+   failed, 4.C PASS. Confirm the same from the app's own environment once
+   it exists (a re-signing gateway there would show as most requests
+   failed; then set `UPSTREAM_PROXY`).
 9. Which path survives restarts for `/data`, and how large may it be? A
    run with recordings and screenshots is tens of MB; a page with video
    more.
@@ -276,7 +282,8 @@ the job) and it replays the recording (`FROZEN_PAGES_DIR`,
 `FROZEN_PAGES_MODE=replay`: a URL with no recording is a tool error and
 nothing is fetched live). The report records `frozen_pages: replay`. So CI
 proves sign-in, a run, the report and ownership, not the server's live
-egress: that is checked on VAST with a real `.gov` page.
+egress: that was checked on a VAST sandbox with a real `.gov` page
+(question 8), and is checked again in the app's own environment.
 
 **What an access token carries** (Keycloak 26.8.2, scopes
 `openid email profile`):
