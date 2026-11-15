@@ -205,7 +205,7 @@ flowchart LR
 **Notes:**
 
 - The template's unauthenticated HTTP port on all interfaces is gone: stdio by default, HTTP only on loopback with Host and Origin checks unless sign-in is on.
-- The five exceptions, each capped: one site search (tried again in quotation marks when it finds nothing), up to five pages (the site map, the page above, two pages below, the home page) checked one at a time, and up to three links to the page under another address (`index.html`), for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
+- The five exceptions, each capped: one site search (tried again in quotation marks when it finds nothing), up to ten pages (the site map, previous and next, the page above, two pages below, three pages it links to, the home page) checked one at a time, and up to three links to the page under another address (`index.html`), for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
 - Page text reaches the server's judge only inside a block marked untrusted, escaped so the text cannot close it.
 - An answer sent through MCP is always recorded as the calling agent's: it cannot claim to be a person's.
 - The server's judge reads a picture only through the guarded evidence reader, and only one the question names as a whole value; page text cannot point it at another file or another person's run.

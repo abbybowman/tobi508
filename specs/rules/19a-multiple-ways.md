@@ -1,7 +1,7 @@
 ---
 tt_test: 19.A
 tt_name: 2.4.5-multiple-ways
-spec_version: 1.12.0
+spec_version: 1.13.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -9,7 +9,7 @@ owner: Abby Bowman
 
 # Rules spec: Test 19.A (2.4.5-multiple-ways)
 
-The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW. It never emits NOT TESTED (p. 6). It needs other pages of the same site; without them the test is not performed. With them, it looks further itself, as a tester does: a link to the page under another address, the site map, the page's parent, child pages and the home page (1.10.0, 1.11.0).
+The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW. It never emits NOT TESTED (p. 6). It needs other pages of the same site; without them the test is not performed. With them, it looks further itself, as a tester does: a link to the page under another address, the site map, the page's previous and next pages, its parent, child pages, pages it links to and the home page (1.10.0, 1.11.0, 1.13.0).
 
 **Citations.** Printed page 75 of TT 5.1.3 (text also in `tt://5.1.3/tests/19.A`). Identify Content: "All web pages within a set of related web pages"; EXCLUDE pages that are "the result of, or a step in, a process, such as an order confirmation form". Applicability: DNA if the page is not within a set of related pages OR is a result of, or a step in, a process. HtT 1: two or more ways to locate the page, such as site maps, site search, tables of contents, navigation menus or dropdowns, navigation trees, links between pages (not limited to these). HtT 2: "Verify that the identified techniques correctly function and lead to the web page" (2.a links and menus lead to the pages; 2.b "The search form leads to the page(s) which contains the search term"). ER 1: "At least two techniques exist"; ER 2: they "function correctly such that they lead to the correct web page".
 
@@ -28,14 +28,16 @@ The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS R
   - *search*: the site search leads to T (below), or T is the site search's own page: a search form on T or on another page submits to T (W5, 1.4.0).
 - *Search form*: a form with role search, a search field, or a field named `q`, `query`, `search`, `s`, `k`, `keyword`, `keywords`, `searchterm` or `term` (the last three 1.1.0), on T or on another page.
 - *Live search* (Abby, 2026-11-02: exhaust the pages first, then run the search on the live site): only when the caller's pages show fewer than two kinds and a search form exists. At most two searches per run, with the same form: the term, then, only when its results do not link to T, the term in quotation marks (1.5.0; Abby, 2026-11-08, post-round 2 fix 11: svs.gsfc.nasa.gov answered "No results for:" the plain heading of 14592, and the tester found the page searching with quotation marks). The form must submit by GET; its action URL must pass the allowlist and be on T's host (the allowlist is checked on every redirect hop, the host at the end); the term is T's first `h1`, else its title; the request carries the form's own hidden fields and the term, nothing else. Each results page is recorded as its own HAR and read like another page, whole: after its scripts have fetched what they fetch (network idle, at most 5 s), since results often arrive by script after load, and up to 2,000 units (1.5.0, fix 11). Search counts as a way when the results page links to T (HtT 2.b; G161 step 5).
-- *Suggested pages* (1.11.0; Abby, 2026-11-14 and 2026-11-15: a tester goes down to a child page for a breadcrumb or a link back, up to the parent, and to the home page; replaces the pages proposed for a follow-up call, 1.1.1, which the eval runners never made and which carried no suggested page when 5 or more were given): pages of T's host that could show more ways, in this order, at most 5:
+- *Suggested pages* (1.11.0; Abby, 2026-11-14 and 2026-11-15: a tester goes down to a child page for a breadcrumb or a link back, up to the parent, and to the home page; replaces the pages proposed for a follow-up call, 1.1.1, which the eval runners never made and which carried no suggested page when 5 or more were given): pages of T's host that could show more ways, in this order, at most 10 (1.13.0; 5 before):
   1. *the site map*: the first link on the pages read (T and the caller's pages) named "site map", "sitemap" or "A-Z index", on T's host;
-  2. *T's parent*: the address one level up from T's own path, on T's host (`/a/b/c/` and `/a/b/c.html` give `/a/b/`; `/a/b/index.html` gives `/a/`; T at the root has none). It comes from T's address, not from page content;
-  3. and 4. *child pages*: the first 2 links on T, in reading order, on T's host, whose path is under T's own directory (T's path when it ends in `/`, else its path up to the last `/`) and is not T, that directory or a suspected alias of T; links to files that are not pages (an extension other than none, `html`, `htm`, `shtml`, `php`, `asp`, `aspx`, `jsp`, `cfm`) are left out. A T whose directory is the site root has no child pages (every page of the site is under it; Abby, 2026-11-15);
-  5. *the home page*: the root of T's host.
+  2. *T's previous and next pages* (1.13.0; Abby, 2026-11-15: "almost certain to result in a valid way"; round 2's leaf pages, whose key found each through its neighbours): links on T named "previous", "prev", "next", "previous page" or "next page" (any case), or with `rel="prev"` or `rel="next"`, at most 2;
+  3. *T's parent*: the address one level up from T's own path, on T's host (`/a/b/c/` and `/a/b/c.html` give `/a/b/`; `/a/b/index.html` gives `/a/`; T at the root has none). It comes from T's address, not from page content;
+  4. and 5. *child pages*: the first 2 links on T, in reading order, on T's host, whose path is under T's own directory (T's path when it ends in `/`, else its path up to the last `/`) and is not T, that directory or a suspected alias of T; links to files that are not pages (an extension other than none, `html`, `htm`, `shtml`, `php`, `asp`, `aspx`, `jsp`, `cfm`) are left out. A T whose directory is the site root has no child pages (every page of the site is under it; Abby, 2026-11-15);
+  6. *related pages* (1.13.0; Abby, 2026-11-15: a tester follows a page's own links to a topic page that links back; round 1 p01's ISS hub, p07's history page): the first 3 other links in T's content (outside navigation, banner and contentinfo regions), in reading order, that are not a page given, the site map, the parent or a child page;
+  7. *the home page*: the root of T's host.
 
-  A page already given, T, a suspected alias of T and the same address twice are left out. Breadcrumbs are not suggested on their own: they are read on the pages that are checked, as any link to T is (Abby, 2026-11-15).
-- *Checking the suggested pages* (1.11.0; Abby, 2026-11-15): only while fewer than two kinds are found after the caller's pages and the alias check. In the order above, one at a time; each is loaded exactly as a caller's other page is loaded (the same code and limits as the alias check, `pipeline.capture_other`) and read as another page: its links to T or a verified alias count (W1), its suspected aliases join the alias check (at most 3 a run in all). The test stops as soon as two kinds are found. A suggested page whose final address is T's, or whose document is T's byte for byte, is T itself: not a way, and not missing. A suggested page that cannot be loaded or read is *not checked*. The tool never follows any other link it reads. In all, at most 5 suggested pages, 3 aliases and 2 searches a run.
+  Each is on T's host, a page (the extensions of the child pages), not T or a suspected alias of T. A page already given and the same address twice are left out; for the previous, next and related pages, a link that differs from another only by its query string counts once. Breadcrumbs are not suggested on their own: they are read on the pages that are checked, as any link to T is (Abby, 2026-11-15).
+- *Checking the suggested pages* (1.11.0; Abby, 2026-11-15): only while fewer than two kinds are found after the caller's pages and the alias check. In the order above, one at a time; each is loaded exactly as a caller's other page is loaded (the same code and limits as the alias check, `pipeline.capture_other`) and read as another page: its links to T or a verified alias count (W1), its suspected aliases join the alias check (at most 3 a run in all). The test stops as soon as two kinds are found. A suggested page whose final address is T's, or whose document is T's byte for byte, is T itself: not a way, and not missing. A suggested page that cannot be loaded or read is *not checked*. The tool never follows any other link it reads. In all, at most 10 suggested pages (1.13.0), 3 aliases and 2 searches a run.
 - *Process hint*: T's text has "step N of M", "review your", "confirm", "confirmation", "order summary" or "thank you for", and T has a form with a submit button.
 
 ## 1. Applicability
@@ -53,7 +55,7 @@ The tool gives each page one 19.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS R
 
 **Site read** (shared with 9.A–9.C; each page up to 9.A's read cap, 5,000 units since 1.6.0, 600 before, so links to T further down a long page now count): adds each page's title and its search forms (action, method, the field to fill, hidden fields). **Alias check**, **suggested pages** and **live search**, only as in Terms, in that order. Nothing is pressed on the recorded pages.
 
-**Time budget:** 240 s (1.11.0; 120 s before): at most 10 loads of up to 20 s each (5 suggested pages, 3 aliases, 2 searches) and their reads. The site read is shared with 9.A–9.C. Past its budget the test is NEEDS REVIEW (G3), never FAIL.
+**Time budget:** 360 s (1.13.0; 240 s in 1.11.0, 120 s before): at most 15 loads of up to 20 s each (10 suggested pages, 3 aliases, 2 searches) and their reads. The site read is shared with 9.A–9.C. Past its budget the test is NEEDS REVIEW (G3), never FAIL.
 
 ## 3. Mechanical checks
 
@@ -83,7 +85,7 @@ Order (1.10.0, 1.11.0): W1 and W5, then the alias check (W6, W7) while fewer tha
 | G2 | Two or more kinds | PASS, naming them |
 | G3 | Fewer than two kinds, and something was not checked: a suggested page (W8), an alias (W7), the search (W4) (1.11.0) or closed menus (W9, 1.12.0) | NEEDS REVIEW, naming the ways found and what was not checked ("This test could not be performed" note) |
 | G4 | Fewer than two kinds, every suggested page checked, no alias left unverified, no closed menu left unread (W9, 1.12.0), and no search form or the search does not lead to T (W3) | FAIL, naming what was checked (Abby, 2026-11-02 and 2026-11-15) |
-| G5 | Anything else | NEEDS REVIEW |
+| G5 | Anything else (in practice: one kind, the search, with everything checked; a tester may still find a second way on a related page the tool cannot reach) | NEEDS REVIEW, naming what was found and what was checked (1.13.0; Abby, 2026-11-15) |
 
 **Plain-language sentences.**
 
@@ -92,6 +94,7 @@ Order (1.10.0, 1.11.0): W1 and W5, then the alias check (W6, W7) while fewer tha
 | G2 | "This page can be found in more than one way: <kinds>." |
 | G3 | "We found <n> way(s) to reach this page (<kinds>) / no way to reach this page. (W9:) A link to this page is inside a closed menu on <url> that we did not open, so the site navigation may lead here. / Some pages we read have closed menus (<n> links inside them on <k> pages) that we did not open, so we cannot say the site navigation does not lead here. We could not check <the site map, the page above this one, a page below this one, the home page> (<url>): <reason>. We could not check whether <url> is this page under another address: <reason>. <the search note>. Run this test again later (tests: 19.A) and replace this result in the saved report; the other tests need not run again. A person can also search the web for pages that link to <T>." (1.11.0) |
 | G4 | "We found only <kinds or 'no way'> to reach this page. We checked <the n other pages you gave, the site map, the page above this one, the home page, n pages below it and the site search (n searches)>. <the search note>. Add a second way, such as a link in the site navigation, a site map or a site search that finds it. A person can also search the web for pages that link to <T>, which may show a way we could not see." (1.11.0) |
+| G5 | "We found <n> way to reach this page (<kind>), and no second way. We checked <the n other pages you gave, the site map, ...>. A person should look for a second way, such as a link to this page on a related page of the site. A person can also search the web for pages that link to <T>." (1.13.0) |
 | A1 | "This test could not be performed: it needs other pages of the same site. Run it again with other_pages (the home page and, if there is one, the site map)." |
 | A3 | "This page is a step in a process (or its result), so this test does not apply." |
 

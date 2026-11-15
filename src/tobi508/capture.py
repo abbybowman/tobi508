@@ -56,8 +56,12 @@ async def record(
     har_path: Path,
     log: LogFn,
     egress: EgressProxy | None = None,
+    with_media: bool = True,
 ) -> Capture:
-    """Load `url` live in a fresh context and save every response to `har_path`."""
+    """Load `url` live in a fresh context and save every response to `har_path`.
+    `with_media` False: no media store. Other pages and 19.A's own loads are
+    read only for their links and text (no test plays their media), and on a
+    page of large videos the store took 342 s past a 20 s share (step 6h)."""
     ctx = await new_context(
         browser, settings, record_har_path=str(har_path), record_har_mode="full"
     )
@@ -93,7 +97,7 @@ async def record(
         frames = cross_site_frames(page.url, [f.url for f in page.frames[1:]])
         if frames:
             log("capture_cross_site_frames", count=len(frames))
-        media = await _fetch_media(ctx, page, settings, log)
+        media = await _fetch_media(ctx, page, settings, log) if with_media else []
         chunks = await _fetch_chunks(ctx, scripts, seen, settings, log)
     finally:
         await ctx.close()  # writes the HAR

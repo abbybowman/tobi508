@@ -163,6 +163,7 @@ UNITS_FN = (
         push(el, { kind: 'control', role: controlRole(el), name, text: name.toLowerCase().slice(0, 200),
           href: t === 'A' && raw !== null ? el.href : '', href_attr: raw === null ? null : raw,
           dest: t === 'A' && raw !== null ? destHref(el) : '',
+          rel: t === 'A' ? norm(el.getAttribute('rel')) : '',
           submit: !!el.form && (el.type || '').toLowerCase() === 'submit', stop: tabbable(el),
           id: el.id || '' }, chain);
         return;
@@ -238,6 +239,7 @@ class Unit(BaseModel):
     # Where the link goes, '' when nowhere (DEST_JS): the pairing key of 9.C.
     dest: str = ""
     href_attr: str | None = None
+    rel: str = ""  # a link's rel attribute (19.A 1.13.0: prev, next)
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
     id: str = ""
