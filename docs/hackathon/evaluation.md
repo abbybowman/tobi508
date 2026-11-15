@@ -189,7 +189,7 @@ Settings load from a `.env` file or environment variables (a Kubernetes Secret w
   - **Optional group gate.** `REQUIRED_GROUPS` admits only members of the listed VAMS or NAMS groups.
   - **Runs belong to their maker.** A run, its answers, its `run://` evidence, its reports and the job that runs it are visible only to the person who started it. To anyone else a run reads as expired and a job as unknown, so an ID reveals nothing, and the list of work left shows only the caller's own runs.
   - **Audit trail.** One JSON line per tool call, resource read and prompt: who (Keycloak subject and NASA email), what (tool, URL without its query string, run ID, test IDs, how many answers), outcome and duration. It never includes answers, page text or report content. Lines go to stderr, where the platform collects them: the audit logger has its own handler since 2026-11-15, when the hosted smoke test (`scripts/smoke_hosted.py`) found that without one every line was dropped (`tests/test_access.py`).
-  - **[PENDING]** An end-to-end sign-in against VAST's Keycloak with a real MCP client; tested so far with a full sign-in against a local stand-in provider (`tests/test_access_signin.py`).
+  - **[PENDING]** An end-to-end sign-in against VAST's Keycloak with a real MCP client. Tested so far with a full sign-in against a local stand-in provider (`tests/test_access_signin.py`), and, on every image build, the image itself signed in through a real Keycloak behind TLS: a run, its report, a second person refused, the audit lines (`scripts/smoke_hosted.py`).
 - **Fresh state for every load.** Each page load gets a fresh browser context, so cookies and storage can't carry state between probes.
 - **CSP bypass, recorded.** The page's Content-Security-Policy is bypassed in every test browser context so that ANDI's injected script runs (`BYPASS_CSP`, on by default since 2026-11-07); every report records the setting. The browser only shows the recording.
 - **Pinned third-party code.** ANDI and jQuery are bundled with hashes, and requests to ssa.gov are blocked so ANDI is never loaded live.
@@ -198,7 +198,7 @@ The template's entry point started an unauthenticated HTTP server on all interfa
 
 ### Known gaps
 
-- Sign-in is tested against a stand-in provider, not yet against NASA's (above).
+- Sign-in is tested against a stand-in provider and a real Keycloak, not yet against NASA's (above).
 - A code review in November 2026 raised leads not yet verified (`docs/reviews/`); they are checked before anything is hosted.
 
 ### Misuse: findings mistaken for certification
