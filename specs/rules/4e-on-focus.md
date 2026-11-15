@@ -1,7 +1,7 @@
 ---
 tt_test: 4.E
 tt_name: 3.2.1-on-focus
-spec_version: 1.6.0
+spec_version: 1.7.0
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -57,7 +57,7 @@ Each step with a context signal is an *instance*. Focus *moves on its own* when,
 | M4 | The top URL changes or the page reloads after a Tab or Shift+Tab | FAIL | p. 22 HtT 2; Understanding 3.2.1 (change of user agent / viewport) |
 | M5 | A new page or window opens after a Tab or Shift+Tab | FAIL | p. 22 HtT 2 ("a new window is launched") |
 | M6 | Focus moves on its own to another element | FAIL | p. 22 HtT 2 ("focus is moved to another interface component") |
-| M7 | Focus moves on its own to the page body (the target drops focus) | FAIL | p. 22 HtT 2; F55 |
+| M7 | Focus moves on its own to the page body (the target drops focus; inside a web component too: the focus log names the element by its host's path, 1.7.0, step 8) | FAIL | p. 22 HtT 2; F55 |
 | M8 | Only a dialog becomes visible; focus stays on the target | Ask J1 (J1?, M9–M11) | Definition of change of context |
 | J1? | J1 not answered yet | NEEDS REVIEW | Open question |
 | M9 | J1 = changes the context | FAIL | p. 22 ER 1; definition of change of context |

@@ -46,6 +46,13 @@ headed Chrome) are in
   recording lacks, an animated one only the scroll found (no region can be
   made for it), or one whose frames at the size shown exceed 100 MB keeps
   2.B and 3.A at NEEDS REVIEW (guard CN or 3.A's A3). Parts C and J.
+- **5.H reads hidden forms for applicability only (5.H 1.9.0):** a
+  hidden form is never submitted, so one that J1 finds consequential and
+  multi-step stays NEEDS REVIEW (no after-submit view, M4). A hidden field
+  inside a frame is not read (the inventory's paths are the page's own
+  document). When pass E takes no form at all, the page's own text is not
+  scanned for consequence words (only the forms' words are): seen while
+  building 1.9.0, not changed.
 - **3.A's screencast net varies between runs on some pages:** on round
   2's 5340 the same code gave DOES NOT APPLY in two runs and NEEDS REVIEW
   (row A3: flashing the capture did not show) in another; `main` gave A3
@@ -86,11 +93,12 @@ headed Chrome) are in
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
-- **4.D, focus dropped on focus inside a web component or a frame:** a
-  control that blurs itself as it gets focus is M3 (FAIL) on a plain page
-  (`4d/f11`), but inside a web component or a frame the walk never reaches
-  it, so 4.D is NEEDS REVIEW there (row WK; found in step 8, 2026-11-15).
-  Safe, not a decided FAIL.
+- **4.D and 4.E, focus dropped on focus inside a frame from another
+  site:** a control that blurs itself as it gets focus is M3 (4.D) and M7
+  (4.E) FAIL on a plain page and, since step 8 (4.D 1.10.0, 4.E 1.7.0),
+  inside a web component; inside a frame from another site the walk never
+  reaches it, so both are NEEDS REVIEW there (row WK). Safe, not a decided
+  FAIL.
 - **The walk on a page with a frame from another site, on a slow CI
   runner:** once (PR #64's CI, 2026-11-15) the walk on the grid's
   `frame-other` page reached all 7 stops but never saw focus wrap back to
