@@ -621,6 +621,17 @@ but not given its own fixture), and 4.x's use of the walk (step 6d).
    5 exception. The second look (part F) asks a model to reread
    confident outcomes and fetches nothing.
 
+### Status (2026-11-15)
+
+Built, one reader per commit, each with the grid rerun and a FAIL twin for
+every new PASS: reader 1 and frames as pages of their own for pass L (PRs
+#58, #60), reader 2 (#61), reader 3 (#62), readers 4-8 (#64), and 8b's pass E
+in frames (5.F 1.10.0, 5.G 1.8.0, 5.H 1.8.0; fixtures `5f/f30`, `f31`). Pages
+that PASSed on `main` and now ask or FAIL: `4e/f13`, `f14`, `5d/f23`,
+`4a/f29`, `f31`. Not done: the grid's NEW-2 cells (step 6d's walk work);
+M-06's red border on a wrapper and a message gone within 150 ms; 5.D's
+`frames_missing` key (5.D reads frames through the walk, step 6d's).
+
 ### Spec wording for step 8's three decisions (draft, for Abby)
 
 **Decision 1: a result read inside a web component or a frame may PASS

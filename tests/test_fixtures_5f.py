@@ -57,6 +57,32 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "like name@example.com"}},
         },
     },
+    # Part D, 8b (5.F 1.10.0): a form in a frame from another site is read in
+    # its frame; its error there is new text. The same pair as f28 and f29.
+    "f30-error-in-frame-vague": {
+        "5.F": {
+            "outcome": "FAIL",
+            "rows": ["M8", "M8", "M8", "M8"],
+            "answers": {"J1": {"choice": "not_identified"}},
+        },
+        "5.G": {
+            "outcome": "FAIL",
+            "rows": ["N5", "N5", "N5", "N5"],
+            "answers": {"J1": {"choice": "no_guidance"}},
+        },
+    },
+    "f31-error-in-frame-described": {
+        "5.F": {
+            "outcome": "PASS",
+            "rows": ["M6", "M6", "M6", "M6"],
+            "answers": {"J1": {"choice": "described", "quote": "Email: enter"}},
+        },
+        "5.G": {
+            "outcome": "PASS",
+            "rows": ["N4", "N4", "N4", "N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "like name@example.com"}},
+        },
+    },
     "f02-server-side-form": {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},

@@ -153,9 +153,14 @@ def _frame_cells() -> dict[str, Cell]:
         "5.B": nr(),
         "5.C": passes("5a/f53-frame-other-site-unnamed.html"),
         "5.D": walk,
-        "5.F": nr(),
-        "5.G": nr(),
-        "5.H": nr(),
+        # Part D, 8b (5.F 1.10.0, 5.G 1.8.0, 5.H 1.8.0): pass E reads the form
+        # in its frame; it checks nothing and is a plain contact form.
+        "5.F": NO_CHECKING,
+        "5.G": dna(
+            "the page did not check the form for errors, so there is no "
+            "error to suggest a fix for"
+        ),
+        "5.H": CONTACT_FORM,
         **_site_cells(),
     }
 
