@@ -96,7 +96,11 @@ EXPECTED: dict[str, dict] = {
         "rows": [],
         "page": ["RC"],
     },
-    "f50-trigger-opens-nothing": {"outcome": "NEEDS_REVIEW", "rows": [], "page": ["RV"]},
+    "f50-trigger-opens-nothing": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page": ["RV"],
+    },
     # A video's built-in controls are the browser's, never a trigger, even
     # when the page renames the video on every load (Abby, 2026-11-15).
     "f51-video-beside-menu": {"outcome": "PASS", "rows": [], "not": ["RC", "RV"]},
