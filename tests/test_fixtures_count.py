@@ -23,7 +23,7 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
             "1 frame on this page was not recorded, so what is inside it was not "
             "checked.",
         )
-        for t in ("5.A", "5.B", "5.C", "5.F", "5.G", "5.H")
+        for t in ("5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H")
     },
     # D-01: a form inside a web component.
     "shadow-form": {
