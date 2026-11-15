@@ -95,12 +95,6 @@ def wrong(outcome: Outcome, item: str, what: str) -> Cell:
 # line in the review's list (or a fix) from whoever takes it up; none is
 # fixed here.
 UNFILED = {
-    "NEW-1": (
-        "4.B reads the visible text of every frame but not of open shadow "
-        'roots: the same instruction ("press and hold the Space bar for 3 '
-        'seconds") is a question inside a frame and is not read inside a '
-        "shadow root, so 4.B PASSes."
-    ),
     "NEW-2": (
         "The PASS of 4.C, 4.D, 4.E, 4.F and 5.D on a page whose stops are in "
         "a shadow root or a frame. The keyboard walk reached all 6 stops the "
@@ -166,6 +160,16 @@ def _frame_cells() -> dict[str, Cell]:
     }
 
 
+CONTACT_FORM = dna(
+    "the form is a plain contact form: no payment, legal agreement, change to "
+    "saved data or test"
+)
+NO_CHECKING = dna(
+    "the form has no required field and no typed field, so the page never "
+    "checks it for errors"
+)
+
+
 # page -> test -> the cell. Review IDs in the `wrong` cells.
 EXPECTED: dict[str, dict[str, Cell]] = {
     # An open shadow root with a form, a navigation block, a mouse-only
@@ -186,13 +190,12 @@ EXPECTED: dict[str, dict[str, Cell]] = {
             "the only moving thing is a grey video that never changes "
             "brightness, so nothing flashes"
         ),
-        "4.A": wrong(
-            Outcome.PASS,
-            "D-03",
-            'the mouse-only "Show details" is inside the shadow root; its '
-            "click listener is read from the light DOM only.",
-        ),
-        "4.B": wrong(Outcome.PASS, "NEW-1", UNFILED["NEW-1"]),
+        # D-03 (part D): listeners are read inside web components, so the
+        # mouse-only "Show details" asks J1.
+        "4.A": nr(),
+        # NEW-1 (part D): the page's text includes its web components', so
+        # the timing sentence asks J1.
+        "4.B": nr(),
         "4.C": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
         "4.E": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
@@ -204,9 +207,15 @@ EXPECTED: dict[str, dict[str, Cell]] = {
         "5.B": nr(),
         "5.C": passes("5a/f48-shadow-labelledby-outside.html"),
         "5.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        "5.F": nr(),
-        "5.G": nr(),
-        "5.H": nr(),
+        # Part D (5.F 1.9.0, 5.G 1.7.0, 5.H 1.7.0): pass E reads the form
+        # inside the web component; it checks nothing and sends nothing
+        # anywhere special, as the hidden-text page's form.
+        "5.F": NO_CHECKING,
+        "5.G": dna(
+            "the page did not check the form for errors, so there is no "
+            "error to suggest a fix for"
+        ),
+        "5.H": CONTACT_FORM,
         **_site_cells(),
     },
     # The same four things in a frame from the same site (frame-inner.html).
@@ -237,14 +246,6 @@ NO_MEDIA = {
     "3.A": dna("nothing on the page flashes"),
     **NOTHING_MOVES,
 }
-CONTACT_FORM = dna(
-    "the form is a plain contact form: no payment, legal agreement, change to "
-    "saved data or test"
-)
-NO_CHECKING = dna(
-    "the form has no required field and no typed field, so the page never "
-    "checks it for errors"
-)
 
 EXPECTED.update(
     {

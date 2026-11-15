@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><title>Shipping options</title></head>
+<body>
+<h1>Shipping options</h1>
+<p><a href="#rates">See rates</a></p>
+<p><span id="more">Show delivery times</span></p>
+<!-- A web component the server rendered: its shadow root comes from the
+     HTML itself, so no script ever attaches it. -->
+<div id="box"><template shadowrootmode="open"><p id="info"></p></template></div>
+<p id="rates">Rates start at $5.</p>
+<script>
+document.getElementById('more').addEventListener('click', () => {
+  document.getElementById('box').shadowRoot.getElementById('info').textContent = 'Standard: 5 days. Express: 2 days.';
+});
+</script>
+</body>
+</html>

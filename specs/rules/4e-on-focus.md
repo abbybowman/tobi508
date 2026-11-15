@@ -1,7 +1,7 @@
 ---
 tt_test: 4.E
 tt_name: 3.2.1-on-focus
-spec_version: 1.5.0
+spec_version: 1.6.0
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -36,7 +36,7 @@ The same evidence as 4.C and 4.D: 4.E is DOES NOT APPLY only when nothing on the
 **Walk extras** (collected only when 4.E is selected; cheap, no images):
 
 1. **Richer focus log.** For each focus-in and focus-out: whether the event is trusted, the element's CSS path, and for focus-out whether the element receiving focus (`relatedTarget`) is inside the one losing it. The current log records only tag and id.
-2. **Dialog visibility.** After each step, whether a dialog is visible that was not visible before the key press (`<dialog open>`, role dialog or alertdialog), and its CSS path. When one is, a viewport screenshot before the key press (from the previous step) and after it, for J1.
+2. **Dialog visibility.** After each step, whether a dialog is visible that was not visible before the key press (`<dialog open>`, role dialog or alertdialog), and its CSS path; in the page, inside its web components and inside its frames (a frame's dialog is named by the frame's address and its path there; 1.6.0, plan 2026-11-12 part D, review F-08: a dialog a frame or a web component opened was never seen, so PASS). When the page's dialogs cannot be read after a step, the step's dialogs count as unread, never as all new. When one is, a viewport screenshot before the key press (from the previous step) and after it, for J1.
 
 **Confirmation replays** (4.E's own follow-up, only for steps with a context signal other than a dialog): (a) *reproduce*: fresh load, replay the keys up to that step, press the key, and check that the same signal happens again; (b) *control*, for navigation and new pages only: fresh load, replay the keys before that step, then wait as long as the original step took, without the final key. A signal that also happens in the control is caused by time, not by focus. At most 10 steps get replays; more is G3.
 

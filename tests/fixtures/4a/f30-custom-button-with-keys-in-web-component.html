@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><title>Save settings</title></head>
+<body>
+<h1>Settings</h1>
+<p><a href="#help">Help</a></p>
+<x-save></x-save>
+<p id="msg"></p>
+<p id="help">Choose your settings, then save.</p>
+<script>
+  // f03's button, inside a web component (an open shadow root).
+  customElements.define('x-save', class extends HTMLElement {
+    constructor() {
+      super();
+      const r = this.attachShadow({ mode: 'open' });
+      r.innerHTML = '<style>.btn { display: inline-block; padding: 4px 10px; border: 1px solid #333; cursor: pointer; }</style>' +
+        '<div class="btn" role="button" tabindex="0" id="save">Save</div>';
+      const save = r.getElementById('save');
+      const go = () => { document.getElementById('msg').textContent = 'Saved'; };
+      save.addEventListener('click', go);
+      save.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    }
+  });
+</script>
+</body>
+</html>

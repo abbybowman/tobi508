@@ -22,6 +22,7 @@ from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
 from tobi508.forms import ARRIVE_SLACK, FIELD_FN, Field5D, _arrive, _fields
 from tobi508.forms import _field_stops as field_stops
+from tobi508.jslib import JSLIB
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -72,17 +73,19 @@ NEW_MAX = 200
 
 READ_JS = (
     "(function ([css, mode]) {"
+    + JSLIB
     + PATH_JS
     + """
   const doc = document;
   const vis = (e) => !!(e && e.checkVisibility && e.checkVisibility({ visibilityProperty: true }));
-  const els = css.map((c) => { try { return c ? doc.querySelector(c) : null; } catch (e) { return null; } });
+  // By path, into web components (part D): J.find.
+  const els = css.map((c) => (c ? J.find(c) : null));
   const descOf = [];
   els.forEach((el, i) => {
     if (!el) return;
     for (const a of ['aria-describedby', 'aria-errormessage'])
       for (const id of (el.getAttribute(a) || '').split(/\\s+/).filter(Boolean)) {
-        const d = doc.getElementById(id); if (d) descOf.push([d, i]);
+        const d = J.byId(el, id); if (d) descOf.push([d, i]);
       }
   });
   const texts = [];
@@ -90,8 +93,11 @@ READ_JS = (
   const full = [];  // the base read's whole text, for 5.H's hint
   const seen = base ? new Set() : globalThis.__a11y5fSeen;
   let capped = !seen;
-  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
-  for (let n = tw.nextNode(); n && seen; n = tw.nextNode()) {
+  // The page's text and its web components' (part D; review M-06: an
+  // error shown inside a web component is new text like any other).
+  const nodes = [];
+  if (seen) J.texts(doc.body, (n) => nodes.push(n));
+  for (const n of nodes) {
     const p = n.parentElement;
     if (!p || ['SCRIPT', 'STYLE', 'NOSCRIPT', 'OPTION', 'TEXTAREA'].includes(p.tagName)) continue;
     if (!vis(p)) continue;
@@ -116,7 +122,7 @@ READ_JS = (
   const label = (el) => {
     let l = el.getAttribute('aria-label') || '';
     if (!l && el.getAttribute('aria-labelledby')) l = el.getAttribute('aria-labelledby').split(/\\s+/)
-      .map((id) => (doc.getElementById(id) || {}).textContent || '').join(' ');
+      .map((id) => (J.byId(el, id) || {}).textContent || '').join(' ');
     if (!l && el.labels && el.labels.length) l = el.labels[0].textContent;
     if (!l && el.type === 'radio') { const fs = el.closest('fieldset'); const lg = fs && fs.querySelector('legend'); if (lg) l = lg.textContent; }
     return (l || el.getAttribute('placeholder') || el.getAttribute('title') || '').replace(/\\s+/g, ' ').trim();
@@ -125,7 +131,7 @@ READ_JS = (
     if (!el) return null;
     const cs = getComputedStyle(el);
     const d = ['aria-describedby', 'aria-errormessage'].flatMap((a) => (el.getAttribute(a) || '').split(/\\s+/))
-      .filter(Boolean).map((id) => (doc.getElementById(id) || {}).textContent || '').join(' ').replace(/\\s+/g, ' ').trim();
+      .filter(Boolean).map((id) => (J.byId(el, id) || {}).textContent || '').join(' ').replace(/\\s+/g, ' ').trim();
     return { shown: vis(el), ai: el.getAttribute('aria-invalid') === 'true',
              valid: el.validity ? el.validity.valid : null,
              vmsg: el.validationMessage || '',
@@ -135,10 +141,10 @@ READ_JS = (
              min: el.getAttribute('min'), max: el.getAttribute('max') };
   });
   if (base) globalThis.__a11y5fSeen = seen;
-  const a = doc.activeElement;
-  const dialogs = Array.from(doc.querySelectorAll(DLG)).filter(vis).length;
+  const a = J.active();
+  const dialogs = J.all(DLG).filter(vis).length;
   return { texts, capped, all_text: full.join(" ").slice(0, 100000),
-           live: Array.from(doc.querySelectorAll(LIVE)).map(path), fields,
+           live: J.all(LIVE).map(path), fields,
            focus: a && a !== doc.body && a !== doc.documentElement ? path(a) : null,
            dialogs, url: location.href };
 })""".replace("NEW_MAX", str(NEW_MAX))
@@ -150,10 +156,12 @@ READ_JS = (
 # candidate submit controls per form (spec section 2, Submit control).
 FORMS_JS = (
     "(function (css) {"
+    + JSLIB
     + PATH_JS
     + """
   const doc = document;
-  const els = css.map((c) => { try { return c ? doc.querySelector(c) : null; } catch (e) { return null; } });
+  // By path, into web components (part D): J.find.
+  const els = css.map((c) => (c ? J.find(c) : null));
   const name = (b) => ((b.getAttribute('aria-label') || b.innerText || b.value || b.alt || b.title || '') + '')
     .replace(/\\s+/g, ' ').trim().slice(0, 80);
   const kind = (b) => b.tagName === 'INPUT' ? b.type : (b.tagName === 'BUTTON' ? b.type : 'role button');
@@ -181,7 +189,7 @@ FORMS_JS = (
       bs = subs.concat(others);
     } else {
       const last = els[f.fields[f.fields.length - 1]];
-      bs = Array.from(doc.querySelectorAll(BTN)).filter((b) => !b.form && !b.closest('form') &&
+      bs = J.all(BTN).filter((b) => !b.form && !b.closest('form') &&
         !!(last.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)).slice(0, 10);
     }
     f.buttons = bs.filter((b) => !b.disabled).map((b) => ({ css: path(b), name: name(b), kind: kind(b) }));
@@ -199,6 +207,8 @@ FORMS_JS = (
       if ([el.name, el.id, el.getAttribute('aria-label'), el.placeholder, lab].some(said)) marks.push('words');
     }
     f.search = Array.from(new Set(marks));
+    // Fields of this form inside a web component (part D; guard CN).
+    f.shadow = f.fields.filter((i) => J.where(els[i]) === 'shadow').length;
     f.limits = own.flatMap((el) => [
       el.required || el.getAttribute('aria-required') === 'true' ? 'required' : null,
       el.getAttribute('pattern') ? 'pattern' : null,
@@ -313,19 +323,21 @@ class PassE(BaseModel):
     notes: list[str] = Field(default_factory=list)
     # What pass E read, by the page inventory's keys (count.py; guard CN).
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
+    # Fields pass E read inside web components (FORMS_JS; part D).
+    shadow_read: int = 0
 
 
 def what_was_read(ps: PassE, count) -> dict[str, int]:
     """Pass E's reading: the forms it took, matched to the inventory's forms
     with a button by path (a form with no field it reached is not taken);
-    fields the walk reached only, so no hidden field; and nothing inside web
-    components or frames (FORMS_JS reads the page's own document)."""
+    fields the walk reached only, so no hidden field; the fields it read
+    inside web components (part D); nothing in frames."""
     forms = set(count.form_paths) if count is not None else set()
     hidden = set(count.hidden_field_paths) if count is not None else set()
     return {
         "forms_with_button": len(forms & {f.key for f in ps.forms if f.key}),
         "fields_hidden": len(hidden & {f.css_path for f in ps.fields if f.css_path}),
-        "fields.shadow": 0,
+        "fields.shadow": ps.shadow_read,
         "fields.frames": 0,
     }
 
@@ -658,17 +670,18 @@ async def _forms(ctx: RunContext, ps: PassE, walk: KeyboardWalk) -> None:
                     for x in ("label", "type", "described", "maxlength", "min", "max")
                 }
             )
-    stops = {
-        st.stop.css_path: i
-        for i, st in enumerate(walk.p1.steps)
-        if st.stop.kind == "element" and not st.stop.frame_chain
-    }
+    # The walk's first visit: it goes round to the first stop again.
+    stops: dict[str | None, int] = {}
+    for i, st in enumerate(walk.p1.steps):
+        if st.stop.kind == "element" and not st.stop.frame_chain:
+            stops.setdefault(st.stop.css_path, i)
     keys = {
         st.stop.css_path: st.stop.path_key
         for st in walk.p1.steps
         if st.stop.kind == "element" and not st.stop.frame_chain
     }
     mapped = {i for g in got.values() for i in g.get("fields", [])}
+    ps.shadow_read = sum(int(g.get("shadow") or 0) for g in got.values())
     unread = [f for i, f in enumerate(fields) if i not in mapped and not f.frame_chain]
     if unread:
         # Never DOES NOT APPLY for fields the tool could not read.

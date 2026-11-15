@@ -27,7 +27,7 @@ from typing import Any, Protocol
 
 from playwright.async_api import BrowserContext, CDPSession, Page
 
-from tobi508.jslib import PATH_JS  # the walk's CSS path, every reader's (jslib.py)
+from tobi508.jslib import JSLIB, PATH_JS  # every reader's rules (jslib.py)
 from tobi508.models import BoundingBox, Candidate, PassResult, Step, Stop
 
 # Tab press cap per pass (4.C spec section 2, P1): 3 x inventory + 50, max 3,000.
@@ -111,9 +111,22 @@ INIT_JS = """(() => {
   log.flush = (count) => { const r = obs.takeRecords();
     if (count && r.length && !log.pause) count_(r); };
   obs.observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
-  const watchRoot = (root) => obs.observe(root, { subtree: true, childList: true, attributes: true, characterData: true });
+  const watched = new WeakSet();
+  const watchRoot = (root) => { if (watched.has(root)) return; watched.add(root);
+    obs.observe(root, { subtree: true, childList: true, attributes: true, characterData: true }); };
   const attach = Element.prototype.attachShadow;
   Element.prototype.attachShadow = function (init) { const r = attach.call(this, init); watchRoot(r); return r; };
+  // Shadow roots a server rendered (<template shadowrootmode>) attach none:
+  // the log's reads sweep for open roots not yet watched (review D-04), at
+  // most once a second and only after the page changed.
+  let sweptAt = -1e9, sweptM = -1;
+  log.sweep = () => {
+    const now = performance.now();
+    if (sweptM === log.m || now - sweptAt < 1000) return;
+    sweptAt = now; sweptM = log.m;
+    const visit = (r) => { for (const el of r.querySelectorAll('*')) if (el.shadowRoot) { watchRoot(el.shadowRoot); visit(el.shadowRoot); } };
+    try { visit(document); } catch (e) {}
+  };
   // A short CSS-like path, for describing elements in the log (not identity:
   // stops are identified through CDP).
   const path = (n) => {
@@ -177,6 +190,7 @@ INIT_JS = """(() => {
 _LOG_JS = """() => {
   const l = window.__a11yLog;
   if (!l) return null;
+  if (l.sweep) l.sweep();
   const now = performance.now();
   return { m: l.m, q: l.q, f: l.f.length, sinceM: l.lastQ ? now - l.lastQ : 1e9, sinceF: l.lastF ? now - l.lastF : 1e9 };
 }"""
@@ -583,7 +597,12 @@ class FocusReader:
         Read from the page's own world: from TOBI's isolated world CDP lists
         none of the listeners the page's scripts added (docs/solutions/
         focus-and-walk.md). A handler on an ancestor that
-        serves a child (delegation) is listed on the ancestor only."""
+        serves a child (delegation) is listed on the ancestor only.
+
+        `pierce`: inside open shadow roots too (review D-03: a mouse-only
+        control inside a web component was never seen). Chrome also lists
+        same-process frames' nodes here; they do not resolve in this frame's
+        world, so `mark` skips them and the frame's own read marks them."""
         main = await self._main_context(session, frame_id)
         if main is None:
             raise LookupError(f"no main world for frame {frame_id}")
@@ -592,7 +611,7 @@ class FocusReader:
         )
         res = await session.send(
             "DOMDebugger.getEventListeners",
-            {"objectId": doc["result"]["objectId"], "depth": -1, "pierce": False},
+            {"objectId": doc["result"]["objectId"], "depth": -1, "pierce": True},
         )
         return res.get("listeners", [])
 
@@ -1399,7 +1418,22 @@ async def run_pass(
 
 # Visible text of every frame (comments, <title> and hidden text are not in
 # innerText). Evidence for J1 and J2; page text is never instructions.
-_TEXT_JS = "() => document.body ? document.body.innerText : ''"
+# The page's text, then the text of each open shadow root at any depth, once
+# each (innerText leaves shadow roots out: the grid's NEW-1, 4.B's timing
+# instructions inside a web component; part D).
+_TEXT_JS = (
+    "() => {"
+    + JSLIB
+    + """
+  if (!document.body) return '';
+  const parts = [document.body.innerText];
+  for (const r of J.roots()) {
+    if (r === document) continue;
+    for (const el of r.children) if (el.innerText && el.innerText.trim()) parts.push(el.innerText);
+  }
+  return parts.join('\\n\\n');
+}"""
+)
 
 
 async def page_text(page: Page) -> list[dict[str, str]]:

@@ -1,7 +1,7 @@
 ---
 tt_test: 5.D
 tt_name: 3.2.2-on-input
-spec_version: 1.7.0
+spec_version: 1.8.0
 guards: unrecorded-code, reveal, reveal-content
 count: fields, fields_hidden, contenteditable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -82,12 +82,12 @@ Each completed field is an *instance*. After the Tab that leaves a field, focus 
 | M4 | The top URL changed, the page reloaded or a form was submitted | Ask J1 (J1?, M8–M10) | p. 27 HtT 4 (user agent, viewport; "a form automatically submitted when exiting a field"); F36 |
 | M5 | A new page or window opened | Ask J1 | p. 27 HtT 4 ("a new window launched when a radio button is selected"); F37 |
 | M6 | Focus went elsewhere (not where expected) | Ask J1 | p. 27 HtT 4 (focus); Understanding 3.2.2 (auto-advancing fields are a change of focus) |
-| M7 | No change above, but a dialog appeared or the DOM changed outside the field's own widget | Ask J2 and J1 together (M11–M13) | p. 27 HtT 4 ("content that changes the meaning of the page") |
+| M7 | No change above, but a dialog appeared or the DOM changed outside the field's own widget (inside the page's web components too, and the field's own widget found by ids in its own tree: 1.8.0, part D, review D-21; `5d/f23` was PASS) | Ask J2 and J1 together (M11–M13) | p. 27 HtT 4 ("content that changes the meaning of the page") |
 | J1? | J1 not answered yet | NEEDS REVIEW | Open question |
 | M8 | J1 = told, and its quote is found in the preceding text | No instance (the user was notified) | p. 27 HtT 4.a.i; G13 |
 | M9 | J1 = not told | FAIL | p. 27 ER 1 |
 | M10 | J1 = unsure, or told but the quote is not in the preceding text | NEEDS REVIEW | Spec rule |
-| M15 | J2 = content only, and the change covers more than half the window (`COVER_MOST`, 0.5) or opened a modal dialog (1.2.0): the larger of the share of pixels that differ between images A and B and the largest new dialog's or positioned layer's (fixed, absolute or sticky, a quarter of the window or more) box over the window, read from the DOM before and after | NEEDS REVIEW: a change over most of the window is not "only adds content"; the agent's answer cannot make it so, and a person looks. A white panel on a white page changes few pixels, hence the DOM reading | Spec rule; Definition of change of context ("major changes in the content of the Web page"); research note 2026-11-07 section 2 |
+| M15 | J2 = content only, and the change covers more than half the window (`COVER_MOST`, 0.5) or opened a modal dialog (1.2.0; dialogs and positioned layers inside web components and dialogs inside frames count too, 1.8.0, part D): the larger of the share of pixels that differ between images A and B and the largest new dialog's or positioned layer's (fixed, absolute or sticky, a quarter of the window or more) box over the window, read from the DOM before and after | NEEDS REVIEW: a change over most of the window is not "only adds content"; the agent's answer cannot make it so, and a person looks. A white panel on a white page changes few pixels, hence the DOM reading | Spec rule; Definition of change of context ("major changes in the content of the Web page"); research note 2026-11-07 section 2 |
 | M11 | J2 = content only | PASS | Definition of change of context, Note; Understanding 3.2.2 (revealing related fields keeps "the basic context") |
 | M12 | J2 = changes the context | J1 decides, as M4 (J1?, M8–M10) | p. 27 HtT 4; TC10.C-3-fail-1 (the form replaced by "Form Submitted" on leaving a field) |
 | M13 | J2 = unsure, or not answered yet | NEEDS REVIEW | Spec rule |

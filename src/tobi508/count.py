@@ -120,7 +120,9 @@ COUNT_JS = (
       if (el.isContentEditable && !(el.parentElement && el.parentElement.isContentEditable) && rendered(el)) add('contenteditable');
       if (el.tagName === 'FORM' && el.querySelector(BUTTON)) {
         add('forms_with_button');
-        if (where === 'light' && out.form_paths.length < pathsMax) out.form_paths.push(path(el));
+        // Inside web components too (part D): a test that took the form
+        // matches it by this path.
+        if (out.form_paths.length < pathsMax) out.form_paths.push(path(el));
       }
       if (el.matches(OPENER) && rendered(el) && !el.matches(':disabled')) out.openers += 1;
       if (el.tagName === 'VIDEO' || el.tagName === 'AUDIO') add('media');

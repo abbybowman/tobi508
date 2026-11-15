@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
+from tobi508.jslib import JSLIB
 from tobi508.models import Stop
 from tobi508.traverse import PATH_JS, ReplayPlan, Session
 from tobi508.walk import KeyboardWalk
@@ -19,16 +20,18 @@ BEFORE_CHARS = 1500
 
 _OWN_JS = """
   const doc = this.ownerDocument;
+  // Ids are looked up in the field's own tree (review D-21): inside a web
+  // component they name elements inside it.
   const own = new Set([this]);
   for (const a of ['aria-controls', 'aria-owns', 'list', 'aria-describedby', 'aria-errormessage']) {
     for (const id of (this.getAttribute(a) || '').split(/\\s+/).filter(Boolean)) {
-      const el = doc.getElementById(id);
+      const el = J.byId(this, id);
       if (el) own.add(el);
     }
   }
   let mates = [];
   if (this.matches('input[type=radio]') && this.name) {
-    mates = Array.from((this.form || doc).querySelectorAll('input[type=radio]'))
+    mates = Array.from((this.form || J.scope(this)).querySelectorAll('input[type=radio]'))
       .filter((r) => r.name === this.name && r.form === this.form);
   } else if (this.getAttribute('role') === 'radio') {
     const g = this.closest('[role=radiogroup]');
@@ -51,6 +54,7 @@ def _on_host(fn: str) -> str:
 
 FIELD_FN = _on_host(
     "function () {"
+    + JSLIB
     + PATH_JS
     + _OWN_JS
     + """
@@ -63,7 +67,7 @@ FIELD_FN = _on_host(
       : type === 'radio' ? String(mates.findIndex((m) => m.checked)) : this.value);
   let label = this.getAttribute('aria-label') || '';
   if (!label && this.getAttribute('aria-labelledby')) label = this.getAttribute('aria-labelledby')
-    .split(/\\s+/).map((id) => (doc.getElementById(id) || {}).textContent || '').join(' ');
+    .split(/\\s+/).map((id) => (J.byId(this, id) || {}).textContent || '').join(' ');
   if (!label && this.labels && this.labels.length) label = this.labels[0].textContent;
   if (!label && mates.length) {
     const fs = this.closest('fieldset'); const lg = fs && fs.querySelector('legend');
@@ -74,7 +78,10 @@ FIELD_FN = _on_host(
   const scope = this.form || this.closest('form');
   const start = scope || null;
   const texts = [];
-  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  // Inside a web component, its own tree: positions across trees are not
+  // in one reading order (D-21).
+  const walkRoot = J.where(this) === 'shadow' ? (start || J.scope(this)) : doc.body;
+  const tw = doc.createTreeWalker(walkRoot, NodeFilter.SHOW_TEXT);
   let headingSeen = null;
   for (let n = tw.nextNode(); n; n = tw.nextNode()) {
     if (this.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING) break;
@@ -98,7 +105,7 @@ FIELD_FN = _on_host(
            options: mates.length || null, own: Array.from(own).map((e) => path(e)),
            before, invalid, pattern: this.getAttribute('pattern'),
            described: (this.getAttribute('aria-describedby') || '').split(/\\s+/).filter(Boolean)
-             .map((id) => (doc.getElementById(id) || {}).textContent || '').join(' ').trim() };
+             .map((id) => (J.byId(this, id) || {}).textContent || '').join(' ').trim() };
 }""".replace("BEFORE", str(BEFORE_CHARS))
 )
 
@@ -106,18 +113,20 @@ FIELD_FN = _on_host(
 # document: visible text and the number of visible dialogs.
 SIG_FN = _on_host(
     "function () {"
+    + JSLIB
     + _OWN_JS
     + """
   const parts = [];
-  const tw = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
-  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+  // The page's text and its web components' (D-21: a change inside a web
+  // component is a change in the page).
+  J.texts(doc.body, (n) => {
     const p = n.parentElement;
-    if (!p || inOwn(p) || ['SCRIPT', 'STYLE'].includes(p.tagName)) continue;
-    if (!p.checkVisibility || !p.checkVisibility({ visibilityProperty: true })) continue;
+    if (!p || inOwn(p) || ['SCRIPT', 'STYLE'].includes(p.tagName)) return;
+    if (!p.checkVisibility || !p.checkVisibility({ visibilityProperty: true })) return;
     const t = n.textContent.replace(/\\s+/g, ' ').trim();
     if (t) parts.push(t);
-  }
-  const dialogs = Array.from(doc.querySelectorAll('dialog[open],[role=dialog],[role=alertdialog]'))
+  });
+  const dialogs = J.all('dialog[open],[role=dialog],[role=alertdialog]')
     .filter((e) => !inOwn(e) && e.checkVisibility()).length;
   return parts.join('|') + '#' + dialogs;
 }"""

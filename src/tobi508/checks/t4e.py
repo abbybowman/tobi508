@@ -26,7 +26,7 @@ from tobi508.models import (
     Step,
     TestId,
 )
-from tobi508.observe import COVER_MOST, DIALOGS_JS, cover, without_fragment
+from tobi508.observe import COVER_MOST, cover, open_dialogs, without_fragment
 from tobi508.traverse import Traversal, open_session, screenshot
 from tobi508.walk import KeyboardWalk, walk_coverage
 
@@ -89,13 +89,12 @@ class ContextHook:
             self.navs += 1
 
         t.page.on("framenavigated", on_nav)
-        self.dialogs = await self._dialogs(t)
+        self.dialogs = await self._dialogs(t) or {}
 
-    async def _dialogs(self, t: Traversal) -> dict[str, dict[str, Any]]:
-        try:
-            return {d["css"]: d for d in await t.page.evaluate(DIALOGS_JS)}
-        except Exception:
-            return {}
+    async def _dialogs(self, t: Traversal) -> dict[str, dict[str, Any]] | None:
+        """Open dialogs, frames and web components included (F-08). None
+        when the page could not be read."""
+        return await open_dialogs(t.page)
 
     async def on_step(self, t: Traversal, step: Step) -> Any:
         out: dict[str, Any] = {}
@@ -104,6 +103,11 @@ class ContextHook:
             self.seen_navs = self.navs
             return out  # the page changed: nothing else on it is comparable
         now = await self._dialogs(t)
+        if now is None:
+            # A failed read is not "every dialog is new" (F-08): keep the
+            # last state, and say the step's dialogs were not read.
+            out["dialogs_unread"] = True
+            return out
         new = sorted(set(now) - set(self.dialogs))
         self.dialogs = now
         if new:

@@ -62,19 +62,19 @@ The figures are from one run on 2026-11-14 at commit `8854a4f`, before step 8's 
 | 2.C | 2.2.2-auto-updating | 2.2.2 | [1.1.0](specs/rules/2c-auto-updating.md) | 🟢 R2 0/10 agree, 10 NR; no wrong outcome. Watches inside web components (1.1.0). Caveat: moving content not settled in 6.5 s is left for a person |
 | 2.D | 4.1.2-change-notify-auto | 4.1.2 | [1.2.0](specs/rules/2d-change-notify-auto.md) | 🟢 R2 0/10 agree, 10 NR; no wrong outcome. Watches inside web components (1.2.0). Caveat: as 2.C |
 | 3.A | 2.3.1-flashing | 2.3.1 | [1.3.0](specs/rules/3a-flashing.md) | 🟢 R2 3/10 agree, 6 NR, 1 Not Tested where the key says Does Not Apply; no wrong PASS. Reads videos inside web components (1.3.0). Caveat: more than 30 images is NEEDS REVIEW (guard CN) |
-| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.11.0](specs/rules/4a-keyboard-access.md) | ⚠️ R2 2/10 agree, 7 NR, 1 FAIL the key passes · R1 0/9 agree, 8 NR, 1 such FAIL (judge answers). Caveat: often undecided with embedded players and frames |
-| 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.3.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 R2 9/10 agree, 1 NR · R1 9/9 agree; no wrong outcome. |
+| 4.A | 2.1.1-keyboard-access | 2.1.1 | [1.12.0](specs/rules/4a-keyboard-access.md) | ⚠️ R2 2/10 agree, 7 NR, 1 FAIL the key passes · R1 0/9 agree, 8 NR, 1 such FAIL (judge answers). Reads click handlers and changes inside web components (1.12.0). Caveat: often undecided with embedded players and frames |
+| 4.B | 2.1.1-no-keystroke-timing | 2.1.1 | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | 🟢 R2 9/10 agree, 1 NR · R1 9/9 agree; no wrong outcome. Reads text inside web components (1.4.0). |
 | 4.C | 2.1.2-no-keyboard-trap | 2.1.2 | [1.13.1](specs/rules/4c-no-keyboard-trap.md) | 🟢 R2 2/10 agree, 8 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: menus or sections that open leave it for a person |
 | 4.D | 2.4.7-focus-visible | 2.4.7 | [1.9.0](specs/rules/4d-focus-visible.md) | ⚠️ R2 1/10 agree, 7 NR, 2 FAILs the key passes · R1 3/9 agree, 6 NR. Caveat: the judge is often unsure on small focus pictures |
-| 4.E | 3.2.1-on-focus | 3.2.1 | [1.5.0](specs/rules/4e-on-focus.md) | 🟢 R2 2/10 agree, 8 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: menus or sections that open leave it for a person |
+| 4.E | 3.2.1-on-focus | 3.2.1 | [1.6.0](specs/rules/4e-on-focus.md) | 🟢 R2 2/10 agree, 8 NR · R1 0/9 agree, 9 NR; no wrong outcome. Sees dialogs inside web components and frames (1.6.0). Caveat: menus or sections that open leave it for a person |
 | 4.F | 2.4.3-focus-order-meaning | 2.4.3 | [1.8.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ R2 2/10 agree, 6 NR, 2 FAILs the key passes (judge answers) · R1 5/9 agree, 4 NR. Caveat: the judge is often unsure |
 | 5.A | 3.3.2-label-provided | 3.3.2 | [1.12.0](specs/rules/5a-label-provided.md) | 🟢 R2 3/10 agree, 7 NR · R1 9/9 agree; no wrong outcome. Reads fields inside web components (1.10.0) and frames, each opened as a page of its own (1.11.0). Caveat: a frame the recording lacks is left for a person |
 | 5.B | 2.4.6-label-descriptive | 2.4.6 | [1.8.0](specs/rules/5b-label-descriptive.md) | ⚠️ R2 3/10 agree, 7 NR · R1 0/9 agree, 8 NR, 1 FAIL the key passes (judge answer). Reads fields inside web components (1.7.0) and frames (1.8.0). Caveat: the judge is often unsure |
 | 5.C | 1.3.1-programmatic-label | 1.3.1, 4.1.2 | [1.11.0](specs/rules/5c-programmatic-label.md) | ⚠️ R2 5/10 agree, 5 NR · R1 1/9 agree, 7 NR, 1 FAIL the key passes (a rule). Reads fields inside web components, their names from Chrome's accessibility tree (ANDI cannot read there; 1.10.0), and frames, each opened as a page of its own with ANDI run there (1.11.0; round 2's key has 3 FAILs in frames, not yet rerun). Caveat: a frame the recording lacks is left for a person |
-| 5.D | 3.2.2-on-input | 3.2.2 | [1.7.0](specs/rules/5d-on-input.md) | ⚠️ R2 3/10 agree, 7 NR · R1 1/9 agree, 7 NR, 1 FAIL the key passes (judge answer). Caveat: menus or sections that open leave it for a person |
-| 5.F | 3.3.1-error-identification | 3.3.1 | [1.8.0](specs/rules/5f-error-identification.md) | 🟢 R2 3/10 agree, 7 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: fields inside frames are not checked yet |
-| 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.6.0](specs/rules/5g-error-suggestion.md) | 🟢 R2 3/10 agree, 7 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: as 5.F |
-| 5.H | 3.3.4-error-prevention | 3.3.4 | [1.6.0](specs/rules/5h-error-prevention.md) | 🟢 R2 4/10 agree, 6 NR · R1 0/9 agree, 9 NR; no wrong outcome. Caveat: a form that is only a button is NEEDS REVIEW (guard CN) |
+| 5.D | 3.2.2-on-input | 3.2.2 | [1.8.0](specs/rules/5d-on-input.md) | ⚠️ R2 3/10 agree, 7 NR · R1 1/9 agree, 7 NR, 1 FAIL the key passes (judge answer). Sees dialogs and changes inside web components, and dialogs inside frames (1.8.0). Caveat: menus or sections that open leave it for a person |
+| 5.F | 3.3.1-error-identification | 3.3.1 | [1.9.0](specs/rules/5f-error-identification.md) | 🟢 R2 3/10 agree, 7 NR · R1 0/9 agree, 9 NR; no wrong outcome. Reads forms and errors inside web components (1.9.0). Caveat: fields inside frames are not checked yet |
+| 5.G | 3.3.3-error-suggestion | 3.3.3 | [1.7.0](specs/rules/5g-error-suggestion.md) | 🟢 R2 3/10 agree, 7 NR · R1 0/9 agree, 9 NR; no wrong outcome. Reads web components (1.7.0). Caveat: as 5.F |
+| 5.H | 3.3.4-error-prevention | 3.3.4 | [1.7.0](specs/rules/5h-error-prevention.md) | 🟢 R2 4/10 agree, 6 NR · R1 0/9 agree, 9 NR; no wrong outcome. Reads web components (1.7.0). Caveat: a form that is only a button is NEEDS REVIEW (guard CN) |
 | 9.A | 2.4.1-bypass-function | 2.4.1 | [1.7.0](specs/rules/9a-bypass.md) | 🟢 R2 10/10 agree · R1 8/9 agree, 1 NR; no wrong outcome. Reads navigation inside web components (1.7.0). Caveat: a page with more than 5,000 items is left for a person |
 | 9.B | 3.2.3-consistent-navigation | 3.2.3 | [1.6.0](specs/rules/9b-consistent-navigation.md) | 🟢 R2 9/10 agree, 1 NR · R1 9/9 agree; no wrong outcome. Reads navigation inside web components (1.6.0). Caveat: as 9.A |
 | 9.C | 3.2.4-consistent-identification | 3.2.4 | [1.9.0](specs/rules/9c-consistent-identification.md) | ⚠️ R2 7/10 agree, 3 NR · R1 1/9 agree, 8 FAILs the key passes (one cause: "Home" against "NASA — return to the homepage"). Reads components inside web components, named from Chrome's accessibility tree (1.9.0). Caveat: as 9.A |
@@ -104,10 +104,9 @@ A fix removes its line here in the same commit.
 | 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; motion that starts after 6.5 s |
 | 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
 | 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
-| 4.A | PASS | a mouse-only control inside a web component |
-| 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read); timing instructions inside a web component (found by the grid of hard pages, 2026-11-13) |
+| 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
 | 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
-| 5.F, 5.G | Does Not Apply | an error shown in a web component or as a red border on a wrapper |
+| 5.F, 5.G | Does Not Apply | an error shown only as a red border on a wrapper around the field |
 | 5.H | Does Not Apply | a payment form not in English |
 
 ## Tools
