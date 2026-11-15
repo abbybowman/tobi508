@@ -8,7 +8,8 @@ A *trigger* is a stop of the Tab walk that announces it opens something: a
 collapsed control (`aria-expanded` false, a closed `<summary>`), one with
 `aria-haspopup`, one that names a region in `aria-controls` that is hidden, or
 a tab that is not the selected one. Form fields (including the parts of a
-native date input) are not triggers. A plain button with no such hint is not a trigger.
+native date input) are not triggers. Nor are the controls of a video or audio
+element's built-in player (the browser's, not the page's). A plain button with no such hint is not a trigger.
 Each is opened on its own fresh load: focus is put on it directly and Enter is
 pressed (a click when Enter did nothing). What was not visible before and is
 now is what it opened. When the opened content holds sets of check boxes or
@@ -224,6 +225,13 @@ def reasons(stop) -> list[str]:
     # a spinbutton updates a total: 5.D's matter), and the parts of a native
     # date input open the browser's own picker, which is not page content.
     if stop.control or stop.group:
+        return out
+    # A video or audio element's built-in controls are the browser's player:
+    # its menu button ("show more media controls", aria-haspopup) opens the
+    # browser's own menu, not page content (Abby, 2026-11-15; round 2's
+    # 14194, 14592 and 4914, where the page also renames the video on every
+    # load, so the button could never be found again).
+    if getattr(stop, "media", False):
         return out
     if stop.collapsed:
         out.append("summary" if stop.tag == "summary" else "collapsed")
