@@ -70,9 +70,11 @@ def instances(mp: MotionPass) -> list[tuple[str, Region]]:
     return [(f"r{n}", r) for n, r in enumerate(rs, 1)]
 
 
-def hints(mp: MotionPass) -> list[str]:
+def hints(mp: MotionPass, timers: bool = True) -> list[str]:
     """Signs the page updates more slowly than the watch, or with data a
-    recording cannot replay (A2). Plain words; no outcome."""
+    recording cannot replay (A2). Plain words; no outcome. A timer longer
+    than the watch is no sign once the clock check cleared it (1.2.0);
+    `timers=False` leaves timers out (needs_clock_check)."""
     out = []
     if mp.walk_unsettled >= WALK_UNSETTLED:
         out.append(
@@ -83,9 +85,11 @@ def hints(mp: MotionPass) -> list[str]:
         every = f" about every {p.gap_ms / 1000:.1f} s" if p.gap_ms else ""
         out.append(f"it asks its server for new data{every}")
         break
-    slow = sorted({t.ms for t in mp.timers if t.ms > mp.watch_s * 1000})
-    if slow:
-        out.append(f"it sets a timer of {slow[0] / 1000:g} s, longer than we watched")
+    slow = sorted({t.ms for t in motion.slow_timers(mp)})
+    tc = mp.timer_check
+    if timers and slow and not (tc is not None and tc.cleared):
+        sign = f"it sets a timer of {slow[0] / 1000:g} s, longer than we watched"
+        out.append(f"{sign} ({tc.why})" if tc is not None and tc.why else sign)
     moving = {f"{r.frame}|{r.content_css}" for _, r in instances(mp)}
     if any(c not in moving for c in mp.carousels):
         out.append("it has a carousel that did not change while we watched")
@@ -98,6 +102,51 @@ def hints(mp: MotionPass) -> list[str]:
                 "watched"
             )
     return out
+
+
+def needs_clock_check(mp: MotionPass) -> bool:
+    """The clock check is worth a load only when the long timers alone hold
+    the page at A2: no instance and no other sign (1.2.0)."""
+    return (
+        mp.ok
+        and bool(motion.slow_timers(mp))
+        and not instances(mp)
+        and not hints(mp, timers=False)
+    )
+
+
+def clock_sentence(mp: MotionPass) -> str:
+    """What the clock check did, for a DOES NOT APPLY it made possible."""
+    tc = mp.timer_check
+    if tc is None or not tc.cleared:
+        return ""
+    times = ", ".join(_duration(ms) for ms in tc.timers_ms)
+    return (
+        f" We also ran the page's clock past its "
+        f"{'timer' if len(tc.timers_ms) == 1 else 'timers'} ({times}), and "
+        "nothing on the page changed."
+    )
+
+
+def _duration(ms: int) -> str:
+    s = ms / 1000
+    if s < 120:
+        return f"{round(s, 1):g} seconds"
+    if s < 7200:
+        return f"{round(s / 60, 1):g} minutes"
+    return f"{round(s / 3600, 1):g} hours"
+
+
+def clock_trace(mp: MotionPass) -> str:
+    tc = mp.timer_check
+    if tc is None:
+        return ""
+    return (
+        f" Clock check: timers {[ms / 1000 for ms in tc.timers_ms]} s; "
+        f"advanced {tc.advanced_ms / 1000:g} s; requests {tc.requests}; "
+        f"changed {tc.changed or 'nothing'}; {tc.seconds:g} s"
+        + ("; cleared." if tc.cleared else f"; kept: {tc.why}.")
+    )
 
 
 def a2_note(mp: MotionPass, found: list[str]) -> str:
@@ -448,14 +497,16 @@ def evaluate(st: State2C, evidence_refs: list[str]) -> Finding:
             DecidedBy.RULE,
             evidence_refs,
         )
+        f.rationale += clock_trace(st.mp)
         return f
     if row.id == "A3":
         return _finding(
             Outcome.DNA,
             "Nothing on this page changed by itself while we watched, so this "
-            "test does not apply.",
+            "test does not apply." + clock_sentence(st.mp),
             ["A3", "G1"],
             evidence_refs,
+            rationale="Spec G1." + clock_trace(st.mp),
         )
     if row.id == "A4":
         return _finding(
@@ -621,6 +672,8 @@ def apply_answers(st: State2C, report) -> None:
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State2C:
     mp = await motion.collect(ctx)
     mp.walk_unsettled = ctx.cache.get("walk_unsettled", mp.walk_unsettled)
+    if needs_clock_check(mp):
+        await motion.timer_check_shared(ctx, mp)
     st = State2C(mp=mp, selected=sorted(ctx.selected))
     row, page = applicability(mp)
     if row.id != "A5":
@@ -671,4 +724,13 @@ class Check2C:
         return await press_answered_keys(ctx, state)
 
 
-__all__ = ["Check2C", "State2C", "applicability", "instances", "content_name"]
+__all__ = [
+    "Check2C",
+    "State2C",
+    "applicability",
+    "clock_sentence",
+    "clock_trace",
+    "content_name",
+    "instances",
+    "needs_clock_check",
+]

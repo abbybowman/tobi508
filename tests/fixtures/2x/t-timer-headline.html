@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><title>Mission notes</title></head>
+<body>
+<main>
+<h1>Mission notes</h1>
+<p id="latest">Latest: launch window opens Monday.</p>
+<p>More static text.</p>
+</main>
+<script>
+// Every 150 s the latest note changes.
+const notes = ['Latest: launch window opens Monday.', 'Latest: crew arrives at the pad.'];
+let i = 0;
+function next() { i = (i + 1) % notes.length; document.getElementById('latest').textContent = notes[i]; setTimeout(next, 150000); }
+setTimeout(next, 150000);
+</script>
+</body>
+</html>

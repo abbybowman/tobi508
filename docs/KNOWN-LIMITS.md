@@ -49,6 +49,15 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the 30th are not measured (N-02 to N-09, W-02, W-09); an
   animated image past the 30th now makes 2.B and 3.A NEEDS REVIEW
   (N-06, guard CN). Parts C and J.
+- **2.C's clock check (2.C 1.2.0, 2.D 1.3.0)** clears a timer longer
+  than the watch only when one more load sets it again, runs the page's
+  clock past it, and sees nothing change: the screen in five
+  screenshots, the text, the elements, the image sources, a count of
+  every change to the page and what is playing. It sees only the first
+  screen in its screenshots (elements and text are read for the whole
+  page); a page with a canvas keeps the timer as a sign; a timer longer
+  than a day, or one that asks the server for data, keeps the page NEEDS
+  REVIEW.
 - **A walk that stops at a trap, or runs out of time,** can still PASS
   in 5.D, 5.F and 4.C (H-03, M-05, E-07). Parts A and C.
 

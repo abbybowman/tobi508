@@ -160,6 +160,10 @@ class RunContext:
     # page's clock paused before page scripts (flashcap.py). None when not
     # available.
     open_flash: NewPage | None = None
+    # 2.C's clock check load (motion.timer_check): pass T's browser, the
+    # page's clock paused before page scripts, a timer hook added after it.
+    # None when not available.
+    open_clock: NewPage | None = None
     # Content pass T found still changing, which the settle rule stops
     # waiting on once pass T ends (pipeline.SettleIgnore; T1 (b)).
     settle_ignore: Any = None

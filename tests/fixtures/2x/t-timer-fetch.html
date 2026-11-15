@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><title>Mission notes</title></head>
+<body>
+<main>
+<h1>Mission notes</h1>
+<p id="latest">Latest: launch window opens Monday.</p>
+<p>More static text.</p>
+</main>
+<script>
+// Every 150 s it asks the server for the latest note and shows it.
+function next() {
+  fetch('/2x/latest-note.txt?t=' + Date.now()).then((r) => r.text())
+    .then((t) => { document.getElementById('latest').textContent = t; }).catch(() => {});
+  setTimeout(next, 150000);
+}
+setTimeout(next, 150000);
+</script>
+</body>
+</html>

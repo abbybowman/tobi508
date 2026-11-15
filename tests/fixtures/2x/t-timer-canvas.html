@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><title>Mission notes</title></head>
+<body>
+<main>
+<h1>Mission notes</h1>
+<p>Static text about the mission.</p>
+<div style="height: 1600px"></div>
+<canvas id="c" width="300" height="100" aria-label="Launch countdown"></canvas>
+</main>
+<script>
+// Below the first screen, every 150 s a canvas redraws a new number.
+let n = 10;
+function draw() { const g = document.getElementById('c').getContext('2d'); g.clearRect(0, 0, 300, 100); g.font = '40px sans-serif'; g.fillText(String(n--), 20, 60); setTimeout(draw, 150000); }
+draw();
+</script>
+</body>
+</html>
