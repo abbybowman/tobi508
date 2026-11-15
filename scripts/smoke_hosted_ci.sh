@@ -52,11 +52,23 @@ end() { echo "::endgroup::" 2>/dev/null || true; }
 step "certificates (a throwaway CA)"
 mkdir -p "$WORK/certs" "$WORK/frozen" "$WORK/page"
 cd "$WORK/certs"
+# Extensions a strict verifier needs (Python 3.13+ sets VERIFY_X509_STRICT:
+# the CA needs keyUsage, the server certificate its key identifiers).
 openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj "/CN=tobi508 smoke CA" \
+  -addext "basicConstraints=critical,CA:TRUE" \
+  -addext "keyUsage=critical,keyCertSign,cRLSign" \
+  -addext "subjectKeyIdentifier=hash" \
   -keyout ca.key -out ca.crt 2>/dev/null
 openssl req -newkey rsa:2048 -nodes -subj "/CN=smoke.test" \
   -keyout server.key -out server.csr 2>/dev/null
-printf "subjectAltName=DNS:keycloak.smoke.test,DNS:tobi.smoke.test\n" > ext
+cat > ext <<'EXT'
+basicConstraints=critical,CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid
+subjectAltName=DNS:keycloak.smoke.test,DNS:tobi.smoke.test
+EXT
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial \
   -days 1 -extfile ext -out server.crt 2>/dev/null
 chmod 644 ./*
