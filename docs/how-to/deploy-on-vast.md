@@ -7,9 +7,9 @@ end is what to confirm on the first deployment.
 **Status:** no deployment on VAST yet. Every value here is taken from the
 code (`src/tobi508/config.py`, `app.py`, `access.py`, `routes.py`,
 `runlog.py`), the `Dockerfile` and `.env.example`, not from memory. The
-sign-in is tested against a stand-in provider (`tests/test_access_signin.py`),
-not yet against a real Keycloak, VAST's or another, nor NASA Launchpad
-(step 12b). Design and
+sign-in is tested against a stand-in provider (`tests/test_access_signin.py`);
+`scripts/smoke_hosted.py` checks a deployed server end to end. Not yet
+against VAST's Keycloak and NASA Launchpad (step 12b). Design and
 reasons: [the hosted sign-in plan](../plans/2026-11-06-hosted-auth.md).
 
 Results are agent-assisted, never a certified Trusted Tester result, on
@@ -149,7 +149,7 @@ without sign-in; `GET /version` gives the package version. Use `/health`
 for the platform's liveness and readiness checks. It shows that the
 process serves HTTP, not that Keycloak or Chromium work: the server
 fetches Keycloak's discovery document at startup and does not start
-without it, and the checklist (section 7) is what shows a run works.
+without it, and the smoke test (section 7) is what shows a run works.
 
 ## 5. Connecting from Claude Code
 
@@ -223,12 +223,22 @@ Not confirmed from the code or VAST's documentation:
 4. `curl -i -X POST https://<app host>/mcp` answers 401 with
    `WWW-Authenticate: Bearer resource_metadata="https://<app host>/.well-known/oauth-protected-resource/mcp"`
    (the host is the public one, https).
-5. A person signs in from Claude Code (section 5). A 403 on the consent
-   page means `FORWARDED_ALLOW_IPS` or the ingress's `X-Forwarded-Proto`
-   (question 6). A 401 after signing in means the token lacks `sub`, the
-   group or the audience: look for `authn.no_subject` or `authz.denied` in
-   the log.
-6. Claude Code runs one page through the server, and saves its report.
+5. The smoke test passes. Two people sign in by hand (the second from a
+   private window, or Keycloak signs the first in again); save the
+   server's log to a file first, or give `--audit-cmd` a command that
+   prints it:
+
+   ```bash
+   uv run python scripts/smoke_hosted.py https://<app host> --page https://www.section508.gov/ --login browser --audit-file tobi.log
+   ```
+
+   It prints one line per check (health, no token, sign-in, run, report,
+   second person, audit) and stops at the first failure. A 403 at the
+   consent page means `FORWARDED_ALLOW_IPS` or the ingress's
+   `X-Forwarded-Proto` (question 6). A 401 after signing in means the
+   token lacks `sub`, the group or the audience: look for
+   `authn.no_subject` or `authz.denied` in the log.
+6. Claude Code connects (section 5), runs one page, and saves its report.
 7. The audit lines name each caller: one JSON line per tool call,
    resource read and prompt, with `sub`, `who`, `action`, `tool`, the URL
    without its query, `outcome` and `seconds`; no token, answer or page
