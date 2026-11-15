@@ -84,7 +84,9 @@ is merged. At most three threads at once. Each thread branches from
 - **6f.** The judge fails "Home" against "NASA, return to the
   homepage" in 9.C on 8 of round 1's pages, and the key passes them:
   the pairing or the rubric. 9.B's budget from 60 s to 180 s. 19.A's
-  FAIL on CILab has two causes, each a proposal to Abby first: a link
+  FAIL on CILab has two causes, each approved by Abby (2026-11-14; a
+  sixth exception to principle 5 for the alias, and the suggested-pages
+  exception widened), the wording shown to her before it is built: a link
   to the page under another address (`/cilab/index.html` for
   `/cilab/`), checked by loading the suspected alias as an other page
   is loaded, only when one is found and a way is missing; and ways
