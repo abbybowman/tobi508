@@ -178,7 +178,7 @@ what is planned.
 6d. **The walk was complete, checked in one place** (Abby,
    2026-11-14). A walk that ends in a trap, a loop, a cap or out of
    time has been handled test by test (5.D, 5.F; 4.D and 4.F by guard
-   CN), and the grid shows 4.E still passes after a trap. One shared
+   CN). One shared
    answer, "the walk reached every stop it could have, or here is what
    it did not reach", read by every test that uses the walk (4.A-4.F,
    5.A-5.H): PASS or DOES NOT APPLY on an incomplete walk becomes
@@ -186,15 +186,32 @@ what is planned.
    14 (part C), pulled up; the coverage record for the other readers
    stays there. It touches `walk.py` and the checks, not the readers
    step 8 replaces.
+   **Decided 2026-11-14 (Abby):** "complete" is coverage, not how a pass
+   ended: every element the test checks was reached by some pass the
+   test may read (P1, P2; P6's stops only once a test has its readings on
+   them, item 14b), counted when the last pass ended. A trap, loop, cap
+   or time limit matters only through what it left unreached. A radio
+   group, a date input and an entered frame count once. 4.D's loop page
+   (7 of 7 reached by the two passes) stays PASS; so does the grid's
+   trap page for 4.E. `walk.walk_coverage` is the one answer.
+   **Built 2026-11-14:** the function and 4.E 1.5.0 (the grid's NEW-3
+   is withdrawn: its trap page reached 7 of 7; the new fixture 4e/f13
+   leaves an element unreached), then 4.D 1.9.0 (guard CN stays beside
+   it) and 4.A 1.11.0. What Tab should land on leaves out a radio group's
+   other radios and whatever an open modal dialog covers. 5.D 1.7.0 (by fields,
+   `walk.field_coverage`; guard CN stays). 5.F 1.8.0, 5.G 1.6.0 and 5.H 1.6.0 (they
+   read 5.F's list). Phase 1 is built; phase 2 (4.A, 4.B, 4.F, 5.x reading
+   the union of the passes) is a proposal to Abby first. 4.B, 4.C and 4.F keep their own decisions.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the
    suite when it stops being wrong, so each fix updates its cell. It
    found four cases the review has no item for (`UNFILED` in the test
-   file; the three that are wrong outcomes are in the README's table):
-   4.B does not read instructions inside a web component, 4.E passes
-   after a keyboard trap, and 4.A and 4.C-4.F pass a page whose only
-   form opens from a plain button.
+   file; the wrong outcomes are in the README's table): 4.B does not
+   read instructions inside a web component, and 4.A and 4.C-4.F pass a
+   page whose only form opens from a plain button. (A third, "4.E passes
+   after a keyboard trap", was withdrawn in step 6d: the page's two
+   passes reached every element, so the PASS was right.)
 8. **One library for reading the page, frames included** (part D).
    - **8a:** one `jslib` in front of every script; shadow roots and
      same-origin frames are read in place by every reader, in the
@@ -471,7 +488,7 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
 - **5.F, 5.G:** fields in frames are not read (guard CN holds PASS and
   DOES NOT APPLY); fields and errors inside web components are, since step
-  8 (5.F 1.8.0). 5.A-5.C read both (5.A 1.11.0, 5.C 1.11.0). Found in step
+  8 (5.F 1.9.0). 5.A-5.C read both (5.A 1.11.0, 5.C 1.11.0). Found in step
   8: a `role="alert"` added together with its error text is not counted as
   a notice (M7 FAIL), though 5.F's Terms say "present before the attempt
   or added with the text"; the same on a plain page, so not new. For Abby. 5.F and 5.G leave `time`,

@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F25 a loop, and Shift+Tab reaches the rest</title></head><body><h1>Loop</h1>
+<nav><a href="/p/a.html">About</a> <a href="/p/s.html">Services</a></nav>
+<p><button id="a">One</button> <button id="b">Two</button></p>
+<p><label for="n">Name</label> <input id="n" name="n"> <button type="button">Send</button></p>
+<script>
+const a=document.getElementById("a"),b=document.getElementById("b");
+b.addEventListener("keydown",e=>{if(e.key==="Tab"&&!e.shiftKey){e.preventDefault();a.focus()}});
+a.addEventListener("keydown",e=>{if(e.key==="Tab"&&e.shiftKey){e.preventDefault();b.focus()}});</script></body></html>

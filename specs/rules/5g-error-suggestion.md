@@ -1,7 +1,7 @@
 ---
 tt_test: 5.G
 tt_name: 3.3.3-error-suggestion
-spec_version: 1.6.0
+spec_version: 1.7.0
 guards: unrecorded-code
 count: fields_hidden, fields.shadow, fields.frames
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -17,6 +17,8 @@ The tool gives each page one 5.G outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 **Other sources.** [Understanding 3.3.3](https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html): suggestions from a limited set of values ("Choose one of: January, …", "Do you mean 'December'?"); an error message can meet 3.3.1 and 3.3.3 at once ("Please provide a valid email address in the format name@domain.com"); the user agent may provide the description. Understanding 3.3.1: the browser's generic native validation messages "may not provide sufficiently helpful or specific suggestions" for 3.3.3. Sufficient techniques [G84](https://www.w3.org/WAI/WCAG22/Techniques/general/G84), [G85](https://www.w3.org/WAI/WCAG22/Techniques/general/G85) (the description says how to fix it), [G177](https://www.w3.org/WAI/WCAG22/Techniques/general/G177) (suggested correction text next to the field or linked from it), [ARIA18](https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA18) (check 7: the alertdialog suggests how to fix the error). No failure techniques, no ACT rule, no DHS ACT data. ICT Testing Baseline 3.1 10.F-ErrorSuggestion: trigger errors as 10.D, review the notifications, check that guidance on how to correct them is provided where it would not jeopardize security or purpose. No Baseline Alignment cases for 10.F.
 
 **Terms.** Everything from [5f-error-identification.md](5f-error-identification.md): error pass E, attempts, error indicators, instances (a field an attempt showed in error).
+
+**Terms for row WK.** A form field is *reached* when P1 stopped on it (not read-only, not disabled; a radio group once; P2's stops are not read by this test, since its fields come from P1). The *fields to reach* are the form fields the page has when P1 ended (`PassResult.form_fields_end`: rendered, not disabled, not read-only; a radio group once). A pass that ended in a trap, a loop, a cap or out of time matters here only through what is left unreached. The sentence is built by `walk.field_coverage`, for example: "The keyboard reached 1 of the 2 form fields on this page, so 1 was not checked. Tab got stuck at "Search" (textbox)." It names only what ran.
 
 ## 1. Applicability
 
@@ -53,10 +55,13 @@ Each 5.F instance (a field an attempt showed in error) is a 5.G instance.
 | --- | --- | --- |
 | G1 | Section 1 gives DOES NOT APPLY or NEEDS REVIEW | That outcome |
 | G2 | Any instance is FAIL | FAIL, listing every instance |
-| G3 | Any instance is NEEDS REVIEW, or 5.F's G3 evidence conditions hold (P1 incomplete, too many forms, an attempt cut short, a page read that failed before an attempt, or new text that could not all be read (1.1.0, from 5.F 1.1.0), a form sent) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
+| G3 | Any instance is NEEDS REVIEW, or 5.F's G3 evidence conditions hold (P1 incomplete, a field no pass read (row WK, 1.6.0), too many forms, an attempt cut short, a page read that failed before an attempt, or new text that could not all be read (1.1.0, from 5.F 1.1.0), a form sent) | NEEDS REVIEW, with the note "This test could not be performed" and the reason (p. 5) |
 | G4 | Every instance is DOES NOT APPLY | DOES NOT APPLY |
 | G5 | Every instance is PASS or DOES NOT APPLY, at least one PASS | PASS |
 | G6 | Anything else | NEEDS REVIEW |
+
+**Row WK: the walk did not reach every field** (1.6.0; Abby, 2026-11-14; review H-03, M-05). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every form field this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. 5.G reads 5.F's list, so its sentence is 5.F's.
+
 
 **Plain-language sentences.**
 
@@ -75,7 +80,7 @@ Each 5.F instance (a field an attempt showed in error) is a 5.G instance.
 
 **Guard GU: code the recording lacks** (front matter `guards: unrecorded-code`; defined in [_template.md](_template.md); Abby, 2026-11-09). This test presses keys or types, so it runs the page's own handlers. When the page's recorded scripts name scripts by a string literal that load when the page is used (code splitting) and the recording does not hold them (`Report.unrecorded_code`), a replay cannot run those handlers: a page outcome of PASS becomes NEEDS REVIEW with the plain sentence "The page loads more code when it is used, for example when you type in a field, and the recording of the page does not have that code, so what happens when you press keys or type could not be checked." Trace row `GU`. FAIL and DOES NOT APPLY are unchanged: the guard only moves a would-be PASS toward review.
 
-**Guard CN: forms and fields pass E could not read** (1.4.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review M-07, D-01). The page's inventory (`count.py`, `Report.counts`) counts form fields hidden when the page loads, and form fields inside web components (open shadow roots) and frames. Pass E reads only fields the walk reached, so no hidden field, and, since part D (1.6.0), the fields and forms inside web components it reaches, with the page's text and its live regions there, so an error shown inside a web component is new text like any other (review M-06), but nothing in frames (`t5f.what_was_read`). When the inventory has more of any of these than pass E read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ( "2 form fields are hidden until something opens them, and were not checked"). Hidden fields count only when the page has something that could show them (a button, a disclosure, a same-page or script link, an inline click handler); on a page with none, a hidden field is hidden from everyone and holds nothing, as DHS's Baseline cases TC10.A-ic-dna-1 and -2 expect (Abby, 2026-11-12). Trace row `CN`. FAIL is unchanged. So a form a plain button shows is left for a person, not DOES NOT APPLY.
+**Guard CN: forms and fields pass E could not read** (1.4.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review M-07, D-01). The page's inventory (`count.py`, `Report.counts`) counts form fields hidden when the page loads, and form fields inside web components (open shadow roots) and frames. Pass E reads only fields the walk reached, so no hidden field, and, since part D (1.7.0), the fields and forms inside web components it reaches, with the page's text and its live regions there, so an error shown inside a web component is new text like any other (review M-06), but nothing in frames (`t5f.what_was_read`). When the inventory has more of any of these than pass E read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and one plain sentence per gap ( "2 form fields are hidden until something opens them, and were not checked"). Hidden fields count only when the page has something that could show them (a button, a disclosure, a same-page or script link, an inline click handler); on a page with none, a hidden field is hidden from everyone and holds nothing, as DHS's Baseline cases TC10.A-ic-dna-1 and -2 expect (Abby, 2026-11-12). Trace row `CN`. FAIL is unchanged. So a form a plain button shows is left for a person, not DOES NOT APPLY.
 
 ## 4. Judgment questions
 

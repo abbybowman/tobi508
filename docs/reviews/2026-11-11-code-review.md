@@ -505,7 +505,7 @@ them.
 - **Checked:** verified (run) for two of the three: error text in a
   shadow root, and a red border on a wrapper, both 5.F DOES NOT APPLY.
   The 60 ms message is the reviewer's run.
-- **Partly fixed:** step 8 reader 4, specs 5.F 1.8.0, 5.G 1.6.0, 5.H 1.6.0: pass E reads text, live regions, dialogs and fields inside web components (`jslib`), so the error in a shadow root is new text and asks J1 (`5f/f28`, FAIL on "Error."; its twin `5f/f29` PASS). Open: the red border on a wrapper, and the message gone within 150 ms.
+- **Partly fixed:** step 8 reader 4, specs 5.F 1.9.0, 5.G 1.7.0, 5.H 1.7.0: pass E reads text, live regions, dialogs and fields inside web components (`jslib`), so the error in a shadow root is new text and asks J1 (`5f/f28`, FAIL on "Error."; its twin `5f/f29` PASS). Open: the red border on a wrapper, and the message gone within 150 ms.
 
 ### A walk cut short by a trap or the clock
 
@@ -564,6 +564,32 @@ different checks, and some of those ways do not hold back an outcome.
   field is not complete (M-05)", no spec change (5.F's G3 already says it;
   5.G and 5.H read the same pass). Fixtures `5f/f24` (NEEDS REVIEW) and
   `5f/f25` (trap after the last field, still PASS).
+
+- **Step 6d (2026-11-14):** the same cause in 4.E (a trap counted as a
+  complete walk), found by the grid as NEW-3, is closed by coverage, not
+  by treating a trap as incomplete: 4.E 1.5.0 reads `walk.walk_coverage`
+  (an element no pass reached is NEEDS REVIEW). The grid's page reached
+  7 of 7 elements, so its PASS stands; fixture `4e/f13`.
+- **Step 6d, 4.D (1.9.0):** 4.D reads the same coverage (row WK) beside guard
+  CN, which stays: removing it could let a NEEDS REVIEW become a PASS.
+  A loop whose other pass reached every element stays PASS (`4d/f25`); a
+  link skipped in both directions is NEEDS REVIEW (`4d/f26`).
+- **Step 6d, 4.A (1.11.0):** 4.A reads the coverage too; its sentence replaces
+  the generic "did not get through the whole page" line when an element was
+  unreached (P1's own condition is unchanged). Two ACT cases (c88fcaf4,
+  fa27b588: a modal dialog open on load) showed the count held elements
+  behind a modal, which Tab cannot reach: the inventory and the focusable
+  count now leave them out (traverse.py, count.py).
+- **Step 6d, 5.D (1.7.0):** 5.D reads the field coverage (`walk.field_coverage`,
+  P1's fields against the page's fields when P1 ended) beside guard CN
+  (`count: fields`), which stays. A field a script skips with the walk
+  wrapped is NEEDS REVIEW (`5d/f23`); the same page without the script
+  is PASS (`5d/f24`).
+- **Step 6d, 5.F, 5.G, 5.H (1.8.0, 1.6.0, 1.6.0):** 5.F's trap-specific line
+  ("ended in a trap, so N form fields were never reached") is replaced by
+  the field coverage sentence; a trap after the last field is still
+  complete, and a field a script skips with the walk wrapped is now NEEDS
+  REVIEW too (`5f/f28`). 5.G and 5.H read 5.F's list.
 
 #### F-11 4.F says "only one element takes focus" when the first element traps Tab
 

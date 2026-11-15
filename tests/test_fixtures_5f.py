@@ -28,7 +28,7 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "Please"}},
         },
     },
-    # M-06 (part D, 5.F 1.8.0): an error shown inside a web component is new
+    # M-06 (part D, 5.F 1.9.0): an error shown inside a web component is new
     # text like any other (it was DOES NOT APPLY, "the page did not check").
     # "Error." names no field: FAIL (M8, as TC10.D-2-fail-3); its twin
     # names the field and the problem in an alert region the web component
@@ -322,6 +322,23 @@ EXPECTED: dict[str, dict[str, dict]] = {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
     },
+    # Row WK (5.F 1.8.0, 5.G 1.6.0, 5.H 1.6.0; step 6d): a script skips the
+    # second field in both directions, so the walk wraps having reached 1 of
+    # the page's 2 fields, and the second is never tested. f25 above is the
+    # nearest page that must still PASS: a trap, but every field reached.
+    "f28-field-skipped-by-script": {
+        "5.F": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["M2"],
+            "page_rows": ["WK"],
+            "walk": (1, 2),
+        },
+        "5.G": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["N7"],
+            "answers": {"J1": {"choice": "unsure"}},
+        },
+    },
     "f25-trap-after-last-field": {
         "5.F": {"outcome": "PASS", "rows": ["M2"]},
         "5.G": {
@@ -388,6 +405,11 @@ async def test_outcome(name, settings, server, drafts):  # noqa: F811
             f.rationale,
             f.summary,
         )
+        if "page_rows" in x:
+            assert set(x["page_rows"]) <= set(f.rows), (tt, f.rows)
+        if "walk" in x:  # row WK's evidence: fields reached of fields counted
+            r, c = x["walk"]
+            assert f"Walk: reached {r} of {c} fields" in f.rationale, f.rationale
 
 
 @pytest.mark.parametrize(
