@@ -557,6 +557,12 @@ class OtherPage(BaseModel):
         description="With frozen pages (an eval): true if this page came from "
         "the frozen copies, false if it was recorded live.",
     )
+    purpose: Literal["search", "alias"] | None = Field(
+        default=None,
+        description="A page 19.A loaded itself: its site search's results "
+        "(search) or a suspected alias of the tested page (alias). None for "
+        "the caller's pages.",
+    )
 
 
 class Part(BaseModel):
@@ -662,7 +668,9 @@ class Report(BaseModel):
     )
     live_pages: list[OtherPage] = Field(
         default_factory=list,
-        description="Pages the tool loaded live itself: 19.A's site search only.",
+        description="Pages the tool loaded itself, each by the code a caller's "
+        "other page uses: 19.A's site search and its suspected aliases of the "
+        "tested page (`purpose`).",
     )
     cross_site_frames: list[str] = Field(
         default_factory=list,

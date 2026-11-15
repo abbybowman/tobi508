@@ -63,6 +63,17 @@ class Search(BaseModel):
     failed_scripts: list[str] = Field(default_factory=list)
 
 
+class Alias(BaseModel):
+    """A suspected alias of T (spec Terms, 1.10.0) and how it was settled."""
+
+    url: str
+    page: int  # the other page whose link named it
+    status: str = "not_verified"  # same | not_verified | not_needed
+    how: str = ""  # address | document, when the same page
+    final_url: str = ""
+    reason: str = ""  # why not verified
+
+
 class State19A(BaseModel):
     no_pages: bool = False
     read_errors: list[str] = Field(default_factory=list)
@@ -76,6 +87,8 @@ class State19A(BaseModel):
     # T is the address a search form submits to (W5, 1.4.0)
     search_target: str = ""
     search: Search = Field(default_factory=Search)
+    # Suspected aliases of T, in the order their links were read (1.10.0).
+    aliases: list[Alias] = Field(default_factory=list)
     suggestions: list[str] = Field(default_factory=list)
     hint: bool = False
     text: list[str] = Field(default_factory=list)  # J1 input
@@ -97,6 +110,40 @@ def _to_t(href: str, t: str | tuple[str, ...]) -> bool:
 
 def _same(a: str, b: str) -> bool:
     return norm_href(a) == norm_href(b) and bool(norm_href(a))
+
+
+ALIAS_MAX = 3  # suspected aliases checked a run (Abby, 2026-11-14)
+ALIAS_FILE = re.compile(r"^(index|default)\.[a-z0-9]+$", re.I)
+
+
+def _alias_key(u: str) -> tuple[str, int | None, str, str]:
+    """An address with what an alias may change taken out (spec Terms,
+    1.10.0): the scheme, a leading "www.", a last segment named index.* or
+    default.*, a trailing slash and the fragment. The query string stays: a
+    link that differs only by it is another page (Abby, 2026-11-15)."""
+    p = urlsplit(u)
+    host = (p.hostname or "").lower().rstrip(".")
+    host = host[4:] if host.startswith("www.") else host
+    try:
+        port = p.port
+    except ValueError:
+        port = None
+    if port in (80, 443):
+        port = None
+    segs = p.path.split("/")
+    if segs and ALIAS_FILE.match(segs[-1]):
+        segs[-1] = ""
+    return (host, port, "/".join(segs).rstrip("/"), p.query)
+
+
+def suspected_alias(href: str, t: str) -> bool:
+    """A link destination that is not T but differs from it only as an alias
+    may (spec Terms, 1.10.0)."""
+    if not href or not t or _same(href, t):
+        return False
+    if urlsplit(href).scheme not in ("http", "https", "file"):
+        return False
+    return _alias_key(href) == _alias_key(t)
 
 
 def _path(u: str) -> tuple[str, str, str]:
@@ -243,6 +290,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
     )
     st.search_target = search_target(forms, both)
+    if len(st.kinds) < 2:
+        await _check_aliases(ctx, st, site.others, maps)
     if len(st.kinds) < 2 and st.search_forms and not st.search_target:
         await _live_search(ctx, st, main, forms)
     if len(st.kinds) < 2:
@@ -253,6 +302,59 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     if st.hint:
         st.text = [t[:200] for t in texts][:60]
     return st
+
+
+def _targets(st: State19A) -> tuple[str, ...]:
+    """T, the address the caller gave and every verified alias (W6)."""
+    return (st.t_url, st.t_requested) + tuple(
+        a.url for a in st.aliases if a.status == "same"
+    )
+
+
+async def _check_aliases(
+    ctx: RunContext, st: State19A, pages: list[PageRead], maps: set[int]
+) -> None:
+    """Suspected aliases of T on the pages read (spec Terms, 1.10.0): at
+    most ALIAS_MAX loaded, each as a caller's other page is loaded; the same
+    page only by its final address or its document's bytes. Links to a
+    verified alias then count as links to T (W6); any other is not verified
+    (W7)."""
+    for p in pages:
+        for u in p.units:
+            if u.role != "link" or not suspected_alias(u.href, st.t_url):
+                continue
+            url = u.href.split("#")[0]
+            if any(_same(url, a.url) for a in st.aliases):
+                continue
+            st.aliases.append(Alias(url=url, page=p.n))
+    for i, a in enumerate(st.aliases):
+        if len(st.kinds) >= 2:
+            a.status = "not_needed"
+            continue
+        if i >= ALIAS_MAX:
+            a.reason = f"only {ALIAS_MAX} are checked in a run"
+            continue
+        if ctx.record_live is None or ctx.out_of_time():
+            a.reason = "no time was left to load it"
+            continue
+        try:
+            ref = await ctx.record_live(a.url, "alias")
+        except Exception as exc:
+            a.reason = (
+                "it took longer than its share of the time"
+                if isinstance(exc, TimeoutError)
+                else f"it could not be loaded ({type(exc).__name__})"
+            )
+            continue
+        a.final_url = ref.final_url
+        if _same(ref.final_url, st.t_url):
+            a.status, a.how = "same", "address"
+        elif ref.same_content_as_tested:
+            a.status, a.how = "same", "document"
+        else:
+            a.reason = "it loaded a different document"
+            continue
+        st.links = links_to(_targets(st), pages, maps)
 
 
 async def _live_search(ctx: RunContext, st: State19A, main: PageRead, forms) -> None:
@@ -297,7 +399,7 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             "its results could not be read",
         )
         return
-    found = results_link_to(res, (st.t_url, st.t_requested))
+    found = results_link_to(res, _targets(st))
     try:
         failed = failed_scripts(ref.har) if ref.har is not None else []
     except Exception:
@@ -428,9 +530,12 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             Outcome.NEEDS_REVIEW, REVIEW_HEAD, ["A4", "G1"], evidence_refs, note=True
         )
     kinds = st.kinds
+    unverified = [a for a in st.aliases if a.status == "not_verified"]
     trace = (
         ["A5", "W1"]
         + (["W5"] if st.search_target else [])
+        + (["W6"] if any(a.status == "same" for a in st.aliases) else [])
+        + (["W7"] if unverified and len(kinds) < 2 else [])
         + {
             "found": ["W2"],
             "not_found": ["W3"],
@@ -440,7 +545,11 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
     )
     words = [KIND_WORDS[k] for k in kinds]
     pages = ", ".join(f"other page {p['n']}" for p in st.pages)
-    rationale = f"Kinds: {kinds}; links: {len(st.links)}; search {st.search.status}; pages: {pages}."
+    rationale = (
+        f"Kinds: {kinds}; links: {len(st.links)}; search {st.search.status}; "
+        f"aliases: {[(a.url, a.status, a.how or a.reason) for a in st.aliases]}; "
+        f"pages: {pages}."
+    )
     if len(kinds) >= 2:
         return _finding(
             Outcome.PASS,
@@ -458,7 +567,12 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
         "not_found": "The site search did not find this page when searching for its heading.",
         "cannot_run": f"The site search could not be checked: {st.search.reason}.",
     }.get(st.search.status, "")
-    if st.suggestions or st.search.status == "cannot_run":
+    alias_note = " ".join(
+        f"We could not check whether {a.url} is this page under another "
+        f"address: {a.reason}."
+        for a in unverified
+    )
+    if st.suggestions or st.search.status == "cannot_run" or unverified:
         more = (
             " To check further, run this test again (tests: 19.A) with these pages"
             " of the site added to other_pages: "
@@ -472,7 +586,11 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
         )
         return _finding(
             Outcome.NEEDS_REVIEW,
-            " ".join(x for x in [f"We found {found}.", search_note, more.strip()] if x),
+            " ".join(
+                x
+                for x in [f"We found {found}.", alias_note, search_note, more.strip()]
+                if x
+            ),
             trace + ["G3"],
             evidence_refs,
             rationale,
@@ -517,7 +635,9 @@ class Check19A:
         "It looks for links to this page on the other pages of the same site "
         "you give, and groups them by kind: the site navigation, a site map, a "
         "table of contents, links in other pages' content. Two kinds pass. If "
-        "it finds fewer, it tries the site's own search for the page's heading "
+        "it finds fewer, it checks whether a link to this page's address with "
+        "index.html (or similar) is the same page, then tries the site's own "
+        "search for the page's heading "
         "(again in quotation marks if that finds nothing), and otherwise "
         "suggests more pages to check."
     )
