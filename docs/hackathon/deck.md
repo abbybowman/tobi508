@@ -185,6 +185,7 @@ flowchart LR
 - Step 6e: an analytics timer held 2.C and 2.D on every round 2 page; running the page's clock past it decided 8 cells, all agreeing with the key, and a test page caught the one false Does Not Apply on the way.
 - Step 6e, images: reading every image (not the first 30) decided 6 more round 2 cells, all agreeing with the key, and finds a strobing image the old cap missed.
 - Step 6e, hidden forms: 5.H reads a form hidden behind a button for whether it applies, as a person would, without submitting it: 8 more cells decided, all agreeing with the key.
+- Step 6e, anti-spam fields: a hidden field nothing a tester does can show is out of scope, decided by behaviour; it moves no cell on our pages, and its test pages caught two wrong results before they shipped.
 - **[FILL: the main disagreements in the scored run and whether any is a false PASS.]**
 - Unless each test has about 60 true failures, say "promising, not proven".
 

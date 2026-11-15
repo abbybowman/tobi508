@@ -68,7 +68,10 @@ HIDDEN_FORMS_JS = (
       || el.getAttribute('placeholder') || el.getAttribute('title') || el.name || el.type || '').replace(/\s+/g, ' ').trim().slice(0, 120);
   };
   const seenForms = new Map();
-  const out = { forms: [], forms_found: [], fields_found: [] };
+  // The page's visible text: the hint reads all of it (spec section 2), and
+  // pass E has none when it took no form.
+  const out = { forms: [], forms_found: [], fields_found: [],
+    page_text: J.text(document.body).slice(0, 20000) };
   const readForm = (f, key) => {
     if (seenForms.has(f)) return;
     seenForms.set(f, true);
@@ -260,6 +263,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
             got["forms_found"]
         )
         page["fields_hidden"] = page.get("fields_hidden", 0) + len(got["fields_found"])
+        if not all_text and HINT.search(got.get("page_text", "")):
+            # Pass E took no form, so it read no page text: the hint reads
+            # the page's visible text from this load instead (spec: "all of
+            # its visible text").
+            for form in st.forms:
+                form.hint = True
     st.page_text = [t[:200] for t in base_texts][:TEXT_MAX]
     # The hint reads all of the page's text; the 60 strings are J1's input.
     if HINT.search(all_text) or any(HINT.search(t) for t in base_texts):

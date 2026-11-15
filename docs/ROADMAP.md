@@ -72,8 +72,12 @@ is merged. At most three threads at once. Each thread branches from
   Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
   decided, all agreeing with the key) and the images (up to 300 read;
   6 cells, all agreeing) and 5.H reading a hidden form to say whether
-  it is the kind 5.H is about (8 cells, all agreeing). To research:
-  fields hidden from everyone (honeypots, reCAPTCHA).
+  it is the kind 5.H is about (8 cells, all agreeing). Done: fields hidden from everyone
+  (honeypots, reCAPTCHA), decided by behaviour inside a form shown on
+  load (5.A 1.13.0 to 5.H 1.10.0; no cell on the frozen pages, by
+  design). Later: a mobile copy out of scope, once a positive test exists;
+  the freeze recording frames whose address varies per load, and its
+  scroll on smooth-scrolling pages (round 3).
 - **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14 and
   15; [draft](plans/2026-11-15-19a-finds-ways.md)). Today 19.A reads
   only the pages the caller gave and one site search, and the eval
