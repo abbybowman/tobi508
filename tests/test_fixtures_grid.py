@@ -398,7 +398,14 @@ EXPECTED.update(
             "4.E": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
             "4.F": wrong(Outcome.PASS, "NEW-4", UNFILED["NEW-4"]),
             # H-08: held by guard CN ("hidden until something opens it").
-            **{t: nr() for t in ("5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H")},
+            **{t: nr() for t in ("5.A", "5.B", "5.C", "5.D", "5.F", "5.G")},
+            # 5.H 1.9.0 reads the hidden form for applicability without
+            # submitting it: an email box and Subscribe, no consequence hint.
+            "5.H": dna(
+                "the only form, behind a button, is an email sign-up: read "
+                "for applicability (5.H 1.9.0), it makes no payment, agreement, "
+                "change to saved data or test submission"
+            ),
             **_site_cells(),
         },
     }

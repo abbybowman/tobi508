@@ -60,17 +60,34 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
     },
     # M-07: a payment form a plain button shows.
     "pay-form-hidden": {
-        t: (
+        **{
+            t: (
+                "NEEDS_REVIEW",
+                "2 form fields are hidden until something opens them, and were "
+                "not checked.",
+            )
+            for t in ("5.F", "5.G")
+        },
+        # 5.H 1.9.0 reads the hidden form for applicability: "Card number" and
+        # "Pay" are consequence hints, so J1 is asked (open here): still NEEDS
+        # REVIEW, now by the rows, not the guard.
+        "5.H": ("NEEDS_REVIEW", None),
+    },
+    # 5.H 1.9.0: a hidden "Was this page helpful?" form with no consequence
+    # hint is read for applicability, so 5.H decides (A3). 5.F, which would
+    # have to submit it, is still held by the guard.
+    "feedback-form-hidden": {
+        "5.H": ("DNA", None),
+        "5.F": (
             "NEEDS_REVIEW",
-            "2 form fields are hidden until something opens them, and were not "
+            "3 form fields are hidden until something opens them, and were not "
             "checked.",
-        )
-        for t in ("5.F", "5.G", "5.H")
+        ),
     },
     # M-02: a form that is only a button.
-    "delete-button-form": {
-        "5.H": ("NEEDS_REVIEW", "1 form with a button was not tested."),
-    },
+    # 5.H 1.9.0 reads the form pass E did not take: "Delete my account" is a
+    # consequence hint, so J1 is asked (open here).
+    "delete-button-form": {"5.H": ("NEEDS_REVIEW", None)},
     # N-01: audio a script plays with no element on the page.
     "audio-detached": {
         "2.A": (
