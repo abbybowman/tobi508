@@ -28,7 +28,8 @@ keep their own schedule.
   ones that did not open or could not be read (guard RV), about 10;
   guard CN (a hidden form, more than 30 images), 44; the judge unsure,
   29; frames, 28; 2.C and 2.D's timer, 20; 19.A, 12. The keys fail
-  few of them. Steps 6e, 6g and 8 are aimed at these.
+  few of them. Steps 6e, 6g, 6h and 8 went after these (all merged
+  2026-11-15); what they won back on real pages is measured by 9b.
 - **Hosting:** sign-in, run ownership and audit lines are built, and
   the built image passes a smoke test in CI behind a real Keycloak.
   Nothing has run in the tobi-508 environment on VAST yet (step 12b).
@@ -104,11 +105,10 @@ is merged. At most three threads at once. Each thread branches from
   `main`, on an unmerged branch, and no other thread is told the
   pages. Round 3's pages are not frozen yet and no thread has been
   told what they are (Abby, 2026-11-15): the freeze and the run are
-  one thread, started last. Before it, the freeze is checked against
-  what step 6e found on round 1's pages (a popup a visitor sees at 5 s
-  never opens in the replay; 12 requests fail). The scorer fixes are
-  merged (PR #73).
-  Its freeze waits for step 10a. 9b runs at the same commit, so the two can be read together.
+  one thread, started when step 10a is merged. The thread compares
+  each replay with the live page before any test runs. The scorer
+  fixes are merged (PR #73). 9b runs at the same commit, so the two
+  can be read together.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
   - **12a is built** (PRs #70 to #72, #74):
     [the deployment guide](how-to/deploy-on-vast.md), a smoke test
@@ -251,8 +251,9 @@ itself, one bundle a thread; they are not repeated here.
   ([browser checks](../specs/rules/_browser-checks.md)).
 - **`JUDGE_TYPES`:** 4.B alone meets the gate in step 9a; decided after
   9b.
-- **Each change of steps 6e and 6g** that turns NEEDS REVIEW into an
-  outcome, shown before it is built.
+- **The image cap's timing** (step 6e raised it from 30 to 300
+  without the timed run against 2.B's budget it had promised; no 2.B
+  ran out on the frozen pages): 9b's test times will show it.
 
 **After the demo: each shapes a step of "Next".**
 
