@@ -122,6 +122,10 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
         )
         for t in ("5.A", "5.F")
     },
+    # 5.H: a hidden form whose own words ("Amount", "Continue") hold no
+    # consequence word, on a page that says "Pay your bill". Pass E takes no
+    # form, so the page's text is read with the hidden form: J1 is asked.
+    "pay-page-hidden-form": {"5.H": ("NEEDS_REVIEW", None)},
     # M-02: a form that is only a button.
     # 5.H 1.9.0 reads the form pass E did not take: "Delete my account" is a
     # consequence hint, so J1 is asked (open here).
