@@ -111,11 +111,12 @@ ran three to four times longer than the work took.
 | 6d | One shared check that the keyboard walk reached every element, for the tests that read it | Sonnet | phase 1 done Nov 14: PRs #59, #63 | Phase 2 (4.A, 4.B, 4.F past a forward trap) is step 14c, after the demo |
 | 6e | Guard CN on real pages, and 2.C and 2.D's timer: the two largest causes of NEEDS REVIEW that hide no failure | Opus | Nov 15-16 | Step 9a's results; this file, "What each step covers" |
 | 6f | 9.C's "Home" pairs (8 false FAILs on round 1), 19.A on CILab, 9.B's budget | Sonnet | Nov 15-16 | Step 9a's results |
+| 6g | The keyboard tests read content that menus and sections open: 4.C and 4.E first, from the pass 4.F already makes | Opus | Nov 16-17, after PR #64 | Step 15's phase 2, its first part; guard RC |
 | 7 | The grid of hard pages | Sonnet | done Nov 13: PRs #48, #50 | Plan part I; `tests/test_fixtures_grid.py` |
 | 8 | One library for reading the page: web components and frames | Opus | readers 1 to 3 done Nov 14 (PRs #58, #60 to #62); readers 4 to 8 in PR #64; the form error tests in frames next | Plan part D; fix 7 |
 | 9a | The second check: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | done Nov 14; its branch waits to merge (see "Where things stand") | `evals/README.md`, "Gate 2026-11-14" |
 | 9b | The third check: the same pages after 8, 6d, 6e and 6f | Sonnet | Nov 17, started by midday | As 9a, a new folder, one repeat |
-| 10 | Round 3, small: a NASA site not used before, with web components if Abby finds one | Abby's keys; Sonnet for the run | pages chosen by Nov 15; run Nov 16-17 | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
+| 10 | Round 3, small: a NASA site not used before. Abby's keys are locked (2026-11-15) | Sonnet | freeze the pages now; run and score once, on Nov 17, at 9b's commit | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
 | 11 | If the days allow: the second look's trial | Sonnet | after 6, beside 8 | Plan part F, "Trial" |
 | 12 | If the days allow: sign in on VAST from Claude Code and run one page | Opus | when the admin's answers arrive | [Hosted sign-in plan](plans/2026-11-06-hosted-auth.md). The demo for reviewers is recorded (Abby, 2026-11-12), so this is not needed for it |
 | 13 | The pitch: the submission commit fixed on Nov 17, one scored run, rehearsal, fallback video | Abby, with a Sonnet thread for the run | Nov 18-19 | [docs/hackathon/](hackathon/README.md) |
@@ -126,8 +127,9 @@ before it bumps a spec version or edits the README tables it merges
 `main` and takes the next free version. Step 8 merges reader by reader,
 so a half-finished step 8 on Nov 17 still leaves `main` whole.
 
-**The cut.** Whatever of steps 8 to 12 is not merged by the end of
-Nov 17 waits until after the demo. The pitch says what is measured and
+**The cut** is the end of Nov 17: from Nov 18 only the deck and the
+presentation (Abby, 2026-11-13). Whatever of steps 6e to 12 is not
+merged by then waits until after the demo. The pitch says what is measured and
 what is planned.
 
 ### What each step covers
@@ -224,14 +226,13 @@ what is planned.
    other radios and whatever an open modal dialog covers. 5.D 1.7.0 (by fields,
    `walk.field_coverage`; guard CN stays). 5.F 1.8.0, 5.G 1.6.0 and 5.H 1.6.0 (they
    read 5.F's list). Phase 1 is built; phase 2 (4.A, 4.B, 4.F, 5.x reading
-   the union of the passes) is step 14c, after the demo (proposed
-   2026-11-15: no page of rounds 1 or 2 has a forward trap, so it
-   would move no measured cell, and it turns NEEDS REVIEW into
-   outcomes). 4.B, 4.C and 4.F keep their own decisions. Left open by
+   the union of the passes) is step 14c, after the demo (Abby,
+   2026-11-15: step 9a's NEEDS REVIEW cells name no forward trap, so
+   it would move no measured cell; step 6g is where those cells are). 4.B, 4.C and 4.F keep their own decisions. Left open by
    the step: the grid's `frame-other` test failed once without a
    cause found, and the modal-dialog rule is not yet in `jslib`
    (step 8's thread).
-6e. **Guard CN on real pages, and the timer** (proposed 2026-11-15;
+6e. **Guard CN on real pages, and the timer** (Abby, 2026-11-15;
    each change turns NEEDS REVIEW into an outcome, so Abby approves
    each before it is built). Step 9a: 58 guard CN cells on 19 real
    pages and no failure among them.
@@ -250,7 +251,7 @@ what is planned.
    - Every change comes with the nearest page that must stay NEEDS
      REVIEW, and the grid rerun: its hidden-form and late-start pages
      are the guard's own cases.
-6f. **Three smaller findings of step 9a** (proposed 2026-11-15):
+6f. **Three smaller findings of step 9a** (Abby, 2026-11-15):
    - **9.C:** on 8 of round 1's 9 pages the judge fails the pair
      "Home" and "NASA, return to the homepage", and the key passes
      all 8. Find whether the pair should have been made at all (a
@@ -261,6 +262,20 @@ what is planned.
      looked at.
    - **9.B's budget** is 60 s and its longest run was 41.5 s (51.6 s
      in a dry run, where it ran out): 180 s, as 9.A and 9.C.
+6g. **Opened content in 4.C and 4.E** (Abby, 2026-11-15: the largest
+   cause of NEEDS REVIEW in step 9a). Guard RC holds a PASS whenever a
+   menu or section opened to show controls the test did not walk: 45
+   cells over the two rounds (4.C 14, 4.E 16, 5.D 9, the rest 4.D,
+   5.A and 5.C), and the keys pass 44 of them. 4.F's pass R already
+   opens each trigger on a fresh replay and Tabs through what it
+   shows, for the first six triggers. 4.C and 4.E read that pass: a
+   trap inside the opened content, and a change of context on focus
+   there, by their own rows. Guard RC then holds only what pass R did
+   not open (past six triggers, or a trigger that did not open). It is
+   the first part of step 15's phase 2, pulled up; 4.D (it needs
+   pictures) and 5.D (it must fill fields) follow only if the days
+   allow. It turns NEEDS REVIEW into PASS, so the spec wording and
+   the moved cells go to Abby first.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the
@@ -308,12 +323,16 @@ what is planned.
    that it finishes inside the cut. A gate run's reports and pre-SCRT
    files stay out of git (about 70 MB a run with their screenshots);
    the scores, the comparison and the README sections go in.
-10. **Round 3, small.** A site the tool has not been developed against;
-    Abby looks for NASA sites built with web components. Three to five
-    pages, Abby's blind SCRT files first, then the tool, then the score.
-    Abby's time for the keys decides its size. The scorer fixes (15 to
-    17) come first. If no such site is found by Nov 15, round 3 waits
-    and step 9 stands in.
+10. **Round 3, small.** A site the tool has not been developed against,
+    Abby's blind SCRT files locked on 2026-11-15. Two parts:
+    - **Now:** freeze the pages (a live page drifts from what the keys
+      describe), and the scorer fixes (15 to 17). The tool is not run
+      and the keys are not opened.
+    - **Nov 17:** one run at the same commit as 9b, then the lock and
+      the score. Run once, last, with no fix made from it before the
+      demo: the moment a result from it changes the code, it is a
+      development site like the other two, and the pitch loses its one
+      figure from pages the tool was never tuned on.
 11. **The second look's trial:** one request per frozen round 2 page,
     with the rules as they were at round 2's lock, asking the server's
     model to look again at the rules' PASS and DOES NOT APPLY results.
@@ -430,8 +449,8 @@ itself, one bundle a thread; they are not repeated here.
   2.B have no wrong cell and too few cells; 4.A, 4.D, 4.F, 5.B, 5.D and
   9.C are over the wrong-FAIL limits. Switch 4.B on now, or wait for
   9b.
-- **Steps 6e and 6f,** and phase 2 of step 6d moved after the demo:
-  proposed 2026-11-15.
+- **Step 6g's wording and moved cells** (NEEDS REVIEW to PASS in 4.C
+  and 4.E inside opened content), before it is built.
 - **Step 9a's branch:** it committed each page's report and pre-SCRT
   file (72 MB). Keep them out of `main` (proposed), or keep them.
 - **Step 8's direction** (NEEDS REVIEW to PASS inside web components

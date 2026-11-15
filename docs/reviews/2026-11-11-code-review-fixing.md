@@ -14,9 +14,9 @@ is listed here is what is left to start or still running.
 `evals/README.md`, "Gate 2026-11-14"). Step 8 is running (PRs #58,
 #60 to #62 merged, #64 open).
 
-**Order to start them** (at most three threads at once): 6e and 6f
-now, beside step 8's thread; 9b by midday on Nov 17; 10 when the keys
-are in place.
+**Order to start them** (at most three threads at once, beside step
+8's thread while it finishes): 6e, 6f and step 10's freeze now; 6g
+when PR #64 is merged; 9b and step 10's run by midday on Nov 17.
 
 ## Starting a thread
 
@@ -90,6 +90,37 @@ are in place.
 >
 > The per-page reports of step 9a are not in git: ask me for them or
 > for the frozen archives (never fetch the pages live).
+
+**Step 6g, Opus: opened content in 4.C and 4.E** (when PR #64 is merged)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "Working rules". Your work is step 6g of
+> `docs/ROADMAP.md` "Order of work". Read `docs/solutions/opening-triggers.md`,
+> guard RC in 4.C's and 4.E's specs, pass R in 4.F's spec, and step
+> 9a's cells with row `RC`
+> (`evals/judging/gate-2026-11-14/compare-round1.md` and
+> `compare-round2.md`): 45 cells, my keys pass 44.
+>
+> First, no code: tell me what pass R records today for each trigger
+> it opens (which stops, what a trap or a change of context inside
+> the opened content would look like in it), what 4.C and 4.E would
+> need from it that it lacks, and what a tester does here by the TT
+> text. Then the spec wording for 4.C and 4.E: their own rows applied
+> to the stops inside opened content, and guard RC narrowed to what
+> pass R did not open (past `REVEAL_MAX`, a trigger that did not
+> open, content with controls pass R did not reach). Show me both
+> before building: this turns NEEDS REVIEW into PASS.
+>
+> Then build 4.C, then 4.E, one pull request each: a fixture where
+> opened content traps Tab (4.C FAIL) and one where focus inside it
+> changes context (4.E FAIL), the nearest page that must stay NEEDS
+> REVIEW (a seventh trigger; a trigger that does not open), the grid
+> rerun, and the README rows. Then rerun 4.C and 4.E on the frozen
+> pages of rounds 1 and 2 (ask me for the archives; never fetch them
+> live) and show me every moved cell beside my key: if any is a PASS
+> where my key fails, stop. 4.D and 5.D only if I say so after that.
+> Merge `main` before each spec version. Whatever is not merged by
+> the end of Nov 17 stops there.
 
 **Step 8, Opus: one library for reading the page, frames included** (running)
 
@@ -167,16 +198,25 @@ are in place.
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3's run** (when I have put my SCRT files for the pages in place)
+**Step 10, Sonnet: round 3** (two threads: the freeze now, the run on Nov 17)
 
-> Read `docs/how-to/run-a-judging-round.md` and
-> `evals/agent/README.md`. Before the run, do scorer fixes 15, 16 and
-> 17 of `docs/plans/2026-11-08-post-round2-fixes.md`, each with its
-> test. Then run a round on the pages I name, with the server judge
-> answering, exactly as the how-to describes: freeze, run, lock, then
-> score against my keys. Never open my keys before the lock. Report
-> per test and in all, and list apart the cells that are inside a web
-> component or a frame.
+> The freeze, now. Read `docs/how-to/run-a-judging-round.md` and
+> `evals/agent/README.md`. My keys for round 3 are locked; do not
+> open them. Freeze the pages I name with the fuller freeze (PR #52:
+> it scrolls, stores media and records 19.A's searches), check each
+> recording against its manifest, and tell me anything that did not
+> record. Then do scorer fixes 15, 16 and 17 of
+> `docs/plans/2026-11-08-post-round2-fixes.md`, each with its test.
+> Do not run the tool on the pages and do not score anything.
+
+> The run, on Nov 17. Read the same two files. Run round 3 once on
+> `main`'s head (record the commit; it should be 9b's), with the
+> server judge answering, exactly as the how-to describes: run, lock,
+> then score against my keys. Never open my keys before the lock.
+> Report per test and in all, and list apart the cells that are
+> inside a web component or a frame. Keep each page's report and
+> pre-SCRT file out of git as 9b does. Change no code from what you
+> find: list it for after the demo.
 
 **Step 11, Sonnet: the second look's trial** (if the days allow)
 
