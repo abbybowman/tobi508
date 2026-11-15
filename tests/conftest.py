@@ -293,6 +293,15 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         # are served: the request is looked up as a key, never joined into a
         # path, so no request can name a file outside it.
         fixture = _fixture_file(path)
+        if path.endswith("/") and fixture is None:
+            # A directory address, as most servers answer it (19.A aliases):
+            # its dir.html when the fixture folder has one (a page that is
+            # not its index.html), else its index.html.
+            fixture = _fixture_file(path + "dir.html") or _fixture_file(
+                path + "index.html"
+            )
+            if fixture is not None:
+                return self._send(200, fixture.read_bytes())
         if path.endswith(".html") and fixture is not None:
             return self._send(200, fixture.read_bytes())
         if path.endswith(".js") and fixture is not None:  # lazy/ chunks

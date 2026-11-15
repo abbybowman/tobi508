@@ -106,6 +106,28 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W4", "G3"],
         {},
     ),
+    # Step 6h (19.A 1.10.0; round 2 p05, svs.gsfc.nasa.gov/cilab/, key Pass):
+    # every link to the microsite's home goes to its index.html. Loaded, it
+    # is the same document, so those links count: the agency's labs page
+    # (content) and the lab's own menu (navigation).
+    "alias-index-html-is-the-page": (
+        "micro/",
+        ["lab-home", "micro/people"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    # The nearest case that must never PASS: thin/index.html is another page
+    # under the same heavy template (same title and heading, one paragraph
+    # apart). Its bytes differ, so it is not verified: NEEDS REVIEW, where
+    # before this the page FAILed with no way found.
+    "alias-index-html-is-another-page": (
+        "thin/",
+        ["lab-home"],
+        "NEEDS_REVIEW",
+        ["W1", "W7", "G3"],
+        {},
+    ),
     "process-step": (
         "step2",
         ["home"],
@@ -121,7 +143,7 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     page, others, outcome, rows, answers = EXPECTED[case]
     got = await run_tests(
         settings,
-        f"{server.base}/19a/{page}.html",
+        f"{server.base}/19a/{page}" + ("" if page.endswith("/") else ".html"),
         ["19.A"],
         {"19.A": answers},
         other_pages=[f"{server.base}/19a/{o}.html" for o in others],
@@ -129,6 +151,8 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     f = got["19.A"]
     assert f.outcome.value == outcome, (f.rows, f.summary, f.rationale)
     assert [r for r in f.rows if r != "A5"] == rows, f.rows
+    if case == "alias-index-html-is-another-page":
+        assert "thin/index.html is this page under another address" in f.summary
     if case == "search-finds-nothing":
         assert "sitemap.html" in f.summary  # suggested, never visited
 
@@ -315,3 +339,43 @@ def test_failed_scripts_reads_the_recording(tmp_path):
         "https://cdn.example/app.js",
         "https://example.gov/static/r.js",
     ]
+
+
+def test_suspected_alias():
+    """19.A 1.10.0 Terms (Abby, 2026-11-14 and 2026-11-15): an index.* or
+    default.* last segment either way round, the scheme and a leading www.
+    make a suspected alias; a query string, another directory or another
+    file name do not; neither does T itself."""
+    from tobi508.checks.t19a import suspected_alias
+
+    t = "https://svs.example.gov/cilab/"
+    yes = [
+        "https://svs.example.gov/cilab/index.html",
+        "https://svs.example.gov/cilab/default.aspx",
+        "http://svs.example.gov/cilab/index.html#top",
+        "https://www.svs.example.gov/cilab/",
+    ]
+    no = [
+        "https://svs.example.gov/cilab/",
+        "https://svs.example.gov/cilab",
+        "https://svs.example.gov/cilab/?page=2",
+        "https://svs.example.gov/cilab/information.html",
+        "https://svs.example.gov/index.html",
+        "https://other.example.gov/cilab/index.html",
+        "mailto:lab@example.gov",
+    ]
+    assert [u for u in yes if not suspected_alias(u, t)] == []
+    assert [u for u in no if suspected_alias(u, t)] == []
+    assert suspected_alias(
+        "https://svs.example.gov/cilab/", "https://svs.example.gov/cilab/index.html"
+    )
+
+
+def test_alias_reasons_are_plain_words():
+    """Principle 8: why an alias was not loaded, without exception names."""
+    from tobi508.checks.t19a import _load_reason
+    from tobi508.frozen import NotFrozen
+
+    assert _load_reason(NotFrozen("x")) == "no saved copy of it was available to load"
+    assert "time" in _load_reason(TimeoutError())
+    assert "Error" not in _load_reason(RuntimeError("boom"))
