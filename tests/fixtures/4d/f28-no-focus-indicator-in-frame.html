@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F28 no focus indicator inside a frame from another site</title></head><body>
+<p><a href="#a">Before</a></p>
+<div id="slot"></div>
+<p><a href="#c">After</a></p>
+<script>
+// A link whose focus shows nothing, inside a frame from another site
+// (localhost against 127.0.0.1).
+var f = document.createElement('iframe');
+f.title = 'Benefits'; f.width = 300; f.height = 80;
+f.src = new URL('frames/f28-inner.html', location.href).href.replace('127.0.0.1', 'localhost');
+document.getElementById('slot').appendChild(f);
+</script></body></html>

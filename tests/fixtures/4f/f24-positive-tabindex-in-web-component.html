@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F24 positive tabindex inside a web component</title></head><body>
+<header><a href="#home">Agency home</a></header>
+<x-page></x-page>
+<script>
+// f03's page body, inside a web component (an open shadow root): the
+// footer link's tabindex="1" puts it first among the component's stops.
+customElements.define('x-page', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML =
+      '<main><h1>Benefits</h1><p><a href="#apply">Apply</a></p></main>' +
+      '<footer><a href="#privacy" tabindex="1">Privacy policy</a></footer>';
+  }
+});
+</script></body></html>

@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F27 no focus indicator inside a web component</title></head><body>
+<p><a href="#a">Before</a></p>
+<x-links></x-links>
+<p><a href="#c">After</a></p>
+<script>
+// A link whose focus shows nothing, inside a web component (an open shadow root).
+customElements.define('x-links', class extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' }).innerHTML =
+      '<style>a{outline:none;color:#000;text-decoration:none}</style><p><a href="#b">Benefits</a></p>';
+  }
+});
+</script></body></html>

@@ -75,6 +75,11 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
+- **4.D, focus dropped on focus inside a web component or a frame:** a
+  control that blurs itself as it gets focus is M3 (FAIL) on a plain page
+  (`4d/f11`), but inside a web component or a frame the walk never reaches
+  it, so 4.D is NEEDS REVIEW there (row WK; found in step 8, 2026-11-15).
+  Safe, not a decided FAIL.
 - **5.A-5.C, 5.F-5.H:** read fields inside web components and frames
   since step 8 (5.A 1.11.0, 5.C 1.11.0, 5.F 1.10.0); a frame the recording
   lacks holds PASS and DOES NOT APPLY (`frames_missing`). Found in step
