@@ -81,6 +81,9 @@ packet's answer matched; its follow-up round was not sent). Time cost of the err
 pass inside 4.C on a realistic page is not measured.
 
 ### 7. Frames, as TT tells a person to test them
+- **Built (step 8, 2026-11-14/15):** 5.A-5.C open each frame as a page of
+  its own with ANDI there (#60); 5.F-5.H read fields and errors in place in
+  each frame; a frame the recording lacks holds PASS and DOES NOT APPLY.
 - **Where it is built (2026-11-12):** part D of
   [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md), with shadow roots,
   which the same readers miss. The evidence and the TT method below

@@ -22,7 +22,7 @@ from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
 from tobi508.forms import ARRIVE_SLACK, FIELD_FN, Field5D, _arrive, _fields
 from tobi508.forms import _field_stops as field_stops
-from tobi508.jslib import JSLIB
+from tobi508.jslib import JSLIB, frame_docs
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -146,6 +146,7 @@ READ_JS = (
   return { texts, capped, all_text: full.join(" ").slice(0, 100000),
            live: J.all(LIVE).map(path), fields,
            focus: a && a !== doc.body && a !== doc.documentElement ? path(a) : null,
+           has_focus: doc.hasFocus(),
            dialogs, url: location.href };
 })""".replace("NEW_MAX", str(NEW_MAX))
     .replace("LIVE", json.dumps(_LIVE))
@@ -224,12 +225,42 @@ FORMS_JS = (
 def _css(f: Field5D) -> str | None:
     """The CSS path page reads use: a date field's walk stop is its first
     part, inside the input's own shadow root, so read the input (its group
-    is "input:<path>"). Fields in frames are not read (spec section 2)."""
-    if f.frame_chain:
-        return None
+    is "input:<path>"). A field in a frame: its path in the frame's own
+    document (read there, part D)."""
     if f.control == "date" and f.group and f.group.startswith("input:"):
         return f.group.removeprefix("input:")
     return f.css_path
+
+
+def _full(f: Field5D) -> str | None:
+    """A field's path with its frame chain, as the merged reads name it."""
+    c = _css(f)
+    return _pre(f.frame_chain, c) if c else None
+
+
+def _pre(chain: list[str], p: str | None) -> str | None:
+    return " >> ".join([*chain, p]) if chain and p else p
+
+
+async def _docs(s: Session) -> list[tuple[list[str], Any]]:
+    """The documents pass E reads: the page (None: its isolated world) and
+    each shown frame the recording has, with its chain (part D)."""
+    out: list[tuple[list[str], Any]] = [([], None)]
+    try:
+        docs = await frame_docs(s.page)
+    except Exception:
+        docs = []
+    out += [(d.chain, d.frame) for d in docs if d.shown and not d.missing]
+    return out
+
+
+async def _in_doc(s: Session, frame: Any, js: str, arg: Any) -> Any:
+    if frame is None:
+        return await _top(s, js, arg)
+    try:
+        return await frame.evaluate(f"{js}({json.dumps(arg)})")
+    except Exception:
+        return None
 
 
 async def _top(s: Session, js: str, arg: Any) -> Any:
@@ -325,6 +356,8 @@ class PassE(BaseModel):
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
     # Fields pass E read inside web components (FORMS_JS; part D).
     shadow_read: int = 0
+    # Fields pass E read inside frames (part D, 8b).
+    frames_read: int = 0
 
 
 def what_was_read(ps: PassE, count) -> dict[str, int]:
@@ -334,11 +367,16 @@ def what_was_read(ps: PassE, count) -> dict[str, int]:
     inside web components (part D); nothing in frames."""
     forms = set(count.form_paths) if count is not None else set()
     hidden = set(count.hidden_field_paths) if count is not None else set()
+    framed = sum(
+        1
+        for f in ps.forms
+        if " >> " in (f.key or "") and not f.key.endswith("(no form)")
+    )
     return {
-        "forms_with_button": len(forms & {f.key for f in ps.forms if f.key}),
+        "forms_with_button": len(forms & {f.key for f in ps.forms if f.key}) + framed,
         "fields_hidden": len(hidden & {f.css_path for f in ps.fields if f.css_path}),
         "fields.shadow": ps.shadow_read,
-        "fields.frames": 0,
+        "fields.frames": ps.frames_read,
     }
 
 
@@ -463,9 +501,51 @@ def _read_of(got: Any, moment: str, fields: list[Field5D]) -> Read:
 
 
 async def _read(s: Session, moment: str, fields: list[Field5D]) -> Read:
+    """READ_JS in the page and in each frame that holds a field (part D: a
+    form in a frame, its errors in that frame), merged: paths inside a frame
+    carry its chain; focus is the deepest document that has it."""
     mode = "base" if moment in ("base", "load") else "after"
-    got = await _top(s, READ_JS, [[_css(f) for f in fields], mode])
-    return _read_of(got, moment, fields)
+    merged: dict[str, Any] | None = None
+    focus_depth = -1
+    for chain, frame in await _docs(s):
+        mine = [list(f.frame_chain) == chain for f in fields]
+        if chain and not any(mine):
+            continue
+        got = await _in_doc(
+            s,
+            frame,
+            READ_JS,
+            [[_css(f) if m else None for f, m in zip(fields, mine)], mode],
+        )
+        if not isinstance(got, dict):
+            if not chain:
+                return Read(moment=moment, failed=True)
+            continue  # its fields stay unread (None): never an absence
+        for t in got.get("texts") or []:
+            t["p"] = _pre(chain, t["p"])
+            if t.get("live"):
+                t["live"] = _pre(chain, t["live"])
+        got["live"] = [_pre(chain, x) for x in got.get("live") or []]
+        if merged is None:
+            merged = got
+            if got.get("has_focus") and got.get("focus"):
+                focus_depth = 0
+            continue
+        merged["texts"] = (merged.get("texts") or []) + (got.get("texts") or [])
+        merged["live"] = (merged.get("live") or []) + got["live"]
+        merged["capped"] = bool(merged.get("capped") or got.get("capped"))
+        merged["all_text"] = (
+            (merged.get("all_text") or "") + " " + (got.get("all_text") or "")
+        ).strip()
+        merged["dialogs"] = (merged.get("dialogs") or 0) + (got.get("dialogs") or 0)
+        merged["fields"] = [
+            a if a is not None else b
+            for a, b in zip(merged.get("fields") or [], got.get("fields") or [])
+        ]
+        if got.get("has_focus") and got.get("focus") and len(chain) > focus_depth:
+            merged["focus"] = _pre(chain, got["focus"])
+            focus_depth = len(chain)
+    return _read_of(merged, moment, fields)
 
 
 def _rel(ctx: RunContext, path) -> str:
@@ -655,7 +735,29 @@ async def _forms(ctx: RunContext, ps: PassE, walk: KeyboardWalk) -> None:
     fields = ps.fields
     s = await ctx.replay(["Tab"] * (fields[0].index + 1))
     try:
-        got = await _top(s, FORMS_JS, [_css(f) for f in fields])
+        got = {}
+        chains: dict[str, list[str]] = {}
+        for chain, frame in await _docs(s):
+            mine = [list(f.frame_chain) == chain for f in fields]
+            if chain and not any(mine):
+                continue
+            part = await _in_doc(
+                s,
+                frame,
+                FORMS_JS,
+                [_css(f) if m else None for f, m in zip(fields, mine)],
+            )
+            if not isinstance(part, dict):
+                if not chain:
+                    got = None
+                    break
+                continue
+            for k, v in part.items():
+                key = (
+                    _pre(chain, k) if k else (_pre(chain, "(no form)") if chain else k)
+                )
+                got[key] = v
+                chains[key] = chain
         base = await _read(s, "load", fields)
     finally:
         await s.close()
@@ -670,37 +772,34 @@ async def _forms(ctx: RunContext, ps: PassE, walk: KeyboardWalk) -> None:
                     for x in ("label", "type", "described", "maxlength", "min", "max")
                 }
             )
-    # The walk's first visit: it goes round to the first stop again.
-    stops: dict[str | None, int] = {}
+    # The walk's first visit (it goes round to the first stop again), by
+    # frame chain and path: buttons in a frame map to its stops (part D).
+    stops: dict[tuple, int] = {}
+    keys: dict[tuple, str] = {}
     for i, st in enumerate(walk.p1.steps):
-        if st.stop.kind == "element" and not st.stop.frame_chain:
-            stops.setdefault(st.stop.css_path, i)
-    keys = {
-        st.stop.css_path: st.stop.path_key
-        for st in walk.p1.steps
-        if st.stop.kind == "element" and not st.stop.frame_chain
-    }
+        if st.stop.kind == "element":
+            k = (tuple(st.stop.frame_chain), st.stop.css_path)
+            stops.setdefault(k, i)
+            keys.setdefault(k, st.stop.path_key)
     mapped = {i for g in got.values() for i in g.get("fields", [])}
     ps.shadow_read = sum(int(g.get("shadow") or 0) for g in got.values())
-    unread = [f for i, f in enumerate(fields) if i not in mapped and not f.frame_chain]
+    unread = [f for i, f in enumerate(fields) if i not in mapped]
     if unread:
-        # Never DOES NOT APPLY for fields the tool could not read.
+        # Never DOES NOT APPLY for fields the tool could not read (a field in
+        # a frame the recording lacks or that could not be read too).
         ps.incomplete.append(f"{len(unread)} form field(s) could not be read.")
-    framed = [f for f in fields if f.frame_chain]
-    if framed:
-        ps.incomplete.append(
-            f"{len(framed)} form field(s) are inside frames, which this test does not check yet."
-        )
+    ps.frames_read = len({i for i in mapped if fields[i].frame_chain})
     for j, (key, g) in enumerate(got.items()):
         members = [fields[i] for i in g.get("fields", [])]
+        chain = tuple(chains.get(key) or [])
         btns = [
             Btn(
                 n=k + 1,
-                css=b["css"],
+                css=_pre(list(chain), b["css"]) or b["css"],
                 name=b.get("name") or "",
                 kind=b.get("kind") or "",
-                index=stops.get(b["css"]),
-                path_key=keys.get(b["css"]),
+                index=stops.get((chain, b["css"])),
+                path_key=keys.get((chain, b["css"])),
             )
             for k, b in enumerate(g.get("buttons") or [])
         ]
@@ -872,7 +971,7 @@ def notice(a: AttemptE, texts: list[ErrText]) -> bool:
 
 
 def _focus_on_field(r: Read, f: Field5D) -> bool:
-    return bool(r.focus and _css(f) and r.focus == _css(f))
+    return bool(r.focus and _full(f) and r.focus == _full(f))
 
 
 def instances(ps: PassE) -> list[Inst5F]:

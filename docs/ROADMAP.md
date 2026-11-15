@@ -577,9 +577,9 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
-- **5.F, 5.G:** fields in frames are not read (guard CN holds PASS and
-  DOES NOT APPLY); fields and errors inside web components are, since step
-  8 (5.F 1.9.0). 5.A-5.C read both (5.A 1.11.0, 5.C 1.11.0). Found in step
+- **5.A-5.C, 5.F-5.H:** read fields inside web components and frames
+  since step 8 (5.A 1.11.0, 5.C 1.11.0, 5.F 1.10.0); a frame the recording
+  lacks holds PASS and DOES NOT APPLY (`frames_missing`). Found in step
   8: a `role="alert"` added together with its error text is not counted as
   a notice (M7 FAIL), though 5.F's Terms say "present before the attempt
   or added with the text"; the same on a plain page, so not new. For Abby. 5.F and 5.G leave `time`,
