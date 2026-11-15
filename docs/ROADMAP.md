@@ -169,9 +169,13 @@ the remaining checks).
    readings (focus pictures, focus-event check) on them, and only then
    count them as reached (step 6d's walk-coverage rule).
 15. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
-   guards RV and RC). Phase 2: 4.A, 4.C, 4.D and 4.E (and 4.F past its
-   first six triggers) walk the keyboard through opened content, which
-   removes guard RC. Phase 3: 5.D fills fields in opened content. Also
+   guards RV and RC). Phase 2 is started (step 6g, 2026-11-15): a shared
+   walk through what each trigger opened (`opened.py`), read by 4.C
+   (1.14.0) and 4.E, where guard RC holds only what the walk did not
+   reach. Still to do: 4.A and 4.D read it; **4.F's pass R moves onto the
+   shared walk** (4.F keeps pass R until then; Abby, 2026-11-15); and a
+   menu that opened only by a click joins 4.A's execute check, ahead of
+   its cap, with 4.A's rows deciding (Abby, 2026-11-15). Phase 3: 5.D fills fields in opened content. Also
    nested triggers, a combobox's list, buttons that need a key other than
    Enter, and phase 1's caps (20 triggers, 3 sets). From the review: a
    trigger is "opened" only by what appears in the region it controls

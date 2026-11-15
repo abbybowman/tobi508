@@ -237,7 +237,7 @@ flowchart LR
 **On the slide**
 
 - Fewer false FAILs and fewer "unsure" answers: the rule and question fixes round 2 pointed to
-- Fields inside frames, and the keyboard walk through everything a page can open
+- Fields inside frames, and the rest of the keyboard tests walking through everything a page can open (the keyboard-trap test does now)
 - A person's answer from TOBI's own signed-in page, kept so the same question is answered once per site
 - A third round on a site not used before, with a second certified tester if one is available
 - More of the 61 tests: images, contrast, headings, resize, where scanners and people disagree most
