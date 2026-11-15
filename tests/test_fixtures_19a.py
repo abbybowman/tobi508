@@ -167,6 +167,24 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W8", "G3"],
         {},
     ),
+    # 19.A 1.12.0 W9 (Abby, 2026-11-15: "we can't say we've checked for nav
+    # links as a way if we haven't read the nav"). The other page links the
+    # grants page in its content and inside a menu that is closed on load:
+    # NEEDS REVIEW, not FAIL. Its twin with the menu open PASSes.
+    "closed-menu-not-read": (
+        "t7-grants",
+        ["menu-closed"],
+        "NEEDS_REVIEW",
+        ["W1", "W9", "G3"],
+        {},
+    ),
+    "open-menu-read": (
+        "t7-grants",
+        ["menu-open"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
     "process-step": (
         "step2",
         ["home"],
@@ -190,6 +208,8 @@ async def test_case(case, settings, server, drafts):  # noqa: F811
     f = got["19.A"]
     assert f.outcome.value == outcome, (f.rows, f.summary, f.rationale)
     assert [r for r in f.rows if r != "A5"] == rows, f.rows
+    if case == "closed-menu-not-read":
+        assert "inside a closed menu on" in f.summary, f.summary
     if case == "alias-index-html-is-another-page":
         assert "thin/index.html is this page under another address" in f.summary
     if f.outcome.value == "FAIL":  # names what was checked (Abby, 2026-11-15)

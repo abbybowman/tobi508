@@ -103,6 +103,9 @@ class State19A(BaseModel):
     search: Search = Field(default_factory=Search)
     # Suspected aliases of T, in the order their links were read (1.10.0).
     aliases: list[Alias] = Field(default_factory=list)
+    # Pages read with links in closed menus (W9, 1.12.0): page n, its url,
+    # how many, and how many lead to T or a verified alias.
+    hidden_nav: list[dict[str, Any]] = Field(default_factory=list)
     # The suggested pages, in the order they are checked (1.11.0).
     checked: list[Suggested] = Field(default_factory=list)
     hint: bool = False
@@ -380,6 +383,16 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         await _check_suggested(ctx, st, main, read)
     if len(st.kinds) < 2 and st.search_forms and not st.search_target:
         await _live_search(ctx, st, main, forms)
+    st.hidden_nav = [
+        {
+            "page": p.n,
+            "url": p.url,
+            "count": len(p.hidden_nav),
+            "to_t": sum(1 for h in p.hidden_nav if _to_t(h, _targets(st))),
+        }
+        for p in read
+        if p.hidden_nav
+    ]
     for a in st.aliases:  # past the cap, or no longer needed
         if a.status == "pending":
             a.status = "not_needed" if len(st.kinds) >= 2 else "not_verified"
@@ -689,12 +702,14 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
     short = len(kinds) < 2
     unverified = [a for a in st.aliases if a.status == "not_verified"]
     unchecked = [c for c in st.checked if c.status == "not_checked"]
+    menus = [] if "navigation" in kinds else st.hidden_nav
     trace = (
         ["A5", "W1"]
         + (["W5"] if st.search_target else [])
         + (["W6"] if any(a.status == "same" for a in st.aliases) else [])
         + (["W7"] if unverified and short else [])
         + (["W8"] if unchecked and short else [])
+        + (["W9"] if menus and short else [])
         + {
             "found": ["W2"],
             "not_found": ["W3"],
@@ -736,14 +751,32 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
         f"We could not check {ROLE_WORDS[c.role]} ({c.url}): {c.reason}."
         for c in unchecked
     )
+    to_t = [h for h in menus if h["to_t"]]
+    menu_note = (
+        " ".join(
+            f"A link to this page is inside a closed menu on {h['url']} that we "
+            "did not open, so the site navigation may lead here."
+            for h in to_t
+        )
+        if to_t
+        else (
+            f"Some pages we read have closed menus ({sum(h['count'] for h in menus)} "
+            f"links inside them on {len(menus)} page{'s' if len(menus) != 1 else ''}) "
+            "that we did not open, so we cannot say the site navigation does not "
+            "lead here."
+            if menus
+            else ""
+        )
+    )
     web = f"A person can also search the web for pages that link to {st.t_url}"
-    if unchecked or unverified or st.search.status == "cannot_run":
+    if unchecked or unverified or menus or st.search.status == "cannot_run":
         return _finding(
             Outcome.NEEDS_REVIEW,
             " ".join(
                 x
                 for x in [
                     f"We found {found}.",
+                    menu_note,
                     page_note,
                     alias_note,
                     search_note,
