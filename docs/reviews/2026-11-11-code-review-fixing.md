@@ -15,9 +15,9 @@ is listed here is what is left to start or still running.
 #60 to #62 merged, #64 open).
 
 **Order to start them** (at most three threads at once, beside step
-8's thread while it finishes): 6e, 6f and 12a now; 6g and round 3
-(step 10) when PR #64 is merged; 9b and round 4 (step 10b) by midday
-on Nov 17. If usage limits bite, hold 6f.
+8's thread while it finishes): 6e, 6h and 12a now (6f is running);
+6g when PR #64 is merged; round 3's run (step 10) when PR #64 and
+step 6h are merged; 9b and round 4 (step 10b) by midday on Nov 17.
 
 ## Starting a thread
 
@@ -82,8 +82,8 @@ on Nov 17. If usage limits bite, hold 6f.
 > says are wrong; add the nearest pair that must still FAIL, and run
 > the judge eval for 9.C before and after.
 >
-> (2) 19.A on CILab (round 2) is FAIL by rule where my key passes:
-> find the cause and tell me before changing anything.
+> (2) 19.A is not yours: step 6h has it. Leave 19.A's spec, its
+> check and the gate script alone.
 >
 > (3) 9.B's budget: 60 s to 180 s (`config.TEST_BUDGETS_DEFAULT`), as
 > 9.A and 9.C; its longest run was 41.5 s and it ran out once in a
@@ -122,6 +122,76 @@ on Nov 17. If usage limits bite, hold 6f.
 > where my key fails, stop. 4.D and 5.D only if I say so after that.
 > Merge `main` before each spec version. Whatever is not merged by
 > the end of Nov 17 stops there.
+
+**Step 6h, Opus: 19.A finds its ways as a tester does** (now; before round 3 runs)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow its "Working rules". Your work is step 6h of
+> `docs/ROADMAP.md` "Order of work". Read 19.A's spec whole
+> (`specs/rules/19a-multiple-ways.md`: the Terms "Suggested pages" and
+> the live search, rows W1 to W5 and G1 to G5), CLAUDE.md principle 5
+> and "Pages and URLs", `src/tobi508/site.py` (`near_copy`), and how
+> the follow-up call is made (`tobi_run_status` with `finish=true`).
+>
+> The problem. 19.A reads only the pages the caller gave, plus one
+> site search. When I test 19.A by hand I also go down to a child
+> page and look for a breadcrumb or a link back, up to the parent
+> page, and to the home page; and I treat `/cilab/index.html` as
+> `/cilab/`. On round 2's CILab page the tool FAILs where my key
+> passes: one way is a link to `/cilab/index.html`, the other is the
+> top navigation of CILab's own subpages, which nobody gave it. And in
+> our eval runs nothing makes the follow-up call an agent would make,
+> so 19.A stops at NEEDS REVIEW with pages it has already named. A
+> round 3 run would have 19.A undecided on every page. I have approved
+> the three changes below with their limits. Show me the spec wording
+> and the two exception texts for CLAUDE.md before you build; then
+> each is its own pull request.
+>
+> (1) A suspected alias of the tested page T, checked live. Only when
+> 19.A would have fewer than two kinds AND a link on a page it read
+> is a suspected alias: same host, and differing from T only by a
+> last segment named `index.*` or `default.*` (either way round), by
+> scheme or a leading `www.`, or by its query string. At most 3
+> candidates a run. Load each exactly as a caller's other page is
+> loaded (the same code path: the allowlist, the same host before and
+> after redirects, every hop checked, its own HAR, the page cache);
+> write no new HTTP client. It is the same page as T when its final
+> address equals T's (fragment and trailing slash aside) or when the
+> text comparison `near_copy` uses says so (generalise it to this
+> pair). Its links then count as links to T. One that cannot be
+> loaded or compared is "not verified": NEEDS REVIEW, as row W4,
+> never FAIL and never a match. This is a sixth exception to
+> principle 5.
+>
+> (2) Suggested pages, widened. Add T's parent (the address one level
+> up from T's own path, same host: it comes from T's address, not
+> from page content) and up to 2 child pages (links on T, same host,
+> under T's own directory). The cap of 5 stays; propose the order
+> they are taken in and tell me if the cap bites on real pages. They
+> are read only by the follow-up call, as the others are, for links
+> back to T or to a verified alias of T. Row G4 ("nothing is left to
+> try") applies only when these are used up. G3's and G4's sentences
+> also tell a person they can search the web for pages that link to
+> this address. This widens the existing suggested-pages exception.
+>
+> (3) The eval runners make the follow-up call. `evals/apijudge_gate.py`
+> and the round runner (`evals/judging.py`) make, once per page, the
+> call `tobi_run_status` with `finish=true` would make, and record
+> it. In tested_frozen mode the pages it reads load live under the
+> usual rules; in replay mode a page with no recording is "not
+> verified". Say how many of step 9a's 19.A cells on row G3 this
+> would have changed (`evals/judging/gate-2026-11-14/`).
+>
+> Fixtures: a microsite home whose only link from the site goes to
+> `.../index.html` (now found); the nearest page that must not match
+> (an `index.html` that is a different page); a home page whose
+> second way is on a child page; a page whose parent links to it;
+> and a page where none of this finds a second way (still FAIL).
+> Then rerun 19.A on the frozen pages of rounds 1 and 2 (ask me for
+> the archives; never fetch the tested pages live) and show me every
+> moved cell beside my key: a PASS where my key fails stops the work.
+> Say what the follow-up adds to a run's time. Step 6f's thread has
+> been told to leave 19.A alone; round 3's run waits for you.
 
 **Step 8, Opus: one library for reading the page, frames included** (running)
 
@@ -199,7 +269,7 @@ on Nov 17. If usage limits bite, hold 6f.
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3, a formal blind judging round** (when PR #64 is merged)
+**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze now; the run when PR #64 and step 6h are merged)
 
 > Read `docs/how-to/run-a-judging-round.md` and
 > `evals/agent/README.md`. First do scorer fixes 15, 16 and 17 of
@@ -213,7 +283,11 @@ on Nov 17. If usage limits bite, hold 6f.
 > own branch and do not open a pull request or merge anything of the
 > round until the run is locked: other threads must not see the page
 > list before then. Keep each page's report and pre-SCRT file out of
-> git. Report per test and in all; list apart the cells inside a web
+> git. Do not run the tool before step 6h is merged: until then
+> 19.A cannot be decided on any page. Run in tested_frozen mode, each
+> page with the round's other pages on its host and the site's home
+> page as other pages, and with the follow-up call step 6h adds.
+> Report per test and in all; list apart the cells inside a web
 > component or a frame; and list every NEEDS REVIEW and wrong cell by
 > cause, as a list of findings for the other threads. Change no code
 > yourself, and change nothing between the freeze and the lock: the
