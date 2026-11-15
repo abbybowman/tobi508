@@ -115,6 +115,24 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.C": "PASS"},
         {},
     ),
+    # Round 1's "Home" pairs (step 6f; 9.C 1.10.0): a footer "Home" here and
+    # a story bar's logo there go to one address but are not one component:
+    # the same kind of block is required, and two named blocks must carry
+    # the same name. l1 also has a "Breadcrumbs" Home, which must not pair
+    # with the story bar's (also navigation, named otherwise) either. The
+    # nearest case that must still FAIL: one footer link, worded two ways.
+    "home-link-against-story-logo": (
+        "l1-plain-home-links",
+        ["l2-story-bar-logo"],
+        {"9.C": "PASS"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
+    "footer-link-reworded": (
+        "l3-footer-sign-in",
+        ["l4-footer-log-in"],
+        {"9.C": "FAIL"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
     # Pages of another template: nothing can be said (spec 1.1.0 / 1.2.0,
     # A3o). They were DOES NOT APPLY before.
     "unrelated": (
@@ -527,3 +545,49 @@ def test_text_share_and_near_copy():
     assert near_copy(a, page("https://X.gov:443/p/?x=1", base))
     # no text at all is not a copy
     assert text_share(page("u", []), page("u", [])) == 0.0
+
+
+def test_9c_destination_pairs_only_within_one_block():
+    """1.10.0 (step 6f): round 1's "Home" pairs. A footer link and a story
+    bar's logo go to one address and are not one component; a breadcrumb and
+    the story bar are both navigation but named differently. The same footer
+    on two pages still pairs, worded however it is."""
+    from tobi508.checks.t9c import AndiPage, Comp, make_pairs
+
+    def comp(k, region, key, name):
+        return Comp(
+            k=k,
+            css=f"a{k}",
+            role="link",
+            href="https://x.test",
+            region_role=region,
+            regions=[key],
+            andi_name=name,
+        )
+
+    here = AndiPage(
+        n=0,
+        ran=True,
+        comps=[
+            comp(0, "contentinfo", "contentinfo|@1", "Home"),
+            comp(1, "navigation", "navigation|Breadcrumbs", "Home"),
+        ],
+    )
+    story = AndiPage(
+        n=1,
+        ran=True,
+        comps=[comp(0, "navigation", "navigation|#feature-nav", "Return home")],
+    )
+    assert make_pairs(here, story) == []
+    # Positional names say nothing: navigation @2 here and @1 there pair.
+    a = AndiPage(n=0, ran=True, comps=[comp(0, "navigation", "navigation|@2", "Home")])
+    b = AndiPage(n=1, ran=True, comps=[comp(0, "navigation", "navigation|@1", "Start")])
+    assert [(p.here, p.there) for p in make_pairs(a, b)] == [(0, 0)]
+    # The same footer, worded two ways, still pairs (and fails).
+    f1 = AndiPage(
+        n=0, ran=True, comps=[comp(0, "contentinfo", "contentinfo|@1", "Sign in")]
+    )
+    f2 = AndiPage(
+        n=1, ran=True, comps=[comp(0, "contentinfo", "contentinfo|@1", "Log in")]
+    )
+    assert [(p.here, p.there) for p in make_pairs(f1, f2)] == [(0, 0)]
