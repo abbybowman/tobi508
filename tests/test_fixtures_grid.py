@@ -94,17 +94,7 @@ def wrong(outcome: Outcome, item: str, what: str) -> Cell:
 # Findings of the grid that the code review has no item for. Each needs a
 # line in the review's list (or a fix) from whoever takes it up; none is
 # fixed here.
-UNFILED = {
-    "NEW-2": (
-        "The PASS of 4.C, 4.D, 4.E, 4.F and 5.D on a page whose stops are in "
-        "a shadow root or a frame. The keyboard walk reached all 6 stops the "
-        "page has (3 links, 2 fields, 1 button), so the PASS may well be "
-        "right; it is listed because the grid's rule is never PASS, and "
-        "nothing in the run says what a frame or a shadow root hid from the "
-        "readings that sit beside the walk (focus pictures, the fields' "
-        "answers)."
-    ),
-}
+UNFILED = {}
 
 NEW4 = {
     "NEW-4": (
@@ -126,7 +116,9 @@ def _site_cells() -> dict[str, Cell]:
 def _frame_cells() -> dict[str, Cell]:
     """What a page whose content is in a frame (same site or another) gives:
     the two frame pages read the same today."""
-    walk = wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"])
+    # Step 8: the walk reached every stop in the frame and the readings
+    # beside it read the frame, so these PASS; each names its twin, the same
+    # defect in a frame, which must still FAIL (the grid's NEW-2, closed).
     return {
         # Audio that starts by itself and has no control before it: a real FAIL.
         "2.A": fail(),
@@ -143,16 +135,16 @@ def _frame_cells() -> dict[str, Cell]:
         ),
         "4.A": nr(),
         "4.B": nr(),
-        "4.C": walk,
-        "4.D": walk,
-        "4.E": walk,
-        "4.F": walk,
+        "4.C": passes("4c/f19-cross-origin-iframe-loop.html"),
+        "4.D": passes("4d/f28-no-focus-indicator-in-frame.html"),
+        "4.E": passes("4e/f14-dialog-in-frame-on-focus.html"),
+        "4.F": passes("4f/f25-positive-tabindex-in-frame.html"),
         # Pass L opens the frame as a page of its own and reads it with ANDI
         # (5.A, 5.C 1.11.0; part D): both fields are labelled.
         "5.A": passes("5a/f52-frame-other-site-placeholder-only.html"),
         "5.B": nr(),
         "5.C": passes("5a/f53-frame-other-site-unnamed.html"),
-        "5.D": walk,
+        "5.D": passes("5d/f09-field-in-iframe.html"),
         # Part D, 8b (5.F 1.10.0, 5.G 1.8.0, 5.H 1.8.0): pass E reads the form
         # in its frame; it checks nothing and is a plain contact form.
         "5.F": NO_CHECKING,
@@ -201,17 +193,17 @@ EXPECTED: dict[str, dict[str, Cell]] = {
         # NEW-1 (part D): the page's text includes its web components', so
         # the timing sentence asks J1.
         "4.B": nr(),
-        "4.C": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        "4.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        "4.E": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
-        "4.F": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
+        "4.C": passes("4c/f24-open-shadow-loop.html"),
+        "4.D": passes("4d/f27-no-focus-indicator-in-web-component.html"),
+        "4.E": passes("4e/f13-dialog-in-web-component-on-focus.html"),
+        "4.F": passes("4f/f24-positive-tabindex-in-web-component.html"),
         # D-01: pass L reads the web component (5.A, 5.C 1.10.0; part D):
         # both fields are labelled, so 5.A and 5.C PASS on their rows; 5.B
         # asks whether the labels describe the fields.
         "5.A": passes("5a/f46-shadow-placeholder-only.html"),
         "5.B": nr(),
         "5.C": passes("5a/f48-shadow-labelledby-outside.html"),
-        "5.D": wrong(Outcome.PASS, "NEW-2", UNFILED["NEW-2"]),
+        "5.D": passes("5d/f23-web-component-shows-full-terms.html"),
         # Part D (5.F 1.9.0, 5.G 1.7.0, 5.H 1.7.0): pass E reads the form
         # inside the web component; it checks nothing and sends nothing
         # anywhere special, as the hidden-text page's form.

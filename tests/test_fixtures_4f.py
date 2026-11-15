@@ -64,6 +64,18 @@ EXPECTED: dict[str, dict] = {
         "choice": "preserves",
         "signals": {"S3"},
     },
+    # Step 8 (the grid's NEW-2): f03 inside a web component and inside a
+    # frame from another site still FAILs, the twins of the grid's PASSes.
+    "f24-positive-tabindex-in-web-component": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S1"},
+    },
+    "f25-positive-tabindex-in-frame": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S1"},
+    },
     "f22-steps-out-of-sequence": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",

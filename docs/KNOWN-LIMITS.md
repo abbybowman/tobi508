@@ -84,6 +84,21 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   past the cap of 60 stops have no budget of their own.
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
   root) and f32 (two traps) for 4.D, and f32 for 4.F.
+- **4.D, focus dropped on focus inside a web component or a frame:** a
+  control that blurs itself as it gets focus is M3 (FAIL) on a plain page
+  (`4d/f11`), but inside a web component or a frame the walk never reaches
+  it, so 4.D is NEEDS REVIEW there (row WK; found in step 8, 2026-11-15).
+  Safe, not a decided FAIL.
+- **The walk on a page with a frame from another site, on a slow CI
+  runner:** once (PR #64's CI, 2026-11-15) the walk on the grid's
+  `frame-other` page reached all 7 stops but never saw focus wrap back to
+  the first within its press limit (50 presses), so 4.C-4.F and 5.D were
+  NEEDS REVIEW (an incomplete walk, step 6d) and the grid failed; the rerun
+  passed. Not reproduced here: 12 runs of 4.C on that page under heavy CPU
+  load all ended normally (2026-11-15). Safe (NEEDS REVIEW), not wrong. If
+  it recurs, keep the failing run's `steps.jsonl` to see the stop keys
+  after the last stop (`traverse.detect_p1_end` needs OUT, then the first
+  stop's key).
 - **5.A-5.C, 5.F-5.H:** read fields inside web components and frames
   since step 8 (5.A 1.11.0, 5.C 1.11.0, 5.F 1.10.0); a frame the recording
   lacks holds PASS and DOES NOT APPLY (`frames_missing`). Found in step
