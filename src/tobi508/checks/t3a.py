@@ -208,6 +208,12 @@ def _pictures(ctx, src: flashcap.Source, n: int, frames, scale: float = 1.0) -> 
         pass  # pictures are evidence for a person; the counts stand
 
 
+# One animated image's measurement (decoding its frames at the size shown,
+# then counting flashes) stops after this long; the image is then not
+# measured (A3), and the test goes on (3.A 1.4.0).
+IMAGE_MEASURE_S = 60
+
+
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
     mp = await motion.collect(ctx, keep_shots=False)
     motion.match_inventory(ctx, mp)
@@ -361,12 +367,34 @@ async def _measure(
             if tool is None:
                 tool_ctx, tool = await motion._secure_tool_page(page)
             try:
-                frames, durations, reps = await flashcap.image_frames(
-                    tool, body, kind, w, h
+                frames, durations, reps = await asyncio.wait_for(
+                    flashcap.image_frames(tool, body, kind, w, h), IMAGE_MEASURE_S
                 )
-                a, span, total = await asyncio.to_thread(
-                    flashcap.analyze_image, frames, durations, reps, (b["x"], b["y"])
+                a, span, total = await asyncio.wait_for(
+                    asyncio.to_thread(
+                        flashcap.analyze_image,
+                        frames,
+                        durations,
+                        reps,
+                        (b["x"], b["y"]),
+                    ),
+                    IMAGE_MEASURE_S,
                 )
+            except TimeoutError:
+                # A3 (1.4.0): a measurement time cut short. Round 2's 14194 has
+                # a 192-frame GIF shown large; decoding every frame at that size
+                # took the whole test's time once every image was read.
+                st.unmeasured.append(
+                    flashcap.Unmeasured(
+                        what="an animated image",
+                        why=f"measuring it took longer than {IMAGE_MEASURE_S} seconds",
+                        src=src_url[:200],
+                    )
+                )
+                if tool_ctx is not None:
+                    await tool_ctx.close()  # stop the tool page's work
+                    tool_ctx = tool = None
+                continue
             except Exception as exc:
                 st.unmeasured.append(
                     flashcap.Unmeasured(
