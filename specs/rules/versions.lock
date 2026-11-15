@@ -2,10 +2,10 @@
 # After a spec change and its version bump: uv run python -m tobi508.rules lock
 19a-multiple-ways.md 1.9.0 c910bb3bfbcb53cf52e8c15dddffb1c6697d995cc9b88d52ef72fea6ab58994c
 2a-audio-control.md 1.2.0 bd3212ad9e1aba9cdefa05b6fb4cee2ca29e5ef5837114e72228adfc68409357
-2b-blinking-moving-scrolling.md 1.4.0 c946a4227a1a0b22802e6aa89fec2aea5438d4e30484bf3a9a7cc48de2c0b3a3
+2b-blinking-moving-scrolling.md 1.5.0 a0cf98961f297787378024edcb640665a8e5ce45ff90f8c179c43014f59298d9
 2c-auto-updating.md 1.2.0 09c78b5427526b32566572be60ca0b06b630dd117a30c22d587fa233f02a0b5a
 2d-change-notify-auto.md 1.3.0 1c2aa28c176224b1aa98afb92b490d56d8b346c5e478b326c03f9d3c0fcc8074
-3a-flashing.md 1.3.0 efcda0708255ea71f3630098140e3b0f00d2361d2b755baa317af5c48be886bc
+3a-flashing.md 1.4.0 6cfe81285fe854f80ad531857ea641c373d2f4ab6cf81233ef894bb8f2cbac9c
 4a-keyboard-access.md 1.12.0 9ab6fb4211d018ac5df7b8aa93a6fdb3905c507015097849f2776e14baeabe0a
 4b-no-keystroke-timing.md 1.4.0 6516a49bf24b61a37eb282c05e6a70500735e11c411346084e7dbafb85ddb7d4
 4c-no-keyboard-trap.md 1.13.1 1996072434bc2db0f7642e7515bd3bc32cd1e782295a3d8d0ecdd6ea9e9ec899

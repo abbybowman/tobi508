@@ -59,7 +59,7 @@ class State2B(BaseModel):
     @property
     def read(self) -> dict[str, dict[str, int]]:
         """Image addresses pass T examined for animation, for guard CN."""
-        return {"page": {"images": self.mp.images_read}}
+        return {"page": {"images": motion.images_read(self.mp)}}
 
 
 # ── Terms ─────────────────────────────────────────────────────────────────
@@ -607,6 +607,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State2B:
     """Pass T, then the probe for every moving region (up to three), before
     J1: J1 only excludes, so the probe never waits for an answer."""
     mp = await motion.collect(ctx)
+    motion.match_inventory(ctx, mp)
     st = State2B(mp=mp, selected=sorted(ctx.selected))
     p = page_of(st)
     if not mp.ok or p.failed_video or _only(p):

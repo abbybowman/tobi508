@@ -1,7 +1,7 @@
 ---
 tt_test: 2.B
 tt_name: 2.2.2-blinking-moving-scrolling
-spec_version: 1.4.0
+spec_version: 1.5.0
 count: images
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -14,7 +14,7 @@ NEEDS REVIEW. It never emits NOT TESTED (p. 6). PASS is gated as in 2.C:
 a working mechanism gives NEEDS REVIEW until every test that can apply to
 it is built ([2c-auto-updating.md](2c-auto-updating.md) section 3c).
 
-1.0.0 (Abby, 2026-11-05): approved and built, from draft 0.2.0. 0.2.0 (2026-11-04), from building it: still moving and colour-only as below; motion below the first screen; content with no element inside is placed by document order; one probe per content shared with 2.C; J1 can only lead to DNA; the text question is J3. Plan:
+1.5.0 (Abby, 2026-11-15; roadmap step 6e): every image is read for animation, not the first 30: at the end of pass T the page is scrolled through as the recording was, so lazy images load; an image's type is read from its first bytes before its size matters; a redirect inside the recording is followed; guard CN counts only the inventory's addresses pass T read. On step 9a's pages the 30-image cap never decided a cell alone: in every one, some of the first 30 were unread (lazy, a 14 MB JPEG, a redirect, a request that failed while recording). 1.0.0 (Abby, 2026-11-05): approved and built, from draft 0.2.0. 0.2.0 (2026-11-04), from building it: still moving and colour-only as below; motion below the first screen; content with no element inside is placed by document order; one probe per content shared with 2.C; J1 can only lead to DNA; the text question is J3. Plan:
 [research/2026-11-03-auto-updating-2a-2d.md](../../docs/research/2026-11-03-auto-updating-2a-2d.md).
 
 **Citations.** Printed pages of TT 5.1.3 (text also in `tt://5.1.3/tests/2.B`). Identify Content, p. 14: before loading, "make sure the browser is not set to block auto-playing content"; visual content that "Starts moving, blinking, or scrolling without user activation (including videos, synchronized media, and scrolling text)", "Moves, blinks, or scrolls continuously for more than 5 seconds", and "Is not the only content on the page"; "EXCLUDE content where the movement, blinking, or scrolling of the content is essential"; none: DNA. Notes, p. 14: content that moves without changing is 2.B only; content that changes is 2.C; both when both. Applicability, p. 14. HtT 1 ("an evident mechanism ... within the first three elements that the user would encounter OR within three elements before/after the moving/blinking/scrolling content"), HtT 2–3, p. 14. ER 1 (an evident mechanism that can pause, stop or hide the content), ER 2 (where), ER 3 (it passes all applicable Test Conditions), p. 14. Appendix B: 5.1.3 made the mechanism "evident".
@@ -68,7 +68,22 @@ Pass T and the mechanism probe as in [2c-auto-updating.md](2c-auto-updating.md) 
 
 - its animations' timing, from `getAnimations()`;
 - for each animated image: frames, loop count and one play-through, from
-  `ImageDecoder` on the bytes in the HAR;
+  `ImageDecoder` on the bytes in the HAR (1.5.0, `motion._read_images`):
+  - every image address on the page at the end of the watch is read, at
+    most 300 (`IMAGE_READ_MAX`; was 30); then, after every other read,
+    the page is scrolled down one window at a time as the recording was,
+    and the addresses that appeared are read too (the *late read*);
+  - the bytes come from the recording, following a redirect the
+    recording holds (at most 3); an address it does not have is unread;
+  - the type comes from the first bytes, whatever the size: JPEG, SVG
+    and other types that cannot animate, a PNG with no `acTL` chunk before
+    its image data and a WebP with no animation flag are read without
+    decoding; a GIF, an animated PNG or an animated WebP is decoded when
+    it is 5 MB or less, and is unread when larger or when it cannot be
+    decoded;
+  - an animated image the late read finds that plays for more than 5 s is
+    unread for this test (no region can be made for it once the watch is
+    over), so guard CN holds the page;
 - for each video: paused, muted, `currentTime` progress, duration and
   loop, read in its own frame.
 
@@ -107,7 +122,7 @@ gives FAIL, as for any blinking content.
 | A2 | "Nothing on this page moved for more than 5 seconds while we watched, so this test does not apply." |
 | A4 | "<content> moves, but only while the page loads and nothing can be used yet, so it does not need a pause." |
 
-**Guard CN: images past the read's limit** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-06). The page's inventory (`count.py`, `Report.counts`) counts the distinct image addresses (`http` or `https`) of every document, web component and frame. Pass T examines at most 30 of them for animation, and skips one that is not in the recording or is over 5 MB (`MotionPass.images_read`). When the inventory has more than pass T examined, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and the sentence "32 images: only the first 30 were checked for animation." Trace row `CN`. FAIL is unchanged.
+**Guard CN: images past the read's limit** (1.2.0; front matter `count:`; defined in [_template.md](_template.md); Abby, 2026-11-12; review N-06). The page's inventory (`count.py`, `Report.counts`) counts the distinct image addresses (`http` or `https`) of every document, web component and frame. Pass T reads them as section 2 says (1.5.0); what it read is `MotionPass.image_srcs_read`, and only the inventory's addresses among them count as read (`inventory_images_read`), so an address pass T read that the inventory never saw cannot stand in for one it did. When the inventory has more than pass T read, a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and the sentence "11 images: 10 were checked for animation, and 1 could not be." Trace row `CN`. FAIL is unchanged.
 
 ## 4. Judgment questions
 

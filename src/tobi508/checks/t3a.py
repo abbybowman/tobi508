@@ -210,7 +210,8 @@ def _pictures(ctx, src: flashcap.Source, n: int, frames, scale: float = 1.0) -> 
 
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
     mp = await motion.collect(ctx, keep_shots=False)
-    st = State3A(read={"page": {"images": mp.images_read, "players": 0}})
+    motion.match_inventory(ctx, mp)
+    st = State3A(read={"page": {"images": motion.images_read(mp), "players": 0}})
     if not mp.ok:
         st.motion_ok, st.error = False, mp.error or "the page could not be watched"
         return st
