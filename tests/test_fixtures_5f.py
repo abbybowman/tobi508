@@ -28,6 +28,35 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "Please"}},
         },
     },
+    # M-06 (part D, 5.F 1.9.0): an error shown inside a web component is new
+    # text like any other (it was DOES NOT APPLY, "the page did not check").
+    # "Error." names no field: FAIL (M8, as TC10.D-2-fail-3); its twin
+    # names the field and the problem in an alert region the web component
+    # holds from the start (a notice): PASS.
+    "f28-error-in-web-component-vague": {
+        "5.F": {
+            "outcome": "FAIL",
+            "rows": ["M8", "M8", "M8", "M8"],
+            "answers": {"J1": {"choice": "not_identified"}},
+        },
+        "5.G": {
+            "outcome": "FAIL",
+            "rows": ["N5", "N5", "N5", "N5"],
+            "answers": {"J1": {"choice": "no_guidance"}},
+        },
+    },
+    "f29-error-in-web-component-described": {
+        "5.F": {
+            "outcome": "PASS",
+            "rows": ["M6", "M6", "M6", "M6"],
+            "answers": {"J1": {"choice": "described", "quote": "Email: enter"}},
+        },
+        "5.G": {
+            "outcome": "PASS",
+            "rows": ["N4", "N4", "N4", "N4"],
+            "answers": {"J1": {"choice": "guides", "quote": "like name@example.com"}},
+        },
+    },
     "f02-server-side-form": {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},

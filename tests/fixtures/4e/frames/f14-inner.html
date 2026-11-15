@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><title>Newsletter</title>
+<style>#dlg{position:fixed;inset:5%;background:#fff;border:3px solid #333;padding:1em}</style></head><body>
+<label>Email <input id="email"></label>
+<div id="dlg" role="dialog" aria-label="Sign up" hidden><h2>Sign up for our newsletter</h2><p>Get updates every week.</p></div>
+<script>email.addEventListener('focus', () => { dlg.hidden = false; });</script>
+</body></html>

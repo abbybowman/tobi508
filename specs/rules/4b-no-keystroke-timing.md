@@ -1,7 +1,7 @@
 ---
 tt_test: 4.B
 tt_name: 2.1.1-no-keystroke-timing
-spec_version: 1.3.0
+spec_version: 1.4.0
 guards: unrecorded-code
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -27,7 +27,7 @@ The tool gives each page one 4.B outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 ## 2. Evidence to collect
 
-**From the shared walk:** stops, with accessible name and title (4.A's walk extra), and pass ends. **Page text:** the visible text of every readable frame (`traverse.page_text`, one fresh load). Keystroke timing cannot be seen in the DOM; a tester finds it from what the page says and from using it (HtT 1–2).
+**From the shared walk:** stops, with accessible name and title (4.A's walk extra), and pass ends. **Page text:** the visible text of every readable frame (`traverse.page_text`, one fresh load), and of every open shadow root in it (1.4.0, plan 2026-11-12 part D: instructions inside a web component were never read, the grid's NEW-1). Keystroke timing cannot be seen in the DOM; a tester finds it from what the page says and from using it (HtT 1–2).
 
 **Timing words** (case-insensitive, whole words, English only): hold, holding, held down, press and hold, long press, double-press, double press, press twice, twice quickly, quickly, rapidly, in quick succession, within N second(s), for N second(s), typing speed, keystroke rhythm. Sentences end at . ! ? or a blank line; a single line break (a `<br>`) does not end one. Each sentence of the page text, a stop's name or a stop's title that contains a timing word is a *match*. The page text goes out with the questions (`page_text` in the tool result).
 

@@ -31,6 +31,18 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M10"],
         "choice": "content_only",
     },
+    # F-08 (part D, 4.E 1.5.0): a dialog that opens inside a web component or
+    # inside a frame is a dialog too; before, both were PASS.
+    "f13-dialog-in-web-component-on-focus": {
+        "outcome": "FAIL",
+        "rows": ["M9"],
+        "choice": "changes_context",
+    },
+    "f14-dialog-in-frame-on-focus": {
+        "outcome": "FAIL",
+        "rows": ["M9"],
+        "choice": "changes_context",
+    },
     # The open notice and the sign-up dialog share their nearest 6 ancestors:
     # a key that stops at 6 levels took the sign-up dialog for the notice.
     "f09-dialog-beside-open-notice": {

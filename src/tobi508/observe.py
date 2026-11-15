@@ -14,6 +14,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from tobi508.jslib import JSLIB
 from tobi508.traverse import PATH_JS, Session, _read_logs, settle, submissions
 
 
@@ -43,6 +44,28 @@ SHOWN_JS = (
 )
 
 
+async def open_dialogs(page) -> dict[str, dict[str, Any]] | None:
+    """Open dialogs in the page and in every frame (review F-08: a chat or
+    consent dialog a frame opens is a dialog too), by identity: the path in
+    the page, or the frame's address, " >> " and the path inside it. None
+    when the page's own document could not be read; a frame that cannot be
+    read adds nothing."""
+    try:
+        out = {d["css"]: d for d in await page.evaluate(DIALOGS_JS)}
+    except Exception:
+        return None
+    for f in page.frames:
+        if f == page.main_frame:
+            continue
+        try:
+            for d in await f.evaluate(DIALOGS_JS):
+                key = f"{f.url} >> {d['css']}"
+                out[key] = {**d, "css": key, "frame": f.url}
+        except Exception:
+            continue
+    return out
+
+
 async def shown(s: Session) -> set[str] | None:
     """SHOWN_JS in the top frame's isolated world; None when it fails."""
     try:
@@ -57,6 +80,7 @@ async def shown(s: Session) -> set[str] | None:
 # dialogs share one, so the second never counted as new (f09).
 DIALOGS_JS = (
     "() => {"
+    + JSLIB
     + PATH_JS
     + """
   const vis = (el) => el.checkVisibility
@@ -77,7 +101,8 @@ DIALOGS_JS = (
     try { if (el.matches(':modal')) return true; } catch (e) {}
     return el.getAttribute('aria-modal') === 'true';
   };
-  return Array.from(document.querySelectorAll(sel)).filter(vis)
+  // Inside web components too (part D; review F-08).
+  return J.all(sel).filter(vis)
     .map((el) => ({ css: path(el), name: el.getAttribute('aria-label') || '',
       share: share(el), modal: modal(el) }));
 }"""
@@ -88,11 +113,12 @@ DIALOGS_JS = (
 # on white changes few pixels. Visible ones only; the path is their identity.
 OVERLAYS_JS = (
     "() => {"
+    + JSLIB
     + PATH_JS
     + """
   const vw = innerWidth, vh = innerHeight, out = [];
   if (!vw || !vh || !document.body) return out;
-  for (const el of document.body.querySelectorAll('*')) {
+  for (const el of J.all('*', document.body)) {
     const cs = getComputedStyle(el);
     if (!['fixed', 'absolute', 'sticky'].includes(cs.position)) continue;
     if (cs.display === 'none' || cs.visibility === 'hidden') continue;

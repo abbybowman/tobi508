@@ -33,6 +33,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tobi508 import labels
+from tobi508.jslib import JSLIB
 from tobi508.observe import observe
 from tobi508.traverse import PATH_JS, Session, open_session, screenshot, settle
 
@@ -59,20 +60,21 @@ WHY = {
 }
 
 _COMMON_JS = (
-    PATH_JS
+    JSLIB
+    + PATH_JS
     + """
-  const vis = (el) => el.checkVisibility ? el.checkVisibility({ visibilityProperty: true }) : el.getClientRects().length > 0;
-  const find = (p) => { try { let root = document, el = null;
-      for (const part of p.split(/(?<!>) (?!>)/)) { el = root.querySelector(part); if (!el) return null; root = el.shadowRoot || el; }
-      return el; } catch (e) { return null; } };
+  const vis = (el) => J.rendered(el);
+  // The shared path finder (an escaped space in an id is not a boundary).
+  const find = (p) => J.find(p);
   const chainOf = () => { const c = [];
     try { for (let w = window; w.frameElement; w = w.parent) c.unshift(path(w.frameElement)); }
     catch (e) { c.unshift('?'); }
     return c; };
   const FOCUSABLE = 'a[href], area[href], button, input:not([type="hidden"]), select, textarea, summary, ' +
     '[tabindex]:not([tabindex^="-"]), [contenteditable]:not([contenteditable="false"])';
-  const FIELD = 'input:not([type=hidden]):not([type=button]):not([type=submit]):not([type=reset]):not([type=image]), ' +
-    'select, textarea, [role=textbox], [role=checkbox], [role=radio], [role=switch], [role=combobox]';
+  // The 5.D field the inventory counts (D-19: this copy lacked slider,
+  // searchbox and spinbutton).
+  const FIELD = J.FIELD;
 """
 )
 
