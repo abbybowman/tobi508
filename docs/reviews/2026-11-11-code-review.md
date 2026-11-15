@@ -109,7 +109,7 @@ below; "run" means I ran a page and got the outcome shown.
 | D-01 | 5.A, 5.B, 5.C | DOES NOT APPLY | a form in a shadow root | run · fixed (part B); read (step 8) |
 | K-02 | 9.A, 9.B, 9.C, 19.A | DOES NOT APPLY, FAIL | a shared header in a shadow root or frame | run · fixed (step 8: read) |
 | N-01 | 2.A | DOES NOT APPLY | audio from `new Audio()` or in a shadow root | run · fixed (part B); read (step 8) |
-| M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run |
+| M-06 | 5.F, 5.G | DOES NOT APPLY | an error shown in a shadow root or on a wrapper | run · fixed (step 8) |
 | E-07 | 4.C | PASS | a run that ran out of time before the error-state pass | run |
 | H-03, M-05 | 5.D, 5.F | PASS | a form past a keyboard trap | run · 5.D fixed (part B); 5.F, 5.G, 5.H fixed (step 6b) |
 | F-11 | 4.F | DOES NOT APPLY | a page whose first element traps Tab | run · fixed (part B) |
@@ -506,6 +506,7 @@ them.
   shadow root, and a red border on a wrapper, both 5.F DOES NOT APPLY.
   The 60 ms message is the reviewer's run.
 - **Partly fixed:** step 8 reader 4, specs 5.F 1.9.0, 5.G 1.7.0, 5.H 1.7.0: pass E reads text, live regions, dialogs and fields inside web components (`jslib`), so the error in a shadow root is new text and asks J1 (`5f/f28`, FAIL on "Error."; its twin `5f/f29` PASS). Open: the red border on a wrapper, and the message gone within 150 ms.
+- **Fixed:** step 8, specs 5.F 1.11.0, 5.G 1.9.0, row A3c: a DOM change during the submit press that no read took as an error is NEEDS REVIEW, not "the page did not check" (`5f/f32`, the red box; `5f/f33`, "Error." gone after 60 ms; both were DOES NOT APPLY).
 
 ### A walk cut short by a trap or the clock
 

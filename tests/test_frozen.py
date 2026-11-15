@@ -18,8 +18,10 @@ from .harness import run_tests
 
 async def test_freeze_then_replay_with_the_server_down(settings, drafts, tmp_path):  # noqa: F811
     srv = LocalServer()
-    page = f"{srv.base}/19a/t-benefits.html"
-    others = [f"{srv.base}/19a/home.html"]
+    # A page whose second way is only the site search (19.A 1.11.0 checks a
+    # linked site map before searching, and t-benefits' home page links one).
+    page = f"{srv.base}/19a/t4-flare.html"
+    others = [f"{srv.base}/19a/home4.html"]
     frozen = settings.model_copy(
         update={
             "frozen_pages_dir": tmp_path / "frozen",
@@ -31,7 +33,8 @@ async def test_freeze_then_replay_with_the_server_down(settings, drafts, tmp_pat
     finally:
         srv.stop()
     index = json.loads((tmp_path / "frozen" / "index.json").read_text())
-    # The tested page, the other page and the live site search.
+    # The tested page, the other page, the pages 19.A checked itself and the
+    # live site search.
     assert page in index and others[0] in index
     assert any("search" in u for u in index), sorted(index)
     assert first["19.A"].outcome.value == "PASS" and "W2" in first["19.A"].rows

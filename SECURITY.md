@@ -38,8 +38,9 @@ sign-in its HTTP transport listens on loopback only (127.0.0.1 or ::1; any
 other host is refused at start) and checks the Host and Origin headers on
 every request. Hosted sign-in exists (`AUTH=oidc`: an OIDC proxy, a group
 gate, runs private to the person who made them, audit lines) and is tested
-against a stand-in provider; it has not yet run against NASA's identity
-provider. Do not host the server for others until the items under "Before
+against a stand-in provider and, on every image build, by a sign-in
+through a real Keycloak behind TLS (`scripts/smoke_hosted.py`); it has
+not yet run against NASA's identity provider. Do not host the server for others until the items under "Before
 a hosted deployment" are done.
 
 ## What the server does to stay safe

@@ -1,10 +1,13 @@
 """Test 19.A (2.4.5-multiple-ways), from specs/rules/19a-multiple-ways.md.
 
 Reads the site read (`site.py`): links to the tested page on the caller's
-other pages, by kind of way. Only when they show fewer than two kinds, it
-runs the site's own search on the live site, then once more with the
-heading quoted if that finds nothing (CLAUDE.md, Abby 2026-11-02; fix 11) and, still short, suggests pages for the calling agent to add
-(Abby, 2026-11-05). J1 asks
+other pages, by kind of way. While they show fewer than two kinds, it
+checks suspected aliases of the page (1.10.0), then the site map, the
+page's parent, up to two child pages and the home page one by one (1.11.0;
+Abby, 2026-11-15), each loaded as a caller's other page, then the site's
+own search on the live site, once more with the heading quoted if that
+finds nothing (CLAUDE.md, Abby 2026-11-02; fix 11). It stops at two kinds.
+J1 asks
 whether the page is a step in a process, only when hinted. Only evaluate()
 and the rules decide outcomes.
 """
@@ -31,6 +34,7 @@ from tobi508.site import PageRead, norm_href, page_label, read_page, site_read
 from tobi508.walk import KeyboardWalk
 
 SUGGEST_MAX = 5
+CHILD_MAX = 2
 KIND_WORDS = {
     "navigation": "the site navigation",
     "toc": "a table of contents",
@@ -63,6 +67,27 @@ class Search(BaseModel):
     failed_scripts: list[str] = Field(default_factory=list)
 
 
+class Alias(BaseModel):
+    """A suspected alias of T (spec Terms, 1.10.0) and how it was settled."""
+
+    url: str
+    page: int  # the other page whose link named it
+    status: str = "pending"  # same | not_verified | not_needed
+    how: str = ""  # address | document, when the same page
+    final_url: str = ""
+    reason: str = ""  # why not verified
+
+
+class Suggested(BaseModel):
+    """A suggested page (spec Terms, 1.11.0) and what came of checking it."""
+
+    url: str
+    role: str  # site_map | parent | child | home
+    status: str = "pending"  # checked | not_checked | is_this_page | not_needed
+    final_url: str = ""
+    reason: str = ""  # why not checked
+
+
 class State19A(BaseModel):
     no_pages: bool = False
     read_errors: list[str] = Field(default_factory=list)
@@ -76,7 +101,13 @@ class State19A(BaseModel):
     # T is the address a search form submits to (W5, 1.4.0)
     search_target: str = ""
     search: Search = Field(default_factory=Search)
-    suggestions: list[str] = Field(default_factory=list)
+    # Suspected aliases of T, in the order their links were read (1.10.0).
+    aliases: list[Alias] = Field(default_factory=list)
+    # Pages read with links in closed menus (W9, 1.12.0): page n, its url,
+    # how many, and how many lead to T or a verified alias.
+    hidden_nav: list[dict[str, Any]] = Field(default_factory=list)
+    # The suggested pages, in the order they are checked (1.11.0).
+    checked: list[Suggested] = Field(default_factory=list)
     hint: bool = False
     text: list[str] = Field(default_factory=list)  # J1 input
     j1: dict[str, Any] | None = None
@@ -97,6 +128,40 @@ def _to_t(href: str, t: str | tuple[str, ...]) -> bool:
 
 def _same(a: str, b: str) -> bool:
     return norm_href(a) == norm_href(b) and bool(norm_href(a))
+
+
+ALIAS_MAX = 3  # suspected aliases checked a run (Abby, 2026-11-14)
+ALIAS_FILE = re.compile(r"^(index|default)\.[a-z0-9]+$", re.I)
+
+
+def _alias_key(u: str) -> tuple[str, int | None, str, str]:
+    """An address with what an alias may change taken out (spec Terms,
+    1.10.0): the scheme, a leading "www.", a last segment named index.* or
+    default.*, a trailing slash and the fragment. The query string stays: a
+    link that differs only by it is another page (Abby, 2026-11-15)."""
+    p = urlsplit(u)
+    host = (p.hostname or "").lower().rstrip(".")
+    host = host[4:] if host.startswith("www.") else host
+    try:
+        port = p.port
+    except ValueError:
+        port = None
+    if port in (80, 443):
+        port = None
+    segs = p.path.split("/")
+    if segs and ALIAS_FILE.match(segs[-1]):
+        segs[-1] = ""
+    return (host, port, "/".join(segs).rstrip("/"), p.query)
+
+
+def suspected_alias(href: str, t: str) -> bool:
+    """A link destination that is not T but differs from it only as an alias
+    may (spec Terms, 1.10.0)."""
+    if not href or not t or _same(href, t):
+        return False
+    if urlsplit(href).scheme not in ("http", "https", "file"):
+        return False
+    return _alias_key(href) == _alias_key(t)
 
 
 def _path(u: str) -> tuple[str, str, str]:
@@ -195,28 +260,94 @@ def _term(main: PageRead) -> str:
     return (h1 or main.title)[:80]
 
 
-def suggestions(t_url: str, pages: list[PageRead], given: set[str]) -> list[str]:
-    host = urlsplit(t_url).hostname
+PAGE_EXT = {"", "html", "htm", "shtml", "php", "asp", "aspx", "jsp", "cfm"}
+
+
+def _dir(path: str) -> str:
+    """T's own directory: its path when it ends in "/", else up to the last
+    "/" (spec Terms, 1.11.0)."""
+    return path if path.endswith("/") else path.rsplit("/", 1)[0] + "/"
+
+
+def parent_of(t_url: str) -> str | None:
+    """The address one level up from T's own path (spec Terms, 1.11.0): from
+    T's address, never from page content. None for T at the root."""
+    p = urlsplit(t_url)
+    segs = p.path.rstrip("/").split("/")
+    if segs and ALIAS_FILE.match(segs[-1]):
+        segs = segs[:-1]
+    if len(segs) <= 1:
+        return None
+    return urlunsplit((p.scheme, p.netloc, "/".join(segs[:-1]) + "/", "", ""))
+
+
+def children_of(t_url: str, main: PageRead) -> list[str]:
+    """Up to CHILD_MAX links on T, on T's host, under T's own directory, in
+    reading order; none when that directory is the site root (spec Terms,
+    1.11.0: every page of the site is under it)."""
+    t = urlsplit(t_url)
+    d = _dir(t.path)
+    if d == "/":
+        return []
     out: list[str] = []
-    for p in pages:
-        for u in p.units:
-            if u.role != "link" or not u.href:
-                continue
-            path = urlsplit(u.href).path
-            crumbs = any("breadcrumb" in r.lower() for r in u.regions)
-            if not (
-                SITE_MAP.search(u.name)
-                or HOME.match(u.name)
-                or path in ("", "/")
-                or crumbs
-            ):
-                continue
-            url = u.href.split("#")[0]
-            if urlsplit(url).hostname != host or _same(url, t_url):
-                continue
-            if any(_same(url, g) for g in given) or any(_same(url, o) for o in out):
-                continue
-            out.append(url)
+    for u in main.units:
+        if u.role != "link" or not u.href:
+            continue
+        h = urlsplit(u.href)
+        if h.hostname != t.hostname or h.scheme not in ("http", "https", "file"):
+            continue
+        last = h.path.rsplit("/", 1)[-1]
+        ext = last.rpartition(".")[2].lower() if "." in last else ""
+        if not h.path.startswith(d) or ext not in PAGE_EXT:
+            continue
+        url = urlunsplit((h.scheme, h.netloc, h.path, h.query, ""))
+        if h.path.rstrip("/") in (t.path.rstrip("/"), d.rstrip("/")):
+            continue
+        if _same(url, t_url) or suspected_alias(url, t_url):
+            continue
+        if any(_same(url, o) for o in out):
+            continue
+        out.append(url)
+        if len(out) == CHILD_MAX:
+            break
+    return out
+
+
+def suggested_pages(
+    t_url: str, main: PageRead, pages: list[PageRead], given: set[str]
+) -> list[Suggested]:
+    """The suggested pages, in the order they are checked (spec Terms,
+    1.11.0): the site map, T's parent, up to 2 child pages, the home page;
+    at most SUGGEST_MAX, never a page given, T or a suspected alias of T."""
+    t = urlsplit(t_url)
+    found: list[tuple[str, str]] = []
+    site_map = next(
+        (
+            u.href.split("#")[0]
+            for p in pages
+            for u in p.units
+            if u.role == "link"
+            and u.href
+            and SITE_MAP.search(u.name)
+            and urlsplit(u.href).hostname == t.hostname
+        ),
+        None,
+    )
+    if site_map:
+        found.append(("site_map", site_map))
+    parent = parent_of(t_url)
+    if parent:
+        found.append(("parent", parent))
+    found += [("child", c) for c in children_of(t_url, main)]
+    if t.scheme in ("http", "https"):
+        found.append(("home", urlunsplit((t.scheme, t.netloc, "/", "", ""))))
+    out: list[Suggested] = []
+    for role, url in found:
+        if _same(url, t_url) or suspected_alias(url, t_url):
+            continue
+        if any(_same(url, g) for g in given) or any(_same(url, o.url) for o in out):
+            continue
+        out.append(Suggested(url=url, role=role))
     return out[:SUGGEST_MAX]
 
 
@@ -243,16 +374,132 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
     )
     st.search_target = search_target(forms, both)
-    if len(st.kinds) < 2 and st.search_forms and not st.search_target:
-        await _live_search(ctx, st, main, forms)
+    read = list(site.others)
+    if len(st.kinds) < 2:
+        await _check_aliases(ctx, st, read, maps)
     if len(st.kinds) < 2:
         given = {p.url for p in site.pages} | {ctx_p.final_url for ctx_p in ctx.pages}
-        st.suggestions = suggestions(st.t_url, site.pages, given)
+        st.checked = suggested_pages(st.t_url, main, site.pages, given)
+        await _check_suggested(ctx, st, main, read)
+    if len(st.kinds) < 2 and st.search_forms and not st.search_target:
+        await _live_search(ctx, st, main, forms)
+    st.hidden_nav = [
+        {
+            "page": p.n,
+            "url": p.url,
+            "count": len(p.hidden_nav),
+            "to_t": sum(1 for h in p.hidden_nav if _to_t(h, _targets(st))),
+        }
+        for p in read
+        if p.hidden_nav
+    ]
+    for a in st.aliases:  # past the cap, or no longer needed
+        if a.status == "pending":
+            a.status = "not_needed" if len(st.kinds) >= 2 else "not_verified"
+            a.reason = a.reason or f"only {ALIAS_MAX} are checked in a run"
     texts = [u.name for u in main.units if u.kind in ("text", "heading")]
     st.hint = any(HINT.search(t) for t in texts) and any(u.submit for u in main.units)
     if st.hint:
         st.text = [t[:200] for t in texts][:60]
     return st
+
+
+def _load_reason(exc: Exception) -> str:
+    """Why a page 19.A loads itself could not be loaded, in plain words
+    (principle 8: no exception names)."""
+    name = type(exc).__name__
+    if isinstance(exc, TimeoutError):
+        return "it took longer than its share of the time"
+    if name == "NotFrozen":
+        return "no saved copy of it was available to load"
+    if name == "NavigationBlocked":
+        return "its address is not one the tool may visit"
+    if isinstance(exc, ValueError):
+        return "it is not on this page's site, before or after redirects"
+    return "it could not be loaded"
+
+
+def _targets(st: State19A) -> tuple[str, ...]:
+    """T, the address the caller gave and every verified alias (W6)."""
+    return (st.t_url, st.t_requested) + tuple(
+        a.url for a in st.aliases if a.status == "same"
+    )
+
+
+async def _check_aliases(
+    ctx: RunContext, st: State19A, pages: list[PageRead], maps: set[int]
+) -> None:
+    """Suspected aliases of T on the pages read (spec Terms, 1.10.0): at
+    most ALIAS_MAX loaded in a run, each as a caller's other page is loaded;
+    the same page only by its final address or its document's bytes. Links
+    to a verified alias then count as links to T (W6); any other is not
+    verified (W7). Called again for each suggested page read (1.11.0)."""
+    for p in pages:
+        for u in p.units:
+            if u.role != "link" or not suspected_alias(u.href, st.t_url):
+                continue
+            url = u.href.split("#")[0]
+            if any(_same(url, a.url) for a in st.aliases):
+                continue
+            st.aliases.append(Alias(url=url, page=p.n))
+    for a in st.aliases:
+        if a.status != "pending" or len(st.kinds) >= 2:
+            continue
+        if sum(1 for x in st.aliases if x.status in ("same", "not_verified")) >= (
+            ALIAS_MAX
+        ):
+            break
+        if ctx.record_live is None or ctx.out_of_time():
+            a.status, a.reason = "not_verified", "no time was left to load it"
+            continue
+        try:
+            ref = await ctx.record_live(a.url, "alias")
+        except Exception as exc:
+            a.status, a.reason = "not_verified", _load_reason(exc)
+            continue
+        a.final_url = ref.final_url
+        if _same(ref.final_url, st.t_url):
+            a.status, a.how = "same", "address"
+        elif ref.same_content_as_tested:
+            a.status, a.how = "same", "document"
+        else:
+            a.status, a.reason = "not_verified", "it loaded a different document"
+            continue
+        st.links = links_to(_targets(st), pages, maps)
+
+
+async def _check_suggested(
+    ctx: RunContext, st: State19A, main: PageRead, read: list[PageRead]
+) -> None:
+    """The suggested pages, one at a time, each loaded as a caller's other
+    page is, until two kinds are found (spec Terms, 1.11.0; Abby,
+    2026-11-15). Each page read joins the pages read: its links to T or a
+    verified alias count (W1), and its suspected aliases are checked."""
+    for c in st.checked:
+        if len(st.kinds) >= 2:
+            c.status = "not_needed"
+            continue
+        if ctx.record_live is None or ctx.out_of_time():
+            c.status, c.reason = "not_checked", "no time was left to load it"
+            continue
+        try:
+            ref = await ctx.record_live(c.url, "suggested")
+            got = await read_page(ref.n, ref.final_url, ref.new_page)
+        except Exception as exc:
+            c.status, c.reason = "not_checked", _load_reason(exc)
+            continue
+        c.final_url = ref.final_url
+        if got.error:
+            c.status, c.reason = "not_checked", "it could not be read"
+            continue
+        if _same(ref.final_url, st.t_url) or ref.same_content_as_tested:
+            c.status = "is_this_page"
+            continue
+        c.status = "checked"
+        read.append(got)
+        maps = _site_map_pages([main, *read])
+        st.links = links_to(_targets(st), read, maps)
+        await _check_aliases(ctx, st, read, maps)
 
 
 async def _live_search(ctx: RunContext, st: State19A, main: PageRead, forms) -> None:
@@ -288,7 +535,7 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
         st.search.reason = (
             "the search took longer than its share of the time limit"
             if isinstance(exc, TimeoutError)
-            else f"the search could not be run ({type(exc).__name__})"
+            else f"the search could not be run: {_load_reason(exc)}"
         )
         return
     if res.error:
@@ -297,7 +544,7 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             "its results could not be read",
         )
         return
-    found = results_link_to(res, (st.t_url, st.t_requested))
+    found = results_link_to(res, _targets(st))
     try:
         failed = failed_scripts(ref.har) if ref.har is not None else []
     except Exception:
@@ -395,6 +642,30 @@ def _list(words: list[str]) -> str:
     return words[0] if len(words) == 1 else ", ".join(words[:-1]) + " and " + words[-1]
 
 
+ROLE_WORDS = {
+    "site_map": "the site map",
+    "parent": "the page above this one",
+    "child": "a page below this one",
+    "home": "the home page",
+}
+
+
+def _checked_words(st: State19A) -> list[str]:
+    """What G4's FAIL names as checked (Abby, 2026-11-15)."""
+    n = len(st.pages)
+    out = [f"the {n} other page{'s' if n != 1 else ''} you gave"]
+    done = [c for c in st.checked if c.status in ("checked", "is_this_page")]
+    for role in ("site_map", "parent", "home"):
+        out += [ROLE_WORDS[role] for c in done if c.role == role]
+    kids = sum(1 for c in done if c.role == "child")
+    if kids:
+        out.append(f"{kids} page{'s' if kids != 1 else ''} below it")
+    if st.search.tries:
+        k = len(st.search.tries)
+        out.append(f"the site search ({k} search{'es' if k != 1 else ''})")
+    return out
+
+
 def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
     if st.no_pages:
         f = Finding.not_performed(
@@ -428,9 +699,17 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             Outcome.NEEDS_REVIEW, REVIEW_HEAD, ["A4", "G1"], evidence_refs, note=True
         )
     kinds = st.kinds
+    short = len(kinds) < 2
+    unverified = [a for a in st.aliases if a.status == "not_verified"]
+    unchecked = [c for c in st.checked if c.status == "not_checked"]
+    menus = [] if "navigation" in kinds else st.hidden_nav
     trace = (
         ["A5", "W1"]
         + (["W5"] if st.search_target else [])
+        + (["W6"] if any(a.status == "same" for a in st.aliases) else [])
+        + (["W7"] if unverified and short else [])
+        + (["W8"] if unchecked and short else [])
+        + (["W9"] if menus and short else [])
         + {
             "found": ["W2"],
             "not_found": ["W3"],
@@ -440,8 +719,13 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
     )
     words = [KIND_WORDS[k] for k in kinds]
     pages = ", ".join(f"other page {p['n']}" for p in st.pages)
-    rationale = f"Kinds: {kinds}; links: {len(st.links)}; search {st.search.status}; pages: {pages}."
-    if len(kinds) >= 2:
+    rationale = (
+        f"Kinds: {kinds}; links: {len(st.links)}; search {st.search.status}; "
+        f"aliases: {[(a.url, a.status, a.how or a.reason) for a in st.aliases]}; "
+        f"suggested: {[(c.role, c.url, c.status) for c in st.checked]}; "
+        f"pages: {pages}."
+    )
+    if not short:
         return _finding(
             Outcome.PASS,
             f"This page can be found in more than one way: {_list(words)}.",
@@ -450,29 +734,59 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             rationale,
         )
     found = (
-        f"{len(kinds)} way to reach this page in the pages you gave ({words[0]})"
+        f"{len(kinds)} way to reach this page ({words[0]})"
         if kinds
-        else "no way to reach this page in the pages you gave"
+        else "no way to reach this page"
     )
     search_note = {
         "not_found": "The site search did not find this page when searching for its heading.",
         "cannot_run": f"The site search could not be checked: {st.search.reason}.",
     }.get(st.search.status, "")
-    if st.suggestions or st.search.status == "cannot_run":
-        more = (
-            " To check further, run this test again (tests: 19.A) with these pages"
-            " of the site added to other_pages: "
-            + ", ".join(st.suggestions)
-            + ". Other pages of the site that show another way to reach pages (a"
-            " site map, an A-Z index, the home page) count too. You need not ask"
-            " the user first. Replace this result in the saved report; the other"
-            " tests need not run again."
-            if st.suggestions
+    alias_note = " ".join(
+        f"We could not check whether {a.url} is this page under another "
+        f"address: {a.reason}."
+        for a in unverified
+    )
+    page_note = " ".join(
+        f"We could not check {ROLE_WORDS[c.role]} ({c.url}): {c.reason}."
+        for c in unchecked
+    )
+    to_t = [h for h in menus if h["to_t"]]
+    menu_note = (
+        " ".join(
+            f"A link to this page is inside a closed menu on {h['url']} that we "
+            "did not open, so the site navigation may lead here."
+            for h in to_t
+        )
+        if to_t
+        else (
+            f"Some pages we read have closed menus ({sum(h['count'] for h in menus)} "
+            f"links inside them on {len(menus)} page{'s' if len(menus) != 1 else ''}) "
+            "that we did not open, so we cannot say the site navigation does not "
+            "lead here."
+            if menus
             else ""
         )
+    )
+    web = f"A person can also search the web for pages that link to {st.t_url}"
+    if unchecked or unverified or menus or st.search.status == "cannot_run":
         return _finding(
             Outcome.NEEDS_REVIEW,
-            " ".join(x for x in [f"We found {found}.", search_note, more.strip()] if x),
+            " ".join(
+                x
+                for x in [
+                    f"We found {found}.",
+                    menu_note,
+                    page_note,
+                    alias_note,
+                    search_note,
+                    "Run this test again later (tests: 19.A) and replace this "
+                    "result in the saved report; the other tests need not run "
+                    "again.",
+                    web + ".",
+                ]
+                if x
+            ),
             trace + ["G3"],
             evidence_refs,
             rationale,
@@ -485,9 +799,11 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             " ".join(
                 x
                 for x in [
-                    f"We found only {what} to reach this page, and nothing else to check.",
+                    f"We found only {what} to reach this page.",
+                    f"We checked {_list(_checked_words(st))}.",
                     search_note,
                     "Add a second way, such as a link in the site navigation, a site map or a site search that finds it.",
+                    web + ", which may show a way we could not see.",
                 ]
                 if x
             ),
@@ -517,9 +833,12 @@ class Check19A:
         "It looks for links to this page on the other pages of the same site "
         "you give, and groups them by kind: the site navigation, a site map, a "
         "table of contents, links in other pages' content. Two kinds pass. If "
-        "it finds fewer, it tries the site's own search for the page's heading "
-        "(again in quotation marks if that finds nothing), and otherwise "
-        "suggests more pages to check."
+        "it finds fewer, it checks whether a link to this page's address with "
+        "index.html (or similar) is the same page, then looks at the site map, "
+        "the page above this one, two pages below it and the home page, one at "
+        "a time, then tries the site's own search for the page's heading "
+        "(again in quotation marks if that finds nothing). It stops as soon "
+        "as it has two kinds, and fails only when all of these were checked."
     )
 
     def walk_extras(self) -> list:
@@ -539,18 +858,6 @@ class Check19A:
     async def resume(self, ctx: RunContext, state: State19A, report) -> list[str]:
         apply_answers(state, report)
         return []
-
-    def follow_up(self, state: State19A, report) -> dict | None:
-        """The call that adds the suggested pages (fix 18): 19.A alone, the
-        pages given before plus the suggested ones (at most 5 without
-        no_time_limit). None when there is nothing to suggest."""
-        if not state.suggestions:
-            return None
-        given = [p.url for p in report.other_pages]
-        pages = list(dict.fromkeys(given + list(state.suggestions)))[:5]
-        if pages == given:
-            return None
-        return {"url": report.target, "tests": ["19.A"], "other_pages": pages}
 
 
 __all__ = ["Check19A", "page_label"]

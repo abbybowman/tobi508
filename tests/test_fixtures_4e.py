@@ -19,6 +19,8 @@ EXPECTED: dict[str, dict] = {
     "f02-navigate-on-focus": {"outcome": "FAIL", "rows": ["M4"]},
     "f03-focus-moves-to-help": {"outcome": "FAIL", "rows": ["M6"]},
     "f04-blur-on-focus": {"outcome": "FAIL", "rows": ["M7"]},
+    # 4.E 1.7.0: the same inside a web component (it was WK, NEEDS REVIEW).
+    "f15-blur-on-focus-in-web-component": {"outcome": "FAIL", "rows": ["M7"]},
     "f05-listbox-delegates-focus": {"outcome": "PASS", "rows": []},
     "f06-menu-and-tooltip-on-focus": {"outcome": "PASS", "rows": []},
     "f07-signup-dialog-on-focus": {

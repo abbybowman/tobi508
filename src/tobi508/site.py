@@ -208,7 +208,14 @@ UNITS_FN = (
                explicit: !!(f.getAttribute('action') || '').trim(),
                field: field && field.name ? field.name : '', hidden, css: path(f) };
     }).filter(Boolean);
-    return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms, shadow_read: shadowRead };
+    // Links in navigation, banner or footer regions not shown on load (closed
+    // menus): 19.A 1.12.0 W9 cannot say the site navigation does not lead to
+    // a page while these were not read (Abby, 2026-11-15).
+    const NAV_REGION = 'nav, header, footer, [role=navigation], [role=banner], [role=contentinfo]';
+    const hiddenNav = J.all('a[href]').filter((a) => a.closest(NAV_REGION) && !shown(a))
+      .map((a) => a.href).slice(0, 2000);
+    return { units: out, regions, truncated, url: location.href, els, title: norm(document.title), forms,
+             shadow_read: shadowRead, hidden_nav: hiddenNav };
   };
 """
 )
@@ -259,6 +266,9 @@ class PageRead(BaseModel):
     # Landmarks and links inside web components the read covered (part D):
     # the inventory's keys, so guard CN compares them.
     shadow_read: dict[str, int] = Field(default_factory=dict)
+    # Addresses of links in navigation, banner or footer regions that were
+    # not shown on load (closed menus; 19.A W9, 1.12.0).
+    hidden_nav: list[str] = Field(default_factory=list)
     # The same document as the tested page, under another address (K-01).
     identical: bool = False
     # Nearly the same page: the same address apart from the query string, and
@@ -352,6 +362,7 @@ async def read_page(
             title=data.get("title") or "",
             forms=data.get("forms") or [],
             shadow_read=data.get("shadow_read") or {},
+            hidden_nav=data.get("hidden_nav") or [],
         )
     except Exception as exc:
         return PageRead(n=n, url=url, error=type(exc).__name__)
