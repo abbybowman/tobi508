@@ -6,7 +6,7 @@ decision it needed into the spec, CLAUDE.md or `docs/solutions/` where it
 belongs. Plans in `docs/plans/` hold the detail of an item; they do not
 keep their own schedule.
 
-## Where things stand (2026-11-14)
+## Where things stand (2026-11-15)
 
 - **22 TT tests are built:** 2.A-2.D, 3.A, 4.A-4.F, 5.A-5.D, 5.F-5.H,
   9.A-9.C and 19.A. The [README](../README.md) has a status line per
@@ -28,9 +28,11 @@ keep their own schedule.
   guard CN (a hidden form, more than 30 images), 44; the judge unsure,
   29; frames, 28; 2.C and 2.D's timer, 20; 19.A, 12. The keys fail
   few of them. Steps 6e, 6g and 8 are aimed at these.
-- **Hosting:** sign-in, run ownership and audit lines are built and
-  tested against a stand-in provider; nothing has run on VAST yet
-  (step 12).
+- **Hosting:** sign-in, run ownership and audit lines are built, and
+  the built image passes a smoke test in CI behind a real Keycloak.
+  Nothing has run in the tobi-508 environment on VAST yet (step 12b).
+- **Web components and frames** are read by every reader (step 8,
+  2026-11-15) and decided on the same rows as the rest of the page.
 - What each finished step covered and decided:
   [archive](archive/2026-11-14-roadmap-to-the-demo.md).
 
@@ -52,39 +54,37 @@ is merged. At most three threads at once. Each thread branches from
 
 | Step | What | Model | When |
 | --- | --- | --- | --- |
-| 1-7, 9a | Done: PRs #39 to #63 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
-| 8 | One library for reading the page: web components and frames | Opus | readers 1 to 3 merged; 4 to 8 in PR #64; the form error tests in frames next |
-| 6e | Guard CN on real pages; 2.C and 2.D's timer | Opus | now |
-| 6f | 9.C's "Home" pairs; 19.A on CILab; 9.B's budget | Sonnet | now |
-| 6g | 4.C and 4.E read the content that menus and sections open | Opus | when PR #64 is merged |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | when PR #64 is merged |
-| 12 | Hosted on VAST | Opus | 12a now; 12b when the environment exists |
-| 9b | Rerun of rounds 1 and 2's pages after the steps above | Sonnet | Nov 17, by midday |
-| 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17, at 9b's commit |
+| 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
+| 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
+| 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
+| 6h | 19.A finds its ways as a tester does: an alias of the page, its parent and child pages, the follow-up call | Opus | now |
+| 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
+| 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
+| 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
+| 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
 | 11 | If the days allow: the second look's trial | Sonnet | |
 | 13 | The pitch: one scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
 
 ### What each open step covers
 
-- **8** (plan part D). Every reader uses one `jslib`; web components
-  and same-site frames are read in place, and a frame is opened as a
-  page of its own for the tests that use ANDI. Left: PR #64, then 5.F
-  to 5.H in frames. Not expected before the cut: two edge cases of
-  5.F's error read (a red border on a wrapper; a message gone in
-  150 ms).
 - **6e.** Guard CN made 58 cells NEEDS REVIEW on 19 real pages and the
-  keys fail none. First a table of those cells by cause; then, per
-  cause, the smallest change that decides the cell without guessing,
-  each approved by Abby before it is built. The same for the timer
-  that holds 2.C and 2.D on every svs page. Done: the timer (2.C 1.2.0,
-  the clock check; 8 of round 2's cells decided, all agreeing with the
-  key). Done: the images (2.B 1.5.0, 3.A 1.4.0; 6 of round 2's cells
-  decided, all agreeing with the key). Done: 5.H reading hidden forms
-  (5.H 1.9.0; 8 cells decided, all agreeing with the key). To research: fields hidden from everyone (honeypots, reCAPTCHA).
-- **6f.** The judge fails "Home" against "NASA, return to the
-  homepage" in 9.C on 8 of round 1's pages, and the key passes them:
-  the pairing or the rubric. 19.A's FAIL on CILab, not yet looked at.
-  9.B's budget from 60 s to 180 s.
+  keys fail none; each change is approved by Abby before it is built.
+  Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
+  decided, all agreeing with the key) and the images (up to 300 read;
+  6 cells, all agreeing) and 5.H reading a hidden form to say whether
+  it is the kind 5.H is about (8 cells, all agreeing). To research:
+  fields hidden from everyone (honeypots, reCAPTCHA).
+- **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14).
+  Today 19.A reads only the pages the caller gave and one site
+  search, and the eval runners never make the follow-up call, so it
+  is NEEDS REVIEW or a wrong FAIL where a tester finds two ways.
+  Three changes, approved by Abby with their limits (a sixth exception
+  to principle 5; the suggested-pages exception widened), wording
+  shown first: a link to the page under another address (`index.html`
+  for its directory) is checked by loading the suspected alias as an
+  other page is loaded; the page's parent and up to two of its child
+  pages join the suggested pages; and the runners make the follow-up
+  call an agent would.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
   test did not walk it. 4.F's pass R already opens each trigger and
   Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
@@ -95,15 +95,21 @@ is merged. At most three threads at once. Each thread branches from
   tool runs, the run locked before the keys are opened. Until a
   round's run is locked, its page list, keys and freeze stay off
   `main`, on an unmerged branch, and no other thread is told the
-  pages. Scorer fixes 15 to 17 come first.
+  pages. Round 3 is frozen and the scorer fixes are merged (PR #73).
+  Its run waits for 6e, 6g and 6h, so that it is run once on the
+  code as it will be shown: without 6h, 19.A is undecided on every
+  page. 9b runs at the same commit, so the two can be read together.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
-  - **12a, built 2026-11-15** (how-to, smoke test, the smoke test in CI
-    against Keycloak; what it found is in the how-to's section 8): a deployment guide
-    (`docs/how-to/deploy-on-vast.md`: the one-line Containerfile, every
-    setting, where runs are stored, what to check); a smoke test that
-    signs in, runs one page, reads its report and shows a second
-    person cannot; and that smoke test run in CI against the built
-    image and a real Keycloak, not the stand-in.
+  - **12a is built** (PRs #70 to #72, #74):
+    [the deployment guide](how-to/deploy-on-vast.md), a smoke test
+    (`scripts/smoke_hosted.py`), and that smoke test in CI against the
+    built image and a real Keycloak. It found three things a first
+    deployment would have hit: Keycloak's tokens need a groups mapper
+    and an audience mapper; behind TLS the server must trust the
+    proxy's forwarded headers or nobody can sign in; and the audit
+    lines were never printed (fixed). On VAST the image pulls, a
+    Chromium container runs, and a sandbox reaches .gov sites directly
+    (Abby, 2026-11-15).
   - **12b, when the environment exists:** deploy, sign in from Claude
     Code, run one page, confirm the audit lines; then the [PENDING]
     markers go.
@@ -113,7 +119,7 @@ is merged. At most three threads at once. Each thread branches from
   - **Not before the demo:** a store that outlives a restart, the page
     where a signed-in person answers, network-level egress rules,
     NASA's security review.
-- **9b.** As step 9a, one repeat, on `main` as it stands. A gate run's
+- **9b.** As step 9a, one repeat, at round 3's commit. A gate run's
   per-page reports and pre-SCRT files stay out of git.
 - **11** (plan part F, "Trial"). One request per frozen page asking the
   server's model to look again at the rules' PASS and DOES NOT APPLY
@@ -207,10 +213,10 @@ itself, one bundle a thread; they are not repeated here.
 
 **Soon: each holds up a step of "Now".**
 
-- **VAST** (step 12): whether the tobi-508 environment exists, and the
-  admin's answers to questions 4 and 5 (2 and 3 answered, 2026-11-15)
-  ([hosted sign-in plan](plans/2026-11-06-hosted-auth.md), "Open
-  questions for the VAST admin").
+- **VAST** (step 12b): whether the tobi-508 environment exists, and
+  the two answers still open (the app's token contents; whether
+  Anthropic's addresses can reach it), with the further questions in
+  [the deployment guide](how-to/deploy-on-vast.md).
 - **The judge on VAST** (step 12): the CLI route is not in the image.
   Luna or another gateway needs its API shape, base URL, auth header,
   picture limits and quota; without one the hosted server leaves open

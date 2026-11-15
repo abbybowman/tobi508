@@ -4,12 +4,11 @@ What each built test cannot do today, beyond the wrong outcomes the
 README lists ("Known wrong outcomes"). Moved out of `docs/ROADMAP.md`
 on 2026-11-14; a fix removes its line here in the same commit.
 
-**Not every limit is NEEDS REVIEW-safe today.** The code review's P0
-table lists 30 cases that give PASS or DOES NOT APPLY, each with a page
-that shows it; the ones that are a stated limit are marked below. Until
-parts A to D land, a PASS or a DOES NOT APPLY means "in what the tool
-looked at". Browser checks still to run (mostly Windows headed Chrome)
-are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
+**Not every limit is NEEDS REVIEW-safe.** The ones that give a PASS or
+a DOES NOT APPLY are in the README's "Known wrong outcomes" table, each
+with a page that shows it. Browser checks still to run (mostly Windows
+headed Chrome) are in
+[specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 
 - **4.D, a page that shifts as focus moves (F-02, 4.D 1.8.0):** a link
   whose only sign of a focus style is that its box moved is NEEDS REVIEW,
@@ -24,15 +23,11 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   a radio Tab cannot land on: today it asks whether a group's second
   radio "works with a mouse but cannot be reached", which Tab never
   could.
-- **Web components (shadow roots):** the keyboard walk enters them; the
-  label pass, the site read, the media read, 4.A's handler scan and
-  5.F's error read do not. Since part B's inventory and guard CN
-  (2026-11-12), a form, navigation or sound inside one is NEEDS REVIEW
-  in 5.A-5.H, 9.A-9.C and 2.A, not DOES NOT APPLY (D-01, K-02, M-12,
-  N-01). Still open: 4.A can PASS with a mouse-only control inside one
-  (D-03), 5.F and 5.G miss an error shown in one (M-06), and 19.A fails
-  a page whose shared header is one (K-02; a guard never moves a FAIL;
-  accepted until part D, Abby 2026-11-12). Part D reads them.
+- **Web components and frames** are read by every reader since step 8
+  (2026-11-15), and a test decides content inside them on the same
+  rows. Not read: a closed shadow root, and a frame the recording
+  lacks (PASS and DOES NOT APPLY are held, `frames_missing`). The
+  lines below name what is still open inside them.
 - **Content that opens:** a form behind a button with no ARIA marker is
   never opened; since guard CN its hidden fields make 5.A-5.H NEEDS
   REVIEW, not DOES NOT APPLY (H-08, M-07), and so does an editable text
