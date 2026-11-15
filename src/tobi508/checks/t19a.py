@@ -215,12 +215,18 @@ def _site_map_pages(pages: list[PageRead]) -> set[int]:
 TEMPLATE = ("navigation", "banner", "contentinfo")
 
 
-def link_groups(page: PageRead) -> dict[str, set[str]]:
-    """Each link group's destinations on a page (site.Unit.group)."""
+def link_groups(page: PageRead, targets: tuple[str, ...] = ()) -> dict[str, set[str]]:
+    """Each link group's destinations on a page (site.Unit.group). A link to
+    T or a verified alias of T (`targets`, T first) is T: round 2's CILab
+    subpage links its home as index.html in the row its home has."""
     out: dict[str, set[str]] = {}
     for u in page.units:
         if u.role == "link" and u.group and u.href:
-            d = norm_href(u.href)
+            d = (
+                norm_href(targets[0])
+                if targets and _to_t(u.href, targets)
+                else norm_href(u.href)
+            )
             if d:
                 out.setdefault(u.group, set()).add(d)
     return out
@@ -279,7 +285,12 @@ def links_to(
 ) -> list[LinkTo]:
     out = []
     for p in pages:
-        groups = link_groups(p) if t_groups else None
+        targets = (t_url,) if isinstance(t_url, str) else t_url
+        groups = link_groups(p, targets) if t_groups else None
+        mapped = [
+            sorted({norm_href(targets[0]) if _to_t(x, targets) else x for x in g})
+            for g in t_groups
+        ]
         for u in p.units:
             if u.role == "link" and _to_t(u.href, t_url):
                 out.append(
@@ -287,7 +298,7 @@ def links_to(
                         page=p.n,
                         name=u.name[:80],
                         region=u.region_role,
-                        kind=_kind(u, p, maps, groups, t_groups),
+                        kind=_kind(u, p, maps, groups, mapped),
                     )
                 )
     return out
