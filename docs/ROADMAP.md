@@ -56,7 +56,7 @@ is merged. At most three threads at once. Each thread branches from
 | --- | --- | --- | --- |
 | 1-9a, 6f, 12a | Done: PRs #39 to #80 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Step 8's thread has one last pull request to open (4.D and 4.E on focus dropped inside a web component; 5.F and 5.G row A3c) | | |
 | 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
-| 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
+| 6g | 4.C and 4.E read the content that menus and sections open; 19.A opens the closed menu that holds a link to the page | Opus | done 2026-11-15 (#90, #92; 19.A in this PR) |
 | 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0); repeated link rows as navigation, non-pages set aside (1.14.0); then the rounds' rerun | Opus | running |
 | 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
@@ -92,11 +92,14 @@ is merged. At most three threads at once. Each thread branches from
   checked, only when all were checked; no follow-up call for 19.A is
   left, so the runners need none. Then 19.A is rerun on rounds 1 and
   2's frozen pages, every moved cell shown beside the key.
-- **6g.** Guard RC holds a PASS when a menu or section opened and the
-  test did not walk it. 4.F's pass R already opens each trigger and
-  Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
-  The wording and the moved cells go to Abby first. 4.D and 5.D only
-  if the days allow.
+- **6g, done 2026-11-15.** A shared walk through what each menu or
+  section opens (`opened.py`, on `reveal.py`'s opening; pass R only
+  pressed Tab once). 4.C 1.14.0 (#90) and 4.E 1.8.0 (#92) read it; guard
+  RC holds only what the walk did not reach. A video's built-in controls
+  are not a trigger. Frozen rerun: 4.C R2 9/10, R1 6/9; 4.E R2 8/10, R1
+  6/9 agree; no PASS the key fails. 19.A 1.15.0 opens the one visible
+  button that controls a hidden navigation link to the page. Not done:
+  4.D and 5.D (Abby: skipped for the cut).
 - **10 and 10b.** A blind round is run by
   [the how-to](how-to/run-a-judging-round.md): keys locked before the
   tool runs, the run locked before the keys are opened. Until a
