@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F19 Filter keywords</title>
+<style>#dlg{position:fixed;top:10%;left:10%;width:60%;background:#fff;border:1px solid #333;padding:1em}</style></head><body>
+<header><a href="#home">Home</a></header>
+<main><h1>Search results</h1>
+<button id="b" type="button" aria-haspopup="dialog">Filter keywords</button>
+<p>Results.</p><a href="#r1">First result</a></main>
+<div id="dlg" hidden><h2 id="t">Filter</h2><button id="close" type="button">Close</button>
+<label>Keyword <input id="kw" type="text"></label> <button id="go" type="button">Apply</button></div>
+<script>
+// Inside the modal dialog, the keyword field sends focus on to the Apply
+// button as soon as it gets focus.
+const b = document.getElementById("b"), dlg = document.getElementById("dlg"), close = document.getElementById("close");
+const go = document.getElementById("go");
+function shut() { dlg.hidden = true; dlg.removeAttribute("role"); dlg.removeAttribute("aria-modal"); b.focus(); }
+b.addEventListener("click", () => {
+  dlg.hidden = false; dlg.setAttribute("role", "dialog"); dlg.setAttribute("aria-modal", "true");
+  dlg.setAttribute("aria-labelledby", "t"); close.focus();
+});
+close.addEventListener("click", shut);
+dlg.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") shut();
+  if (e.key === "Tab" && !e.shiftKey && document.activeElement === go) { e.preventDefault(); close.focus(); }
+});
+document.getElementById("kw").addEventListener("focus", () => go.focus());
+</script></body></html>

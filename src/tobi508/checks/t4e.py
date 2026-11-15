@@ -9,12 +9,15 @@ control replay. Only evaluate() and the row tables decide outcomes.
 from __future__ import annotations
 
 import asyncio
+import json
 from typing import Any
 
 from pydantic import BaseModel, Field
 
+from tobi508 import reveal
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
+from tobi508.jslib import JSLIB
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -96,8 +99,30 @@ class ContextHook:
         when the page could not be read."""
         return await open_dialogs(t.page)
 
+    async def rebase(self, t: Traversal) -> None:
+        """Take the dialogs open now as the starting state (opened.py: the
+        dialog a trigger opened is not one that appeared on the first Tab)."""
+        now = await self._dialogs(t)
+        if now is not None:
+            self.dialogs = now
+
     async def on_step(self, t: Traversal, step: Step) -> Any:
         out: dict[str, Any] = {}
+        # The dialog keeping focus (1.8.0): the step ends in an open modal
+        # dialog and the element that first took focus is outside it, so the
+        # dialog sent focus back in (TT p. 23, 4.F HtT 3), not a jump.
+        first = next(
+            (e.get("css") for e in step.focus_events if e["type"] == "focusin"),
+            None,
+        )
+        if first and step.stop.modal:
+            try:
+                if await t.reader.evaluate_top(
+                    KEPT_IN_MODAL_FN.replace("CSS", json.dumps(first))
+                ):
+                    out["kept_in_modal"] = True
+            except Exception:
+                pass
         if self.navs != self.seen_navs:
             out["navigations"] = self.navs - self.seen_navs
             self.seen_navs = self.navs
@@ -124,6 +149,25 @@ class ContextHook:
                     path.resolve().relative_to(t.rel_base.resolve()).as_posix()
                 )
         return out or None
+
+
+KEPT_IN_MODAL_FN = (
+    "(() => {"
+    + JSLIB
+    + """
+  let a = document.activeElement;
+  while (a && a.shadowRoot && a.shadowRoot.activeElement) a = a.shadowRoot.activeElement;
+  const m = a && a.closest('dialog, [role=dialog], [role=alertdialog]');
+  if (!m || !((m.tagName === 'DIALOG' && m.matches(':modal')) || m.getAttribute('aria-modal') === 'true')) return false;
+  // The focus log does not escape an id ("#id_series_Narrated Movies"): an
+  // id-only path is also tried as an id.
+  const css = CSS;
+  const el = J.find(css) || (/^#[^>]*$/.test(css) ? document.getElementById(css.slice(1)) : null);
+  if (!el) return false;
+  for (let n = el; n; n = n.parentNode || n.host || null) if (n === m) return false;
+  return true;
+})()"""
+)
 
 
 def context_hook(pass_name: str, prior: PassResult | None) -> ContextHook:
@@ -153,6 +197,9 @@ class Inst4E(BaseModel):
     before_shot: str | None = None
     after_shot: str | None = None
     j1: dict[str, Any] | None = None
+    # Found in opened content (4.C's P8, 1.8.0): how to open it again before
+    # the Tabs ({frame_chain, css_path, by, name}); None for P1 and P2.
+    opened: dict[str, Any] | None = None
 
 
 class State4E(BaseModel):
@@ -222,7 +269,14 @@ def classify(
             None,
         )
         pulled_back = prev is not None and step.stop.path_key == prev.stop.path_key
-        if lost is not None and not lost.get("rel_inside") and not pulled_back:
+        # An open modal dialog sent focus back inside it (1.8.0): not a jump.
+        kept = bool(extra.get("kept_in_modal"))
+        if (
+            lost is not None
+            and not lost.get("rel_inside")
+            and not pulled_back
+            and not kept
+        ):
             if step.stop.kind == "BODY" or lost.get("rel") is None:
                 return Signal(kind="dropped", detail=target_css), unreliable
             return (
@@ -305,6 +359,50 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
                     after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
                 )
             )
+    # Opened content (4.C's P8; 1.8.0): every Tab step of the shared walk
+    # through what each trigger opened (opened.py). Opening it is not a step
+    # this test judges (activation, not focus).
+    rv = ctx.cache.get("reveal")
+    for trig in rv.triggers if rv is not None else []:
+        w = trig.walked
+        if w is None:
+            continue
+        what = f'opening "{trig.name or "a control"}"'
+        if w.end in ("cap", "time", "error"):
+            st.incomplete.append(
+                f"Tabbing through what {what} showed did not finish ({w.end})."
+            )
+        opener = {
+            "frame_chain": list(trig.frame_chain),
+            "css_path": trig.css_path,
+            "by": w.by,
+            "name": trig.name or "the control",
+        }
+        prev = None
+        for i, step in enumerate(w.steps):
+            sig, unreliable = classify(step, prev, p1.start_url or "", p1.start_pages)
+            prev = step
+            if sig is None:
+                continue
+            target = _target(step, sig)
+            ident = (target.get("css_path") or "", sig.kind)
+            if ident in seen:
+                continue
+            seen.add(ident)
+            st.instances.append(
+                Inst4E(
+                    id=f"e{len(st.instances) + 1}",
+                    pass_name="P8",
+                    step=i + 1,
+                    key="Tab",
+                    keys=["Tab"] * (i + 1),
+                    target=target,
+                    signal=sig,
+                    unreliable=unreliable,
+                    after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
+                    opened=opener,
+                )
+            )
     replays = 0
     for inst in st.instances:
         if inst.unreliable:
@@ -332,8 +430,40 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
     return st
 
 
+async def _opened_at(
+    ctx: RunContext, inst: Inst4E, keys: list[str], hooks=None, shots=False
+):
+    """A fresh load with the trigger opened as reveal.py opened it, then
+    `keys` (an instance in opened content, 1.8.0)."""
+    o = inst.opened or {}
+    s = await open_session(
+        ctx.new_page,
+        ctx.quiet_ms,
+        ctx.shots if shots else None,
+        ctx.rel if shots else None,
+        hooks,
+    )
+    try:
+        if not await reveal.reopen(
+            s, o["frame_chain"], o["css_path"], o["by"], ctx.quiet_ms
+        ):
+            raise RuntimeError("the menu or section could not be opened again")
+        for k in keys:
+            await s.traversal.press(k)
+    except BaseException:
+        await s.close()
+        raise
+    return s
+
+
 async def _reproduce(ctx: RunContext, inst: Inst4E) -> bool:
-    s = await open_session(ctx.new_page, ctx.quiet_ms, hooks=[ContextHook("R")])
+    if inst.opened:
+        try:
+            s = await _opened_at(ctx, inst, [], hooks=[ContextHook("R")])
+        except Exception:
+            return False
+    else:
+        s = await open_session(ctx.new_page, ctx.quiet_ms, hooks=[ContextHook("R")])
     try:
         prev = None
         for k in inst.keys:
@@ -354,7 +484,11 @@ async def _reproduce(ctx: RunContext, inst: Inst4E) -> bool:
 async def _control(ctx: RunContext, inst: Inst4E) -> bool:
     """Same keys except the last, then wait: does the page change anyway?"""
     try:
-        s = await ctx.replay(inst.keys[:-1])
+        s = (
+            await _opened_at(ctx, inst, inst.keys[:-1])
+            if inst.opened
+            else await ctx.replay(inst.keys[:-1])
+        )
     except Exception:
         return False
     try:
@@ -372,7 +506,11 @@ async def _control(ctx: RunContext, inst: Inst4E) -> bool:
 
 async def _before_shot(ctx: RunContext, inst: Inst4E) -> str | None:
     try:
-        s = await ctx.replay(inst.keys[:-1], shots=True)
+        s = (
+            await _opened_at(ctx, inst, inst.keys[:-1], shots=True)
+            if inst.opened
+            else await ctx.replay(inst.keys[:-1], shots=True)
+        )
     except Exception:
         return None
     try:
@@ -526,12 +664,20 @@ def _label(info: dict[str, Any]) -> str:
     )
 
 
-def _keys_text(keys: list[str]) -> str:
-    return f"{keys[0]} {len(keys)} times" if len(keys) > 1 else keys[0]
+def _keys_text(keys: list[str], opened: dict[str, Any] | None = None) -> str:
+    tabs = f"{keys[0]} {len(keys)} times" if len(keys) > 1 else keys[0]
+    if not opened:
+        return tabs
+    how = (
+        f'Enter on "{opened["name"]}"'
+        if opened.get("by") != "a click"
+        else f'(click "{opened["name"]}" to open it)'
+    )
+    return f"{how}, then {tabs}"
 
 
 def _sentence(inst: Inst4E, rid: str) -> str:
-    el, keys = _label(inst.target), _keys_text(inst.keys)
+    el, keys = _label(inst.target), _keys_text(inst.keys, inst.opened)
     see = f"To see it, load the page and press {keys}."
     kinds = {
         "navigation": "the page went to another address",
@@ -595,7 +741,7 @@ def evaluate(st: State4E, evidence_refs: list[str]) -> Finding:
                 selector=inst.target.get("css_path"),
                 frame_path=inst.target.get("frame_chain") or [],
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.signal.kind} "
-                f"after {_keys_text(inst.keys)}: {_label(inst.target)}",
+                f"after {_keys_text(inst.keys, inst.opened)}: {_label(inst.target)}",
                 evidence_refs=[p for p in (inst.before_shot, inst.after_shot) if p],
             )
         )

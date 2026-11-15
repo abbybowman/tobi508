@@ -1033,6 +1033,12 @@ class Traversal:
         self._last_mutations, self._last_focus_total, self._last_q = m, f, q
         await _focus_events(self.page, self._seen_focus)
 
+    async def forget_focus_events(self) -> None:
+        """Take the focus events logged so far as read, so the next press
+        reports only its own (opened.py: the opener's own focus on the
+        trigger, and the opening, are not the first Tab's)."""
+        await _focus_events(self.page, self._seen_focus)
+
     async def resync(self) -> None:
         """Take the focus and mutation logs as they are now, after keys were
         pressed outside press() (5.D's observed actions), so the next press

@@ -82,6 +82,16 @@ EXPECTED: dict[str, dict] = {
         "rows": [],
         "walk": (5, 5),
     },
+    # 1.8.0 (step 6g): what a menu opened is Tabbed through (4.C's P8).
+    # Opening it is activation, not focus; a link inside that navigates when
+    # it gets focus fails like any other.
+    "f16-menu-focuses-first-item": {"outcome": "PASS", "rows": [], "not": ["RC"]},
+    "f17-menu-link-navigates-on-focus": {"outcome": "FAIL", "rows": ["M4"]},
+    # A modal dialog keeping focus inside it (TT p. 23, 4.F HtT 3) is not
+    # focus moving on its own; a field inside it that sends focus elsewhere
+    # in the dialog still is (1.8.0; round 2's Search, Bootstrap's trap).
+    "f18-modal-dialog-keeps-focus": {"outcome": "PASS", "rows": [], "not": ["RC"]},
+    "f19-modal-dialog-field-jumps": {"outcome": "FAIL", "rows": ["M6"]},
 }
 HELPERS = {"f02-other"}
 # Pages from other tests that prove a "not an instance" rule for 4.E.
@@ -89,6 +99,20 @@ REUSED = {
     "../no_trap.html": {"outcome": "PASS", "rows": []},
     # A field that swallows Tab: focus never moves, no signal.
     "../4c/f04-field-swallows-tab.html": {"outcome": "PASS", "rows": []},
+    # 1.8.0: 4.C's opened-content pages. A plain menu is not held by RC; a
+    # control the walk did not reach holds RC; a trigger that opens nothing
+    # holds RV.
+    "../4c/f47-menu-opens-plain.html": {"outcome": "PASS", "rows": [], "not": ["RC"]},
+    "../4c/f49-panel-unreached-control.html": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page_rows": ["RC"],
+    },
+    "../4c/f50-trigger-opens-nothing.html": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page_rows": ["RV"],
+    },
 }
 
 
@@ -113,6 +137,8 @@ async def test_outcome(name, settings, server):
     )
     if "page_rows" in e:
         assert set(e["page_rows"]) <= set(f.rows), f.rows
+    for row in e.get("not", []):
+        assert row not in f.rows, (row, f.rows, f.rationale)
     if "walk" in e:
         # Row WK's evidence, not only its sentence: elements reached against
         # elements counted (the finding's rationale records them).

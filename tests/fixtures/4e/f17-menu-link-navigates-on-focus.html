@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F17 Topics menu</title></head><body>
+<header><nav aria-label="Main">
+<a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<ul id="panel" hidden><li><a href="#earth">Earth</a></li><li><a href="#sun" id="sun">Sun</a></li></ul>
+<a href="#contact">Contact</a>
+</nav></header>
+<main><h1>Topics</h1><p>Pick a topic from the menu.</p></main>
+<script>
+const b = document.getElementById("b"), panel = document.getElementById("panel");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+document.getElementById("sun").addEventListener("focus", () => { location.href = "f02-other.html"; });
+</script></body></html>
