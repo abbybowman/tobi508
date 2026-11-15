@@ -192,6 +192,28 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     "next-page-does-not-link-back": ("nb/d/", ["hub2"], "FAIL", ["W1", "G4"], {}),
     # ... and a related page T links to in its content (round 1's ISS hub).
     "related-page-links-back": ("rel/x/", ["hub2"], "PASS", ["W1", "G2"], {}),
+    # 19.A 1.14.0 (Abby, 2026-11-15, option 1; round 2's CILab): a lab's
+    # subpages repeat its home page's row of icon links, outside any
+    # navigation region. The row is on T too, so the link back (to
+    # index.html, a verified alias) is navigation. Its twin's subpage links
+    # back only from a paragraph of links T does not have: one kind, FAIL.
+    "repeated-link-row-is-navigation": (
+        "lab2/",
+        ["hub3"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    "content-links-not-on-t-are-not-navigation": (
+        "lab3/",
+        ["hub3"],
+        "FAIL",
+        ["W1", "W6", "G4"],
+        {},
+    ),
+    # ... and a related link that is an API's JSON is not a page: it takes
+    # no place, and a link held back is checked instead.
+    "json-is-not-a-page": ("rel/y/", ["hub3"], "PASS", ["W1", "G2"], {}),
     "process-step": (
         "step2",
         ["home"],
