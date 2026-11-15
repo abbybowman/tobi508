@@ -84,6 +84,16 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
             "checked.",
         ),
     },
+    # 5.H 1.9.0: a visible form with a hidden part ("Add a message"): the
+    # hidden field joins that form, read once, and 5.H decides; 5.F, which
+    # would have to type in it, is still held by the guard.
+    "form-with-hidden-part": {
+        "5.H": ("DNA", None),
+        "5.F": (
+            "NEEDS_REVIEW",
+            "1 form field is hidden until something opens it, and was not checked.",
+        ),
+    },
     # M-02: a form that is only a button.
     # 5.H 1.9.0 reads the form pass E did not take: "Delete my account" is a
     # consequence hint, so J1 is asked (open here).

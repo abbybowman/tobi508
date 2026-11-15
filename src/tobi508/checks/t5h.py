@@ -135,6 +135,7 @@ class Form5H(BaseModel):
     # the page's elements for applicability only, never submitted.
     hidden: bool = False
     text: str = ""  # a hidden form's own words (scripts left out)
+    key: str = ""  # its path, as the inventory names forms
 
 
 class State5H(BaseModel):
@@ -181,6 +182,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
         form = Form5H(
             n=len(st.forms) + 1,
             id=f.id,
+            key=f.key or "",
             fields=[
                 (ps.info.get(str(n)) or {}).get("label") or f"field {n}"
                 for n in f.fields
@@ -228,7 +230,18 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
     # applicability, counted as read for guard CN only when found.
     got = await read_hidden_forms(ctx, ps)
     if got:
+        by_id = {f.key: f for f in st.forms if f.key}
         for h in got["forms"]:
+            known = by_id.get(h["key"])
+            if known is not None:
+                # A form pass E took that also holds hidden fields: its hidden
+                # fields' names and its words join that form, not a second one.
+                known.fields = list(dict.fromkeys([*known.fields, *h["fields"]]))[:20]
+                known.text = h["text"][:600]
+                known.hint = known.hint or bool(
+                    HINT.search(" ".join([*known.fields, known.text]))
+                )
+                continue
             form = Form5H(
                 n=len(st.forms) + 1,
                 id=h["key"],
@@ -236,6 +249,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
                 buttons=h["buttons"][:10],
                 hidden=True,
                 text=h["text"][:600],
+                key=h["key"],
             )
             form.hint = bool(
                 HINT.search(" ".join([*form.fields, *form.buttons, form.text]))
