@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><title>Launch schedule</title></head>
+<body>
+<main>
+<h1>Launch schedule</h1>
+<p>The order of events for launch day is below.</p>
+<ol><li>Crew arrives at the pad.</li><li>Fueling begins.</li><li>Launch.</li></ol>
+<button type="button" id="b" onclick="document.getElementById('d').hidden=false">Give feedback</button>
+<div id="d" hidden>
+<form onsubmit="event.preventDefault()">
+<fieldset><legend>Was this page helpful?</legend>
+<label><input type="radio" name="h" value="y"> Yes</label>
+<label><input type="radio" name="h" value="n"> No</label>
+</fieldset>
+<label>What should we change on this page? <textarea name="c"></textarea></label>
+<button type="submit">Send</button>
+</form>
+</div>
+</main>
+</body>
+</html>

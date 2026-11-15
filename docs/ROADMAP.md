@@ -71,9 +71,9 @@ is merged. At most three threads at once. Each thread branches from
   keys fail none; each change is approved by Abby before it is built.
   Done: 2.C and 2.D's timer (a clock check; 8 of round 2's cells
   decided, all agreeing with the key) and the images (up to 300 read;
-  6 cells, all agreeing). Being built: 5.H reads a hidden form to say
-  whether it is the kind 5.H is about. To research: fields hidden
-  from everyone (honeypots, reCAPTCHA).
+  6 cells, all agreeing) and 5.H reading a hidden form to say whether
+  it is the kind 5.H is about (8 cells, all agreeing). To research:
+  fields hidden from everyone (honeypots, reCAPTCHA).
 - **6h. 19.A finds its ways as a tester does** (Abby, 2026-11-14).
   Today 19.A reads only the pages the caller gave and one site
   search, and the eval runners never make the follow-up call, so it
