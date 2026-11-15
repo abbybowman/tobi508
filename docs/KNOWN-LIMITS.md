@@ -45,10 +45,17 @@ are in [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
   stable identity (Abby, 2026-11-12).
 - **The watch is 6.5 seconds:** what starts later is DOES NOT APPLY in
   2.A, 2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second
-  can be missed; flashing below the first screen and an animated image
-  past the 30th are not measured (N-02 to N-09, W-02, W-09); an
-  animated image past the 30th now makes 2.B and 3.A NEEDS REVIEW
-  (N-06, guard CN). Parts C and J.
+  can be missed; flashing below the first screen that is not an image is
+  not measured (N-02 to N-09, W-02, W-09). Images (2.B 1.5.0, 3.A
+  1.4.0): up to 300 per page are read, lazy ones after a scroll; one the
+  recording lacks, an animated one only the scroll found (no region can be
+  made for it), or one whose frames at the size shown exceed 100 MB keeps
+  2.B and 3.A at NEEDS REVIEW (guard CN or 3.A's A3). Parts C and J.
+- **3.A's screencast net varies between runs on some pages:** on round
+  2's 5340 the same code gave DOES NOT APPLY in two runs and NEEDS REVIEW
+  (row A3: flashing the capture did not show) in another; `main` gave A3
+  twice. The key says Does Not Apply, so no run is wrong, but the cell is
+  not stable. Not yet looked into.
 - **2.C's clock check (2.C 1.2.0, 2.D 1.3.0)** clears a timer longer
   than the watch only when one more load sets it again, runs the page's
   clock past it, and sees nothing change: the screen in five
