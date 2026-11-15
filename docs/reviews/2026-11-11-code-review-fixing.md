@@ -8,42 +8,90 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 5 (PRs #39 to #44), step 6 (PR #46; results in
-`evals/README.md`, "Gate 2026-11-13"), step 6b (PR #53), step 6c
-(PRs #49, #51, #52, #54, #55) and step 7 (PRs #48, #50).
+**Done:** steps 1 to 5 (PRs #39 to #44), step 6 (PR #46), step 6b
+(PR #53), step 6c (PRs #49, #51, #52, #54, #55), step 6d's phase 1
+(PRs #59, #63), step 7 (PRs #48, #50) and step 9a (results in
+`evals/README.md`, "Gate 2026-11-14"). Step 8 is running (PRs #58,
+#60 to #62 merged, #64 open).
 
-**Order to start them** (at most three threads at once): 8, 9a and 6d
-now; 9b after 8; 10 when the keys are in place.
+**Order to start them** (at most three threads at once): 6e and 6f
+now, beside step 8's thread; 9b by midday on Nov 17; 10 when the keys
+are in place.
 
 ## Starting a thread
 
-**Step 6d, Sonnet: the walk was complete, checked in one place** (running; the roadmap's step 6d has the rule as decided on 2026-11-14, which replaces "a trap makes the walk incomplete" below)
+**Step 6e, Opus: guard CN on real pages, and 2.C and 2.D's timer** (now)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow it. Your work is step 6d of `docs/ROADMAP.md` "Order of
-> work": the first conversion of part C in
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md` (the
-> walk), and nothing else of part C. First list, for every test that
-> reads the keyboard walk (4.A-4.F, 5.A-5.H), what it does today when
-> the walk ended in a trap, a loop, a cap or out of time, or reached
-> fewer stops than the page has (`walk.py` `TRAP_ENDS`, guard CN's
-> `count: focusable`, each check's own list), and show me the table:
-> which tests already hold PASS and DOES NOT APPLY, and which do not
-> (the grid's NEW-3 says 4.E does not). Then one shared function that
-> answers "was the walk complete, and if not, what did it not reach"
-> in a plain sentence, and each test's own lists replaced by it, one
-> test a commit with its fixtures and the grid rerun. The spec wording
-> is one sentence per spec (a MINOR version each, the same sentence);
-> show me it once before building. Every change moves a PASS or a DOES
-> NOT APPLY to NEEDS REVIEW; no FAIL changes; if a cell would move the
-> other way, stop and ask. Update the grid's cells, the README's
-> "Known wrong outcomes" row for 4.E, and the review items in the same
-> commits. Step 8 is running beside you in the readers (`labels.py`,
-> `site.py`, `motion.py`, `forms.py`, `reveal.py`, `observe.py`): stay
-> out of them, and merge `main` before every spec version and before
-> editing `tests/test_fixtures_grid.py`.
+> and follow its "Working rules". Your work is step 6e of
+> `docs/ROADMAP.md` "Order of work". Read step 9a's results first:
+> `evals/README.md` ("Gate 2026-11-14") and
+> `evals/judging/gate-2026-11-14/compare-round1.md` and
+> `compare-round2.md` (their "Guard CN cells" and per-test tables).
+> Guard CN made 58 cells NEEDS REVIEW on 19 real pages and my keys
+> fail none of them; 2.C and 2.D are NEEDS REVIEW on all 10 of round
+> 2's pages.
+>
+> First, no code: a table of every CN cell by the sentence that made
+> it (a form hidden until opened, a form that is only a button, more
+> than 30 images, anything else), with my key beside it and the page.
+> The per-page reports are not in git: ask me for them, or for the
+> frozen archives to rerun the pages (never fetch them live). And for
+> 2.C and 2.D: what sets the timer on round 2's pages, and what, if
+> anything, it changes on screen.
+>
+> Then, for each cause, propose the smallest change that decides the
+> cell without guessing, and show me before building: every one turns
+> NEEDS REVIEW into an outcome, so each is mine to approve, one at a
+> time. Candidates to weigh, not instructions: 5.H reads a hidden
+> form's own fields and words for its applicability rows (it does not
+> need to fill the form); 5.F and 5.G test a form that the reveal pass
+> already opened; the 30-image cap measured and raised, as step 6c did
+> for the 600-item cap; for 2.C and 2.D, advancing the page's clock
+> past the timer with the stepped clock 3.A's capture has, to see
+> whether anything visible changes. Say for each what a careful
+> tester does at that point in the TT text (principle 7).
+>
+> Each approved change: a MINOR spec version, the fixture that now
+> decides, the nearest page that must stay NEEDS REVIEW, the grid
+> rerun (its hidden-form and late-start pages are the guard's own
+> cases; a cell may move only where the content was really read), and
+> the README rows. Then rerun the changed tests on the frozen pages
+> and show me each moved cell beside my key: if any is a PASS or a
+> DOES NOT APPLY where my key fails, stop. Step 8's thread is working
+> in `forms.py`, `reveal.py` and `checks/t5f.py`: merge `main` before
+> each change and say if you need the same lines. Whatever is not
+> merged by the end of Nov 17 stops there.
 
-**Step 8, Opus: one library for reading the page, frames included** (now)
+**Step 6f, Sonnet: three findings of step 9a** (now)
+
+> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
+> and follow it. Your work is step 6f of `docs/ROADMAP.md` "Order of
+> work", three items, each its own pull request.
+>
+> (1) 9.C on round 1: on 8 of 9 pages the judge answers
+> "inconsistent" for the pair "Home" and "NASA, return to the
+> homepage", and my key passes all 8
+> (`evals/judging/gate-2026-11-14/compare-round1.md`). Show me the
+> two elements of that pair (what each is, where it sits) and say
+> which is wrong: the pairing (a logo and a menu link that go to one
+> address are two components, not one component named two ways; see
+> fix 14 in `docs/plans/2026-11-08-post-round2-fixes.md`) or the
+> rubric. Propose the fix before building. It removes FAILs my key
+> says are wrong; add the nearest pair that must still FAIL, and run
+> the judge eval for 9.C before and after.
+>
+> (2) 19.A on CILab (round 2) is FAIL by rule where my key passes:
+> find the cause and tell me before changing anything.
+>
+> (3) 9.B's budget: 60 s to 180 s (`config.TEST_BUDGETS_DEFAULT`), as
+> 9.A and 9.C; its longest run was 41.5 s and it ran out once in a
+> dry run. No spec change.
+>
+> The per-page reports of step 9a are not in git: ask me for them or
+> for the frozen archives (never fetch the pages live).
+
+**Step 8, Opus: one library for reading the page, frames included** (running)
 
 > Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
 > and follow it. Your work is step 8 of `docs/ROADMAP.md` "Order of
@@ -70,26 +118,29 @@ now; 9b after 8; 10 when the keys are in place.
 > Whatever is not merged by the end of Nov 17 stops there: leave
 > `main` whole and write down where you stopped.
 
-**Step 9a and 9b, Sonnet: the second and third checks** (9a now; 9b after step 8, or on Nov 16 with whatever of it is merged; the same prompt, a fresh thread each)
+**Step 9b, Sonnet: the third check** (by midday on Nov 17, on `main` as it stands then)
 
 > Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
 > ("The gate"), the docstring of `evals/apijudge_gate.py`, and step 6's
 > write-up in `evals/README.md` ("Gate 2026-11-13") with its folder
 > `evals/judging/gate-2026-11-13/` (`compare.py` is the comparison to
 > reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work"
-> (I will say whether this is 9a or 9b): step 6 again, on `main`'s
-> head (record the commit), on round 2's 10 frozen pages and round
-> 1's, two repeats, with the server judge answering every question
-> type, scored with the same scorer. Report the two repeats side by
-> side and name every cell that differs between them.
+> (this is 9b): step 9a again
+> (`evals/judging/gate-2026-11-14/`, its `compare.py` and the gate
+> script's `--round` option), on `main`'s head (record the commit),
+> on round 2's 10 frozen pages and round 1's, one repeat, with the
+> server judge answering every question type, scored with the same
+> scorer. Keep each page's report and pre-SCRT file out of git (about
+> 70 MB a run): check `.gitignore` covers the folder you write to
+> before your first commit, and commit only the scores, the
+> comparison and the write-up.
 >
 > Before anything else, check and tell me if either fails: the frozen
 > recordings of both rounds are restored (`evals/judging/round2/frozen`,
 > `evals/judging/round1/frozen`; they are not in git, so stop and ask
 > me for the archives, never fetch the pages live), and the browser in
 > this container trusts the egress proxy (step 6's six 19.A false
-> FAILs were the container's). The gate script reads only round 2's
-> pages today: give it a round option. Use the CLI route (`claude -p`)
+> FAILs were the container's). Use the CLI route (`claude -p`)
 > unless I tell you Luna is configured. Run `--dry` first and tell me
 > the request and token estimate before the real run. Write into a new
 > folder under `evals/judging/`; never rewrite a locked round or step

@@ -33,6 +33,27 @@ keep their own schedule.
   pitch (Abby, 2026-11-13): no target share of NEEDS REVIEW; the three
   figures side by side, the rise in NEEDS REVIEW named as the cost, and
   where the lost cells went.
+- **Step 9a, the second check** (2026-11-14; one repeat, at commit
+  `8854a4f`, so before step 8's readers and step 6d; results in
+  `evals/README.md`, "Gate 2026-11-14", once its branch is merged).
+  Round 2: still no wrong PASS or DOES NOT APPLY, false FAILs 11 to 6,
+  decided cells 68 to 91 of 220 (the read cap gave back 26). Round 1,
+  first time with the judge: no wrong PASS or DOES NOT APPLY, 12 false
+  FAILs (8 of them one cause: the judge calls "Home" and "NASA, return
+  to the homepage" inconsistent in 9.C), 59 decided. What it showed:
+  - **Guard CN is now the largest single cost.** 58 cells over the two
+    rounds (44 on round 1), and the keys fail none of them: mostly
+    5.F, 5.G and 5.H on a form hidden until opened, and 2.B and 3.A on
+    more than 30 images. Step 6e.
+  - **2.C and 2.D are NEEDS REVIEW on all 10 of round 2's pages,** as
+    in step 6 (the page sets a timer longer than the watch). Step 6e.
+  - **Outcomes repeat.** Of 325 cells no judge answer decided, none
+    differs in outcome between the dry run and the real run, so 9b is
+    one repeat too.
+  - **4.B meets the whole gate** (6 of 6 on real pages; the test-page
+    half clean three times). No other type does yet.
+  - **Budgets:** only 5.D ran out (594 of 600 s, once); 9.B came close
+    to its 60 s.
 - **Evals.** Judge eval runs are in [evals/README.md](../evals/README.md).
   Agent eval rounds 1 (nasa.gov) and 2 (svs.gsfc.nasa.gov) are scored
   against Abby's blind SCRT files
@@ -87,11 +108,13 @@ ran three to four times longer than the work took.
 | 6 | The check against round 2: the baseline before the readers change | Opus | done Nov 13: [results](../evals/README.md#gate-2026-11-13-round-2s-10-pages-again-the-server-judge-on-every-type-roadmap-step-6) | [Judge build plan](plans/2026-11-08-apijudge-build.md), "What is left", 1 |
 | 6b | Single-test fixes for the README's known wrong outcomes | Sonnet | done Nov 13: PR #53 | Eleven review items (M-05, C-01, M-10, H-02, M-08, K-01, M-01, E-08, F-02, C-07, K-05); each is marked fixed in [the review](reviews/2026-11-11-code-review.md) and decided in its spec |
 | 6c | Win back decided cells: the read cap, 19.A's unverified search, a fuller freeze, a time budget per test, 9.B and 9.C on a page whose own navigation matches nothing | Opus | done Nov 13-14: PRs #49, #51, #52, #54, #55 | This file, "What each step covers"; [time budgets](solutions/time-budget.md) |
-| 6d | One shared check that the keyboard walk was complete, for every test that reads it | Sonnet | Nov 14-15, beside 8 | Plan part C, its first conversion (the walk); review H-03, M-05, F-11; the grid's NEW-3 |
+| 6d | One shared check that the keyboard walk reached every element, for the tests that read it | Sonnet | phase 1 done Nov 14: PRs #59, #63 | Phase 2 (4.A, 4.B, 4.F past a forward trap) is step 14c, after the demo |
+| 6e | Guard CN on real pages, and 2.C and 2.D's timer: the two largest causes of NEEDS REVIEW that hide no failure | Opus | Nov 15-16 | Step 9a's results; this file, "What each step covers" |
+| 6f | 9.C's "Home" pairs (8 false FAILs on round 1), 19.A on CILab, 9.B's budget | Sonnet | Nov 15-16 | Step 9a's results |
 | 7 | The grid of hard pages | Sonnet | done Nov 13: PRs #48, #50 | Plan part I; `tests/test_fixtures_grid.py` |
-| 8 | One library for reading the page: shadow roots and same-origin frames (8a), then a frame from another site as its own page (8b) | Opus | 8a Nov 14-15; 8b Nov 15-16 | Plan part D; fix 7 |
-| 9a | The second check, now: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | Nov 14, beside 8 | As step 6, a new folder |
-| 9b | The third check: the same pages after 8 | Sonnet | Nov 16-17 | As 9a, a new folder |
+| 8 | One library for reading the page: web components and frames | Opus | readers 1 to 3 done Nov 14 (PRs #58, #60 to #62); readers 4 to 8 in PR #64; the form error tests in frames next | Plan part D; fix 7 |
+| 9a | The second check: round 2's and round 1's frozen pages after 6b and 6c, before the readers change | Sonnet | done Nov 14; its branch waits to merge (see "Where things stand") | `evals/README.md`, "Gate 2026-11-14" |
+| 9b | The third check: the same pages after 8, 6d, 6e and 6f | Sonnet | Nov 17, started by midday | As 9a, a new folder, one repeat |
 | 10 | Round 3, small: a NASA site not used before, with web components if Abby finds one | Abby's keys; Sonnet for the run | pages chosen by Nov 15; run Nov 16-17 | Scorer fixes 15 to 17 first; [how-to](how-to/run-a-judging-round.md) |
 | 11 | If the days allow: the second look's trial | Sonnet | after 6, beside 8 | Plan part F, "Trial" |
 | 12 | If the days allow: sign in on VAST from Claude Code and run one page | Opus | when the admin's answers arrive | [Hosted sign-in plan](plans/2026-11-06-hosted-auth.md). The demo for reviewers is recorded (Abby, 2026-11-12), so this is not needed for it |
@@ -201,7 +224,43 @@ what is planned.
    other radios and whatever an open modal dialog covers. 5.D 1.7.0 (by fields,
    `walk.field_coverage`; guard CN stays). 5.F 1.8.0, 5.G 1.6.0 and 5.H 1.6.0 (they
    read 5.F's list). Phase 1 is built; phase 2 (4.A, 4.B, 4.F, 5.x reading
-   the union of the passes) is a proposal to Abby first. 4.B, 4.C and 4.F keep their own decisions.
+   the union of the passes) is step 14c, after the demo (proposed
+   2026-11-15: no page of rounds 1 or 2 has a forward trap, so it
+   would move no measured cell, and it turns NEEDS REVIEW into
+   outcomes). 4.B, 4.C and 4.F keep their own decisions. Left open by
+   the step: the grid's `frame-other` test failed once without a
+   cause found, and the modal-dialog rule is not yet in `jslib`
+   (step 8's thread).
+6e. **Guard CN on real pages, and the timer** (proposed 2026-11-15;
+   each change turns NEEDS REVIEW into an outcome, so Abby approves
+   each before it is built). Step 9a: 58 guard CN cells on 19 real
+   pages and no failure among them.
+   - First a table from 9a's reports: every CN cell by the sentence
+     that made it (a form hidden until opened; a form that is only a
+     button; more than 30 images; the rest), with the key beside it.
+   - Then, per cause, the smallest change that decides the cell
+     without guessing. Candidates: 5.H reads a hidden form's own
+     fields and words to say whether it is the kind of form 5.H is
+     about (it does not need to fill it); 5.F and 5.G test a form that
+     phase 1 of "opening everything" already opened; the 30-image cap
+     measured and raised as the 600-item cap was.
+   - 2.C and 2.D: what the timer on round 2's pages is, and whether
+     advancing the page's clock past it (the stepped clock 3.A's
+     capture already has) shows that nothing visible changes.
+   - Every change comes with the nearest page that must stay NEEDS
+     REVIEW, and the grid rerun: its hidden-form and late-start pages
+     are the guard's own cases.
+6f. **Three smaller findings of step 9a** (proposed 2026-11-15):
+   - **9.C:** on 8 of round 1's 9 pages the judge fails the pair
+     "Home" and "NASA, return to the homepage", and the key passes
+     all 8. Find whether the pair should have been made at all (a
+     logo and a menu link that go to one address are two components,
+     not one named two ways) or whether the rubric is wrong; a judge
+     eval either way.
+   - **19.A on CILab** is FAIL by rule where the key passes; not yet
+     looked at.
+   - **9.B's budget** is 60 s and its longest run was 41.5 s (51.6 s
+     in a dry run, where it ran out): 180 s, as 9.A and 9.C.
 7. **The grid of hard pages** is built (`tests/test_fixtures_grid.py`,
    nine pages by 22 tests; one recording per fixture page). It is the
    test for step 8: a cell marked as a known wrong outcome fails the
@@ -242,16 +301,13 @@ what is planned.
    fuller freeze is the fix), and it is where `JUDGE_TYPES` is decided,
    on both rounds' cells and the gate's test-page half. Then each README status line is rewritten from it, and the
    caveats step 8 removed go.
-   It runs twice (Abby, 2026-11-14): **9a** now, on `main`
-   after 6b and 6c, so their effect is measured apart from step 8's
-   and the pitch has a second set of figures whatever step 8 reaches;
-   **9b** after step 8. 9a is one repeat (Abby, 2026-11-14: a
-   checkpoint, not a scoring round), run at the commit of its dry
-   count so that the dry run's outcomes stand in for a second repeat
-   on the cells no judge answer decides: step 6c saw the same frozen
-   page take a different path on different loads, and that comparison
-   shows how often, at no cost in tokens. Whether 9b needs a second
-   repeat is decided from it.
+   It runs twice (Abby, 2026-11-14). **9a** is done: one repeat at
+   the commit of its dry count, before step 8's readers. **9b** runs
+   on `main` after steps 8, 6d, 6e and 6f, one repeat (9a's dry and
+   real runs differed in no outcome), started by midday on Nov 17 so
+   that it finishes inside the cut. A gate run's reports and pre-SCRT
+   files stay out of git (about 70 MB a run with their screenshots);
+   the scores, the comparison and the README sections go in.
 10. **Round 3, small.** A site the tool has not been developed against;
     Abby looks for NASA sites built with web components. Three to five
     pages, Abby's blind SCRT files first, then the tool, then the score.
@@ -293,6 +349,15 @@ the remaining checks).
    checks' shared base goes in with it (one finding builder, one "out
    of time" helper), which is what "Tidy the checks" was. Every outcome
    stays the same except where a gap now holds one back.
+14c. **Past a forward trap in 4.A, 4.B and 4.F** (step 6d's phase 2;
+   approved in principle, Abby 2026-11-14). They read only the forward
+   walk and so give up at a forward trap; they read what the other
+   passes reached instead. A proposal first, with a two-trap page per
+   test, the nearest page that must stay NEEDS REVIEW and the cells
+   that move. 4.C's outcome is untouched, and 4.F does not PASS on the
+   backward walk alone where a forward trap whose only exit is the
+   opposite direction was logged for it. Opus: it is a design, not a
+   pattern to carry through.
 14b. **P6's stops to 4.D and 4.E** (from step 6d, 2026-11-14). 4.C's mouse
    bypass (P6) reaches stops that neither the Tab nor the Shift+Tab walk
    reached when the two end in different traps, and 4.C's spec said they
@@ -360,11 +425,15 @@ itself, one bundle a thread; they are not repeated here.
 - **Windows headed Chrome** was last run on 2026-11-02, before most of
   today's specs. Run it again before the scored submission run, or state
   the limit ([browser checks](../specs/rules/_browser-checks.md)).
-- **`JUDGE_TYPES`:** the question types to switch on, after step 9, on
-  round 1's and round 2's cells together and the gate's test-page half
-  (not run in step 6). 4.B is nearest (5 of 5 agree, 6 cells needed);
-  4.A, 4.D and 4.F stay off (they gave the judge's wrong FAILs in both
-  rounds).
+- **`JUDGE_TYPES`:** step 9a's answer is 4.B alone (6 of 6 on real
+  pages, the test-page half clean three times). 5.C, 5.H, 5.A, 9.A and
+  2.B have no wrong cell and too few cells; 4.A, 4.D, 4.F, 5.B, 5.D and
+  9.C are over the wrong-FAIL limits. Switch 4.B on now, or wait for
+  9b.
+- **Steps 6e and 6f,** and phase 2 of step 6d moved after the demo:
+  proposed 2026-11-15.
+- **Step 9a's branch:** it committed each page's report and pre-SCRT
+  file (72 MB). Keep them out of `main` (proposed), or keep them.
 - **Step 8's direction** (NEEDS REVIEW to PASS inside web components
   and frames): the three points under step 8, before its first spec
   change.
