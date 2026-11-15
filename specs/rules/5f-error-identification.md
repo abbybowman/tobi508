@@ -1,7 +1,7 @@
 ---
 tt_test: 5.F
 tt_name: 3.3.1-error-identification
-spec_version: 1.10.0
+spec_version: 1.11.0
 guards: unrecorded-code
 count: fields_hidden, fields.shadow, fields.frames, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -26,6 +26,7 @@ The tool gives each page one 5.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | --- | --- | --- | --- |
 | A1 | No P1 stop is a field, and the DOM inventory counts no form fields | DOES NOT APPLY | p. 25 Identify Content (5.A–5.H) |
 | A2 | No stop is a field, but the inventory counts form fields | NEEDS REVIEW | Spec rule (as 5.D A2) |
+| A3c | As A3, except that an attempt's submit press changed the page (the settle log counts a DOM change during the press, content pass T found changing by itself left out) and no read took the change as an error: a colour on a box around a field, a message gone within the 150 ms read, a change no read can name (1.11.0; review M-06: each read as "the page did not check") | NEEDS REVIEW | Spec rule (DOES NOT APPLY needs a page that did not check) |
 | A3 | Pass E ran in full, no attempt sent a form to a server, and no field is an instance (section 3: no error indicator, or J1 and J2 found none), and every form's pressed control could have sent it (1.7.0, M-01: a submit button, Enter in a form of one field, or a control J0 named). A press of any other button on a form with no such control, with no error shown, proves nothing about the page's error checking: it is NEEDS REVIEW (G3), with "We pressed <button>, but it may not be the control that sends this form, so we could not tell whether the page checks it for errors. Please check how the form reports errors." Never DOES NOT APPLY | DOES NOT APPLY ("no automatic error detection") | p. 28 Identify Content, Applicability; TC10.D-ic-dna-1 |
 | A3s | As A3, except that an attempt sent a form and that form is a *site search*: its only field is one text or search box (attempt 2 types into it); nothing limits its input (no `required` or `aria-required="true"`, no `pattern`, no `minlength`, an `input` of type text or search, or a `textarea`); and the page marks it as a search (a `role=search` landmark or `<search>` element holds it, "search" in the form's `action`, `type=search`, or "search" in the field's name, id, `aria-label`, placeholder or label). No error indicator appeared on the page (else it is an instance) (1.2.0) | DOES NOT APPLY: a site search accepts any input, so there is nothing to get wrong. Any other form that was sent stays A4: a field with no stated limit can still have one a server checks ("ZIP code", F02) | p. 28 Identify Content ("no automatic error detection"); TC10.D-ic-dna-1 (a form with no detection is DNA); Abby, 2026-11-05 (post-round 1 fix 17: NASA's header search was NEEDS REVIEW on 9 pages that the tester marked DNA) |
 | A4 | An attempt sent a form (a `submit` event not cancelled, or a form submission request) and no error indicator appeared on the page before it left | NEEDS REVIEW: the recording cannot answer a submission, so errors a server would return cannot be seen. Never DOES NOT APPLY: the server may well detect errors | Spec rule (principle 3); 5.D spec section 5 (submission in a recorded page) |
@@ -108,6 +109,7 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 | Page PASS | "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form. Each error the page found was named and explained in text." |
 | Page FAIL | "Some form errors are not named or explained in text, so a person may not know which field is wrong or why." |
 | Page NEEDS REVIEW | "We could not finish this test, so a person needs to check it." |
+| A3c | "When we tried to send the form with mistakes, the page changed, but not in a way we could read as an error message (for example a colour on a box around a field, or a message that disappeared at once). A person needs to look: load the page, make the same mistakes and send it." |
 | A3 | "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form, and the page did not check for errors, so this test does not apply." |
 | A3s | "The page's only form that was sent is a site search: it accepts anything typed into it and showed no error on the page, so there is nothing to get wrong and this test does not apply." |
 | A4 | "The form was sent to its server, and our copy of the page cannot show what the server answers. Please submit it with mistakes on the live site and check the error messages." |

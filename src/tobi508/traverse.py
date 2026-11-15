@@ -137,7 +137,10 @@ INIT_JS = """(() => {
       const same = p ? Array.from(p.children).filter((x) => x.tagName === c.tagName) : [];
       parts.unshift(c.tagName.toLowerCase() + (same.length > 1 ? `:nth-of-type(${same.indexOf(c) + 1})` : ''));
     }
-    return parts.join(' > ');
+    // Inside a web component: its host's path first, then a space, as the
+    // walk names it (step 8: focus dropped inside one must match its host).
+    const root = n && n.getRootNode ? n.getRootNode() : null;
+    return (root && root.host ? path(root.host) + ' ' : '') + parts.join(' > ');
   };
   // Form submissions (5.D): submit events, and submit()/requestSubmit()
   // calls, which fire no event for submit(). Evidence only; the recorded
