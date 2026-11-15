@@ -1639,8 +1639,25 @@ def match_inventory(ctx: Any, mp: MotionPass) -> None:
     that the inventory never saw cannot stand in for ones it did."""
     count = getattr(ctx, "cache", {}).get("count")
     srcs = getattr(count, "image_srcs", None)
-    if srcs:
-        mp.inventory_images_read = len(set(srcs) & set(mp.image_srcs_read))
+    if not srcs:
+        return
+    # An address the inventory saw that pass T's page never showed (a slide
+    # never shown, an image another browser loads sooner): read from the
+    # recording. A type that cannot animate is done from its first bytes; one
+    # that can is left unread, so guard CN holds the page (2.B 1.5.0).
+    har = getattr(ctx, "rel", None)
+    har = har / "evidence" / "page.har.zip" if har is not None else None
+    if har is not None and har.exists():
+        from tobi508.capture import media_body
+
+        for src in srcs:
+            if src in mp.image_srcs_read or len(mp.image_srcs_read) >= IMAGE_READ_MAX:
+                continue
+            body = media_body(har, src)
+            if body and _can_animate(body) is None:
+                mp.image_srcs_read.append(src)
+        mp.images_read = len(mp.image_srcs_read)
+    mp.inventory_images_read = len(set(srcs) & set(mp.image_srcs_read))
 
 
 def images_read(mp: MotionPass) -> int:
@@ -1650,14 +1667,29 @@ def images_read(mp: MotionPass) -> int:
     )
 
 
+# The late read's scroll: one window at a time, jumping (a page with smooth
+# scrolling did not move before the next read, so the recorder's own scroll
+# stopped after one step on round 2's home page), then a wait for loads.
+LATE_SCROLL_STEPS = 60
+LATE_SCROLL_WAIT_MS = 150
+LATE_SCROLL_SETTLE_MS = 1500
+_SCROLL_DOWN_JS = """async ([steps, wait]) => {
+  for (let i = 0; i < steps; i++) {
+    const before = window.scrollY;
+    window.scrollTo({ top: before + Math.max(200, innerHeight * 0.9), behavior: 'instant' });
+    await new Promise((r) => setTimeout(r, wait));
+    if (window.scrollY === before) break;
+  }
+}"""
+
+
 async def _late_images(page, har: Path, out: MotionPass) -> None:
     """After every other read of pass T: scroll down the page one window at
     a time, as the recording did, so lazy images load from the recording,
     then read the addresses not read yet (2.B 1.5.0: on round 2's galleries
     page 23 images were on the page at load and 119 after a scroll)."""
-    from tobi508.capture import _scroll_steps
-
-    await _scroll_steps(page, lambda *a, **k: None)
+    await page.evaluate(_SCROLL_DOWN_JS, [LATE_SCROLL_STEPS, LATE_SCROLL_WAIT_MS])
+    await page.wait_for_timeout(LATE_SCROLL_SETTLE_MS)
     await _read_images(page, har, out, await _page_images(page), late=True)
 
 

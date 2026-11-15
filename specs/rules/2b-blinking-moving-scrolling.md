@@ -84,6 +84,12 @@ Pass T and the mechanism probe as in [2c-auto-updating.md](2c-auto-updating.md) 
   - an animated image the late read finds that plays for more than 5 s is
     unread for this test (no region can be made for it once the watch is
     over), so guard CN holds the page;
+  - the late read's scroll jumps one window at a time (a page with smooth
+    scrolling did not move between steps of the recorder's own scroll);
+  - an address the inventory counted that pass T's page never showed (a
+    slide never shown; an image the inventory's browser loads sooner) is
+    read from the recording when the test collects: a type that cannot
+    animate is done from its first bytes; one that can is unread;
 - for each video: paused, muted, `currentTime` progress, duration and
   loop, read in its own frame.
 
