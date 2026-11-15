@@ -83,8 +83,15 @@ is merged. At most three threads at once. Each thread branches from
   forms. To research: fields hidden from everyone (honeypots, reCAPTCHA).
 - **6f.** The judge fails "Home" against "NASA, return to the
   homepage" in 9.C on 8 of round 1's pages, and the key passes them:
-  the pairing or the rubric. 19.A's FAIL on CILab, not yet looked at.
-  9.B's budget from 60 s to 180 s.
+  the pairing or the rubric. 9.B's budget from 60 s to 180 s. 19.A's
+  FAIL on CILab has two causes, each a proposal to Abby first: a link
+  to the page under another address (`/cilab/index.html` for
+  `/cilab/`), checked by loading the suspected alias as an other page
+  is loaded, only when one is found and a way is missing; and ways
+  that are on pages nobody gave, so the page's parent and a few of its
+  child pages join the suggested pages, as a tester looks there. The
+  gate script also makes the follow-up call an agent would, which it
+  does not today.
 - **6g.** Guard RC holds a PASS when a menu or section opened and the
   test did not walk it. 4.F's pass R already opens each trigger and
   Tabs through it, so 4.C and 4.E read that pass (30 of the 45 cells).
