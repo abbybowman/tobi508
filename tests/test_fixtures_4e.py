@@ -87,6 +87,11 @@ EXPECTED: dict[str, dict] = {
     # it gets focus fails like any other.
     "f16-menu-focuses-first-item": {"outcome": "PASS", "rows": [], "not": ["RC"]},
     "f17-menu-link-navigates-on-focus": {"outcome": "FAIL", "rows": ["M4"]},
+    # A modal dialog keeping focus inside it (TT p. 23, 4.F HtT 3) is not
+    # focus moving on its own; a field inside it that sends focus elsewhere
+    # in the dialog still is (1.8.0; round 2's Search, Bootstrap's trap).
+    "f18-modal-dialog-keeps-focus": {"outcome": "PASS", "rows": [], "not": ["RC"]},
+    "f19-modal-dialog-field-jumps": {"outcome": "FAIL", "rows": ["M6"]},
 }
 HELPERS = {"f02-other"}
 # Pages from other tests that prove a "not an instance" rule for 4.E.

@@ -46,7 +46,7 @@ The same evidence as 4.C and 4.D: 4.E is DOES NOT APPLY only when nothing on the
 
 ## 3. Mechanical checks
 
-Each step of P1, P2 or P8 (1.8.0) with a context signal is an *instance*. Focus *moves on its own* when, after one key press and with no further key, the focus log shows the target losing focus to another element or to the page body. It does not count when focus moves into the target (a widget handing focus to its active item), or back to the stop focus was on before the key (that is the element being left pulling focus back: 4.C's evidence, initiated by its blur, not by the target receiving focus).
+Each step of P1, P2 or P8 (1.8.0) with a context signal is an *instance*. Focus *moves on its own* when, after one key press and with no further key, the focus log shows the target losing focus to another element or to the page body. It does not count when focus moves into the target (a widget handing focus to its active item), or back to the stop focus was on before the key (that is the element being left pulling focus back: 4.C's evidence, initiated by its blur, not by the target receiving focus). Nor does it count when the step ends inside an open modal dialog (4.C's Terms) and the element that first took focus is outside that dialog: the dialog keeping focus inside it until it is closed, as TT asks (p. 23, 4.F HtT 3), not a jump (1.8.0; round 2's Search, Bootstrap's focus trap). Focus that moves from one element to another inside the dialog still counts (F18, F19).
 
 **3a. Instance rules (first match wins)**
 

@@ -105,6 +105,11 @@ async def focus_still(s: Session, quiet_ms: int) -> None:
         waited += FOCUS_STILL_MS
     await s.traversal.resync()
     await s.traversal.forget_focus_events()
+    # Walk extras that keep state (4.E's open dialogs) start from the opened
+    # state: what the opening showed is not the first Tab's doing.
+    for h in s.traversal.hooks:
+        if hasattr(h, "rebase"):
+            await h.rebase(s.traversal)
 
 
 async def walk(

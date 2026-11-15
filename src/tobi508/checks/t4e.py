@@ -9,6 +9,7 @@ control replay. Only evaluate() and the row tables decide outcomes.
 from __future__ import annotations
 
 import asyncio
+import json
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -16,6 +17,7 @@ from pydantic import BaseModel, Field
 from tobi508 import reveal
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
+from tobi508.jslib import JSLIB
 from tobi508.models import (
     REVIEW_HEAD,
     DecidedBy,
@@ -97,8 +99,30 @@ class ContextHook:
         when the page could not be read."""
         return await open_dialogs(t.page)
 
+    async def rebase(self, t: Traversal) -> None:
+        """Take the dialogs open now as the starting state (opened.py: the
+        dialog a trigger opened is not one that appeared on the first Tab)."""
+        now = await self._dialogs(t)
+        if now is not None:
+            self.dialogs = now
+
     async def on_step(self, t: Traversal, step: Step) -> Any:
         out: dict[str, Any] = {}
+        # The dialog keeping focus (1.8.0): the step ends in an open modal
+        # dialog and the element that first took focus is outside it, so the
+        # dialog sent focus back in (TT p. 23, 4.F HtT 3), not a jump.
+        first = next(
+            (e.get("css") for e in step.focus_events if e["type"] == "focusin"),
+            None,
+        )
+        if first and step.stop.modal:
+            try:
+                if await t.reader.evaluate_top(
+                    KEPT_IN_MODAL_FN.replace("CSS", json.dumps(first))
+                ):
+                    out["kept_in_modal"] = True
+            except Exception:
+                pass
         if self.navs != self.seen_navs:
             out["navigations"] = self.navs - self.seen_navs
             self.seen_navs = self.navs
@@ -125,6 +149,25 @@ class ContextHook:
                     path.resolve().relative_to(t.rel_base.resolve()).as_posix()
                 )
         return out or None
+
+
+KEPT_IN_MODAL_FN = (
+    "(() => {"
+    + JSLIB
+    + """
+  let a = document.activeElement;
+  while (a && a.shadowRoot && a.shadowRoot.activeElement) a = a.shadowRoot.activeElement;
+  const m = a && a.closest('dialog, [role=dialog], [role=alertdialog]');
+  if (!m || !((m.tagName === 'DIALOG' && m.matches(':modal')) || m.getAttribute('aria-modal') === 'true')) return false;
+  // The focus log does not escape an id ("#id_series_Narrated Movies"): an
+  // id-only path is also tried as an id.
+  const css = CSS;
+  const el = J.find(css) || (/^#[^>]*$/.test(css) ? document.getElementById(css.slice(1)) : null);
+  if (!el) return false;
+  for (let n = el; n; n = n.parentNode || n.host || null) if (n === m) return false;
+  return true;
+})()"""
+)
 
 
 def context_hook(pass_name: str, prior: PassResult | None) -> ContextHook:
@@ -226,7 +269,14 @@ def classify(
             None,
         )
         pulled_back = prev is not None and step.stop.path_key == prev.stop.path_key
-        if lost is not None and not lost.get("rel_inside") and not pulled_back:
+        # An open modal dialog sent focus back inside it (1.8.0): not a jump.
+        kept = bool(extra.get("kept_in_modal"))
+        if (
+            lost is not None
+            and not lost.get("rel_inside")
+            and not pulled_back
+            and not kept
+        ):
             if step.stop.kind == "BODY" or lost.get("rel") is None:
                 return Signal(kind="dropped", detail=target_css), unreliable
             return (
