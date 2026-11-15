@@ -83,6 +83,18 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "like name@example.com"}},
         },
     },
+    # M-06 (5.F 1.11.0, 5.G 1.9.0, row A3c): the page changed when the form
+    # was sent, but no read took it as an error: a red box around the fields
+    # (f32), "Error." gone after 60 ms (f33). Was DOES NOT APPLY ("the page
+    # did not check"); now a person looks.
+    "f32-error-only-a-red-box": {
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
+    },
+    "f33-error-gone-at-once": {
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
+    },
     "f02-server-side-form": {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
