@@ -138,29 +138,37 @@ and 6h are merged; 12b when the VAST environment exists; round 4
 > `docs/hackathon/`. Last, give me the path of each page's
 > `pre-scrt.json` beside the path of its key.
 
-**Step 10, Sonnet: round 3, a formal blind judging round** (frozen; the run when steps 6e, 6g and 6h are merged)
+**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze and the run in one thread, when steps 6e, 6g and 6h are merged; I give the pages then)
 
 > Read `docs/how-to/run-a-judging-round.md` and
-> `evals/agent/README.md`. The scorer fixes are merged (PR #73).
-> Round 3, a formal judging round
-> like rounds 1 and 2, on the pages I give you in this thread, with the server judge answering, exactly as the
-> how-to describes: freeze (the fuller freeze of PR #52; check each
-> recording against its manifest and tell me anything that did not
-> record), run on `main`'s head (record the commit), lock, then score
-> against my keys. Never open my keys before the lock. Work on your
-> own branch and do not open a pull request or merge anything of the
-> round until the run is locked: other threads must not see the page
-> list before then. Keep each page's report and pre-SCRT file out of
-> git. Do not run the tool before steps 6e, 6g and 6h are merged
-> (without 6h, 19.A cannot be decided on any page), and tell me the
-> commit before you start: 9b runs at the same one. Run in tested_frozen mode, each
-> page with the round's other pages on its host and the site's home
-> page as other pages, and with the follow-up call step 6h adds.
-> Report per test and in all; list apart the cells inside a web
-> component or a frame; and list every NEEDS REVIEW and wrong cell by
-> cause, as a list of findings for the other threads. Change no code
-> yourself, and change nothing between the freeze and the lock: the
-> score is the blind result for that commit.
+> `evals/agent/README.md`. This is round 3, a formal judging round
+> like rounds 1 and 2, on the pages I give you in this thread, with
+> the server judge answering, exactly as the how-to describes:
+> freeze, run, lock, then score against my keys. Never open my keys
+> before the lock. Work on your own branch and do not open a pull
+> request or merge anything of the round until the run is locked:
+> no other thread has seen the page list, and none may before then.
+> Keep each page's report and pre-SCRT file out of git.
+>
+> The freeze (the fuller freeze of PR #52). Check each recording
+> against its manifest. Then, for each page, compare one replay with
+> the live page before you run any test: the requests that fail in
+> the replay, and anything a visitor sees in the first 30 s that the
+> replay does not show (a popup, a banner, a player). On round 1's
+> pages a feedback popup that opens at 5 s never opened in the
+> replay. Tell me what you find before the run; do not change the
+> freeze yourself.
+>
+> The run. On `main`'s head, after steps 6e, 6g and 6h are merged
+> (without 6h, 19.A cannot be decided on any page); tell me the
+> commit before you start, since 9b runs at the same one. Run in
+> tested_frozen mode, each page with the round's other pages on its
+> host and the site's home page as other pages, and with the
+> follow-up call step 6h adds. Report per test and in all; list apart
+> the cells inside a web component or a frame; and list every NEEDS
+> REVIEW and wrong cell by cause, as findings for the other threads.
+> Change no code yourself, and change nothing between the freeze and
+> the lock: the score is the blind result for that commit.
 
 **Step 10b, Sonnet: round 4, a second blind round, if I key one** (two threads: the freeze the day I key the pages, the run on Nov 17)
 

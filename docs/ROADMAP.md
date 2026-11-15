@@ -59,7 +59,7 @@ is merged. At most three threads at once. Each thread branches from
 | 6e | Guard CN on real pages: the timer and the images are done (PRs #78, #80); 5.H on hidden forms is being built | Opus | running |
 | 6g | 4.C and 4.E read the content that menus and sections open | Opus | now |
 | 6h | 19.A finds its ways as a tester does: aliases (#85, 1.10.0), site map, parent, child and home pages (#86, 1.11.0) done; no FAIL while closed menus were not read (1.12.0); previous, next and related pages (1.13.0); then the rounds' rerun | Opus | running |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | frozen; the run when 6e, 6g and 6h are merged |
+| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 6e, 6g and 6h are merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
@@ -104,7 +104,12 @@ is merged. At most three threads at once. Each thread branches from
   tool runs, the run locked before the keys are opened. Until a
   round's run is locked, its page list, keys and freeze stay off
   `main`, on an unmerged branch, and no other thread is told the
-  pages. Round 3 is frozen and the scorer fixes are merged (PR #73).
+  pages. Round 3's pages are not frozen yet and no thread has been
+  told what they are (Abby, 2026-11-15): the freeze and the run are
+  one thread, started last. Before it, the freeze is checked against
+  what step 6e found on round 1's pages (a popup a visitor sees at 5 s
+  never opens in the replay; 12 requests fail). The scorer fixes are
+  merged (PR #73).
   Its run waits for 6e, 6g and 6h, so that it is run once on the
   code as it will be shown: without 6h, 19.A is undecided on every
   page. 9b runs at the same commit, so the two can be read together.
