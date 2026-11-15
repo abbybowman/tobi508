@@ -37,12 +37,15 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 WORK=$(mktemp -d)
 chmod 755 "$WORK"
 
-cleanup() {
+cleanup() {  # keeps the script's own exit status: a cleanup error never decides it
+  rc=$?
   if [ "${KEEP:-0}" != 1 ]; then
     docker rm -f tobi-kc tobi-page tobi-proxy tobi >/dev/null 2>&1 || true
     docker network rm "$NET" >/dev/null 2>&1 || true
-    rm -rf "$WORK"
+    # The recorder wrote the frozen page as the image's uid 1000.
+    rm -rf "$WORK" 2>/dev/null || sudo rm -rf "$WORK" || true
   fi
+  exit "$rc"
 }
 trap cleanup EXIT
 
