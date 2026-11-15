@@ -41,6 +41,8 @@ presentation. What is not merged by then waits. Every change to a test
 updates its README status line and the "Known wrong outcomes" table in
 the same commit.
 
+### Order of work
+
 **Use the step numbers below.** Each step is one thread, started with
 its prompt in
 [reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md),
