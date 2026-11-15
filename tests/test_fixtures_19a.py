@@ -185,6 +185,19 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G2"],
         {},
     ),
+    # 19.A 1.15.0 W9 (step 6g; Abby, 2026-11-15): the one visible button
+    # that controls the hidden link to T is opened; when the link is then
+    # shown it is a navigation way. Above, a button that opens nothing stays
+    # NEEDS REVIEW; here one that opens the menu PASSes, and a link in a
+    # mobile copy of the menu (no visible button controls it) is not a way.
+    "closed-menu-opened": ("t7-grants", ["menu-script"], "PASS", ["W1", "G2"], {}),
+    "mobile-menu-copy": (
+        "t7-grants",
+        ["menu-mobile"],
+        "NEEDS_REVIEW",
+        ["W1", "W9", "G3"],
+        {},
+    ),
     # 19.A 1.13.0 (Abby, 2026-11-15: "previous and next ... almost certain
     # to result in a valid way"; round 2's leaf pages): the next story links
     # back in its content. Its twin's next story does not: FAIL, naming it.
