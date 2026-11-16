@@ -131,12 +131,15 @@ packets, the round is not blind. Note it in your pull request.
 ## 6. Keep the recordings, then lock
 
 The recordings (`*.har.zip`) and screenshots never go in git; they are
-too large. Zip the round's results before locking, and keep the zip:
+too large. Each page's `report.json` and `pre-scrt.json` do (about 1 MB a
+page). Settle the folder first (see "The round's folder" below), then zip
+the round's results before locking, and keep the zip:
 
 ```bash
 R=evals/judging/smith-2026-11-20
 uv run python -m zipfile -c smith-2026-11-20-results.zip $R/results
 sha256sum smith-2026-11-20-results.zip > smith-2026-11-20-results.sha256
+# write $R/ARCHIVE.md now (round 3's is the example), then:
 uv run python evals/judging.py lock $R
 git add $R && git commit -m "smith-2026-11-20: lock (before any answer key)"
 git push
@@ -144,6 +147,64 @@ git push
 
 `lock` hashes every result file, `pages.txt` and the scoring code. Commit
 it before any SCRT file is in the repository.
+
+## The round's folder: the same in every round
+
+Rounds 1 and 2 (agent eval) and round 3 (scan, formal) ended up with
+different layouts, and round 3 lost time to it (2026-11-16). From round 3 on,
+every round, scanned or agent-driven, has this one layout.
+
+| Path | In git? | What it is |
+| --- | --- | --- |
+| `pages.txt` | yes | the page list and the key hashes (step 3) |
+| `state.json` | yes | a scanned round's progress; the lock reads it (agent rounds have none) |
+| `frozen/index.json`, `frozen/freeze.json` | yes | the frozen set's index and its freeze log |
+| `frozen/pages/*.har.zip` | no | the frozen recordings |
+| `frozen-MANIFEST.sha256` | yes | `sha256sum` of every file in `frozen/`, made from inside it (`find . -type f \| LC_ALL=C sort \| xargs sha256sum`) |
+| `results/pNN/report.json`, `pre-scrt.json` (agent rounds: `results/arm-*/runs/*/`) | yes | each run's report and pre-SCRT |
+| `results/**/*.har.zip`, `*.png`, `evidence/` | no | recordings, screenshots, evidence |
+| `results/lock.json` | yes | the lock |
+| `ARCHIVE.md` | yes | what is in the archive zips: each zip's size, SHA-256 and how to restore it, plus what was done (freeze, run settings, lock). At the round's root: the lock covers `results/`, so a new file there fails the scorer |
+| `keys/`, `score.md`, `score.json`, `adjudications.json` | yes | after the lock: the reveal, the score, the adjudication |
+| `attempts/` (agent rounds only) | yes | stopped or retried runs, as in rounds 1 and 2 |
+
+Rules:
+- **No per-round `.gitignore` lines.** The global rules (`*.har.zip`,
+  `*.png`, `evidence/`) are the whole policy. Rounds 1 and 2 kept reports
+  and pre-SCRT files in git; round 3 first ignored them by mistake and had to
+  lock twice.
+- **The lock sorts files by `.gitignore`.** It stores files git keeps and
+  files git ignores apart, and `score` sorts them again. A `.gitignore`
+  change, or any new file in `results/`, after the lock makes `score` stop
+  with "Result files changed after the lock". So before you lock: finish
+  `.gitignore`, write `ARCHIVE.md`, make the zips, and put nothing more in
+  `results/`.
+- **No working papers in a round's folder.** A handoff, a one-off script or a
+  scratch comparison goes in the session's own space, or `docs/reviews/`
+  if it is worth keeping. They are linted and reviewed like code, and a
+  round's folder is a record of what ran.
+- **Keep the old rounds as they are.** Rounds 1 and 2 keep their layout
+  (`results/ARCHIVE.md`); never rewrite `evals/judging/`.
+
+### A formal round with the server judge, in order
+
+1. **Freeze** (`uv run python -m evals.agent.freeze <round>`; `evals/agent/README.md`).
+   For each page compare one replay with the live page, first 30 s: the same
+   text and height, no popup, dialog or player. A page that fetches its data
+   late (a single-page app) records short: set `RECORD_EXTRA_WAIT_MS=30000`
+   and refreeze that page only (remove its entry and recording from
+   `frozen/index.json`; the freeze records every page that has none). Make
+   `frozen-MANIFEST.sha256` and a zip of `frozen/`.
+2. **Run** `scan` in `tested_frozen` mode with the server judge. In a cloud
+   container: `FROZEN_PAGES_DIR=<abs>/frozen FROZEN_PAGES_MODE=tested_frozen
+   UPSTREAM_PROXY="$HTTPS_PROXY" BROWSER_CHANNEL=chromium HEADLESS=true
+   JUDGE_BACKEND=api JUDGE_ROUTE=cli JUDGE_MODEL=claude-sonnet-5-5
+   JUDGE_TYPES=<the types> RUN_TTL_HOURS=720`. `apply` only if a page is
+   left open. State which code (`main` at which commit) the freeze and the run
+   used: both should be on `main` before the run.
+3. **Archive, then lock:** zip `results/`, write `ARCHIVE.md`, lock, commit,
+   push, open the pull request. Only then may the keys come.
+4. **Reveal and score** as in step 7.
 
 ## 7. Reveal and score
 
