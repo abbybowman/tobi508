@@ -349,6 +349,6 @@ async def test_the_freeze_logs_its_scroll_and_lists_frames_not_recorded(
     ], frames
     assert smooth["frames_not_recorded"] == []
     saved = json.loads((rd / "frozen" / "freeze.json").read_text())
-    assert saved["pages"][urls[0]]["frames_not_recorded"] == frames[
-        "frames_not_recorded"
-    ]
+    assert (
+        saved["pages"][urls[0]]["frames_not_recorded"] == frames["frames_not_recorded"]
+    )
