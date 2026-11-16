@@ -352,3 +352,27 @@ async def test_the_freeze_logs_its_scroll_and_lists_frames_not_recorded(
     assert (
         saved["pages"][urls[0]]["frames_not_recorded"] == frames["frames_not_recorded"]
     )
+
+
+async def test_extra_wait_is_off_by_default_and_waits_when_set(settings):
+    """record_extra_wait_ms (Abby, 2026-11-16): 0 waits for nothing; a value
+    pauses that long, then checks the network is idle."""
+    from tobi508.capture import _extra_wait
+
+    class FakePage:
+        def __init__(self):
+            self.waited = []
+            self.idle = 0
+
+        async def wait_for_timeout(self, ms):
+            self.waited.append(ms)
+
+        async def wait_for_load_state(self, state, timeout=None):
+            self.idle += 1
+
+    page = FakePage()
+    await _extra_wait(page, settings, lambda *a, **k: None)
+    assert page.waited == [] and page.idle == 0
+    s = settings.model_copy(update={"record_extra_wait_ms": 7000})
+    await _extra_wait(page, s, lambda *a, **k: None)
+    assert page.waited == [7000] and page.idle == 1

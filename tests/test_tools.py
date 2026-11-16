@@ -87,6 +87,7 @@ async def test_run_tt_tests_on_http_page(settings, server):
         "settle_quiet_ms": settings.settle_quiet_ms,
         "record_scroll_passes": settings.record_scroll_passes,
         "record_scroll_steps": False,  # the freeze turns it on (step 6c)
+        "record_extra_wait_ms": 0,
         "media_chosen_first": False,
         "run_limit_s": settings.run_limit_s,
         "other_page_s": settings.other_page_s,
