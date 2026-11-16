@@ -1,5 +1,5 @@
 {
- "started_at": "2026-11-16T12:55:17.514205+00:00",
+ "started_at": "2026-11-16T13:04:31.297971+00:00",
  "pages": {
   "https://science.data.nasa.gov/": {
    "status": "frozen",
@@ -13,7 +13,7 @@
    "title": "Discover Science Data at NASA | Science Data Portal",
    "heading": "Discover Science Data at NASA",
    "frames_not_recorded": [],
-   "seconds": 6.3
+   "seconds": 5.7
   },
   "https://science.data.nasa.gov/blog": {
    "status": "frozen",
@@ -27,7 +27,7 @@
    "title": "Science Data Blog | Science Data Portal",
    "heading": "Science Data Blog",
    "frames_not_recorded": [],
-   "seconds": 5.7
+   "seconds": 5.5
   },
   "https://science.data.nasa.gov/contact": {
    "status": "frozen",
@@ -41,7 +41,7 @@
    "title": "Contact | Science Data Portal",
    "heading": "Website feedback",
    "frames_not_recorded": [],
-   "seconds": 5.6
+   "seconds": 5.5
   },
   "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel": {
    "status": "frozen",
@@ -55,7 +55,7 @@
    "title": "Search Results | Science Data Portal",
    "heading": "",
    "frames_not_recorded": [],
-   "seconds": 5.9
+   "seconds": 5.5
   },
   "https://science.data.nasa.gov/fits/verifier": {
    "status": "frozen",
@@ -69,7 +69,7 @@
    "title": "FITS Verifier | Science Data Portal",
    "heading": "FITS Verifier",
    "frames_not_recorded": [],
-   "seconds": 5.6
+   "seconds": 5.5
   },
   "https://science.data.nasa.gov/fits/sample-files": {
    "status": "frozen",
@@ -110,8 +110,8 @@
    ],
    "scroll_reached_end": true,
    "document_status": 200,
-   "assets": 41,
-   "assets_failed": 1,
+   "assets": 70,
+   "assets_failed": 0,
    "title": "Data Governance Knowledge Hub",
    "heading": "",
    "frames_not_recorded": [
@@ -120,7 +120,7 @@
      "why": "differs between two loads"
     }
    ],
-   "seconds": 13.8
+   "seconds": 72.5
   },
   "https://science.data.nasa.gov/data-governance-community/forum": {
    "status": "frozen",
@@ -139,7 +139,7 @@
      "why": "differs between two loads"
     }
    ],
-   "seconds": 5.5
+   "seconds": 5.3
   },
   "https://science.data.nasa.gov/science-discovery-engine/search/sde/home": {
    "status": "frozen",
@@ -167,7 +167,7 @@
    "title": "Science Discovery Engine",
    "heading": "",
    "frames_not_recorded": [],
-   "seconds": 6.3
+   "seconds": 5.7
   }
  },
  "searches": {
@@ -392,6 +392,6 @@
    ]
   }
  },
- "finished_at": "2026-11-16T12:56:38.477621+00:00",
+ "finished_at": "2026-11-16T13:06:40.177904+00:00",
  "recordings": 28
 }
