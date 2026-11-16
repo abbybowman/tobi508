@@ -12,75 +12,359 @@ is listed here is what is left to start or still running.
 to #101; `docs/archive/2026-11-14-roadmap-to-the-demo.md`). Round 3
 is scored. Step 9b's thread is running.
 
-**Order to start them:** 10c now; 10d when 9b is done; 12b when the
-VAST environment exists; round 4 (step 10b) if I key one.
+**Order to start them:** threads A and B now, side by side (A's step
+23 stops at midday Nov 17 if not merged); 10d when 9b is done; 12b
+when the VAST environment exists; round 4 (step 10b) if I key one.
+After the demo, bundles R1 to R5, one thread each: R2 before R4, R1's
+step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 
 ## Starting a thread
 
-**Step 10c, Opus: what round 3 showed** (now; plans and prompts, no code)
+**Thread A, Opus: round 3's steps 21, 22, then a time-boxed 23** (now; before the Nov 17 cut)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` and `docs/KNOWN-LIMITS.md`,
-> then round 3: `evals/judging/round3/score.md` and `score.json`, the
-> ten pages' `results/pNN/report.json` and `pre-scrt.json`, and my
-> keys in `evals/judging/round3/keys/` (the round is locked and
-> scored, so the keys are open). Round 3 was a blind round on
-> science.data.nasa.gov, a site the tool was not developed on. Your
-> work is step 10c of the roadmap: say what it showed and plan what to
-> do about it. Change no code, spec or test. Never fetch the pages
-> live: everything you need is in the reports; ask me for the frozen
-> archive only if a report cannot answer a question.
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (threads A and B, and the step
+> entries 21 to 23 under "Next"), `docs/KNOWN-LIMITS.md`, and
+> `docs/plans/2026-11-16-after-round3.md`: its questions at the top,
+> causes 1 and 2, and the table at the end. Then follow the
+> instructions below the line in
+> `docs/reviews/2026-11-11-code-review-fixing.md` (how to fix one item,
+> the working rules). Three steps, in this order, one pull request
+> each; 21 and 22 never wait on 23.
 >
-> The score: 149 of 220 cells decided, 118 agree. Wrong: 2 PASS where
-> my key fails (5.F and 5.G on p03, the contact page), 1 DOES NOT
-> APPLY where it fails (4.F on p08), 18 FAIL where it passes (9.B on
-> six pages, each against the first other page, row N3; 4.A on p07 and
-> p08, about 45 controls each on row M16; 4.E on p07, p08 and p10;
-> 4.F, 5.A, 5.B, 5.C, 5.D), 10 DOES NOT APPLY where it passes (5.B on
-> five pages; 5.D on three). 71 cells were left for a person (19.A on
-> 8 pages, 4.A and 4.D on 7).
+> **Step 21: the browser's own error messages (5.F, 5.G).** On round
+> 3's contact page the form has no error messages of its own: the
+> browser's bubble is the only one. The tool read Chromium's
+> `validationMessage` for every empty field as shown (5.F row M2),
+> though the browser shows one field's bubble at a time, and J1 judged
+> Chromium's words for `test@` (5.G N4), where Firefox, which I tested
+> in, says only "Please enter an email address". Both PASS where my key
+> fails. Make a native message NEEDS REVIEW in both specs, with a plain
+> sentence that the message is the browser's, shows one field at a
+> time and differs by browser. Fixture `5f/f01-native-validation` moves
+> from PASS to NEEDS REVIEW; `5f/f15` (the page cancels the browser's
+> message: FAIL) and the custom-message fixtures keep their outcomes.
+> Whether TT 5.F fails native validation is my decision, still open
+> (the plan's question 1): do not make it FAIL. MINOR versions, the
+> lock, the hackathon evaluation line and slide.
 >
-> First, a table of every wrong cell and every cell left for a
-> person: the page, the test, my key and its comment, the tool's
-> outcome, rows and sentence, and the cause in one line, from the
-> report's evidence (not a guess: where the report does not show the
-> cause, say so). Then group the cells by cause. For each cause:
-> - what the tool did and what I did as the tester, in plain words;
-> - whether it is the rule (the spec decides wrongly), the reading
->   (the page was not read as it is), the judge (an answer was wrong
->   or unsure where the evidence settles it), the recording, or my
->   key (say so plainly if you think a key cell is wrong, and why);
-> - whether rounds 1 and 2 show the same cause (their latest reruns:
->   `evals/judging/gate-2026-11-14/` and, for round 1,
->   `gate-2026-11-16/` on branch `claude/elegant-lamport-7noqy0`), or
->   whether it is new with this site (its pages p07 to p10 are
->   applications built with a script framework; say what about them
->   the tool was not built for);
-> - the smallest fix, the spec row it changes, the fixture it needs
->   and the nearest page that must keep its outcome, its size, and
->   whether it turns NEEDS REVIEW into an outcome or removes a FAIL my
->   key confirms (those need my approval first).
-> Also look at 19.A on round 2's CILab page: it passed in step 6h's
-> rerun and FAILs in step 6g's (`evals/README.md`, the 2026-11-15
-> reruns) though both of my key's ways are on the live site. Say what
-> the two reruns gave it and which is right.
+> **Step 22: no outcome from a walk that missed the page.** On round
+> 3's community pages (p07, p08), an Angular app, the forward walk
+> found one link of 76 and 90: the inventory was empty when the walk
+> began (the backward pass's cap was 50 = 3 x 0 + 50). 4.F said DOES
+> NOT APPLY (A3, "only one element"; my key fails p08), 5.D said no
+> fields (A1), 4.A's J1 was shown one reached stop and FAILed ~20
+> controls (M6). A page whose controls a script draws 1.2 s after
+> load reproduces it, and also gives 5.A DOES NOT APPLY and 4.A and
+> 4.C PASS. Make these tests decide from the inventory taken after the
+> walk (the "reached N of M" count 4.E and 4.A already print): 4.F A3
+> needs one element there, not one stop; 5.A, 5.D and 5.F to 5.H's "no
+> form fields" read it; 4.A's unreached candidates are C? while the
+> walk is incomplete; 4.C does not PASS on it. Everything moves only
+> to NEEDS REVIEW. Fixture: the late-drawn page (custom, no ACT case
+> covers it); `4f/f07-one-link` and 5.D on `4d/f01-background-change`
+> must stay DOES NOT APPLY.
 >
-> Rank the causes: a PASS or DOES NOT APPLY where my key fails first
-> (a false PASS is the worst error), then by cells. Say which, if any,
-> is small and safe enough to do before the Nov 17 cut; assume the
-> rest is after the demo.
+> **Step 23, time-boxed: wait for the page to draw.** It stops at
+> midday on Nov 17 if it is not merged, and returns to bundle R1.
+> First a probe, no code: ask me for round 3's frozen archive, and on
+> its four application pages (p07 to p10) in replay, measure how long
+> each takes to draw, the focusable count at the start and when it
+> stops changing, and whether the drawn page matches what my key
+> describes (the forum's tag word cloud, the community's header
+> search, SDE's "All" dropdown and search box, MySearchStory's
+> carousel buttons). Also say where the address went on the first key
+> press (4.E e1 on p07 and p08; the plan's cause 14), from the run's
+> `steps.jsonl` if the archive has it. Show me the probe. Build only if
+> the replay draws: before the walk, pass L and the site read, wait
+> until the focusable count is unchanged for a short window, with a
+> ceiling; take P2's press cap from the inventory when P2 starts.
+> Rounds 1 and 2's pages should not move; if one does, say so cell by
+> cell. Step 26 (one document at every address) stays after the demo.
 >
-> Write it up as `docs/plans/2026-11-16-after-round3.md` (the table,
-> the causes, the ranked plan), add one entry per piece of work to
-> "Next: after the demo" in `docs/ROADMAP.md` with its step number,
-> and add a prompt for each under "Starting a thread" in
-> `docs/reviews/2026-11-11-code-review-fixing.md`, written so a fresh
-> thread can start from it alone. Add each wrong outcome that
-> reproduces to the README's "Known wrong outcomes" table and each
-> new limit to `docs/KNOWN-LIMITS.md`; do not touch the README's
-> status table (step 10d has it). Round 3's pages are development
-> pages from now on: say in the plan that a later run on them is a
-> rerun, never in place of this score. Show me the ranked list of
-> causes before you write the prompts.
+> Run the rerun below twice: once when 22 is merged, before 23
+> starts, so 21 and 22's moved cells reach me on their own; and again
+> if 23 is merged.
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
+
+**Thread B, Sonnet: round 3's step 31 (9.B), then 29's small part (5.B)** (now; before the Nov 17 cut, beside thread A)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (threads A and B, and steps 29
+> and 31 under "Next"), and `docs/plans/2026-11-16-after-round3.md`:
+> causes 6 and 10 and the table at the end. Then follow the
+> instructions below the line in
+> `docs/reviews/2026-11-11-code-review-fixing.md`. Two pull requests,
+> in this order. Thread A changes 5.A, 5.D, 5.F to 5.H, 4.A, 4.C and
+> 4.F at the same time: touch none of their specs.
+>
+> **Step 31: 9.B pairs equal links by alignment.** On round 3's
+> Drupal pages there are three links named "Home" to one address (top
+> bar, the footer's logo block, the footer list) and a fourth, the
+> breadcrumb's, on every page but the home page. The spec pairs equal
+> components "in order" (9.B Terms), so the home page's second "Home"
+> pairs with the others' breadcrumb and the social links between them
+> read as reversed (N3): FAIL on all six pages where my key passes.
+> Reproduced on two scratch pages whose repeated links sit in no
+> landmark; in distinct landmarks it PASSes. Pair equal components by
+> an alignment that keeps their order where it can (the longest
+> common subsequence of the two pages' lists), so an extra copy is an
+> insertion, not a swap. Fixtures: the two pages (one with the extra
+> breadcrumb "Home" in the same region), and a page where a real
+> reorder among repeated links must still FAIL (two different links
+> swapped, as `9x/a3-nav-reordered`, plus one where the same two equal
+> links change places with a different link between them).
+> `9x/a3-nav-reordered` and `9x/a4-nav-css-order` keep FAIL.
+>
+> **Step 29, the small part only: 5.B when 5.A could not decide.** On
+> round 3's Drupal pages the search box sits in a panel the magnifier
+> opens; 5.A's J1 was unsure (its picture showed the magnifier, not the
+> field), and 5.B still said no field has a visible label (A2, DOES NOT
+> APPLY; my key passes, counting the magnifier). Make A2 hold only
+> when 5.A found every field unlabelled by a rule or by J1 =
+> not_labeled; a field 5.A left unsure makes 5.B NEEDS REVIEW, and
+> J1 = graphic makes the field an item. Fixture: a search box 5.A is
+> unsure about (scripted answer unsure); a placeholder-only search box
+> with no icon (round 1's nasa.gov) keeps 5.A FAIL and 5.B DOES NOT
+> APPLY. The rest of step 29 (opening the panel; a magnifier as a
+> label) is bundle R4, after the demo.
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
+
+**Bundle R1, Opus: applications** (after the demo; steps 23 if thread A left it, 24, 25, 26, 35a, 35e)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R1 under "Next"),
+> `docs/KNOWN-LIMITS.md` ("Found in round 3") and
+> `docs/plans/2026-11-16-after-round3.md`: causes 2, 5, 14, 15, 17 and
+> 21 and the table. Then follow the instructions below the line in
+> this file. Round 3's p07 to p10 are Angular applications: they draw
+> themselves after load, serve one HTML shell at every address, change
+> their address on their own while starting, have no `<form>`
+> element, and load code chunks when used. Order, wrong outcomes
+> first: step 23 (if thread A did not merge it: its prompt above,
+> probe first); **24**, 4.E's control replay waits until the same time
+> after load as the original step (3 false FAILs; keep
+> `4e/f02-navigate-on-focus` FAIL and `4e/f12-pushstate-on-focus`
+> PASS); **25**, the freeze runs the chunk store so the chunks are in
+> the frozen recording (guard GU held 4.B on p07, p08); then the steps
+> that turn NEEDS REVIEW into outcomes, each spec text shown to me
+> for approval first: **26**, K-01's byte test only for the same path
+> apart from the query string, in 9.A to 9.C and 19.A's A2, aliases
+> and suggested pages (16 cells; only after 23, or 9.A could say DOES
+> NOT APPLY on an undrawn shell where my key fails; K-01's
+> query-string copy stays NEEDS REVIEW); **35a**, form "none" leaves out
+> banner and navigation buttons, and 5.C's M5 also matches with spaces
+> removed ("SDESDE" against "SDE"); **35e**, 4.C: a press that navigates
+> leaves no error state to walk (SDE home). Bundle R5 waits for your
+> step 26: do not touch 9.C or 19.A beyond A2 and the byte test.
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
+
+**Bundle R2, Opus: 4.D and 5.D on what opens** (after the demo; step 27, then step 15's 4.D and 5.D part)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R2, and step 15 under
+> "Next"), `docs/plans/2026-11-16-after-round3.md` (causes 3 and 7) and
+> step 6g's notes on `opened.py`. Then follow the instructions below
+> the line in this file. **Step 27 first:** on round 3's blog page each
+> post's "Image" link passes 4.D's M6 on about 50 changed pixels
+> (`MIN_CHANGED_PX` is 12 CSS px², whatever the element's size); my
+> key fails it ("no visual indication of that focus"), and only guard
+> RC holds the cell at NEEDS REVIEW. Make M6 also need the change to be
+> a share of the element's size (measure the share on the three
+> rounds' 4.D PASS instances before choosing it), else J1 (M7).
+> Fixtures: a large image link with a small mark;
+> `4d/f18-small-icon-clear-ring` keeps PASS and
+> `4d/f19-small-icon-faint-ring` NEEDS REVIEW. **Only when 27 is
+> merged:** step 15's 4.D and 5.D part, 4.D and 5.D read what menus and
+> sections open (the shared walk, `opened.py`), so guard RC holds only
+> what was not reached (round 3: 9 of its cells). Show me the blog
+> page's 4.D cell after both. Bundle R4 waits for you (it changes 5.D
+> too).
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
+
+**Bundle R3, Opus: 4.A and 4.F** (after the demo; steps 28, 32, 33)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R3),
+> `docs/plans/2026-11-16-after-round3.md` (causes 4, 11 and 12) and
+> `docs/solutions/judge-eval.md`. Then follow the instructions below
+> the line in this file. Order, the cell one step from unsafe first:
+> **28**, on round 3's MySearchStory, 4.A's J1 answered "alternative"
+> while its reasons say "not the same ... Not certain" (k1, M5 PASS),
+> and M8 passed a custom control whose Enter only advanced a carousel;
+> my key fails 4.A, and the cell is NEEDS REVIEW only because of
+> another answer. Make an "alternative" whose reasons hedge count as
+> unsure (rubric and answer check), and M8 need the key's effect to be
+> the click's (same navigation, same region changed), else NEEDS
+> REVIEW; a button whose Enter a carousel takes is a fixture, and 4.A's
+> working custom controls keep PASS. Then **33**, 4.F: J1's order list
+> and picture name every element its signals name (p02, p06 unsure for
+> that); the rubric says an order that is odd but keeps meaning and
+> operation preserves it (p04 FAIL where my key passes: "a little odd
+> ... but preserved"); judge eval. Then, each spec text shown to me
+> first: 33's S3 not raised for a jump to the top of the next column of
+> one list (every Drupal footer) and S6 not raised when the popup is a
+> listbox or menu reached by arrows (SDE's "All" dropdown, p09 FAIL);
+> **32**, 4.A's U: a frame with no visible area (AddToAny's helper) and a
+> listener on the window, document or body are not U, and calibrate
+> `HOVER_MAX` on the three rounds' pages (4.A NEEDS REVIEW on all six
+> Drupal pages). Keep 4.F's `f04`, `f05`, `f20`, `f21` and 4.A's
+> fixtures at their outcomes.
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
+
+**Bundle R4, Opus: forms** (after the demo, once R2 is merged; the rest of 29, 30, 35b to 35d)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R4),
+> `docs/plans/2026-11-16-after-round3.md` (causes 6, 9, 18, 19, 20 and
+> the questions at its top) and `docs/solutions/judge-eval.md`. Then
+> follow the instructions below the line in this file. Order, wrong
+> outcomes first: **35b**, 5.D on round 3's blog filters (FAIL where my
+> key passes): focus that lands on the field's own label or wrapper,
+> or the same field drawn again, is not a move, and an action whose
+> request the recording cannot answer (the replay showed the site's
+> error banner) is NEEDS REVIEW; `5d/f19-rerender-on-change` keeps FAIL.
+> **35c**, 5.C on the community home (FAIL): J1 called "GMT" on an
+> event card button a missing cue; the rubric says a control's own
+> content is not an instruction or cue; judge eval. **35d**, 5.B on the
+> FITS verifier (FAIL): read a visually hidden checkbox's `label[for]`
+> as its visible label, and an answer whose `seen` says the item is
+> not visible is unsure. Then, each spec text shown to me first:
+> **29**'s rest, pass L opens the panel that holds a hidden field (the
+> Drupal search box behind the magnifier) before its picture, and my
+> decision whether a panel's opener showing a magnifier labels the
+> field; **30**, 5.F to 5.H on a form with nothing to get wrong (filter
+> checkboxes; a search box with nothing required): a spec decision
+> with me first; `5f/f19-site-search-required` keeps its outcome.
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
+
+**Bundle R5, Opus: site tests** (after the demo, once R1's step 26 is merged; step 34, CILab, 9.C by function)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R5 and step 19b),
+> `docs/plans/2026-11-16-after-round3.md` (cause 13, "19.A on round
+> 2's CILab page", the questions at its top),
+> `docs/plans/2026-11-15-19a-finds-ways.md` and `docs/KNOWN-LIMITS.md`
+> (9.C). Then follow the instructions below the line in this file.
+> **CILab first** (a wrong FAIL): 19.A passed in step 6h's rerun (the
+> home page's card link to `/cilab/index.html`, a verified alias, and
+> the subpages' icon row) and FAILs in step 6g's, with the other pages
+> loaded live. Ask me for both runs' folders; run 19.A alone on CILab
+> in each mode, compare W1 and W6, and find what the FAIL read
+> differently. Then **34**: my answers on whether a breadcrumb on a
+> child page is a way of its own (the spec counts it as navigation)
+> and whether a search results page is one page whatever its query;
+> the spec text to me before you build (round 3's home page, blog and
+> search page). Then **19b**, 9.C pairs by function, as the roadmap
+> entry says, each candidate rule with a pair that must not FAIL and a
+> judge eval. R1 changed 9.A to 9.C and 19.A's A2 (one document at
+> every address): build on it.
+>
+> **The rerun, at the end** (ask me for the three rounds' frozen
+> archives; I hold them): rerun the tests you changed, and the tests
+> that read what you changed, on all three rounds' frozen pages, with
+> the server judge as step 9b ran it (`evals/apijudge_gate.py run
+> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
+> keys, writing under `evals/judging/gate-<date>/round3/`, never under
+> `evals/judging/round3/`, which is locked). Serve every page from the
+> freeze, other pages too, and say if any was loaded live. Score each
+> round with its own keys and scorer. Show me **every cell that moved,
+> beside my key and its comment**, old outcome, new outcome and the
+> rows that decided it, round by round; a cell on round 1 or 2 that
+> moved gets its own line and a reason. Round 3's pages are
+> development pages: this is a rerun, never in place of its score.
+> Report verified (test or command) apart from assumed, and update the
+> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
+> what you fixed, in the same commit (not the README's status table).
 
 **Step 10d, Sonnet: the README's status table, made by a script** (when step 9b is done)
 

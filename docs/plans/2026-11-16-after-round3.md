@@ -13,9 +13,63 @@ custom element tags), drawn in the browser after load.
 them is a rerun that shows what a change did. It never replaces this
 score, which stays the blind result.
 
-What is scheduled when is in [the roadmap](../ROADMAP.md) ("Next: after
-the demo", steps 21 to 35); each step's prompt is in
+What is scheduled when is in [the roadmap](../ROADMAP.md): two threads
+before the cut ("Now", A and B) and five bundles after the demo
+("Next", R1 to R5), holding steps 21 to 35. Each thread's prompt is in
 [the handoff file](../reviews/2026-11-11-code-review-fixing.md).
+
+## Questions for Abby
+
+1. **Native validation in 5.F (and 5.G).** The contact form has no
+   error messages of its own; the browser's bubble is the only one, it
+   shows one field at a time and its words differ by browser. TT does
+   not ask a tester to tell the browser's message from the page's.
+   Should TT 5.F (and 5.G) FAIL such a form, PASS it, or leave it to a
+   person? Until you decide, step 21 makes it NEEDS REVIEW (cause 1).
+2. **MySearchStory 5.A, 5.B, 5.D (key Pass).** The tool found only
+   buttons there. If the page has no data-entry field, your 2026-11-04
+   decision ("buttons alone are not a form") makes 5.A and 5.D DOES NOT
+   APPLY. Which field did you judge? (cause 16)
+3. **The search page's 19.A (key Pass by "content links").** The home
+   page's topic tags lead to other queries of the results page, not to
+   `?rendered_item=test&sort_by=rel`. Is a results page one page
+   whatever its query? (cause 13)
+4. **The home page's and blog's 19.A (key Pass by "breadcrumbs").** The
+   spec counts a breadcrumb as a navigation link, the same kind as the
+   menus. Is a breadcrumb on a child page a way of its own? (cause 13)
+
+## How the work is cut (Abby, 2026-11-16)
+
+The ranking below stands; the work is cut into seven threads.
+
+- **Before the cut (Nov 17), two threads, at once:**
+  - **Thread A:** step 21, then step 22, then a time-boxed step 23
+    (wait for the page to draw), which starts with a probe and no code
+    and stops at midday on Nov 17 if not merged; 21 and 22 never wait
+    on it.
+  - **Thread B:** step 31 (9.B), then only the small part of step 29
+    (5.B is NEEDS REVIEW, not DOES NOT APPLY, when 5.A could not
+    decide).
+  - Each reruns its tests on all three rounds' frozen pages and shows
+    every moved cell beside the key.
+- **After the demo, five bundles, one thread at a time each; no two
+  share a test.** Inside a bundle, a wrong outcome or a cell one step
+  from unsafe comes before turning NEEDS REVIEW into answers.
+  - **R1, applications:** step 23 if thread A did not finish it, 24,
+    25, 26, 35a (controls with no `<form>`) and 35e (4.C: a search
+    button that shows results at another address, on SDE home; your
+    list left 35e out, and R1 is the bundle that already touches 4.C's
+    walk).
+  - **R2, 4.D and 5.D on what opens:** 27, then step 15's 4.D and 5.D
+    part.
+  - **R3, 4.A and 4.F:** 28, 32, 33.
+  - **R4, forms:** the rest of 29, 30, and 35b to 35d (5.D, 5.C, 5.B).
+  - **R5, site tests:** 34 (with CILab), and 9.C by function (roadmap
+    19b).
+  - **Two overlaps to keep apart by order:** R1's step 26 changes A2
+    of 9.A to 9.C and 19.A, which R5 also changes, so R5 starts after
+    R1 has merged 26; R4's 35b changes 5.D, which R2 also changes, so
+    R4 starts after R2 has merged.
 
 ## What it showed, in short
 
@@ -112,9 +166,9 @@ the PASS is already in the instance rows. The rest by cells.
 **Before the Nov 17 cut:** steps 21 and 22 are small and only move
 PASS, DOES NOT APPLY and FAIL to NEEDS REVIEW, so neither needs
 approval and neither can add a wrong PASS. Step 31 (9.B) is small too
-and removes six false FAILs no key confirms, but it changes which pairs
-9.B compares; do it before the cut only if 21 and 22 are merged with a
-day to spare. Everything else is after the demo.
+and removes six false FAILs no key confirms. Abby's cut (above): 21,
+22 and a time-boxed 23 in thread A; 31 and 29's small part in thread
+B. Everything else is after the demo, in five bundles.
 
 ## The causes
 
@@ -627,9 +681,10 @@ PASS: **needs approval**.
 - **What to do (step 34).** Run 19.A alone on CILab twice in each mode
   and compare W1 and W6 with the 6g run folder (Abby holds a copy).
   Whatever the cause, development reruns of 9.A to 9.C and 19.A should
-  use `replay` mode, with the other pages frozen too, as round 3 did
-  (every other page `frozen: true`): a `tested_frozen` rerun depends
-  on what live pages show that day and is not repeatable.
+  serve the other pages from the freeze too, as round 3's were (every
+  other page `frozen: true` in its reports): a rerun that loads them
+  live depends on what the live pages show that day and is not
+  repeatable.
 
 ## Key cells
 
