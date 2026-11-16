@@ -156,6 +156,100 @@ certified Trusted Tester results; a development site, one repeat.
 - **Not verified here:** repeats; 9.A-9.C beside the other tests in one
   full run (the cap changes no other test's read).
 
+## Gate 2026-11-16: round 1's pages, the server judge on every type, one repeat (roadmap step 9b)
+
+Round 1's 9 frozen www.nasa.gov pages, tested once at `main` `ece881b` (PR 98; `src/` is main's, this branch changes none of it) with the server judge switched on for all 21 types it can take (4.C stays with the client), CLI route, `claude-sonnet-5-5`, prompt SHA-256 `e8320f2c…` (as in 9a). **Round 2's 10 pages were not run:** the test container could not reach their site (below). Folder `evals/judging/gate-2026-11-16/`: `round1/dry-r1.json` (the count), `round1/gate.json`, `compare-round1.md` and `.json`, `combined.md`, `compare.py` (9a's, with a 9a side), `testpages/` (the judge eval's results). The page files (`round1/r1/results/`, `round1/dry/`) are kept out of git (`.gitignore`). Scored with round 1's own scorer and keys, as in 9a. Agent-assisted results, not certified Trusted Tester results; one development site, one repeat. Abby's instructions for 9b: the same as 9a on main's head, `JUDGE_TYPES` unchanged.
+
+- **Checked first.** Round 2's frozen archive: every file matches Abby's manifest. Round 1's recordings: intact zips, each index entry present, **no hash to check them against**. Browser trust: **fails for svs.gsfc.nasa.gov, fine for www.nasa.gov.** svs.gsfc.nasa.gov renewed its certificate on 2026-11-16 (12:59 UTC) and serves only the leaf, not its intermediate (Let's Encrypt YR2, issued by Root YR, a root this container does not trust). Node's fetch in the navigation guard failed ("unable to verify the first certificate"). I fetched YR2 and Root YR (cross-signed by ISRG Root X1) from the addresses in the certificates, checked that `openssl verify` chains leaf, YR2, Root YR to X1 in the system store, and gave the process a bundle with them (`NODE_EXTRA_CA_CERTS`): the page then loaded. The browser's requests still get **502 "upstream request failed" from the container's proxy** (the platform's, not `egress.py`; curl through it gets the same files with 200). Adding the two certificates to the browser's NSS store as untrusted intermediates did not change it (removed again). A direct connection (no proxy, the gateway's CAs trusted in a throwaway store) was refused by the session's safety classifier and not tried. **Round 2's live search for 19.A therefore could not run, and a round 2 run was not started.** Checked again after the proxy restarted and again after the run: unchanged.
+- **Cost.** Dry count: 27 requests, 56 questions, ~91.7k text tokens, 122 pictures (9a round 1: 34, 75, ~103k, 131). Run (the judge's own record): 27 calls, 58 questions answered, **0 failed, 0 left open**; ~0.28M input tokens (54 + 17,402 cache read + 266,192 cache creation), 13.4k output. Browser time 57 min (dry 53). A dry run's 19.A cells are not valid: the container's proxy moved from port 40831 to 36829 during it, so `.env`'s `UPSTREAM_PROXY` was stale and every live request failed ("could not reach the upstream proxy"). The real run used the refreshed address; its logs hold no such error, and 19.A's live search ran on every page that has one: found on 6, not found on 1, none to run on 2.
+- **All scored cells, round 1** (153; no false PASS and no missed fail in either run, judge-decided or rule-decided):
+
+  | Run | Scored | False PASS | Missed fail | False FAIL | Other | Needs review (CN) | Agree (of decided) |
+  | --- | --- | --- | --- | --- | --- | --- | --- |
+  | 9b, this run | 153 | **0** | **0** | **2** | 0 | 77 (27) | 74/76 |
+  | 9b, dry run (judge off; 19.A invalid) | 153 | 0 | 0 | 1 | 0 | 92 (22) | 60/61 |
+  | 9a | 153 | 0 | 0 | 12 | 0 | 94 (30) | 47/59 |
+  | Locked arms A1-A3 (round 1's old rules) | 136-153 | 0 | 0 | 1-3 | 0 | 84-99 | 49-51/52-54 |
+
+  Judge-decided cells: 30 (9a: 36): 0 false PASS, 0 missed fail, 1 false FAIL (9a: 11), 16 NEEDS REVIEW (5 CN), 13/14 agree (9a: 10/21). Rule-decided cells: 123 (9a: 117): 1 false FAIL (the same as 9a), 61 NEEDS REVIEW (22 CN), 61/62 agree (9a: 37/38).
+- **Per TT test** (a test with no key on these pages is not scored; no test had a false PASS or a missed fail):
+
+  | Test | Round 1, this run (agree/scored; NR; wrong) | Round 1, 9a | Judge cells (this run) |
+  | --- | --- | --- | --- |
+  | 4.A | 0/9; 9 NR; 0 wrong | 0/9; 8 NR; 1 wrong | 2 |
+  | 4.B | 9/9; 0 NR; 0 wrong | 9/9; 0 NR; 0 wrong | 1 |
+  | 4.C | 5/9; 4 NR; 0 wrong | 0/9; 9 NR; 0 wrong | 0 |
+  | 4.D | 3/9; 6 NR; 0 wrong | 3/9; 6 NR; 0 wrong | 0 |
+  | 4.E | 6/9; 3 NR; 0 wrong | 0/9; 9 NR; 0 wrong | 0 |
+  | 4.F | 4/9; 5 NR; 0 wrong | 5/9; 4 NR; 0 wrong | 9 |
+  | 5.A | 9/9; 0 NR; 0 wrong | 9/9; 0 NR; 0 wrong | 1 |
+  | 5.B | 0/9; 9 NR; 0 wrong | 0/9; 8 NR; 1 wrong | 4 |
+  | 5.C | 1/9; 7 NR; 1 wrong | 1/9; 7 NR; 1 wrong | 3 |
+  | 5.D | 1/9; 7 NR; 1 wrong | 1/9; 7 NR; 1 wrong | 3 |
+  | 5.F | 0/9; 9 NR; 0 wrong | 0/9; 9 NR; 0 wrong | 0 |
+  | 5.G | 0/9; 9 NR; 0 wrong | 0/9; 9 NR; 0 wrong | 0 |
+  | 5.H | 6/9; 3 NR; 0 wrong | 0/9; 9 NR; 0 wrong | 5 |
+  | 9.A | 8/9; 1 NR; 0 wrong | 8/9; 1 NR; 0 wrong | 0 |
+  | 9.B | 9/9; 0 NR; 0 wrong | 9/9; 0 NR; 0 wrong | 0 |
+  | 9.C | 9/9; 0 NR; 0 wrong | 1/9; 0 NR; 8 wrong | 2 |
+  | 19.A | 4/9; 5 NR; 0 wrong | 1/9; 8 NR; 0 wrong | 0 |
+
+- **Every wrong cell (2, both also wrong in 9a).** 5.D on spot-the-station (a judge answer) and 5.C on `?search=artemis` (a rule). 9a's other 10 are gone: 9.C on 8 pages, 5.B on missions, 4.A on artemis-iii. I did not trace why. Main moved by many changes between `8854a4f` and `ece881b` (PRs 64 to 98, among them 9.C 1.10.0, whose "Home" pair fix is the cause 9a named for the eight), and one repeat per run cannot tell a code change from the judge's run-to-run variation.
+- **Moved from NEEDS REVIEW since 9a: 20 cells, all agree with Abby's key** (no cell of this round has a step 6 baseline). 4.E on 6 pages and 4.C on 5 (key Pass), 5.H on 6 (key Does Not Apply; 3 by a judge answer), 19.A on 3 (key Pass; the live search found the page).
+- **Guard CN.** 27 CN cells on round 1's pages (9a: 30), all scored: key Does Not Apply on 18, Pass on 9 (5.B 8, 5.F 6, 5.G 6, 5.C 4, 5.H 3). **Key Fail among them: 0, so the guard held back no failure on round 1's pages.** The other 50 NEEDS REVIEW cells there are not CN.
+- **Dry run against real run, on cells no judge answer decided** (the dry run's page files are in `round1/dry/`, out of git): 167 cells, 144 the same, **23 differ**; 31 cells a judge answer decided are not compared.
+  - **Outcome differs: 5.** 19.A on 4 pages (spot-the-station, careers, artemis-iii, max-power): NEEDS REVIEW in the dry run, PASS in the real run: the stale proxy, not the rules. **4.C on spot-the-station: PASS in the dry run, NEEDS REVIEW in the real run (row RC, the reveal guard).** The same cell differed in 9a, so it varies from run to run; the real run is the careful one.
+  - **Rows or path: 6 more.** 19.A on the other 5 pages (W-rows differ; the dry run's search could not run). 3.A on naca-at-110: the dry run ran out of its 240 s (240.1 s, no row), the real run took 10.3 s (row A3).
+  - **4.D instance rows: 4** (one to three focus rows read M4 in one run and M6 in the other), no outcome change. **Text only: 8** (the 2.C and 2.D timer reading, about 148 to 150 s, and the list of menu names in 4.C and 4.E).
+- **Per question type, round 1 (this run) with round 2 as 9a measured it** (round 2's cells are from 9a at `8854a4f`, because round 2 was not run here; one repeat per round, so "at most 1 wrong FAIL per repeat" is read per round):
+
+  | Type | Judge cells | Decided | Agree | Wrong PASS | Wrong DNA | Wrong FAIL | Unsure | Against the thresholds |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | 4.B | 6 | 6 | 6 | 0 | 0 | 0 | 0 | **meets the real-page half** |
+  | 9.C | 10 | 8 | 8 | 0 | 0 | 0 | 2 | **meets the real-page half** (round 1: 2 of the 8 cells) |
+  | 5.H | 11 | 5 | 5 | 0 | 0 | 0 | 6 | no wrong; one decided cell short (5 of 6) |
+  | 5.C | 5 | 3 | 3 | 0 | 0 | 0 | 2 | no wrong; too few (3) |
+  | 5.B | 13 | 2 | 2 | 0 | 0 | 0 | 11 | no wrong; too few (2) |
+  | 5.A | 1 | 1 | 1 | 0 | 0 | 0 | 0 | no wrong; too few (1) |
+  | 9.A | 1 | 1 | 1 | 0 | 0 | 0 | 0 | no wrong; too few (1) |
+  | 2.B | 4 | 1 | 0 | 0 | 0 | 0 | 3 | no wrong; too few (1) |
+  | 4.A | 9 | 3 | 2 | 0 | 0 | 1 | 6 | wrong FAIL 33% of decided (over 20%); too few (3) |
+  | 4.D | 5 | 1 | 0 | 0 | 0 | 1 | 4 | wrong FAIL 100%; too few (1) |
+  | 4.F | 18 | 7 | 5 | 0 | 0 | 2 | 11 | 2 wrong FAILs in round 2 (over 1 a repeat); 29% |
+  | 5.D | 4 | 3 | 2 | 0 | 0 | 1 | 1 | wrong FAIL 33% (over 20%); too few (3) |
+
+  2.A, 2.C, 2.D, 3.A, 4.E, 5.F, 5.G and 9.B asked nothing the judge answered. No type has a wrong PASS or a wrong DOES NOT APPLY. `JUDGE_TYPES` is unchanged (empty); Abby chooses from this table.
+- **The gate's test-page half, for the four types with no wrong cell and at least 3 decided cells (4.B, 5.C, 5.H, 9.C).** `judge_eval.py answer --backend api --repeat 3` on their 35 cases (dry: 35 requests, 44 questions, ~24.8k text tokens, 21 pictures a repeat): **3 repeats, 0 failed calls, 0 wrong PASS, trick text never taken, 32/35 match each time** (4.B 4 of 5, 5.C 12 of 13, 5.H 12 of 13, 9.C 4 of 4). The same three cases miss in all three repeats, all to NEEDS REVIEW: 4.B f02 (hold with an alternative) and 5.C f32 (filter boxes with no heading) expect PASS, 5.H f08 (a wizard's next step says "required") expects FAIL. **4.B and 9.C meet both halves of the gate; 5.C and 5.H meet the test pages and are short only on real-page cells (3 and 5 of 6).** 4.B's spec changed after 9a (1.3.0 to 1.4.0) and the 9a test-page run is not reused. Results: `gate-2026-11-16/testpages/`.
+- **Time budgets** (round 1; `test_times`; limit = budget unless less of the run was left). **One test ran out: 5.D on missions (596.5 s of 600)**, as in 9a (594.1 s). In the dry run 5.D also ran out there (592.5 s) and 3.A on naca-at-110 (240.1 s of 240). 9.B's budget is now 180 s and 19.A's 360 s (9a: 60 and 120). The longest each test took, beside 9a's longest on either round:
+
+  | Test | Budget now (s) | Longest this run, round 1 (s) | Longest in 9a, either round (s) | Ran out this run |
+  | --- | --- | --- | --- | --- |
+  | 2.A | 120 | 0.0 | 0.9 (round 2 p05) | - |
+  | 2.B | 120 | 17.6 | 91.3 (round 2 p09) | - |
+  | 2.C | 120 | 8.7 | 27.4 (round 1 p01) | - |
+  | 2.D | 120 | 0.0 | - | - |
+  | 3.A | 240 | 10.3 | 75.3 (round 2 p10) | - |
+  | 4.A | 240 | 14.0 | 160.4 (round 2 p09) | - |
+  | 4.B | 60 | 4.4 | 11.8 (round 2 p07) | - |
+  | 4.C | 180 | 60.7 | 76.4 (round 2 p08) | - |
+  | 4.D | 60 | 12.8 | 15.5 (round 1 p06) | - |
+  | 4.E | 60 | 0.0 | - | - |
+  | 4.F | 540 | 29.2 | 324.6 (round 2 p10) | - |
+  | 5.A | 60 | 9.4 | 15.2 (round 2 p07) | - |
+  | 5.B | 60 | 0.0 | - | - |
+  | 5.C | 60 | 0.0 | - | - |
+  | 5.D | 600 | 596.5 | 594.1 (round 1 p05) | round 1 p05 |
+  | 5.F | 120 | 21.8 | 40.4 (round 2 p07) | - |
+  | 5.G | 120 | 0.0 | - | - |
+  | 5.H | 120 | 4.1 | - | - |
+  | 9.A | 180 | 47.0 | 50.2 (round 1 p07) | - |
+  | 9.B | 180 | 0.0 | 41.5 (round 2 p01) | - |
+  | 9.C | 180 | 30.2 | 42.6 (round 2 p01) | - |
+  | 19.A | 360 | 84.8 | 21.5 (round 1 p05) | - |
+
+  A test at 0.0 s read a result another test had already computed. Round 2's times come from 9a only.
+- **Not verified here:** round 2 (above); more than one repeat; why 9.C, 5.B and 4.A no longer give a wrong FAIL on round 1; whether svs.gsfc.nasa.gov's reissued certificate causes the 502 or the container's proxy does (the proxy returns it; I could not see inside it); the direct-connection route; round 1's recordings against a hash.
+
 ## Gate 2026-11-14: both rounds' pages, the server judge on every type, one repeat (roadmap step 9a)
 
 Round 2's 10 frozen svs.gsfc.nasa.gov pages and round 1's 9 frozen www.nasa.gov

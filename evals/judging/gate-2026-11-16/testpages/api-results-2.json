@@ -1,0 +1,2244 @@
+{
+ "4.B-baseline-TC01.A-2-fail-1": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "timing_required",
+     "duration_ms": 3000,
+     "element": 4,
+     "key": "Space",
+     "quote": "press and hold the space bar for 3 seconds",
+     "reasons": "Sentence says to hold space bar 3 seconds on the button, which is stop 4."
+    },
+    "q": "4.B-p-J1",
+    "reasons": "Sentence says to hold space bar 3 seconds on the button, which is stop 4."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.8,
+   "switched_on": [
+    "4.B"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 600,
+    "cache_read_input_tokens": 2374,
+    "input_tokens": 2,
+    "output_tokens": 158
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "p:M5",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.B",
+  "wrong_pass": false
+ },
+ "4.B-f01-hold-space-to-switch": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "timing_required",
+     "duration_ms": 3000,
+     "element": 1,
+     "key": "Space",
+     "quote": "press and hold the space bar for 3 seconds",
+     "reasons": "Sentence says keyboard user must tab to the button and hold space 3 seconds to change it."
+    },
+    "q": "4.B-p-J1",
+    "reasons": "Sentence says keyboard user must tab to the button and hold space 3 seconds to change it."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "no_alternative",
+     "reasons": "Only one element is reached, the same button. A normal press changed nothing, so no other element does this job."
+    },
+    "q": "4.B-p-J2",
+    "reasons": "Only one element is reached, the same button. A normal press changed nothing, so no other element does this job."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 6.6,
+   "switched_on": [
+    "4.B"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1207,
+    "cache_read_input_tokens": 4503,
+    "input_tokens": 4,
+    "output_tokens": 290
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "p:M8",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.B",
+  "wrong_pass": false
+ },
+ "4.B-f02-hold-with-alternative": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "timing_required",
+     "duration_ms": 3000,
+     "element": 1,
+     "key": "Space",
+     "reasons": "Sentence says to tab to the button and hold the space bar 3 seconds to change it; button is stop 1."
+    },
+    "q": "4.B-p-J1",
+    "reasons": "Sentence says to tab to the button and hold the space bar 3 seconds to change it; button is stop 1."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Stop 2 'Switch request type' may do the same job, but only its name suggests that. Names are untrusted and no press on it was tested."
+    },
+    "q": "4.B-p-J2",
+    "reasons": "Stop 2 'Switch request type' may do the same job, but only its name suggests that. Names are untrusted and no press on it was tested."
+   }
+  ],
+  "expected": "PASS",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 7.0,
+   "switched_on": [
+    "4.B"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1207,
+    "cache_read_input_tokens": 4539,
+    "input_tokens": 4,
+    "output_tokens": 491
+   },
+   "unsure": 1
+  },
+  "match": false,
+  "rows": [
+   "A3",
+   "p:M9",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.B",
+  "wrong_pass": false
+ },
+ "4.B-f03-timing-words-not-keys": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "no_timing",
+     "reasons": "Sentences are about holding an ID card to a camera and applying within 30 days; neither concerns holding or repeatedly pressing keys."
+    },
+    "q": "4.B-p-J1",
+    "reasons": "Sentences are about holding an ID card to a camera and applying within 30 days; neither concerns holding or repeatedly pressing keys."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.5,
+   "switched_on": [
+    "4.B"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 605,
+    "cache_read_input_tokens": 2234,
+    "input_tokens": 2,
+    "output_tokens": 133
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "p:M3",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.B",
+  "wrong_pass": false
+ },
+ "4.B-f04-hold-alternative-does-other": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "timing_required",
+     "duration_ms": 3000,
+     "element": 1,
+     "key": "Space",
+     "quote": "press and hold the space bar for 3 seconds",
+     "reasons": "Sentence says to tab to the button and hold Space 3 seconds to change it. Stop 1 is that button. A second button, Change request, exists but the sentence still requires the hold."
+    },
+    "q": "4.B-p-J1",
+    "reasons": "Sentence says to tab to the button and hold Space 3 seconds to change it. Stop 1 is that button. A second button, Change request, exists but the sentence still requires the hold."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Button 2 'Change request' might be the alternative, but its name is untrusted and no evidence shows a normal press makes the same change."
+    },
+    "q": "4.B-p-J2",
+    "reasons": "Button 2 'Change request' might be the alternative, but its name is untrusted and no evidence shows a normal press makes the same change."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 8.3,
+   "switched_on": [
+    "4.B"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1205,
+    "cache_read_input_tokens": 4535,
+    "input_tokens": 4,
+    "output_tokens": 624
+   },
+   "unsure": 1
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "p:M9",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.B",
+  "wrong_pass": false
+ },
+ "5.C-f03-date-format-outside-label": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "(MM/DD/YYYY)",
+     "reasons": "Format cue (MM/DD/YYYY) is shown beside the box but not in the announced name."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Format cue (MM/DD/YYYY) is shown beside the box but not in the announced name."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.5,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1815,
+    "cache_read_input_tokens": 1446,
+    "input_tokens": 2,
+    "output_tokens": 149
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f04-required-marker-not-announced": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "*",
+     "reasons": "A red asterisk marks the field as required, but the announced name is only 'Full name' and the component is not marked required."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "A red asterisk marks the field as required, but the announced name is only 'Full name' and the component is not marked required."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.6,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1792,
+    "cache_read_input_tokens": 1446,
+    "input_tokens": 2,
+    "output_tokens": 142
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f05-radio-question-not-grouped": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Are you a veteran?",
+     "reasons": "Radio announced only as Yes; the question over it is not announced."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Radio announced only as Yes; the question over it is not announced."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Are you a veteran?",
+     "reasons": "Radio announced only as No; the question over it is not announced."
+    },
+    "q": "5.C-c2-J1",
+    "reasons": "Radio announced only as No; the question over it is not announced."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.8,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2687,
+    "cache_read_input_tokens": 1829,
+    "input_tokens": 2,
+    "output_tokens": 243
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M7",
+   "c3:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f08-table-column-headers": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "complete",
+     "reasons": "Table header Full name is announced and names the field's purpose. Relationship is another column's header."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Table header Full name is announced and names the field's purpose. Relationship is another column's header."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "complete",
+     "reasons": "Table header Relationship is announced and names the field's purpose. Full name is another column's header."
+    },
+    "q": "5.C-c2-J1",
+    "reasons": "Table header Relationship is announced and names the field's purpose. Full name is another column's header."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.8,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2882,
+    "cache_read_input_tokens": 1829,
+    "input_tokens": 2,
+    "output_tokens": 326
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M6",
+   "c2:M6",
+   "c3:M5",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f10-floating-label-focus-tip": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Use 5 digits",
+     "reasons": "Visible hint 'Use 5 digits' is shown for the field but the announced name is only 'ZIP code'."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Visible hint 'Use 5 digits' is shown for the field but the announced name is only 'ZIP code'."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.4,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1765,
+    "cache_read_input_tokens": 1446,
+    "input_tokens": 2,
+    "output_tokens": 160
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f21-required-marker-from-css": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "*",
+     "reasons": "Red asterisk shown beside the field is not announced; name is only 'Image title'."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Red asterisk shown beside the field is not announced; name is only 'Image title'."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.4,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1793,
+    "cache_read_input_tokens": 1446,
+    "input_tokens": 2,
+    "output_tokens": 138
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M5",
+   "c3:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f22-filter-adds-remove-buttons": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Earth; Sun",
+     "reasons": "Both buttons are announced only as \"X\". Row words tell them apart but are not announced."
+    },
+    "q": "5.C-c5-J1",
+    "reasons": "Both buttons are announced only as \"X\". Row words tell them apart but are not announced."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.1,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 604,
+    "cache_read_input_tokens": 2411,
+    "input_tokens": 2,
+    "output_tokens": 126
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M5",
+   "c2:M5",
+   "c3:M5",
+   "c4:M5",
+   "c5:M7",
+   "c6:M7",
+   "revealed",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f30-question-text-over-wrapped-options": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Are you a veteran?",
+     "reasons": "Announced only 'Yes'; the question over the radios is not announced."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Announced only 'Yes'; the question over the radios is not announced."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Are you a veteran?",
+     "reasons": "Announced only 'No'; the question over the radios is not announced."
+    },
+    "q": "5.C-c2-J1",
+    "reasons": "Announced only 'No'; the question over the radios is not announced."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.9,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2692,
+    "cache_read_input_tokens": 1829,
+    "input_tokens": 2,
+    "output_tokens": 246
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M7",
+   "c3:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f31-heading-then-intro-over-set": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Choose any.",
+     "reasons": "Announced only 'Earth'; the shown instruction 'Choose any.' and the 'Topics' heading are not announced."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Announced only 'Earth'; the shown instruction 'Choose any.' and the 'Topics' heading are not announced."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Choose any.",
+     "reasons": "Announced only 'Sun'; the shown instruction 'Choose any.' and the 'Topics' heading are not announced."
+    },
+    "q": "5.C-c2-J1",
+    "reasons": "Announced only 'Sun'; the shown instruction 'Choose any.' and the 'Topics' heading are not announced."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.9,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2687,
+    "cache_read_input_tokens": 1829,
+    "input_tokens": 2,
+    "output_tokens": 431
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M7",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f32-filter-boxes-no-heading": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "Missions",
+     "reasons": "The checkboxes Active, Future and Past sit under the heading \"Missions\". That heading says what is being filtered, but it is not announced with them. Without it the options are ambiguous."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "The checkboxes Active, Future and Past sit under the heading \"Missions\". That heading says what is being filtered, but it is not announced with them. Without it the options are ambiguous."
+   }
+  ],
+  "expected": "PASS",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.9,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2034,
+    "cache_read_input_tokens": 1446,
+    "input_tokens": 2,
+    "output_tokens": 490
+   },
+   "unsure": 0
+  },
+  "match": false,
+  "rows": [
+   "A3",
+   "c1:M9",
+   "c2:M9",
+   "c3:M9",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f33-filter-sets-no-heading-over-cards": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "complete",
+     "reasons": "Labels Earth and Sun match visible text. The only heading is a page title, not a question the set answers."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Labels Earth and Sun match visible text. The only heading is a page title, not a question the set answers."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "complete",
+     "reasons": "Labels Visualization and Animation match visible text. The only heading is a page title, not a question the set answers."
+    },
+    "q": "5.C-c3-J1",
+    "reasons": "Labels Visualization and Animation match visible text. The only heading is a page title, not a question the set answers."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.5,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 3236,
+    "cache_read_input_tokens": 1829,
+    "input_tokens": 2,
+    "output_tokens": 448
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M6",
+   "c2:M6",
+   "c3:M6",
+   "c4:M6",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f42-non-latin-labels-not-announced": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "not_purpose",
+     "reasons": "Announced name 'f1' does not say the field is for a user name."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "Announced name 'f1' does not say the field is for a user name."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "not_purpose",
+     "reasons": "Announced name 'x1' does not say the field is for an address; the visible Japanese label is not announced."
+    },
+    "q": "5.C-c2-J1",
+    "reasons": "Announced name 'x1' does not say the field is for an address; the visible Japanese label is not announced."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.1,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2936,
+    "cache_read_input_tokens": 1829,
+    "input_tokens": 2,
+    "output_tokens": 225
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M8",
+   "c2:M8",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.C-f44-label-words-hidden": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "missing",
+     "quote": "*",
+     "reasons": "The visible \"*\" required cue sits by this field. The announced name is only \"Email address\", and the field is not marked required."
+    },
+    "q": "5.C-c1-J1",
+    "reasons": "The visible \"*\" required cue sits by this field. The announced name is only \"Email address\", and the field is not marked required."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.4,
+   "switched_on": [
+    "5.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1763,
+    "cache_read_input_tokens": 1446,
+    "input_tokens": 2,
+    "output_tokens": 277
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "c1:M7",
+   "c2:M3",
+   "c3:M5",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.C",
+  "wrong_pass": false
+ },
+ "5.H-baseline-TC10.G-2.a-pass-1": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "one_page",
+     "element": 1,
+     "reasons": "Pizza order charges a credit card. Submit finishes it at once with a confirmation, no review step."
+    },
+    "q": "5.H-J1",
+    "reasons": "Pizza order charges a credit card. Submit finishes it at once with a confirmation, no review step."
+   }
+  ],
+  "expected": "DNA",
+  "got": "DNA",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.6,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 601,
+    "cache_read_input_tokens": 2399,
+    "input_tokens": 2,
+    "output_tokens": 133
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "G1"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-baseline-TC10.G-2.c-pass-1": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "reasons": "Pizza order is a purchase. Add to Cart leads to a cart review page with Change Order and Submit Payment buttons, so there is a review stage before final submission."
+    },
+    "q": "5.H-J1",
+    "reasons": "Pizza order is a purchase. Add to Cart leads to a cart review page with Change Order and Submit Payment buttons, so there is a review stage before final submission."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "review_step",
+     "reasons": "After submit, a summary page shows order details with a Change Order control and a separate Submit Payment button."
+    },
+    "q": "5.H-J2",
+    "reasons": "After submit, a summary page shows order details with a Change Order control and a separate Submit Payment button."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 5.2,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1215,
+    "cache_read_input_tokens": 4621,
+    "input_tokens": 4,
+    "output_tokens": 304
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M2",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-baseline-TC10.G-all-fail-1": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "one_page",
+     "element": 1,
+     "reasons": "Pizza order charges a credit card; one Submit gives a final confirmation with no review step."
+    },
+    "q": "5.H-J1",
+    "reasons": "Pizza order charges a credit card; one Submit gives a final confirmation with no review step."
+   }
+  ],
+  "expected": "DNA",
+  "got": "DNA",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.3,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 604,
+    "cache_read_input_tokens": 2403,
+    "input_tokens": 2,
+    "output_tokens": 120
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "G1"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-baseline-TC10.G-ic-dna-2": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "not_consequential",
+     "element": 1,
+     "reasons": "Single Name field and Submit; page says it changes no stored data and the button does nothing."
+    },
+    "q": "5.H-J1",
+    "reasons": "Single Name field and Submit; page says it changes no stored data and the button does nothing."
+   }
+  ],
+  "expected": "DNA",
+  "got": "DNA",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.3,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 606,
+    "cache_read_input_tokens": 2209,
+    "input_tokens": 2,
+    "output_tokens": 120
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "G1"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f01-checks-input": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "reasons": "Donation is a payment. Page says step 1 of 2, and after submit a review stage 'Step 2 of 2' appears."
+    },
+    "q": "5.H-J1",
+    "reasons": "Donation is a payment. Page says step 1 of 2, and after submit a review stage 'Step 2 of 2' appears."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.5,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 603,
+    "cache_read_input_tokens": 2257,
+    "input_tokens": 2,
+    "output_tokens": 161
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M1",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f02-no-review": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "quote": "Pay your permit fee: step 2 of 2",
+     "reasons": "Card payment is consequential. Page says 'step 2 of 2' and that details were saved in step 1, so it is one step of several, though Pay now finishes it."
+    },
+    "q": "5.H-J1",
+    "reasons": "Card payment is consequential. Page says 'step 2 of 2' and that details were saved in step 1, so it is one step of several, though Pay now finishes it."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "none",
+     "reasons": "Only a final confirmation appeared: card charged, non-refundable. No review step, cancel or undo."
+    },
+    "q": "5.H-J2",
+    "reasons": "Only a final confirmation appeared: card charged, non-refundable. No review step, cancel or undo."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 6.1,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1209,
+    "cache_read_input_tokens": 4499,
+    "input_tokens": 4,
+    "output_tokens": 453
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M3",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f03-cancel-period": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "quote": "Order printed publications: step 2 of 2",
+     "reasons": "Order with card payment is consequential. Page says 'step 2 of 2', so it is one step of several, though it can be cancelled later."
+    },
+    "q": "5.H-J1",
+    "reasons": "Order with card payment is consequential. Page says 'step 2 of 2', so it is one step of several, though it can be cancelled later."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "reversible",
+     "quote": "You can cancel this order within 30 days from your account page.",
+     "reasons": "After submit, page says order can be cancelled within 30 days and shows a Cancel order control."
+    },
+    "q": "5.H-J2",
+    "reasons": "After submit, page says order can be cancelled within 30 days and shows a Cancel order control."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 6.7,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1198,
+    "cache_read_input_tokens": 4510,
+    "input_tokens": 4,
+    "output_tokens": 432
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M2",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f04-server-step": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "reasons": "Benefit application says step 1 of 3 with a Next button; consequential benefit application spans several steps."
+    },
+    "q": "5.H-J1",
+    "reasons": "Benefit application says step 1 of 3 with a Next button; consequential benefit application spans several steps."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Nothing appeared after submit and no dialog; the page was left. Evidence does not settle it."
+    },
+    "q": "5.H-J2",
+    "reasons": "Nothing appeared after submit and no dialog; the page was left. Evidence does not settle it."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 5.9,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1209,
+    "cache_read_input_tokens": 4317,
+    "input_tokens": 4,
+    "output_tokens": 266
+   },
+   "unsure": 1
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M4",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f06-confirm-dialog": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "quote": "Pay your permit fee: step 2 of 2",
+     "reasons": "Form 1 makes a payment. The page says 'step 2 of 2', so it is one step of several. A confirm prompt also appears before the payment goes through."
+    },
+    "q": "5.H-J1",
+    "reasons": "Form 1 makes a payment. The page says 'step 2 of 2', so it is one step of several. A confirm prompt also appears before the payment goes through."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "review_step",
+     "quote": "Pay the $40 permit fee now? Payments cannot be undone.",
+     "reasons": "A confirm dialog names the action and fee, so people can confirm or cancel it (G168). It also says payments cannot be undone."
+    },
+    "q": "5.H-J2",
+    "reasons": "A confirm dialog names the action and fee, so people can confirm or cancel it (G168). It also says payments cannot be undone."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 7.4,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1207,
+    "cache_read_input_tokens": 4438,
+    "input_tokens": 4,
+    "output_tokens": 423
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M2",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f07-confirm-checkbox": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "reasons": "Payment form; page says 'step 2 of 2', so it is one step of several. Also has a confirmation checkbox."
+    },
+    "q": "5.H-J1",
+    "reasons": "Payment form; page says 'step 2 of 2', so it is one step of several. Also has a confirmation checkbox."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "review_step",
+     "quote": "Tick the box to confirm your payment details before paying.",
+     "reasons": "After submitting, the page asked to tick a box confirming payment details before paying, so the form is not sent without that confirmation (G155)."
+    },
+    "q": "5.H-J2",
+    "reasons": "After submitting, the page asked to tick a box confirming payment details before paying, so the form is not sent without that confirmation (G155)."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 6.5,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1214,
+    "cache_read_input_tokens": 4450,
+    "input_tokens": 4,
+    "output_tokens": 406
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M2",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f08-wizard-next-step-says-required": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "reasons": "Checkout payment form; page says Step 1 of 2 and Next leads to a Step 2 payment stage with Pay now."
+    },
+    "q": "5.H-J1",
+    "reasons": "Checkout payment form; page says Step 1 of 2 and Next leads to a Step 2 payment stage with Pay now."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Submit only showed a validation error on step 2 payment; no review, confirmation or cancel info appeared."
+    },
+    "q": "5.H-J2",
+    "reasons": "Submit only showed a validation error on step 2 payment; no review, confirmation or cancel info appeared."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 5.5,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1206,
+    "cache_read_input_tokens": 4515,
+    "input_tokens": 4,
+    "output_tokens": 290
+   },
+   "unsure": 1
+  },
+  "match": false,
+  "rows": [
+   "A6",
+   "f1:M4",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f09-hidden-feedback": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "not_consequential",
+     "element": 1,
+     "reasons": "Page feedback form (helpful yes/no, comment, Send). It is a feedback form, not a payment, legal, account data or test answers."
+    },
+    "q": "5.H-J1",
+    "reasons": "Page feedback form (helpful yes/no, comment, Send). It is a feedback form, not a payment, legal, account data or test answers."
+   }
+  ],
+  "expected": "DNA",
+  "got": "DNA",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.2,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 602,
+    "cache_read_input_tokens": 2218,
+    "input_tokens": 2,
+    "output_tokens": 153
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "G1"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "5.H-f10-hidden-payment-steps": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "multi_step",
+     "element": 1,
+     "reasons": "Card payment form says 'Step 1 of 2' and has a Next button, so it is a payment with more than one step."
+    },
+    "q": "5.H-J1",
+    "reasons": "Card payment form says 'Step 1 of 2' and has a Next button, so it is a payment with more than one step."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Nothing appeared after submit and no alerts, so the evidence does not settle it."
+    },
+    "q": "5.H-J2",
+    "reasons": "Nothing appeared after submit and no alerts, so the evidence does not settle it."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 2,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 2,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 6.1,
+   "switched_on": [
+    "5.H"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 1207,
+    "cache_read_input_tokens": 4322,
+    "input_tokens": 4,
+    "output_tokens": 262
+   },
+   "unsure": 1
+  },
+  "match": true,
+  "rows": [
+   "A6",
+   "f1:M4",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "5.H",
+  "wrong_pass": false
+ },
+ "9.C-footer-link-reworded": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same destination and area, but names differ: 'Sign in' vs 'Log in' for the same action."
+    },
+    "q": "9.C-p1-7-J1",
+    "reasons": "Same destination and area, but names differ: 'Sign in' vs 'Log in' for the same action."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.5,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 605,
+    "cache_read_input_tokens": 2397,
+    "input_tokens": 2,
+    "output_tokens": 144
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C1",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C4",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-paging": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "consistent",
+     "reasons": "Names follow the same 'Go to page N' pattern, changing only with the target page."
+    },
+    "q": "9.C-p1-2-J1",
+    "reasons": "Names follow the same 'Go to page N' pattern, changing only with the target page."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "consistent",
+     "reasons": "Names follow the same 'Go to page N' pattern, changing only with the target page."
+    },
+    "q": "9.C-p1-3-J1",
+    "reasons": "Names follow the same 'Go to page N' pattern, changing only with the target page."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.9,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 608,
+    "cache_read_input_tokens": 3584,
+    "input_tokens": 2,
+    "output_tokens": 338
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C3",
+   "p1-3:C3",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-renamed": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same destination address, but names differ: Contact vs Get in touch."
+    },
+    "q": "9.C-p1-4-J1",
+    "reasons": "Same destination address, but names differ: Contact vs Get in touch."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Both are search buttons in the search area, but named Search and Find: different words for the same action."
+    },
+    "q": "9.C-p1-12-J1",
+    "reasons": "Both are search buttons in the search area, but named Search and Find: different words for the same action."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.2,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 603,
+    "cache_read_input_tokens": 3531,
+    "input_tokens": 2,
+    "output_tokens": 199
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C4",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C4",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-wc-renamed": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same destination address, but the names differ: 'Contact' and 'Get in touch'."
+    },
+    "q": "9.C-p1-4-J1",
+    "reasons": "Same destination address, but the names differ: 'Contact' and 'Get in touch'."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Both are search buttons in the search area, but one is named 'Search' and the other 'Find'. Same action, different words."
+    },
+    "q": "9.C-p1-12-J1",
+    "reasons": "Both are search buttons in the search area, but one is named 'Search' and the other 'Find'. Same action, different words."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.7,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 601,
+    "cache_read_input_tokens": 3531,
+    "input_tokens": 2,
+    "output_tokens": 213
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C4",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C4",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ }
+}
