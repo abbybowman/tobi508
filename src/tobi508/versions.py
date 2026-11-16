@@ -50,6 +50,7 @@ def collect_versions(
             "record_scroll_passes": settings.record_scroll_passes,
             # Scrolled one window at a time while recording (lazy content).
             "record_scroll_steps": settings.record_scroll_steps,
+            "record_extra_wait_ms": settings.record_extra_wait_ms,
             # The media store kept each player's chosen file first.
             "media_chosen_first": settings.media_chosen_first,
             "run_limit_s": settings.run_limit_s,

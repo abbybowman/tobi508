@@ -161,6 +161,11 @@ class Settings(BaseSettings):
     # (roadmap step 6c: round 2's 14194, 14592 and 4914 lacked 16 lazy
     # images). The freeze turns it on (evals/agent/freeze.py).
     record_scroll_steps: bool = False
+    # Extra milliseconds a recording waits after the page loads, and again
+    # after its scroll, before the network-idle check, for apps that fetch
+    # their data late (round 3's /data-governance-community/home recorded
+    # 27 of 152 lines at 0). 0 keeps the old behaviour. (Abby, 2026-11-16)
+    record_extra_wait_ms: int = Field(default=0, ge=0, le=120_000)
     # The media store keeps the file each player chose (currentSrc) before
     # any alternative <source> (the freeze: those are the files a replay
     # plays; the alternatives can be gigabytes of ProRes).
