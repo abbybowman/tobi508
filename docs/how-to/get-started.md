@@ -51,8 +51,8 @@ or the same in a project's `.mcp.json`:
 ## 2. The image, over stdio
 
 No clone and no Python: the image has the server, Chromium (headless) and
-everything they need. It is large (Chromium and its libraries), so the
-first pull takes a while.
+everything they need. The first pull downloads about 1.2 GB (2.8 GB on
+disk), mostly Chromium and its libraries.
 
 ```bash
 docker pull ghcr.io/abbybowman/tobi508:latest
