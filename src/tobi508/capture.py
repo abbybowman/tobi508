@@ -83,9 +83,11 @@ async def record(
     try:
         page = await ctx.new_page()
         final_url = await guard.goto(page, url)
+        await _extra_wait(page, settings, log)
         await _idle(page, log, 10_000)
         if settings.record_scroll_steps:
             await _scroll_steps(page, log)
+            await _extra_wait(page, settings, log)
         # Scroll to the bottom so content loaded on scroll is recorded (4.C spec
         # section 2, Recording).
         for i in range(settings.record_scroll_passes):
@@ -738,6 +740,14 @@ def failed_scripts(har_path: Path) -> list[str]:
         if e.get("_resourceType") == "script"
         and not 0 <= e["response"].get("status", 0) < 400
     ]
+
+
+async def _extra_wait(page, settings: Settings, log: LogFn) -> None:
+    """`record_extra_wait_ms`: a pause for pages that fetch late; the
+    network-idle check that follows catches what it started."""
+    if settings.record_extra_wait_ms:
+        await page.wait_for_timeout(settings.record_extra_wait_ms)
+        await _idle(page, log, 10_000)
 
 
 async def _idle(page, log: LogFn, timeout_ms: int) -> None:
