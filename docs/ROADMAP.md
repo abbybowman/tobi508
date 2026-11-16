@@ -108,7 +108,8 @@ is merged. At most three threads at once. Each thread branches from
   `docs/KNOWN-LIMITS.md`.
 - **19.A on CILab,** left from step 10a: it passed in step 6h's rerun
   and FAILs in step 6g's with the pages loaded live, though both of
-  the key's ways are still on the live site. Folded into 10c.
+  the key's ways are still on the live site. Read in 10c: the PASS is
+  right; the FAIL's rows are not in git; found in step 34.
 - **10b.** Round 4, if Abby keys one, is run as round 3 was
   ([the how-to](how-to/run-a-judging-round.md)): the page list, keys
   and freeze stay off `main` until the run is locked.
@@ -142,8 +143,74 @@ is merged. At most three threads at once. Each thread branches from
 
 ## Next: after the demo
 
-Steps continue from "Now", in this order unless a judging round says
-otherwise; whatever of steps 8 to 12 was not reached comes first. Parts
+**Round 3 says otherwise** ([plan](plans/2026-11-16-after-round3.md),
+step 10c): its steps 21 to 35 below come first, in their rank order
+(21 and 22 before the cut if Abby agrees; 27 before step 15's 4.D
+part; 26 after 23), then 14 onward. Steps marked "approval" turn
+NEEDS REVIEW into an outcome and wait for Abby's yes on the spec text.
+
+21. **5.F and 5.G: the browser's own error messages** (cause 1; S; no
+    approval). Native validation (5.F M2, 5.G J1 on the browser's
+    `validationMessage`) becomes NEEDS REVIEW: the browser shows one
+    field's message at a time and its words differ by browser. Round
+    3's contact page: PASS where the key fails. Whether TT 5.F fails it
+    is Abby's later call.
+22. **No outcome from a walk that missed the page** (cause 2; S-M; no
+    approval). 4.F A3, 5.A, 5.D and 5.F to 5.H's "no form fields", 4.A's
+    unreached candidates and 4.C's PASS read the inventory taken after
+    the walk; when the walk covered less, NEEDS REVIEW. Round 3's forum
+    page: 4.F DOES NOT APPLY where the key fails.
+23. **Wait for an application to draw itself** (cause 2; M). Before the
+    walk, pass L and the site read, wait until the page's inventory
+    stops growing (with a ceiling); P2's press cap from the inventory
+    when P2 starts. Round 3's p07 and p08.
+24. **4.E: an address change the page makes on its own** (cause 14;
+    S-M; no approval). The control replay waits until the same time
+    after load as the original step. Round 3: 3 false FAILs.
+25. **The freeze saves the chunk store** (cause 17; S). Code the page
+    loads when used is in the frozen recording (guard GU held 4.B on
+    p07 and p08).
+26. **One document at every address** (cause 5; S; approval; after 23).
+    K-01's byte test only for the same path apart from the query, in
+    9.A to 9.C and 19.A (A2, aliases, suggested pages). Round 3: 16
+    cells not performed.
+27. **4.D: a faint mark on a large element** (cause 3; M; no approval;
+    before step 15's 4.D part). M6 also needs the change to be a share
+    of the element's size, else J1. Round 3's blog page: the image
+    links pass where the key fails, held only by guard RC.
+28. **4.A: a hedged "alternative" and Enter's effect** (cause 4; M; no
+    approval). J1's "alternative" whose reasons hedge is unsure; M8
+    needs the key's effect to be the click's. Judge eval.
+29. **5.A and 5.B: a search box in a closed panel** (cause 6; S then M;
+    approval for the icon). 5.B's A2 only when 5.A found no label
+    (S); pass L opens the panel before its picture (with step 15);
+    Abby's decision on a magnifier opener as a label.
+30. **5.F to 5.H: a form with nothing to get wrong** (cause 9; M;
+    approval). A spec decision first: filter checkboxes and a search
+    box with nothing required.
+31. **9.B: equal links paired by alignment** (cause 10; S; no approval).
+    An extra copy of a repeated link on one page is an insertion, not a
+    swap. Round 3: 6 false FAILs.
+32. **4.A's undecided signals** (cause 11; M; approval). A hidden helper
+    frame and a page-level wheel or touch listener are not U; calibrate
+    `HOVER_MAX`. Round 3: 4.A NEEDS REVIEW on all six Drupal pages.
+33. **4.F: columns, arrow-key popups and the judge** (cause 12; M;
+    approval for S3 and S6). The order list names what the signals
+    name; S3 not raised for a column-to-column jump; S6 not raised for a
+    listbox or menu; J1's rubric and a judge eval.
+34. **19.A after round 3** (cause 13; questions first; approval).
+    Breadcrumbs as a way of their own, a results page and its query;
+    and why 19.A FAILed on round 2's CILab in step 6g's rerun.
+35. **Five small readings from round 3** (causes 15, 18 to 21; S each;
+    approval for a and e). (a) controls with no `<form>`; (b) 5.D
+    focus onto the field's own label, and a request the recording
+    cannot answer; (c) 5.C, a card's own words are not a cue; (d) 5.B,
+    a styled checkbox's label and an answer that did not see its item;
+    (e) 4.C, a press that navigates leaves no error state.
+
+Then the steps below continue from "Now", in this order unless a
+judging round says otherwise; whatever of steps 8 to 12 was not reached
+comes first. Parts
 are those of
 [plans/2026-11-12-coverage-second-look-thin-agent.md](plans/2026-11-12-coverage-second-look-thin-agent.md);
 fix numbers are the

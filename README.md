@@ -96,6 +96,9 @@ Not Apply as "in what the tool looked at". The full list, with the page
 for each, is [the code review](docs/reviews/2026-11-11-code-review.md);
 the fixes are planned in
 [the plan after the review](docs/plans/2026-11-12-coverage-second-look-thin-agent.md).
+The rows naming round 3 come from the blind round on
+science.data.nasa.gov (2026-11-16); their fixes are planned in
+[the plan after round 3](docs/plans/2026-11-16-after-round3.md).
 A fix removes its line here in the same commit.
 
 | Test | Gives | On a page with |
@@ -108,6 +111,9 @@ A fix removes its line here in the same commit.
 | 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
 | 5.H | Does Not Apply | a payment form not in English |
 | 9.C | PASS or Does Not Apply | controls in the pages' own content that do the same thing under different names on different pages, unless they share an `id` (read) |
+| 5.F, 5.G | PASS | a form checked only by the browser's own messages: each field's message is read as shown though the browser shows one at a time, and Chrome's words are judged where another browser's differ (round 3's contact page, keyed Fail in Firefox; fixture `5f/f01` gives PASS) |
+| 4.A, 4.C, 4.F, 5.A, 5.D | PASS or Does Not Apply | a page that draws its controls a second or more after it loads (an application built with a script framework): the tests decide on what was there at first (round 3's forum page: 4.F Does Not Apply where the key fails; a scratch page drawn after 1.2 s gave 4.F, 5.A and 5.D Does Not Apply and 4.A and 4.C PASS) |
+| 4.D | PASS | a large linked image whose focus shows only a faint mark: about 50 changed pixels pass, whatever the element's size (round 3's blog page, held at NEEDS REVIEW there only by guard RC) (read) |
 
 ## Tools
 
