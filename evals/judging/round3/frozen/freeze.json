@@ -1,5 +1,5 @@
 {
- "started_at": "2026-11-16T03:40:37.109063+00:00",
+ "started_at": "2026-11-16T12:55:17.514205+00:00",
  "pages": {
   "https://science.data.nasa.gov/": {
    "status": "frozen",
@@ -13,7 +13,7 @@
    "title": "Discover Science Data at NASA | Science Data Portal",
    "heading": "Discover Science Data at NASA",
    "frames_not_recorded": [],
-   "seconds": 5.9
+   "seconds": 6.3
   },
   "https://science.data.nasa.gov/blog": {
    "status": "frozen",
@@ -27,7 +27,7 @@
    "title": "Science Data Blog | Science Data Portal",
    "heading": "Science Data Blog",
    "frames_not_recorded": [],
-   "seconds": 5.5
+   "seconds": 5.7
   },
   "https://science.data.nasa.gov/contact": {
    "status": "frozen",
@@ -41,7 +41,7 @@
    "title": "Contact | Science Data Portal",
    "heading": "Website feedback",
    "frames_not_recorded": [],
-   "seconds": 5.5
+   "seconds": 5.6
   },
   "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel": {
    "status": "frozen",
@@ -55,7 +55,7 @@
    "title": "Search Results | Science Data Portal",
    "heading": "",
    "frames_not_recorded": [],
-   "seconds": 5.5
+   "seconds": 5.9
   },
   "https://science.data.nasa.gov/fits/verifier": {
    "status": "frozen",
@@ -69,7 +69,7 @@
    "title": "FITS Verifier | Science Data Portal",
    "heading": "FITS Verifier",
    "frames_not_recorded": [],
-   "seconds": 5.5
+   "seconds": 5.6
   },
   "https://science.data.nasa.gov/fits/sample-files": {
    "status": "frozen",
@@ -110,8 +110,8 @@
    ],
    "scroll_reached_end": true,
    "document_status": 200,
-   "assets": 20,
-   "assets_failed": 0,
+   "assets": 41,
+   "assets_failed": 1,
    "title": "Data Governance Knowledge Hub",
    "heading": "",
    "frames_not_recorded": [
@@ -120,32 +120,14 @@
      "why": "differs between two loads"
     }
    ],
-   "seconds": 12.3
+   "seconds": 13.8
   },
   "https://science.data.nasa.gov/data-governance-community/forum": {
    "status": "frozen",
    "final_url": "https://science.data.nasa.gov/data-governance-community/forum",
    "cross_site_frames": 0,
-   "scroll": [
-    {
-     "step": "capture_scroll_steps",
-     "status": "ok",
-     "steps": 1,
-     "cut": false,
-     "reached_end": true,
-     "stuck": false,
-     "top": 0,
-     "height": 900,
-     "window": 900
-    },
-    {
-     "step": "capture_scroll",
-     "status": "ok",
-     "pass_": 1,
-     "page_grew": false
-    }
-   ],
-   "scroll_reached_end": true,
+   "scroll": [],
+   "scroll_reached_end": false,
    "document_status": 200,
    "assets": 65,
    "assets_failed": 0,
@@ -157,7 +139,7 @@
      "why": "differs between two loads"
     }
    ],
-   "seconds": 12.9
+   "seconds": 5.5
   },
   "https://science.data.nasa.gov/science-discovery-engine/search/sde/home": {
    "status": "frozen",
@@ -171,7 +153,7 @@
    "title": "Science Discovery Engine",
    "heading": "",
    "frames_not_recorded": [],
-   "seconds": 5.3
+   "seconds": 5.4
   },
   "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory": {
    "status": "frozen",
@@ -185,7 +167,7 @@
    "title": "Science Discovery Engine",
    "heading": "",
    "frames_not_recorded": [],
-   "seconds": 5.6
+   "seconds": 6.3
   }
  },
  "searches": {
@@ -410,6 +392,6 @@
    ]
   }
  },
- "finished_at": "2026-11-16T03:41:55.059182+00:00",
+ "finished_at": "2026-11-16T12:56:38.477621+00:00",
  "recordings": 28
 }
