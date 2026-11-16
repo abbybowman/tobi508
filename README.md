@@ -167,31 +167,27 @@ A fix removes its line here in the same commit.
 
 ## Use it
 
-**Setup (Windows, Git Bash).** Run natively on Windows, not in WSL2, so
-the browser can be shown. You need [uv](https://docs.astral.sh/uv/) and
-Google Chrome.
+**[Get started](docs/how-to/get-started.md)**: run it on Windows, macOS
+or Linux, from a clone or from the container image, and connect Claude
+Code. No sign-in is needed to run it yourself. The short version, from a
+clone with [uv](https://docs.astral.sh/uv/) and Google Chrome:
 
 ```bash
-cp .env.example .env
-uv sync --group dev
-TEST_BROWSER_CHANNEL=chrome TEST_HEADED=1 uv run pytest -v   # checks it in real Chrome
+cp .env.example .env && uv sync
+claude mcp add tobi508 -- uv --directory /full/path/to/tobi508 run tobi508
 ```
 
-While it runs, keep the screen unlocked and don't click in the test
-windows ([what the first Windows runs found](docs/solutions/windows-chrome-results.md)).
+Or with only Docker:
 
-**Connect to Claude Code.** Add to `.mcp.json` in your project:
-
-```json
-{
-  "mcpServers": {
-    "tobi508": {
-      "command": "uv",
-      "args": ["--directory", "C:/path/to/your/clone", "run", "tobi508"]
-    }
-  }
-}
+```bash
+claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abbybowman/tobi508:latest
 ```
+
+**Run the test suite** (contributors): `uv sync --group dev`, then
+`uv run pytest`. On Windows, `TEST_BROWSER_CHANNEL=chrome TEST_HEADED=1`
+checks it in real Chrome; run natively, not in WSL2, keep the screen
+unlocked and don't click in the test windows
+([what the first Windows runs found](docs/solutions/windows-chrome-results.md)).
 
 **Examples.** Ask in plain words, and your agent makes calls like these.
 `tests/test_readme.py` checks each one against the tool's schema and runs

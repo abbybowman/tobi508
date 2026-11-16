@@ -13,8 +13,8 @@ can't be built on VAST.
 
 **What we do.** `Dockerfile` builds from Debian (`python:3.11-slim-bookworm`)
 with uv, the dev group, and `playwright install --with-deps chromium`
-(Chromium, the headless shell and ffmpeg), running as uid 1000; about
-2.2 GB unpacked. `.github/workflows/container.yml` builds it and pushes
+(Chromium, the headless shell and ffmpeg), running as uid 1000.
+`.github/workflows/container.yml` builds it and pushes
 `ghcr.io/abbybowman/tobi508:latest` and `:<sha>`; VAST only pulls and
 runs it. `.dockerignore` keeps `.env`, `.venv`, `.git` and `runs/` out. It
 was first committed as `dockerignore`, without the dot, so Docker ignored it
@@ -22,6 +22,31 @@ and the published image held `.git` (no secret was in it: CI checks out a
 clean tree with no `.env`). The workflow's path filter does not include
 `tests/`, so a change only to tests does not rebuild the image; run the
 workflow by hand.
+
+**How big it is (measured 2026-11-16, `:latest`, digest `sha256:cd5a6adb…`, Docker
+29.9.2).** A pull downloads 1.15 GB (compressed layers). Its layers hold
+2.8 GB unpacked. `docker images` shows 4.04 GB, because Docker's containerd
+store counts the unpacked layers and the compressed download it keeps. The
+files a running container sees come to about 2.1 GB:
+
+| What | Size | Needed to serve? |
+| --- | --- | --- |
+| Playwright's full Chromium | 393 MB | Yes: replays of pages with cross-site iframes ([full-chromium-iframes.md](full-chromium-iframes.md)) |
+| Chromium's headless shell | 261 MB | Yes: every other headless launch (`BROWSER_CHANNEL=chromium` launches with no channel) |
+| System libraries and fonts for Chromium (`--with-deps`) | about 350 MB | Yes |
+| `.venv` (Playwright's driver with Node 140 MB, numpy 73 MB, ...) | 371 MB | Yes |
+| uv's download cache, `/root/.cache/uv` | 310 MB | No: left by `uv sync` |
+| `evals/judging/` (recorded rounds) | 251 MB | No: evals only |
+| Python base, uv, the rest of the code | about 250 MB | Yes |
+
+Chromium has to be in the image: the server drives a real browser, and the
+container has no other. So does each of the two builds above. What isn't
+needed is about 1.2 GB of layers: the cache, `evals/judging/`, and the
+last step's `chown -R app /app /data`, which writes a second copy of
+`/app` (a 672 MB layer). Copying with `--chown` and creating the user first,
+`uv sync --no-cache`, and `evals/judging/` in `.dockerignore` (the suite in
+the image does not read it; check before excluding) would bring the layers
+to about 1.6 GB. Not done yet.
 
 **Running the suite in the image, with progress.** Under `-q` the suite
 prints a dot only as each test finishes, so a slow start looks like a hang.
