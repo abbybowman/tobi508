@@ -28,3 +28,35 @@ failed live.
 How we know: `tests/test_egress.py` (removing the proxy from the launch fails 9
 tests), `tests/test_leakage.py::test_secrets_stay_out_of_a_load_failure` (found
 the 403 case), and the iframe test (found the HAR hang).
+
+## A page blank in its replay: the silent sign-in check (round 3, 2026-11-16)
+
+**What happened.** Round 3's two Data Governance pages (an Angular app on
+keycloak-js) replayed as a blank white page while the live page showed
+about 125 lines. The app draws nothing until a hidden frame asks the sign-in
+server whether the visitor is signed in (`prompt=none`, "check-sso"). That
+request carries a `state` value made on each load, so the replay asked an
+address the recording never saw, the frame was aborted and the app waited
+forever.
+
+**What did not work.** Serving the recorded redirect as it is: its `state`
+is the recording's own, keycloak-js rejects the mismatch and still draws
+nothing. Answering with a fulfilled 302: Chromium followed the redirect
+outside the replay's routes, to the network (a leak in a frozen run).
+
+**What we do now** (`capture._serve_signin_answers`, Abby 2026-11-16).
+When the recording holds the check answered "not signed in"
+(`error=login_required`), a replay gives a new load the same answer: a
+small page that sends the frame to the recorded redirect address, served
+from the recording, with only `state` replaced by the request's own. Only
+a frame's navigation, only to an address the recording holds; nothing
+live. It is the one place a replay makes up part of a response, and each
+one is logged (`replay_signin_answer` in steps.jsonl).
+
+**How we know.** `tests/test_replay_signin.py` (the fixture page draws
+only when the answer carries its own state; without a recorded answer
+nothing is made up). On the real forum page the replay drew 130 lines,
+live 123. A page can still draw incompletely when its recording lacks
+what the app loads after the check (the home page: 27 lines of about 126,
+its recording missing a script, images and data requests): compare a
+replay with the live page after freezing.

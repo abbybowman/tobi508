@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import parse_qs, urlencode, urljoin, urlsplit, urlunsplit
 
 from playwright.async_api import Browser, BrowserContext
 
@@ -792,9 +792,112 @@ async def replay_context(
         await ctx.route(lambda url: url in failed, fail)
     await _serve_media(ctx, har_path)  # after route_from_har: runs first
     await _serve_chunks(ctx, har_path)
+    await _serve_signin_answers(ctx, har_path, log)
     andi_aborted = None
     if with_andi:
         andi_aborted = await install_andi_routes(ctx, settings.third_party_dir)
     guard = NavigationGuard(settings, live=False, log=log)
     await guard.install(ctx)  # last registered runs first
     return Replay(ctx, guard, andi_aborted)
+
+
+# ── Silent sign-in checks (round 3, Abby 2026-11-16) ────────────────────────
+# Some apps draw nothing until a hidden frame asks their sign-in server
+# whether the visitor is signed in (keycloak-js check-sso: `prompt=none`).
+# The question carries a state value made on each load, so a replay asks an
+# address the recording never saw, the frame is aborted and the page stays
+# blank. When the recording holds that check answered "not signed in"
+# (`error=login_required`), the replay gives the same answer to the new
+# load: the recorded redirect address, served from the recording, with only
+# `state` replaced by the new request's own (the protocol echoes it). This
+# is the one place a replay makes up part of a response; each one is logged
+# (`replay_signin_answer`). Nothing is fetched live, no other address is
+# used, and a main-frame request is never answered.
+
+_SIGNIN_JS = "<!doctype html><meta charset=utf-8><script>location.replace({})</script>"
+
+
+def _location(entry: dict) -> str:
+    for h in entry["response"].get("headers", []):
+        if h.get("name", "").lower() == "location":
+            return urljoin(entry["request"]["url"], h.get("value", ""))
+    return ""
+
+
+def signin_answers(har_path: Path) -> dict[str, str]:
+    """Silent sign-in checks the recording holds answered "not signed in":
+    the check's address without its query -> the recorded redirect address.
+    Only GET document requests with `prompt=none`, answered by a redirect
+    whose address carries `error=login_required` and a `state`."""
+    with zipfile.ZipFile(har_path) as z:
+        name = next(n for n in z.namelist() if n.endswith(".har"))
+        entries = json.loads(z.read(name))["log"]["entries"]
+    out: dict[str, str] = {}
+    for e in entries:
+        req, status = e["request"], e["response"].get("status", 0)
+        u = urlsplit(req["url"])
+        if req.get("method") != "GET" or not 300 <= status < 400:
+            continue
+        if parse_qs(u.query).get("prompt") != ["none"]:
+            continue
+        loc = _location(e)
+        answer = parse_qs(urlsplit(loc).fragment or urlsplit(loc).query)
+        if answer.get("error") == ["login_required"] and "state" in answer:
+            out[urlunsplit((u.scheme, u.netloc, u.path, "", ""))] = loc
+    return out
+
+
+def signin_location(recorded: str, request_url: str) -> str | None:
+    """The recorded "not signed in" redirect with its `state` replaced by
+    the request's own; None when the request is not a silent check with
+    one state. Nothing else of either address is changed or added."""
+    q = parse_qs(urlsplit(request_url).query)
+    if q.get("prompt") != ["none"] or len(q.get("state", [])) != 1:
+        return None
+    r = urlsplit(recorded)
+    part = "fragment" if r.fragment else "query"
+    pairs = [
+        (k, q["state"][0] if k == "state" else v)
+        for k, vs in parse_qs(getattr(r, part), keep_blank_values=True).items()
+        for v in vs
+    ]
+    return urlunsplit(r._replace(**{part: urlencode(pairs)}))
+
+
+async def _serve_signin_answers(ctx, har_path: Path, log: LogFn) -> None:
+    answers = signin_answers(har_path)
+    if not answers:
+        return
+    with zipfile.ZipFile(har_path) as z:
+        name = next(n for n in z.namelist() if n.endswith(".har"))
+        recorded = {
+            e["request"]["url"].split("#")[0]
+            for e in json.loads(z.read(name))["log"]["entries"]
+        }
+
+    def key(url: str) -> str:
+        u = urlsplit(url)
+        return urlunsplit((u.scheme, u.netloc, u.path, "", ""))
+
+    async def answer(route) -> None:
+        req = route.request
+        rec = answers.get(key(req.url))
+        new = signin_location(rec, req.url) if rec else None
+        # A frame's navigation only, to an address the recording holds.
+        if (
+            new is None
+            or not req.is_navigation_request()
+            or req.frame.parent_frame is None
+            or new.split("#")[0] not in recorded
+        ):
+            await route.fallback()
+            return
+        log("replay_signin_answer", url=safe_url(req.url), to=safe_url(new))
+        body = _SIGNIN_JS.format(json.dumps(new).replace("</", "<\\/"))
+        await route.fulfill(status=200, content_type="text/html", body=body)
+
+    # The recording answers an address it holds exactly; this only the rest.
+    await ctx.route(
+        lambda url: key(url) in answers and url.split("#")[0] not in recorded,
+        answer,
+    )

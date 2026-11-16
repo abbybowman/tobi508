@@ -37,7 +37,7 @@ here.
 | --- | --- |
 | [environment.md](environment.md) | The Linux container image; parallel tests and per-worker files; tests that depend on chance; editing formatted code; working beside a running suite; probing recordings |
 | [hosted-sign-in.md](hosted-sign-in.md) | The audit logger had no handler (caplog hid it); behind TLS the Origin check refuses consent unless the proxy is trusted; what Keycloak's tokens carry; a CI page with DEV_MODE off |
-| [egress-proxy.md](egress-proxy.md) | Every browser connection goes through the egress proxy; what a refused connection looks like; HAR replay |
+| [egress-proxy.md](egress-proxy.md) | Every browser connection goes through the egress proxy; what a refused connection looks like; HAR replay; a page blank in its replay (a silent sign-in check) |
 | [full-chromium-iframes.md](full-chromium-iframes.md) | Pages with cross-site iframes replay in full Chromium, never the headless shell |
 | [browser-specific-results.md](browser-specific-results.md) | Results that differ by browser version; load a vendored case in Chrome before trusting it |
 | [windows-chrome-results.md](windows-chrome-results.md) | Windows headless and headed Chrome 156 against Linux (2026-11-02): what differed and why |

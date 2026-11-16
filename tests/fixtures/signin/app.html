@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A hub that checks sign-in first</title></head><body>
+<div id="app"></div>
+<script>
+// As keycloak-js's check-sso does: a hidden frame asks the sign-in server,
+// with a state made on this load, whether the visitor is signed in. The
+// page is drawn only when the answer carries that same state.
+const state = Math.random().toString(36).slice(2);
+const back = location.origin + '/signin/silent.html';
+window.addEventListener('message', (e) => {
+  if (e.origin !== location.origin) return;
+  const got = new URLSearchParams(String(e.data).split('#')[1] || '');
+  if (got.get('state') !== state) return;  // not our answer: draw nothing
+  document.getElementById('app').innerHTML =
+    '<h1>Knowledge hub</h1><p>Welcome, guest.</p><a href="/signin/forum.html">Forum</a>';
+});
+const f = document.createElement('iframe');
+f.hidden = true;
+f.title = 'Sign-in check';
+f.src = '/signin/auth?client_id=hub&prompt=none&response_mode=fragment&state=' + state +
+  '&redirect_uri=' + encodeURIComponent(back);
+document.body.appendChild(f);
+</script>
+</body></html>

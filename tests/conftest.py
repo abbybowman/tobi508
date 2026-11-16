@@ -265,6 +265,19 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-Length", "0")
             self.end_headers()
             return
+        if self.path.startswith("/signin/auth?"):
+            # A silent sign-in check, as Keycloak answers one for a visitor
+            # who is not signed in: back to the page's own redirect address
+            # with the request's state (step 10, round 3's Data Governance
+            # pages). Only a path on this server is used as the target.
+            q = parse_qs(urlsplit(self.path).query)
+            target = urlsplit(q.get("redirect_uri", ["/"])[0]).path or "/"
+            state = q.get("state", [""])[0]
+            self.send_response(302)
+            self.send_header("Location", f"{target}#error=login_required&state={state}")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         if self.path == "/data.json":
             return self._send(
                 200, json.dumps({"n": nonce}).encode(), "application/json"
