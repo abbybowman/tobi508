@@ -8,138 +8,123 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 9a, 6b to 6h and 12a (PRs #39 to #93;
-`docs/archive/2026-11-14-roadmap-to-the-demo.md`).
+**Done:** steps 1 to 10, 6b to 6h, 10a's freeze fix and 12a (PRs #39
+to #101; `docs/archive/2026-11-14-roadmap-to-the-demo.md`). Round 3
+is scored. Step 9b's thread is running.
 
-**Order to start them:** 10a now; round 3 (step 10) and 9b when 10a
-is merged; 12b when the VAST environment exists; round 4 (step 10b)
-if I key one.
+**Order to start them:** 10c now; 10d when 9b is done; 12b when the
+VAST environment exists; round 4 (step 10b) if I key one.
 
 ## Starting a thread
 
-**Step 10a, Sonnet: two things before round 3's freeze** (now)
+**Step 10c, Opus: what round 3 showed** (now; plans and prompts, no code)
 
-> Read `docs/reviews/2026-11-11-code-review-fixing.md` below the line
-> and follow its "Working rules". Your work is step 10a of
-> `docs/ROADMAP.md` "Order of work", two items, each its own pull
-> request. Round 3's pages are not frozen yet and you will not be
-> told what they are.
+> Read `CLAUDE.md`, `docs/ROADMAP.md` and `docs/KNOWN-LIMITS.md`,
+> then round 3: `evals/judging/round3/score.md` and `score.json`, the
+> ten pages' `results/pNN/report.json` and `pre-scrt.json`, and my
+> keys in `evals/judging/round3/keys/` (the round is locked and
+> scored, so the keys are open). Round 3 was a blind round on
+> science.data.nasa.gov, a site the tool was not developed on. Your
+> work is step 10c of the roadmap: say what it showed and plan what to
+> do about it. Change no code, spec or test. Never fetch the pages
+> live: everything you need is in the reports; ask me for the frozen
+> archive only if a report cannot answer a question.
 >
-> (1) The freeze's scroll. `capture._scroll_steps` (PR #52) scrolls
-> with `scrollBy` and stops when the position has not moved yet, so
-> on a page that sets `scroll-behavior: smooth` (Bootstrap 5; round
-> 2's svs pages) it stops after one step and lazy content below is
-> never recorded (`docs/KNOWN-LIMITS.md`). Make a page that shows it
-> (smooth scrolling, an image that loads only when scrolled to, three
-> windows down), see the test fail, then fix the scroll so it reaches
-> the end of the page whatever the page's scroll behaviour, and say
-> how you know it reached the end. Also make the freeze list, in its
-> output, every frame it saw whose address was not recorded or
-> differs between two loads (reCAPTCHA, a lazy video embed): a
-> report, not a fix. No spec changes and no outcome changes.
+> The score: 149 of 220 cells decided, 118 agree. Wrong: 2 PASS where
+> my key fails (5.F and 5.G on p03, the contact page), 1 DOES NOT
+> APPLY where it fails (4.F on p08), 18 FAIL where it passes (9.B on
+> six pages, each against the first other page, row N3; 4.A on p07 and
+> p08, about 45 controls each on row M16; 4.E on p07, p08 and p10;
+> 4.F, 5.A, 5.B, 5.C, 5.D), 10 DOES NOT APPLY where it passes (5.B on
+> five pages; 5.D on three). 71 cells were left for a person (19.A on
+> 8 pages, 4.A and 4.D on 7).
 >
-> (2) 19.A on CILab (round 2). Step 6h's rerun gave PASS, as my key
-> does; step 6g's rerun gave FAIL, with `main`'s code too
-> (`evals/README.md`, the 2026-11-15 reruns). Both of my key's ways
-> are on the live site today: the home page links to
-> `/cilab/index.html`, which is the same document as `/cilab/`, and
-> `/cilab/information.html`'s top row links back. So the difference
-> is in what each rerun gave the test (its other pages) or in how the
-> pages loaded. Rerun 19.A on CILab's frozen copy both ways (ask me
-> for the archive; never fetch the tested page live) and show me,
-> for each: the other pages given, every page 19.A loaded itself and
-> whether it loaded, each alias checked and its result, each way
-> found and its kind, and the rows. Tell me the cause before changing
-> anything. If the outcome depends on which other pages are given,
-> say what round 3's runner should give every page.
+> First, a table of every wrong cell and every cell left for a
+> person: the page, the test, my key and its comment, the tool's
+> outcome, rows and sentence, and the cause in one line, from the
+> report's evidence (not a guess: where the report does not show the
+> cause, say so). Then group the cells by cause. For each cause:
+> - what the tool did and what I did as the tester, in plain words;
+> - whether it is the rule (the spec decides wrongly), the reading
+>   (the page was not read as it is), the judge (an answer was wrong
+>   or unsure where the evidence settles it), the recording, or my
+>   key (say so plainly if you think a key cell is wrong, and why);
+> - whether rounds 1 and 2 show the same cause (their latest reruns:
+>   `evals/judging/gate-2026-11-14/` and, for round 1,
+>   `gate-2026-11-16/` on branch `claude/elegant-lamport-7noqy0`), or
+>   whether it is new with this site (its pages p07 to p10 are
+>   applications built with a script framework; say what about them
+>   the tool was not built for);
+> - the smallest fix, the spec row it changes, the fixture it needs
+>   and the nearest page that must keep its outcome, its size, and
+>   whether it turns NEEDS REVIEW into an outcome or removes a FAIL my
+>   key confirms (those need my approval first).
+> Also look at 19.A on round 2's CILab page: it passed in step 6h's
+> rerun and FAILs in step 6g's (`evals/README.md`, the 2026-11-15
+> reruns) though both of my key's ways are on the live site. Say what
+> the two reruns gave it and which is right.
+>
+> Rank the causes: a PASS or DOES NOT APPLY where my key fails first
+> (a false PASS is the worst error), then by cells. Say which, if any,
+> is small and safe enough to do before the Nov 17 cut; assume the
+> rest is after the demo.
+>
+> Write it up as `docs/plans/2026-11-16-after-round3.md` (the table,
+> the causes, the ranked plan), add one entry per piece of work to
+> "Next: after the demo" in `docs/ROADMAP.md` with its step number,
+> and add a prompt for each under "Starting a thread" in
+> `docs/reviews/2026-11-11-code-review-fixing.md`, written so a fresh
+> thread can start from it alone. Add each wrong outcome that
+> reproduces to the README's "Known wrong outcomes" table and each
+> new limit to `docs/KNOWN-LIMITS.md`; do not touch the README's
+> status table (step 10d has it). Round 3's pages are development
+> pages from now on: say in the plan that a later run on them is a
+> rerun, never in place of this score. Show me the ranked list of
+> causes before you write the prompts.
 
-**Step 9b, Sonnet: the third check** (at round 3's commit)
+**Step 10d, Sonnet: the README's status table, made by a script** (when step 9b is done)
 
-> Read `CLAUDE.md`, then `docs/plans/2026-11-08-apijudge-build.md`
-> ("The gate"), the docstring of `evals/apijudge_gate.py`, and step 6's
-> write-up in `evals/README.md` ("Gate 2026-11-13") with its folder
-> `evals/judging/gate-2026-11-13/` (`compare.py` is the comparison to
-> reuse). Your work is step 9 of `docs/ROADMAP.md` "Order of work"
-> (this is 9b): step 9a again
-> (`evals/judging/gate-2026-11-14/`, its `compare.py` and the gate
-> script's `--round` option), on `main`'s head (record the commit),
-> on round 2's 10 frozen pages and round 1's, one repeat, with the
-> server judge answering every question type, scored with the same
-> scorer. Keep each page's report and pre-SCRT file out of git (about
-> 70 MB a run): check `.gitignore` covers the folder you write to
-> before your first commit, and commit only the scores, the
-> comparison and the write-up.
+> Read `README.md` ("TT tests in scope"), `tests/test_readme.py`,
+> `evals/judging/round3/score.json`, and step 9b's results for rounds
+> 1 and 2 (`evals/judging/gate-2026-11-16/`). The README's status
+> table has grown into a list of results per round. It is to be a
+> very high-level view: one colour and at most a few words per test.
 >
-> Before anything else, check and tell me if either fails: the frozen
-> recordings of both rounds are restored (`evals/judging/round2/frozen`,
-> `evals/judging/round1/frozen`; they are not in git, so stop and ask
-> me for the archives, never fetch the pages live), and the browser in
-> this container trusts the egress proxy (step 6's six 19.A false
-> FAILs were the container's). Use the CLI route (`claude -p`)
-> unless I tell you Luna is configured. Run `--dry` first and tell me
-> the request and token estimate before the real run. Write into a new
-> folder under `evals/judging/`; never rewrite a locked round or step
-> 6's folder.
+> Write `evals/status_table.py`. It reads the latest scored result of
+> each site (round 3's blind score; step 9b's reruns of rounds 1 and
+> 2) and, per test, counts over all three: agree, PASS or DOES NOT
+> APPLY where the key fails, FAIL or DOES NOT APPLY where the key
+> passes, and left for a person. One rule gives the colour and the
+> words, first match:
+> - red, "passed a page a tester failed": any PASS or DOES NOT APPLY
+>   where the key fails;
+> - red, "wrong more often than right": more wrong than agreeing
+>   among decided cells;
+> - yellow, "often fails pages a tester passes": wrong on more than 1
+>   in 5 decided cells;
+> - yellow, "mostly left for a person": fewer than half the cells
+>   decided;
+> - green, "agrees with a tester": otherwise.
+> Show me the table this gives and the counts behind it before you
+> change the README: I may move a threshold.
 >
-> Report, beside step 6's figures and round 2's (and, for 9b, beside
-> 9a's): false PASS, missed
-> fails (wrong DOES NOT APPLY), false FAILs, NEEDS REVIEW and decided
-> cells, per test and in all; every cell that moved from NEEDS REVIEW
-> to an outcome since step 6, with whether my key agrees; guard CN's
-> cells on round 1's pages apart from the rest, and whether it held
-> back any failure there; and for each question type, on both rounds'
-> cells together, whether it meets the thresholds under "The gate".
-> From each report's `test_times`, list every test that ran out of its
-> budget and the longest time each test took, so the provisional
-> budgets can be set.
-> Run the gate's test-page half for the types that are near. Do not
-> change `JUDGE_TYPES`: I choose the types from your report.
->
-> Put the result in `evals/README.md`. Then rewrite each README status
-> line from this run: one short line per test, and remove a caveat
-> only where this run or a grid cell shows it is gone. Keep the "Known
-> wrong outcomes" table as it is. Do not fill any [FILL] in
-> `docs/hackathon/`. Last, give me the path of each page's
-> `pre-scrt.json` beside the path of its key.
+> Then: the README table has the columns ID, test name, spec (version
+> and link, as now) and status (the colour and those words, nothing
+> else), with one line above it saying what the colours mean, which
+> results it is from and that the counts are in `evals/STATUS.md`.
+> The script writes the rows between two marker comments in the
+> README, and writes `evals/STATUS.md`: per test and site, the counts,
+> and which run each is from (round 3 blind; rounds 1 and 2 reruns on
+> development pages). `tests/test_readme.py` fails when the README's
+> rows are not what the script writes. Everything the old rows said
+> about what a test reads or cannot do is already in
+> `docs/KNOWN-LIMITS.md` or the specs: check each sentence you remove
+> is there, and add the ones that are not. Never write "certified",
+> "compliant" or "conformant" about a page; "agrees with a tester"
+> is about our evaluation pages only, and the line above the table
+> says so.
 
-**Step 10, Sonnet: round 3, a formal blind judging round** (the freeze and the run in one thread, when step 10a is merged; I give the pages then)
-
-> Read `docs/how-to/run-a-judging-round.md` and
-> `evals/agent/README.md`. This is round 3, a formal judging round
-> like rounds 1 and 2, on the pages I give you in this thread, with
-> the server judge answering, exactly as the how-to describes:
-> freeze, run, lock, then score against my keys. Never open my keys
-> before the lock. Work on your own branch and do not open a pull
-> request or merge anything of the round until the run is locked:
-> no other thread has seen the page list, and none may before then.
-> Keep each page's report and pre-SCRT file out of git.
->
-> The freeze (the fuller freeze of PR #52, with step 10a's scroll
-> fix). Check each recording against its manifest, and its
-> `capture_scroll_steps` log lines: the scroll must have reached the
-> end of every page. List the frames the freeze reports as not
-> recorded. Then, for each page, compare one replay with
-> the live page before you run any test: the requests that fail in
-> the replay, and anything a visitor sees in the first 30 s that the
-> replay does not show (a popup, a banner, a player). On round 1's
-> pages a feedback popup that opens at 5 s never opened in the
-> replay. Tell me what you find before the run; do not change the
-> freeze yourself.
->
-> The run. On `main`'s head; tell
-> me the commit before you start, since 9b runs at the same one. Run
-> in tested_frozen mode, each page with the round's other pages on
-> its host and the site's home page as other pages (19.A loads
-> further pages itself). Before the run, check that the site's own
-> search loads in your container: run one search by hand through the
-> tool's browser and tell me if its results page fails to load any
-> script (19.A cannot FAIL where it does not). Report per test and in all; list apart
-> the cells inside a web component or a frame; and list every NEEDS
-> REVIEW and wrong cell by cause, as findings for the other threads.
-> Change no code yourself, and change nothing between the freeze and
-> the lock: the score is the blind result for that commit.
-
-**Step 10b, Sonnet: round 4, a second blind round, if I key one** (two threads: the freeze the day I key the pages, the run on Nov 17)
+**Step 10b, Sonnet: round 4, a second blind round, if I key one** (the freeze the day I key the pages, then the run)
 
 > The freeze. Read `docs/how-to/run-a-judging-round.md`. Freeze the
 > pages I give you in this thread with the fuller freeze, check each
