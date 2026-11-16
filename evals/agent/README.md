@@ -97,7 +97,14 @@ Round folder `evals/judging/<round>/`, for example `evals/judging/round1/`.
    would use), into `frozen/` (an index, the recordings and
    `freeze.json`). It scrolls each page down one window at a time so
    images that load when they come into view are recorded, and stores the
-   video or audio file each player chose in full (up to 500 MB a page). Check that every page says `frozen`, and
+   video or audio file each player chose in full (up to 500 MB a page).
+   For each page it prints whether the scroll reached the end (with the
+   position, window and height it measured; `scroll` and
+   `scroll_reached_end` in `freeze.json`) and every frame the recording
+   does not hold, seen live or asked for by one replay of the copy
+   (`frames_not_recorded`: "not recorded", or "differs between two
+   loads", as reCAPTCHA does). Check that every page says `frozen` and
+   reached the end, and
    compare each frozen page's footer timestamp with your own testing. It
    prints each page's status, title and first heading and how many of its
    CSS, font and script requests failed, and stops with an error on a page

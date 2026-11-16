@@ -13,7 +13,13 @@ load lazy content), into <round>/frozen/ (index.json, the recordings and
 freeze.json). Since roadmap step 6c (round 3 on; a locked round's frozen
 set is never recorded again) the freeze also:
   * scrolls each page down one window at a time, so images that load when
-    they come into view are recorded (`record_scroll_steps`);
+    they come into view are recorded (`record_scroll_steps`; since step
+    10a whatever the page's scroll behaviour, and each page's
+    `capture_scroll_steps` line, with `reached_end`, is kept in
+    freeze.json);
+  * lists every frame the recording does not hold, seen live or asked for
+    by one replay of the copy (`frames_not_recorded`, step 10a: a report,
+    not a fix);
   * stores the media file each player chose, in full, before any
     alternative source (`media_chosen_first`, caps MEDIA_CAP_MB and
     MEDIA_CAP_S per page);
@@ -155,6 +161,14 @@ async def freeze(rd: Path, settings: Settings, accept: bool = False) -> dict:
                 entry: dict = {}
                 print(f"freezing {url}", flush=True)
                 decision = check_url(url, s.allowed_domains, s.dev_mode)
+                scroll: list[dict] = []
+
+                def keep(step: str, status: str = "ok", **detail) -> None:
+                    # The scroll's log lines go in freeze.json: a reader checks
+                    # that every page's scroll reached its end (step 10a).
+                    if step.startswith("capture_scroll"):
+                        scroll.append({"step": step, "status": status, **detail})
+
                 try:
                     if not decision.allowed:
                         raise ValueError(f"not allowed: {decision.reason}")
@@ -164,17 +178,22 @@ async def freeze(rd: Path, settings: Settings, accept: bool = False) -> dict:
                             s,
                             url,
                             Path(tmp) / "page.har.zip",
-                            lambda *a, **k: None,
+                            keep,
                             proxy,
                         )
                     entry.update(
                         status="frozen",
                         final_url=cap.final_url,
                         cross_site_frames=len(cap.cross_site_frames),
+                        scroll=scroll,
+                        scroll_reached_end=any(x.get("reached_end") for x in scroll),
                     )
                     rec = load(folder).get(url)
                     if rec is not None:
                         entry.update(check_recording(folder / rec.har, cap.final_url))
+                        entry["frames_not_recorded"] = await frames_not_recorded(
+                            browser, s, folder / rec.har, rec.final_url, cap.frame_urls
+                        )
                     if entry.get("suspect") and not accept:
                         entry["status"] = "suspect"
                 except Exception as exc:  # recorded: the arms are refused it
@@ -189,6 +208,81 @@ async def freeze(rd: Path, settings: Settings, accept: bool = False) -> dict:
     log["recordings"] = len(load(folder))
     (folder / "freeze.json").write_text(json.dumps(log, indent=1) + "\n")
     return log
+
+
+def _recorded_urls(har_zip: Path) -> set[str]:
+    """Request URLs the recording answers (fragment dropped), with a
+    response: a frame the recording asked for and got nothing is not there."""
+    import zipfile
+
+    with zipfile.ZipFile(har_zip) as z:
+        name = next(n for n in z.namelist() if n.endswith(".har"))
+        entries = json.loads(z.read(name))["log"]["entries"]
+    return {
+        e["request"]["url"].split("#")[0]
+        for e in entries
+        if e["response"].get("status", 0) > 0
+    }
+
+
+REPLAY_FRAME_WAIT_MS = 5_000
+
+
+async def frames_not_recorded(
+    browser, s: Settings, har_zip: Path, final_url: str, live: list[str]
+) -> list[dict]:
+    """Every frame the freeze saw whose address the recording does not hold
+    (step 10a: a report, not a fix). `live`: the frame addresses at the end
+    of the recording; then one replay of the frozen copy is loaded and its
+    frame addresses read: one there that the recording lacks is an address
+    that differs between two loads (reCAPTCHA, a lazy video embed). Each
+    is given without its query; `why` says which."""
+    from tobi508.capture import replay_context
+    from tobi508.redact import safe_url
+
+    have = _recorded_urls(har_zip)
+    out: list[dict] = []
+
+    def add(u: str, why: str) -> None:
+        item = {"frame": safe_url(u), "why": why}
+        if item not in out:
+            out.append(item)
+
+    for u in live:
+        if u.split("#")[0] not in have:
+            add(u, "not recorded")
+    replay = None
+    try:
+        replay = await replay_context(browser, s, har_zip, lambda *a, **k: None)
+        page = await replay.context.new_page()
+        asked: list[str] = []
+
+        def note(req) -> None:
+            # A frame whose address the recording lacks is aborted, and the
+            # frame then shows an error page's address: read the request.
+            if (
+                req.is_navigation_request()
+                and req.frame != page.main_frame
+                and req.url.startswith(("http:", "https:"))
+            ):
+                asked.append(req.url)
+
+        page.on("request", note)
+        await replay.guard.goto(page, final_url)
+        await page.wait_for_timeout(REPLAY_FRAME_WAIT_MS)
+        again = asked + [
+            f.url for f in page.frames[1:] if f.url.startswith(("http:", "https:"))
+        ]
+    except Exception as exc:  # the report says it could not look
+        add(final_url, f"replay not read: {type(exc).__name__}")
+        again = []
+    finally:
+        if replay is not None:
+            await replay.context.close()
+    for u in again:
+        if u.split("#")[0] not in have:
+            add(u, "differs between two loads")
+    return out
 
 
 async def _read_frozen(browser, s: Settings, url: str):
@@ -294,6 +388,22 @@ def main(argv: list[str]) -> None:
             f"title {e.get('title')!r}; heading {e.get('heading')!r}"
             + (f"; SUSPECT: {e['suspect']}" if e.get("suspect") else "")
         )
+        if e.get("status") == "frozen":
+            last = next(
+                (
+                    x
+                    for x in e.get("scroll") or []
+                    if x["step"] == "capture_scroll_steps"
+                ),
+                {},
+            )
+            print(
+                f"  scroll: reached the end {e.get('scroll_reached_end')}; "
+                f"{last.get('steps')} steps, at {last.get('top')} + window "
+                f"{last.get('window')} of height {last.get('height')}"
+            )
+            for f in e.get("frames_not_recorded") or []:
+                print(f"  frame not recorded: {f['frame']} ({f['why']})")
     for u, e in log.get("searches", {}).items():
         for item in e.get("searches", []):
             print(
