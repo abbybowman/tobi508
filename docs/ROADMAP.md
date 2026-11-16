@@ -57,7 +57,7 @@ is merged. At most three threads at once. Each thread branches from
 | Step | What | Model | When |
 | --- | --- | --- | --- |
 | 1-9a, 6e-6h, 12a | Done: PRs #39 to #93 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
-| 10a | Before round 3's freeze: the freeze scrolls a smooth-scrolling page to its end; why 19.A on CILab differs between two reruns | Sonnet | now |
+| 10a | Before round 3's freeze: the freeze scrolls a smooth-scrolling page to its end (item 1 built); why 19.A on CILab differs between two reruns (item 2) | Sonnet | item 2 later |
 | 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 10a is merged |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
@@ -85,11 +85,16 @@ is merged. At most three threads at once. Each thread branches from
     Round 2, 9 of 10 agree; round 1, 4 of 9, the other 5 NEEDS REVIEW
     on closed menus whose links do not lead to the page.
 - **10a. Before round 3's freeze** (found by steps 6e and 6g):
-  - **The freeze stops scrolling after one step on a page that sets
-    smooth scrolling** (Bootstrap 5 does), so lazy content below is
-    not recorded. Fix it, with a page that shows it. Frames whose
-    address changes on every load (reCAPTCHA, a lazy video embed) are
-    not recorded either: report them at freeze time.
+  - **Built: the freeze's scroll and its frame report.** The window
+    by window scroll moves with `behavior: "instant"`, so a page's
+    `scroll-behavior: smooth` (Bootstrap 5) no longer stops it after
+    one step, and it ends when the window's bottom reaches the
+    document's height, measured again after each wait. Its log line
+    (`capture_scroll_steps`: `reached_end`, `top`, `window`, `height`)
+    goes in `freeze.json` with `scroll_reached_end` per page, and the
+    freeze lists every frame the recording lacks, seen live or asked
+    for by one replay (`frames_not_recorded`). Fixtures `lazy/l08`,
+    `lazy/l09`.
   - **19.A on CILab** passed in step 6h's rerun and FAILs in step
     6g's, on `main`'s code as well, with the pages loaded live. Both
     of the key's ways are still on the live site (checked 2026-11-15:

@@ -73,14 +73,11 @@ headed Chrome) are in
   script at the end of the body, so it runs first and throws "jQuery is
   not defined". The run's report does not say so: guard GU sees no
   unrecorded code, and page script errors are not recorded as a note.
-- **The freeze's window-by-window scroll stops after one step on a page
-  with smooth scrolling** (`capture._scroll_steps`, PR #52: it scrolls
-  with `scrollBy` and stops when the position has not moved yet;
-  Bootstrap 5 sets `scroll-behavior: smooth`, as round 2's svs pages
-  have). Lazy content further down is then not recorded. Round 1 and 2
-  were frozen before #52; a round frozen with it should check its
-  `capture_scroll_steps` log lines. Found 2026-11-15, not fixed (the image
-  read's own scroll jumps instead).
+- **A frame whose address changes on every load is not in a frozen
+  copy** (reCAPTCHA, a lazy video embed): its replay asks for an address
+  the recording never saw, and it is aborted. The freeze lists such frames
+  in `freeze.json` (`frames_not_recorded`, step 10a); it does not record
+  them.
 - **3.A's screencast net varies between runs on some pages:** on round
   2's 5340 the same code gave DOES NOT APPLY in two runs and NEEDS REVIEW
   (row A3: flashing the capture did not show) in another; `main` gave A3

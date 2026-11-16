@@ -47,6 +47,9 @@ class Capture:
     # itself (code split by the page), saved or not (the chunk store).
     chunks: list[dict[str, Any]] = field(default_factory=list)
     frozen: bool = False  # replayed from a frozen pages folder (frozen.py)
+    # Every http(s) frame address seen at the end of a live recording, query
+    # kept, so the freeze can say which the recording lacks (step 10a).
+    frame_urls: list[str] = field(default_factory=list)
 
 
 async def record(
@@ -94,7 +97,10 @@ async def record(
             await _idle(page, log, 3_000)
             grew = await page.evaluate("document.documentElement.scrollHeight") > height
             log("capture_scroll", pass_=i + 1, page_grew=grew)
-        frames = cross_site_frames(page.url, [f.url for f in page.frames[1:]])
+        frame_urls = [
+            f.url for f in page.frames[1:] if f.url.startswith(("http:", "https:"))
+        ]
+        frames = cross_site_frames(page.url, frame_urls)
         if frames:
             log("capture_cross_site_frames", count=len(frames))
         media = await _fetch_media(ctx, page, settings, log) if with_media else []
@@ -111,6 +117,7 @@ async def record(
         frames,
         media=[{k: v for k, v in m.items() if k != "body"} for m in media],
         chunks=[{k: v for k, v in c.items() if k != "body"} for c in chunks],
+        frame_urls=frame_urls,
     )
 
 
@@ -118,27 +125,61 @@ SCROLL_STEP_MAX = 60  # windows scrolled one at a time (a very long page stops)
 SCROLL_STEP_WAIT_MS = 250
 
 
+_SCROLL_STEP_JS = """() => {
+  const el = document.scrollingElement || document.documentElement;
+  const before = el.scrollTop;
+  // "instant" overrides a page's scroll-behavior: smooth (Bootstrap 5),
+  // under which scrollBy has not moved yet when it returns (step 10a).
+  window.scrollTo({top: before + Math.max(200, innerHeight * 0.9),
+                   behavior: "instant"});
+  return {before, after: el.scrollTop};
+}"""
+
+_SCROLL_END_JS = """() => {
+  const el = document.scrollingElement || document.documentElement;
+  return {top: el.scrollTop, height: el.scrollHeight, window: innerHeight};
+}"""
+
+
 async def _scroll_steps(page, log: LogFn) -> None:
     """Scroll down one window at a time, waiting briefly at each, then back
-    to the top; what came into view has had the chance to load."""
-    steps = 0
+    to the top; what came into view has had the chance to load.
+
+    It has reached the end when, after the wait, the window's bottom is at
+    the document's full height, measured again then, so content the step
+    loaded counts. A step that does not move the page before the end (the
+    page itself blocks scrolling) stops the walk and is logged as not at the
+    end. The log line gives the last position, the height and the window:
+    `reached_end` is the fact a freeze's reader checks."""
+    steps, at = 0, {"top": 0, "height": 0, "window": 0}
+    reached = stuck = False
     try:
         while steps < SCROLL_STEP_MAX:
-            at_end = await page.evaluate(
-                """() => { const before = scrollY;
-                  scrollBy(0, Math.max(200, innerHeight * 0.9));
-                  return scrollY === before; }"""
-            )
+            moved = await page.evaluate(_SCROLL_STEP_JS)
             steps += 1
             await page.wait_for_timeout(SCROLL_STEP_WAIT_MS)
-            if at_end:
+            at = await page.evaluate(_SCROLL_END_JS)
+            if at["top"] + at["window"] >= at["height"] - 2:
+                reached = True
+                break
+            if moved["after"] <= moved["before"] and at["top"] <= moved["before"]:
+                stuck = True
                 break
         await _idle(page, log, 5_000)
-        await page.evaluate("window.scrollTo(0, 0)")
+        await page.evaluate('window.scrollTo({top: 0, behavior: "instant"})')
     except Exception as exc:
         log("capture_scroll_steps", "error", error=type(exc).__name__)
         return
-    log("capture_scroll_steps", steps=steps, cut=steps >= SCROLL_STEP_MAX)
+    log(
+        "capture_scroll_steps",
+        steps=steps,
+        cut=steps >= SCROLL_STEP_MAX and not reached,
+        reached_end=reached,
+        stuck=stuck,
+        top=at["top"],
+        height=at["height"],
+        window=at["window"],
+    )
 
 
 # ── Media store (2.A-2.D plan items 13-14, Q9) ─────────────────────────────
