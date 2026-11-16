@@ -1,0 +1,1460 @@
+{
+ "round": "round3",
+ "scored_at": "2026-11-16T15:35:43.808962+00:00",
+ "lock_commit": "eb45b078296b59f042e74d2c68b516a572e6e307",
+ "rates": {
+  "pages scored": "10 of 10",
+  "pages not scored": "none",
+  "scored": "149",
+  "agreement (of decided)": "118/149",
+  "validated catches (the tester confirmed the tool)": "0",
+  "needs review (of scored)": "0/149",
+  "false PASS": "2",
+  "missed fail (Does Not Apply)": "1",
+  "false FAIL": "18",
+  "Fail vs Does Not Apply": "0",
+  "other mismatch": "10",
+  "no answer given": "0",
+  "not performed by the tool": "71",
+  "no reference answer": "390"
+ },
+ "counts": {
+  "agree": 118,
+  "validated_catch": 0,
+  "false_pass": 2,
+  "missed_fail": 1,
+  "false_fail": 18,
+  "fail_vs_dna": 0,
+  "other_mismatch": 10,
+  "needs_review": 0,
+  "not_performed": 71,
+  "not_scored": 390,
+  "no_answer": 0
+ },
+ "judge_decided": {
+  "4.F": {
+   "cells": 8,
+   "agree": 4,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 2,
+   "pass_vs_dna": 0,
+   "unsure": 2,
+   "other": 0
+  },
+  "5.A": {
+   "cells": 6,
+   "agree": 2,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 4,
+   "other": 0
+  },
+  "5.H": {
+   "cells": 4,
+   "agree": 4,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0
+  },
+  "9.C": {
+   "cells": 6,
+   "agree": 6,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0
+  },
+  "4.A": {
+   "cells": 9,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 2,
+   "pass_vs_dna": 0,
+   "unsure": 6,
+   "other": 0
+  },
+  "5.B": {
+   "cells": 5,
+   "agree": 3,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 1,
+   "pass_vs_dna": 0,
+   "unsure": 1,
+   "other": 0
+  },
+  "5.D": {
+   "cells": 2,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 1,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0
+  },
+  "5.G": {
+   "cells": 2,
+   "agree": 1,
+   "wrong_pass": 1,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0
+  },
+  "5.C": {
+   "cells": 5,
+   "agree": 2,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 1,
+   "pass_vs_dna": 0,
+   "unsure": 2,
+   "other": 0
+  },
+  "5.F": {
+   "cells": 2,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 1,
+   "other": 0
+  },
+  "4.E": {
+   "cells": 2,
+   "agree": 0,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 2,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0
+  },
+  "4.B": {
+   "cells": 1,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0
+  }
+ },
+ "rule_decided": {
+  "2.A": {
+   "agree": 10
+  },
+  "2.B": {
+   "agree": 10
+  },
+  "3.A": {
+   "agree": 10
+  },
+  "4.B": {
+   "agree": 7
+  },
+  "4.C": {
+   "agree": 7
+  },
+  "4.E": {
+   "agree": 6,
+   "false_fail": 1
+  },
+  "5.B": {
+   "other_mismatch": 5
+  },
+  "5.C": {
+   "agree": 5
+  },
+  "5.F": {
+   "agree": 5,
+   "false_pass": 1
+  },
+  "5.G": {
+   "agree": 5
+  },
+  "9.A": {
+   "agree": 6
+  },
+  "9.B": {
+   "false_fail": 6
+  },
+  "2.C": {
+   "agree": 6
+  },
+  "2.D": {
+   "agree": 6
+  },
+  "5.H": {
+   "agree": 3
+  },
+  "19.A": {
+   "agree": 2
+  },
+  "4.D": {
+   "agree": 3
+  },
+  "4.F": {
+   "other_mismatch": 1,
+   "missed_fail": 1
+  },
+  "5.A": {
+   "false_fail": 2,
+   "agree": 1,
+   "other_mismatch": 1
+  },
+  "5.D": {
+   "other_mismatch": 3
+  }
+ },
+ "key_cells_without_a_reason": {
+  "p01": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.C",
+    "result": "Pass"
+   }
+  ],
+  "p02": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.C",
+    "result": "Pass"
+   }
+  ],
+  "p03": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.C",
+    "result": "Pass"
+   }
+  ],
+  "p04": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.C",
+    "result": "Pass"
+   }
+  ],
+  "p05": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.C",
+    "result": "Pass"
+   }
+  ],
+  "p06": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "9.C",
+    "result": "Pass"
+   }
+  ],
+  "p07": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   }
+  ],
+  "p08": [
+   {
+    "test_id": "4.A",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.D",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   }
+  ],
+  "p09": [
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   }
+  ],
+  "p10": [
+   {
+    "test_id": "4.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.E",
+    "result": "Pass"
+   },
+   {
+    "test_id": "4.F",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.B",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.C",
+    "result": "Pass"
+   },
+   {
+    "test_id": "5.D",
+    "result": "Pass"
+   }
+  ]
+ },
+ "pages": [
+  {
+   "page": "p01",
+   "url": "https://science.data.nasa.gov/",
+   "scanned_at": "2026-11-16T14:46:41.835620+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 13,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 1,
+    "fail_vs_dna": 0,
+    "other_mismatch": 1,
+    "needs_review": 0,
+    "not_performed": 7,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "9.B",
+     "test_name": "3.2.3-consistent-navigation",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.6.0 (sha256:20235db62d0c)",
+     "rows": [
+      "A4",
+      "p1:N3",
+      "p2:N3",
+      "p3:N3",
+      "p4:N3",
+      "p5:N3",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.B",
+     "test_name": "2.4.6-label-descriptive",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.9.0 (sha256:a106216129fc)",
+     "rows": [
+      "A2",
+      "G1"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p02",
+   "url": "https://science.data.nasa.gov/blog",
+   "scanned_at": "2026-11-16T14:50:36.795593+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 14,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 2,
+    "fail_vs_dna": 0,
+    "other_mismatch": 0,
+    "needs_review": 0,
+    "not_performed": 6,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "5.D",
+     "test_name": "3.2.2-on-input",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.10.0 (sha256:7ee7112ee572)",
+     "rows": [
+      "A3",
+      "f2:M11",
+      "f3:M11",
+      "f4:M13",
+      "f5:M11",
+      "f6:M11",
+      "f7:M11",
+      "f8:M11",
+      "f9:M9",
+      "f10:M11",
+      "f11:M11",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "9.B",
+     "test_name": "3.2.3-consistent-navigation",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.6.0 (sha256:20235db62d0c)",
+     "rows": [
+      "A4",
+      "p1:N3",
+      "p2:N6",
+      "p3:N6",
+      "p4:N6",
+      "p5:N6",
+      "G2"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p03",
+   "url": "https://science.data.nasa.gov/contact",
+   "scanned_at": "2026-11-16T14:53:55.466289+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 15,
+    "validated_catch": 0,
+    "false_pass": 2,
+    "missed_fail": 0,
+    "false_fail": 1,
+    "fail_vs_dna": 0,
+    "other_mismatch": 0,
+    "needs_review": 0,
+    "not_performed": 4,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "5.F",
+     "test_name": "3.3.1-error-identification",
+     "verdict": "false_pass",
+     "key": "Fail",
+     "tool": "Pass",
+     "tool_outcome": "PASS",
+     "spec_version": "1.12.0 (sha256:00516e8973a2)",
+     "rows": [
+      "A5",
+      "a3-f2:M2",
+      "a3-f3:M2",
+      "a3-f4:M2",
+      "a3-f5:M2",
+      "a4-f3:M2",
+      "G4"
+     ]
+    },
+    {
+     "test_id": "5.G",
+     "test_name": "3.3.3-error-suggestion",
+     "verdict": "false_pass",
+     "key": "Fail",
+     "tool": "Pass",
+     "tool_outcome": "PASS",
+     "spec_version": "1.10.0 (sha256:626a3a8551df)",
+     "rows": [
+      "A5",
+      "a3-f2:N4",
+      "a3-f3:N4",
+      "a3-f4:N4",
+      "a3-f5:N4",
+      "a4-f3:N4",
+      "G5"
+     ]
+    },
+    {
+     "test_id": "9.B",
+     "test_name": "3.2.3-consistent-navigation",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.6.0 (sha256:20235db62d0c)",
+     "rows": [
+      "A4",
+      "p1:N3",
+      "p2:N6",
+      "p3:N6",
+      "p4:N6",
+      "p5:N6",
+      "G2"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p04",
+   "url": "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel",
+   "scanned_at": "2026-11-16T14:58:20.270747+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 13,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 2,
+    "fail_vs_dna": 0,
+    "other_mismatch": 0,
+    "needs_review": 0,
+    "not_performed": 7,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "4.F",
+     "test_name": "2.4.3-focus-order-meaning",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.8.0 (sha256:2ca2e29d5f57)",
+     "rows": [
+      "A4",
+      "o1:M6[S3,S3,S3,S3,S3]",
+      "r6:M9[S6]",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "9.B",
+     "test_name": "3.2.3-consistent-navigation",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.6.0 (sha256:20235db62d0c)",
+     "rows": [
+      "A4",
+      "p1:N3",
+      "p2:N6",
+      "p3:N6",
+      "p4:N6",
+      "p5:N6",
+      "G2"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p05",
+   "url": "https://science.data.nasa.gov/fits/verifier",
+   "scanned_at": "2026-11-16T15:00:36.500660+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 14,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 2,
+    "fail_vs_dna": 0,
+    "other_mismatch": 0,
+    "needs_review": 0,
+    "not_performed": 6,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "5.B",
+     "test_name": "2.4.6-label-descriptive",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.9.0 (sha256:a106216129fc)",
+     "rows": [
+      "A4",
+      "f1.1:M3",
+      "f1.2:M2",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "9.B",
+     "test_name": "3.2.3-consistent-navigation",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.6.0 (sha256:20235db62d0c)",
+     "rows": [
+      "A4",
+      "p1:N3",
+      "p2:N6",
+      "p3:N6",
+      "p4:N6",
+      "p5:N6",
+      "G2"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p06",
+   "url": "https://science.data.nasa.gov/fits/sample-files",
+   "scanned_at": "2026-11-16T15:06:50.599041+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 16,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 1,
+    "fail_vs_dna": 0,
+    "other_mismatch": 1,
+    "needs_review": 0,
+    "not_performed": 4,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "9.B",
+     "test_name": "3.2.3-consistent-navigation",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.6.0 (sha256:20235db62d0c)",
+     "rows": [
+      "A4",
+      "p1:N3",
+      "p2:N6",
+      "p3:N6",
+      "p4:N6",
+      "p5:N6",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.B",
+     "test_name": "2.4.6-label-descriptive",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.9.0 (sha256:a106216129fc)",
+     "rows": [
+      "A2",
+      "G1"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p07",
+   "url": "https://science.data.nasa.gov/data-governance-community/home",
+   "scanned_at": "2026-11-16T15:08:41.630867+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 5,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 4,
+    "fail_vs_dna": 0,
+    "other_mismatch": 3,
+    "needs_review": 0,
+    "not_performed": 10,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "4.A",
+     "test_name": "2.1.1-keyboard-access",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.12.0 (sha256:9ab6fb4211d0)",
+     "rows": [
+      "A3",
+      "u1:M16",
+      "u2:M16",
+      "u3:M16",
+      "u4:M16",
+      "u5:M16",
+      "u6:M16",
+      "u7:M16",
+      "u8:M16",
+      "u9:M16",
+      "u10:M16",
+      "u11:M16",
+      "u12:M16",
+      "u13:M16",
+      "u14:M16",
+      "u15:M16",
+      "u16:M16",
+      "u17:M16",
+      "u18:M16",
+      "u19:M16",
+      "u20:M16",
+      "u21:M16",
+      "u22:M16",
+      "u23:M16",
+      "u24:M16",
+      "u25:M16",
+      "u26:M16",
+      "u27:M16",
+      "u28:M16",
+      "u29:M16",
+      "u30:M16",
+      "u31:M16",
+      "u32:M16",
+      "u33:M16",
+      "u34:M16",
+      "u35:M16",
+      "u36:M16",
+      "u37:M16",
+      "u38:M16",
+      "u39:M16",
+      "u40:M16",
+      "u41:M16",
+      "u42:M16",
+      "u43:M16",
+      "u44:M16",
+      "u45:M16",
+      "u46:M16",
+      "u47:M16",
+      "u48:M16",
+      "k49:M6",
+      "k50:M6",
+      "k51:M5",
+      "k52:M6",
+      "k53:M5",
+      "k54:M6",
+      "k55:M6",
+      "k56:M6",
+      "k57:M6",
+      "k58:M6",
+      "k59:M6",
+      "k60:M6",
+      "k61:M6",
+      "k62:M6",
+      "k63:M6",
+      "k64:M6",
+      "k65:M6",
+      "k66:M6",
+      "k67:M1",
+      "k68:C?",
+      "k69:C?",
+      "k70:M6",
+      "k71:C?",
+      "k72:C?",
+      "k73:C?",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "4.E",
+     "test_name": "3.2.1-on-focus",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.8.0 (sha256:6e6b99b7ecf4)",
+     "rows": [
+      "A3",
+      "e1:M4",
+      "e2:M11",
+      "e3:M4",
+      "e4:M11",
+      "e5:M12",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.A",
+     "test_name": "3.3.2-label-provided",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.13.0 (sha256:5298397b121c)",
+     "rows": [
+      "A4",
+      "c1:M3",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.C",
+     "test_name": "1.3.1-programmatic-label",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.12.0 (sha256:0b7ec9ce3026)",
+     "rows": [
+      "A3",
+      "c1:M5",
+      "c2:M5",
+      "c3:M5",
+      "c4:M5",
+      "c5:M5",
+      "c6:M5",
+      "c7:M5",
+      "c8:M5",
+      "c9:M5",
+      "c10:M5",
+      "c11:M5",
+      "c12:M5",
+      "c13:M5",
+      "c14:M5",
+      "c15:M5",
+      "c16:M5",
+      "c17:M5",
+      "c18:M5",
+      "c19:M5",
+      "c20:M5",
+      "c21:M5",
+      "c22:M5",
+      "c23:M5",
+      "c24:M5",
+      "c25:M5",
+      "c26:M5",
+      "c27:M5",
+      "c28:M5",
+      "c29:M5",
+      "c30:M5",
+      "c31:M5",
+      "c32:M5",
+      "c33:M5",
+      "c34:M5",
+      "c35:M5",
+      "c36:M5",
+      "c37:M5",
+      "c38:M5",
+      "c39:M7",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "4.F",
+     "test_name": "2.4.3-focus-order-meaning",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.8.0 (sha256:2ca2e29d5f57)",
+     "rows": [
+      "A3",
+      "G1"
+     ]
+    },
+    {
+     "test_id": "5.B",
+     "test_name": "2.4.6-label-descriptive",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.9.0 (sha256:a106216129fc)",
+     "rows": [
+      "A2",
+      "G1"
+     ]
+    },
+    {
+     "test_id": "5.D",
+     "test_name": "3.2.2-on-input",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.10.0 (sha256:7ee7112ee572)",
+     "rows": [
+      "A1",
+      "G1"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p08",
+   "url": "https://science.data.nasa.gov/data-governance-community/forum",
+   "scanned_at": "2026-11-16T15:10:29.811831+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 6,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 1,
+    "false_fail": 3,
+    "fail_vs_dna": 0,
+    "other_mismatch": 2,
+    "needs_review": 0,
+    "not_performed": 10,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "4.F",
+     "test_name": "2.4.3-focus-order-meaning",
+     "verdict": "missed_fail",
+     "key": "Fail",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.8.0 (sha256:2ca2e29d5f57)",
+     "rows": [
+      "A3",
+      "G1"
+     ]
+    },
+    {
+     "test_id": "4.A",
+     "test_name": "2.1.1-keyboard-access",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.12.0 (sha256:9ab6fb4211d0)",
+     "rows": [
+      "A3",
+      "u1:M16",
+      "u2:M16",
+      "u3:M16",
+      "u4:M16",
+      "u5:M16",
+      "u6:M16",
+      "u7:M16",
+      "u8:M16",
+      "u9:M16",
+      "u10:M16",
+      "u11:M16",
+      "u12:M16",
+      "u13:M16",
+      "u14:M16",
+      "u15:M16",
+      "u16:M16",
+      "u17:M16",
+      "u18:M16",
+      "u19:M16",
+      "u20:M16",
+      "u21:M16",
+      "u22:M16",
+      "u23:M16",
+      "u24:M16",
+      "u25:M16",
+      "u26:M16",
+      "u27:M16",
+      "u28:M16",
+      "u29:M16",
+      "u30:M16",
+      "u31:M16",
+      "u32:M16",
+      "u33:M16",
+      "u34:M16",
+      "u35:M16",
+      "u36:M16",
+      "u37:M16",
+      "u38:M16",
+      "u39:M16",
+      "u40:M16",
+      "u41:M16",
+      "u42:M16",
+      "k43:M6",
+      "k44:M6",
+      "k45:M3",
+      "k46:M6",
+      "k47:M3",
+      "k48:M6",
+      "k49:M6",
+      "k50:M1",
+      "k51:M6",
+      "k52:M6",
+      "k53:M6",
+      "k54:M6",
+      "k55:M6",
+      "k56:M6",
+      "k57:M6",
+      "k58:M6",
+      "k59:M6",
+      "k60:M6",
+      "k61:M6",
+      "k62:M6",
+      "k63:C?",
+      "k64:C?",
+      "k65:C?",
+      "k66:C?",
+      "k67:C?",
+      "k68:C?",
+      "k69:C?",
+      "k70:C?",
+      "k71:C?",
+      "k72:C?",
+      "k73:C?",
+      "k74:C?",
+      "k75:C?",
+      "k76:C?",
+      "k77:C?",
+      "k78:C?",
+      "k79:M6",
+      "k80:C?",
+      "k81:C?",
+      "k82:C?",
+      "k83:C?",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "4.E",
+     "test_name": "3.2.1-on-focus",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.8.0 (sha256:6e6b99b7ecf4)",
+     "rows": [
+      "A3",
+      "e1:M4",
+      "e2:M11",
+      "e3:M3",
+      "e4:M11",
+      "e5:M12",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.A",
+     "test_name": "3.3.2-label-provided",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.13.0 (sha256:5298397b121c)",
+     "rows": [
+      "A4",
+      "c1:M3",
+      "c3:M3",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.B",
+     "test_name": "2.4.6-label-descriptive",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.9.0 (sha256:a106216129fc)",
+     "rows": [
+      "A2",
+      "G1"
+     ]
+    },
+    {
+     "test_id": "5.D",
+     "test_name": "3.2.2-on-input",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.10.0 (sha256:7ee7112ee572)",
+     "rows": [
+      "A1",
+      "G1"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p09",
+   "url": "https://science.data.nasa.gov/science-discovery-engine/search/sde/home",
+   "scanned_at": "2026-11-16T15:11:27.227749+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 12,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 1,
+    "fail_vs_dna": 0,
+    "other_mismatch": 0,
+    "needs_review": 0,
+    "not_performed": 9,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "4.F",
+     "test_name": "2.4.3-focus-order-meaning",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.8.0 (sha256:2ca2e29d5f57)",
+     "rows": [
+      "A4",
+      "o1:M4",
+      "r1:M6[S6]",
+      "G2"
+     ]
+    }
+   ]
+  },
+  {
+   "page": "p10",
+   "url": "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory",
+   "scanned_at": "2026-11-16T15:12:10.313395+00:00",
+   "skipped": null,
+   "counts": {
+    "agree": 10,
+    "validated_catch": 0,
+    "false_pass": 0,
+    "missed_fail": 0,
+    "false_fail": 1,
+    "fail_vs_dna": 0,
+    "other_mismatch": 3,
+    "needs_review": 0,
+    "not_performed": 8,
+    "not_scored": 39,
+    "no_answer": 0
+   },
+   "same_page": true,
+   "disagreements": [
+    {
+     "test_id": "4.E",
+     "test_name": "3.2.1-on-focus",
+     "verdict": "false_fail",
+     "key": "Pass",
+     "tool": "Fail",
+     "tool_outcome": "FAIL",
+     "spec_version": "1.8.0 (sha256:6e6b99b7ecf4)",
+     "rows": [
+      "A3",
+      "e1:M4",
+      "e2:M4",
+      "G2"
+     ]
+    },
+    {
+     "test_id": "5.A",
+     "test_name": "3.3.2-label-provided",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.13.0 (sha256:5298397b121c)",
+     "rows": [
+      "A2",
+      "G1"
+     ]
+    },
+    {
+     "test_id": "5.B",
+     "test_name": "2.4.6-label-descriptive",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.9.0 (sha256:a106216129fc)",
+     "rows": [
+      "A2",
+      "G1"
+     ]
+    },
+    {
+     "test_id": "5.D",
+     "test_name": "3.2.2-on-input",
+     "verdict": "other_mismatch",
+     "key": "Pass",
+     "tool": "Does Not Apply",
+     "tool_outcome": "DNA",
+     "spec_version": "1.10.0 (sha256:7ee7112ee572)",
+     "rows": [
+      "A1",
+      "G1"
+     ]
+    }
+   ]
+  }
+ ]
+}

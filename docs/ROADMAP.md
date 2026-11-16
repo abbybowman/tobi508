@@ -56,10 +56,10 @@ is merged. At most three threads at once. Each thread branches from
 
 | Step | What | Model | When |
 | --- | --- | --- | --- |
-| 1-9a, 6e-6h, 12a | Done: PRs #39 to #93 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)) | | |
-| 10a | Before round 3's freeze: the freeze scrolls a smooth-scrolling page to its end (item 1 built); why 19.A on CILab differs between two reruns (item 2) | Sonnet | item 2 later |
-| 10 | Round 3: a blind judging round on a site not used before | Sonnet | the freeze and the run together, when 10a is merged |
-| 9b | Rerun of rounds 1 and 2's pages | Sonnet | at round 3's commit |
+| 1-10, 12a | Done: PRs #39 to #101 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Round 3 is scored (`evals/judging/round3/score.md`) | | |
+| 9b | Rerun of rounds 1 and 2's pages | Sonnet | round 1 done (its branch is not merged); round 2 running |
+| 10c | What round 3 showed: every wrong and undecided cell by cause, and a plan | Opus | now; it writes plans and prompts, no code |
+| 10d | The README's status table: one colour and a few words per test, made by a script from the latest results | Sonnet | when 9b is done |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
 | 11 | If the days allow: the second look's trial | Sonnet | |
@@ -84,36 +84,34 @@ is merged. At most three threads at once. Each thread branches from
   - **6h, 19.A:** aliases and further pages loaded by the test itself.
     Round 2, 9 of 10 agree; round 1, 4 of 9, the other 5 NEEDS REVIEW
     on closed menus whose links do not lead to the page.
-- **10a. Before round 3's freeze** (found by steps 6e and 6g):
-  - **Built: the freeze's scroll and its frame report.** The window
-    by window scroll moves with `behavior: "instant"`, so a page's
-    `scroll-behavior: smooth` (Bootstrap 5) no longer stops it after
-    one step, and it ends when the window's bottom reaches the
-    document's height, measured again after each wait. Its log line
-    (`capture_scroll_steps`: `reached_end`, `top`, `window`, `height`)
-    goes in `freeze.json` with `scroll_reached_end` per page, and the
-    freeze lists every frame the recording lacks, seen live or asked
-    for by one replay (`frames_not_recorded`). Fixtures `lazy/l08`,
-    `lazy/l09`.
-  - **19.A on CILab** passed in step 6h's rerun and FAILs in step
-    6g's, on `main`'s code as well, with the pages loaded live. Both
-    of the key's ways are still on the live site (checked 2026-11-15:
-    the home page links to `/cilab/index.html`, which is the same
-    document as `/cilab/`, and the subpage's top row links back), so
-    the cause is in what the two reruns gave the test or in how it
-    loaded them. Find it before round 3, where every page is given
-    other pages the same way.
-- **10 and 10b.** A blind round is run by
-  [the how-to](how-to/run-a-judging-round.md): keys locked before the
-  tool runs, the run locked before the keys are opened. Until a
-  round's run is locked, its page list, keys and freeze stay off
-  `main`, on an unmerged branch, and no other thread is told the
-  pages. Round 3's pages are not frozen yet and no thread has been
-  told what they are (Abby, 2026-11-15): the freeze and the run are
-  one thread, started when step 10a is merged. The thread compares
-  each replay with the live page before any test runs. The scorer
-  fixes are merged (PR #73). 9b runs at the same commit, so the two
-  can be read together.
+- **Round 3 is scored** (2026-11-16; science.data.nasa.gov, 10 pages,
+  a site the tool was not developed on; locked at `eb45b07`). Of 220
+  cells, 149 decided and 71 left for a person; 118 of the 149 agree
+  with the key. Wrong: 2 PASS where the key fails (5.F and 5.G on the
+  contact page), 1 DOES NOT APPLY where the key fails (4.F), 18 FAIL
+  where the key passes (6 of them 9.B, one on every page compared
+  with the first other page), 10 DOES NOT APPLY where the key passes
+  (5.B, 5.D). Its pages are development pages from here on: a later
+  run on them is a rerun, never in place of this score.
+- **10c. What round 3 showed.** Every wrong cell and every cell left
+  for a person, read in its report and grouped by cause, the unsafe
+  ones first. For each cause: what the tool did, what the tester did,
+  whether rounds 1 and 2 show it too, the smallest fix and its size.
+  The result is a plan in `docs/plans/`, entries in "Next" below and a
+  prompt for each piece of work. It changes no code.
+- **10d. The README's status table** (Abby, 2026-11-16: it had grown
+  into a list of results per round). One row per test: a colour and at
+  most a few words, by one stated rule from the latest results on all
+  three sites, written by a script; a test fails when the README's
+  rows are not the script's. The figures per site go in a generated
+  page under `evals/`, and what a test cannot do stays in
+  `docs/KNOWN-LIMITS.md`.
+- **19.A on CILab,** left from step 10a: it passed in step 6h's rerun
+  and FAILs in step 6g's with the pages loaded live, though both of
+  the key's ways are still on the live site. Folded into 10c.
+- **10b.** Round 4, if Abby keys one, is run as round 3 was
+  ([the how-to](how-to/run-a-judging-round.md)): the page list, keys
+  and freeze stay off `main` until the run is locked.
 - **12. Hosted on VAST** ([plan](plans/2026-11-06-hosted-auth.md)).
   - **12a is built** (PRs #70 to #72, #74):
     [the deployment guide](how-to/deploy-on-vast.md), a smoke test

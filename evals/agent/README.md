@@ -135,8 +135,10 @@ Round folder `evals/judging/<round>/`, for example `evals/judging/round1/`.
    the user or this repo, and stops if it does.
 4. **Archive, then lock**, then commit. Page recordings, screenshots and
    tool evidence never go in git (`.gitignore`); zip the round folder with
-   a SHA-256 manifest and keep it outside git, as round 1 did
-   (`evals/judging/round1/results/ARCHIVE.md`). Then:
+   a SHA-256 manifest and keep it outside git, and describe it in
+   `ARCHIVE.md` at the round's root (round 1 and 2 have it in `results/`; from
+   round 3 on it is at the root, so the lock stays valid; the folder layout:
+   `docs/how-to/run-a-judging-round.md`). Then:
 
    ```bash
    uv run python evals/judging.py lock evals/judging/<round>

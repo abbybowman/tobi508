@@ -65,7 +65,9 @@ its developers see the pages or the answers first.
    same folder, opening nothing else; then `apply`. Repeat until no page is
    open.
 4. **Lock.** `uv run python evals/judging.py lock evals/judging/<round>`,
-   then commit `results/` (reports, pre-SCRT files, HARs, `lock.json`).
+   then commit `results/` (reports, pre-SCRT files, `lock.json`; the HARs
+   stay out of git). The round's folder is the same in every round: see
+   "The round's folder" in the how-to.
 5. **Reveal.** The tester adds their SCRT files to `<round>/keys/` (any
    names: they are matched to pages by hash) and commits.
 6. **Score.** `uv run python evals/judging.py score evals/judging/<round>`
