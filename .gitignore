@@ -61,7 +61,3 @@ evals/judging/gate-*/r*/results/
 evals/judging/gate-*/round*/r*/results/
 evals/judging/gate-*/dry/
 evals/judging/gate-*/round*/dry/
-
-# Round 3 (step 10): each page's report and pre-SCRT, and the packets, stay out of git; the zip of results/ keeps them
-evals/judging/round3/results/p*/
-evals/judging/round3/packets/
