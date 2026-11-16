@@ -1,0 +1,110 @@
+{
+ "per_test": {
+  "4.A": {
+   "requests": 7,
+   "questions": 58,
+   "chars": 182893,
+   "pictures": 25,
+   "picture_bytes": 17157950
+  },
+  "4.B": {
+   "requests": 5,
+   "questions": 5,
+   "chars": 86397,
+   "pictures": 3,
+   "picture_bytes": 3478350
+  },
+  "4.D": {
+   "requests": 7,
+   "questions": 19,
+   "chars": 147316,
+   "pictures": 49,
+   "picture_bytes": 2505247
+  },
+  "4.F": {
+   "requests": 9,
+   "questions": 9,
+   "chars": 112310,
+   "pictures": 17,
+   "picture_bytes": 1062760
+  },
+  "5.B": {
+   "requests": 10,
+   "questions": 13,
+   "chars": 61872,
+   "pictures": 63,
+   "picture_bytes": 1810726
+  },
+  "5.C": {
+   "requests": 5,
+   "questions": 33,
+   "chars": 92172,
+   "pictures": 29,
+   "picture_bytes": 1364417
+  },
+  "5.H": {
+   "requests": 7,
+   "questions": 7,
+   "chars": 33138,
+   "pictures": 0,
+   "picture_bytes": 0
+  },
+  "9.C": {
+   "requests": 8,
+   "questions": 52,
+   "chars": 114303,
+   "pictures": 0,
+   "picture_bytes": 0
+  },
+  "9.A": {
+   "requests": 1,
+   "questions": 1,
+   "chars": 1518,
+   "pictures": 0,
+   "picture_bytes": 0
+  },
+  "2.B": {
+   "requests": 2,
+   "questions": 3,
+   "chars": 5865,
+   "pictures": 6,
+   "picture_bytes": 413751
+  },
+  "5.D": {
+   "requests": 1,
+   "questions": 12,
+   "chars": 37469,
+   "pictures": 0,
+   "picture_bytes": 0
+  },
+  "5.A": {
+   "requests": 3,
+   "questions": 12,
+   "chars": 34703,
+   "pictures": 6,
+   "picture_bytes": 241715
+  },
+  "5.F": {
+   "requests": 2,
+   "questions": 25,
+   "chars": 46194,
+   "pictures": 0,
+   "picture_bytes": 0
+  },
+  "5.G": {
+   "requests": 2,
+   "questions": 25,
+   "chars": 46246,
+   "pictures": 0,
+   "picture_bytes": 0
+  }
+ },
+ "total": {
+  "requests": 50,
+  "questions": 274,
+  "chars": 1002409,
+  "pictures": 209,
+  "picture_bytes": 28034925
+ },
+ "rough_input_tokens": 250602
+}
