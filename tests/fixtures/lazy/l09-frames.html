@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Two frames</title></head><body>
+<h1>Two frames</h1>
+<iframe title="The same every load" src="/lazy/l09-frame.html"></iframe>
+<iframe title="A new address every load" id="varies"></iframe>
+<script>
+// As reCAPTCHA and some video embeds do: the address carries a value made
+// on each load, so a replay asks for one the recording never saw.
+document.getElementById('varies').src =
+  '/lazy/l09-frame-varies.html?k=' + Math.random().toString(36).slice(2);
+</script>
+</body></html>

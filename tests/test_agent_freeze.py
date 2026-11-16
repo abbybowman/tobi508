@@ -274,3 +274,81 @@ def test_the_freeze_flags_a_404_page_and_a_page_without_its_assets(tmp_path):
     assert bare["suspect"] == "3 of 3 CSS, font and script requests failed"
     ok = check_recording(har("ok", 200, 200), "https://x.gov/p")
     assert "suspect" not in ok and ok["assets"] == 3
+
+
+def _har_urls(har) -> set[str]:
+    import zipfile
+
+    with zipfile.ZipFile(har) as z:
+        name = next(n for n in z.namelist() if n.endswith(".har"))
+        entries = json.loads(z.read(name))["log"]["entries"]
+    return {e["request"]["url"] for e in entries}
+
+
+async def test_the_scroll_reaches_the_end_of_a_smooth_scrolling_page(
+    settings, tmp_path
+):
+    """Step 10a: under `scroll-behavior: smooth` (Bootstrap 5) scrollBy has
+    not moved yet when it returns, and the old walk stopped after one step,
+    so an image three windows down was never recorded. The walk now reaches
+    the end, and its log line says so with the position it measured."""
+    from playwright.async_api import async_playwright
+
+    from tobi508.browser import launch_browser
+    from tobi508.capture import record
+
+    srv = LocalServer()
+    url = f"{srv.base}/lazy/l08-smooth-scroll.html"
+    lines: list[tuple[str, dict]] = []
+    try:
+        async with EgressProxy(settings) as proxy, async_playwright() as pw:
+            browser = await launch_browser(pw, settings, proxy)
+            s = settings.model_copy(update={"record_scroll_steps": True})
+            har = tmp_path / "smooth.har.zip"
+            await record(
+                browser, s, url, har, lambda st, *a, **k: lines.append((st, k)), proxy
+            )
+            await browser.close()
+    finally:
+        srv.stop()
+    assert any(u.endswith("/lazy/l08-deep.svg") for u in _har_urls(har))
+    [steps] = [d for st, d in lines if st == "capture_scroll_steps"]
+    assert steps["reached_end"] is True and steps["stuck"] is False, steps
+    assert steps["steps"] > 3, steps  # one window at a time, not one jump
+    assert steps["top"] + steps["window"] >= steps["height"] - 2, steps
+
+
+async def test_the_freeze_logs_its_scroll_and_lists_frames_not_recorded(
+    settings, tmp_path
+):
+    """Step 10a: freeze.json keeps each page's scroll lines and whether the
+    scroll reached the end, and lists every frame whose address the
+    recording does not hold: here the one that takes a new address on every
+    load, not the one that keeps its address."""
+    srv = LocalServer()
+    urls = [
+        f"{srv.base}/lazy/l09-frames.html",
+        f"{srv.base}/lazy/l08-smooth-scroll.html",
+    ]
+    rd = tmp_path / "round"
+    rd.mkdir()
+    (rd / "pages.txt").write_text("".join(f"{u} {'ab' * 32}\n" for u in urls))
+    try:
+        log = await freeze(rd, settings)
+    finally:
+        srv.stop()
+    frames, smooth = log["pages"][urls[0]], log["pages"][urls[1]]
+    assert frames["status"] == smooth["status"] == "frozen", log
+    assert smooth["scroll_reached_end"] is True
+    assert any(x["step"] == "capture_scroll_steps" for x in smooth["scroll"])
+    assert frames["frames_not_recorded"] == [
+        {
+            "frame": f"{srv.base}/lazy/l09-frame-varies.html",
+            "why": "differs between two loads",
+        }
+    ], frames
+    assert smooth["frames_not_recorded"] == []
+    saved = json.loads((rd / "frozen" / "freeze.json").read_text())
+    assert (
+        saved["pages"][urls[0]]["frames_not_recorded"] == frames["frames_not_recorded"]
+    )

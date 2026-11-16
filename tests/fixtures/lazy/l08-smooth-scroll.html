@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>A long smooth-scrolling page</title>
+<!-- As Bootstrap 5 sets it: scrollBy has not moved yet when it returns. -->
+<style>html{scroll-behavior:smooth}.gap{height:3000px}</style></head><body>
+<h1>A long smooth-scrolling page</h1>
+<div class="gap"></div>
+<!-- Shown by script only when it stays in view, three windows down. -->
+<img id="seen" data-src="/lazy/l08-deep.svg" alt="A picture far down" width="40" height="40">
+<div class="gap"></div>
+<p>The end.</p>
+<script>
+// As many lazy loaders do: load only once the picture has stayed in view a
+// moment, so a smooth jump that passes it by does not load it.
+let timer = null;
+new IntersectionObserver((es, io) => es.forEach((e) => {
+  clearTimeout(timer);
+  if (e.isIntersecting) {
+    timer = setTimeout(() => { e.target.src = e.target.dataset.src; io.disconnect(); }, 150);
+  }
+})).observe(document.getElementById('seen'));
+</script>
+</body></html>
