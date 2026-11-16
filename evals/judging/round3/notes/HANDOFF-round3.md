@@ -19,8 +19,8 @@ freeze the run uses and the lock.
   247d4a4, frozen with #95's code). The recordings are git-ignored: restore
   them from `round3-frozen-2026-11-16.zip` (unzip into
   `evals/judging/round3/`, so it makes `frozen/`), and check every file
-  against `round3-frozen-MANIFEST.sha256` (`cd evals/judging/round3/frozen
-  && sha256sum -c MANIFEST`) and the zip against its `.sha256`.
+  against `round3-frozen-MANIFEST.sha256` (from inside `frozen/`:
+  `sha256sum -c ../notes/round3-frozen-MANIFEST.sha256`) and the zip against its `.sha256`.
 
 ## Decisions Abby made
 
@@ -76,7 +76,7 @@ freeze the run uses and the lock.
    that the other 8 recordings and 18 searches are byte-identical to the
    manifest afterwards; report anything that changed.
 3. Compare one replay of p07 and p08 with the live page again
-   (`compare_live.py <outdir>`, run from the repo root with
+   (`evals/judging/round3/notes/compare_live.py <outdir>`, run from the repo root with
    UPSTREAM_PROXY set). Tell Abby the result. If p07 still draws
    incompletely, ask her: leave it out (not scored, with the reason) or
    test it as is.
