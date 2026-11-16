@@ -265,6 +265,10 @@ by TT test ID. Package: `tobi508`.
   [PENDING] marker only when the work exists and is checked; never fill a
   [FILL] placeholder (final figures come from one scored run at the
   submission commit; see `docs/hackathon/README.md`).
+- Every judging round's folder has the same layout (the how-to, "The
+  round's folder"): no per-round `.gitignore` lines, no working papers in
+  it, `ARCHIVE.md` at its root, and nothing added to `results/` after the
+  lock.
 - Never rewrite `evals/judging/`: its runs, transcripts and `lock.json`
   hashes are records of what ran, and a locked round is scored with the
   code at its lock commit. (The locked rounds keep old names and paths:
