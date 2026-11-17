@@ -1,56 +1,26 @@
 # Section 508 TOBI — Tester-Oriented Browser Inspector
 
-TOBI (`tobi508` in code) is an MCP server that helps people test web pages
-with the DHS Trusted Tester 5.1.3 process for Section 508. The name follows
-the tradition of ANDI, SSA's Accessible Name & Description Inspector, which
-TOBI runs inside the browser. TOBI is independent of DHS and SSA.
+TOBI (`tobi508` in code) is an MCP server that helps people test web pages with the DHS Trusted Tester 5.1.3 process for Section 508. The name follows the tradition of ANDI, SSA's Accessible Name & Description Inspector, which TOBI runs inside the browser. TOBI is independent of DHS and SSA.
 
-> **Not a certified Trusted Tester result.** This tool produces agent-assisted
-> findings only. Its output is not a DHS Trusted Tester certified test result
-> and must not be reported, cited or relied on as one. A certified Trusted
-> Tester must perform any test that counts for Section 508 conformance.
+> **Not a certified Trusted Tester result.** This tool produces agent-assisted findings only. Its output is not a DHS Trusted Tester certified test result and must not be reported, cited or relied on as one. A certified Trusted Tester must perform any test that counts for Section 508 conformance.
 
-**Why it exists.** Automated accessibility scanners read a page's code.
-They miss failures you only find by using the page: a keyboard trap, focus
-you can't see, a field whose only label disappears when you type, no way
-to skip the header.
+**Why it exists.** Automated accessibility scanners read a page's code. They miss failures you only find by using the page: a keyboard trap, focus you can't see, a field whose only label disappears when you type, no way to skip the header.
 
-TOBI finds those failures for site owners and Trusted Testers. It
-runs the hands-on parts of the DHS Trusted Tester 5.1.3 process in a real
-Chrome browser, does the repetitive tabbing and comparing, and asks your AI
-agent the judgment questions. Clear failures surface early, and certified
-testers can spend their time on the cases that need a person.
+TOBI finds those failures for site owners and Trusted Testers. It runs the hands-on parts of the DHS Trusted Tester 5.1.3 process in a real Chrome browser, does the repetitive tabbing and comparing, and asks your AI agent the judgment questions. Clear failures surface early, and certified testers can spend their time on the cases that need a person.
 
-**What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT
-test, with plain-language explanations, evidence, and a pre-SCRT file: the
-same rows as DHS's SCRT report, plus where each result came from and
-which rows need a person. DHS's SCRT does not open it (by design: it is
-not a Trusted Tester's record). To read one, download
-[viewer.html](demo/prescrt-viewer/viewer.html) and open it in a browser;
-it works offline, and a second file can be loaded beside it
-([how to use it](demo/prescrt-viewer/README.md)).
-- **Outcomes** come only from the rules specs in [specs/rules/](specs/rules/),
-  one per TT test, checked against the TT 5.1.3 PDF.
-- **When the tool can't decide,** it says NEEDS REVIEW: a person should
-  look at that row, usually the largest group in a report. It never guesses
-  PASS. (3.A can say NOT TESTED, as the TT text requires, when it finds
-  flashing.)
+**What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT test, with plain-language explanations, evidence, and a pre-SCRT file: the same rows as DHS's SCRT report, plus where each result came from and which rows need a person. DHS's SCRT does not open it (by design: it is not a Trusted Tester's record). To read one, download [viewer.html](demo/prescrt-viewer/viewer.html) and open it in a browser; it works offline, and a second file can be loaded beside it ([how to use it](demo/prescrt-viewer/README.md)).
+- **Outcomes** come only from the rules specs in [specs/rules/](specs/rules/), one per TT test, checked against the TT 5.1.3 PDF.
+- **When the tool can't decide,** it says NEEDS REVIEW: a person should look at that row, usually the largest group in a report. It never guesses PASS. (3.A can say NOT TESTED, as the TT text requires, when it finds flashing.)
 
 ## How it works
 
 ![A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once, and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric: a sure answer goes back to the rule, an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into their own SCRT record. The results and a link to the report go back to the agent, which explains them.](docs/hackathon/diagrams/tobi-flow.png)
 
-The diagram is the planned flow
-([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
+The diagram is the planned flow ([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
 
-- **Built:** recording and replay, the rules specs and checks, the
-  pre-SCRT file, the server judge, and hosted sign-in with per-user runs
-  (running on a VAST dev environment; not yet a finished service).
-- **Off by default:** the server judge (`JUDGE_BACKEND=api`, one question
-  type at a time in `JUDGE_TYPES`). Until a type is switched on, its
-  open questions go to the calling agent, by the same rubric.
-- **Not built yet:** the page where a signed-in person answers, and the
-  export to a Trusted Tester's SCRT record.
+- **Built:** recording and replay, the rules specs and checks, the pre-SCRT file, the server judge, and hosted sign-in with per-user runs (running on a VAST dev environment; not yet a finished service).
+- **Off by default:** the server judge (`JUDGE_BACKEND=api`, one question type at a time in `JUDGE_TYPES`). Until a type is switched on, its open questions go to the calling agent, by the same rubric.
+- **Not built yet:** the page where a signed-in person answers, and the export to a Trusted Tester's SCRT record.
 
 ## TT tests in scope
 
@@ -93,17 +63,9 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). What eac
 
 ## Known wrong outcomes
 
-A code review on 2026-11-11 built small pages aimed at each test's blind
-spots and found wrong PASS and DOES NOT APPLY results. These are the ones
-still unfixed (checked against the code on 2026-11-17). Each was
-reproduced by a run unless marked "(read)". Until they are fixed, read a
-PASS or DOES NOT APPLY as "in what the tool looked at".
+A code review on 2026-11-11 built small pages aimed at each test's blind spots and found wrong PASS and DOES NOT APPLY results. These are the ones still unfixed (checked against the code on 2026-11-17). Each was reproduced by a run unless marked "(read)". Until they are fixed, read a PASS or DOES NOT APPLY as "in what the tool looked at".
 
-The pages are in [the code review](docs/reviews/2026-11-11-code-review.md);
-fixes are planned in [the plan after the review](docs/plans/2026-11-12-coverage-second-look-thin-agent.md)
-and, for the rows naming round 3 (the blind round on science.data.nasa.gov,
-2026-11-16), [the plan after round 3](docs/plans/2026-11-16-after-round3.md).
-A fix removes its row in the same commit.
+The pages are in [the code review](docs/reviews/2026-11-11-code-review.md); fixes are planned in [the plan after the review](docs/plans/2026-11-12-coverage-second-look-thin-agent.md) and, for the rows naming round 3 (the blind round on science.data.nasa.gov, 2026-11-16), [the plan after round 3](docs/plans/2026-11-16-after-round3.md). A fix removes its row in the same commit.
 
 | Test | Gives | On a page with |
 | --- | --- | --- |
@@ -129,33 +91,21 @@ A fix removes its row in the same commit.
 | `tobi_read_report` | Reads an SCRT or pre-SCRT file: what failed and what still needs a person. With `compare_to`, it lists every test whose result differs between two files (for example, before and after a fix). | `content`; `compare_to` |
 
 **Also:**
-- **Resources:** `run://{run_id}/...` (a run's files, kept 24 hours) and
-  `tt://5.1.3/...` (the TT text).
-- **Prompt:** `explain` (a test or a result in plain language; the same
-  material as `tobi_explain`, as a command for the user).
+- **Resources:** `run://{run_id}/...` (a run's files, kept 24 hours) and `tt://5.1.3/...` (the TT text).
+- **Prompt:** `explain` (a test or a result in plain language; the same material as `tobi_explain`, as a command for the user).
 
 ## How long it takes
 
-- **A run takes minutes, not seconds.** By default it takes as long as the
-  page needs, up to 30 minutes. Each still-running result says what the run
-  is doing.
-- **A call returns within 45 s.** If the run isn't done, the result says
-  `"status": "running"` with a `job_id`, and `tobi_run_status` waits for it.
-  You don't need to raise your client's timeout.
-- **Anything that doesn't finish in time is NEEDS REVIEW,** with the
-  reason, and the other tests still run.
-- **Very large pages** are refused, or tested without 5.D (which reads
-  every form field); the finding says how to run it.
+- **A run takes minutes, not seconds.** By default it takes as long as the page needs, up to 30 minutes. Each still-running result says what the run is doing.
+- **A call returns within 45 s.** If the run isn't done, the result says `"status": "running"` with a `job_id`, and `tobi_run_status` waits for it. You don't need to raise your client's timeout.
+- **Anything that doesn't finish in time is NEEDS REVIEW,** with the reason, and the other tests still run.
+- **Very large pages** are refused, or tested without 5.D (which reads every form field); the finding says how to run it.
 
-Time limits, per-test budgets, measured timings and running several pages
-at once: [how long a run takes](docs/how-to/how-long-a-run-takes.md).
+Time limits, per-test budgets, measured timings and running several pages at once: [how long a run takes](docs/how-to/how-long-a-run-takes.md).
 
 ## Use it
 
-**[Get started](docs/how-to/get-started.md)** covers Windows, macOS and
-Linux, from a clone or from the container image, and connecting Claude
-Code. No sign-in is needed to run it yourself. The short version, from a
-clone with [uv](https://docs.astral.sh/uv/) and Google Chrome:
+**[Get started](docs/how-to/get-started.md)** covers Windows, macOS and Linux, from a clone or from the container image, and connecting Claude Code. No sign-in is needed to run it yourself. The short version, from a clone with [uv](https://docs.astral.sh/uv/) and Google Chrome:
 
 ```bash
 cp .env.example .env && uv sync
@@ -168,8 +118,7 @@ Or with only Docker:
 claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abbybowman/tobi508:latest
 ```
 
-**Examples.** Ask in plain words, and your agent makes calls like these.
-`tests/test_readme.py` checks each one against the tool's schema.
+**Examples.** Ask in plain words, and your agent makes calls like these. `tests/test_readme.py` checks each one against the tool's schema.
 
 "Check https://www.section508.gov/ for keyboard, focus and form problems":
 
@@ -195,16 +144,14 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 <details>
 <summary>An open question, end to end, on a local test page (for contributors)</summary>
 
-With `DEV_MODE=true`, this fixture's three links pass focus among
-themselves forever (the test suite runs this pair):
+With `DEV_MODE=true`, this fixture's three links pass focus among themselves forever (the test suite runs this pair):
 
 <!-- example -->
 ```json
 {"tool": "tobi_run_tt_tests", "arguments": {"url": "file:///ABSOLUTE/PATH/TO/CLONE/tests/fixtures/4c/f06-script-loop.html", "tests": ["4.C"]}}
 ```
 
-4.C comes back NEEDS REVIEW and asks whether the page names a key that
-gets out. The agent answers from the page text:
+4.C comes back NEEDS REVIEW and asks whether the page names a key that gets out. The agent answers from the page text:
 
 <!-- example -->
 ```json
@@ -215,65 +162,37 @@ gets out. The agent answers from the page text:
 
 </details>
 
-**Example output.** A recent run: the home page of science.data.nasa.gov,
-from round 3's blind evaluation (2026-11-16, the 22 built tests):
-- [pre-scrt.json](evals/judging/round3/results/p01/pre-scrt.json): the
-  SCRT rows, with rows for a person flagged. Download it and open it in
-  the [viewer](demo/prescrt-viewer/viewer.html) to read it as a table.
-- [report.json](evals/judging/round3/results/p01/report.json): findings,
-  questions and answers, and every version used.
+**Example output.** A recent run: the home page of science.data.nasa.gov, from round 3's blind evaluation (2026-11-16, the 22 built tests):
+- [pre-scrt.json](evals/judging/round3/results/p01/pre-scrt.json): the SCRT rows, with rows for a person flagged. Download it and open it in the [viewer](demo/prescrt-viewer/viewer.html) to read it as a table.
+- [report.json](evals/judging/round3/results/p01/report.json): findings, questions and answers, and every version used.
 
-Save your own reports in your repository: a run's files expire after 24
-hours.
+Save your own reports in your repository: a run's files expire after 24 hours.
 
 ## Configuration and safety
 
-**Settings** come from the environment or `.env`. `.env.example` lists
-them all with comments. The ones you are most likely to change:
+**Settings** come from the environment or `.env`. `.env.example` lists them all with comments. The ones you are most likely to change:
 - `ALLOWED_DOMAINS`: the pages TOBI may test (default `.gov` and `.mil`);
 - `DEV_MODE=true`: also allows `file://` pages;
-- `JUDGE_BACKEND`: `client` (default; your agent answers open questions)
-  or `api` (the server's own model answers the types in `JUDGE_TYPES`).
+- `JUDGE_BACKEND`: `client` (default; your agent answers open questions) or `api` (the server's own model answers the types in `JUDGE_TYPES`).
 
 **Safety:**
 - Every navigation and redirect is checked against the allowlist.
-- Chrome connects through a local proxy that refuses private and
-  cloud-metadata addresses.
+- Chrome connects through a local proxy that refuses private and cloud-metadata addresses.
 - ANDI is served from a vendored copy.
-- Page content is treated as data: it never chooses a URL, a tool or an
-  outcome.
+- Page content is treated as data: it never chooses a URL, a tool or an outcome.
 - Every report records all versions.
 
-Details: [docs/hackathon/evaluation.md](docs/hackathon/evaluation.md).
-What TOBI can't do yet, test by test (and in general, such as replays not
-freezing randomness or time): [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
+Details: [docs/hackathon/evaluation.md](docs/hackathon/evaluation.md). What TOBI can't do yet, test by test (and in general, such as replays not freezing randomness or time): [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
 
 ## Contribute
 
-- **Testers:** certified Trusted Testers can run their own judging round
-  and contribute it: [docs/how-to/run-a-judging-round.md](docs/how-to/run-a-judging-round.md).
-- **Developers:** set up with [Get started](docs/how-to/get-started.md),
-  then read [CLAUDE.md](CLAUDE.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
-  Run the tests with `uv sync --group dev`, then `uv run pytest`. On
-  Windows, `TEST_BROWSER_CHANNEL=chrome TEST_HEADED=1` checks it in real
-  Chrome; run natively, not in WSL2, keep the screen unlocked and don't
-  click in the test windows
-  ([what the first Windows runs found](docs/solutions/windows-chrome-results.md)).
+- **Testers:** certified Trusted Testers can run their own judging round and contribute it: [docs/how-to/run-a-judging-round.md](docs/how-to/run-a-judging-round.md).
+- **Developers:** set up with [Get started](docs/how-to/get-started.md), then read [CLAUDE.md](CLAUDE.md) and [docs/ROADMAP.md](docs/ROADMAP.md). Run the tests with `uv sync --group dev`, then `uv run pytest`. On Windows, `TEST_BROWSER_CHANNEL=chrome TEST_HEADED=1` checks it in real Chrome; run natively, not in WSL2, keep the screen unlocked and don't click in the test windows ([what the first Windows runs found](docs/solutions/windows-chrome-results.md)).
 
 ## License
 
-MIT (see [LICENSE](LICENSE)), from the GSA-TTS
-[mcp-hackathon-template](https://github.com/GSA-TTS/mcp-hackathon-template).
-Third-party software (see [NOTICE](NOTICE)):
+MIT (see [LICENSE](LICENSE)), from the GSA-TTS [mcp-hackathon-template](https://github.com/GSA-TTS/mcp-hackathon-template). Third-party software (see [NOTICE](NOTICE)):
 
-- **ANDI 29.2.2**, Copyright Social Security Administration, Apache License 2.0
-  ([third_party/andi/NOTICE](third_party/andi/NOTICE),
-  [LICENSE.md](third_party/andi/LICENSE.md)). Unmodified copy; use does not
-  imply SSA endorsement.
-- **jQuery 3.7.1**, Copyright OpenJS Foundation and other contributors, MIT
-  ([third_party/jquery/LICENSE.txt](third_party/jquery/LICENSE.txt)).
-- **SCRT 5.2.0**, Copyright Department of Homeland Security, MIT
-  ([third_party/scrt/LICENSE](third_party/scrt/LICENSE)). Its test rows
-  are read as a template; its pages are used in tests, and
-  [demo/prescrt-viewer/](demo/prescrt-viewer/) reuses its stylesheet.
-  Use does not imply DHS endorsement.
+- **ANDI 29.2.2**, Copyright Social Security Administration, Apache License 2.0 ([third_party/andi/NOTICE](third_party/andi/NOTICE), [LICENSE.md](third_party/andi/LICENSE.md)). Unmodified copy; use does not imply SSA endorsement.
+- **jQuery 3.7.1**, Copyright OpenJS Foundation and other contributors, MIT ([third_party/jquery/LICENSE.txt](third_party/jquery/LICENSE.txt)).
+- **SCRT 5.2.0**, Copyright Department of Homeland Security, MIT ([third_party/scrt/LICENSE](third_party/scrt/LICENSE)). Its test rows are read as a template; its pages are used in tests, and [demo/prescrt-viewer/](demo/prescrt-viewer/) reuses its stylesheet. Use does not imply DHS endorsement.
