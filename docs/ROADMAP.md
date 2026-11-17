@@ -58,7 +58,6 @@ file and the prompt file; other threads write to their plan.
 
 | Order | Steps | What | Model | When |
 | --- | --- | --- | --- | --- |
-| 1 | 23 | Wait for the page to draw (time-boxed; 21, 36 and 22 are merged, #109 to #111, rerun in `evals/judging/gate-2026-11-17/`) | Opus | PR #112 |
 | 1 | 31, 29 (small part) | 9.B's six false FAILs; 5.B's DOES NOT APPLY when 5.A could not decide | Sonnet | morning, beside the first |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
@@ -77,9 +76,9 @@ cheapest moves:
   tests then have no wrong cell and are mostly left for a person.
 - **22 (4.F, and 4.A, 5.D):** 4.F red to yellow; two false FAILs of
   4.A and two wrong cells of 5.D go.
-- **23:** about 12 cells on two application pages from NEEDS REVIEW
-  to outcomes, if the replay draws the application at all. A probe
-  first; every moved cell is shown to Abby.
+- **23 (done, #112):** the replay draws; on round 3's p07, p08 and
+  p10, 4.E's three false FAILs, 5.F, 5.G and 5.H moved to NEEDS REVIEW,
+  PASS or an agreeing DOES NOT APPLY (`evals/judging/gate-2026-11-17-step23/`).
 - **31 (9.B):** yellow to green.
 - **29, small part (5.B):** five wrong cells become NEEDS REVIEW.
 - **9c where the search loads (19.A):** 8 of round 2's 19.A cells are
@@ -93,10 +92,6 @@ Left yellow after the cut, each needing more than a day: 4.A, 4.D,
 
 ### What each step covers
 
-- **23. Wait for an application to draw itself.** Built only if a
-  probe shows the replay draws: wait until the count of focusable
-  elements stops changing, with a ceiling. Rounds 1 and 2's cells
-  should not move.
 - **31. 9.B pairs repeated links without crossing them.** An extra
   copy of a link on one page is an insertion, not a swap; a real
   reorder still FAILs.
@@ -131,7 +126,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 
 | Row | Steps | What |
 | --- | --- | --- |
-| Applications | 23 (if not done), 24, 25, 26, 35a, 35e | The app's own address changes read as caused by focus (24); the freeze saves code loaded on use (25); every address serving one document (26, approval, 16 cells); controls with no form element (35a, approval); a press that navigates (35e, approval) |
+| Applications | 24, 25, 26, 35a, 35e | The app's own address changes read as caused by focus (24); the freeze saves code loaded on use (25); every address serving one document (26, approval, 16 cells); controls with no form element (35a, approval); a press that navigates (35e, approval) |
 | 4.D and 5.D on what opens | 27, then 15 | A faint mark on a large element is not a focus indicator (27; it must land first: one cell is a PASS the key fails, held only by a guard), then 4.D and 5.D read what menus and sections open (15) |
 | 4.A and 4.F | 28, 32, 33 | A hedged judge answer is "unsure" (28); 4.A's undecided signals (32, approval); 4.F's rubric, footer columns and dropdowns (33) |
 | Forms | 29 (rest), 30, 35b-d, 37 | The search box in a panel (29, approval); forms with nothing to get wrong (30, approval); the one-cell 5.B, 5.C and 5.D items (35b-d) with 5.B's rubric on a search page; a frame's fields pictured in place on the page, not opened alone (37) |

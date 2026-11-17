@@ -273,7 +273,11 @@ roadmap steps 21 to 35):
 - **4.F:** a footer of link columns raises S3 on every page (Tab goes
   down one column and up to the next), and a dropdown whose options take
   arrow keys raises S6; J1's order list can leave out what the signals
-  name. Step 33.
+  name. On those signals the judge's J1 answer changes from run to run:
+  round 2's p02, p03 and p07 were unsure (NEEDS REVIEW) in gate
+  2026-11-17 and "does not preserve" (a false FAIL) in its step 23
+  rerun, with p07's signals the same both times; step 9b had p03 and
+  p08 FAIL. Step 33.
 - **Controls with no `<form>`:** every control's form is "none", so a
   header's menu button joins a search field's form in 5.B. Step 35.
 - **5.D on a filter whose request the recording lacks:** the replay
