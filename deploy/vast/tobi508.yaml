@@ -1,0 +1,150 @@
+# TOBI (tobi508) on VAST: the app's resources, for the cluster admins to
+# apply. Guide: docs/how-to/deploy-on-vast.md, section 9.
+#
+# Before applying, replace every <...>:
+#   <namespace>    where the admins put the app
+#   <commit sha>   the image to run (never :latest: one deployment, one known image)
+#   <app host>     the app's subdomain on VAST's gateway
+#   <keycloak host>, <client id>, <group>   from the app's Keycloak client
+# The secrets are not in this file: create them first (guide, section 9).
+#
+# Results are agent-assisted findings, never a certified Trusted Tester result.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tobi508-config
+  namespace: <namespace>
+  labels: {app: tobi508}
+data:
+  # Sign-in. Without every one of these the server refuses to start.
+  AUTH: oidc
+  PUBLIC_BASE_URL: https://<app host>
+  OIDC_CONFIG_URL: https://<keycloak host>/realms/<realm>/.well-known/openid-configuration
+  OIDC_CLIENT_ID: <client id>
+  OIDC_AUDIENCE: <client id>
+  REQUIRED_GROUPS: '["<group>"]'
+  GROUP_CLAIM: claim_groups
+  # Uvicorn's setting: whose X-Forwarded-Proto to believe. At a dev
+  # environment's URL, Traefik's requests came from 10.42.0.0, the pod
+  # network (2026-11-17). The range keeps sign-in working if that address
+  # moves with the node; any pod in the cluster could then claim https,
+  # which sign-in still guards. Narrow it if the admins name the address.
+  FORWARDED_ALLOW_IPS: 10.42.0.0/16
+  # What may be tested. DEV_MODE must stay off on VAST.
+  ALLOWED_DOMAINS: '[".gov", ".mil"]'
+  DEV_MODE: "false"
+  # Open questions go to the calling agent. For the server's own judge
+  # (Luna or another Messages API gateway), see the guide, section 2.
+  JUDGE_BACKEND: client
+  # Capacity. Keep CALL_WAIT_S under the gateway's read timeout (at least 50 s).
+  MAX_CONCURRENT_RUNS: "2"
+  CALL_WAIT_S: "45"
+  RUN_TTL_HOURS: "24"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tobi508-data
+  namespace: <namespace>
+  labels: {app: tobi508}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      # Run folders (tens of MB each, kept 24 h) and the sign-in store.
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tobi508
+  namespace: <namespace>
+  labels: {app: tobi508}
+spec:
+  # Exactly one: jobs and the sign-in store live in this one process and
+  # its volume. Recreate, so an update never runs two at once.
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: tobi508}
+  template:
+    metadata:
+      labels: {app: tobi508}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: tobi508
+          image: ghcr.io/abbybowman/tobi508:<commit sha>
+          ports:
+            - {name: http, containerPort: 8000}
+          envFrom:
+            - configMapRef: {name: tobi508-config}
+            - secretRef: {name: tobi508-secrets}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: "2", memory: 4Gi}
+            limits: {cpu: "4", memory: 8Gi}
+          # The server fetches Keycloak's discovery document before it
+          # serves; give it a minute.
+          startupProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: dshm, mountPath: /dev/shm}
+      volumes:
+        - name: data
+          persistentVolumeClaim: {claimName: tobi508-data}
+        # Chromium's shared memory, larger than the default 64 MB.
+        - name: dshm
+          emptyDir: {medium: Memory, sizeLimit: 1Gi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tobi508
+  namespace: <namespace>
+  labels: {app: tobi508}
+spec:
+  selector: {app: tobi508}
+  ports:
+    - {name: http, port: 8000, targetPort: http}
+---
+# The gateway route. VAST's gateway is Traefik, which ends TLS; the admins
+# may use their own route type instead. Whatever they use must pass Host
+# unchanged and send X-Forwarded-Proto: https (Traefik does by default).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tobi508
+  namespace: <namespace>
+  labels: {app: tobi508}
+spec:
+  rules:
+    - host: <app host>
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tobi508
+                port: {name: http}

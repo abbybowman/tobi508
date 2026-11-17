@@ -37,8 +37,10 @@ keep their own schedule.
   (steps 21 and 22).
 - **Hosting:** sign-in, run ownership and audit lines are built, and
   the built image passes a smoke test in CI behind a real Keycloak
-  ([guide](how-to/deploy-on-vast.md)). Nothing has run in the
-  tobi-508 environment on VAST yet. Without a gateway for the judge,
+  ([guide](how-to/deploy-on-vast.md)). On VAST (2026-11-17) the image
+  runs in a dev environment and ran a live page there through Claude
+  Code over an ssh tunnel; the dev URL's gateway is measured; sign-in
+  there waits for a Keycloak client from the admins. Without a gateway for the judge,
   a hosted server leaves open questions to the calling agent.
 - Earlier steps and their notes: [archive](archive/).
 
@@ -61,7 +63,7 @@ file and the prompt file; other threads write to their plan.
 | 1 | 31, 29 (small part) | 9.B's six false FAILs; 5.B's DOES NOT APPLY when 5.A could not decide | Sonnet | morning, beside the first |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
-| - | 12b | Hosted on VAST: the first deployment | Opus | the day the environment exists |
+| - | 12b | Hosted on VAST: sign-in at the dev URL, then YAML for the cluster admins | Opus | when the Keycloak client arrives |
 | - | 13 | The pitch: the scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
 
 ### Why these, and what they should do to the status table
@@ -105,9 +107,12 @@ Left yellow after the cut, each needing more than a day: 4.A, 4.D,
   test by one stated rule, written by a script from 9c; a test fails
   when the README's rows are not the script's. Counts per site go to
   a generated `evals/STATUS.md`.
-- **12b.** Deploy by [the guide](how-to/deploy-on-vast.md), sign in
-  from Claude Code, run the smoke test, then one page; then the
-  [PENDING] markers about sign-in go.
+- **12b.** No app namespace for developers on VAST (admin,
+  2026-11-17): make it work with sign-in at the dev environment's URL,
+  then hand the cluster admins YAML for its resources
+  ([guide, section 6a](how-to/deploy-on-vast.md)). Sign in from Claude
+  Code, run the smoke test, then one page; then the [PENDING] markers
+  about sign-in go.
 - **13.** The [FILL] figures from one scored run at the submission
   commit ([docs/hackathon/](hackathon/README.md)).
 
@@ -134,6 +139,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | The judge | 40 | For a question type that fails the gate, the judge's FAIL is shown as "likely fails, a person should confirm", never handed to the calling agent (a rule change; Abby's decision first) |
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
 | Meaning to the judge | 16 | 5.H's, 4.B's and 2.x's word lists become questions |
+| Live status page | 41 | A read-only page on the server, open without sign-in, showing each run it holds as it goes (page, tests, progress) and, when done, its outcomes, with its pre-SCRT file opened in the viewer; a link to it in the tool's results. Runs the server still holds only; the lasting store is 17. Touches no test or spec, so it can run beside the rows above |
 | The service | 17, 18 | The store, a thin MCP surface, one writer per run (17); a person's answer only from TOBI's own page (18) |
 | Measures | 10b, 11, 19 | Round 4, a blind round, when Abby keys one (10b); the second look's trial (11), then as a guard (19) |
 | SCRT files | 20 | Review, merge, export ([plan](plans/2026-11-02-scrt-io.md)) |
@@ -145,8 +151,8 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 **Before the demo:**
 
-- **VAST** (step 12b): whether the tobi-508 environment exists; the
-  app's token contents; a gateway for the judge.
+- **VAST** (step 12b): a Keycloak client for the dev URL (asked
+  2026-11-17); the app's token contents; a gateway for the judge.
 - **Publishing the repository.** GSA asks for a GitHub repository;
   SECURITY.md says NASA's release review comes first. Which comes
   first for the submission.
@@ -167,6 +173,13 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
   random content, a second browser, CLAUDE.md's lists, and
   SECURITY.md's two [TO CONFIRM] items: worded in
   [the archive](archive/2026-11-17-roadmap-before-the-last-day.md).
+
+**Decided (Abby, 2026-11-17): the live status page is open.** The MCP
+server keeps sign-in. A read-only page of what the server is running
+and has just run (the URLs tested, progress, outcomes and the pre-SCRT
+file in the viewer) may be read without it: the pages tested are
+public, and VAST's domain is reachable only from NASA's network. It
+starts, changes and answers nothing (step 41).
 
 ## Known limits, per test
 

@@ -13,7 +13,7 @@ is listed here is what is left to start or still running.
 
 **Order to start them** (the roadmap's "Order of work"): the two
 pre-cut threads now, side by side; 9c when both are merged; 10d after
-9c; 12b the day the VAST environment exists; the after-demo rows one
+9c; 12b when the Keycloak client arrives; 41 after the demo, beside the test rows; the after-demo rows one
 thread at a time each, in the roadmap's order.
 
 ## Starting a thread
@@ -375,16 +375,78 @@ thread at a time each, in the roadmap's order.
 > is about our evaluation pages only, and the line above the table
 > says so.
 
-**Step 12b, Opus: the first deployment** (when the VAST environment exists)
+**Step 12b, Opus: the first deployment** (when the Keycloak client arrives)
 
-> Read `docs/how-to/deploy-on-vast.md` and follow it with me: I run
-> the VAST commands and paste what they print. Deploy, sign in from
-> Claude Code, run `scripts/smoke_hosted.py` against the app's
-> address, then one real page. Record what differed from the how-to
-> and fix the how-to. Only when the smoke test passes on VAST, remove
+> Read `docs/how-to/deploy-on-vast.md`, sections 6a and 9 first, and
+> follow it with me: I run the VAST commands and paste what they
+> print. VAST gives developers no app namespace: first run the image
+> with sign-in at my dev environment's URL (Podman in the dev
+> environment, port 8000, `FORWARDED_ALLOW_IPS` as section 6a found),
+> sign in from Claude Code, run `scripts/smoke_hosted.py` against that
+> URL, then one real page. Then fill `deploy/vast/tobi508.yaml` for the
+> cluster admins (outside the repo: no internal host names in git).
+> Record what differed from the how-to and fix the how-to. Only when the smoke test passes on VAST, remove
 > the two [PENDING] markers about the end-to-end sign-in
 > (`docs/hackathon/evaluation.md`, `docs/hackathon/deck.md`) and
 > update `SECURITY.md`'s status.
+
+**Step 41, Opus: the live status page** (after the demo; beside the test rows, since it touches no test or spec)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (step 41 and Abby's decision of
+> 2026-11-17 above "Known limits"), `docs/how-to/get-started.md`,
+> `docs/how-to/deploy-on-vast.md` (sections 4, 6a and 9),
+> `src/tobi508/jobs.py`, `src/tobi508/routes.py`, `src/tobi508/app.py`
+> (`http_options`), `src/tobi508/tools/run_tt_tests.py` and
+> `run_status.py`, and `demo/prescrt-viewer/README.md`. Then plan with
+> me before building; one pull request.
+>
+> **Why.** Using TOBI from Claude Code, I saw the run's progress only
+> while a tool call was open: after `CALL_WAIT_S` the call returns a
+> job and the progress line goes, and between `tobi_run_status` calls
+> only my agent spoke. I want a page in the browser that keeps showing
+> what the server is doing while I chat with my agent. A status line
+> in Claude Code is out: too hard for our users to install.
+>
+> **What.** A read-only page served by the server over HTTP (way 3 of
+> get-started, and hosted), refreshing itself: each run the server
+> holds, with the page tested, its tests, state, the progress step and
+> message, and times; when a run is done, its outcome per test and a
+> way to open its pre-SCRT file in the viewer (`viewer.html`) in the
+> browser. Each tool result that starts or waits on a run carries the
+> page's address (one short field; keep tool output small), and the
+> agent is told to give it to the user.
+>
+> **Decided:** the MCP endpoint keeps sign-in; this page is open
+> without it, as `/health` is, on a server with `AUTH=oidc`, and shows
+> every person's runs, URLs and results (my decision, recorded in the
+> roadmap). Without sign-in the server still listens on loopback only:
+> never change that rule (`app.http_options`).
+>
+> **Scope.** Only what the server holds now: jobs in memory
+> (`jobs.py`) and run folders until they expire (`RUN_TTL_HOURS`).
+> Nothing that outlives a restart or the 24 hours: that is the store,
+> step 17. Over stdio there is no HTTP server, so no page; say so in
+> get-started.
+>
+> **Rules to keep.** Read-only: GET only; it starts, answers and
+> changes nothing. Page content is untrusted (`CLAUDE.md`, principle
+> 5): every URL, title, message and file value is shown as text, never
+> HTML, on the page and in the viewer (test it with a page title and a
+> URL holding markup and script). No outside scripts, styles or
+> requests; a strict Content-Security-Policy. The disclaimer on every
+> view; never "certified" or "compliant". The page copies outcomes and
+> decides none. The viewer today opens a file the user picks and makes
+> no requests; how it gets a run's file (embedded by the server, or a
+> same-origin fetch with its CSP changed to allow only that) is a
+> choice to bring me with its trade-offs.
+>
+> **Tests:** the page answers without a token while `/mcp` answers
+> 401; it shows a running job's progress and a finished run's
+> outcomes; markup in page values is escaped; a POST is refused; the
+> result field is present and small. Run it once by hand over way 3
+> and show me a screenshot. Update the how-tos, `SECURITY.md` (an
+> unauthenticated route), and, as a security control changed,
+> `docs/hackathon/evaluation.md` and its slide in `deck.md`.
 
 **Step 13, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
 
