@@ -2,6 +2,23 @@
 
 Agent-assisted results, not certified Trusted Tester results.
 
+## Round 1 (9 pages run: p01, p02, p03, p04, p05, p06, p07, p08, p09)
+
+Loaded live: none (every page from the freeze)
+
+| Page | Test | Key | Key's comment | Old (verdict, rows) | New (verdict, rows) |
+| --- | --- | --- | --- | --- | --- |
+| p01 | 19.A | Pass | Page is linked from ISS mission hub (https://www.nasa.gov/international-space-station/) and found in site search. NOT available in Sitemap linked from footer (o | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p01 | 4.C | Pass |  | None (needs_review; A3 i1:M1 G3) | Pass (agree; A3 G4) |
+| p04 | 19.A | Pass | Reachable from the main navigation (under About NASA), sitemap, and site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p04 | 4.C | Pass |  | Pass (agree; A3 i1:M3 G4) | None (needs_review; A3 G4 RC) |
+| p04 | 4.E | Pass |  | Pass (agree; A3 G4) | None (needs_review; A3 G4 RC) |
+| p04 | 4.F | Pass |  | None (needs_review; A4 o1:M9[S2,S3,S4] G3) | Pass (agree; A4 o1:M7[S3,S3,S3,S3,S3,S3,S3] r2:M4 r3:M4 r4:M4 G5) |
+| p06 | 19.A | Pass | Reachable from content links on other Artemis-related pages and from appearing in site search. | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p06 | 4.F | Pass |  | None (needs_review; A4 o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4] r2:M4 r3:M4 r4:M4 G3) | Pass (agree; A4 o1:M7[S3,S3,S3,S3,S3,S3,S3,S4] r2:M4 r3:M4 r4:M4 G5) |
+| p06 | 5.D | Pass | The site search bar passes, and the rest of the page has no form elements. | Fail (false_fail; A3 f1:M9 G2) | None (needs_review; A3 G4 RC) |
+| p08 | 19.A | Pass | Reachable from content links (e.g. https://www.nasa.gov/news/recently-published/), sitemap (under Content Archive .> 2026 .> October .> 30), and site search. | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+
 ## Round 2 (10 pages run: p01, p02, p03, p04, p05, p06, p07, p08, p09, p10)
 
 Loaded live: none (every page from the freeze)

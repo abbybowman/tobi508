@@ -28,7 +28,17 @@ keys and scorer (`gate-2026-11-17/compare.py --new gate-2026-11-17-step23
 
 ## Every moved cell, with its cause
 
-ROUND1_TABLE
+### Round 1 (9 pages): 10 moved, none from step 23
+
+| Page | Test | Key | Old | New | Cause |
+| --- | --- | --- | --- | --- | --- |
+| p04 careers | 4.C | Pass | PASS (first rerun, under load) | NEEDS REVIEW (A3 G4 RC) | Load in the first rerun: the popup opened there. Back to step 9b's and the page-alone outcome (RC: "NASA Force" and 3 more not reached) |
+| p04 careers | 4.E | Pass | PASS (first rerun, under load) | NEEDS REVIEW (RC) | The same: back to 9b's and the page-alone outcome |
+| p04 careers | 4.F | Pass | NEEDS REVIEW (o1:M9, under load) | PASS (o1:M7), agrees | The same: back to 9b's and the page-alone outcome |
+| p06 artemis-iii | 5.D | Pass | FAIL (f1:M9, under load) | NEEDS REVIEW (RC) | The same: the first rerun's false FAIL under load is gone; back to 9b's outcome |
+| p01 spot-the-station | 4.C | Pass | NEEDS REVIEW (i1:M1) | PASS, agrees | The open question i1 was not raised this run, so no judge answer held it; why it was not raised was not traced |
+| p06 artemis-iii | 4.F | Pass | NEEDS REVIEW (o1:M9) | PASS (o1:M7), agrees | The judge answered "preserves" this time |
+| p01, p04, p06, p08 | 19.A | Pass | PASS (step 9b: W2, the live search) | NEEDS REVIEW (W8 W9 W4) | The run's setting, not step 23: step 9b ran round 1's site search and suggested pages live ("tested_frozen"); this rerun serves every page from the freeze ("replay", as asked), and round 1's freeze holds no copy of them ("no saved copy of it was available to load", in each report) |
 
 ### Round 2 (10 pages): 8 moved, none from step 23
 
@@ -67,15 +77,18 @@ False FAILs on the first rerun's tests:
 
 | Round | First rerun | Step 23 rerun | Why |
 | --- | --- | --- | --- |
-ROUND1_ROW
+| 1 | 4 | 3 | -1 5.D (the first rerun's load) |
 | 2 | 7 | 9 | +3 4.F (the judge), -1 5.B (the judge) |
 | 3 | 9 | 6 | -3 4.E (step 23) |
 
 **Verified** (commands above): every cell, row and key comment in
 `moved.md`; that no page was fetched live; the false FAIL counts (each
 round's scorer on both reruns); that p07's 4.F signals are the same in
-both reruns while J1's answer differs (the two reports).
-**Assumed**: that round 2's 4.F, 5.B and 9.C moves are the judge's
+both reruns while J1's answer differs (the two reports); that round
+1's four 19.A moves come from the freeze holding no search or suggested
+page (each report's sentence, and step 9b's "tested_frozen" runs in
+`evals/README.md`).
+**Not traced**: why round 1's p01 4.C raised no i1 this run. **Assumed**: that round 1's p06 4.F, and round 2's 4.F, 5.B and 9.C moves are the judge's
 answers varying and not step 23 (the reports keep the answers, not the
 question packets, so the judge's inputs were not compared byte for
 byte; p02's and p03's signal lists differ by one jump each); that round
