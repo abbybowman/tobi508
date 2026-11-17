@@ -197,3 +197,59 @@ headed Chrome) are in
   needs its own focus reader (no CDP) and every fixture rerun; not
   planned.
 
+**Found in round 3** (science.data.nasa.gov, 2026-11-16; causes and
+fixes in [the plan after round 3](plans/2026-11-16-after-round3.md),
+roadmap steps 21 to 35):
+
+- **Applications that draw themselves after load** (Angular and the
+  like): the walk, pass L and the site read can start before the page
+  has drawn its controls. On round 3's community pages the forward walk
+  found one link of 76 and 90, and 4.F, 4.A, 5.A, 5.D and 5.F to 5.H
+  decided on that (README, "Known wrong outcomes"). Steps 22 and 23.
+- **One document at every address:** an application that serves the
+  same HTML shell at every path makes another page's recording byte for
+  byte the tested page's, so 9.A to 9.C and 19.A read it as the tested
+  page again (K-01) and are not performed. On such a site 19.A's alias
+  check would also verify `/index.html` as the tested page because its
+  shell is the same (not run; a PASS risk). Step 26.
+- **A sign-in check in a frame** (an OpenID Connect `auth` frame whose
+  address changes on every load) is not in a frozen recording (as the
+  frames above); on round 3's community pages the app may leave the
+  page when it is missing (not shown in the reports).
+- **4.E: an address change the page makes on its own** soon after load
+  is read as caused by focus when it lands on the first key press: the
+  control replay waits only as long as the step took. A false FAIL
+  (round 3: 3). Step 24.
+- **5.F and 5.G read the browser's own messages as Chrome words them,**
+  every field's at once, though the browser shows one at a time and
+  another browser's words differ (README). Step 21.
+- **4.D's `MIN_CHANGED_PX` is absolute:** about 50 changed pixels pass a
+  large image link (README). Step 27.
+- **4.A:** J1 can answer "alternative" while its reasons say it is not
+  sure, and M8 passes any effect of Enter or Space, even one that is not
+  what the click does (round 3's MySearchStory: Enter advanced a
+  carousel; NEEDS REVIEW there only because of another answer). Native
+  buttons are never executed, so a page that takes Enter from a native
+  button is not seen. Step 28. Round 3 also held 4.A at NEEDS REVIEW on
+  all six Drupal pages for a hidden share frame, a page-level wheel or
+  touch listener and `HOVER_MAX` (40) (step 32).
+- **9.B pairs equal links in order:** when one page has an extra copy
+  of a repeated link (a breadcrumb "Home" in the same region as the
+  others), the pairs cross and 9.B FAILs where nothing moved (round 3:
+  6). Step 31.
+- **4.F:** a footer of link columns raises S3 on every page (Tab goes
+  down one column and up to the next), and a dropdown whose options take
+  arrow keys raises S6; J1's order list can leave out what the signals
+  name. Step 33.
+- **Controls with no `<form>`:** every control's form is "none", so a
+  header's menu button joins a search field's form in 5.B. Step 35.
+- **5.D on a filter whose request the recording lacks:** the replay
+  shows the site's own error, and focus landing on the field's own label
+  reads as a move (round 3's blog: a false FAIL). Step 35.
+- **The freeze does not run the chunk store:** code an application loads
+  when used is missing from a frozen recording, so guard GU holds 4.B
+  (round 3's community pages). Step 25.
+- **19.A counts a breadcrumb as a navigation link,** the same kind as
+  the menus; Abby's round 3 keys count breadcrumbs on child pages as a
+  way of their own. A question for Abby (step 34).
+

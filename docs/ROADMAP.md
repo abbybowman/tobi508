@@ -58,7 +58,9 @@ is merged. At most three threads at once. Each thread branches from
 | --- | --- | --- | --- |
 | 1-10, 12a | Done: PRs #39 to #101 ([archive](archive/2026-11-14-roadmap-to-the-demo.md)). Round 3 is scored (`evals/judging/round3/score.md`) | | |
 | 9b | Rerun of rounds 1 and 2's pages | Sonnet | round 1 done (its branch is not merged); round 2 running |
-| 10c | What round 3 showed: every wrong and undecided cell by cause, and a plan | Opus | now; it writes plans and prompts, no code |
+| 10c | What round 3 showed: every wrong and undecided cell by cause, and a plan ([plan](plans/2026-11-16-after-round3.md)) | Opus | done when merged |
+| A | Round 3, thread A: step 21 (5.F, 5.G native messages), then 22 (no outcome from a walk that missed the page), then a time-boxed 23 (wait for the page to draw; probe first) | Opus | now; 23 stops at midday Nov 17 if not merged |
+| B | Round 3, thread B: step 31 (9.B pairs equal links by alignment), then 29's small part (5.B NEEDS REVIEW when 5.A could not decide) | Sonnet | now, beside A |
 | 10d | The README's status table: one colour and a few words per test, made by a script from the latest results | Sonnet | when 9b is done |
 | 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
 | 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
@@ -93,12 +95,18 @@ is merged. At most three threads at once. Each thread branches from
   with the first other page), 10 DOES NOT APPLY where the key passes
   (5.B, 5.D). Its pages are development pages from here on: a later
   run on them is a rerun, never in place of this score.
-- **10c. What round 3 showed.** Every wrong cell and every cell left
-  for a person, read in its report and grouped by cause, the unsafe
-  ones first. For each cause: what the tool did, what the tester did,
-  whether rounds 1 and 2 show it too, the smallest fix and its size.
-  The result is a plan in `docs/plans/`, entries in "Next" below and a
-  prompt for each piece of work. It changes no code.
+- **10c. What round 3 showed** ([plan](plans/2026-11-16-after-round3.md)):
+  102 cells in 21 causes, ranked unsafe first; questions for Abby at
+  its top. The work is cut into threads A and B (now) and bundles R1
+  to R5 ("Next"), seven prompts.
+- **Threads A and B** (before the cut; the entries are under "Next",
+  steps 21, 22, 23, 31 and 29's small part). A: 5.F and 5.G's native
+  messages, then no outcome from a walk that missed the page, then a
+  probe and, if the replay draws, a wait for the page to draw; 23
+  stops at midday Nov 17 if not merged, and 21 and 22 never wait on
+  it. B: 9.B's pairing, then 5.B's DOES NOT APPLY when 5.A could not
+  decide. Each reruns its tests on all three rounds' frozen pages and
+  shows every moved cell beside the key.
 - **10d. The README's status table** (Abby, 2026-11-16: it had grown
   into a list of results per round). One row per test: a colour and at
   most a few words, by one stated rule from the latest results on all
@@ -108,7 +116,8 @@ is merged. At most three threads at once. Each thread branches from
   `docs/KNOWN-LIMITS.md`.
 - **19.A on CILab,** left from step 10a: it passed in step 6h's rerun
   and FAILs in step 6g's with the pages loaded live, though both of
-  the key's ways are still on the live site. Folded into 10c.
+  the key's ways are still on the live site. Read in 10c: the PASS is
+  right; the FAIL's rows are not in git; found in step 34 (bundle R5).
 - **10b.** Round 4, if Abby keys one, is run as round 3 was
   ([the how-to](how-to/run-a-judging-round.md)): the page list, keys
   and freeze stay off `main` until the run is locked.
@@ -142,8 +151,95 @@ is merged. At most three threads at once. Each thread branches from
 
 ## Next: after the demo
 
-Steps continue from "Now", in this order unless a judging round says
-otherwise; whatever of steps 8 to 12 was not reached comes first. Parts
+**Round 3 says otherwise** ([plan](plans/2026-11-16-after-round3.md),
+step 10c; cut into threads by Abby, 2026-11-16). Steps 21 to 35 are the
+plan's; their numbers stay so the plan's references land. Steps 21, 22
+and 31 and part of 29 (and 23 if its time box holds) are threads A and
+B in "Now". The rest is five bundles, R1 to R5, each one thread at a
+time, before step 14. Inside a bundle, a wrong outcome or a cell one
+step from unsafe comes before turning NEEDS REVIEW into answers. Steps
+marked "approval" turn NEEDS REVIEW into an outcome and wait for
+Abby's yes on the spec text. Every bundle reruns its tests on all
+three rounds' frozen pages and shows Abby every moved cell beside her
+key. Two overlaps are kept apart by order: R5 starts after R1 has
+merged step 26 (both change 9.A to 9.C and 19.A), and R4 after R2 has
+merged (both change 5.D).
+
+**Before the cut (threads A and B, "Now"):**
+
+- **21. 5.F and 5.G: the browser's own error messages** (cause 1; S;
+  no approval). Native validation (5.F M2, 5.G J1 on the browser's
+  `validationMessage`) becomes NEEDS REVIEW: the browser shows one
+  field's message at a time and its words differ by browser. Round 3's
+  contact page: PASS where the key fails. Whether TT 5.F fails it is
+  Abby's later call. Thread A.
+- **22. No outcome from a walk that missed the page** (cause 2; S-M; no
+  approval). 4.F A3, 5.A, 5.D and 5.F to 5.H's "no form fields", 4.A's
+  unreached candidates and 4.C's PASS read the inventory taken after
+  the walk; when the walk covered less, NEEDS REVIEW. Round 3's forum
+  page: 4.F DOES NOT APPLY where the key fails. Thread A.
+- **23. Wait for an application to draw itself** (cause 2; M). A probe
+  first, no code: on round 3's four application pages in replay, how
+  long each takes to draw and how many focusable elements it has at
+  the start and when the count stops changing. Built only if the
+  replay draws: before the walk, pass L and the site read, wait until
+  the count is unchanged for a short window (with a ceiling); P2's
+  press cap from the inventory when P2 starts. Thread A, time-boxed:
+  if not merged by midday Nov 17 it returns to R1.
+- **31. 9.B: equal links paired by alignment** (cause 10; S; no
+  approval). An extra copy of a repeated link on one page is an
+  insertion, not a swap; a page with a real reorder still FAILs.
+  Round 3: 6 false FAILs. Thread B.
+- **29 (small part). 5.B is NEEDS REVIEW, not DOES NOT APPLY, when 5.A
+  could not decide** (cause 6; S; no approval). Round 3: 5.B DOES NOT
+  APPLY on four pages where 5.A was unsure or found the placeholder
+  only. Thread B.
+
+**After the demo, five bundles:**
+
+- **R1. Applications** (Opus): step 23 if thread A did not finish it;
+  **24.** 4.E, an address change the page makes on its own: the control
+  replay waits until the same time after load as the original step
+  (cause 14; S-M; no approval; 3 false FAILs); **25.** the freeze saves
+  the chunk store, so code the page loads when used is in the frozen
+  recording (cause 17; S); **26.** one document at every address: K-01's
+  byte test only for the same path apart from the query, in 9.A to 9.C
+  and 19.A (cause 5; S; approval; after 23; 16 cells); **35a.**
+  controls with no `<form>`: form "none" leaves out banner and
+  navigation buttons, and 5.C's M5 also matches with spaces removed
+  (cause 15; S; approval); **35e.** 4.C: a press that navigates leaves
+  no error state to walk (cause 21; S; approval).
+- **R2. 4.D and 5.D on what opens** (Opus): **27.** 4.D, a faint mark
+  on a large element: M6 also needs the change to be a share of the
+  element's size, else J1 (cause 3; M; no approval; the blog's image
+  links pass where the key fails, held only by guard RC); then step
+  15's 4.D and 5.D part (4.D and 5.D read what menus and sections open,
+  phases 2 and 3).
+- **R3. 4.A and 4.F** (Opus): **28.** 4.A, a hedged "alternative" is
+  unsure, and M8 needs the key's effect to be the click's (cause 4; M;
+  no approval; judge eval); **32.** 4.A's undecided signals: a hidden
+  helper frame and a page-level wheel or touch listener are not U;
+  calibrate `HOVER_MAX` (cause 11; M; approval); **33.** 4.F: the order
+  list names what the signals name, S3 not raised for a
+  column-to-column jump, S6 not raised for a listbox or menu, J1's
+  rubric and a judge eval (cause 12; M; approval for S3 and S6).
+- **R4. Forms** (Opus; after R2): **29** (the rest): pass L opens the
+  panel that holds a hidden field before its picture, and Abby's
+  decision on a magnifier opener as a label (cause 6; M; approval);
+  **30.** 5.F to 5.H, a form with nothing to get wrong: a spec decision
+  first (cause 9; M; approval); **35b.** 5.D, focus onto the field's
+  own label, and a request the recording cannot answer (cause 18; S);
+  **35c.** 5.C, a card's own words are not a cue (cause 19; S; judge
+  eval); **35d.** 5.B, a styled checkbox's label, and an answer that
+  did not see its item is unsure (cause 20; S).
+- **R5. Site tests** (Opus; after R1's step 26): **34.** 19.A after round
+  3: Abby's answers on breadcrumbs and on a results page's query, then
+  the spec change (cause 13; approval); why 19.A FAILed on round 2's
+  CILab in step 6g's rerun; and **19b** below, 9.C by function.
+
+Then the steps below continue from "Now", in this order unless a
+judging round says otherwise; whatever of steps 8 to 12 was not reached
+comes first. Parts
 are those of
 [plans/2026-11-12-coverage-second-look-thin-agent.md](plans/2026-11-12-coverage-second-look-thin-agent.md);
 fix numbers are the
@@ -178,7 +274,8 @@ the remaining checks).
    1.13.1 says so). Build: share P6's steps with 4.D and 4.E, run their own
    readings (focus pictures, focus-event check) on them, and only then
    count them as reached (step 6d's walk-coverage rule).
-15. **Opening everything, phases 2 and 3.** Phase 1 is built (`reveal.py`;
+15. **Opening everything, phases 2 and 3.** (Its 4.D and 5.D part is in
+   bundle R2 above, after step 27.) Phase 1 is built (`reveal.py`;
    guards RV and RC). Phase 2 is started (step 6g, 2026-11-15): a shared
    walk through what each trigger opened (`opened.py`), read by 4.C
    (1.14.0) and 4.E, where guard RC holds only what the walk did not
@@ -216,7 +313,7 @@ the remaining checks).
    gate: Abby, 2026-11-12). Its README line says what the trial caught
    and missed.
 19b. **9.C pairs by function, not only by address and place** (Abby,
-    2026-11-15). Candidates in the pages' own content: controls with
+    2026-11-15; done in bundle R5 above, after step 34). Candidates in the pages' own content: controls with
     the same picture, the same action word, or the same place in a
     template both pages share; every candidate goes to J1, which can
     already answer "different function". Each candidate rule comes
