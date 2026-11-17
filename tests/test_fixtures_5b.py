@@ -209,3 +209,106 @@ async def test_a_forms_button_below_several_fields_labels_none(
     f = got["5.B"]
     # First name, Last name and the Continue button; not the third field.
     assert (f.outcome.value, instance_rows(f)) == ("PASS", ["M1", "M1", "M1"]), f.rows
+
+
+# Step 29's small part (5.B 1.10.0; plan cause 6). Round 3's Drupal pages:
+# the search box sits in a panel the magnifier opens, 5.A's J1 was unsure
+# and 5.B still said no field has a visible label (A2, DOES NOT APPLY; the
+# key passes, counting the magnifier). f54 stands in: a box with a picture
+# beside it, outside any form, and no words.
+async def test_a_box_5a_is_unsure_about_is_a_review_not_dna(settings, server, drafts):  # noqa: F811
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f54-picture-beside-unlabelled-box.html",
+        ["5.A", "5.B"],
+        {"5.A": {"J1": {"choice": "unsure"}}},
+    )
+    assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == (
+        "NEEDS_REVIEW",
+        ["M6"],
+    )
+    f = got["5.B"]
+    assert (f.outcome.value, f.rows) == ("NEEDS_REVIEW", ["A2u", "G1"]), f.summary
+    assert f.note == "This test could not be performed"
+    assert "label test could not tell" in f.summary
+
+
+async def test_a_box_5a_has_not_asked_about_is_a_review_not_dna(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):  # noqa: F811
+    """5.A is not part of the run: nothing says the box has no label."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f54-picture-beside-unlabelled-box.html",
+        ["5.B"],
+        {},
+    )
+    assert (got["5.B"].outcome.value, got["5.B"].rows) == (
+        "NEEDS_REVIEW",
+        ["A2u", "G1"],
+    )
+
+
+async def test_a_box_5a_finds_unlabelled_stays_dna(settings, server, drafts):  # noqa: F811
+    """5.A's J1 = not_labeled is a finding (M5, FAIL): nothing for 5.B to judge."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f54-picture-beside-unlabelled-box.html",
+        ["5.A", "5.B"],
+        {"5.A": {"J1": {"choice": "not_labeled"}}},
+    )
+    assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("FAIL", ["M5"])
+    assert (got["5.B"].outcome.value, got["5.B"].rows) == ("DNA", ["A2", "G1"])
+
+
+@pytest.mark.parametrize(
+    ("answer", "outcome", "row"),
+    [
+        (ALL, "PASS", "M1"),
+        (_not(1), "FAIL", "M2"),
+        ({"J1": {"choice": "unsure"}}, "NEEDS_REVIEW", "M4"),
+    ],
+)
+async def test_a_box_5a_calls_graphic_is_an_item(
+    answer,
+    outcome,
+    row,
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """5.A's J1 = graphic (a graphic label, TT p. 26 Note 2): 5.B judges the
+    field by its picture, in a form of its own."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f54-picture-beside-unlabelled-box.html",
+        ["5.A", "5.B"],
+        {
+            "5.A": {"J1": {"choice": "graphic", "reasons": "a magnifier beside it"}},
+            "5.B": answer,
+        },
+    )
+    assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("PASS", ["M4"])
+    f = got["5.B"]
+    assert (f.outcome.value, instance_rows(f)) == (outcome, [row]), (f.rows, f.summary)
+    if outcome == "FAIL":
+        assert "labelled only by a picture" in f.summary
+
+
+async def test_a_placeholder_only_search_box_with_no_icon_is_still_dna(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):
+    """Round 1's nasa.gov: 5.A FAILs it by rule (M3), so 5.B has nothing to
+    judge. The nearest case that must keep its outcome."""
+    got = await run_tests(
+        settings,
+        f"{server.base}/5a/f55-placeholder-only-search-no-icon.html",
+        ["5.A", "5.B"],
+        {},
+    )
+    assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("FAIL", ["M3"])
+    assert (got["5.B"].outcome.value, got["5.B"].rows) == ("DNA", ["A2", "G1"])
