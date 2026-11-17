@@ -18,6 +18,13 @@ before the cut ("Now", A and B) and five bundles after the demo
 ("Next", R1 to R5), holding steps 21 to 35. Each thread's prompt is in
 [the handoff file](../reviews/2026-11-11-code-review-fixing.md).
 
+**Names.** `docs/ROADMAP.md` names the work by step number only. Where
+this plan says "thread A", "thread B" or "bundles R1 to R5", read the
+rows of the roadmap's "Order of work" and "Next" tables: A is steps 21,
+36, 22 and 23; B is steps 31 and 29's small part; R1 to R5 are the
+rows Applications, 4.D and 5.D on what opens, 4.A and 4.F, Forms, and
+Site tests. Cause numbers are this plan's own.
+
 ## Questions for Abby
 
 1. **Native validation in 5.F (and 5.G).** The contact form has no
