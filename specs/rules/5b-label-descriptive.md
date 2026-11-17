@@ -1,7 +1,7 @@
 ---
 tt_test: 5.B
 tt_name: 2.4.6-label-descriptive
-spec_version: 1.10.0
+spec_version: 1.11.0
 guards: reveal
 count: fields.shadow, fields.frames, fields_hidden, contenteditable, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -27,6 +27,9 @@ The tool gives each page one 5.B outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | A2u | As A2, but 5.A left a field that is not an item undecided (M1, J1? or M6; also when 5.A was not part of the run), or found a label 5.B does not read (1.10.0; step 29: round 3's Drupal pages, where the search box sits in a panel the magnifier opens, 5.A's J1 was unsure and 5.B said no field has a visible label; the key passes) | NEEDS REVIEW, not performed: "The label test could not tell whether a form field on this page has a label people can see, so there may be a label to judge here" | Spec rule; Abby, 2026-11-17 |
 | A3 | Pass L did not run | NEEDS REVIEW | Spec rule |
 | A4 | Otherwise | Applies; go to section 3 | |
+
+
+**Row WL: a page that drew itself after the walk began** (1.11.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. 5.B reads pass L (5.A's row WL): a pass L that found no data-entry field while the walk counted fields after the walk is incomplete, so never DOES NOT APPLY. Its sentence: "The page drew <N> form field(s) after it loaded, after we had read its labels, so they were not checked."
 
 ## 2. Evidence to collect
 

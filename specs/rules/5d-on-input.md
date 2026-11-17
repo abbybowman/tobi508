@@ -1,7 +1,7 @@
 ---
 tt_test: 5.D
 tt_name: 3.2.2-on-input
-spec_version: 1.10.0
+spec_version: 1.11.0
 guards: unrecorded-code, reveal, reveal-content
 count: fields, fields_hidden, contenteditable, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -27,6 +27,9 @@ The tool gives each page one 5.D outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | A1 | No P1 or P2 stop is a field, and the DOM inventory counts no form fields | DOES NOT APPLY | p. 25 Identify Content; p. 27 Applicability |
 | A2 | No stop is a field, but the inventory counts form fields | NEEDS REVIEW (fields the keyboard does not reach are 4.A's matter; the walk or inventory may be at fault) | Spec rule |
 | A3 | At least one stop is a field | Applies; go to section 3 | p. 27 Applicability |
+
+
+**Row WL: a page that drew itself after the walk began** (1.11.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. A1's "the DOM inventory counts no form fields" is the count after the walk: a page that draws its fields after the walk began is A2 (NEEDS REVIEW), never A1.
 
 ## 2. Evidence to collect
 

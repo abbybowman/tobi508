@@ -212,7 +212,13 @@ roadmap steps 21 to 35):
   like): the walk, pass L and the site read can start before the page
   has drawn its controls. On round 3's community pages the forward walk
   found one link of 76 and 90, and 4.F, 4.A, 5.A, 5.D and 5.F to 5.H
-  decided on that (README, "Known wrong outcomes"). Steps 22 and 23.
+  decided on that. Since step 22 (row WL; 4.A 1.13.0, 4.C 1.15.0, 4.F
+  1.9.0, 5.A 1.14.0, 5.B 1.11.0, 5.C 1.13.0, 5.D 1.11.0, 5.F 1.15.0) the
+  page is counted again 3 s after the backward walk's load, and a walk
+  that missed what was drawn decides nothing: those tests are NEEDS
+  REVIEW there, not decided. A page drawn later than 3 s and walked
+  faster still slips (README). Waiting for the page to draw, so the
+  tests decide again, is step 23.
 - **One document at every address:** an application that serves the
   same HTML shell at every path makes another page's recording byte for
   byte the tested page's, so 9.A to 9.C and 19.A read it as the tested

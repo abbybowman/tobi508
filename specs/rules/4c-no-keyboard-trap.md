@@ -1,7 +1,7 @@
 ---
 tt_test: 4.C
 tt_name: 2.1.2-no-keyboard-trap
-spec_version: 1.14.0
+spec_version: 1.15.0
 guards: unrecorded-code, reveal, reveal-walk
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -31,6 +31,9 @@ The tool gives each page one 4.C outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 The Identify Content blocks on p. 19 and p. 22 say "DOES NOT APPLY: 4.A to 4.H". TT 5.1.3's Test 4 ends at 4.F, so the spec reads this as 4.A to 4.F.
 
 **OPEN O4 (A1), page whose only focusable elements have tabindex=-1.** A1 gives DNA: nothing can receive focus from the keyboard. DHS's TT result on ACT test case 4b93a866 (one div with tabindex=-1) is PASS, while its result on the matching 4.D case (oj04fd b12f1f45) is inapplicable. Options: (a) keep DNA; (b) PASS. Neither is a false PASS; this only changes scoring. Recommend (a), with 4b93a866 scored as a known mismatch.
+
+
+**Row WL: a page that drew itself after the walk began** (1.15.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. When the count after the walk is larger than the count when it began and the walk did not reach every element, the walk is incomplete: no PASS (G3, trace row WL), and with no stop at all it is A2 (NEEDS REVIEW), never A1. Its sentence: "The page showed <N> element(s) that take focus when the keyboard walk began and <M> a few seconds later (it draws itself after it loads), and the walk reached <R> of them, so the page could not be checked as a person sees it." (`walk.drawn_late`).
 
 ## 2. Evidence to collect
 

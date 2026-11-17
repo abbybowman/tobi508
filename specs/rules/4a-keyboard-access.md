@@ -1,7 +1,7 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.12.0
+spec_version: 1.13.0
 guards: unrecorded-code, reveal, reveal-content
 count: canvases, draggable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -29,6 +29,9 @@ The tool gives each page one 4.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | A3 | Otherwise | Applies; go to section 3 | p. 19 Applicability |
 
 A page with zero stops and only pointer targets applies: everything on it is mouse-only (K rows).
+
+
+**Row WL: a page that drew itself after the walk began** (1.13.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. When the count after the walk is larger than the count when it began and the walk did not reach every element (row WK's evidence), the page is NEEDS REVIEW (G3, trace row WL), and every candidate the walk did not reach is C? (NEEDS REVIEW), never a J1 question: on such a page "the keyboard never reaches it" may only mean the walk began too soon (round 3: J1, shown one reached stop, failed about 20 controls, M6). Its sentence: "The page showed <N> element(s) that take focus when the keyboard walk began and <M> a few seconds later (it draws itself after it loads), and the walk reached <R> of them, so the page could not be checked as a person sees it." (`walk.drawn_late`).
 
 ## 2. Evidence to collect
 
@@ -71,7 +74,7 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 
 | # | Evidence pattern | Instance outcome | Source |
 | --- | --- | --- | --- |
-| C? | A cap or the time limit left the instance unchecked | NEEDS REVIEW | Spec rule |
+| C? | A cap or the time limit left the instance unchecked, or (row WL) the page drew itself after the walk began and the walk did not reach the candidate | NEEDS REVIEW | Spec rule |
 | M1 | The element could not be found again or focused, or an effect is unreliable (section 2, effect) | NEEDS REVIEW | Spec rule |
 | M2 | K: a non-native candidate whose click has no effect | No instance (nothing for a mouse to operate) | p. 19 HtT 1 |
 | M3 | K: a link, or a click that navigates, whose *destination* ([9a-bypass.md](9a-bypass.md) Terms) is the destination of a reached link; a control with no destination (`#`, `javascript:`, empty, the page itself) never matches, so it goes to M4 (1.6.0, Abby 2026-11-12) | PASS (another keyboard method with the same function) | p. 19 HtT 2.b |
