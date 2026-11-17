@@ -1,7 +1,7 @@
 ---
 tt_test: 5.C
 tt_name: 1.3.1-programmatic-label
-spec_version: 1.12.0
+spec_version: 1.13.0
 guards: reveal
 count: fields.shadow, fields.frames, fields_hidden, contenteditable, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -25,6 +25,9 @@ The tool gives each page one 5.C outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | A1 | The inventory has no form component | DOES NOT APPLY | p. 26 Applicability; TC10.A-ic-dna-1, -2 |
 | A2 | Pass L did not run, or ANDI could not run on the page (a Content-Security-Policy that blocks its script, an error) | NEEDS REVIEW: the PDF's evidence is missing | p. 26 HtT 1–3 |
 | A3 | Otherwise | Applies; go to section 3 | |
+
+
+**Row WL: a page that drew itself after the walk began** (1.13.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. 5.C reads pass L (5.A's row WL): a pass L that found no data-entry field while the walk counted fields after the walk is incomplete, so never DOES NOT APPLY. Its sentence: "The page drew <N> form field(s) after it loaded, after we had read its labels, so they were not checked."
 
 ## 2. Evidence to collect
 

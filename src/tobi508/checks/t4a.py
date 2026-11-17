@@ -39,7 +39,7 @@ from tobi508.traverse import (
     screenshot,
     settle,
 )
-from tobi508.walk import KeyboardWalk, walk_coverage
+from tobi508.walk import KeyboardWalk, drawn_late, walk_coverage
 
 HOVER_MAX = 40
 REVEAL_REPLAYS = 10
@@ -395,6 +395,7 @@ class State4A(BaseModel):
     instances: list[Inst4A] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
     walk_gap: str | None = None  # row WK's sentence, when an element was not reached
+    late: str | None = None  # row WL's sentence (step 22): the page drew itself late
     walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     notes: list[str] = Field(default_factory=list)
     shot: str | None = None
@@ -517,6 +518,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
         st.walk_reached = (cov.reached, cov.counted)
     if not cov.complete and cov.sentence:
         st.walk_gap = cov.sentence
+    # Step 22 (row WL): the page drew elements after the walk began. What the
+    # walk did not reach is then not "never reached by the keyboard": each is
+    # C? (NEEDS REVIEW), never a question that could FAIL it.
+    late = st.late = drawn_late(walk)
+    if late:
+        st.incomplete.append(late)
     if st.walk_gap:
         st.incomplete.append(st.walk_gap)
     elif p1.end != "wrap" and walk.stops > 0:
@@ -673,7 +680,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
 
     # K: what is left, in document order.
     for t in unreached.values():
-        st.instances.append(_k(st, t, None))
+        st.instances.append(_k(st, t, None, checked=not late))
     clicks = 0
     for inst in st.instances:
         if (
@@ -691,7 +698,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
             inst.click.kinds
         ):
             inst.same_link = _same_link(st, inst.click.url)
-    if any(i.kind == "K" and not i.checked for i in st.instances):
+    if not late and any(i.kind == "K" and not i.checked for i in st.instances):
         st.incomplete.append(
             f"More than {CLICK_MAX} things a mouse can use were found; not all were clicked."
         )
@@ -1428,6 +1435,8 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
     trace.append(page.id)
     if st.walk_gap and page.outcome is Outcome.NEEDS_REVIEW:
         trace.insert(-1, "WK")
+    if st.late and page.outcome is Outcome.NEEDS_REVIEW:
+        trace.insert(-1, "WL")
     order = {Outcome.FAIL: 0, Outcome.NEEDS_REVIEW: 1}
     body = [t for _, t in sorted(sentences, key=lambda x: order.get(x[0], 2))]
     if page.outcome is Outcome.PASS:

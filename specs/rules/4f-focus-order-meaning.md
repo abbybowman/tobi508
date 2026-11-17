@@ -1,7 +1,7 @@
 ---
 tt_test: 4.F
 tt_name: 2.4.3-focus-order-meaning
-spec_version: 1.8.0
+spec_version: 1.9.0
 guards: unrecorded-code, reveal
 count: focusable@dna
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -24,8 +24,12 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | --- | --- | --- | --- |
 | A1 | P1 and P2 reach zero stops, and the DOM inventory has zero candidates | DOES NOT APPLY | p. 23 Applicability |
 | A2 | P1 and P2 reach zero stops, but the inventory has candidates | NEEDS REVIEW (walk or inventory fault) | Spec rule |
+| WL | Exactly one distinct stop and no trigger, but the count after the walk is larger and the walk did not reach it all (step 22) | NEEDS REVIEW | Spec rule (principle 3) |
 | A3 | Exactly one distinct stop and no trigger | DOES NOT APPLY (with one stop there is no order to affect meaning) | p. 23 Note 2 |
 | A4 | Otherwise | Applies; go to section 3 | p. 23 Applicability |
+
+
+**Row WL: a page that drew itself after the walk began** (1.9.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. A3 (one element, no order) needs one element in the count after the walk, not one stop: one distinct stop on a page that counts more after the walk is row WL, NEEDS REVIEW with "This test could not be performed", and A1 needs no element in that count either (else A2). On any other page such a walk is incomplete (G3). Its sentence: "The page showed <N> element(s) that take focus when the keyboard walk began and <M> a few seconds later (it draws itself after it loads), and the walk reached <R> of them, so the page could not be checked as a person sees it." (`walk.drawn_late`).
 
 ## 2. Evidence to collect
 

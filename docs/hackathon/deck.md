@@ -107,7 +107,7 @@ flowchart LR
 - Never PASS or Does Not Apply on a reading that is not complete: an inventory of the page holds back a result when a test did not read everything there
 - Inside web components and frames a test reads the content and decides it on the same rows; every new PASS there has a page beside it that must still FAIL
 
-**Notes:** A false PASS hides a barrier from the people it blocks. A false FAIL costs a developer time. The scoring weights say the same: a false PASS counts three times any other error. Done since round 3: a form checked only by the browser's own messages is left for a person (5.F 1.13.0, 5.G 1.11.0); the browser shows one field's message at a time and its words differ by browser, so Chrome's words passed a form the tester failed in Firefox. A number that appears on the page ("4") is no longer read as an error message (5.F 1.14.0, 5.G 1.12.0).
+**Notes:** A false PASS hides a barrier from the people it blocks. A false FAIL costs a developer time. The scoring weights say the same: a false PASS counts three times any other error. Done since round 3: a form checked only by the browser's own messages is left for a person (5.F 1.13.0, 5.G 1.11.0); the browser shows one field's message at a time and its words differ by browser, so Chrome's words passed a form the tester failed in Firefox. A number that appears on the page ("4") is no longer read as an error message (5.F 1.14.0, 5.G 1.12.0). A page that draws itself after the keyboard walk began is left for a person instead of decided on the one link the walk found (step 22).
 
 ---
 

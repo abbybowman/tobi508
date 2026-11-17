@@ -741,6 +741,15 @@ async def labels_pass(ctx, walk) -> LabelsPass:
                 idx.setdefault((tuple(st.stop.frame_chain), st.stop.css_path), i)
         for c in lp.components:
             c.tab_index = idx.get((tuple(c.frame_chain), c.css))
+        # Step 22 (plan after round 3, cause 2): pass L read the page as it
+        # loaded and found no field, but the walk counted fields later (the
+        # page draws itself after load): never "no form fields".
+        n = walk.fields_after
+        if n and not any(c.entry for c in lp.components):
+            lp.incomplete.append(
+                f"The page drew {n} form field{'' if n == 1 else 's'} after it "
+                "loaded, after we had read its labels, so they were not checked."
+            )
     lp.read = {"page": what_was_read(lp, ctx.cache.get("count"))}
     ctx.cache["labels-pass"] = lp
     return lp.model_copy(deep=True)

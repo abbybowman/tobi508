@@ -44,7 +44,7 @@ from tobi508.traverse import (
     page_text,
     replay,
 )
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, drawn_late
 
 ARROWS = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"]
 P3_MAX_MEMBERS = 10
@@ -163,6 +163,8 @@ class State4C(BaseModel):
     inventory: int
     keyboard_unreachable: int = 0
     collapsed: int = 0
+    # Step 22 (row WL): the page drew elements the walk did not reach.
+    late: str | None = None
     distinct_p1p2: list[str]
     p1_trap: str | None = None  # instance id
     p2_trap: str | None = None
@@ -821,6 +823,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
                 f"{walk_name} left the page (a key press opened another page), so "
                 "the rest of the page was not walked."
             )
+    st.late = drawn_late(walk)
+    if st.late:
+        st.incomplete.append(st.late)
     if st.stops == 0:
         return st  # section 1 decides
     s = await c.session()
@@ -1192,13 +1197,13 @@ def instance_rows(st: State4C) -> list[Row]:
 APPLICABILITY = [
     Row(
         "A1",
-        lambda st: st.stops == 0 and st.inventory == 0,
+        lambda st: st.stops == 0 and st.inventory == 0 and not st.late,
         Outcome.DNA,
         "p. 21 Applicability",
     ),
     Row(
         "A2",
-        lambda st: st.stops == 0 and st.inventory > 0,
+        lambda st: st.stops == 0 and (st.inventory > 0 or bool(st.late)),
         Outcome.NEEDS_REVIEW,
         "Spec rule",
     ),
@@ -1304,6 +1309,8 @@ def evaluate(st: State4C, evidence_refs: list[str]) -> Finding:
     g, outcome = page_outcome(
         PageEvidence(applicability, results, incomplete, complete)
     )
+    if st.late and g != "G1":
+        trace.append("WL")
     trace.append(g)
     if g == "G1":
         reason = {

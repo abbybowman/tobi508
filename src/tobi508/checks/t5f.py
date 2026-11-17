@@ -869,7 +869,7 @@ async def error_pass(ctx: RunContext, walk: KeyboardWalk) -> PassE:
     ps = PassE(
         p1={"end": walk.p1.end, "presses": len(walk.p1.steps)},
         field_stops=field_stops(walk),
-        inventory_fields=walk.p1.form_fields,
+        inventory_fields=walk.fields_after,
     )
     cov = field_coverage(walk)
     if cov.counted is not None:
