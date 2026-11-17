@@ -60,6 +60,14 @@ class KeyboardWalk(BaseModel):
         )
 
     @property
+    def grew(self) -> bool:
+        """The page more than doubled its elements that take focus after the
+        walk began (step 22; the test 4.C uses for a page that grew): one
+        drawn after load. A late link or two on a page drawn by the server
+        (round 2's home page: 145, then 146) is not."""
+        return self.inventory_after > 2 * max(self.inventory, 1)
+
+    @property
     def fields_after(self) -> int:
         """Form fields, counted after the walk (step 22), as `inventory_after`."""
         return max(
@@ -269,7 +277,7 @@ def walk_coverage(
         key=lambda p: p.inventory_end,
         default=None,
     )
-    if later is not None and last.inventory_end is not None:
+    if later is not None and last.inventory_end is not None and walk.grew:
         if later.inventory_end > last.inventory_end:
             last = later
     causes = [c for p in read if (c := _cause(p))]
@@ -348,12 +356,15 @@ def field_coverage(
         and not s.stop.readonly
         and not s.stop.disabled
     }
-    # Step 22: the walk's larger end count (P2's is read late).
-    cov.counted = max(
-        p.form_fields_end
-        for p in (walk.p1, walk.p2, last)
-        if p.form_fields_end is not None
-    )
+    # Step 22: the walk's larger end count (P2's is read late), when the page
+    # grew after the walk began or had no form field when it began.
+    cov.counted = last.form_fields_end
+    if walk.grew or walk.p1.form_fields == 0:
+        cov.counted = max(
+            p.form_fields_end
+            for p in (walk.p1, walk.p2, last)
+            if p.form_fields_end is not None
+        )
     cov.not_reached = max(0, cov.counted - len(seen))
     cov.reached = cov.counted - cov.not_reached
     if cov.not_reached:
@@ -372,7 +383,7 @@ def drawn_late(walk: KeyboardWalk) -> str | None:
     take focus after the walk than when it began, and the walk did not reach
     them all. Then a test does not decide from the walk (NEEDS REVIEW, row
     WL). The sentence says what was missed; None when nothing was."""
-    if walk.inventory_after <= walk.inventory:
+    if not walk.grew:
         return None
     cov = walk_coverage(walk)
     if cov.complete:

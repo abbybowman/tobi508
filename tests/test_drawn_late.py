@@ -71,3 +71,34 @@ async def test_a_page_drawn_with_its_load_keeps_its_outcome(
     out = await run_tt_tests(settings, f"{server.base}/{page}", [TestId(test)])
     [f] = out.report.findings
     assert (f.outcome, f.rows) == (Outcome.DNA, [row, "G1"]), (f.rows, f.summary)
+
+
+def _walk(start: int, end1: int, end2: int):
+    from tobi508.models import PassResult
+    from tobi508.walk import KeyboardWalk
+
+    def p(name, end):
+        return PassResult.model_construct(
+            name=name,
+            steps=[],
+            end="wrap",
+            inventory=start,
+            inventory_end=end,
+            inventory_end_items=None,
+            form_fields=0,
+            form_fields_end=0,
+        )
+
+    return KeyboardWalk.model_construct(p1=p("P1", end1), p2=p("P2", end2))
+
+
+def test_a_late_link_on_a_page_drawn_by_the_server_is_not_a_page_drawn_late():
+    """Round 2's home page (step 22's first rerun): 145 elements when the walk
+    began, 146 later. One late link is not an application drawn after load:
+    no row WL, and coverage keeps counting against the pass it reads."""
+    from tobi508.walk import drawn_late
+
+    w = _walk(145, 146, 145)
+    assert not w.grew and drawn_late(w) is None
+    assert _walk(1, 1, 76).grew  # round 3's community home page
+    assert not _walk(10, 10, 20).grew and _walk(10, 10, 21).grew
