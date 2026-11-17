@@ -110,21 +110,27 @@ headed Chrome) are in
   may read the dialog. Not measured.
 - **4.A:** controls inside content that opens only on click or Enter are
   not scanned (phase 2 above). Handlers delegated to an ancestor are not
-  tied to the child they serve.
+  tied to the child they serve. A page with embedded players or frames is
+  often NEEDS REVIEW.
 - **4.B:** timing the page does not describe in words is not found; the
   timing words are English only, and no match is PASS, so a page in
   another language passes (M-03, E-09; part E).
 - **4.C:** a late-refocus fixture (refocus 600 ms after blur, no DOM
   change) once the xfail in `tests/test_traverse.py` is settled; traps
-  past the cap of 60 stops have no budget of their own.
+  past the cap of 60 stops have no budget of their own. A menu whose
+  controls the Tab key does not reach, or that could not be opened, is
+  NEEDS REVIEW (as in 4.E and 5.D).
 - **4.D and 4.F:** run 4.C's f19 (cross-origin frame), f24 (open shadow
-  root) and f32 (two traps) for 4.D, and f32 for 4.F.
+  root) and f32 (two traps) for 4.D, and f32 for 4.F. The judge is often
+  unsure on both (on small focus pictures for 4.D), so many cells wait for
+  a person.
 - **4.D and 4.E, focus dropped on focus inside a frame from another
   site:** a control that blurs itself as it gets focus is M3 (4.D) and M7
   (4.E) FAIL on a plain page and, since step 8 (4.D 1.10.0, 4.E 1.7.0),
   inside a web component; inside a frame from another site the walk never
   reaches it, so both are NEEDS REVIEW there (row WK). Safe, not a decided
-  FAIL.
+  FAIL. 4.E also leaves a menu whose controls the Tab key does not reach,
+  or that could not be opened, NEEDS REVIEW.
 - **The walk on a page with a frame from another site, on a slow CI
   runner:** once (PR #64's CI, 2026-11-15) the walk on the grid's
   `frame-other` page reached all 7 stops but never saw focus wrap back to
@@ -146,7 +152,7 @@ headed Chrome) are in
   5.H's consequence words are English only, and no match is DOES NOT
   APPLY (M-03). Error handling done on the server cannot be replayed
   from a recording: 5.F answers NEEDS REVIEW when a form is sent, and
-  that stays.
+  that stays. So does a change it cannot read as an error.
 - **5.B:** icon-only buttons are left out (pass L has no picture of
   buttons); a field whose only label is an icon button beside it is
   judged by that picture, and a field whose only cue is its own button's
@@ -156,15 +162,18 @@ headed Chrome) are in
   step 29); one 5.A calls graphic is judged by its picture, in a form of
   its own after the others. Beside other judged fields, a field 5.A left
   unsure is still not counted by 5.B, so a PASS there is "in what 5.B
-  judged". Not done: opening the panel a magnifier opens (so 5.A can see
+  judged". The judge is often unsure, so many cells wait for a person.
+  Not done: opening the panel a magnifier opens (so 5.A can see
   the field) and a magnifier as a label (the forms row).
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (both M4; only the wording differs). A jump forward past a
-  field after Tab-away is not detected.
+  field after Tab-away is not detected. A menu or section that opens
+  leaves it NEEDS REVIEW (as in 4.C and 4.E).
 - **9.x:** rows no fixture triggers (9.A M2, M6 and the 8-candidate cap;
   9.B N1, N5; 9.C C2, C5; a page or ANDI that cannot be read, end to
   end; an other page that redirects off the host). Add fixtures for
-  whatever real templates show.
+  whatever real templates show. A page with more than 5,000 items is
+  NEEDS REVIEW in 9.A to 9.C.
 - **A stuck download can run past its time limit.** An other page's
   media download once ran 342 s past a 20 s limit (step 6h). The cause
   there is gone (other pages no longer record media), but a time limit
@@ -172,7 +181,10 @@ headed Chrome) are in
 - **19.A's site search depends on where the tool runs.** Where the
   results page cannot load its scripts, the search is "not verified"
   and 19.A stays NEEDS REVIEW where a search that loaded would decide
-  (round 2's two keyed FAILs, in one container).
+  (round 2's two keyed FAILs, in one container). A page whose other pages
+  have closed menus the tool did not open, and a link to the page under
+  another address whose content changes on every load, are NEEDS REVIEW
+  too.
 - **9.C compares less than the TT text covers** (read against the TT
   text, 2026-11-15; not run). TT: "components that have the same
   functionality within a set of web pages", whatever they look like or
@@ -193,7 +205,8 @@ headed Chrome) are in
   until ER 3's shortlist is built (6.A, 7.A, 7.E, 12.D, 13.A, 13.B, 13.C,
   18.A). 2.C J1's wording when the mechanism is page text naming a key.
   Real YouTube and Vimeo embeds are NEEDS REVIEW in 2.A (A2), 2.B (A1)
-  and 3.A.
+  and 3.A. 2.A: audio that does not play from the recording is NEEDS
+  REVIEW.
 - **3.A:** CSS background animated images are not decoded (only `<img>`);
   H.264 video cannot be decoded in Chromium (NEEDS REVIEW). No held-out
   pages with flashing exist. Optional: the IRIS cross-check
