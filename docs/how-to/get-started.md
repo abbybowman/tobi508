@@ -95,6 +95,11 @@ claude mcp add --transport http tobi508 http://127.0.0.1:8000/mcp
 own loopback, which a published port cannot reach. Stop it with
 `docker rm -f tobi`.
 
+Open questions go to your agent by default. To have the server answer
+some itself through a Messages API gateway (Luna or another), set the
+`JUDGE_*` settings in `.env`, or with the image in a file passed with
+`--env-file`: [deploy-on-vast.md, section 9](deploy-on-vast.md#9-the-yaml-for-the-cluster-admins).
+
 ## Check it works
 
 Restart Claude Code, run `/mcp` and check `tobi508` is connected, then ask:

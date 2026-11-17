@@ -356,3 +356,61 @@ both: the full smoke test with the setting, and the 403 without it.
 handler on the audit logger); the smoke test found it, and the fix is
 tested (`tests/test_access.py`).
 
+
+## 9. The YAML for the cluster admins
+
+On VAST a developer cannot apply resources outside their own dev
+namespace (section 6a), so the deployment is a file the cluster admins
+apply: [`deploy/vast/tobi508.yaml`](../../deploy/vast/tobi508.yaml). It
+holds a ConfigMap (the settings of section 2), a PersistentVolumeClaim
+for `/data` (20 Gi), a Deployment (one replica, `Recreate`, the image
+pinned by commit, uid 1000, all capabilities dropped, a 1 Gi `/dev/shm`,
+`/health` probes), a Service on port 8000 and an Ingress for the app's
+host. Replace every `<...>` first. `tests/test_deploy_manifest.py` checks
+that every setting it names is one the server reads (an unknown name is
+ignored silently), that sign-in is on and `DEV_MODE` off, and that it
+stays one replica of a pinned image.
+
+**The secrets** are not in the file. Whoever applies it creates them,
+from a file only they can read, deleted afterwards (not on the command
+line, where shell history keeps them):
+
+```bash
+umask 077
+cat > tobi508-secrets.env <<'END'
+OIDC_CLIENT_SECRET=<the Keycloak client's secret>
+OIDC_JWT_SIGNING_KEY=<a long random string, e.g. from: openssl rand -base64 48>
+END
+kubectl create secret generic tobi508-secrets -n <namespace> --from-env-file=tobi508-secrets.env
+rm tobi508-secrets.env
+kubectl apply -f tobi508.yaml
+```
+
+Keep `OIDC_JWT_SIGNING_KEY` the same across updates: a new one makes
+every client register and sign in again.
+
+**The server's own judge** (Luna or another Messages API gateway; off by
+default, section 2). In the ConfigMap:
+
+```yaml
+  JUDGE_BACKEND: api
+  JUDGE_ROUTE: anthropic-messages
+  JUDGE_BASE_URL: https://<gateway>      # without /v1: the server adds /v1/messages
+  JUDGE_MODEL: <the gateway's model name>
+  JUDGE_TYPES: 4.B,5.H                   # only the types that pass the gate (ROADMAP.md)
+  # JUDGE_AUTH_HEADER: authorization     # if the gateway wants a bearer token, not x-api-key
+```
+
+and `JUDGE_API_KEY=<key>` in the secrets file (with `authorization` as the
+header, the key's value is `Bearer <key>`). The server refuses to start
+with `api` and no URL or key. The gateway must be reachable from the pod.
+Locally the same names go in `.env`; with Podman, in a file passed with
+`--env-file` (mode 600).
+
+**Verified (2026-11-17):** the manifest's test; the image's smoke test
+(`tests/container_smoke.py`, 4.C PASS) under Docker with the manifest's
+security settings (`--user 1000:1000 --cap-drop ALL --security-opt
+no-new-privileges --shm-size 1g`). **Not verified:** applying it on a
+cluster (no access from where it was written, and no schema check run);
+whether VAST's gateway takes a standard Ingress; the gateway's reach to
+Luna.

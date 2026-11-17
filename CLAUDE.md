@@ -327,6 +327,7 @@ specs/rules/    rules specs, one per TT test: the only source of outcome logic (
                 <id>-build-tasks.md while a test is built
 specs/sources/  the TT 5.1.3 PDF (the authority) and its Markdown + tt.json copy
 docs/           ROADMAP.md; plans/; solutions/; research/ (notes, not authorities); hackathon/; how-to/
+deploy/vast/    the Kubernetes YAML the VAST cluster admins apply (docs/how-to/deploy-on-vast.md, section 9)
 third_party/    ANDI 29.2.2, jQuery 3.7.1, SCRT 5.2.0 (template read by scrt.py), PROVENANCE.json
 tests/          fixtures/ (per-test folders; act/ and baseline/ vendored cases with manifests and sync
                 scripts; inject/ pages whose text tries to steer the judge; budget/ timing pages);
