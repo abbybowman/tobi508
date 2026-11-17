@@ -167,3 +167,31 @@ arrows through up to 5 items.
   its "after" read; press the opposite arrow once.
 - Try ArrowDown, then ArrowRight if nothing moved, instead of guessing the
   orientation from the role.
+
+## Where a stop is on the page (4.F 1.11.0)
+
+**Problem.** Step 23's rerun gave three false FAILs on round 2's pages,
+each a page where the judge had been unsure the run before. The signals
+it was shown were measurement errors, a different few each run:
+- **A box and a scroll read in two calls.** The walk's box comes with the
+  step; the hook read `scrollX, scrollY` in a later call. Bootstrap sets
+  `scroll-behavior: smooth`, so focus starts a scroll that runs on between
+  the two reads: a date field was placed below the next row, a card's
+  copy button below its Download button. Worse under load.
+- **A box that scrolls by itself** (`max-height`, `overflow: auto`): focus
+  scrolls it, so its later links sit above earlier ones on the screen.
+- **A script-made id** (`#html5_media_<random>`): P1 and P2 load the page
+  apart, so path keys with that id never match and S4 said Shift+Tab was
+  not the reverse of Tab when it was exactly that.
+
+**What we do.** Read the box and the scroll in one `evaluate` (ORDER_FN's
+own `page`); place a stop in a scroll box by where it lies in the box's
+content against its neighbours in the box, and by the box's own place
+against everything else; for S4, treat an id found in only one walk as
+the same. Fixtures 4f/f26 to f29 (f29: steps out of sequence inside a
+scroll box still FAIL).
+
+**How to find it next time.** Run the page alone twice with no judge
+(signals only) and diff the signal lists; a signal that comes and goes on
+a replay is a measurement, not the page. Compare the two walks by path
+key before believing S4.

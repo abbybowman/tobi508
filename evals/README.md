@@ -566,6 +566,14 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## Run 37, 2026-11-17: 4.F 1.11.0 (where a stop is while the page scrolls; the Shift+Tab list by Tab number), every 4.F packet
+
+4.F 1.11.0 changed J1's input: `input.backward` names each element by its number in `input.order` (null for one Tab never reached) and lists only the elements `input.order` holds; the question says so. Placing stops (one-call boxes, scroll boxes) and S4's match of script-made ids change which pages ask, not the question. `prepare 4.F` ran every 4.F case (18 ask questions; the new f26 to f28 ask none). Two fresh agents (general-purpose, Sonnet, told to open nothing outside their packets; each listed only packet files):
+- **First: 15/18.** f08 and f16 (what a menu opened, the R question, unchanged) were "unsure": NEEDS REVIEW, safe. The first f29 (a scroll box drawn bottom to top, Tab following its numbered topics) was "preserves", a PASS where the fixture expected FAIL; the agent's reason ("reached in numbered order; only the drawing is reversed") is one a careful tester could give, so the fixture was wrong, not the answer. f29 became numbered steps drawn 1 to 5 and reached 3, 1, 5, 2, 4 inside a scroll box.
+- **Second (f29 replaced): 18/18 match**, no false PASS; f29 FAIL, f14 (Shift+Tab differs) FAIL.
+
+Then 4.F alone on all three rounds' frozen pages with the server judge, one round at a time ([`judging/gate-2026-11-17-4f/`](judging/gate-2026-11-17-4f/README.md)), against step 23's rerun: round 2's false FAILs 4 to 2 (p02 PASS, agreeing; p03 and p07 NEEDS REVIEW; p09 a new one, the judge on an interactive sky map), round 1 agree 5 to 8, round 3 one PASS to NEEDS REVIEW (the judge unsure). No false PASS; no page reached PASS without the judge.
+
 ## Run 36, 2026-11-17: 5.F 1.14.0 and 5.G 1.12.0 (steps 21 and 36: the browser's own message; text that is not a message), every 5.F and 5.G packet
 
 Step 21 stopped asking 5.G's J1 about the browser's own message, and step 36 removed text with no word from J1's `input.errors` and added to both J1 rubrics that text which is not a message (a number or count, a date or time, a result the page shows) is "no_error". `prepare 5.F,5.G` ran every 5.F and 5.G case (49 ask questions; f01, f13, f16, f25 and the new f34 ask none now). One fresh agent (general-purpose, Sonnet, told to open nothing outside its packets; it listed only packet files and wrote helper scripts in the folder above them, reading only the packets) answered all 49, and f11's second round. **49/49 match** on the page outcome, no false PASS. f35 (the new twin: "Invalid" for two fields) stayed FAIL: not_identified for 5.F, no_guidance for 5.G. Its first `answers.json` files were wrapped as `{"answers": [...]}`; they were unwrapped as they stood (format only) before `apply`.

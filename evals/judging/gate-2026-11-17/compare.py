@@ -100,11 +100,14 @@ def main() -> None:
     ap.add_argument("--out", default="moved")
     ap.add_argument("--new", default="", help="gate folder to read (default: this)")
     ap.add_argument("--old", default="", help="gate folder for FIRST's old side")
+    ap.add_argument("--tests", default="", help="only these tests, e.g. 4.F")
     a = ap.parse_args()
     new_gate = JUD / a.new if a.new else HERE
     out_dir = new_gate
     # The first rerun ran FIRST only; a later gate (--new) ran TESTS.
     tests = TESTS if a.new else FIRST
+    if a.tests:  # a rerun of some tests only: the rest read "not performed"
+        tests = a.tests.split(",")
     out: dict = {
         "note": "Agent-assisted results, not certified Trusted Tester results.",
         "rounds": {},
