@@ -174,6 +174,13 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
   SECURITY.md's two [TO CONFIRM] items: worded in
   [the archive](archive/2026-11-17-roadmap-before-the-last-day.md).
 
+**Decided (Abby, 2026-11-17): VAST runs `:latest`** while TOBI is a
+prototype, pulled at each restart, so it follows `main` (the guide,
+section 9, "Updating"). A pinned, automatic update (CI writing each
+build's commit into the YAML, deployed from VAST's Forgejo through a
+mirror of the GitHub repository) and recording the image build in
+every report wait until after the demo.
+
 **Decided (Abby, 2026-11-17): the live status page is open.** The MCP
 server keeps sign-in. A read-only page of what the server is running
 and has just run (the URLs tested, progress, outcomes and the pre-SCRT
