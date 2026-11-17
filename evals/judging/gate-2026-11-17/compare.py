@@ -26,14 +26,28 @@ sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "src"))
 
 from evals import judging  # noqa: E402
-from tobi508 import scrt  # noqa: E402
 from tobi508.compare import compare  # noqa: E402
 
 JUD = REPO / "evals" / "judging"
 KEYS = {1: JUD / "round1", 2: JUD / "round2-armc", 3: JUD / "round3"}
-TESTS = ["4.A", "4.C", "4.D", "4.E", "4.F", "5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H"]
+TESTS = [
+    "4.A",
+    "4.C",
+    "4.D",
+    "4.E",
+    "4.F",
+    "5.A",
+    "5.B",
+    "5.C",
+    "5.D",
+    "5.F",
+    "5.G",
+    "5.H",
+]
 
-_spec = importlib.util.spec_from_file_location("g16", JUD / "gate-2026-11-16" / "compare.py")
+_spec = importlib.util.spec_from_file_location(
+    "g16", JUD / "gate-2026-11-16" / "compare.py"
+)
 g16 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(g16)
 
@@ -78,7 +92,10 @@ def main() -> None:
     ap.add_argument("--run", default="r1")
     ap.add_argument("--out", default="moved")
     a = ap.parse_args()
-    out: dict = {"note": "Agent-assisted results, not certified Trusted Tester results.", "rounds": {}}
+    out: dict = {
+        "note": "Agent-assisted results, not certified Trusted Tester results.",
+        "rounds": {},
+    }
     md = ["# Moved cells, gate 2026-11-17", "", out["note"], ""]
     for rnd in (1, 2, 3):
         new_dir = HERE / f"round{rnd}" / a.run / "results"
@@ -90,7 +107,9 @@ def main() -> None:
             old = {(r["page"], r["test"]): r for r in g16.side(_dirs(old_dir), KEYS[3])}
             old_rows = _rows(old_dir)
         else:
-            sides = json.loads((JUD / "gate-2026-11-16" / f"compare-round{rnd}.json").read_text())
+            sides = json.loads(
+                (JUD / "gate-2026-11-16" / f"compare-round{rnd}.json").read_text()
+            )
             old = {(r["page"], r["test"]): r for r in sides["sides"]["real"]}
             old_rows = {k: v.get("rows", []) for k, v in old.items()}
         new_rows = _rows(new_dir)
@@ -102,25 +121,40 @@ def main() -> None:
             o = old[k]
             if (o["tool"], o["verdict"]) == (n["tool"], n["verdict"]):
                 continue
-            moved.append({
-                "page": k[0], "test": k[1], "key": n["key"], "comment": notes.get(k, ""),
-                "old": o["tool"], "old_verdict": o["verdict"], "old_rows": old_rows.get(k, []),
-                "new": n["tool"], "new_verdict": n["verdict"], "new_rows": new_rows.get(k, []),
-                "judge_decided": n.get("judge_decided"),
-            })
+            moved.append(
+                {
+                    "page": k[0],
+                    "test": k[1],
+                    "key": n["key"],
+                    "comment": notes.get(k, ""),
+                    "old": o["tool"],
+                    "old_verdict": o["verdict"],
+                    "old_rows": old_rows.get(k, []),
+                    "new": n["tool"],
+                    "new_verdict": n["verdict"],
+                    "new_rows": new_rows.get(k, []),
+                    "judge_decided": n.get("judge_decided"),
+                }
+            )
         pages = sorted({k[0] for k in new})
         out["rounds"][rnd] = {"pages": pages, "moved": moved, "live": _live(new_dir)}
         md += [f"## Round {rnd} ({len(pages)} pages run: {', '.join(pages)})", ""]
-        md += [f"Loaded live: {'; '.join(_live(new_dir)) or 'none (every page from the freeze)'}", ""]
+        live = "; ".join(_live(new_dir)) or "none (every page from the freeze)"
+        md += [f"Loaded live: {live}", ""]
         if not moved:
             md += ["No cell moved.", ""]
             continue
-        md += ["| Page | Test | Key | Key's comment | Old (verdict, rows) | New (verdict, rows) |", "| --- | --- | --- | --- | --- | --- |"]
+        md += [
+            "| Page | Test | Key | Key's comment "
+            "| Old (verdict, rows) | New (verdict, rows) |",
+            "| --- | --- | --- | --- | --- | --- |",
+        ]
         for m in moved:
             c = m["comment"].replace("|", "/").replace("\n", " ")[:160]
+            was = f"{m['old']} ({m['old_verdict']}; {' '.join(m['old_rows'][:8])})"
+            now = f"{m['new']} ({m['new_verdict']}; {' '.join(m['new_rows'][:8])})"
             md.append(
-                f"| {m['page']} | {m['test']} | {m['key']} | {c} | {m['old']} ({m['old_verdict']}; {' '.join(m['old_rows'][:8])}) "
-                f"| {m['new']} ({m['new_verdict']}; {' '.join(m['new_rows'][:8])}) |"
+                f"| {m['page']} | {m['test']} | {m['key']} | {c} | {was} | {now} |"
             )
         md.append("")
     (HERE / f"{a.out}.json").write_text(json.dumps(out, indent=1))

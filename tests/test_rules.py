@@ -35,7 +35,14 @@ def test_repo_specs_load_and_4c_version_comes_from_front_matter() -> None:
             t,
             spec.spec_version,
         )
-    assert specs[TestId.T4C].spec_version == "1.14.0"
+    # The front matter's version, as the lock records it (a literal here
+    # broke on every 4.C bump).
+    lock = {
+        line.split()[0]: line.split()[1]
+        for line in (RULES_DIR / "versions.lock").read_text().splitlines()
+        if line and not line.startswith("#")
+    }
+    assert specs[TestId.T4C].spec_version == lock["4c-no-keyboard-trap.md"]
     assert specs[TestId.T4C].path.name == "4c-no-keyboard-trap.md"
 
 
