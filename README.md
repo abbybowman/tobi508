@@ -53,9 +53,9 @@ The table lists each implemented test, its rules spec and how it did on our eval
 
 Status is about our evaluation pages only (29 pages on three NASA sites, scored against a Trusted Tester's blind SCRT files and rerun after fixes as development runs) and is not a result for any other page: ❌ red passed a page a tester failed, or was wrong more often than right; ⚠️ yellow often fails pages a tester passes, or leaves most cells for a person; ✅ green agrees with a tester. The counts, and which run each is from, are in [evals/STATUS.md](evals/STATUS.md); every test's limits are in [Known limits, per test](docs/KNOWN-LIMITS.md).
 
+<!-- status-table:start -->
 | ID | TT test name | Spec | Status |
 | --- | --- | --- | --- |
-<!-- status-table:start -->
 | 2.A | 1.4.2-audio-control | [1.2.0](specs/rules/2a-audio-control.md) | ✅ agrees with a tester |
 | 2.B | 2.2.2-blinking-moving-scrolling | [1.5.0](specs/rules/2b-blinking-moving-scrolling.md) | ✅ agrees with a tester |
 | 2.C | 2.2.2-auto-updating | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester |
@@ -78,6 +78,7 @@ Status is about our evaluation pages only (29 pages on three NASA sites, scored 
 | 9.B | 3.2.3-consistent-navigation | [1.7.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
 | 9.C | 3.2.4-consistent-identification | [1.10.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester |
 | 19.A | 2.4.5-multiple-ways | [1.15.0](specs/rules/19a-multiple-ways.md) | ⚠️ mostly left for a person |
+
 <!-- status-table:end -->
 
 ## Known wrong outcomes

@@ -197,7 +197,7 @@ def readme_rows() -> list[str]:
 
     specs = rules.load_specs(REPO / "specs" / "rules")
     counts = compute()
-    rows = []
+    rows = ["| ID | TT test name | Spec | Status |", "| --- | --- | --- | --- |"]
     for tid, by_site in counts.items():
         spec = specs[TestId(tid)]
         colour, words = status(total(by_site))
@@ -262,7 +262,7 @@ def write() -> None:
     text = README.read_text("utf-8")
     a, b = text.index(START) + len(START), text.index(END)
     README.write_text(
-        text[:a] + "\n" + "\n".join(readme_rows()) + "\n" + text[b:], "utf-8"
+        text[:a] + "\n" + "\n".join(readme_rows()) + "\n\n" + text[b:], "utf-8"
     )
     STATUS_MD.write_text(status_md(), "utf-8")
 
