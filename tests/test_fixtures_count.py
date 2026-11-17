@@ -87,12 +87,12 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
     # 5.H 1.9.0: a visible form with a hidden part ("Add a message"): the
     # hidden field joins that form, read once, and 5.H decides; 5.F, which
     # would have to type in it, is still held by the guard.
+    # Since step 21 (5.F 1.13.0) its only error is the browser's own
+    # message, already NEEDS REVIEW (M2), so the guard is not reached for
+    # 5.F; frame-missing still shows 5.F's guard.
     "form-with-hidden-part": {
         "5.H": ("DNA", None),
-        "5.F": (
-            "NEEDS_REVIEW",
-            "1 form field is hidden until something opens it, and was not checked.",
-        ),
+        "5.F": ("NEEDS_REVIEW", None),
     },
     # Fields hidden from everyone (Abby, 2026-11-15; hidden.py): an
     # Akismet-style trap, a Gravity Forms-style honeypot and a reCAPTCHA-
@@ -102,25 +102,27 @@ EXPECTED: dict[str, dict[str, tuple[str, str | None]]] = {
     "antispam-form": {
         "5.A": ("PASS", None),
         "5.C": ("PASS", None),
-        "5.F": ("PASS", None),
+        "5.F": ("NEEDS_REVIEW", None),  # the browser's own message (step 21)
         "5.H": ("DNA", None),
     },
     # The nearest that must stay: the same form with an "Other, please
     # specify" field a list choice shows, and with a popup form that opens by
-    # itself after 5 s. Each is counted; the guard holds.
+    # itself after 5 s. Each is counted; the guard holds. (5.F is NEEDS
+    # REVIEW there by the browser's own message since step 21, before the
+    # guard.)
     "antispam-other": {
-        t: (
+        "5.A": (
             "NEEDS_REVIEW",
             "1 form field is hidden until something opens it, and was not checked.",
-        )
-        for t in ("5.A", "5.F")
+        ),
+        "5.F": ("NEEDS_REVIEW", None),
     },
     "antispam-popup": {
-        t: (
+        "5.A": (
             "NEEDS_REVIEW",
             "1 form field is hidden until something opens it, and was not checked.",
-        )
-        for t in ("5.A", "5.F")
+        ),
+        "5.F": ("NEEDS_REVIEW", None),
     },
     # 5.H: a hidden form whose own words ("Amount", "Continue") hold no
     # consequence word, on a page that says "Pay your bill". Pass E takes no

@@ -1372,8 +1372,8 @@ def instance_rows(st: State5F) -> list[Row]:
         Row(
             "M2",
             lambda i: bool(i.native),
-            Outcome.PASS,
-            "Understanding 3.3.1 (native validation)",
+            Outcome.NEEDS_REVIEW,
+            "Understanding 3.3.1 (native validation) against p. 29 ER 1; step 21",
         ),
         Row(
             "M3",
@@ -1504,6 +1504,20 @@ def see(ps: PassE, i: Inst5F) -> str:
 SORRY = " If you disagree, tell your assistant."
 
 
+def native_sentence(ps: PassE, i: Inst5F, how: str = "") -> str:
+    """5.F's M2 and 5.G's N8 (step 21): the browser's own message is left for
+    a person, since it shows one field at a time and differs by browser."""
+    msg = re.sub(r"\s+", " ", i.native or "").strip()
+    msg = msg if len(msg) <= 120 else msg[:117] + "..."
+    return (
+        f'The only error message for {_label(i)} was the browser\'s own ("{msg}"), '
+        "not one the page wrote. The browser shows it for one field at a time, "
+        f"and its words differ from browser to browser{how}, so a person needs "
+        "to check it in the browsers people use: load the page and "
+        f"{steps(ps, i)}"
+    )
+
+
 def _sentence(st: State5F, i: Inst5F, rid: str) -> str:
     fl, ps = _label(i), st.ps
     q = (st.j.get(f"{i.id}-J1") or {}).get("quote", "")
@@ -1515,7 +1529,7 @@ def _sentence(st: State5F, i: Inst5F, rid: str) -> str:
     )
     return {
         "M1": f"We read the page after {fl} was {i.done} while it was still changing, so an error message that appeared later may have been missed. Please look: load the page and {steps(ps, i)}",
-        "M2": f"The browser's own message points to {fl} and explains the error; that is fine.",
+        "M2": native_sentence(ps, i),
         "M3": f"When {fl} was wrong, the page only marked it ({look}), with no text saying what is wrong. {see(ps, i)}{SORRY}",
         "M5": f"When {fl} was wrong, its look changed, and we could not tell whether that marks an error. Please look: load the page and {steps(ps, i)}",
         "J1?": f"An error appeared after {fl} was {i.done}; a question about it is still open. {see(ps, i)}",

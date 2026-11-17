@@ -96,6 +96,12 @@ def instance_rows(st: State5G) -> list[Row]:
             "Spec rule (5.F's M1)",
         ),
         Row("N2", lambda i: i.type == "password", Outcome.DNA, "p. 29 Applicability"),
+        Row(
+            "N8",
+            lambda i: bool(i.native),
+            Outcome.NEEDS_REVIEW,
+            "Understanding 3.3.1 (native messages); step 21",
+        ),
         Row("N3", lambda i: not _has_text(i) and i.aria, Outcome.FAIL, "p. 29 ER 1, 2"),
         Row(
             "N3",
@@ -135,7 +141,7 @@ def instance_rows(st: State5G) -> list[Row]:
 
 
 def is_none(st: State5G, i: Inst5F) -> bool:
-    if i.type == "password":
+    if i.type == "password" or i.native:
         return False
     if not _has_text(i) and not i.aria and _j(st, i, "J2") == "not_error":
         return True
@@ -153,12 +159,10 @@ def questions_for(st: State5G, evidence_refs: list[str]) -> list[OpenQuestion]:
         if a.unsettled:
             continue  # N1 decides, whatever the answer
         images = [f"{base}/{p}" for p in (a.shot_before, a.shot_after) if p]
+        if i.native:
+            continue  # N8 decides (step 21): the browser's words are not judged
         if _has_text(i) and f"{i.id}-J1" not in st.j:
-            errors = (
-                [{"text": i.native, "where": "the browser's own message for the field"}]
-                if i.native
-                else t5f.error_inputs(ps, a)
-            )
+            errors = t5f.error_inputs(ps, a)
             out.append(
                 OpenQuestion(
                     question_id=f"5.G-{i.id}-J1",
@@ -212,6 +216,11 @@ def _sentence(st: State5G, i: Inst5F, rid: str) -> str:
         "J2?": f"When {fl} was wrong, its look changed; a question about it is still open. {see}",
         "J1?": f"An error appeared for {fl}; a question about it is still open. {see}",
         "N4": "",
+        "N8": t5f.native_sentence(
+            ps,
+            i,
+            " (one browser says how to fix the value, another only that it is wrong)",
+        ),
         "N5": f"The error for {fl} ({errs}) does not say what to enter instead. {see}{t5f.SORRY}",
         "N6": f"We could not tell whether a correct value for {fl} could be known. Please look: load the page and {t5f.steps(ps, i)}",
         "N7": f"We could not tell whether the error for {fl} says how to fix it. Please look: load the page and {t5f.steps(ps, i)}",

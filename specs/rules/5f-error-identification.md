@@ -1,7 +1,7 @@
 ---
 tt_test: 5.F
 tt_name: 3.3.1-error-identification
-spec_version: 1.12.0
+spec_version: 1.13.0
 guards: unrecorded-code
 count: fields_hidden, fields.shadow, fields.frames, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -77,7 +77,7 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 | # | Evidence pattern | Instance outcome | Source |
 | --- | --- | --- | --- |
 | M1 | The replay did not reach the field or the submit control, or a read was unsettled or unresolved. A read is unsettled when the submit press, or a Tab in attempt 2, hit the settle rule's 1,500 ms limit: the page was still changing, so an error shown later was not read (1.3.1, wording; the code ignored it before) | NEEDS REVIEW | Spec rule |
-| M2 | The error came from native validation (the `invalid` event blocked the submission, the page did not cancel it, and the field has a `validationMessage`). A cancelled `invalid` event shows no message (pages cancel it to draw their own errors), so the field falls to the rows below (1.1.0) | PASS: the browser identifies the field by focusing it and describes the error in text | Understanding 3.3.1 (user agent native HTML form validation) |
+| M2 | The error came from native validation (the `invalid` event blocked the submission, the page did not cancel it, and the field has a `validationMessage`). A cancelled `invalid` event shows no message (pages cancel it to draw their own errors), so the field falls to the rows below (1.1.0) | NEEDS REVIEW (1.13.0; was PASS): the message is the browser's, not the page's; the browser shows it for one field at a time (the first in error), and its words differ by browser, so what the tool reads (Chromium's `validationMessage` for every field) is not what every user sees. Never FAIL here: whether TT 5.F fails a form that relies on the browser's messages is the owner's open decision | Understanding 3.3.1 (native validation "meets the requirements") against p. 29 ER 1 ("identified in text"); round 3's contact page (keyed Fail in Firefox: one bubble, under the first field only); Abby, 2026-11-17 (step 21) |
 | M3 | The field has an error indicator, and no new text appeared anywhere and no JS dialog opened (the field is marked by `aria-invalid` or its look alone) | Ask J2 when only its look changed (is it marked as an error?); FAIL when `aria-invalid` is set, or J2 = error | p. 29 ER 1 ("in text"); Understanding 3.3.1 (color alone); TC10.D-2-fail-2 |
 | M4 | J2 = not an error (a look that means valid, or unrelated) | No instance | Spec rule |
 | M5 | J2 = unsure, or not answered | NEEDS REVIEW | Spec rule |
@@ -113,7 +113,7 @@ An attempt's *notice* is how the user learns of its errors (Baseline 10.D "made 
 | A3 | "We left required fields empty and typed a wrong value (such as a bad email address or a year out of range) into fields that expect a format and dates outside the allowed range into date fields, then tried to send the form, and the page did not check for errors, so this test does not apply." |
 | A3s | "The page's only form that was sent is a site search: it accepts anything typed into it and showed no error on the page, so there is nothing to get wrong and this test does not apply." |
 | A4 | "The form was sent to its server, and our copy of the page cannot show what the server answers. Please submit it with mistakes on the live site and check the error messages." |
-| M2 (note) | "The browser's own message points to <field> and explains the error; that is fine." |
+| M2 | "The only error message for <field> was the browser's own (\"<message>\"), not one the page wrote. The browser shows it for one field at a time, and its words differ from browser to browser, so a person needs to check it in the browsers people use: load the page and press <keys>." |
 | M3 | "When <field> was wrong, the page only marked it (<how>), with no text saying what is wrong. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | M7 | "The page shows an error for <field> (\"<quote>\"), but nothing announces it: it is not read out, and focus does not move to it, so a screen reader user may not know it appeared. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | M8 | "The error message \"<text>\" does not say <which field is wrong / what is wrong with <field>>. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
@@ -186,7 +186,7 @@ V-numbers are browser checks in [_browser-checks.md](_browser-checks.md#5f).
 | TC10.D-all-pass-2: "Error: not a number." in an `aria-live=assertive` region | M6 PASS (one field, so "not a number" identifies it; J1) | — |
 | TC10.D-all-pass-3: focus moved to the message | M6 PASS | — |
 | TC10.D-ic-dna-1: the button does nothing | A3 DOES NOT APPLY | — |
-| Native validation (`required`, `type=email`) | M2 PASS; the message is the browser's, read as `validationMessage` (headless Chrome draws no bubble to screenshot) | V3 |
+| Native validation (`required`, `type=email`) | M2 NEEDS REVIEW (1.13.0; was PASS); the message is the browser's, read as `validationMessage` (headless Chrome draws no bubble to screenshot); fixture f01 | V3 |
 | The page cancels the `invalid` event and only sets `aria-invalid` (custom error display with no text) | Not M2: the browser shows nothing. M3 FAIL (fixture f15; 1.1.0) | — |
 | A form with no button (one text field) | Both attempts press Enter in the field (fixture f16; 1.1.0) | — |
 | A long page (1,200 paragraphs) with its form in the footer | Only text new after each action is read, so the error is found (fixture f17; 1.1.0) | — |
