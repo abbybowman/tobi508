@@ -1,0 +1,96 @@
+{
+ "per_test": {
+  "4.F": {
+   "requests": 9,
+   "questions": 9,
+   "chars": 92972,
+   "pictures": 9,
+   "picture_bytes": 3441801
+  },
+  "5.A": {
+   "requests": 5,
+   "questions": 7,
+   "chars": 21939,
+   "pictures": 10,
+   "picture_bytes": 385026
+  },
+  "5.H": {
+   "requests": 6,
+   "questions": 6,
+   "chars": 19403,
+   "pictures": 1,
+   "picture_bytes": 1197538
+  },
+  "9.C": {
+   "requests": 5,
+   "questions": 9,
+   "chars": 19901,
+   "pictures": 0,
+   "picture_bytes": 0
+  },
+  "4.A": {
+   "requests": 6,
+   "questions": 8,
+   "chars": 16469,
+   "pictures": 15,
+   "picture_bytes": 7146233
+  },
+  "5.B": {
+   "requests": 4,
+   "questions": 4,
+   "chars": 13966,
+   "pictures": 7,
+   "picture_bytes": 259117
+  },
+  "5.D": {
+   "requests": 2,
+   "questions": 17,
+   "chars": 39581,
+   "pictures": 17,
+   "picture_bytes": 13048195
+  },
+  "5.F": {
+   "requests": 4,
+   "questions": 6,
+   "chars": 15209,
+   "pictures": 0,
+   "picture_bytes": 559958
+  },
+  "5.C": {
+   "requests": 4,
+   "questions": 6,
+   "chars": 15016,
+   "pictures": 0,
+   "picture_bytes": 169934
+  },
+  "4.E": {
+   "requests": 2,
+   "questions": 12,
+   "chars": 52830,
+   "pictures": 21,
+   "picture_bytes": 5255334
+  },
+  "5.G": {
+   "requests": 3,
+   "questions": 5,
+   "chars": 13812,
+   "pictures": 0,
+   "picture_bytes": 559958
+  },
+  "4.B": {
+   "requests": 1,
+   "questions": 1,
+   "chars": 2766,
+   "pictures": 0,
+   "picture_bytes": 650458
+  }
+ },
+ "total": {
+  "requests": 35,
+  "questions": 90,
+  "chars": 323874,
+  "pictures": 92,
+  "picture_bytes": 32673562
+ },
+ "rough_input_tokens": 80968
+}
