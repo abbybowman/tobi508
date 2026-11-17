@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><title>Order samples</title></head><body><main><h1>Order samples</h1>
+<form id="f" novalidate><label>Name <input name="name" id="n"></label><label>Postal code <input name="postal" id="p"></label><button type="submit">Add to list</button></form>
+<p id="c" role="alert"></p>
+<script>document.getElementById('f').addEventListener('submit',function(ev){ev.preventDefault();var c=document.getElementById('c');c.textContent='';setTimeout(function(){c.textContent='Invalid';},10);});</script></main></body></html>

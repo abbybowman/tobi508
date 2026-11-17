@@ -104,6 +104,32 @@ EXPECTED: dict[str, dict[str, dict]] = {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
     },
+    # Step 36 (5.F 1.14.0, 5.G 1.12.0; round 2's 5340): pressing the button
+    # only changes a number on the page ("3" to "4"). Text with no word is
+    # not a candidate message, so each field is left for a person (M10, N9),
+    # never a J1 question (the judge had failed 25 fields on "4"). Its twin
+    # f35 shows a real one-word message, "Invalid", for two fields: still a
+    # J1 question, and still FAIL (it names no field and no fix).
+    "f34-button-changes-a-number": {
+        "5.F": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["M10", "M10", "M10", "M10"],
+            "says": "with no words in it",
+        },
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N9", "N9", "N9", "N9"]},
+    },
+    "f35-one-word-error": {
+        "5.F": {
+            "outcome": "FAIL",
+            "rows": ["M8", "M8", "M8", "M8"],
+            "answers": {"J1": {"choice": "not_identified"}},
+        },
+        "5.G": {
+            "outcome": "FAIL",
+            "rows": ["N5", "N5", "N5", "N5"],
+            "answers": {"J1": {"choice": "no_guidance"}},
+        },
+    },
     "f02-server-side-form": {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
@@ -458,6 +484,8 @@ async def test_outcome(name, settings, server, drafts):  # noqa: F811
         ("5.G", "N6"),
         ("5.G", "N7"),
         ("5.G", "N8"),
+        ("5.F", "M10"),
+        ("5.G", "N9"),
     ],
 )
 def test_please_look_sentences_end_with_the_keys(test, row):
