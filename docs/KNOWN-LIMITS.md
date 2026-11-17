@@ -150,6 +150,13 @@ headed Chrome) are in
   buttons); a field whose only label is an icon button beside it is
   judged by that picture, and a field whose only cue is its own button's
   words by those words (fix 8b).
+  A field 5.A could not decide (its J1 unsure, or 5.A not in the run)
+  makes 5.B NEEDS REVIEW when no other field is judged (A2u, 1.10.0,
+  step 29); one 5.A calls graphic is judged by its picture, in a form of
+  its own after the others. Beside other judged fields, a field 5.A left
+  unsure is still not counted by 5.B, so a PASS there is "in what 5.B
+  judged". Not done: opening the panel a magnifier opens (so 5.A can see
+  the field) and a magnifier as a label (the forms row).
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (both M4; only the wording differs). A jump forward past a
   field after Tab-away is not detected.

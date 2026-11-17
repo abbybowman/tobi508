@@ -15,10 +15,11 @@ A type passes only when both hold:
   reported, not a reason on its own (code review L-02, L-03).
 
     uv run python evals/apijudge_gate.py run   --date D [--repeat N]
-        [--types 4.A,5.B] [--pages cilab,14592] [--round 1|2] [--dry]
-    uv run python evals/apijudge_gate.py score --date D [--eval OUT] [--round 1|2]
+        [--types 4.A,5.B] [--pages cilab,14592] [--round 1|2|3] [--dry]
+        [--tests 5.A,5.B,9.B] [--frozen-mode replay]
+    uv run python evals/apijudge_gate.py score --date D [--eval OUT] [--round 1|2|3]
 
-`--round N` (1 or 2; omitted = round 2, into `gate-D/` as step 6 ran it) takes
+`--round N` (1, 2 or 3; omitted = round 2, into `gate-D/` as step 6 ran it) takes
 that round's pages, frozen copies and keys, and writes `gate-D/roundN/`.
 `run` tests each page of `evals/judging/round2-armc/pages.txt` on the frozen
 copy (`evals/judging/round2/frozen`, tested_frozen as Agent C ran it) with the
@@ -66,6 +67,9 @@ KEYS = REPO / "evals" / "judging" / "round2-armc"
 ROUNDS = {
     1: (REPO / "evals" / "judging" / "round1", REPO / "evals" / "judging" / "round1"),
     2: (SRC, KEYS),
+    # Round 3's pages are development pages now (its blind score stays in
+    # `round3/`, locked): a gate run writes only under `gate-D/round3/`.
+    3: (REPO / "evals" / "judging" / "round3", REPO / "evals" / "judging" / "round3"),
 }
 MAX_WRONG_FAIL_PER_REPEAT = 1
 MAX_WRONG_FAIL_SHARE = 0.20
@@ -132,7 +136,13 @@ def eval_by_type(eval_dir: Path) -> dict[str, bool]:
 # ── run ─────────────────────────────────────────────────────────────────────
 
 
-def _settings(out: Path, types: str, judge_on: bool, src: Path = SRC):
+def _settings(
+    out: Path,
+    types: str,
+    judge_on: bool,
+    src: Path = SRC,
+    mode: str = "tested_frozen",
+):
     from tobi508.config import Settings
 
     kw = {
@@ -141,7 +151,7 @@ def _settings(out: Path, types: str, judge_on: bool, src: Path = SRC):
         "headless": True,
         "run_ttl_hours": 720,
         "frozen_pages_dir": (src / "frozen").resolve(),
-        "frozen_pages_mode": "tested_frozen",
+        "frozen_pages_mode": mode,
     }
     if judge_on:
         kw |= {
@@ -169,6 +179,8 @@ async def run(
     pages: list[str],
     dry: bool,
     rnd: int | None = None,
+    only_tests: str = "",
+    mode: str = "tested_frozen",
 ) -> None:
     from tobi508 import apijudge
     from tobi508.checks import REGISTRY
@@ -187,10 +199,13 @@ async def run(
         if not pages or any(p in u for p in pages)
     ]
     tests = [t for t in TestId if t in REGISTRY]
+    if only_tests:  # a rerun of the tests a change touched, not the whole set
+        want = set(only_tests.split(","))
+        tests = [t for t in tests if t.value in want]
     for k in range(1, repeat + 1):
         runs = gd / f"r{k}" / "runs"
         runs.mkdir(parents=True, exist_ok=True)
-        s = _settings(gd / f"r{k}", types, judge_on=not dry, src=src)
+        s = _settings(gd / f"r{k}", types, judge_on=not dry, src=src, mode=mode)
         run_ids: list[str] = []
         for n, url in chosen:
             pid = f"p{n:02d}"
@@ -210,6 +225,8 @@ async def run(
         "date": date,
         "round": rnd,
         "types": types,
+        "tests": only_tests or "all",
+        "frozen_pages_mode": mode,
         "repeat": repeat,
         "pages": [u for _, u in chosen],
         "dry": dry,
@@ -342,7 +359,7 @@ def main(argv: list[str]) -> None:
         sys.exit(__doc__)
     rnd = int(opt("--round")) if opt("--round") else None
     if rnd is not None and rnd not in ROUNDS:
-        sys.exit("--round: 1 or 2")
+        sys.exit("--round: 1, 2 or 3")
     src, _ = round_dirs(rnd)
     if not (src / "frozen" / "pages").is_dir():
         sys.exit(f"{src / 'frozen' / 'pages'} is missing: restore the frozen archive")
@@ -356,6 +373,8 @@ def main(argv: list[str]) -> None:
                 pages,
                 "--dry" in argv,
                 rnd,
+                opt("--tests"),
+                opt("--frozen-mode", "tested_frozen"),
             )
         )
     else:
