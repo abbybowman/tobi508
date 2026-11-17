@@ -1,0 +1,403 @@
+# Roadmap, "Where things stand" to "Decisions", as of 2026-11-17 (archive)
+
+Cut from `docs/ROADMAP.md` on 2026-11-17 when it was shortened for the
+last day of development before the demo. It holds the longer notes on
+steps 6e to 12a, the after-demo items as they were worded, and the
+decisions list. The roadmap is the status of record; nothing here is
+kept up to date. The round 3 causes and fixes are in
+`docs/plans/2026-11-16-after-round3.md`.
+
+## Where things stand (2026-11-15)
+
+- **22 TT tests are built:** 2.A-2.D, 3.A, 4.A-4.F, 5.A-5.D, 5.F-5.H,
+  9.A-9.C and 19.A. The [README](../../README.md) has a status line per
+  test and the wrong outcomes known today; what each cannot do is in
+  [KNOWN-LIMITS.md](../KNOWN-LIMITS.md).
+- **Direction** ([plan](../plans/2026-11-07-server-judge-pivot.md)): the
+  server judges, a person reviews, the client agent explains, as a
+  hosted service on VAST.
+- **On real pages** ([evals/README.md](../../evals/README.md)): rounds 1
+  (www.nasa.gov) and 2 (svs.gsfc.nasa.gov) were blind judging rounds
+  against Abby's SCRT files. Later runs on their frozen pages are
+  development reruns: they show what a change did, and are not blind
+  results. The latest, step 9a (2026-11-14, before step 8's readers):
+  no wrong PASS or DOES NOT APPLY on either site; false FAILs 6 on
+  round 2's pages and 12 on round 1's; decided cells 91 of 220 on
+  round 2's pages (68 in step 6, about 132 in the blind round).
+- **Where NEEDS REVIEW comes from** (step 9a, 223 cells over both
+  sites): menus and sections that open and were not walked (guard RC), 37, and
+  ones that did not open or could not be read (guard RV), about 10;
+  guard CN (a hidden form, more than 30 images), 44; the judge unsure,
+  29; frames, 28; 2.C and 2.D's timer, 20; 19.A, 12. The keys fail
+  few of them. Steps 6e, 6g, 6h and 8 went after these (all merged
+  2026-11-15); what they won back on real pages is measured by 9b.
+- **Hosting:** sign-in, run ownership and audit lines are built, and
+  the built image passes a smoke test in CI behind a real Keycloak.
+  Nothing has run in the tobi-508 environment on VAST yet (step 12b).
+- **Web components and frames** are read by every reader (step 8,
+  2026-11-15) and decided on the same rows as the rest of the page.
+- What each finished step covered and decided:
+  [archive](../archive/2026-11-14-roadmap-to-the-demo.md).
+
+## Now: to the Nov 20 demo
+
+**The cut** is the end of Nov 17: from Nov 18 only the deck and the
+presentation. What is not merged by then waits. Every change to a test
+updates its README status line and the "Known wrong outcomes" table in
+the same commit.
+
+### Order of work
+
+**Use the step numbers below.** Each step is one thread, started with
+its prompt in
+[reviews/2026-11-11-code-review-fixing.md](../reviews/2026-11-11-code-review-fixing.md),
+"Starting a thread"; a prompt is removed from that file when its step
+is merged. At most three threads at once. Each thread branches from
+`main` and merges `main` before a spec version or a README table edit.
+
+| Step | What | Model | When |
+| --- | --- | --- | --- |
+| 1-10, 12a | Done: PRs #39 to #101 ([archive](../archive/2026-11-14-roadmap-to-the-demo.md)). Round 3 is scored (`evals/judging/round3/score.md`) | | |
+| 9b | Rerun of rounds 1 and 2's pages | Sonnet | round 1 done (its branch is not merged); round 2 running |
+| 10c | What round 3 showed: every wrong and undecided cell by cause, and a plan ([plan](../plans/2026-11-16-after-round3.md)) | Opus | done when merged |
+| A | Round 3, thread A: step 21 (5.F, 5.G native messages), then 22 (no outcome from a walk that missed the page), then a time-boxed 23 (wait for the page to draw; probe first) | Opus | now; 23 stops at midday Nov 17 if not merged |
+| B | Round 3, thread B: step 31 (9.B pairs equal links by alignment), then 29's small part (5.B NEEDS REVIEW when 5.A could not decide) | Sonnet | now, beside A |
+| 10d | The README's status table: one colour and a few words per test, made by a script from the latest results | Sonnet | when 9b is done |
+| 12b | Hosted on VAST: the first deployment | Opus | when the environment exists |
+| 10b | Round 4, a second blind round, if Abby keys one | Sonnet | Nov 17 |
+| 11 | If the days allow: the second look's trial | Sonnet | |
+| 13 | The pitch: one scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
+
+### What each open step covers
+
+- **What steps 6e, 6g and 6h left** (all merged 2026-11-15; each
+  rerun on the frozen pages gave no PASS or DOES NOT APPLY where the
+  key fails):
+  - **6e, guard CN:** the timer (2.C, 2.D), the images (up to 300),
+    5.H on hidden forms, and fields hidden from everyone (a hidden
+    part of a form shown on load that nothing shows). Still NEEDS
+    REVIEW: nasa.gov's feedback popup and mobile search box (about 22
+    cells; the popup never opens for anyone, live or recorded, because
+    of a script error on the site), and the home page's filter panels.
+  - **6g, opened content:** 4.C and 4.E walk what menus and sections
+    open (`opened.py`). Agreement on the frozen pages: 4.C 9 of 10 and
+    6 of 9 (2 and 0 before); 4.E 8 of 10 and 6 of 9 (2 and 0 before).
+    19.A opens the one closed menu that hides a link to the page.
+    Skipped for the cut: 4.D and 5.D.
+  - **6h, 19.A:** aliases and further pages loaded by the test itself.
+    Round 2, 9 of 10 agree; round 1, 4 of 9, the other 5 NEEDS REVIEW
+    on closed menus whose links do not lead to the page.
+- **Round 3 is scored** (2026-11-16; science.data.nasa.gov, 10 pages,
+  a site the tool was not developed on; locked at `eb45b07`). Of 220
+  cells, 149 decided and 71 left for a person; 118 of the 149 agree
+  with the key. Wrong: 2 PASS where the key fails (5.F and 5.G on the
+  contact page), 1 DOES NOT APPLY where the key fails (4.F), 18 FAIL
+  where the key passes (6 of them 9.B, one on every page compared
+  with the first other page), 10 DOES NOT APPLY where the key passes
+  (5.B, 5.D). Its pages are development pages from here on: a later
+  run on them is a rerun, never in place of this score.
+- **10c. What round 3 showed** ([plan](../plans/2026-11-16-after-round3.md)):
+  102 cells in 21 causes, ranked unsafe first; questions for Abby at
+  its top. The work is cut into threads A and B (now) and bundles R1
+  to R5 ("Next"), seven prompts.
+- **Threads A and B** (before the cut; the entries are under "Next",
+  steps 21, 22, 23, 31 and 29's small part). A: 5.F and 5.G's native
+  messages, then no outcome from a walk that missed the page, then a
+  probe and, if the replay draws, a wait for the page to draw; 23
+  stops at midday Nov 17 if not merged, and 21 and 22 never wait on
+  it. B: 9.B's pairing, then 5.B's DOES NOT APPLY when 5.A could not
+  decide. Each reruns its tests on all three rounds' frozen pages and
+  shows every moved cell beside the key.
+- **10d. The README's status table** (Abby, 2026-11-16: it had grown
+  into a list of results per round). One row per test: a colour and at
+  most a few words, by one stated rule from the latest results on all
+  three sites, written by a script; a test fails when the README's
+  rows are not the script's. The figures per site go in a generated
+  page under `evals/`, and what a test cannot do stays in
+  `docs/KNOWN-LIMITS.md`.
+- **19.A on CILab,** left from step 10a: it passed in step 6h's rerun
+  and FAILs in step 6g's with the pages loaded live, though both of
+  the key's ways are still on the live site. Read in 10c: the PASS is
+  right; the FAIL's rows are not in git; found in step 34 (bundle R5).
+- **10b.** Round 4, if Abby keys one, is run as round 3 was
+  ([the how-to](../how-to/run-a-judging-round.md)): the page list, keys
+  and freeze stay off `main` until the run is locked.
+- **12. Hosted on VAST** ([plan](../plans/2026-11-06-hosted-auth.md)).
+  - **12a is built** (PRs #70 to #72, #74):
+    [the deployment guide](../how-to/deploy-on-vast.md), a smoke test
+    (`scripts/smoke_hosted.py`), and that smoke test in CI against the
+    built image and a real Keycloak. It found three things a first
+    deployment would have hit: Keycloak's tokens need a groups mapper
+    and an audience mapper; behind TLS the server must trust the
+    proxy's forwarded headers or nobody can sign in; and the audit
+    lines were never printed (fixed). On VAST the image pulls, a
+    Chromium container runs, and a sandbox reaches .gov sites directly
+    (Abby, 2026-11-15).
+  - **12b, when the environment exists:** deploy, sign in from Claude
+    Code, run one page, confirm the audit lines; then the [PENDING]
+    markers go.
+  - **Hosted without a gateway,** open questions go to the calling
+    agent (`JUDGE_BACKEND=client`); the server judge on VAST waits for
+    Luna or another gateway.
+  - **Not before the demo:** a store that outlives a restart, the page
+    where a signed-in person answers, network-level egress rules,
+    NASA's security review.
+- **9b.** As step 9a, one repeat, at round 3's commit. A gate run's
+  per-page reports and pre-SCRT files stay out of git.
+- **11** (plan part F, "Trial"). One request per frozen page asking the
+  server's model to look again at the rules' PASS and DOES NOT APPLY
+  results. It measures; it changes no outcome.
+- **13.** The [FILL] figures from one scored run at the submission
+  commit ([docs/hackathon/](../hackathon/README.md)).
+
+## Next: after the demo
+
+**Round 3 says otherwise** ([plan](../plans/2026-11-16-after-round3.md),
+step 10c; cut into threads by Abby, 2026-11-16). Steps 21 to 35 are the
+plan's; their numbers stay so the plan's references land. Steps 21, 22
+and 31 and part of 29 (and 23 if its time box holds) are threads A and
+B in "Now". The rest is five bundles, R1 to R5, each one thread at a
+time, before step 14. Inside a bundle, a wrong outcome or a cell one
+step from unsafe comes before turning NEEDS REVIEW into answers. Steps
+marked "approval" turn NEEDS REVIEW into an outcome and wait for
+Abby's yes on the spec text. Every bundle reruns its tests on all
+three rounds' frozen pages and shows Abby every moved cell beside her
+key. Two overlaps are kept apart by order: R5 starts after R1 has
+merged step 26 (both change 9.A to 9.C and 19.A), and R4 after R2 has
+merged (both change 5.D).
+
+**Before the cut (threads A and B, "Now"):**
+
+- **21. 5.F and 5.G: the browser's own error messages** (cause 1; S;
+  no approval). Native validation (5.F M2, 5.G J1 on the browser's
+  `validationMessage`) becomes NEEDS REVIEW: the browser shows one
+  field's message at a time and its words differ by browser. Round 3's
+  contact page: PASS where the key fails. Whether TT 5.F fails it is
+  Abby's later call. Thread A.
+- **22. No outcome from a walk that missed the page** (cause 2; S-M; no
+  approval). 4.F A3, 5.A, 5.D and 5.F to 5.H's "no form fields", 4.A's
+  unreached candidates and 4.C's PASS read the inventory taken after
+  the walk; when the walk covered less, NEEDS REVIEW. Round 3's forum
+  page: 4.F DOES NOT APPLY where the key fails. Thread A.
+- **23. Wait for an application to draw itself** (cause 2; M). A probe
+  first, no code: on round 3's four application pages in replay, how
+  long each takes to draw and how many focusable elements it has at
+  the start and when the count stops changing. Built only if the
+  replay draws: before the walk, pass L and the site read, wait until
+  the count is unchanged for a short window (with a ceiling); P2's
+  press cap from the inventory when P2 starts. Thread A, time-boxed:
+  if not merged by midday Nov 17 it returns to R1.
+- **31. 9.B: equal links paired by alignment** (cause 10; S; no
+  approval). An extra copy of a repeated link on one page is an
+  insertion, not a swap; a page with a real reorder still FAILs.
+  Round 3: 6 false FAILs. Thread B.
+- **29 (small part). 5.B is NEEDS REVIEW, not DOES NOT APPLY, when 5.A
+  could not decide** (cause 6; S; no approval). Round 3: 5.B DOES NOT
+  APPLY on four pages where 5.A was unsure or found the placeholder
+  only. Thread B.
+
+**After the demo, five bundles:**
+
+- **R1. Applications** (Opus): step 23 if thread A did not finish it;
+  **24.** 4.E, an address change the page makes on its own: the control
+  replay waits until the same time after load as the original step
+  (cause 14; S-M; no approval; 3 false FAILs); **25.** the freeze saves
+  the chunk store, so code the page loads when used is in the frozen
+  recording (cause 17; S); **26.** one document at every address: K-01's
+  byte test only for the same path apart from the query, in 9.A to 9.C
+  and 19.A (cause 5; S; approval; after 23; 16 cells); **35a.**
+  controls with no `<form>`: form "none" leaves out banner and
+  navigation buttons, and 5.C's M5 also matches with spaces removed
+  (cause 15; S; approval); **35e.** 4.C: a press that navigates leaves
+  no error state to walk (cause 21; S; approval).
+- **R2. 4.D and 5.D on what opens** (Opus): **27.** 4.D, a faint mark
+  on a large element: M6 also needs the change to be a share of the
+  element's size, else J1 (cause 3; M; no approval; the blog's image
+  links pass where the key fails, held only by guard RC); then step
+  15's 4.D and 5.D part (4.D and 5.D read what menus and sections open,
+  phases 2 and 3).
+- **R3. 4.A and 4.F** (Opus): **28.** 4.A, a hedged "alternative" is
+  unsure, and M8 needs the key's effect to be the click's (cause 4; M;
+  no approval; judge eval); **32.** 4.A's undecided signals: a hidden
+  helper frame and a page-level wheel or touch listener are not U;
+  calibrate `HOVER_MAX` (cause 11; M; approval); **33.** 4.F: the order
+  list names what the signals name, S3 not raised for a
+  column-to-column jump, S6 not raised for a listbox or menu, J1's
+  rubric and a judge eval (cause 12; M; approval for S3 and S6).
+- **R4. Forms** (Opus; after R2): **29** (the rest): pass L opens the
+  panel that holds a hidden field before its picture, and Abby's
+  decision on a magnifier opener as a label (cause 6; M; approval);
+  **30.** 5.F to 5.H, a form with nothing to get wrong: a spec decision
+  first (cause 9; M; approval); **35b.** 5.D, focus onto the field's
+  own label, and a request the recording cannot answer (cause 18; S);
+  **35c.** 5.C, a card's own words are not a cue (cause 19; S; judge
+  eval); **35d.** 5.B, a styled checkbox's label, and an answer that
+  did not see its item is unsure (cause 20; S).
+- **R5. Site tests** (Opus; after R1's step 26): **34.** 19.A after round
+  3: Abby's answers on breadcrumbs and on a results page's query, then
+  the spec change (cause 13; approval); why 19.A FAILed on round 2's
+  CILab in step 6g's rerun; and **19b** below, 9.C by function.
+
+Then the steps below continue from "Now", in this order unless a
+judging round says otherwise; whatever of steps 8 to 12 was not reached
+comes first. Parts
+are those of
+[plans/2026-11-12-coverage-second-look-thin-agent.md](../plans/2026-11-12-coverage-second-look-thin-agent.md);
+fix numbers are the
+[post-round 2 fixes](../plans/2026-11-08-post-round2-fixes.md); bundles are
+the [pivot plan's](../plans/2026-11-07-server-judge-pivot.md). Model:
+Opus unless the plan's part says where Sonnet suffices (filling the
+grid's pages, the token cuts, carrying a pattern Opus has set through
+the remaining checks).
+
+14. **Every reading reports what it covered** (part C; about two weeks,
+   reader by reader; sized before the pace of steps 1 to 5 was known). The grid
+   of hard pages (step 7) is its test. One coverage record from each reader and one rule
+   in the engine: no PASS or DOES NOT APPLY on a reading that is not
+   complete. It replaces each check's own "incomplete" list. The
+   checks' shared base goes in with it (one finding builder, one "out
+   of time" helper), which is what "Tidy the checks" was. Every outcome
+   stays the same except where a gap now holds one back.
+14c. **Past a forward trap in 4.A, 4.B and 4.F** (step 6d's phase 2;
+   approved in principle, Abby 2026-11-14). They read only the forward
+   walk and so give up at a forward trap; they read what the other
+   passes reached instead. A proposal first, with a two-trap page per
+   test, the nearest page that must stay NEEDS REVIEW and the cells
+   that move. 4.C's outcome is untouched, and 4.F does not PASS on the
+   backward walk alone where a forward trap whose only exit is the
+   opposite direction was logged for it. Opus: it is a design, not a
+   pattern to carry through.
+14b. **P6's stops to 4.D and 4.E** (from step 6d, 2026-11-14). 4.C's mouse
+   bypass (P6) reaches stops that neither the Tab nor the Shift+Tab walk
+   reached when the two end in different traps, and 4.C's spec said they
+   are "tagged so 4.D and 4.E can still test them". They are not passed
+   today: 4.D and 4.E are NEEDS REVIEW for that part of the page (4.C
+   1.13.1 says so). Build: share P6's steps with 4.D and 4.E, run their own
+   readings (focus pictures, focus-event check) on them, and only then
+   count them as reached (step 6d's walk-coverage rule).
+15. **Opening everything, phases 2 and 3.** (Its 4.D and 5.D part is in
+   bundle R2 above, after step 27.) Phase 1 is built (`reveal.py`;
+   guards RV and RC). Phase 2 is started (step 6g, 2026-11-15): a shared
+   walk through what each trigger opened (`opened.py`), read by 4.C
+   (1.14.0) and 4.E, where guard RC holds only what the walk did not
+   reach. Still to do: 4.A and 4.D read it; **4.F's pass R moves onto the
+   shared walk** (4.F keeps pass R until then; Abby, 2026-11-15); and a
+   menu that opened only by a click joins 4.A's execute check, ahead of
+   its cap, with 4.A's rows deciding (Abby, 2026-11-15). Phase 3: 5.D fills fields in opened content. Also
+   nested triggers, a combobox's list, buttons that need a key other than
+   Enter, and phase 1's caps (20 triggers, 3 sets). From the review: a
+   trigger is "opened" only by what appears in the region it controls
+   (C-02), and a plain button with no ARIA marker opens nothing today
+   (H-08; part B holds the outcome meanwhile).
+16. **Meaning goes to the judge, not to a word list** (part E): 5.H's
+   consequence and "checked" words, 4.B's timing words, the "pause"
+   words in 2.x. One spec change and one judge eval each. Then the
+   spec decisions the review marks "(needs Abby)".
+17. **The store, a thin MCP surface, one writer per run** (part H;
+   bundle 7, moved ahead of the review UI, which needs it). The server
+   keeps the report; the agent gets a short result and a link; tools
+   have no output schema; a job has an owner; answers run as a job.
+   Target: about a third of today's 93,000 tokens a page. The rest of
+   bundle 7 as planned: run index, answers kept by content hash and
+   spec version so a question about the same image or media is answered
+   once per site, retention and the disk check, job state that survives
+   a restart. Plan first: what is stored, for how long, and who may see
+   answers from another user's runs.
+18. **A person's answer only from TOBI's own UI** (the rest of bundle 6):
+   Trusted Tester and reviewer roles, WebAuthn on submit, the evidence
+   page. Design and options in the pivot plan; decide the review view
+   there before building one. Added by part G: the whole page beside
+   every crop, the list of what was not looked at, a sample of PASS and
+   DOES NOT APPLY results for a Trusted Tester to confirm, and every
+   dispute turned into a fixture.
+19. **The second look as a guard** (part F), shaped by its trial (not a
+   gate: Abby, 2026-11-12). Its README line says what the trial caught
+   and missed.
+19b. **9.C pairs by function, not only by address and place** (Abby,
+    2026-11-15; done in bundle R5 above, after step 34). Candidates in the pages' own content: controls with
+    the same picture, the same action word, or the same place in a
+    template both pages share; every candidate goes to J1, which can
+    already answer "different function". Each candidate rule comes
+    with a pair that must not FAIL (round 2: prose links to one address
+    in different words, which the key passes), and a judge eval. Also
+    9.B: repeated navigation inside `main`.
+20. **SCRT files, phases 2 and 3**
+    ([plan](../plans/2026-11-02-scrt-io.md)): TT review, merging a partial
+    file (which is also how to verify a fix: `verify_fix` on
+    `tobi_run_tt_tests`, taking a saved report), export to the real SCRT,
+    site roll-up. Fix advice for a read report is a separate, optional
+    tool.
+
+The review's other items (its P1 to P3 lists, and bundles 5, 7 and 8 of
+its "How this could be handed out") are taken from the review file
+itself, one bundle a thread; they are not repeated here.
+
+## Decisions waiting for Abby
+
+**Soon: each holds up a step of "Now".**
+
+- **VAST** (step 12b): whether the tobi-508 environment exists, and
+  the two answers still open (the app's token contents; whether
+  Anthropic's addresses can reach it), with the further questions in
+  [the deployment guide](../how-to/deploy-on-vast.md).
+- **The judge on VAST** (step 12): the CLI route is not in the image.
+  Luna or another gateway needs its API shape, base URL, auth header,
+  picture limits and quota; without one the hosted server leaves open
+  questions to the calling agent.
+- **Publishing the repository.** GSA asks for a GitHub repository;
+  SECURITY.md says NASA's release review comes before the code is
+  public. Which comes first for the submission (step 13).
+- **Windows headed Chrome** was last run on 2026-11-02. Run it again
+  before the scored submission run, or state the limit
+  ([browser checks](../../specs/rules/_browser-checks.md)).
+- **`JUDGE_TYPES`:** 4.B alone meets the gate in step 9a; decided after
+  9b.
+- **The image cap's timing** (step 6e raised it from 30 to 300
+  without the timed run against 2.B's budget it had promised; no 2.B
+  ran out on the frozen pages): 9b's test times will show it.
+
+**After the demo: each shapes a step of "Next".**
+
+- **Spec decisions from the review:** a form behind a plain button
+  (H-08), a page that is only a canvas (E-03), a title that is a
+  control's only label (E-13), `aria-controls` as a field's "own
+  widget" (H-04), a form that is only a button (M-02), 4.F's "order
+  does not matter" making the test DOES NOT APPLY. (Decided and built
+  in step 6b, 2026-11-13: E-08, K-05, M-01, F-02, C-07.)
+- **CLAUDE.md's lists:** principle 8 does not name 4.A J1 and J2 or
+  4.B J1, which settle a PASS by looking (E-06); principle 5 does not
+  name 9.A's key press (M-15) or the media store's fetches (S-04).
+- **Is `tobi_answer_questions` offered on a hosted server** with the
+  judge on, or only locally (part H).
+- **4.F has guard RV but not RC** (its pass R already Tabs through what
+  its first six triggers open): confirm, or put RC back.
+- **9.A as a candidate for guard GU** (it presses Enter on skip links).
+- **2.B: content whose changes are random can be DOES NOT APPLY.** A
+  region that changed at a steady pace until 4 s, and after 5 s only
+  repeated what it had shown (random colours: about 1 load in 16), is
+  "not still moving". Option: such a region whose last change is within
+  about one period of the 5 s mark is NEEDS REVIEW
+  ([solutions/environment.md](../solutions/environment.md), "A test that
+  fails only on a busy machine").
+- **The settle rule can call a page settled before it reacts.** It waits
+  two animation frames, then 150 ms with no DOM change. A page whose
+  first change comes later (a submit handler on a timer, a reply to a
+  request) reads as quiet: 5.F can miss an error shown late, and with no
+  other indicator the page would be DOES NOT APPLY. Options: a minimum
+  wait after a submit press, or a second read when an attempt shows
+  nothing. Every test uses the rule, so it is a 4.C spec decision. The
+  review reproduced the same miss three other ways (M-06: an error in
+  a shadow root, on a wrapper, or gone in 60 ms); "something changed
+  that was not read as an error" should be NEEDS REVIEW (part C).
+- **A second browser.** Whether a Firefox replay matters for the pitch,
+  or the documented limit is enough (the report records its browser).
+- SECURITY.md's two [TO CONFIRM] items (the reporting route; how long
+  `runs/` is kept on NASA machines).
+
+**Answered** (Abby, 2026-11-12; recorded in the
+[pivot plan](../plans/2026-11-07-server-judge-pivot.md)): who may answer
+which question, accounts outside NASA, the extension's distribution, who
+confirms a Trusted Tester, live page or recorded copy for a final SCRT,
+a data-handling note for public screenshots (none needed), and reviewers'
+access to the hackathon demo (a recording).
+

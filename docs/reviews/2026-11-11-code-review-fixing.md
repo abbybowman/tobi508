@@ -8,22 +8,20 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 10, 6b to 6h, 10a's freeze fix and 12a (PRs #39
-to #101; `docs/archive/2026-11-14-roadmap-to-the-demo.md`). Round 3
-is scored. Step 9b's thread is running.
+**Done:** steps 1 to 10, 6b to 6h, 9b, 10a, 10c and 12a (PRs #39 to
+#105; `docs/archive/`). Round 3 is scored.
 
-**Order to start them:** threads A and B now, side by side (A's step
-23 stops at midday Nov 17 if not merged); 10d when 9b is done; 12b
-when the VAST environment exists; round 4 (step 10b) if I key one.
-After the demo, bundles R1 to R5, one thread each: R2 before R4, R1's
-step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
+**Order to start them** (the roadmap's "Order of work"): the two
+pre-cut threads now, side by side; 9c when both are merged; 10d after
+9c; 12b the day the VAST environment exists; the after-demo rows one
+thread at a time each, in the roadmap's order.
 
 ## Starting a thread
 
-**Thread A, Opus: round 3's steps 21, 22, then a time-boxed 23** (now; before the Nov 17 cut)
+**Steps 21, 36, 22, then a time-boxed 23, Opus** (now; before the Nov 17 cut)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (threads A and B, and the step
-> entries 21 to 23 under "Next"), `docs/KNOWN-LIMITS.md`, and
+> Read `CLAUDE.md`, `docs/ROADMAP.md` ("Now": the order of work and
+> steps 21, 36, 22 and 23), `docs/KNOWN-LIMITS.md`, and
 > `docs/plans/2026-11-16-after-round3.md`: its questions at the top,
 > causes 1 and 2, and the table at the end. Then follow the
 > instructions below the line in
@@ -47,6 +45,19 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > (the plan's question 1): do not make it FAIL. MINOR versions, the
 > lock, the hackathon evaluation line and slide.
 >
+> **Step 36, right after 21, in the same specs and files: text that
+> is not a message.** On round 2's 5340 (step 9b,
+> `evals/README.md`, "Gate 2026-11-16"), 5.F read the text "4" as an
+> error message and the judge failed 25 fields on it (row M8); 5.G
+> followed. New text is a candidate error message only when it holds
+> a word; otherwise the instance is NEEDS REVIEW. Add to J1's rubric
+> that text which is not a message is "no_error", and run the judge
+> eval for 5.F. It moves FAIL to NEEDS REVIEW only. Fixture: a page
+> where pressing a button changes a number and nothing else, and the
+> nearest page that must still FAIL (a real one-word error message).
+> If you are short of time, drop this before you drop step 23's
+> probe.
+>
 > **Step 22: no outcome from a walk that missed the page.** On round
 > 3's community pages (p07, p08), an Angular app, the forward walk
 > found one link of 76 and 90: the inventory was empty when the walk
@@ -65,7 +76,7 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > must stay DOES NOT APPLY.
 >
 > **Step 23, time-boxed: wait for the page to draw.** It stops at
-> midday on Nov 17 if it is not merged, and returns to bundle R1.
+> midday on Nov 17 if it is not merged, and returns to the applications row.
 > First a probe, no code: ask me for round 3's frozen archive, and on
 > its four application pages (p07 to p10) in replay, measure how long
 > each takes to draw, the focusable count at the start and when it
@@ -102,14 +113,14 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Thread B, Sonnet: round 3's step 31 (9.B), then 29's small part (5.B)** (now; before the Nov 17 cut, beside thread A)
+**Steps 31 (9.B) and 29's small part (5.B), Sonnet** (now; before the Nov 17 cut, beside the thread above)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (threads A and B, and steps 29
-> and 31 under "Next"), and `docs/plans/2026-11-16-after-round3.md`:
+> Read `CLAUDE.md`, `docs/ROADMAP.md` ("Now": the order of work and
+> steps 31 and 29's small part), and `docs/plans/2026-11-16-after-round3.md`:
 > causes 6 and 10 and the table at the end. Then follow the
 > instructions below the line in
 > `docs/reviews/2026-11-11-code-review-fixing.md`. Two pull requests,
-> in this order. Thread A changes 5.A, 5.D, 5.F to 5.H, 4.A, 4.C and
+> in this order. the thread of steps 21 to 23 changes 5.A, 5.D, 5.F to 5.H, 4.A, 4.C and
 > 4.F at the same time: touch none of their specs.
 >
 > **Step 31: 9.B pairs equal links by alignment.** On round 3's
@@ -141,7 +152,7 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > unsure about (scripted answer unsure); a placeholder-only search box
 > with no icon (round 1's nasa.gov) keeps 5.A FAIL and 5.B DOES NOT
 > APPLY. The rest of step 29 (opening the panel; a magnifier as a
-> label) is bundle R4, after the demo.
+> label) is the forms row, after the demo.
 >
 > **The rerun, at the end** (ask me for the three rounds' frozen
 > archives; I hold them): rerun the tests you changed, and the tests
@@ -160,9 +171,9 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Bundle R1, Opus: applications** (after the demo; steps 23 if thread A left it, 24, 25, 26, 35a, 35e)
+**Applications, Opus** (after the demo; steps 23 if it was not finished, 24, 25, 26, 35a, 35e)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R1 under "Next"),
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (the applications row under "Next"),
 > `docs/KNOWN-LIMITS.md` ("Found in round 3") and
 > `docs/plans/2026-11-16-after-round3.md`: causes 2, 5, 14, 15, 17 and
 > 21 and the table. Then follow the instructions below the line in
@@ -170,7 +181,7 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > themselves after load, serve one HTML shell at every address, change
 > their address on their own while starting, have no `<form>`
 > element, and load code chunks when used. Order, wrong outcomes
-> first: step 23 (if thread A did not merge it: its prompt above,
+> first: step 23 (if the thread of steps 21 to 23 did not merge it: its prompt above,
 > probe first); **24**, 4.E's control replay waits until the same time
 > after load as the original step (3 false FAILs; keep
 > `4e/f02-navigate-on-focus` FAIL and `4e/f12-pushstate-on-focus`
@@ -184,7 +195,7 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > query-string copy stays NEEDS REVIEW); **35a**, form "none" leaves out
 > banner and navigation buttons, and 5.C's M5 also matches with spaces
 > removed ("SDESDE" against "SDE"); **35e**, 4.C: a press that navigates
-> leaves no error state to walk (SDE home). Bundle R5 waits for your
+> leaves no error state to walk (SDE home). The site tests row waits for your
 > step 26: do not touch 9.C or 19.A beyond A2 and the byte test.
 >
 > **The rerun, at the end** (ask me for the three rounds' frozen
@@ -204,9 +215,9 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Bundle R2, Opus: 4.D and 5.D on what opens** (after the demo; step 27, then step 15's 4.D and 5.D part)
+**4.D and 5.D on what opens, Opus** (after the demo; step 27, then step 15's 4.D and 5.D part)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R2, and step 15 under
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (the "4.D and 5.D on what opens" row, and step 15 under
 > "Next"), `docs/plans/2026-11-16-after-round3.md` (causes 3 and 7) and
 > step 6g's notes on `opened.py`. Then follow the instructions below
 > the line in this file. **Step 27 first:** on round 3's blog page each
@@ -222,7 +233,7 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > merged:** step 15's 4.D and 5.D part, 4.D and 5.D read what menus and
 > sections open (the shared walk, `opened.py`), so guard RC holds only
 > what was not reached (round 3: 9 of its cells). Show me the blog
-> page's 4.D cell after both. Bundle R4 waits for you (it changes 5.D
+> page's 4.D cell after both. The forms row waits for you (it changes 5.D
 > too).
 >
 > **The rerun, at the end** (ask me for the three rounds' frozen
@@ -242,9 +253,9 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Bundle R3, Opus: 4.A and 4.F** (after the demo; steps 28, 32, 33)
+**4.A and 4.F, Opus** (after the demo; steps 28, 32, 33)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R3),
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (the 4.A and 4.F row),
 > `docs/plans/2026-11-16-after-round3.md` (causes 4, 11 and 12) and
 > `docs/solutions/judge-eval.md`. Then follow the instructions below
 > the line in this file. Order, the cell one step from unsafe first:
@@ -287,9 +298,9 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Bundle R4, Opus: forms** (after the demo, once R2 is merged; the rest of 29, 30, 35b to 35d)
+**Forms, Opus** (after the demo, once "4.D and 5.D on what opens" is merged; the rest of 29, 30, 35b to 35d, 37)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R4),
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (the forms row),
 > `docs/plans/2026-11-16-after-round3.md` (causes 6, 9, 18, 19, 20 and
 > the questions at its top) and `docs/solutions/judge-eval.md`. Then
 > follow the instructions below the line in this file. Order, wrong
@@ -328,9 +339,19 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Bundle R5, Opus: site tests** (after the demo, once R1's step 26 is merged; step 34, CILab, 9.C by function)
+> **Step 37, added from the comparison of steps 9a and 9b:** pass L
+> reads a frame's fields on the frame opened alone, so the judge does
+> not see text beside the frame on the page (round 2: 5.A on 4914,
+> 5.B on 5340 and 5144 FAIL where my key passes; 5.A on 5340 and 5.B
+> on 4914 PASS on the same thin evidence). Picture the frame in place
+> on its page. Do not hold only the FAILs: a guard that distrusts a
+> picture when it fails and trusts it when it passes is the wrong way
+> round. With it, 5.B's rubric on a search page's "Sort by" (round 2's
+> search page).
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (bundle R5 and step 19b),
+**Site tests, Opus** (after the demo, once step 26 is merged; step 34, CILab, 9.C by function)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (the site tests row and step 19b),
 > `docs/plans/2026-11-16-after-round3.md` (cause 13, "19.A on round
 > 2's CILab page", the questions at its top),
 > `docs/plans/2026-11-15-19a-finds-ways.md` and `docs/KNOWN-LIMITS.md`
@@ -346,7 +367,7 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > the spec text to me before you build (round 3's home page, blog and
 > search page). Then **19b**, 9.C pairs by function, as the roadmap
 > entry says, each candidate rule with a pair that must not FAIL and a
-> judge eval. R1 changed 9.A to 9.C and 19.A's A2 (one document at
+> judge eval. The applications row changed 9.A to 9.C and 19.A's A2 (one document at
 > every address): build on it.
 >
 > **The rerun, at the end** (ask me for the three rounds' frozen
@@ -366,17 +387,57 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Step 10d, Sonnet: the README's status table, made by a script** (when step 9b is done)
+**Step 9c, Sonnet: the last rerun** (when the two pre-cut threads are merged; by early afternoon on Nov 17)
 
-> Read `README.md` ("TT tests in scope"), `tests/test_readme.py`,
-> `evals/judging/round3/score.json`, and step 9b's results for rounds
-> 1 and 2 (`evals/judging/gate-2026-11-16/`). The README's status
+> Read `CLAUDE.md`, `docs/plans/2026-11-08-apijudge-build.md` ("The
+> gate"), the docstring of `evals/apijudge_gate.py`, and step 9b's
+> write-up in `evals/README.md` ("Gate 2026-11-16") with its folder
+> (`compare.py` is the comparison to reuse). Your work is step 9c of
+> `docs/ROADMAP.md` "Order of work": step 9b again, on `main`'s head
+> (record the commit), one repeat, the server judge answering every
+> question type it can take, on all three sites' frozen pages: rounds
+> 1 and 2 as 9b ran them, and round 3's ten pages (the pre-cut
+> threads added `--round 3` to the gate script; if not, add it:
+> round 3's frozen copies and keys, writing under your own gate
+> folder, never under `evals/judging/round3/`, which is locked).
+> Round 3's pages are development pages now: this is a rerun and is
+> never reported in place of round 3's blind score.
+>
+> Before anything else, check and tell me if any fails: the three
+> frozen archives are restored (ask me; never fetch a tested page
+> live); and the sites' own search loads in your container for all
+> three hosts. In step 9b, svs.gsfc.nasa.gov's new certificate chain
+> stopped its search loading, and 8 of round 2's 19.A cells were left
+> undecided for that reason alone: run one search per host through
+> the tool's browser and show me the result before the run. Do not
+> weaken any check to make it load; if it cannot load, say so and I
+> will decide whether to run elsewhere.
+>
+> Run `--dry` first and tell me the request and token estimate. Keep
+> each page's report and pre-SCRT file out of git; commit the scores,
+> the comparison and the write-up. Report, per site and per test,
+> beside step 9b's figures and round 3's blind score: agree, PASS or
+> DOES NOT APPLY where my key fails, FAIL or DOES NOT APPLY where it
+> passes, left for a person; every cell that moved since 9b (and, on
+> round 3's pages, since the blind score) with whether my key agrees;
+> and each test that ran out of its time budget. Put the result in
+> `evals/README.md`. Do not edit the README's status table (step 10d
+> writes it from your results), `docs/ROADMAP.md` or the prompt file.
+> Give me the paths of your score files for step 10d.
+
+**Step 10d, Sonnet: the README's status table, made by a script** (after step 9c)
+
+> Read `README.md` ("TT tests in scope"), `tests/test_readme.py`, and
+> step 9c's results for all three sites (I will give you the paths;
+> until it is done, build against step 9b's,
+> `evals/judging/gate-2026-11-16/`, and round 3's blind score,
+> `evals/judging/round3/score.json`). The README's status
 > table has grown into a list of results per round. It is to be a
 > very high-level view: one colour and at most a few words per test.
 >
 > Write `evals/status_table.py`. It reads the latest scored result of
-> each site (round 3's blind score; step 9b's reruns of rounds 1 and
-> 2) and, per test, counts over all three: agree, PASS or DOES NOT
+> each site (step 9c's rerun of all three; the judge answered every
+> question type) and, per test, counts over all three: agree, PASS or DOES NOT
 > APPLY where the key fails, FAIL or DOES NOT APPLY where the key
 > passes, and left for a person. One rule gives the colour and the
 > words, first match:
@@ -408,23 +469,6 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > is about our evaluation pages only, and the line above the table
 > says so.
 
-**Step 10b, Sonnet: round 4, a second blind round, if I key one** (the freeze the day I key the pages, then the run)
-
-> The freeze. Read `docs/how-to/run-a-judging-round.md`. Freeze the
-> pages I give you in this thread with the fuller freeze, check each
-> recording against its manifest, and tell me anything that did not
-> record. Do not run the tool on the pages, do not open my keys, and
-> keep your branch unmerged with no pull request: no other thread may
-> see the page list.
-
-> The run, on Nov 17. Read the how-to and `evals/agent/README.md`.
-> Run round 4 once on `main`'s head (record the commit; it should be
-> 9b's), with the server judge answering: run, lock, then score
-> against my keys. Never open my keys before the lock. Report per
-> test and in all, and list apart the cells inside a web component or
-> a frame. Keep each page's report and pre-SCRT file out of git.
-> Change no code from what you find: list it for after the demo.
-
 **Step 12b, Opus: the first deployment** (when the VAST environment exists)
 
 > Read `docs/how-to/deploy-on-vast.md` and follow it with me: I run
@@ -435,18 +479,6 @@ step 26 before R5. Step 10c is done (`docs/plans/2026-11-16-after-round3.md`).
 > the two [PENDING] markers about the end-to-end sign-in
 > (`docs/hackathon/evaluation.md`, `docs/hackathon/deck.md`) and
 > update `SECURITY.md`'s status.
-
-**Step 11, Sonnet: the second look's trial** (if the days allow)
-
-> Read `CLAUDE.md`, then part F of
-> `docs/plans/2026-11-12-coverage-second-look-thin-agent.md`, "Trial".
-> Build `evals/second_look.py` and run it on round 2's 10 frozen pages
-> with the rules as they were at round 2's lock commit, three repeats,
-> through the judge's CLI route. It is a measurement, not a gate: write
-> what it caught of the known wrong cells, what it missed, and what it
-> flagged that my keys say is right, with tokens and time per page,
-> into the plan's part F and `evals/README.md`. Stop there; the guard is
-> a later step.
 
 **Step 13, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
 
