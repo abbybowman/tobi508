@@ -25,11 +25,13 @@ not on VAST: VAST hosts run in FIPS mode and apt fails inside its nested
 containers ([environment notes](../solutions/environment.md)). Every push
 to `main` that changes what goes into the image publishes
 `ghcr.io/abbybowman/tobi508:latest` and `ghcr.io/abbybowman/tobi508:<commit
-sha>`. VAST's Containerfile is one line; pin the commit, so a deployment
-is one known image:
+sha>` (the merge commit's). While TOBI is a prototype, VAST runs
+`:latest`, so it gets each new build at its next restart (Abby,
+2026-11-17; section 9, "Updating"). Pin a commit's tag instead when a
+deployment must be one known image:
 
 ```dockerfile
-FROM ghcr.io/abbybowman/tobi508:<commit sha>
+FROM ghcr.io/abbybowman/tobi508:latest
 ```
 
 What the image already does (`Dockerfile`):
@@ -363,13 +365,30 @@ On VAST a developer cannot apply resources outside their own dev
 namespace (section 6a), so the deployment is a file the cluster admins
 apply: [`deploy/vast/tobi508.yaml`](../../deploy/vast/tobi508.yaml). It
 holds a ConfigMap (the settings of section 2), a PersistentVolumeClaim
-for `/data` (20 Gi), a Deployment (one replica, `Recreate`, the image
-pinned by commit, uid 1000, all capabilities dropped, a 1 Gi `/dev/shm`,
+for `/data` (20 Gi), a Deployment (one replica, `Recreate`, `:latest`
+pulled on every start, uid 1000, all capabilities dropped, a 1 Gi `/dev/shm`,
 `/health` probes), a Service on port 8000 and an Ingress for the app's
 host. Replace every `<...>` first. `tests/test_deploy_manifest.py` checks
 that every setting it names is one the server reads (an unknown name is
-ignored silently), that sign-in is on and `DEV_MODE` off, and that it
-stays one replica of a pinned image.
+ignored silently), that sign-in is on and `DEV_MODE` off, that it stays
+one replica, and that `:latest` is always pulled (a cached `:latest`
+would never update).
+
+**Updating.** Kubernetes pulls `:latest` only when the pod starts: a new
+build on `main` does nothing until a restart. Someone with rights in the
+namespace (today, a cluster admin) restarts it:
+
+```bash
+kubectl -n <namespace> rollout restart deployment/tobi508
+```
+
+A restart ends runs in progress (jobs live in memory); run folders on
+`/data` stay. The YAML does not change for an update, so a deployment
+from git (VAST's Forgejo) would not restart it either. Ways to need no
+one, not built yet: a job in the namespace allowed to restart only this
+deployment, nightly; or, with a deployment from git, CI writing each
+new build's commit into the YAML (pinned and automatic). Reports do not
+yet record which image build ran.
 
 **The secrets** are not in the file. Whoever applies it creates them,
 from a file only they can read, deleted afterwards (not on the command

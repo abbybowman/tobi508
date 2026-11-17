@@ -3,7 +3,6 @@
 #
 # Before applying, replace every <...>:
 #   <namespace>    where the admins put the app
-#   <commit sha>   the image to run (never :latest: one deployment, one known image)
 #   <app host>     the app's subdomain on VAST's gateway
 #   <keycloak host>, <client id>, <group>   from the app's Keycloak client
 # The secrets are not in this file: create them first (guide, section 9).
@@ -81,7 +80,12 @@ spec:
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: tobi508
-          image: ghcr.io/abbybowman/tobi508:<commit sha>
+          # :latest while TOBI is a prototype (Abby, 2026-11-17): a restart
+          # pulls the newest image built from main. Nothing restarts it by
+          # itself; see the guide, section 9, "Updating". To pin one build
+          # instead, use :<merge commit sha> (every build publishes one).
+          image: ghcr.io/abbybowman/tobi508:latest
+          imagePullPolicy: Always
           ports:
             - {name: http, containerPort: 8000}
           envFrom:

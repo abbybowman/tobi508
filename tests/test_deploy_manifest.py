@@ -34,11 +34,13 @@ def test_sign_in_on_dev_mode_off():
     assert config["OIDC_CONFIG_URL"].startswith("https://")
 
 
-def test_one_replica_one_known_image_secrets_not_inline():
+def test_one_replica_image_updates_secrets_not_inline():
     deployment = _docs()["Deployment"]
     assert deployment["spec"]["replicas"] == 1
     assert deployment["spec"]["strategy"]["type"] == "Recreate"
     (container,) = deployment["spec"]["template"]["spec"]["containers"]
-    assert not container["image"].endswith(":latest")
+    # :latest while a prototype (Abby, 2026-11-17); a cached one never updates.
+    if container["image"].endswith(":latest"):
+        assert container["imagePullPolicy"] == "Always"
     assert "Secret" not in _docs()
     assert {"secretRef": {"name": "tobi508-secrets"}} in container["envFrom"]
