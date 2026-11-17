@@ -306,6 +306,24 @@ EXPECTED: dict[str, dict] = {
         # 5.B 1.5.0: checked in test_fixtures_5b.py; the judge eval reads it.
         "5.B": {"outcome": "DNA"},
     },
+    # 5.B 1.10.0 (step 29): a picture beside a box with no words and no form;
+    # 5.A asks J1 (here graphic). 5.B's cases are in test_fixtures_5b.py.
+    "f54-picture-beside-unlabelled-box": {
+        "5.A": {
+            "outcome": "PASS",
+            "rows": ["M4"],
+            "answers": {
+                "J1": {"choice": "graphic", "reasons": "a magnifier beside it"}
+            },
+        },
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
+    # The nearest case that must keep 5.A FAIL and 5.B DOES NOT APPLY (round
+    # 1's nasa.gov): a placeholder-only search box with no icon.
+    "f55-placeholder-only-search-no-icon": {
+        "5.A": {"outcome": "FAIL", "rows": ["M3"]},
+        "5.C": {"outcome": "PASS", "rows": ["M5"]},
+    },
     "f18-header-menu-beside-search": {
         "5.A": {"outcome": "FAIL", "rows": ["M3"]},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M5"]},
