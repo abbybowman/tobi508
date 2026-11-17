@@ -8,110 +8,15 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 10, 6b to 6h, 9b, 10a, 10c and 12a (PRs #39 to
-#105; `docs/archive/`). Round 3 is scored.
+**Done:** steps 1 to 10, 6b to 6h, 9b, 10a, 10c, 12a, 21, 22, 23 and 36
+(PRs #39 to #113; `docs/archive/`). Round 3 is scored.
 
 **Order to start them** (the roadmap's "Order of work"): the two
 pre-cut threads now, side by side; 9c when both are merged; 10d after
-9c; 12b the day the VAST environment exists; the after-demo rows one
+9c; 12b when the Keycloak client arrives; 41 after the demo, beside the test rows; the after-demo rows one
 thread at a time each, in the roadmap's order.
 
 ## Starting a thread
-
-**Steps 21, 36, 22, then a time-boxed 23, Opus** (now; before the Nov 17 cut)
-
-> Read `CLAUDE.md`, `docs/ROADMAP.md` ("Now": the order of work and
-> steps 21, 36, 22 and 23), `docs/KNOWN-LIMITS.md`, and
-> `docs/plans/2026-11-16-after-round3.md`: its questions at the top,
-> causes 1 and 2, and the table at the end. Then follow the
-> instructions below the line in
-> `docs/reviews/2026-11-11-code-review-fixing.md` (how to fix one item,
-> the working rules). Three steps, in this order, one pull request
-> each; 21 and 22 never wait on 23.
->
-> **Step 21: the browser's own error messages (5.F, 5.G).** On round
-> 3's contact page the form has no error messages of its own: the
-> browser's bubble is the only one. The tool read Chromium's
-> `validationMessage` for every empty field as shown (5.F row M2),
-> though the browser shows one field's bubble at a time, and J1 judged
-> Chromium's words for `test@` (5.G N4), where Firefox, which I tested
-> in, says only "Please enter an email address". Both PASS where my key
-> fails. Make a native message NEEDS REVIEW in both specs, with a plain
-> sentence that the message is the browser's, shows one field at a
-> time and differs by browser. Fixture `5f/f01-native-validation` moves
-> from PASS to NEEDS REVIEW; `5f/f15` (the page cancels the browser's
-> message: FAIL) and the custom-message fixtures keep their outcomes.
-> Whether TT 5.F fails native validation is my decision, still open
-> (the plan's question 1): do not make it FAIL. MINOR versions, the
-> lock, the hackathon evaluation line and slide.
->
-> **Step 36, right after 21, in the same specs and files: text that
-> is not a message.** On round 2's 5340 (step 9b,
-> `evals/README.md`, "Gate 2026-11-16"), 5.F read the text "4" as an
-> error message and the judge failed 25 fields on it (row M8); 5.G
-> followed. New text is a candidate error message only when it holds
-> a word; otherwise the instance is NEEDS REVIEW. Add to J1's rubric
-> that text which is not a message is "no_error", and run the judge
-> eval for 5.F. It moves FAIL to NEEDS REVIEW only. Fixture: a page
-> where pressing a button changes a number and nothing else, and the
-> nearest page that must still FAIL (a real one-word error message).
-> If you are short of time, drop this before you drop step 23's
-> probe.
->
-> **Step 22: no outcome from a walk that missed the page.** On round
-> 3's community pages (p07, p08), an Angular app, the forward walk
-> found one link of 76 and 90: the inventory was empty when the walk
-> began (the backward pass's cap was 50 = 3 x 0 + 50). 4.F said DOES
-> NOT APPLY (A3, "only one element"; my key fails p08), 5.D said no
-> fields (A1), 4.A's J1 was shown one reached stop and FAILed ~20
-> controls (M6). A page whose controls a script draws 1.2 s after
-> load reproduces it, and also gives 5.A DOES NOT APPLY and 4.A and
-> 4.C PASS. Make these tests decide from the inventory taken after the
-> walk (the "reached N of M" count 4.E and 4.A already print): 4.F A3
-> needs one element there, not one stop; 5.A, 5.D and 5.F to 5.H's "no
-> form fields" read it; 4.A's unreached candidates are C? while the
-> walk is incomplete; 4.C does not PASS on it. Everything moves only
-> to NEEDS REVIEW. Fixture: the late-drawn page (custom, no ACT case
-> covers it); `4f/f07-one-link` and 5.D on `4d/f01-background-change`
-> must stay DOES NOT APPLY.
->
-> **Step 23, time-boxed: wait for the page to draw.** It stops at
-> midday on Nov 17 if it is not merged, and returns to the applications row.
-> First a probe, no code: ask me for round 3's frozen archive, and on
-> its four application pages (p07 to p10) in replay, measure how long
-> each takes to draw, the focusable count at the start and when it
-> stops changing, and whether the drawn page matches what my key
-> describes (the forum's tag word cloud, the community's header
-> search, SDE's "All" dropdown and search box, MySearchStory's
-> carousel buttons). Also say where the address went on the first key
-> press (4.E e1 on p07 and p08; the plan's cause 14), from the run's
-> `steps.jsonl` if the archive has it. Show me the probe. Build only if
-> the replay draws: before the walk, pass L and the site read, wait
-> until the focusable count is unchanged for a short window, with a
-> ceiling; take P2's press cap from the inventory when P2 starts.
-> Rounds 1 and 2's pages should not move; if one does, say so cell by
-> cell. Step 26 (one document at every address) stays after the demo.
->
-> Run the rerun below twice: once when 22 is merged, before 23
-> starts, so 21 and 22's moved cells reach me on their own; and again
-> if 23 is merged.
->
-> **The rerun, at the end** (ask me for the three rounds' frozen
-> archives; I hold them): rerun the tests you changed, and the tests
-> that read what you changed, on all three rounds' frozen pages, with
-> the server judge as step 9b ran it (`evals/apijudge_gate.py run
-> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
-> keys, writing under `evals/judging/gate-<date>/round3/`, never under
-> `evals/judging/round3/`, which is locked). Serve every page from the
-> freeze, other pages too, and say if any was loaded live. Score each
-> round with its own keys and scorer. Show me **every cell that moved,
-> beside my key and its comment**, old outcome, new outcome and the
-> rows that decided it, round by round; a cell on round 1 or 2 that
-> moved gets its own line and a reason. Round 3's pages are
-> development pages: this is a rerun, never in place of its score.
-> Report verified (test or command) apart from assumed, and update the
-> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
-> what you fixed, in the same commit (not the README's status table).
 
 **Steps 31 (9.B) and 29's small part (5.B), Sonnet** (now; before the Nov 17 cut, beside the thread above)
 
@@ -171,7 +76,7 @@ thread at a time each, in the roadmap's order.
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
 
-**Applications, Opus** (after the demo; steps 23 if it was not finished, 24, 25, 26, 35a, 35e)
+**Applications, Opus** (after the demo; steps 24, 25, 26, 35a, 35e)
 
 > Read `CLAUDE.md`, `docs/ROADMAP.md` (the applications row under "Next"),
 > `docs/KNOWN-LIMITS.md` ("Found in round 3") and
@@ -181,9 +86,10 @@ thread at a time each, in the roadmap's order.
 > themselves after load, serve one HTML shell at every address, change
 > their address on their own while starting, have no `<form>`
 > element, and load code chunks when used. Order, wrong outcomes
-> first: step 23 (if the thread of steps 21 to 23 did not merge it: its prompt above,
-> probe first); **24**, 4.E's control replay waits until the same time
-> after load as the original step (3 false FAILs; keep
+> first: **24**, 4.E's control replay waits until the same time
+> after load as the original step (3 false FAILs before step 23; in
+> its rerun, `gate-2026-11-17-step23`, p07 and p08 are NEEDS REVIEW
+> and p10 PASS, so check what is left first; keep
 > `4e/f02-navigate-on-focus` FAIL and `4e/f12-pushstate-on-focus`
 > PASS); **25**, the freeze runs the chunk store so the chunks are in
 > the frozen recording (guard GU held 4.B on p07, p08); then the steps
@@ -469,16 +375,78 @@ thread at a time each, in the roadmap's order.
 > is about our evaluation pages only, and the line above the table
 > says so.
 
-**Step 12b, Opus: the first deployment** (when the VAST environment exists)
+**Step 12b, Opus: the first deployment** (when the Keycloak client arrives)
 
-> Read `docs/how-to/deploy-on-vast.md` and follow it with me: I run
-> the VAST commands and paste what they print. Deploy, sign in from
-> Claude Code, run `scripts/smoke_hosted.py` against the app's
-> address, then one real page. Record what differed from the how-to
-> and fix the how-to. Only when the smoke test passes on VAST, remove
+> Read `docs/how-to/deploy-on-vast.md`, sections 6a and 9 first, and
+> follow it with me: I run the VAST commands and paste what they
+> print. VAST gives developers no app namespace: first run the image
+> with sign-in at my dev environment's URL (Podman in the dev
+> environment, port 8000, `FORWARDED_ALLOW_IPS` as section 6a found),
+> sign in from Claude Code, run `scripts/smoke_hosted.py` against that
+> URL, then one real page. Then fill `deploy/vast/tobi508.yaml` for the
+> cluster admins (outside the repo: no internal host names in git).
+> Record what differed from the how-to and fix the how-to. Only when the smoke test passes on VAST, remove
 > the two [PENDING] markers about the end-to-end sign-in
 > (`docs/hackathon/evaluation.md`, `docs/hackathon/deck.md`) and
 > update `SECURITY.md`'s status.
+
+**Step 41, Opus: the live status page** (after the demo; beside the test rows, since it touches no test or spec)
+
+> Read `CLAUDE.md`, `docs/ROADMAP.md` (step 41 and Abby's decision of
+> 2026-11-17 above "Known limits"), `docs/how-to/get-started.md`,
+> `docs/how-to/deploy-on-vast.md` (sections 4, 6a and 9),
+> `src/tobi508/jobs.py`, `src/tobi508/routes.py`, `src/tobi508/app.py`
+> (`http_options`), `src/tobi508/tools/run_tt_tests.py` and
+> `run_status.py`, and `demo/prescrt-viewer/README.md`. Then plan with
+> me before building; one pull request.
+>
+> **Why.** Using TOBI from Claude Code, I saw the run's progress only
+> while a tool call was open: after `CALL_WAIT_S` the call returns a
+> job and the progress line goes, and between `tobi_run_status` calls
+> only my agent spoke. I want a page in the browser that keeps showing
+> what the server is doing while I chat with my agent. A status line
+> in Claude Code is out: too hard for our users to install.
+>
+> **What.** A read-only page served by the server over HTTP (way 3 of
+> get-started, and hosted), refreshing itself: each run the server
+> holds, with the page tested, its tests, state, the progress step and
+> message, and times; when a run is done, its outcome per test and a
+> way to open its pre-SCRT file in the viewer (`viewer.html`) in the
+> browser. Each tool result that starts or waits on a run carries the
+> page's address (one short field; keep tool output small), and the
+> agent is told to give it to the user.
+>
+> **Decided:** the MCP endpoint keeps sign-in; this page is open
+> without it, as `/health` is, on a server with `AUTH=oidc`, and shows
+> every person's runs, URLs and results (my decision, recorded in the
+> roadmap). Without sign-in the server still listens on loopback only:
+> never change that rule (`app.http_options`).
+>
+> **Scope.** Only what the server holds now: jobs in memory
+> (`jobs.py`) and run folders until they expire (`RUN_TTL_HOURS`).
+> Nothing that outlives a restart or the 24 hours: that is the store,
+> step 17. Over stdio there is no HTTP server, so no page; say so in
+> get-started.
+>
+> **Rules to keep.** Read-only: GET only; it starts, answers and
+> changes nothing. Page content is untrusted (`CLAUDE.md`, principle
+> 5): every URL, title, message and file value is shown as text, never
+> HTML, on the page and in the viewer (test it with a page title and a
+> URL holding markup and script). No outside scripts, styles or
+> requests; a strict Content-Security-Policy. The disclaimer on every
+> view; never "certified" or "compliant". The page copies outcomes and
+> decides none. The viewer today opens a file the user picks and makes
+> no requests; how it gets a run's file (embedded by the server, or a
+> same-origin fetch with its CSP changed to allow only that) is a
+> choice to bring me with its trade-offs.
+>
+> **Tests:** the page answers without a token while `/mcp` answers
+> 401; it shows a running job's progress and a finished run's
+> outcomes; markup in page values is escaped; a POST is refused; the
+> result field is present and small. Run it once by hand over way 3
+> and show me a screenshot. Update the how-tos, `SECURITY.md` (an
+> unauthenticated route), and, as a security control changed,
+> `docs/hackathon/evaluation.md` and its slide in `deck.md`.
 
 **Step 13, Sonnet: the scored run for the pitch** (Nov 18-19, when I say the submission commit is fixed)
 

@@ -6,9 +6,9 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 
 ## Runs
 
-- Round 1, www.nasa.gov: rerun on development pages, gate 2026-11-17 (step 23) over gate 2026-11-16 (step 9b).
-- Round 2, svs.gsfc.nasa.gov: rerun on development pages, gate 2026-11-17 (step 23) over gate 2026-11-16 (step 9b).
-- Round 3, science.data.nasa.gov: rerun on development pages, gate 2026-11-17 (step 23) over the blind round 3 (locked 2026-11-16, kept as the record in evals/judging/round3/score.md).
+- Round 1, www.nasa.gov: rerun on development pages, gates 2026-11-17 and 2026-11-17-step23 over gate 2026-11-16 (step 9b).
+- Round 2, svs.gsfc.nasa.gov: rerun on development pages, gates 2026-11-17 and 2026-11-17-step23 over gate 2026-11-16 (step 9b).
+- Round 3, science.data.nasa.gov: rerun on development pages, gates 2026-11-17 and 2026-11-17-step23 over the blind round 3 (locked 2026-11-16, kept as the record in evals/judging/round3/score.md).
 
 ## Counts
 
@@ -36,8 +36,8 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 | **3.A** | **all: ✅ agrees with a tester** | 20 | 16 | 0 | 0 | 1 | 3 |
 | 4.A | R1 www.nasa.gov | 9 | 0 | 0 | 0 | 0 | 9 |
 | 4.A | R2 svs.gsfc.nasa.gov | 10 | 2 | 0 | 1 | 0 | 7 |
-| 4.A | R3 science.data.nasa.gov | 10 | 2 | 0 | 0 | 0 | 8 |
-| **4.A** | **all: ⚠️ mostly left for a person** | 29 | 4 | 0 | 1 | 0 | 24 |
+| 4.A | R3 science.data.nasa.gov | 10 | 1 | 0 | 0 | 0 | 9 |
+| **4.A** | **all: ⚠️ often fails pages a tester passes** | 29 | 3 | 0 | 1 | 0 | 25 |
 | 4.B | R1 www.nasa.gov | 9 | 9 | 0 | 0 | 0 | 0 |
 | 4.B | R2 svs.gsfc.nasa.gov | 10 | 9 | 0 | 0 | 0 | 1 |
 | 4.B | R3 science.data.nasa.gov | 10 | 8 | 0 | 0 | 0 | 2 |
@@ -50,55 +50,55 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 | 4.D | R2 svs.gsfc.nasa.gov | 10 | 1 | 0 | 2 | 0 | 7 |
 | 4.D | R3 science.data.nasa.gov | 10 | 3 | 0 | 0 | 0 | 7 |
 | **4.D** | **all: ⚠️ often fails pages a tester passes** | 29 | 7 | 0 | 2 | 0 | 20 |
-| 4.E | R1 www.nasa.gov | 9 | 7 | 0 | 0 | 0 | 2 |
+| 4.E | R1 www.nasa.gov | 9 | 6 | 0 | 0 | 0 | 3 |
 | 4.E | R2 svs.gsfc.nasa.gov | 10 | 8 | 0 | 0 | 0 | 2 |
-| 4.E | R3 science.data.nasa.gov | 10 | 6 | 0 | 3 | 0 | 1 |
-| **4.E** | **all: ✅ agrees with a tester** | 29 | 21 | 0 | 3 | 0 | 5 |
-| 4.F | R1 www.nasa.gov | 9 | 3 | 0 | 0 | 0 | 6 |
-| 4.F | R2 svs.gsfc.nasa.gov | 10 | 1 | 0 | 1 | 0 | 8 |
-| 4.F | R3 science.data.nasa.gov | 10 | 2 | 0 | 2 | 0 | 6 |
-| **4.F** | **all: ⚠️ often fails pages a tester passes** | 29 | 6 | 0 | 3 | 0 | 20 |
+| 4.E | R3 science.data.nasa.gov | 10 | 7 | 0 | 0 | 0 | 3 |
+| **4.E** | **all: ✅ agrees with a tester** | 29 | 21 | 0 | 0 | 0 | 8 |
+| 4.F | R1 www.nasa.gov | 9 | 5 | 0 | 0 | 0 | 4 |
+| 4.F | R2 svs.gsfc.nasa.gov | 10 | 2 | 0 | 4 | 0 | 4 |
+| 4.F | R3 science.data.nasa.gov | 10 | 4 | 0 | 2 | 0 | 4 |
+| **4.F** | **all: ⚠️ often fails pages a tester passes** | 29 | 11 | 0 | 6 | 0 | 12 |
 | 5.A | R1 www.nasa.gov | 9 | 9 | 0 | 0 | 0 | 0 |
 | 5.A | R2 svs.gsfc.nasa.gov | 10 | 6 | 0 | 1 | 0 | 3 |
-| 5.A | R3 science.data.nasa.gov | 10 | 2 | 0 | 3 | 0 | 5 |
-| **5.A** | **all: ✅ agrees with a tester** | 29 | 17 | 0 | 4 | 0 | 8 |
+| 5.A | R3 science.data.nasa.gov | 10 | 3 | 0 | 3 | 0 | 4 |
+| **5.A** | **all: ✅ agrees with a tester** | 29 | 18 | 0 | 4 | 0 | 7 |
 | 5.B | R1 www.nasa.gov | 9 | 0 | 0 | 1 | 0 | 8 |
-| 5.B | R2 svs.gsfc.nasa.gov | 10 | 6 | 0 | 2 | 0 | 2 |
+| 5.B | R2 svs.gsfc.nasa.gov | 10 | 6 | 0 | 1 | 0 | 3 |
 | 5.B | R3 science.data.nasa.gov | 10 | 3 | 0 | 3 | 0 | 4 |
-| **5.B** | **all: ⚠️ often fails pages a tester passes** | 29 | 9 | 0 | 6 | 0 | 14 |
+| **5.B** | **all: ⚠️ often fails pages a tester passes** | 29 | 9 | 0 | 5 | 0 | 15 |
 | 5.C | R1 www.nasa.gov | 9 | 1 | 0 | 1 | 0 | 7 |
 | 5.C | R2 svs.gsfc.nasa.gov | 10 | 10 | 0 | 0 | 0 | 0 |
 | 5.C | R3 science.data.nasa.gov | 10 | 7 | 0 | 1 | 0 | 2 |
 | **5.C** | **all: ✅ agrees with a tester** | 29 | 18 | 0 | 2 | 0 | 9 |
-| 5.D | R1 www.nasa.gov | 9 | 1 | 0 | 2 | 0 | 6 |
+| 5.D | R1 www.nasa.gov | 9 | 1 | 0 | 1 | 0 | 7 |
 | 5.D | R2 svs.gsfc.nasa.gov | 10 | 3 | 0 | 0 | 0 | 7 |
 | 5.D | R3 science.data.nasa.gov | 10 | 1 | 0 | 2 | 0 | 7 |
-| **5.D** | **all: ⚠️ often fails pages a tester passes** | 29 | 5 | 0 | 4 | 0 | 20 |
+| **5.D** | **all: ⚠️ often fails pages a tester passes** | 29 | 5 | 0 | 3 | 0 | 21 |
 | 5.F | R1 www.nasa.gov | 9 | 0 | 0 | 0 | 0 | 9 |
 | 5.F | R2 svs.gsfc.nasa.gov | 10 | 3 | 0 | 0 | 0 | 7 |
-| 5.F | R3 science.data.nasa.gov | 10 | 4 | 0 | 0 | 0 | 6 |
-| **5.F** | **all: ⚠️ mostly left for a person** | 29 | 7 | 0 | 0 | 0 | 22 |
+| 5.F | R3 science.data.nasa.gov | 10 | 6 | 0 | 0 | 0 | 4 |
+| **5.F** | **all: ⚠️ mostly left for a person** | 29 | 9 | 0 | 0 | 0 | 20 |
 | 5.G | R1 www.nasa.gov | 9 | 0 | 0 | 0 | 0 | 9 |
 | 5.G | R2 svs.gsfc.nasa.gov | 10 | 3 | 0 | 0 | 0 | 7 |
-| 5.G | R3 science.data.nasa.gov | 10 | 4 | 0 | 0 | 0 | 6 |
-| **5.G** | **all: ⚠️ mostly left for a person** | 29 | 7 | 0 | 0 | 0 | 22 |
+| 5.G | R3 science.data.nasa.gov | 10 | 6 | 0 | 0 | 0 | 4 |
+| **5.G** | **all: ⚠️ mostly left for a person** | 29 | 9 | 0 | 0 | 0 | 20 |
 | 5.H | R1 www.nasa.gov | 9 | 6 | 0 | 0 | 0 | 3 |
 | 5.H | R2 svs.gsfc.nasa.gov | 10 | 9 | 0 | 0 | 0 | 1 |
-| 5.H | R3 science.data.nasa.gov | 10 | 8 | 0 | 0 | 0 | 2 |
-| **5.H** | **all: ✅ agrees with a tester** | 29 | 23 | 0 | 0 | 0 | 6 |
+| 5.H | R3 science.data.nasa.gov | 10 | 9 | 0 | 0 | 0 | 1 |
+| **5.H** | **all: ✅ agrees with a tester** | 29 | 24 | 0 | 0 | 0 | 5 |
 | 9.A | R1 www.nasa.gov | 9 | 8 | 0 | 0 | 0 | 1 |
 | 9.A | R2 svs.gsfc.nasa.gov | 10 | 10 | 0 | 0 | 0 | 0 |
 | 9.A | R3 science.data.nasa.gov | 10 | 6 | 0 | 0 | 0 | 4 |
 | **9.A** | **all: ✅ agrees with a tester** | 29 | 24 | 0 | 0 | 0 | 5 |
 | 9.B | R1 www.nasa.gov | 9 | 9 | 0 | 0 | 0 | 0 |
 | 9.B | R2 svs.gsfc.nasa.gov | 10 | 9 | 0 | 0 | 0 | 1 |
-| 9.B | R3 science.data.nasa.gov | 10 | 0 | 0 | 6 | 0 | 4 |
-| **9.B** | **all: ⚠️ often fails pages a tester passes** | 29 | 18 | 0 | 6 | 0 | 5 |
+| 9.B | R3 science.data.nasa.gov | 10 | 0 | 0 | 0 | 0 | 10 |
+| **9.B** | **all: ✅ agrees with a tester** | 29 | 18 | 0 | 0 | 0 | 11 |
 | 9.C | R1 www.nasa.gov | 9 | 9 | 0 | 0 | 0 | 0 |
-| 9.C | R2 svs.gsfc.nasa.gov | 10 | 4 | 0 | 0 | 0 | 6 |
+| 9.C | R2 svs.gsfc.nasa.gov | 10 | 5 | 0 | 0 | 0 | 5 |
 | 9.C | R3 science.data.nasa.gov | 10 | 6 | 0 | 0 | 0 | 4 |
-| **9.C** | **all: ✅ agrees with a tester** | 29 | 19 | 0 | 0 | 0 | 10 |
-| 19.A | R1 www.nasa.gov | 9 | 4 | 0 | 0 | 0 | 5 |
+| **9.C** | **all: ✅ agrees with a tester** | 29 | 20 | 0 | 0 | 0 | 9 |
+| 19.A | R1 www.nasa.gov | 9 | 0 | 0 | 0 | 0 | 9 |
 | 19.A | R2 svs.gsfc.nasa.gov | 10 | 2 | 0 | 0 | 0 | 8 |
 | 19.A | R3 science.data.nasa.gov | 10 | 2 | 0 | 0 | 0 | 8 |
-| **19.A** | **all: ⚠️ mostly left for a person** | 29 | 8 | 0 | 0 | 0 | 21 |
+| **19.A** | **all: ⚠️ mostly left for a person** | 29 | 4 | 0 | 0 | 0 | 25 |

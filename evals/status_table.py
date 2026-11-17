@@ -38,28 +38,39 @@ END = "<!-- status-table:end -->"
 # Each site's latest scored result. `base` gives every cell; `overlay` is a
 # later rerun's `moved.json` (only the cells that differ from the base, for the
 # tests that rerun covered). Point these at step 9c's results when it is merged.
+# Later reruns' `moved.json`, oldest first: each lists the cells that differ from
+# the run before it (step 23's file is against the first rerun for the tests
+# that ran twice, against step 9b or the blind run for the rest).
+OVERLAYS = [
+    JUD / "gate-2026-11-17" / "moved.json",
+    JUD / "gate-2026-11-17-step23" / "moved.json",
+]
+
 SITES = {
     1: {
         "site": "www.nasa.gov",
-        "run": "rerun on development pages, gate 2026-11-17 (step 23) over "
+        "run": "rerun on development pages, gates 2026-11-17 and "
+        "2026-11-17-step23 over "
         "gate 2026-11-16 (step 9b)",
         "base": JUD / "gate-2026-11-16" / "compare-round1.json",
-        "overlay": JUD / "gate-2026-11-17" / "moved.json",
+        "overlay": OVERLAYS,
     },
     2: {
         "site": "svs.gsfc.nasa.gov",
-        "run": "rerun on development pages, gate 2026-11-17 (step 23) over "
+        "run": "rerun on development pages, gates 2026-11-17 and "
+        "2026-11-17-step23 over "
         "gate 2026-11-16 (step 9b)",
         "base": JUD / "gate-2026-11-16" / "compare-round2.json",
-        "overlay": JUD / "gate-2026-11-17" / "moved.json",
+        "overlay": OVERLAYS,
     },
     3: {
         "site": "science.data.nasa.gov",
-        "run": "rerun on development pages, gate 2026-11-17 (step 23) over "
+        "run": "rerun on development pages, gates 2026-11-17 and "
+        "2026-11-17-step23 over "
         "the blind round 3 (locked 2026-11-16, kept as the record in "
         "evals/judging/round3/score.md)",
         "base": None,
-        "overlay": JUD / "gate-2026-11-17" / "moved.json",
+        "overlay": OVERLAYS,
     },
 }
 
@@ -103,8 +114,8 @@ def cells(rnd: int) -> dict[tuple[str, str], dict]:
         for r in rows
         if r["verdict"] != "not_scored"
     }
-    if src["overlay"] is not None:
-        moved = json.loads(src["overlay"].read_text("utf-8"))["rounds"]
+    for overlay in src["overlay"]:
+        moved = json.loads(overlay.read_text("utf-8"))["rounds"]
         for m in moved.get(str(rnd), {}).get("moved", []):
             out[(m["page"], m["test"])] = {
                 "key": m["key"],

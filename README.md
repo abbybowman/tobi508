@@ -61,7 +61,7 @@ Status is about our evaluation pages only (29 pages on three NASA sites, scored 
 | 2.C | 2.2.2-auto-updating | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester |
 | 2.D | 4.1.2-change-notify-auto | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
 | 3.A | 2.3.1-flashing | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester |
-| 4.A | 2.1.1-keyboard-access | [1.14.0](specs/rules/4a-keyboard-access.md) | ⚠️ mostly left for a person |
+| 4.A | 2.1.1-keyboard-access | [1.14.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes |
 | 4.B | 2.1.1-no-keystroke-timing | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester |
 | 4.C | 2.1.2-no-keyboard-trap | [1.17.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester |
 | 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes |
@@ -75,7 +75,7 @@ Status is about our evaluation pages only (29 pages on three NASA sites, scored 
 | 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
 | 5.H | 3.3.4-error-prevention | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester |
 | 9.A | 2.4.1-bypass-function | [1.7.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
-| 9.B | 3.2.3-consistent-navigation | [1.7.0](specs/rules/9b-consistent-navigation.md) | ⚠️ often fails pages a tester passes |
+| 9.B | 3.2.3-consistent-navigation | [1.7.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
 | 9.C | 3.2.4-consistent-identification | [1.10.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester |
 | 19.A | 2.4.5-multiple-ways | [1.15.0](specs/rules/19a-multiple-ways.md) | ⚠️ mostly left for a person |
 <!-- status-table:end -->
