@@ -498,9 +498,13 @@ def before(a: list[int], b: list[int]) -> bool:
     return False
 
 
+ALIGN_MAX_CELLS = 6_000_000  # table size past which equal items pair in order
+
+
 def pair_in_order(left: list[tuple[str, int]], right: list[tuple[str, int]]):
     """Pair items with equal keys, the k-th with the k-th. Each item is (key,
-    position); returns (left position, right position) pairs."""
+    position); returns (left position, right position) pairs. The fallback of
+    `pair_aligned` for lists too long to align."""
     from collections import defaultdict
 
     slots: dict[str, list[int]] = defaultdict(list)
@@ -514,6 +518,85 @@ def pair_in_order(left: list[tuple[str, int]], right: list[tuple[str, int]]):
             out.append((pos, slots[k][j]))
             taken[k] = j + 1
     return out
+
+
+def pair_aligned(left: list[tuple[str, int]], right: list[tuple[str, int]]):
+    """Pair items with equal keys by an alignment that keeps their order where
+    it can (9.B 1.7.0, Terms). Each item is (key, position); returns (left
+    position, right position) pairs in left order.
+
+    The longest common subsequence of the two key lists is the alignment (a
+    key found once on each page weighs more than any number of repeated ones,
+    so a repeated link gives way to the unique ones around it). Items it keeps
+    are paired as aligned; an extra copy of a repeated key on one page is then
+    an insertion, not a swap. Copies it cannot keep on both pages (an equal
+    number of unaligned copies of one key) pair in order, so a real reorder
+    still crosses. Pure and deterministic; lists whose table would pass
+    `ALIGN_MAX_CELLS` pair in order, as before 1.7.0."""
+    from collections import Counter, defaultdict
+
+    lc, rc = Counter(k for k, _ in left), Counter(k for k, _ in right)
+    li = [(k, p) for k, p in left if k in rc]
+    ri = [(k, p) for k, p in right if k in lc]
+    if all(lc[k] == 1 and rc[k] == 1 for k, _ in li):
+        return pair_in_order(li, ri)  # no repeated key: nothing to align
+    a, b = [k for k, _ in li], [k for k, _ in ri]
+    top = max(len(a), len(b)) + 1
+
+    def weight(k: str) -> int:
+        return top if lc[k] == 1 and rc[k] == 1 else 1
+
+    # Equal ends always pair; the table covers what is between them.
+    pre = 0
+    while pre < min(len(a), len(b)) and a[pre] == b[pre]:
+        pre += 1
+    suf = 0
+    while (
+        suf < min(len(a), len(b)) - pre and a[len(a) - 1 - suf] == b[len(b) - 1 - suf]
+    ):
+        suf += 1
+    ma, mb = a[pre : len(a) - suf], b[pre : len(b) - suf]
+    if len(ma) * len(mb) > ALIGN_MAX_CELLS:
+        return pair_in_order(li, ri)
+    n, m = len(ma), len(mb)
+    step = bytearray((n + 1) * (m + 1))  # 1 pair, 2 skip left, 3 skip right
+    below = [0] * (m + 1)
+    for i in range(n - 1, -1, -1):
+        row = [0] * (m + 1)
+        for j in range(m - 1, -1, -1):
+            best, how = below[j], 2
+            if row[j + 1] > best:
+                best, how = row[j + 1], 3
+            if ma[i] == mb[j] and below[j + 1] + weight(ma[i]) >= best:
+                best, how = below[j + 1] + weight(ma[i]), 1
+            row[j], step[i * (m + 1) + j] = best, how
+        below = row
+    kept: list[tuple[int, int]] = [(x, x) for x in range(pre)]
+    i = j = 0
+    while i < n and j < m:
+        how = step[i * (m + 1) + j]
+        if how == 1:
+            kept.append((pre + i, pre + j))
+            i += 1
+            j += 1
+        elif how == 2:
+            i += 1
+        else:
+            j += 1
+    kept += [(len(a) - suf + x, len(b) - suf + x) for x in range(suf)]
+    # Copies the alignment dropped on both pages pair in order (a reorder).
+    used_a, used_b = {x for x, _ in kept}, {y for _, y in kept}
+    spare_a: dict[str, list[int]] = defaultdict(list)
+    spare_b: dict[str, list[int]] = defaultdict(list)
+    for x, k in enumerate(a):
+        if x not in used_a:
+            spare_a[k].append(x)
+    for y, k in enumerate(b):
+        if y not in used_b:
+            spare_b[k].append(y)
+    for k, xs in spare_a.items():
+        kept += list(zip(xs, spare_b.get(k, []), strict=False))
+    return [(li[x][1], ri[y][1]) for x, y in sorted(kept)]
 
 
 # ── Kinship: do the other pages share a template with the tested page? ──────

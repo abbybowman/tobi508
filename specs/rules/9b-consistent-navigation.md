@@ -1,7 +1,7 @@
 ---
 tt_test: 9.B
 tt_name: 3.2.3-consistent-navigation
-spec_version: 1.6.0
+spec_version: 1.7.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -15,7 +15,7 @@ The tool gives each page one 9.B outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 **Other sources.** [Understanding 3.2.3](https://www.w3.org/WAI/WCAG22/Understanding/consistent-navigation.html): consistent "visual layout and source order"; examples: a search field, a navigation menu, a skip link; insertions and removals allowed; a change "initiated by the user" (preferences, adaptive user agents) is excepted. Sufficient [G61](https://www.w3.org/WAI/WCAG22/Techniques/general/G61) (list the repeated components; check each is in the same relative order "with regard to other repeated components", and each navigational component's links "in the same relative order"). Failure [F66](https://www.w3.org/WAI/WCAG22/Techniques/failures/F66): "check the default presentation of the navigation mechanism on each page to see if the list of links are in the same relative order"; "secondary navigation items may be in between". No ACT rule; no DHS ACT data. ICT Testing Baseline 3.1 4.B-ConsistentNavigation: "Review multiple Web pages. Do not initiate changes to the content"; navigational mechanisms are "both interactive and non-interactive" and "may or may not be contained within a block of content". No Baseline Alignment cases.
 
-**Terms.** *Other pages*, *unit*, *region*, the site read and *kinship* (a page that *shares almost nothing* with the tested page; *navigation of its own*): [9a-bypass.md](9a-bypass.md) Terms and section 2. A *component* is a control unit (link, button, field) or a region. Components *match* across two pages when they have the same kind, the same region role, the same name (lower case, spaces collapsed) and, for links, the same destination (absolute, without the fragment unless it is a same-page link); several equal ones pair in order. A component inside the `main` landmark of either page is content, not navigation, and is left out. Order is checked two ways: *source order* (reading order; controls are compared with controls and regions with regions) and *visual order* (controls only: a comes before b when a's box ends above b's box, or they share a line and a is to the left; pairs with neither relation are not compared).
+**Terms.** *Other pages*, *unit*, *region*, the site read and *kinship* (a page that *shares almost nothing* with the tested page; *navigation of its own*): [9a-bypass.md](9a-bypass.md) Terms and section 2. A *component* is a control unit (link, button, field) or a region. Components *match* across two pages when they have the same kind, the same region role, the same name (lower case, spaces collapsed) and, for links, the same destination (absolute, without the fragment unless it is a same-page link); equal ones pair by an *alignment* that keeps their order where it can (1.7.0; step 31): the longest common subsequence of the two pages' lists of components (one found once on each page weighs more than any number of repeated ones), so an extra copy of a repeated link on one page is an insertion, not a swap; copies of one key the alignment leaves on both pages, as many on each, pair in order, so a real reorder still crosses. Lists too long to align (a table of more than 6 million cells, after equal ends are paired) pair in order as in 1.6.0. A component inside the `main` landmark of either page is content, not navigation, and is left out. Order is checked two ways: *source order* (reading order; controls are compared with controls and regions with regions) and *visual order* (controls only: a comes before b when a's box ends above b's box, or they share a line and a is to the left; pairs with neither relation are not compared).
 
 ## 1. Applicability
 
@@ -83,6 +83,7 @@ None. Which items are navigation is decided by matching and by leaving out the m
 | --- | --- | --- |
 | A secondary menu or an expanded submenu on one page only | Unmatched items are ignored: insertions are allowed | p. 44 Note |
 | The same link in the header and the footer | Pairs within the same region role, so they are not mixed | Spec rule |
+| A link repeated on every page has an extra copy on some pages (a breadcrumb "Home" beside the top bar's, the footer logo's and the footer list's; round 3's Drupal pages, key PASS on 6) | An insertion: the alignment pairs the copies both pages have, in order, so the links between them are not reversed. Two different links swapped, or repeated links whose copies change places with a link between them, still FAIL (N3) | p. 44 Note; Fixtures m1-m3, n1-n2 |
 | Items reordered with CSS (`order`, `flex-direction: row-reverse`) | Visual order catches it (N4) | Fixture |
 | A mobile and a desktop copy of the menu, one hidden | Hidden units are not read | Spec rule |
 | Menus that open on hover or click | Not opened (HtT 1): their hidden items are not compared | p. 43 HtT 1 |

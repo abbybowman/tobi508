@@ -240,10 +240,11 @@ roadmap steps 21 to 35):
   button is not seen. Step 28. Round 3 also held 4.A at NEEDS REVIEW on
   all six Drupal pages for a hidden share frame, a page-level wheel or
   touch listener and `HOVER_MAX` (40) (step 32).
-- **9.B pairs equal links in order:** when one page has an extra copy
-  of a repeated link (a breadcrumb "Home" in the same region as the
-  others), the pairs cross and 9.B FAILs where nothing moved (round 3:
-  6). Step 31.
+- **9.B on a very long list of links:** equal links pair by an alignment
+  (1.7.0), but two lists whose table passes 6 million cells (after equal
+  ends are paired) pair in order as before, so an extra copy of a
+  repeated link could still read as a swap there. Not seen on any
+  round's pages (the read cap is 5,000 pieces of content).
 - **4.F:** a footer of link columns raises S3 on every page (Tab goes
   down one column and up to the next), and a dropdown whose options take
   arrow keys raises S6; J1's order list can leave out what the signals

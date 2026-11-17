@@ -8,6 +8,7 @@ row tables decide outcomes.
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -32,7 +33,7 @@ from tobi508.site import (
     kinship,
     norm_href,
     page_label,
-    pair_in_order,
+    pair_aligned,
     site_read,
 )
 from tobi508.walk import KeyboardWalk
@@ -110,7 +111,7 @@ def _key(u: Unit, page_url: str) -> str:
 def compare(main: PageRead, other: PageRead) -> Cmp:
     a, b = items(main), items(other)
     c = Cmp(n=other.n, url=other.url, incomplete=other.truncated or main.truncated)
-    pairs = pair_in_order(
+    pairs = pair_aligned(
         [(x.key, k) for k, x in enumerate(a)], [(y.key, k) for k, y in enumerate(b)]
     )
     c.matched = len(pairs)
@@ -139,7 +140,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9B:
     st = State9B(read_errors=site.errors, read=site.read)
     if st.read_errors:
         return st
-    st.cmps = [compare(site.main, p) for p in site.others]
+    # The alignment is a table of up to millions of cells: off the event loop.
+    st.cmps = [await asyncio.to_thread(compare, site.main, p) for p in site.others]
     st.kinship = kinship(site)
     return st
 
