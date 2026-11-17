@@ -86,8 +86,11 @@ def _live(folder: Path) -> list[str]:
     bad = []
     for d in _dirs(folder):
         r = json.loads((d / "report.json").read_text("utf-8"))
-        if r.get("live_pages"):
-            bad.append(f"{d.name}: {r['live_pages']}")
+        # 19.A's other pages and searches list here too; "frozen" says
+        # whether the freeze served them.
+        live = [x["url"] for x in r.get("live_pages") or [] if not x.get("frozen")]
+        if live:
+            bad.append(f"{d.name}: {live}")
     return bad
 
 
