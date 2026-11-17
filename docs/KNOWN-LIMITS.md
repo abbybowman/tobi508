@@ -7,7 +7,9 @@ is NEEDS REVIEW-safe unless it says otherwise. Browser checks still to
 run (mostly Windows headed Chrome) are in
 [specs/rules/_browser-checks.md](../specs/rules/_browser-checks.md).
 
-A fix removes its line in the same commit. When a line was found, and
+A fix removes its line in the same commit. The README's table of
+wrong PASS and DOES NOT APPLY outcomes is a short list of the lines
+below; fix them there too. When a line was found, and
 by which step, is a note at its end, not a heading. Lines marked
 **⚑ Check** may be out of date (reorganised 2026-11-17 without
 re-testing): confirm and remove, or remove the mark.
@@ -63,8 +65,11 @@ re-testing): confirm and remove, or remove the mark.
   on a fresh load (`reveal.py`; guards RV and RC), and 4.C and 4.E walk
   what opened (`opened.py`, step 6g). Not opened: a form behind a button
   with no ARIA marker (H-08; its hidden fields keep 5.A to 5.H at NEEDS
-  REVIEW through guard CN, and so does an editable text area). 4.D,
-  5.D and 4.A do not walk or scan opened content yet (step 15).
+  REVIEW through guard CN, and so does an editable text area). 4.A and
+  4.C to 4.F do not see the controls inside such a form, so on a page
+  whose only form opens from a plain button they can PASS (read, not
+  run). 4.D, 5.D and 4.A do not walk or scan opened content yet
+  (step 15).
 - **Guard CN matches hidden fields by their place in the page:** a page
   that rebuilds its elements when a section opens can make a field that
   was read look unread, so a test is NEEDS REVIEW when it need not be.
@@ -91,11 +96,16 @@ re-testing): confirm and remove, or remove the mark.
   may read the dialog. Not measured.
 - **Words in English only:** 4.B's timing words and 5.H's consequence
   words. No match is PASS in 4.B and DOES NOT APPLY in 5.H, so a page in
-  another language can pass (M-03, E-09; step 16). Known over-match in
+  another language can pass (M-03, E-09; step 16). 4.B matches "press
+  twice" but not "press Enter twice". Known over-match in
   5.H and the "checked" words: "order" in "tab order" or "in order to".
 - **Browsers:** results are for the Chromium the report records.
   Firefox needs its own focus reader (no CDP) and every fixture rerun;
-  not planned.
+  not planned. CI runs headless Chromium; headed Chrome on Windows is
+  checked by hand.
+- **A recording freezes network responses, not randomness or time.**
+- **The test browser bypasses the page's Content-Security-Policy** so
+  that ANDI can run (`BYPASS_CSP`, on by default; the report records it).
 
 ## 2.A to 2.D and 3.A: what plays, moves and flashes
 
@@ -103,6 +113,14 @@ re-testing): confirm and remove, or remove the mark.
   2.B and 3.A (2.C says NEEDS REVIEW); a blink 2.5 times a second can be
   missed; flashing below the first screen that is not an image is not
   measured (N-02 to N-09, W-02, W-09; part J).
+- **2.B misses two kinds of motion:** text that blinks by `visibility`
+  is filed as updating, never as moving (N-03); and a pair of frames in
+  which more than half the screen changed is set aside as a page-wide
+  change, so motion that fills most of the screen is not seen (W-07).
+  Both give DOES NOT APPLY.
+- **2.C's scrolled watch scrolls to the first element only,** so a
+  counter that starts when the second of several elements scrolls into
+  view gives DOES NOT APPLY (N-07).
 - **Images** (2.B 1.5.0, 3.A 1.4.0): up to 300 per page are read, lazy
   ones after a scroll. One the recording lacks, an animated one only the
   scroll found, or one whose frames at the size shown exceed 100 MB
