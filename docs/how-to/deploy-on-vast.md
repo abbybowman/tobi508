@@ -4,7 +4,9 @@ For whoever puts the server on VAST (roadmap step 12) and the VAST admin
 who answers its questions. Follow it top to bottom; the checklist at the
 end is what to confirm on the first deployment.
 
-**Status:** no deployment on VAST yet. Every value here is taken from the
+**Status:** no hosted deployment on VAST yet. The image runs in a VAST
+dev environment, reached through an ssh tunnel without sign-in, and ran a
+live page from there (2026-11-17, section 6a). Every value here is taken from the
 code (`src/tobi508/config.py`, `app.py`, `access.py`, `routes.py`,
 `runlog.py`), the `Dockerfile` and `.env.example`, not from memory. The
 sign-in is tested against a stand-in provider (`tests/test_access_signin.py`);
@@ -197,7 +199,9 @@ Not confirmed from the code or VAST's documentation:
 6. Does the ingress terminate TLS and send `X-Forwarded-Proto: https`, and
    from which addresses does it reach the pod (`FORWARDED_ALLOW_IPS`)? Does
    it pass the `Host` header through unchanged? Without both, nobody can
-   sign in.
+   sign in. Answered for a dev environment's URL (2026-11-17, section 6a):
+   yes, from 10.42.0.0, `Host` unchanged. Confirm for the app's own
+   subdomain.
 7. What is the app's host name (`PUBLIC_BASE_URL`), and can the client's
    redirect URI be `https://<app host>/auth/callback`?
 8. Can the pod reach public `.gov` and `.mil` sites on ports 80 and 443?
@@ -209,7 +213,8 @@ Not confirmed from the code or VAST's documentation:
    Chromium, `DEV_MODE` off) recorded that page live: 42 requests, none
    failed, 4.C PASS. Confirm the same from the app's own environment once
    it exists (a re-signing gateway there would show as most requests
-   failed; then set `UPSTREAM_PROXY`).
+   failed; then set `UPSTREAM_PROXY`). From a dev environment, 2026-11-17:
+   4.C on that page again, PASS (section 6a).
 9. Which path survives restarts for `/data`, and how large may it be? A
    run with recordings and screenshots is tens of MB; a page with video
    more.
@@ -219,9 +224,48 @@ Not confirmed from the code or VAST's documentation:
     audit trail, and how long is it kept?
 12. Is exactly one replica guaranteed?
 13. What read timeout does the ingress have for a request that streams
-    (a tool call holds its response up to `CALL_WAIT_S`, 45 s)?
+    (a tool call holds its response up to `CALL_WAIT_S`, 45 s)? At least
+    50 s at a dev environment's URL (2026-11-17, section 6a).
 14. Is `/dev/shm` the default 64 MB? Chromium uses it; a larger one (or the
     host's) avoids crashes on large pages.
+
+## 6a. What a VAST dev environment showed (2026-11-17)
+
+**How deployment works on VAST** (a VAST admin, 2026-11-17): a developer
+can reach only their own dev namespace; there is no per-app namespace
+with developer rights, and no process to grant one. An app gets its own
+subdomain by configuring the gateway, without a namespace of its own.
+The path is: run it in the dev environment, make it work at the dev
+environment's URL (`https://<you>-dev.<VAST domain>/`), then write YAML
+for the app's resources (its own storage, environment, and Kubernetes
+Secrets for keys and tokens) and hand it to the cluster admins. A
+separate namespace adds nothing but proof of a documented deployment.
+
+**What ran.** The image (`:latest`) in the dev environment under Podman,
+`--network host -e MCP_HOST=127.0.0.1` (way 3 of
+[get-started.md](get-started.md)), reached from a laptop through
+`ssh -L 8000:127.0.0.1:8000`, Claude Code connected over HTTP: 4.C on
+https://www.section508.gov/ came back PASS (93 Tab and 94 Shift+Tab
+presses, no open question). The first live run from a VAST dev
+environment, by Claude Code through MCP.
+
+**What the dev URL's gateway does,** found with a throwaway server that
+echoes each request's headers, not TOBI (TOBI without sign-in stays on
+loopback):
+
+| Question | Found |
+| --- | --- |
+| Port the dev URL reaches | **8000** (`MCP_PORT`'s default). While TOBI listens on 127.0.0.1 only, the URL answers 502, as it should. |
+| Does the gateway sign people in? | **No.** Traefik passes requests through with no user header, so TOBI's own sign-in (`AUTH=oidc`) is what protects it. Never serve it on this URL without that. |
+| TLS and forwarded headers (question 6) | Traefik ends TLS and sends `X-Forwarded-Proto: https`, `X-Forwarded-Port: 443` and `X-Forwarded-Host`; `Host` arrives unchanged. Requests reach the pod from **10.42.0.0** (the cluster's pod network, not Traefik's own address): `FORWARDED_ALLOW_IPS=10.42.0.0`, or `10.42.0.0/16` if that address moves (uvicorn 0.54 takes ranges; any pod could then claim https, while sign-in is still required). `X-Forwarded-For` is 10.42.0.1, not the caller's address. |
+| Read timeout (question 13) | A request held 50 s answered 200 after 50.3 s: `CALL_WAIT_S` (45 s) fits. |
+| Settings given to the environment | No port, URL or OIDC variables (`env` names only). |
+
+**Still needed from the admins:** a confidential client in the `vast`
+realm with redirect `https://<you>-dev.<VAST domain>/auth/callback`, a
+Group Membership mapper (`claim_groups`) and an Audience mapper (section
+8). Then `AUTH=oidc` at the dev URL, the smoke test (section 7), and the
+YAML.
 
 ## 7. Checklist for the first deployment
 

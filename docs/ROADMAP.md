@@ -37,8 +37,10 @@ keep their own schedule.
   (steps 21 and 22).
 - **Hosting:** sign-in, run ownership and audit lines are built, and
   the built image passes a smoke test in CI behind a real Keycloak
-  ([guide](how-to/deploy-on-vast.md)). Nothing has run in the
-  tobi-508 environment on VAST yet. Without a gateway for the judge,
+  ([guide](how-to/deploy-on-vast.md)). On VAST (2026-11-17) the image
+  runs in a dev environment and ran a live page there through Claude
+  Code over an ssh tunnel; the dev URL's gateway is measured; sign-in
+  there waits for a Keycloak client from the admins. Without a gateway for the judge,
   a hosted server leaves open questions to the calling agent.
 - Earlier steps and their notes: [archive](archive/).
 
@@ -62,7 +64,7 @@ file and the prompt file; other threads write to their plan.
 | 1 | 31, 29 (small part) | 9.B's six false FAILs; 5.B's DOES NOT APPLY when 5.A could not decide | Sonnet | morning, beside the first |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
-| - | 12b | Hosted on VAST: the first deployment | Opus | the day the environment exists |
+| - | 12b | Hosted on VAST: sign-in at the dev URL, then YAML for the cluster admins | Opus | when the Keycloak client arrives |
 | - | 13 | The pitch: the scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
 
 ### Why these, and what they should do to the status table
@@ -110,9 +112,12 @@ Left yellow after the cut, each needing more than a day: 4.A, 4.D,
   test by one stated rule, written by a script from 9c; a test fails
   when the README's rows are not the script's. Counts per site go to
   a generated `evals/STATUS.md`.
-- **12b.** Deploy by [the guide](how-to/deploy-on-vast.md), sign in
-  from Claude Code, run the smoke test, then one page; then the
-  [PENDING] markers about sign-in go.
+- **12b.** No app namespace for developers on VAST (admin,
+  2026-11-17): make it work with sign-in at the dev environment's URL,
+  then hand the cluster admins YAML for its resources
+  ([guide, section 6a](how-to/deploy-on-vast.md)). Sign in from Claude
+  Code, run the smoke test, then one page; then the [PENDING] markers
+  about sign-in go.
 - **13.** The [FILL] figures from one scored run at the submission
   commit ([docs/hackathon/](hackathon/README.md)).
 
@@ -150,8 +155,8 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 **Before the demo:**
 
-- **VAST** (step 12b): whether the tobi-508 environment exists; the
-  app's token contents; a gateway for the judge.
+- **VAST** (step 12b): a Keycloak client for the dev URL (asked
+  2026-11-17); the app's token contents; a gateway for the judge.
 - **Publishing the repository.** GSA asks for a GitHub repository;
   SECURITY.md says NASA's release review comes first. Which comes
   first for the submission.
