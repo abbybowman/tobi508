@@ -72,7 +72,8 @@ headed Chrome) are in
   jQuery in `defer` bundles but Popup Maker's `site.js` as a blocking
   script at the end of the body, so it runs first and throws "jQuery is
   not defined". The run's report does not say so: guard GU sees no
-  unrecorded code, and page script errors are not recorded as a note.
+  unrecorded code, and page script errors are not recorded as a note. **It can open on a replay when the machine is loaded** (gate 2026-11-17: three rounds replayed at once in one container): on round 1's careers and artemis-iii pages it took focus, moved 4.C and 4.E to PASS, 4.F to NEEDS REVIEW and 5.D to a false FAIL; run alone, each page gave its usual outcomes. Reruns that score a round run one round at a time.
+
 - **A frame whose address changes on every load is not in a frozen
   copy** (reCAPTCHA, a lazy video embed): its replay asks for an address
   the recording never saw, and it is aborted. The freeze lists such frames
