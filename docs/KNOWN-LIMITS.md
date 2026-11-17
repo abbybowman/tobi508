@@ -119,7 +119,8 @@ re-testing): confirm and remove, or remove the mark.
   13.A, 13.B, 13.C, 18.A). 2.C J1's wording when the mechanism is page
   text naming a key.
 - **Real YouTube and Vimeo embeds** are NEEDS REVIEW in 2.A (A2), 2.B
-  (A1) and 3.A.
+  (A1) and 3.A. 2.A: audio that does not play from the recording is
+  NEEDS REVIEW.
 - **3.A:** CSS background animated images are not decoded (only
   `<img>`); H.264 video cannot be decoded in Chromium (NEEDS REVIEW).
   The screencast net varies between runs on some pages (round 2's 5340:
@@ -145,21 +146,27 @@ re-testing): confirm and remove, or remove the mark.
   MySearchStory; step 28). Every Drupal page of round 3 was NEEDS
   REVIEW for a hidden share frame, a page-level wheel or touch listener
   and `HOVER_MAX` (40) (step 32). Its caps (`HOVER_MAX`, `CLICK_MAX`,
-  `EXECUTE_MAX`) are not calibrated on real pages.
+  `EXECUTE_MAX`) are not calibrated on real pages. A page with embedded
+  players or frames is often NEEDS REVIEW.
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
   walk short of its press limit on a slow machine (the grid's
   `frame-other` page in CI, once; 12 runs under load ended normally):
-  NEEDS REVIEW, not wrong.
+  NEEDS REVIEW, not wrong. A menu whose controls the Tab key does not
+  reach, or that could not be opened, is NEEDS REVIEW (as in 4.E and
+  5.D).
 - **4.D:** `MIN_CHANGED_PX` is absolute, so about 50 changed pixels pass
   a large image link (round 3's blog; held only by guard RC; step 27). A
   link whose only sign of focus is that its box moved is NEEDS REVIEW
   unless it is shown only on focus (F-02, 4.D 1.8.0); if more than 1 in
   5 of a round's 4.D stops end there, Abby's option B: take the two
-  pictures again once the page settles.
+  pictures again once the page settles. The judge is often unsure on
+  small focus pictures, so many cells wait for a person.
 - **4.D and 4.E:** a control that blurs itself as it gets focus is FAIL
   on a plain page and inside a web component, but inside a frame from
-  another site the walk never reaches it: NEEDS REVIEW (row WK).
+  another site the walk never reaches it: NEEDS REVIEW (row WK). 4.E
+  also leaves a menu whose controls the Tab key does not reach, or that
+  could not be opened, NEEDS REVIEW.
 - **4.E:** an address change the page makes on its own soon after load
   is read as caused by focus when it lands on the first key press
   (round 3: 3 false FAILs; step 24). **⚑ Check:** step 23's rerun moved
@@ -169,7 +176,8 @@ re-testing): confirm and remove, or remove the mark.
   dropdown whose options take arrow keys raises S6; J1's order list can
   leave out what the signals name; on those signals the judge's answer
   changes from run to run (round 2's p02, p03, p07: unsure in one rerun,
-  a false FAIL in the next). Step 33.
+  a false FAIL in the next). Step 33. The judge is often unsure, so many
+  cells wait for a person.
 
 ## 5.A to 5.H: forms
 
@@ -183,13 +191,15 @@ re-testing): confirm and remove, or remove the mark.
   fields it is not counted, so a PASS there is "in what 5.B judged". Not
   done: opening the panel a magnifier opens, and a magnifier as a label
   (step 29). Controls with no `<form>` all have form "none", so a
-  header's menu button joins a search field's form (step 35).
+  header's menu button joins a search field's form (step 35). The judge
+  is often unsure, so many cells wait for a person.
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (only the wording differs); a jump forward past a field
   after Tab-away is not detected; on a filter whose request the
   recording lacks, focus landing on the field's own label reads as a
   move (round 3's blog: a false FAIL; step 35). `FIELD_MAX` (40) and
-  `FIELD_SECONDS` (1.1 s) are not calibrated on real pages.
+  `FIELD_SECONDS` (1.1 s) are not calibrated on real pages. A menu or
+  section that opens leaves it NEEDS REVIEW (as in 4.C and 4.E).
 - **5.F and 5.G:** the browser's own error messages are left for a
   person (5.F 1.13.0, 5.G 1.11.0): the browser shows one field's message
   at a time and its words differ by browser, so a form checked only that
@@ -198,7 +208,8 @@ re-testing): confirm and remove, or remove the mark.
   1.12.0), so a one-character message in Chinese or Japanese is left
   for a person. `time`, `datetime-local`, `month` and `week` fields are
   left as loaded in attempt 2. Error handling done on the server cannot
-  be replayed from a recording: a form that is sent is NEEDS REVIEW.
+  be replayed from a recording: a form that is sent is NEEDS REVIEW, as
+  is a change that cannot be read as an error.
 - **5.F to 5.H:** a form that is only a button (M-02). **⚑ Check:** the
   review marks M-02 fixed in part B (guard CN holds it at NEEDS
   REVIEW), so this may now only be "not tested", not "not seen".
@@ -227,7 +238,8 @@ re-testing): confirm and remove, or remove the mark.
   elements). Step 19b.
 - **9.A to 9.C:** an application that serves one document at every
   address (above, "Recordings"). 9.B's region match and 9.C's
-  same-place pairing are not calibrated on real templates.
+  same-place pairing are not calibrated on real templates. A page with
+  more than 5,000 items is NEEDS REVIEW.
 
 ## 19.A: more than one way
 
@@ -235,7 +247,10 @@ re-testing): confirm and remove, or remove the mark.
   page cannot load its scripts, or the container cannot reach the site,
   the search is "not verified" and 19.A stays NEEDS REVIEW where a
   search that loaded would decide (round 2, steps 6h and 9b). A rerun
-  served from the freeze has no search at all.
+  served from the freeze has no search at all. A page whose other pages
+  have closed menus the tool did not open, and a link to the page under
+  another address whose content changes on every load, are NEEDS REVIEW
+  too.
 - **Breadcrumbs** count as navigation links, the same kind as the
   menus; Abby's round 3 keys count breadcrumbs on child pages as a way
   of their own (a question for Abby, step 34).
