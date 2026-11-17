@@ -30,7 +30,10 @@ from tobi508.compare import compare  # noqa: E402
 
 JUD = REPO / "evals" / "judging"
 KEYS = {1: JUD / "round1", 2: JUD / "round2-armc", 3: JUD / "round3"}
-TESTS = [
+# The first rerun's tests (steps 21, 36, 22). A rerun with --new and --old
+# compares these with the old gate and the rest (step 23's 4.B, 9.A-9.C and
+# 19.A) with the baseline below.
+FIRST = [
     "4.A",
     "4.C",
     "4.D",
@@ -44,6 +47,7 @@ TESTS = [
     "5.G",
     "5.H",
 ]
+TESTS = FIRST + ["4.B", "9.A", "9.B", "9.C", "19.A"]
 
 _spec = importlib.util.spec_from_file_location(
     "g16", JUD / "gate-2026-11-16" / "compare.py"
@@ -82,8 +86,11 @@ def _live(folder: Path) -> list[str]:
     bad = []
     for d in _dirs(folder):
         r = json.loads((d / "report.json").read_text("utf-8"))
-        if r.get("live_pages"):
-            bad.append(f"{d.name}: {r['live_pages']}")
+        # 19.A's other pages and searches list here too; "frozen" says
+        # whether the freeze served them.
+        live = [x["url"] for x in r.get("live_pages") or [] if not x.get("frozen")]
+        if live:
+            bad.append(f"{d.name}: {live}")
     return bad
 
 
@@ -91,14 +98,20 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", default="r1")
     ap.add_argument("--out", default="moved")
+    ap.add_argument("--new", default="", help="gate folder to read (default: this)")
+    ap.add_argument("--old", default="", help="gate folder for FIRST's old side")
     a = ap.parse_args()
+    new_gate = JUD / a.new if a.new else HERE
+    out_dir = new_gate
+    # The first rerun ran FIRST only; a later gate (--new) ran TESTS.
+    tests = TESTS if a.new else FIRST
     out: dict = {
         "note": "Agent-assisted results, not certified Trusted Tester results.",
         "rounds": {},
     }
-    md = ["# Moved cells, gate 2026-11-17", "", out["note"], ""]
+    md = [f"# Moved cells, {new_gate.name}", "", out["note"], ""]
     for rnd in (1, 2, 3):
-        new_dir = HERE / f"round{rnd}" / a.run / "results"
+        new_dir = new_gate / f"round{rnd}" / a.run / "results"
         if not new_dir.is_dir():
             continue
         new = {(r["page"], r["test"]): r for r in g16.side(_dirs(new_dir), KEYS[rnd])}
@@ -112,11 +125,20 @@ def main() -> None:
             )
             old = {(r["page"], r["test"]): r for r in sides["sides"]["real"]}
             old_rows = {k: v.get("rows", []) for k, v in old.items()}
+        if a.old:
+            prev_dir = JUD / a.old / f"round{rnd}" / a.run / "results"
+            prev = g16.side(_dirs(prev_dir), KEYS[rnd])
+            prev_rows = _rows(prev_dir)
+            for r in prev:
+                k = (r["page"], r["test"])
+                if k[1] in FIRST:
+                    old[k] = r
+                    old_rows[k] = prev_rows.get(k, [])
         new_rows = _rows(new_dir)
         notes = _comments(KEYS[rnd])
         moved = []
         for k, n in sorted(new.items()):
-            if k[1] not in TESTS or k not in old:
+            if k[1] not in tests or k not in old:
                 continue
             o = old[k]
             if (o["tool"], o["verdict"]) == (n["tool"], n["verdict"]):
@@ -157,8 +179,8 @@ def main() -> None:
                 f"| {m['page']} | {m['test']} | {m['key']} | {c} | {was} | {now} |"
             )
         md.append("")
-    (HERE / f"{a.out}.json").write_text(json.dumps(out, indent=1))
-    (HERE / f"{a.out}.md").write_text("\n".join(md) + "\n")
+    (out_dir / f"{a.out}.json").write_text(json.dumps(out, indent=1))
+    (out_dir / f"{a.out}.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 
 
