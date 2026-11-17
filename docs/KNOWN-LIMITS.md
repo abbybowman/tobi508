@@ -216,7 +216,10 @@ roadmap steps 21 to 35):
   1.9.0, 5.A 1.14.0, 5.B 1.11.0, 5.C 1.13.0, 5.D 1.11.0, 5.F 1.15.0) the
   page is counted again 3 s after the backward walk's load, and a walk
   that missed what was drawn decides nothing: those tests are NEEDS
-  REVIEW there, not decided. A page drawn later than 3 s and walked
+  REVIEW there, not decided. "Drawn late" means the page more than
+  doubled its elements after the walk began (or had no form field and
+  then had some); a page that adds fewer late, with the walk missing
+  them, is read as before. A page drawn later than 3 s and walked
   faster still slips (README). Waiting for the page to draw, so the
   tests decide again, is step 23.
 - **One document at every address:** an application that serves the

@@ -1,7 +1,7 @@
 ---
 tt_test: 5.A
 tt_name: 3.3.2-label-provided
-spec_version: 1.14.0
+spec_version: 1.15.0
 guards: reveal
 count: fields.shadow, fields.frames, fields_hidden, contenteditable, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -28,7 +28,7 @@ The tool gives each page one 5.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | A4 | Otherwise | Applies; go to section 3 | |
 
 
-**Row WL: a page that drew itself after the walk began** (1.14.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. Pass L reads the page as it loads. When it found no data-entry field but the walk's count after the walk has form fields, pass L is incomplete (A3, NEEDS REVIEW), never A1 or A2. Its sentence: "The page drew <N> form field(s) after it loaded, after we had read its labels, so they were not checked."
+**Row WL: a page that drew itself after the walk began** (1.14.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. Pass L reads the page as it loads. When it found no data-entry field but the walk's count after the walk has form fields, pass L is incomplete (A3, NEEDS REVIEW), never A1 or A2. Its sentence: "The page drew <N> form field(s) after it loaded, after we had read its labels, so they were not checked." **Narrowed (step 22's first rerun, 2026-11-17):** "the page drew itself after the walk began" needs the count after the walk to be more than twice the count when the walk began (as 4.C's sign of a page that grew), or, for form fields, no field when it began and some after; only then do coverage rows count against the later count. Round 2's home page counted 145 elements, then 146 (one late link): that is not a page drawn late, and its 4.C and 4.E keep their outcomes.
 
 ## 2. Evidence to collect
 
