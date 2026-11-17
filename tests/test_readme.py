@@ -84,7 +84,7 @@ def test_tests_in_scope_table_shows_each_spec_version_and_links_it():
     text = (REPO_ROOT / "README.md").read_text("utf-8")
     section = text.split("## TT tests in scope", 1)[1].split("\n## ", 1)[0]
     rows = re.findall(
-        r"^\| (\d+\.[A-Z]) \|[^|]*\|[^|]*\| \[([^\]]+)\]\(([^)]+)\) \|", section, re.M
+        r"^\| (\d+\.[A-Z]) \|[^|]*\| \[([^\]]+)\]\(([^)]+)\) \|", section, re.M
     )
     specs = rules.load_specs(REPO_ROOT / "specs/rules")
     versions = rules.spec_versions(REPO_ROOT / "specs/rules")
@@ -97,3 +97,17 @@ def test_tests_in_scope_table_shows_each_spec_version_and_links_it():
     for tid, shown, link in rows:
         assert versions[tid].split()[0] == shown, tid
         assert (REPO_ROOT / link).is_file(), link
+
+
+def test_status_rows_are_what_the_script_writes():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "status_table", REPO_ROOT / "evals" / "status_table.py"
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    text = (REPO_ROOT / "README.md").read_text("utf-8")
+    shown = text.split(mod.START, 1)[1].split(mod.END, 1)[0].strip("\n")
+    assert shown == "\n".join(mod.readme_rows())
+    assert mod.STATUS_MD.read_text("utf-8") == mod.status_md()
