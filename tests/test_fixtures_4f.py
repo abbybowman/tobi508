@@ -116,6 +116,27 @@ EXPECTED: dict[str, dict] = {
     # labels are placed by their labels, so a one-column list raises no
     # order signal.
     "f18-filter-boxes-drawn-apart": {"outcome": "PASS", "rows": ["M4"]},
+    # 1.11.0: a page that scrolls smoothly is placed by boxes read with the
+    # scroll in one call; read apart, round 2's date fields and sidebar links
+    # were placed lower than they are and raised S3.
+    "f26-smooth-scroll-in-order": {"outcome": "PASS", "rows": ["M4"]},
+    # 1.11.0: an id made on each load is not a different element; round 2's
+    # video player raised S4 though Shift+Tab was the exact reverse of Tab.
+    "f27-new-id-each-load": {"outcome": "PASS", "rows": ["M4"]},
+    # 1.11.0: a list in a box that scrolls by itself is placed where it lies
+    # in the box's content; placed where focus scrolled it, round 2's
+    # sidebar links sat above the link before them and raised S3.
+    "f28-scroll-box-in-order": {"outcome": "PASS", "rows": ["M4"]},
+    # The nearest page that must still raise S3 and FAIL: numbered steps in
+    # a scroll box, drawn 1 to 5 (CSS order) and reached 3, 1, 5, 2, 4 (as
+    # f22, inside the box). A first version drew the box bottom to top with
+    # Tab following its numbers; the judge eval's agent said "preserves",
+    # which a careful tester could say too.
+    "f29-scroll-box-steps-out-of-sequence": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S3"},
+    },
     "f15-columns-arbitrary": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",
@@ -218,4 +239,6 @@ async def test_backward_order_is_in_the_question(settings, server):
     )
     [q] = out.open_questions
     assert [s["name"] for s in q.input["backward"]] == ["Four", "Two", "Three", "One"]
+    # 1.11.0: each by its number in input.order, so the two lists line up.
+    assert [s["n"] for s in q.input["backward"]] == [4, 2, 3, 1]
     assert "Shift+Tab" in q.question

@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F27 a player whose id changes on each load</title></head><body>
+<header><a href="#home">Agency home</a></header>
+<main><h1>Launch video</h1>
+<div class="player"><button type="button">Play</button> <button type="button">Mute</button> <button type="button">Full screen</button></div>
+<p><a href="#transcript">Complete transcript</a></p></main>
+<footer><a href="#contact">Contact</a></footer>
+<script>
+  // Like a media library: the player's id is made up on each load.
+  document.querySelector('.player').id = 'media_' + Math.random().toString(36).slice(2, 12);
+</script></body></html>

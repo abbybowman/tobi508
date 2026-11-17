@@ -10,6 +10,7 @@ tables decide outcomes.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +57,23 @@ ORDER_FN = """function () {
   // (post-round 1 fix 16: NASA's filter boxes are drawn apart from their
   // labels, and their boxes made a one-column list look out of order).
   const r = el.getBoundingClientRect();
+  // 1.11.0: boxes and scrolls are read in this one call (a smooth scroll
+  // runs on between two calls). A stop inside a box that scrolls by itself
+  // (round 2's sidebar: max-height, overflow auto) also gets the box
+  // (`scroller`, its place `scroller_page`) and where the stop lies in the
+  // box's content (`inner`): focus scrolls the box, so its links were
+  // placed above the link before them.
+  const up = (c) => c.parentElement || (c.getRootNode() instanceof ShadowRoot ? c.getRootNode().host : null);
+  const scrolls = (c) => { const s = getComputedStyle(c);
+    return (/(auto|scroll|overlay)/.test(s.overflowY) && c.scrollHeight > c.clientHeight)
+      || (/(auto|scroll|overlay)/.test(s.overflowX) && c.scrollWidth > c.clientWidth); };
+  let box = null;
+  for (let c = up(el); c && c !== document.scrollingElement && c !== document.body; c = up(c)) if (scrolls(c)) { box = c; break; }
+  let inner = null, scroller_page = null;
+  if (box) { const b = box.getBoundingClientRect();
+    scroller_page = [b.x + scrollX, b.y + scrollY, b.width, b.height];
+    inner = [r.x - b.x + box.scrollLeft, r.y - b.y + box.scrollTop, r.width, r.height]; }
+  const sx = scrollX, sy = scrollY;
   const opt = el.tagName === 'INPUT' && ['checkbox', 'radio'].includes((el.type || '').toLowerCase());
   const lab = opt && el.labels && el.labels.length ? el.labels[0].getBoundingClientRect() : null;
   const label_box = lab && lab.width > 0 && lab.height > 0
@@ -70,7 +88,8 @@ ORDER_FN = """function () {
     form: el.form ? gpath(el.form) : null, haspopup: el.getAttribute('aria-haspopup'),
     container, dir: getComputedStyle(el).direction, label_box,
     shown: el.checkVisibility ? el.checkVisibility({ visibilityProperty: true, opacityProperty: true }) : r.width > 0,
-    page: [r.x + scrollX, r.y + scrollY, r.width, r.height] };
+    page: [r.x + sx, r.y + sy, r.width, r.height],
+    scroller: box ? gpath(box) : null, scroller_page, inner };
 }"""
 
 CONTAINS_FN = """function (sel) {
@@ -90,7 +109,9 @@ J1_QUESTION = (
     "group, and input.signals lists where the order departs from the "
     "reading order. When input.backward is given, the Shift+Tab order differs from "
     "the reverse of the forward order: judge it too (it need not mirror the "
-    "forward order, but it must also make sense). When input.opened is given, it "
+    "forward order, but it must also make sense). input.backward lists the "
+    "elements in the order Shift+Tab reaches them, each by its number n in "
+    "input.order (n is null for an element Tab never reached). When input.opened is given, it "
     "lists what a menu or disclosure revealed and where the next Tab went. Would "
     "a keyboard user meet these elements in an order that makes sense for "
     "reading and using this part of the page? Answer preserves, "
@@ -154,9 +175,22 @@ class OrderHook:
             return None
         info = await t.reader.call(step.stop, ORDER_FN)
         bb = step.stop.bounding_box
-        if info is not None and bb is not None:
-            # Page coordinates of the top document: the walk's box is already
-            # top-level (frames included), so add the top page's scroll.
+        if info is not None and not step.stop.frame_chain:
+            # Top document: ORDER_FN read the box and the scroll in one call
+            # (1.11.0). The step's box and a scroll read after it straddle a
+            # smooth scroll (Bootstrap's `scroll-behavior: smooth`): on round
+            # 2's pages a date field, sidebar links and a card's button were
+            # placed 28-90 px off, which raised S3 where the order follows
+            # the page, and the order image drew them there.
+            lb = info.get("label_box")
+            if lb:  # a checkbox or radio button: where its label is (1.2.0)
+                for k in ("page", "inner"):
+                    if info.get(k):
+                        p = info[k]
+                        info[k] = [p[0] + lb[0], p[1] + lb[1], lb[2], lb[3]]
+        elif info is not None and bb is not None:
+            # A frame: the walk's box is already top-level, so add the top
+            # page's scroll.
             scroll = await t.reader.evaluate_top("[scrollX, scrollY]") or [0, 0]
             info["page"] = [bb.x + scroll[0], bb.y + scroll[1], bb.width, bb.height]
             lb = info.get("label_box")
@@ -260,6 +294,43 @@ def _plain(si: StopInfo) -> str:
     return f'"{name}"' + (f" ({role})" if role else "")
 
 
+def places(a: dict[str, Any], b: dict[str, Any]) -> tuple[Any, Any]:
+    """Where S3 places two stops (1.11.0). In the same box that scrolls by
+    itself: where each lies in the box's content. Otherwise a stop in such a
+    box is placed where the box is, one block of the page, so the stop after
+    the box is not read as above its last link."""
+    sa, sb = a.get("scroller"), b.get("scroller")
+    if sa and sa == sb and a.get("inner") and b.get("inner"):
+        return a["inner"], b["inner"]
+    pa = (a.get("scroller_page") if sa else None) or a.get("page")
+    pb = (b.get("scroller_page") if sb else None) or b.get("page")
+    return pa, pb
+
+
+_ID = re.compile(r"#((?:\\.|[^\s>#.:\[])+)")
+
+
+def same_keys(f_keys: list[str], b_keys: list[str]) -> tuple[list[str], list[str]]:
+    """The two walks' keys, with an id that only one walk has made the same
+    (1.11.0). P1 and P2 load the page apart, and a script can give an element
+    a new id on each load (round 2: the video player's `#html5_media_<random>`
+    raised S4 though Shift+Tab was the exact reverse of Tab). An id found in
+    both walks is kept, so two cards with ids of their own still count apart."""
+
+    def ids(keys: list[str]) -> set[str]:
+        return {m for k in keys for m in _ID.findall(k)}
+
+    f_ids, b_ids = ids(f_keys), ids(b_keys)
+    alone = (f_ids - b_ids) | (b_ids - f_ids)
+    if not alone:
+        return f_keys, b_keys
+
+    def norm(k: str) -> str:
+        return _ID.sub(lambda m: "#*" if m.group(1) in alone else m.group(0), k)
+
+    return [norm(k) for k in f_keys], [norm(k) for k in b_keys]
+
+
 def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, Any]]:
     """S1-S5 on the forward (and backward) order. Facts only."""
     out: list[dict[str, Any]] = []
@@ -285,7 +356,7 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
             )
             break
     for a, b in zip(fwd, fwd[1:], strict=False):
-        pa, pb = a.info.get("page"), b.info.get("page")
+        pa, pb = places(a.info, b.info)
         if not pa or not pb:
             continue
         tol = max(pa[3] / 2, ROW_TOLERANCE_MIN)
@@ -309,8 +380,7 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
                 }
             )
     if bwd is not None:
-        f_keys = [s.path_key for s in fwd]
-        b_keys = [s.path_key for s in bwd]
+        f_keys, b_keys = same_keys([s.path_key for s in fwd], [s.path_key for s in bwd])
         if b_keys and b_keys != list(reversed(f_keys)):
             out.append(
                 {
@@ -757,9 +827,19 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
         if any(s["code"] == "S4" for s in inst.signals) and st.backward:
             # The backward order is judged too (p. 23 HtT 2.d); without it the
             # agent judged only the forward order (judge eval, f14).
+            # Each element by its number in input.order (1.11.0): numbered
+            # 1, 2, 3 on their own and cut at BADGE_MAX, the two lists of a
+            # long page held its first and its last 60 elements, so they
+            # looked unrelated (round 2's media pages). Only the elements
+            # input.order holds, and those Tab never reached, are listed.
+            f_keys, b_keys = same_keys(
+                [s.path_key for s in st.forward], [s.path_key for s in st.backward]
+            )
+            num = {k: n for n, k in enumerate(f_keys, start=1)}
             extra["backward"] = [
-                {"n": n, "role": si.role, "name": si.name}
-                for n, si in enumerate(st.backward[:BADGE_MAX], start=1)
+                {"n": num.get(k), "role": si.role, "name": si.name}
+                for k, si in zip(b_keys, st.backward, strict=True)
+                if num.get(k) is None or num[k] <= BADGE_MAX
             ]
         if inst.kind == "R":
             extra["opened"] = inst.detail

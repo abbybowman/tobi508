@@ -167,9 +167,10 @@ re-testing): confirm and remove, or remove the mark.
   may only be hidden now.
 - **4.F:** a footer of link columns raises S3 on every page, and a
   dropdown whose options take arrow keys raises S6; J1's order list can
-  leave out what the signals name; on those signals the judge's answer
-  changes from run to run (round 2's p02, p03, p07: unsure in one rerun,
-  a false FAIL in the next). Step 33.
+  leave out what the signals name. Step 33. (Round 2's p02, p03 and p07,
+  unsure in one rerun and a false FAIL in the next, came from elements
+  placed out of line while the page scrolled, a sidebar that scrolls by
+  itself and a player's new id on each load: fixed in 4.F 1.11.0.)
 
 ## 5.A to 5.H: forms
 
