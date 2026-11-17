@@ -58,7 +58,7 @@ file and the prompt file; other threads write to their plan.
 
 | Order | Steps | What | Model | When |
 | --- | --- | --- | --- | --- |
-| 1 | 21, 36, 22, then 23 | The unsafe cells of round 3, then the applications: 5.F and 5.G's browser messages; text that is not a message; no outcome from a walk that missed the page; wait for the page to draw (time-boxed) | Opus | morning; 23 stops at midday if not merged |
+| 1 | 23 | Wait for the page to draw (time-boxed; 21, 36 and 22 are merged, #109 to #111, rerun in `evals/judging/gate-2026-11-17/`) | Opus | PR #112 |
 | 1 | 31, 29 (small part) | 9.B's six false FAILs; 5.B's DOES NOT APPLY when 5.A could not decide | Sonnet | morning, beside the first |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
@@ -93,17 +93,6 @@ Left yellow after the cut, each needing more than a day: 4.A, 4.D,
 
 ### What each step covers
 
-- **21. 5.F and 5.G: the browser's own error messages.** Native
-  validation becomes NEEDS REVIEW: the browser shows one field's
-  message at a time and its words differ by browser. Whether TT 5.F
-  fails it is Abby's later call.
-- **36. 5.F and 5.G: text that is not a message** (found by comparing
-  step 9a with 9b). On round 2's 5340 the text "4" was read as an
-  error message and the judge failed 25 fields. New text is a
-  candidate only when it holds a word; else NEEDS REVIEW.
-- **22. No outcome from a walk that missed the page.** 4.F, 5.A, 5.D,
-  5.F to 5.H, 4.A and 4.C decide from the count taken after the walk;
-  when the walk covered less, NEEDS REVIEW.
 - **23. Wait for an application to draw itself.** Built only if a
   probe shows the replay draws: wait until the count of focusable
   elements stops changing, with a ceiling. Rounds 1 and 2's cells
