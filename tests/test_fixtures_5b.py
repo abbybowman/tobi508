@@ -233,7 +233,11 @@ async def test_a_box_5a_is_unsure_about_is_a_review_not_dna(settings, server, dr
     assert "label test could not tell" in f.summary
 
 
-async def test_a_box_5a_has_not_asked_about_is_a_review_not_dna(settings, server, drafts):  # noqa: F811
+async def test_a_box_5a_has_not_asked_about_is_a_review_not_dna(
+    settings,
+    server,
+    drafts,  # noqa: F811
+):  # noqa: F811
     """5.A is not part of the run: nothing says the box has no label."""
     got = await run_tests(
         settings,
