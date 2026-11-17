@@ -219,7 +219,12 @@ roadmap steps 21 to 35):
   REVIEW there, not decided. "Drawn late" means the page more than
   doubled its elements after the walk began (or had no form field and
   then had some); a page that adds fewer late, with the walk missing
-  them, is read as before. A page drawn later than 3 s and walked
+  them, is read as before. Since step 23 (4.C 1.17.0) every load waits
+  until the count of elements that take focus has not changed for 2 s
+  (at most 10 s; later loads of a page drawn at load do not wait), so a
+  page drawn about a second after load (round 3's applications, 0.7 to
+  1.1 s on replay) is read as drawn and decided. The first load of each
+  address in a run costs 2 s more. A page drawn later than 3 s and walked
   faster still slips (README). Waiting for the page to draw, so the
   tests decide again, is step 23.
 - **One document at every address:** an application that serves the

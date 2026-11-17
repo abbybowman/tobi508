@@ -1086,6 +1086,9 @@ async def run_tt_tests(
             await progress(step, 4, message)
 
     t_start = time.monotonic()
+    from tobi508.traverse import DRAWN
+
+    DRAWN.set({})  # step 23: which addresses of this run draw after load
     if no_time_limit if lift_media_cap is None else lift_media_cap:
         # The user's choice also lifts the media store's cap (plan Q9); the
         # server's default of no time limit does not.

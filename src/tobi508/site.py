@@ -367,6 +367,9 @@ async def read_page(
                 await page.wait_for_load_state("networkidle", timeout=RESULTS_SETTLE_MS)
             except Exception:
                 pass
+        from tobi508.traverse import wait_drawn
+
+        await wait_drawn(page)  # step 23: an application draws after load
         data = await page.evaluate(READ_JS, RESULTS_CAP if results else UNIT_CAP)
         try:
             count = await inventory.take(page, "site read")

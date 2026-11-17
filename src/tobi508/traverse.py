@@ -73,6 +73,58 @@ def _count(attr: str) -> None:
         setattr(m, attr, getattr(m, attr) + 1)
 
 
+# Step 23: wait for a page that draws itself after load (round 3's
+# applications drew their controls 0.7 to 1.1 s after the load began; a
+# 1 s window ended before a page drawn 1.2 s after load). A load waits
+# until the count of elements that take focus is unchanged for DRAW_QUIET_S,
+# at most DRAW_MAX_S. The first load of each address in a run measures; later
+# loads of it wait only when that one changed after load (DRAWN, per run).
+DRAW_QUIET_S = 2.0
+DRAW_MAX_S = 10.0
+DRAW_POLL_S = 0.2
+DRAWN: ContextVar[dict[str, float] | None] = ContextVar("a11y_drawn", default=None)
+
+
+async def _focus_count(page: Page) -> int:
+    total = 0
+    for frame in page.frames:
+        try:
+            total += (await frame.evaluate(_INVENTORY_JS))["count"]
+        except Exception:
+            continue
+    return total
+
+
+async def wait_drawn(page: Page) -> float:
+    """Step 23: wait until the page has drawn itself (the count of elements
+    that take focus unchanged for DRAW_QUIET_S, at most DRAW_MAX_S). The
+    first load of an address in a run measures how long its count kept
+    changing (DRAWN); a later load of it waits only when that was more than
+    nothing, and at most that long plus the quiet window. Returns the seconds
+    waited."""
+    seen = DRAWN.get()
+    key = page.url.split("#", 1)[0]
+    known = seen.get(key) if seen is not None else None
+    if known == 0.0:
+        return 0.0
+    cap = DRAW_MAX_S if known is None else min(DRAW_MAX_S, known + DRAW_QUIET_S)
+    t0 = time.monotonic()
+    last = await _focus_count(page)
+    changed_at = None
+    stable = t0
+    while time.monotonic() - t0 < cap:
+        await asyncio.sleep(DRAW_POLL_S)
+        n = await _focus_count(page)
+        now = time.monotonic()
+        if n != last:
+            last, stable, changed_at = n, now, now - t0
+        elif now - stable >= DRAW_QUIET_S:
+            break
+    if seen is not None and known is None:
+        seen[key] = round(changed_at, 2) if changed_at is not None else 0.0
+    return round(time.monotonic() - t0, 2)
+
+
 # Settle rule (4.C spec section 2). The quiet window is settings.settle_quiet_ms.
 SETTLE_MAX_MS = 1500
 RERUN_WINDOW_MS = 1000
@@ -1181,6 +1233,9 @@ async def open_session(
 ) -> Session:
     _count("loads")
     context, page = await new_page()
+    # Step 23: the inventory (and P1's and P2's press caps from it) is taken
+    # once the page has drawn itself.
+    await wait_drawn(page)
     inv = await dom_inventory(page)
     t = Traversal(context, page, quiet_ms, shots_dir, rel_base, list(hooks or []))
     await t.start()

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import pytest
 
+from tobi508 import traverse
 from tobi508.models import Outcome, TestId
 from tobi508.pipeline import run_tt_tests
 
@@ -20,7 +21,10 @@ TESTS = ("4.A", "4.C", "4.F", "5.A", "5.D", "5.F", "5.G", "5.H")
 
 
 @pytest.fixture
-async def late(settings, server):
+async def late(settings, server, monkeypatch):
+    # Step 22's rows with step 23's wait switched off: a walk that still
+    # began before the page drew (a page drawn past the wait's ceiling).
+    monkeypatch.setattr(traverse, "DRAW_MAX_S", 0.0)
     out = await run_tt_tests(
         settings, f"{server.base}/{LATE}", [TestId(t) for t in TESTS]
     )
@@ -102,3 +106,38 @@ def test_a_late_link_on_a_page_drawn_by_the_server_is_not_a_page_drawn_late():
     assert not w.grew and drawn_late(w) is None
     assert _walk(1, 1, 76).grew  # round 3's community home page
     assert not _walk(10, 10, 20).grew and _walk(10, 10, 21).grew
+
+
+# Step 23: a load waits until the page has drawn itself (the count of elements
+# that take focus unchanged for 2 s, at most 10 s). The page drawn 1.2 s after
+# load then gives what its twin with the same controls in the document at load
+# gives, test by test: every outcome and row. Run with no answers, so 5.B's
+# question stays open on both.
+ALL = (
+    "4.A",
+    "4.C",
+    "4.D",
+    "4.E",
+    "4.F",
+    "5.A",
+    "5.B",
+    "5.C",
+    "5.D",
+    "5.F",
+    "5.G",
+    "5.H",
+)
+
+
+async def test_a_page_drawn_late_is_read_as_it_is_drawn(settings, server):
+    got = {}
+    for page in ("walk/drawn-late.html", "walk/drawn-at-load.html"):
+        out = await run_tt_tests(
+            settings, f"{server.base}/{page}", [TestId(t) for t in ALL]
+        )
+        got[page] = {f.test_id.value: (f.outcome, f.rows) for f in out.report.findings}
+    late, at_load = got["walk/drawn-late.html"], got["walk/drawn-at-load.html"]
+    assert late == at_load
+    # Decided, not left for a person on the late page's account.
+    assert late["4.F"][0] is Outcome.PASS and late["5.D"][0] is Outcome.PASS
+    assert not any("WL" in rows for _, rows in late.values())
