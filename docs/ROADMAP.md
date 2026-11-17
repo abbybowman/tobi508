@@ -144,6 +144,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | The judge | 40 | For a question type that fails the gate, the judge's FAIL is shown as "likely fails, a person should confirm", never handed to the calling agent (a rule change; Abby's decision first) |
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
 | Meaning to the judge | 16 | 5.H's, 4.B's and 2.x's word lists become questions |
+| Live status page | 41 | A read-only page on the server, open without sign-in, showing each run it holds as it goes (page, tests, progress) and, when done, its outcomes, with its pre-SCRT file opened in the viewer; a link to it in the tool's results. Runs the server still holds only; the lasting store is 17. Touches no test or spec, so it can run beside the rows above |
 | The service | 17, 18 | The store, a thin MCP surface, one writer per run (17); a person's answer only from TOBI's own page (18) |
 | Measures | 10b, 11, 19 | Round 4, a blind round, when Abby keys one (10b); the second look's trial (11), then as a guard (19) |
 | SCRT files | 20 | Review, merge, export ([plan](plans/2026-11-02-scrt-io.md)) |
@@ -177,6 +178,13 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
   random content, a second browser, CLAUDE.md's lists, and
   SECURITY.md's two [TO CONFIRM] items: worded in
   [the archive](archive/2026-11-17-roadmap-before-the-last-day.md).
+
+**Decided (Abby, 2026-11-17): the live status page is open.** The MCP
+server keeps sign-in. A read-only page of what the server is running
+and has just run (the URLs tested, progress, outcomes and the pre-SCRT
+file in the viewer) may be read without it: the pages tested are
+public, and VAST's domain is reachable only from NASA's network. It
+starts, changes and answers nothing (step 41).
 
 ## Known limits, per test
 
