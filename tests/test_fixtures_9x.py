@@ -28,6 +28,39 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {},
     ),
     "nav-css-order": ("a1-home", ["a4-nav-css-order"], {"9.B": "FAIL"}, {}),
+    # Step 31 (9.B 1.7.0; round 3's Drupal pages, plan cause 10): three links
+    # named "Home" to one address (top bar, the footer's logo block, the
+    # footer list) and, on every page but the home page, a fourth (the
+    # breadcrumb's), in no landmark. The extra copy is an insertion, not a
+    # swap, so the social links between the copies are not reversed. The
+    # twins that must still FAIL: two social links swapped on the page with
+    # the extra copy, and repeated links whose copies change places with a
+    # different link between them ("nav-reordered" above is two different
+    # links swapped).
+    "extra-home-copy-on-the-other-page": (
+        "m1-home-three-home-links",
+        ["m2-page-with-breadcrumb-home"],
+        {"9.B": "PASS"},
+        {},
+    ),
+    "extra-home-copy-on-the-tested-page": (
+        "m2-page-with-breadcrumb-home",
+        ["m1-home-three-home-links"],
+        {"9.B": "PASS"},
+        {},
+    ),
+    "extra-home-copy-and-socials-swapped": (
+        "m1-home-three-home-links",
+        ["m3-breadcrumb-socials-swapped"],
+        {"9.B": "FAIL"},
+        {},
+    ),
+    "repeated-links-change-places": (
+        "n1-repeated-links-top-and-footer",
+        ["n2-repeated-links-top-swapped"],
+        {"9.B": "FAIL"},
+        {},
+    ),
     # K-04: an unnamed javascript:void(0) icon here and a "Close alert"
     # javascript:void(0) link there are not "the same destination": they do
     # not pair, so no FAIL. (The nav links pair and agree.)

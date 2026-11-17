@@ -7,6 +7,7 @@ from tobi508.site import (
     SiteRead,
     before,
     norm_href,
+    pair_aligned,
     pair_in_order,
     read_page,
     repeated_flags,
@@ -170,3 +171,40 @@ async def test_an_other_page_with_the_tested_pages_own_content_is_not_compared(
         assert f.outcome.value == "NEEDS_REVIEW", (f.test_id, f.rows, f.summary)
         assert f.note == "This test could not be performed", f.test_id
         assert "same content as the tested page" in f.summary, (f.test_id, f.summary)
+
+
+def _pairs(a: str, b: str):
+    """Keys are the letters; positions are the indexes."""
+    return pair_aligned(list(zip(a, range(len(a)))), list(zip(b, range(len(b)))))
+
+
+def test_equal_items_pair_by_an_alignment_that_keeps_their_order():
+    """9.B 1.7.0 (step 31): an extra copy of a repeated key is an insertion."""
+    # "H" three times against four, the social links "xy" between the last two
+    assert _pairs("HHxyH", "HHHxyH") == [(0, 0), (1, 1), (2, 3), (3, 4), (4, 5)]
+    # the extra copy is the first, the middle or the last: the same pairs
+    # for the unique items around it
+    assert _pairs("HabH", "HHabH")[1:3] == [(1, 2), (2, 3)]
+    assert _pairs("aHbH", "aHbHH") == [(0, 0), (1, 1), (2, 2), (3, 3)]
+    # no repeated key: as before
+    assert _pairs("abc", "abc") == [(0, 0), (1, 1), (2, 2)]
+    assert _pairs("abc", "xbz") == [(1, 1)]
+
+
+def test_a_real_reorder_still_crosses_in_the_alignment():
+    # two different links swapped: one stays, the other pairs across it
+    assert _pairs("abc", "bac") == [(0, 1), (1, 0), (2, 2)]
+    # repeated links whose first copies change places around a link between
+    # them: the unaligned copies of each key pair in order, so they cross
+    assert _pairs("HSCHC", "CSHHC") == [(0, 2), (1, 1), (2, 0), (3, 3), (4, 4)]
+    # an equal number of unaligned copies is a move, not an insertion
+    assert _pairs("HSH", "SHH") == [(0, 1), (1, 0), (2, 2)]
+
+
+def test_a_long_list_pairs_in_order(monkeypatch):
+    from tobi508 import site
+
+    monkeypatch.setattr(site, "ALIGN_MAX_CELLS", 0)
+    assert _pairs("HabH", "aHHbH") == pair_in_order(
+        list(zip("HabH", range(4))), list(zip("aHHbH", range(5)))
+    )

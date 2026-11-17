@@ -93,7 +93,7 @@ flowchart LR
 - Outcome logic lives only in spec rows; every report records the spec version
 - The whole PDF is stored as data and checked word for word against the PDF
 
-**Notes:** When the PDF disagrees with itself we record it and do not resolve it silently. A spec step must match something the PDF asks a human tester to do: the aim is consistency with a careful tester, not exceeding one.
+**Notes:** Done since round 3: the navigation test (9.B, spec 1.7.0) no longer reads an extra copy of a repeated link as a swap; a real reorder still fails. When the PDF disagrees with itself we record it and do not resolve it silently. A spec step must match something the PDF asks a human tester to do: the aim is consistency with a careful tester, not exceeding one.
 
 ---
 
