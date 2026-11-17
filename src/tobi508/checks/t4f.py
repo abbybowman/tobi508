@@ -31,7 +31,7 @@ from tobi508.models import (
 )
 from tobi508.observe import observe, shown
 from tobi508.traverse import Traversal, open_session, screenshot
-from tobi508.walk import KeyboardWalk
+from tobi508.walk import KeyboardWalk, drawn_late
 
 # Spec constants.
 REVEAL_MAX = 6
@@ -208,6 +208,8 @@ class State4F(BaseModel):
     inventory: int
     distinct: int = 0
     triggers: int = 0
+    # Step 22 (row WL): the page drew elements the walk did not reach.
+    late: str | None = None
     forward: list[StopInfo] = Field(default_factory=list)
     backward: list[StopInfo] | None = None
     order_image: str | None = None
@@ -674,6 +676,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
     st.forward = fwd
     st.backward = bwd
     st.distinct = len({s.path_key for s in fwd} | {s.path_key for s in (bwd or [])})
+    st.late = drawn_late(walk)
+    if st.late:
+        st.incomplete.append(st.late)
     if p1.end != "wrap":
         st.incomplete.append(
             "The Tab walk did not get through the whole page, so the order past that point is unknown."
@@ -808,15 +813,23 @@ def apply_answers(st: State4F, report) -> None:
 APPLICABILITY = [
     Row(
         "A1",
-        lambda st: st.stops == 0 and st.inventory == 0,
+        lambda st: st.stops == 0 and st.inventory == 0 and not st.late,
         Outcome.DNA,
         "p. 23 Applicability",
     ),
     Row(
         "A2",
-        lambda st: st.stops == 0 and st.inventory > 0,
+        lambda st: st.stops == 0 and (st.inventory > 0 or bool(st.late)),
         Outcome.NEEDS_REVIEW,
         "Spec rule",
+    ),
+    # Step 22: one element reached, but more drawn after the walk began: the
+    # one stop is not the page's only element (round 3's forum page).
+    Row(
+        "WL",
+        lambda st: st.distinct == 1 and st.triggers == 0 and bool(st.late),
+        Outcome.NEEDS_REVIEW,
+        "Spec rule (principle 3; step 22)",
     ),
     Row(
         "A3",
@@ -917,8 +930,9 @@ def _sentence(inst: Inst4F, rid: str) -> str:
 def evaluate(st: State4F, evidence_refs: list[str]) -> Finding:
     app = first_match(APPLICABILITY, st)
     trace = [app.id]
-    if app.id in ("A1", "A2", "A3"):
+    if app.id in ("A1", "A2", "A3", "WL"):
         summary = {
+            "WL": f"We could not finish this test, so a person needs to check it. {st.late}",
             "A1": "Nothing on this page can receive keyboard focus, so this test does not apply.",
             "A2": "We could not move keyboard focus anywhere, although the page has elements that should take focus. Please check by hand.",
             "A3": "The page has only one element that takes keyboard focus, so there is no order to check.",
@@ -932,6 +946,7 @@ def evaluate(st: State4F, evidence_refs: list[str]) -> Finding:
             decided_by=DecidedBy.RULE,
             rows=trace + ["G1"],
             evidence_refs=evidence_refs,
+            note="This test could not be performed" if app.id == "WL" else None,
         )
     results, sentences, instances = [], [], []
     for inst in st.instances:

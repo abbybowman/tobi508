@@ -17,6 +17,7 @@ unsettled; it never decides where focus is.
 
 from __future__ import annotations
 
+import asyncio
 import time
 from collections.abc import Awaitable, Callable, Iterator
 from contextlib import contextmanager
@@ -1393,10 +1394,14 @@ async def run_pass(
     hooks: list[StepHook] | None = None,
     pace: Pace | None = None,
     shot_label: str | None = None,
+    count_after_s: float = 0.0,
 ) -> PassResult:
     """Fresh load, then press `key` until a wrap, a trap event, navigation, the
     cap or the deadline. A trap event gets one screenshot (named by
-    `shot_label`, default `name`)."""
+    `shot_label`, default `name`). The end inventory is read no sooner than
+    `count_after_s` after the load (step 22: a page that draws its controls
+    after load, counted when the pass ended, shows what the walk missed)."""
+    loaded = time.monotonic()
     s = await open_session(new_page, quiet_ms, shots_dir, rel_base, hooks)
     cap = cap if cap is not None else tab_press_cap(s.inventory.candidates)
     base = dict(
@@ -1412,6 +1417,11 @@ async def run_pass(
         end, trap, _ = await drive(s, key, cap, detect_p1_end, deadline, pace)
         if end in ("stuck", "loop"):
             await s.traversal.shoot(shot_label or name)
+        wait = count_after_s - (time.monotonic() - loaded)
+        if deadline is not None:
+            wait = min(wait, deadline - time.monotonic())
+        if wait > 0:
+            await asyncio.sleep(wait)
         end_inv = await dom_inventory(s.page)
         return PassResult(
             steps=s.traversal.steps,

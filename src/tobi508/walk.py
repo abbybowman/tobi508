@@ -29,6 +29,12 @@ from tobi508.traverse import NewPage, Pace, StepHook, run_pass
 
 TRAP_ENDS = ("stuck", "loop")
 
+# Step 22 (plan after round 3, cause 2): P2's end inventory is read no sooner
+# than this after its load, so a page that draws its controls after load
+# (round 3's community pages: 1 element at the start, 76 and 90 later) is
+# counted drawn, and every test that reads the walk sees what it missed.
+COUNT_AFTER_S = 3.0
+
 
 class KeyboardWalk(BaseModel):
     p1: PassResult  # forward, Tab
@@ -43,6 +49,24 @@ class KeyboardWalk(BaseModel):
     @property
     def inventory(self) -> int:
         return max(self.p1.inventory, self.p2.inventory)
+
+    @property
+    def inventory_after(self) -> int:
+        """Elements that take focus, counted after the walk (step 22): the
+        largest count, at the start or at either pass's end."""
+        return max(
+            self.inventory,
+            *(p.inventory_end or 0 for p in (self.p1, self.p2)),
+        )
+
+    @property
+    def fields_after(self) -> int:
+        """Form fields, counted after the walk (step 22), as `inventory_after`."""
+        return max(
+            self.p1.form_fields,
+            self.p2.form_fields,
+            *(p.form_fields_end or 0 for p in (self.p1, self.p2)),
+        )
 
 
 # A check's walk extras: called once per pass with the pass name ("P1" or
@@ -85,6 +109,7 @@ async def walk_page(
         rel,
         lambda: [f("P2", p1) for f in extras],
         None,
+        COUNT_AFTER_S,
     )
     return KeyboardWalk(p1=p1, p2=p2)
 
@@ -105,6 +130,7 @@ async def _confirmed(
     rel: Path | None,
     hooks: Callable[[], list[StepHook]],
     pace: Pace | None,
+    count_after_s: float = 0.0,
 ) -> PassResult:
     """One pass; when it ends in a trap event, a second pass from a fresh load
     (4.C spec section 2, 1.9.0). The same trap again: the first pass stands,
@@ -112,7 +138,16 @@ async def _confirmed(
     `unrepeated` (4.C row M1 leaves that trap for a person). Each pass gets
     fresh hooks: walk extras keep state per pass."""
     first = await run_pass(
-        name, new_page, key, quiet_ms, deadline, shots, rel, hooks=hooks(), pace=pace
+        name,
+        new_page,
+        key,
+        quiet_ms,
+        deadline,
+        shots,
+        rel,
+        hooks=hooks(),
+        pace=pace,
+        count_after_s=count_after_s,
     )
     if first.end not in TRAP_ENDS:
         return first
@@ -130,6 +165,7 @@ async def _confirmed(
         hooks=hooks(),
         pace=again_pace,
         shot_label=f"{name}-again",
+        count_after_s=count_after_s,
     )
     if again.end == first.end and trap_paths(again) == trap_paths(first):
         return first.model_copy(update={"confirmed": True})
@@ -225,6 +261,17 @@ def walk_coverage(
     one, a frame the walk went into one."""
     read = [p for name, p in (("P1", walk.p1), ("P2", walk.p2)) if name in passes]
     last = read[-1]
+    # Step 22: counted against the walk's larger end count, so a page that
+    # drew more after the passes read began (P2's count is read late) is
+    # incomplete, whichever passes a test reads.
+    later = max(
+        (p for p in (walk.p1, walk.p2) if p.inventory_end is not None),
+        key=lambda p: p.inventory_end,
+        default=None,
+    )
+    if later is not None and last.inventory_end is not None:
+        if later.inventory_end > last.inventory_end:
+            last = later
     causes = [c for p in read if (c := _cause(p))]
     cov = WalkCoverage(causes=causes)
     if last.inventory_end is None:
@@ -301,7 +348,12 @@ def field_coverage(
         and not s.stop.readonly
         and not s.stop.disabled
     }
-    cov.counted = last.form_fields_end
+    # Step 22: the walk's larger end count (P2's is read late).
+    cov.counted = max(
+        p.form_fields_end
+        for p in (walk.p1, walk.p2, last)
+        if p.form_fields_end is not None
+    )
     cov.not_reached = max(0, cov.counted - len(seen))
     cov.reached = cov.counted - cov.not_reached
     if cov.not_reached:
@@ -313,3 +365,23 @@ def field_coverage(
         if cov.causes:
             cov.sentence += " " + "; ".join(cov.causes) + "."
     return cov
+
+
+def drawn_late(walk: KeyboardWalk) -> str | None:
+    """Step 22 (plan after round 3, cause 2): the page had more elements that
+    take focus after the walk than when it began, and the walk did not reach
+    them all. Then a test does not decide from the walk (NEEDS REVIEW, row
+    WL). The sentence says what was missed; None when nothing was."""
+    if walk.inventory_after <= walk.inventory:
+        return None
+    cov = walk_coverage(walk)
+    if cov.complete:
+        return None
+    return (
+        f"The page showed {walk.inventory} element"
+        f"{'' if walk.inventory == 1 else 's'} that take focus when the keyboard "
+        f"walk began and {walk.inventory_after} a few seconds later (it draws "
+        "itself after it loads), and the walk reached "
+        f"{cov.reached if cov.counted is not None else 'fewer'} of them, so the "
+        "page could not be checked as a person sees it."
+    )

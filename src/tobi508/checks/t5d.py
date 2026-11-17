@@ -622,7 +622,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State5D:
     st = State5D(
         p1={"end": walk.p1.end, "presses": len(walk.p1.steps)},
         field_stops=_field_stops(walk),
-        inventory_fields=walk.p1.form_fields,
+        inventory_fields=walk.fields_after,
     )
     # Row WK (1.7.0): a field no pass read was not checked, whatever the walk
     # ended in; guard CN (count: fields) stays beside it.
