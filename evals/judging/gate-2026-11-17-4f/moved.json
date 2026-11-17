@@ -1,0 +1,320 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "rounds": {
+  "1": {
+   "pages": [
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09"
+   ],
+   "moved": [
+    {
+     "page": "p01",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4]",
+      "r2:M4",
+      "r3:M4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G5"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p05",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G5"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p06",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": "Pass",
+     "old_verdict": "agree",
+     "old_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3,S4]",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "G5"
+     ],
+     "new": null,
+     "new_verdict": "needs_review",
+     "new_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "G3"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p07",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4]",
+      "r1:M4",
+      "r3:M4",
+      "r4:M4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3]",
+      "r1:M4",
+      "r3:M4",
+      "r4:M4",
+      "G5"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p09",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G5"
+     ],
+     "judge_decided": true
+    }
+   ],
+   "live": []
+  },
+  "2": {
+   "pages": [
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10"
+   ],
+   "moved": [
+    {
+     "page": "p01",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4]",
+      "r1:M4",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4]",
+      "r1:M4",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "G5"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p02",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": "Fail",
+     "old_verdict": "false_fail",
+     "old_rows": [
+      "A4",
+      "o1:M6[S3,S3,S3,S3,S3]",
+      "r1:M4",
+      "G2"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3]",
+      "r1:M4",
+      "G5"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p03",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": "Fail",
+     "old_verdict": "false_fail",
+     "old_rows": [
+      "A4",
+      "o1:M6[S3,S3,S3,S3,S3,S4]",
+      "G2"
+     ],
+     "new": null,
+     "new_verdict": "needs_review",
+     "new_rows": [
+      "A4",
+      "o1:M9[S3,S3,S4]",
+      "G3"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p07",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": "Fail",
+     "old_verdict": "false_fail",
+     "old_rows": [
+      "A4",
+      "o1:M6[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4]",
+      "G2"
+     ],
+     "new": null,
+     "new_verdict": "needs_review",
+     "new_rows": [
+      "A4",
+      "o1:M9[S3]",
+      "G3"
+     ],
+     "judge_decided": true
+    },
+    {
+     "page": "p09",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3]",
+      "G3"
+     ],
+     "new": "Fail",
+     "new_verdict": "false_fail",
+     "new_rows": [
+      "A4",
+      "o1:M6[S3,S3,S3,S3,S3]",
+      "G2"
+     ],
+     "judge_decided": true
+    }
+   ],
+   "live": []
+  },
+  "3": {
+   "pages": [
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10"
+   ],
+   "moved": [
+    {
+     "page": "p01",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": "Pass",
+     "old_verdict": "agree",
+     "old_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3,S3]",
+      "G5"
+     ],
+     "new": null,
+     "new_verdict": "needs_review",
+     "new_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3,S3,S3,S3,S3]",
+      "G3"
+     ],
+     "judge_decided": true
+    }
+   ],
+   "live": []
+  }
+ }
+}
