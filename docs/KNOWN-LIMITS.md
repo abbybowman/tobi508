@@ -227,9 +227,19 @@ roadmap steps 21 to 35):
   is read as caused by focus when it lands on the first key press: the
   control replay waits only as long as the step took. A false FAIL
   (round 3: 3). Step 24.
-- **5.F and 5.G read the browser's own messages as Chrome words them,**
-  every field's at once, though the browser shows one at a time and
-  another browser's words differ (README). Step 21.
+- **5.F and 5.G leave the browser's own error messages for a person**
+  (5.F 1.13.0, 5.G 1.11.0, step 21): the browser shows one field's
+  message at a time and its words differ by browser, so a form checked
+  only that way is NEEDS REVIEW, never PASS or FAIL, until Abby decides
+  whether TT 5.F fails it (the plan after round 3, question 1). Fixtures
+  that reached PASS only through the browser's message (`5f/f01`, `f13`,
+  `f16`, `f25`; `count/antispam-form`) are NEEDS REVIEW with them.
+- **5.F and 5.G: text with no word is not a message** (5.F 1.14.0, 5.G
+  1.12.0, step 36): a "word" is two letters in a row, so a one-character
+  message in a script that writes a word in one character (Chinese,
+  Japanese) is left for a person, as a number is (NEEDS REVIEW, never
+  an outcome). Worded text that is not a message ("Showing 12 results")
+  still goes to the judge, whose rubric calls it "no error".
 - **4.D's `MIN_CHANGED_PX` is absolute:** about 50 changed pixels pass a
   large image link (README). Step 27.
 - **4.A:** J1 can answer "alternative" while its reasons say it is not

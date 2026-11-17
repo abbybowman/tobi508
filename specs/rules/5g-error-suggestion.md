@@ -1,7 +1,7 @@
 ---
 tt_test: 5.G
 tt_name: 3.3.3-error-suggestion
-spec_version: 1.10.0
+spec_version: 1.12.0
 guards: unrecorded-code
 count: fields_hidden, fields.shadow, fields.frames, frames_missing
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -41,6 +41,8 @@ Each 5.F instance (a field an attempt showed in error) is a 5.G instance.
 | --- | --- | --- | --- |
 | N1 | 5.F's M1 (the replay or a read failed, or a read was unsettled; 1.2.1, wording) | NEEDS REVIEW | Spec rule |
 | N2 | The field is a password field (`type=password`) | DOES NOT APPLY for this field | p. 29 Applicability ("details about an incorrect password") |
+| N8 | The field's error text is the browser's own message (5.F's M2: native validation the page did not cancel) (1.11.0) | NEEDS REVIEW: the message is the browser's, it shows one field at a time and its words differ by browser (Chromium's "Please enter a part following '@'" guides; Firefox's "Please enter an email address" does not), so the page's guidance cannot be judged from one browser's words. J1 is not asked. Never FAIL here (the owner's open decision, as 5.F's M2) | Understanding 3.3.1 (generic native messages "may not provide sufficiently helpful or specific suggestions"); round 3's contact page; Abby, 2026-11-17 (step 21) |
+| N9 | 5.F's M10: the attempt's only new text holds no word ("4") | NEEDS REVIEW; J1 is not asked. Never FAIL from it | Spec rule (principle 3); Step 36 (1.12.0); round 2's 5340 |
 | N3 | No error text at all, and the field is marked by `aria-invalid`, or by its look and J2 (5.F's J2, asked again under 5.G) = error | FAIL: no guidance in text | p. 29 ER 1, 2 |
 | J2? | No error text, look only, J2 not answered | NEEDS REVIEW | Open question |
 | J1? | J1 not answered | NEEDS REVIEW | Open question |
@@ -73,6 +75,8 @@ Each 5.F instance (a field an attempt showed in error) is a 5.G instance.
 | A1 (DNA) | "The page did not check the form for errors, so this test does not apply." |
 | N1 (unsettled) | "We read the page after <field> was <done> while it was still changing, so an error message, or what it says to enter, may have been missed. Please look: load the page and press <keys>." |
 | N2 (note) | "<field> is a password field; saying more about what was wrong could help someone guess it, so no hint is needed." |
+| N8 | "The only error message for <field> was the browser's own (\"<message>\"), not one the page wrote. The browser shows it for one field at a time, and its words differ from browser to browser (one browser says how to fix the value, another only that it is wrong), so a person needs to check it in the browsers people use: load the page and press <keys>." |
+| N9 | As 5.F's M10. |
 | N3 | "When <field> was wrong, the page only marked it, with no text saying how to fix it. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | N5 | "The error for <field> (\"<text>\") does not say what to enter instead. To see it, load the page and press <keys>. If you disagree, tell your assistant." |
 | N6 | "We could not tell whether a correct value for <field> could be known. Please look: load the page and press <keys>." |
@@ -94,7 +98,7 @@ J1 is settled by reading (CLAUDE.md principle 8): a guides answer leads to PASS 
 
 **Output:** `{choice: guides|no_guidance|not_knowable|no_error|unsure, quote, reasons}`.
 
-**Rubric.** guides: the text says what is required ("must be 5 digits", "use the format MM/DD/YYYY", "is required" for an empty field: entering a value is the fix) or suggests a value ("Did you mean …?", a list of choices). no_guidance: it says only that the value is wrong ("Invalid entry", "Error: not a number" for a field whose expected format is not obvious from the label… unsure if it might be). not_knowable: no correction could be known (a wrong account number, a code from a letter). unsure: anything else. Mechanical check: the quote must appear in `errors` or `instructions` (whitespace and case aside).
+**Rubric.** guides: the text says what is required ("must be 5 digits", "use the format MM/DD/YYYY", "is required" for an empty field: entering a value is the fix) or suggests a value ("Did you mean …?", a list of choices). no_guidance: it says only that the value is wrong ("Invalid entry", "Error: not a number" for a field whose expected format is not obvious from the label… unsure if it might be). not_knowable: no correction could be known (a wrong account number, a code from a letter). no_error: nothing in the text is about this field (it accepted the value); text that is not a message at all (a number or a count on its own, a date or time, a result or value the page shows) is no_error too (1.12.0, step 36). unsure: anything else. Mechanical check: the quote must appear in `errors` or `instructions` (whitespace and case aside).
 
 | Example | Answer |
 | --- | --- |
@@ -103,13 +107,13 @@ J1 is settled by reading (CLAUDE.md principle 8): a guides answer leads to PASS 
 | "Invalid entry" on a date field with no format given anywhere | no_guidance |
 | "The confirmation code is incorrect" | not_knowable |
 
-**Use:** N4–N7.
+**Use:** N4–N7. Not asked for N1, N8 or N9 instances; `input.errors` holds only new text with a word (5.F's Terms).
 
 ## 5. Edge cases
 
 | Case | Rule |
 | --- | --- |
-| Native validation ("Please fill out this field.", "Please include an '@' in the email address. 'abc' is missing an '@'.") | J1 on the browser's `validationMessage`, as any error text (Understanding 3.3.1: generic messages may not suggest enough) |
+| Native validation ("Please fill out this field.", "Please include an '@' in the email address. 'abc' is missing an '@'.") | N8 NEEDS REVIEW (1.11.0; was J1 on the browser's `validationMessage`, as any error text): the words are the browser's and differ by browser (Understanding 3.3.1: generic messages may not suggest enough); fixture 5f/f01 |
 | One message meets 5.F and 5.G at once | Judged twice, once per test (Understanding 3.3.1) |
 | A required field left empty, message "First name is required" | guides (the fix is to enter it) |
 | The page corrects the value itself and says so | guides (Understanding 3.3.1 note) |

@@ -20,12 +20,21 @@ PICK_SEND = {"J0": {"choice": "element", "element": 2}}
 
 # name -> test -> expected outcome, instance rows, scripted answers
 EXPECTED: dict[str, dict[str, dict]] = {
+    # Step 21 (5.F 1.13.0, 5.G 1.11.0): the browser's own message is the
+    # browser's, shown one field at a time, worded by each browser: a person
+    # checks it (was PASS by M2 and N4; round 3's contact page, keyed Fail in
+    # Firefox). Never FAIL: the owner's open decision. f15 (the page cancels
+    # the message) keeps its FAIL.
     "f01-native-validation": {
-        "5.F": {"outcome": "PASS", "rows": ["M2", "M2", "M2"]},
+        "5.F": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["M2", "M2", "M2"],
+            "says": "shows it for one field at a time",
+        },
         "5.G": {
-            "outcome": "PASS",
-            "rows": ["N4", "N4", "N4"],
-            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["N8", "N8", "N8"],
+            "says": "its words differ from browser to browser",
         },
     },
     # M-06 (part D, 5.F 1.9.0): an error shown inside a web component is new
@@ -94,6 +103,32 @@ EXPECTED: dict[str, dict[str, dict]] = {
     "f33-error-gone-at-once": {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
         "5.G": {"outcome": "NEEDS_REVIEW", "rows": []},
+    },
+    # Step 36 (5.F 1.14.0, 5.G 1.12.0; round 2's 5340): pressing the button
+    # only changes a number on the page ("3" to "4"). Text with no word is
+    # not a candidate message, so each field is left for a person (M10, N9),
+    # never a J1 question (the judge had failed 25 fields on "4"). Its twin
+    # f35 shows a real one-word message, "Invalid", for two fields: still a
+    # J1 question, and still FAIL (it names no field and no fix).
+    "f34-button-changes-a-number": {
+        "5.F": {
+            "outcome": "NEEDS_REVIEW",
+            "rows": ["M10", "M10", "M10", "M10"],
+            "says": "with no words in it",
+        },
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N9", "N9", "N9", "N9"]},
+    },
+    "f35-one-word-error": {
+        "5.F": {
+            "outcome": "FAIL",
+            "rows": ["M8", "M8", "M8", "M8"],
+            "answers": {"J1": {"choice": "not_identified"}},
+        },
+        "5.G": {
+            "outcome": "FAIL",
+            "rows": ["N5", "N5", "N5", "N5"],
+            "answers": {"J1": {"choice": "no_guidance"}},
+        },
     },
     "f02-server-side-form": {
         "5.F": {"outcome": "NEEDS_REVIEW", "rows": []},
@@ -247,16 +282,12 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "enter 10 digits"}},
         },
     },
-    # Native date fields get a date outside their range (spec 0.6.0).
+    # Native date fields get a date outside their range (spec 0.6.0). Both
+    # errors are the browser's own messages: a person checks them (step 21;
+    # was PASS by M2 and N4).
     "f13-date-after-max": {
-        "5.F": {"outcome": "PASS", "rows": ["M2", "M2"]},
-        "5.G": {
-            "outcome": "PASS",
-            "rows": ["N4", "N4"],
-            # One scripted quote for both errors: the field's label, from
-            # input.instructions (the check accepts a quote from either).
-            "answers": {"J1": {"choice": "guides", "quote": "Date of the change"}},
-        },
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2", "M2"]},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N8", "N8"]},
     },
     "f14-birth-date-in-future": {
         "5.F": {
@@ -290,14 +321,11 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "answers": {"J1": {"choice": "guides", "quote": "like"}},
         },
     },
-    # No button: both attempts press Enter in the field (empty, then "abc").
+    # No button: both attempts press Enter in the field (empty, then "abc");
+    # the browser's own messages show both ran (step 21: NEEDS REVIEW).
     "f16-no-button": {
-        "5.F": {"outcome": "PASS", "rows": ["M2", "M2"]},
-        "5.G": {
-            "outcome": "PASS",
-            "rows": ["N4", "N4"],
-            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
-        },
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2", "M2"]},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N8", "N8"]},
     },
     # Post-round 1 fix 17 (Abby, 2026-11-05): a site search accepts any
     # input, so both are Does Not Apply (A3s), though it was sent.
@@ -332,12 +360,8 @@ EXPECTED: dict[str, dict[str, dict]] = {
     # error message there (FAIL when nothing stops the walk); the second has
     # the trap after the last field, so its outcome is unchanged.
     "f24-trap-before-second-form": {
-        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2"]},
-        "5.G": {
-            "outcome": "NEEDS_REVIEW",
-            "rows": ["N4"],
-            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
-        },
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2"], "page_rows": ["WK"]},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N8"]},
     },
     # M-01 (5.F 1.7.0, 5.G 1.5.0): a form checked by a type=button control.
     # f26 shows a described error when it is pressed (PASS: DOES NOT APPLY
@@ -362,8 +386,9 @@ EXPECTED: dict[str, dict[str, dict]] = {
     },
     # Row WK (5.F 1.8.0, 5.G 1.6.0, 5.H 1.6.0; step 6d): a script skips the
     # second field in both directions, so the walk wraps having reached 1 of
-    # the page's 2 fields, and the second is never tested. f25 above is the
-    # nearest page that must still PASS: a trap, but every field reached.
+    # the page's 2 fields, and the second is never tested. f25 below is the
+    # nearest page with no row WK: a trap, but every field reached (it was a
+    # PASS until step 21 made the browser's own message NEEDS REVIEW).
     "f28-field-skipped-by-script": {
         "5.F": {
             "outcome": "NEEDS_REVIEW",
@@ -371,19 +396,13 @@ EXPECTED: dict[str, dict[str, dict]] = {
             "page_rows": ["WK"],
             "walk": (1, 2),
         },
-        "5.G": {
-            "outcome": "NEEDS_REVIEW",
-            "rows": ["N7"],
-            "answers": {"J1": {"choice": "unsure"}},
-        },
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N8"]},
     },
+    # Since step 21 its only error is the browser's own message, so it is
+    # NEEDS REVIEW by M2 and N8 alone: the walk is complete (no row WK).
     "f25-trap-after-last-field": {
-        "5.F": {"outcome": "PASS", "rows": ["M2"]},
-        "5.G": {
-            "outcome": "PASS",
-            "rows": ["N4"],
-            "answers": {"J1": {"choice": "guides", "quote": "Please"}},
-        },
+        "5.F": {"outcome": "NEEDS_REVIEW", "rows": ["M2"], "no_page_rows": ["WK"]},
+        "5.G": {"outcome": "NEEDS_REVIEW", "rows": ["N8"], "no_page_rows": ["WK"]},
     },
 }
 
@@ -445,6 +464,10 @@ async def test_outcome(name, settings, server, drafts):  # noqa: F811
         )
         if "page_rows" in x:
             assert set(x["page_rows"]) <= set(f.rows), (tt, f.rows)
+        if "no_page_rows" in x:
+            assert not set(x["no_page_rows"]) & set(f.rows), (tt, f.rows)
+        if "says" in x:
+            assert x["says"] in f.summary, (tt, f.summary)
         if "walk" in x:  # row WK's evidence: fields reached of fields counted
             r, c = x["walk"]
             assert f"Walk: reached {r} of {c} fields" in f.rationale, f.rationale
@@ -454,11 +477,15 @@ async def test_outcome(name, settings, server, drafts):  # noqa: F811
     "test,row",
     [
         ("5.F", "M1"),
+        ("5.F", "M2"),
         ("5.F", "M5"),
         ("5.F", "M9"),
         ("5.G", "N1"),
         ("5.G", "N6"),
         ("5.G", "N7"),
+        ("5.G", "N8"),
+        ("5.F", "M10"),
+        ("5.G", "N9"),
     ],
 )
 def test_please_look_sentences_end_with_the_keys(test, row):
@@ -470,6 +497,7 @@ def test_please_look_sentences_end_with_the_keys(test, row):
         attempts=[t5f.AttemptE(form="form1", kind=1, keys="Tab 2 times, press Enter")]
     )
     i = t5f.Inst5F(id="a1-f1", attempt=0, field=1, label="Name", kind="text")
+    i.native = "Please fill out this field."
     if test == "5.F":
         text = t5f._sentence(t5f.State5F.model_construct(ps=ps, j={}), i, row)
     else:

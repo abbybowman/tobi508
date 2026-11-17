@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><title>Order samples</title></head><body><main><h1>Order samples</h1>
+<form id="f" novalidate><label>Name <input name="name" id="n"></label><label>Postal code <input name="postal" id="p"></label><button type="submit">Add to list</button></form>
+<p>On your list: <span id="c">3</span></p>
+<script>var k=3;document.getElementById('f').addEventListener('submit',function(ev){ev.preventDefault();k+=1;document.getElementById('c').textContent=String(k);});</script></main></body></html>
