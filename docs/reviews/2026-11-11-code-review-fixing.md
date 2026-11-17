@@ -115,8 +115,8 @@ thread at a time each, in the roadmap's order.
 
 **Steps 31 (9.B) and 29's small part (5.B), Sonnet** (now; before the Nov 17 cut, beside the thread above)
 
-> Read `CLAUDE.md`, `docs/ROADMAP.md` (the two pre-cut threads, and steps 29
-> and 31 under "Next"), and `docs/plans/2026-11-16-after-round3.md`:
+> Read `CLAUDE.md`, `docs/ROADMAP.md` ("Now": the order of work and
+> steps 31 and 29's small part), and `docs/plans/2026-11-16-after-round3.md`:
 > causes 6 and 10 and the table at the end. Then follow the
 > instructions below the line in
 > `docs/reviews/2026-11-11-code-review-fixing.md`. Two pull requests,
