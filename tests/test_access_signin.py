@@ -39,6 +39,7 @@ class _Keycloak(http.server.BaseHTTPRequestHandler):
     base = ""
     login_as = "alice"
     groups = ["VAST--tobi--scan"]
+    scope = None  # what the last sign-in asked Keycloak for
 
     def _json(self, doc):
         body = json.dumps(doc).encode()
@@ -66,6 +67,7 @@ class _Keycloak(http.server.BaseHTTPRequestHandler):
             return self._json({"keys": [{**key, "kid": "k1", "use": "sig"}]})
         if path.path == "/auth":  # the person signs in at Launchpad
             q = parse_qs(path.query)
+            _Keycloak.scope = q.get("scope", [None])[0]
             redirect_uri = q["redirect_uri"][0].replace("\r", "").replace("\n", "")
             state = q["state"][0].replace("\r", "").replace("\n", "")
             back = (
@@ -253,6 +255,14 @@ async def test_the_signed_in_person_is_the_caller(server, caplog):
         json.loads(r.message) for r in caplog.records if r.name == "tobi508.audit"
     ]
     assert line["sub"] == "alice" and line["who"] == "alice@nasa.gov"
+
+
+def test_sign_in_asks_keycloak_for_vasts_scopes(server):
+    # The scopes VAST's realm is set up for (py_auth_boilerplate's README);
+    # a client such as Claude Code asks for none of its own.
+    _Keycloak.scope = None
+    _sign_in(server, "alice")
+    assert _Keycloak.scope == "openid email profile"
 
 
 async def test_a_run_is_private_to_its_maker(server):

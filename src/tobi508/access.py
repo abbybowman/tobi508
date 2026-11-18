@@ -36,6 +36,10 @@ OWNER_FILE = "owner"
 # Claims that name a person, in the order used for the audit line. Launchpad's
 # claim names (VAST) first, then standard OIDC.
 NAME_CLAIMS = ("nasaPrimaryEmail", "email", "preferred_username", "AgencyUID")
+# The scopes VAST's app realms are set up for (py_auth_boilerplate's README).
+# FastMCP sends Keycloak no scope when the MCP client asks for none, which
+# Claude Code does; a realm may attach Launchpad claims to these scopes.
+UPSTREAM_SCOPES = "openid email profile"
 
 
 # ── The caller ────────────────────────────────────────────────────────────────
@@ -142,6 +146,7 @@ class GatedOIDCProxy(OIDCProxy):
         # Set before super().__init__, which calls get_token_verifier.
         self._required_groups = required_groups
         self._group_claim = group_claim
+        kw.setdefault("extra_authorize_params", {"scope": UPSTREAM_SCOPES})
         super().__init__(**kw)
 
     def get_token_verifier(
