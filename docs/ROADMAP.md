@@ -60,7 +60,6 @@ file and the prompt file; other threads write to their plan.
 
 | Order | Steps | What | Model | When |
 | --- | --- | --- | --- | --- |
-| 1 | 31, 29 (small part) | 9.B's six false FAILs; 5.B's DOES NOT APPLY when 5.A could not decide | Sonnet | morning, beside the first |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
 | - | 12b | Hosted on VAST: sign-in at the dev URL, then YAML for the cluster admins | Opus | when the Keycloak client arrives |
@@ -73,16 +72,20 @@ tests are red (4.F, 5.F, 5.G) and six yellow (4.A, 4.D, 5.B, 5.D, 9.B,
 19.A); the script will give the real table. The rows above are the
 cheapest moves:
 
-- **21, 36 (5.F, 5.G):** red to yellow. The browser's own error
+- **21, 36 (5.F, 5.G; done, #109):** red to yellow. The browser's own error
   messages, and text that is not a message, become NEEDS REVIEW. Both
   tests then have no wrong cell and are mostly left for a person.
-- **22 (4.F, and 4.A, 5.D):** 4.F red to yellow; two false FAILs of
+- **22 (4.F, and 4.A, 5.D; done, #110, #111):** 4.F red to yellow; two false FAILs of
   4.A and two wrong cells of 5.D go.
 - **23 (done, #112):** the replay draws; on round 3's p07, p08 and
   p10, 4.E's three false FAILs, 5.F, 5.G and 5.H moved to NEEDS REVIEW,
   PASS or an agreeing DOES NOT APPLY (`evals/judging/gate-2026-11-17-step23/`).
-- **31 (9.B):** yellow to green.
-- **29, small part (5.B):** five wrong cells become NEEDS REVIEW.
+- **31 (9.B; done):** yellow to green.
+- **29, small part (5.B; done):** five wrong cells become NEEDS REVIEW.
+- **4.F 1.11.0 (done, #121, not planned):** step 23's rerun showed three
+  new 4.F false FAILs on round 2; the cause was measurement (a box read
+  while the page scrolled, a scroll box, a script-made id), not the
+  judge. Round 2's 4.F false FAILs 4 to 2 (`evals/judging/gate-2026-11-17-4f/`).
 - **9c where the search loads (19.A):** 8 of round 2's 19.A cells are
   undecided only because the site's search did not load in step 9b's
   container; with it, 19.A may go from yellow to green without a code
@@ -94,11 +97,6 @@ Left yellow after the cut, each needing more than a day: 4.A, 4.D,
 
 ### What each step covers
 
-- **31. 9.B pairs repeated links without crossing them.** An extra
-  copy of a link on one page is an insertion, not a swap; a real
-  reorder still FAILs.
-- **29, small part. 5.B is NEEDS REVIEW, not DOES NOT APPLY, when 5.A
-  could not decide.**
 - **9c. The last rerun.** As step 9b, one repeat, the judge on every
   type, plus round 3's pages (a rerun, never in place of its blind
   score). Before it starts: the sites' own search must load in its

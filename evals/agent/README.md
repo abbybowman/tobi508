@@ -193,7 +193,7 @@ Files: `evals/judging/round1/agent-score.md` and `.json`, from the locked
 scoring code (`results/lock.json`, code commit 7d26a02). nasa.gov is a
 development site from now on and is never scored again (eval plan 3.1).
 Fixes are in
-[the post-round 1 plan](../../docs/plans/2026-11-04-post-round1-fixes.md).
+[the post-round 1 plan](../../docs/archive/2026-11-04-post-round1-fixes.md).
 
 **Scoring checks on the first real keys.** The scorer ran unchanged. All 9
 keys matched their pages by hash and passed the P_Location check. The

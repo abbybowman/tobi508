@@ -1,6 +1,6 @@
 """Development prompt versions for Agent A: round 1's task (prompt.py, which
 the round 1 lock covers and must not change) plus one paragraph. Runs with
-these are never scored as a round (docs/plans/2026-11-04-post-round1-fixes.md
+these are never scored as a round (docs/archive/2026-11-04-post-round1-fixes.md
 fix 9); they show what the tool does when the agent is told how to use it.
 
     uv run python -m evals.agent.run --route cli --arm a --prompt answers-v1 <round>

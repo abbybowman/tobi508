@@ -8,73 +8,15 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 10, 6b to 6h, 9b, 10a, 10c, 12a, 21, 22, 23 and 36
-(PRs #39 to #113; `docs/archive/`). Round 3 is scored.
+**Done:** steps 1 to 10, 6b to 6h, 9b, 10a, 10c, 12a, 21, 22, 23, 29's
+small part, 31 and 36, and 4.F 1.11.0 (PRs #39 to #121; `docs/archive/`). Round 3 is scored.
 
-**Order to start them** (the roadmap's "Order of work"): the two
-pre-cut threads now, side by side; 9c when both are merged; 10d after
+**Order to start them** (the roadmap's "Order of work"): 9c now (both
+pre-cut threads are merged); 10d after
 9c; 12b when the Keycloak client arrives; 41 after the demo, beside the test rows; the after-demo rows one
 thread at a time each, in the roadmap's order.
 
 ## Starting a thread
-
-**Steps 31 (9.B) and 29's small part (5.B), Sonnet** (now; before the Nov 17 cut, beside the thread above)
-
-> Read `CLAUDE.md`, `docs/ROADMAP.md` ("Now": the order of work and
-> steps 31 and 29's small part), and `docs/plans/2026-11-16-after-round3.md`:
-> causes 6 and 10 and the table at the end. Then follow the
-> instructions below the line in
-> `docs/reviews/2026-11-11-code-review-fixing.md`. Two pull requests,
-> in this order. the thread of steps 21 to 23 changes 5.A, 5.D, 5.F to 5.H, 4.A, 4.C and
-> 4.F at the same time: touch none of their specs.
->
-> **Step 31: 9.B pairs equal links by alignment.** On round 3's
-> Drupal pages there are three links named "Home" to one address (top
-> bar, the footer's logo block, the footer list) and a fourth, the
-> breadcrumb's, on every page but the home page. The spec pairs equal
-> components "in order" (9.B Terms), so the home page's second "Home"
-> pairs with the others' breadcrumb and the social links between them
-> read as reversed (N3): FAIL on all six pages where my key passes.
-> Reproduced on two scratch pages whose repeated links sit in no
-> landmark; in distinct landmarks it PASSes. Pair equal components by
-> an alignment that keeps their order where it can (the longest
-> common subsequence of the two pages' lists), so an extra copy is an
-> insertion, not a swap. Fixtures: the two pages (one with the extra
-> breadcrumb "Home" in the same region), and a page where a real
-> reorder among repeated links must still FAIL (two different links
-> swapped, as `9x/a3-nav-reordered`, plus one where the same two equal
-> links change places with a different link between them).
-> `9x/a3-nav-reordered` and `9x/a4-nav-css-order` keep FAIL.
->
-> **Step 29, the small part only: 5.B when 5.A could not decide.** On
-> round 3's Drupal pages the search box sits in a panel the magnifier
-> opens; 5.A's J1 was unsure (its picture showed the magnifier, not the
-> field), and 5.B still said no field has a visible label (A2, DOES NOT
-> APPLY; my key passes, counting the magnifier). Make A2 hold only
-> when 5.A found every field unlabelled by a rule or by J1 =
-> not_labeled; a field 5.A left unsure makes 5.B NEEDS REVIEW, and
-> J1 = graphic makes the field an item. Fixture: a search box 5.A is
-> unsure about (scripted answer unsure); a placeholder-only search box
-> with no icon (round 1's nasa.gov) keeps 5.A FAIL and 5.B DOES NOT
-> APPLY. The rest of step 29 (opening the panel; a magnifier as a
-> label) is the forms row, after the demo.
->
-> **The rerun, at the end** (ask me for the three rounds' frozen
-> archives; I hold them): rerun the tests you changed, and the tests
-> that read what you changed, on all three rounds' frozen pages, with
-> the server judge as step 9b ran it (`evals/apijudge_gate.py run
-> --round 1|2`; add `--round 3` for round 3's pages, frozen copies and
-> keys, writing under `evals/judging/gate-<date>/round3/`, never under
-> `evals/judging/round3/`, which is locked). Serve every page from the
-> freeze, other pages too, and say if any was loaded live. Score each
-> round with its own keys and scorer. Show me **every cell that moved,
-> beside my key and its comment**, old outcome, new outcome and the
-> rows that decided it, round by round; a cell on round 1 or 2 that
-> moved gets its own line and a reason. Round 3's pages are
-> development pages: this is a rerun, never in place of its score.
-> Report verified (test or command) apart from assumed, and update the
-> README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
-> what you fixed, in the same commit (not the README's status table).
 
 **Applications, Opus** (after the demo; steps 24, 25, 26, 35a, 35e)
 
@@ -260,7 +202,7 @@ thread at a time each, in the roadmap's order.
 > Read `CLAUDE.md`, `docs/ROADMAP.md` (the site tests row and step 19b),
 > `docs/plans/2026-11-16-after-round3.md` (cause 13, "19.A on round
 > 2's CILab page", the questions at its top),
-> `docs/plans/2026-11-15-19a-finds-ways.md` and `docs/KNOWN-LIMITS.md`
+> `docs/archive/2026-11-15-19a-finds-ways.md` and `docs/KNOWN-LIMITS.md`
 > (9.C). Then follow the instructions below the line in this file.
 > **CILab first** (a wrong FAIL): 19.A passed in step 6h's rerun (the
 > home page's card link to `/cilab/index.html`, a verified alias, and

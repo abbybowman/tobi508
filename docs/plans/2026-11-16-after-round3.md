@@ -528,7 +528,10 @@ Kind: judge (p04, p09), rule (S3 on columns, S6 on an arrow-key
 popup) and reading (the order list misses what the signals name).
 Rounds 1 and 2: round 2's two 4.F false FAILs (search, 5340) were
 judge answers; round 1's 4.F is NEEDS REVIEW by J1 on 5 pages. Same
-family. **Step 33:** the order list and picture include every element
+family. After 4.F 1.11.0 (gate 2026-11-17-4f), the search page's FAIL was
+measurement and is gone; 5340 (p08, a tab widget) still FAILs, and 5144
+(p09, an interactive sky map: J1 read its popup links and panels as
+jumbled) is a new judge FAIL. **Step 33:** the order list and picture include every element
 a signal names (S); S3 not raised for a jump to the top of the next
 column of one list (M); S6 not raised when the trigger's popup is a
 listbox or menu reached by arrows (S); J1's rubric: an order that is
@@ -671,7 +674,7 @@ PASS: **needs approval**.
   check loaded and found to be the same document (W6, a content link),
   and the subpages' row of icon links, repeated on CILab's home (the
   1.14.0 link-group rule: navigation)
-  ([plan](2026-11-15-19a-finds-ways.md), "Rerun with 19.A 1.14.0").
+  ([plan](../archive/2026-11-15-19a-finds-ways.md), "Rerun with 19.A 1.14.0").
 - **Step 6g's rerun** (19.A 1.15.0, the same day, the same mode; and
   `main`'s 1.14.0 run beside it): **FAIL** where the key passes. The
   README's status line records only the outcome; the run's reports are

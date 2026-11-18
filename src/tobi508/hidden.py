@@ -1,5 +1,5 @@
 """Fields hidden from everyone (guard CN's hidden fields; Abby, 2026-11-15,
-roadmap step 6e; plan docs/plans/2026-11-15-fields-hidden-from-everyone.md).
+roadmap step 6e; plan docs/archive/2026-11-15-fields-hidden-from-everyone.md).
 
 A form field hidden when the page loads is *hidden from everyone* only when
 nothing a careful tester does shows it, read by behaviour, never by its
