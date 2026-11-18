@@ -10,7 +10,8 @@
   "https://science.data.nasa.gov/fits/verifier",
   "https://science.data.nasa.gov/fits/sample-files",
   "https://science.data.nasa.gov/data-governance-community/home",
-  "https://science.data.nasa.gov/data-governance-community/forum"
+  "https://science.data.nasa.gov/data-governance-community/forum",
+  "https://science.data.nasa.gov/science-discovery-engine/search/sde/home"
  ],
  "dry": false,
  "started": "2026-11-18T01:10:49.743490+00:00"
