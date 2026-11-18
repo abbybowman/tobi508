@@ -15,7 +15,7 @@ A type passes only when both hold:
   reported, not a reason on its own (code review L-02, L-03).
 
     uv run python evals/apijudge_gate.py run   --date D [--repeat N]
-        [--types 4.A,5.B] [--pages cilab,14592] [--round 1|2|3] [--dry]
+        [--types 4.A,5.B] [--pages cilab,14592 | =EXACT_URL] [--round 1|2|3] [--dry]
         [--tests 5.A,5.B,9.B] [--frozen-mode replay]
     uv run python evals/apijudge_gate.py score --date D [--eval OUT] [--round 1|2|3]
 
@@ -197,7 +197,8 @@ async def run(
     chosen = [
         (n, u)
         for n, (u, _) in enumerate(listed, 1)
-        if not pages or any(p in u for p in pages)
+        if not pages
+        or any((p[1:] == u) if p.startswith("=") else (p in u) for p in pages)
     ]
     tests = [t for t in TestId if t in REGISTRY]
     if only_tests:  # a rerun of the tests a change touched, not the whole set

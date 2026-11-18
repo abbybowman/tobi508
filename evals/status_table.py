@@ -49,28 +49,25 @@ OVERLAYS = [
 SITES = {
     1: {
         "site": "www.nasa.gov",
-        "run": "rerun on development pages, gates 2026-11-17 and "
-        "2026-11-17-step23 over "
-        "gate 2026-11-16 (step 9b)",
-        "base": JUD / "gate-2026-11-16" / "compare-round1.json",
-        "overlay": OVERLAYS,
+        "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
+        "the server judge on every type it can take, on the original freeze",
+        "base": JUD / "gate-2026-11-17-9c" / "compare-round1.json",
+        "overlay": [],
     },
     2: {
         "site": "svs.gsfc.nasa.gov",
-        "run": "rerun on development pages, gates 2026-11-17 and "
-        "2026-11-17-step23 over "
-        "gate 2026-11-16 (step 9b)",
-        "base": JUD / "gate-2026-11-16" / "compare-round2.json",
-        "overlay": OVERLAYS,
+        "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
+        "the server judge on every type it can take",
+        "base": JUD / "gate-2026-11-17-9c" / "compare-round2.json",
+        "overlay": [],
     },
     3: {
         "site": "science.data.nasa.gov",
-        "run": "rerun on development pages, gates 2026-11-17 and "
-        "2026-11-17-step23 over "
-        "the blind round 3 (locked 2026-11-16, kept as the record in "
-        "evals/judging/round3/score.md)",
-        "base": None,
-        "overlay": OVERLAYS,
+        "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
+        "the server judge on every type it can take (the blind round 3, "
+        "locked 2026-11-16, stays the record in evals/judging/round3/score.md)",
+        "base": JUD / "gate-2026-11-17-9c" / "compare-round3.json",
+        "overlay": [],
     },
 }
 

@@ -60,17 +60,15 @@ file and the prompt file; other threads write to their plan.
 
 | Order | Steps | What | Model | When |
 | --- | --- | --- | --- | --- |
-| 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
-| 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
 | - | 12b | Hosted on VAST: sign-in at the dev URL (client minted 2026-11-18; read `py_auth_boilerplate`), then YAML for the cluster admins | Opus | now |
 | - | 13 | The pitch: the scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
 
 ### Why these, and what they should do to the status table
 
-By the status rule (step 10d) applied to the three runs above, three
-tests are red (4.F, 5.F, 5.G) and six yellow (4.A, 4.D, 5.B, 5.D, 9.B,
-19.A); the script will give the real table. The rows above are the
-cheapest moves:
+Step 9c (done, 2026-11-18) ran all three sites' frozen pages after the
+rows below, and the README's status table (step 10d, done) is written
+from it: 16 tests green, 6 yellow (4.A, 4.D, 5.B, 5.D, 5.F, 5.G), none
+red. The rows below are what moved the tests:
 
 - **21, 36 (5.F, 5.G; done, #109):** red to yellow. The browser's own error
   messages, and text that is not a message, become NEEDS REVIEW. Both
@@ -86,21 +84,29 @@ cheapest moves:
   new 4.F false FAILs on round 2; the cause was measurement (a box read
   while the page scrolled, a scroll box, a script-made id), not the
   judge. Round 2's 4.F false FAILs 4 to 2 (`evals/judging/gate-2026-11-17-4f/`).
-- **9c where the search loads (19.A):** 8 of round 2's 19.A cells are
-  undecided only because the site's search did not load in step 9b's
-  container; with it, 19.A may go from yellow to green without a code
-  change.
+- **9c where the search loads (19.A; done):** the sites' own search
+  loaded in this run's container for all three sites (svs's failed on
+  its first two pages and those two were run again), and 19.A went from
+  yellow to green with no code change: 9 of 10 cells agree on round 2
+  (one false FAIL, CILab) beside 2 in step 9b
+  (`evals/judging/gate-2026-11-17-9c/`).
 
-Left yellow after the cut, each needing more than a day: 4.A, 4.D,
-4.F and 5.B (the judge unsure or too strict; frames pictured alone),
+Left yellow after the cut, each needing more than a day: 4.A, 4.D
+and 5.B (the judge unsure or too strict; frames pictured alone),
 5.D (opened content), 5.F and 5.G (forms a recording cannot send).
 
 ### What each step covers
 
-- **9c. The last rerun.** As step 9b, one repeat, the judge on every
-  type, plus round 3's pages (a rerun, never in place of its blind
-  score). Before it starts: the sites' own search must load in its
-  container. Per-page reports stay out of git.
+- **9c. The last rerun (done, 2026-11-18).** As step 9b, one repeat,
+  the judge on every type, plus round 3's pages (a rerun, never in
+  place of its blind score), on all three rounds' original freezes at
+  `main` `30e948c` with #121 (write-up in `evals/README.md`, "Gate
+  2026-11-17-9c"; folder `evals/judging/gate-2026-11-17-9c/`, per-page
+  reports out of git). No cell PASSes or DOES NOT APPLYs where the key
+  fails in any round. The README's status table (step 10d) reads its
+  `compare-roundN.json` files. A reference run of round 1 on a refreeze
+  is its own experiment (`evals/judging/gate-2026-11-17-9c-refrozen/`),
+  not in the table.
 - **10d. The README's status table.** One colour and a few words per
   test by one stated rule, written by a script from 9c; a test fails
   when the README's rows are not the script's. Counts per site go to
