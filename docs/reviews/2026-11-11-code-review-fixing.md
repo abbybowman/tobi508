@@ -228,7 +228,9 @@ thread at a time each, in the roadmap's order.
 > script that could draw the results (`capture.failed_scripts` counts
 > every one now), with a fixture that has such a tag beside one that
 > breaks the results, before you build; a cell that turns NEEDS REVIEW
-> into PASS or FAIL waits for my yes. Then **19b**, 9.C pairs by function, as the roadmap
+> into PASS or FAIL waits for my yes.
+>
+> Then **19b**, 9.C pairs by function, as the roadmap
 > entry says, each candidate rule with a pair that must not FAIL and a
 > judge eval. The applications row changed 9.A to 9.C and 19.A's A2 (one document at
 > every address): build on it.
