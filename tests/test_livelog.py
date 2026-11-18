@@ -110,3 +110,81 @@ def test_long_text_is_trimmed_and_says_so():
     out = livelog._trim("x" * (livelog.MAX_TEXT + 5))
     assert len(out["text"]) == livelog.MAX_TEXT and out["more_chars"] == 5
     json.dumps(out)  # events stay JSON
+
+
+def test_only_get_is_answered(http, live):
+    for path in ("/live", "/live/app.js", "/live/app.css", "/live/events"):
+        r = http.post(path, headers={"X-Live-Token": TOKEN}, content=b"{}")
+        assert r.status_code == 405, path
+
+
+async def test_markup_in_page_values_stays_text(live):
+    """Page text with markup and script reaches the page as text: no element,
+    no script run (CLAUDE.md principle 5)."""
+    import socket
+    import threading
+    import time
+
+    import uvicorn
+    from playwright.async_api import async_playwright
+
+    evil = '<img src=x onerror="window.pwned=1"><script>window.pwned=2</script>'
+    livelog.emit(
+        "call",
+        call=1,
+        who=None,
+        action="tool",
+        name="tobi_run_tt_tests",
+        arguments={"url": "https://example.gov/" + evil},
+    )
+    livelog.emit("progress", job="job-1", target="https://example.gov/", message=evil)
+    livelog.emit(
+        "result",
+        call=1,
+        name="tobi_run_tt_tests",
+        action="tool",
+        seconds=1.0,
+        is_error=False,
+        parts=[
+            {
+                "type": "text",
+                "text": json.dumps(
+                    {"findings": [{"test_id": evil, "outcome": "PASS"}], "title": evil}
+                ),
+            },
+            {
+                "type": "image",
+                "mime": "image/svg+xml",
+                "bytes": 10,
+                "data": "PHN2Zz48L3N2Zz4=",
+            },
+        ],
+    )
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+    srv = uvicorn.Server(
+        uvicorn.Config(
+            mcp.http_app(transport="streamable-http"),
+            host="127.0.0.1",
+            port=port,
+            log_level="error",
+        )
+    )
+    threading.Thread(target=srv.run, daemon=True).start()
+    deadline = time.monotonic() + 10
+    while not srv.started and time.monotonic() < deadline:
+        time.sleep(0.05)
+    try:
+        async with async_playwright() as pw:
+            b = await pw.chromium.launch()
+            page = await b.new_page()
+            await page.goto(f"http://127.0.0.1:{port}/live#token={TOKEN}")
+            await page.wait_for_selector(".ev.result")
+            assert await page.evaluate("window.pwned") is None
+            assert await page.locator("#log img").count() == 0  # no markup, no SVG
+            assert await page.locator("#log script").count() == 0
+            assert evil in await page.inner_text("#log")  # shown, as text
+            await b.close()
+    finally:
+        srv.should_exit = True
