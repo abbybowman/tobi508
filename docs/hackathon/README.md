@@ -9,7 +9,9 @@ https://www.gsa.gov/super-intelligence/si-community-of-practice/events-and-train
 | --- | --- |
 | [evaluation.md](evaluation.md) | Evaluation document, the source |
 | [out/TOBI-evaluation.docx](out/TOBI-evaluation.docx) | The same, built in GSA's Word template (the file to upload) |
-| [deck.md](deck.md) | Presentation deck, one section per slide (being rewritten to match the evaluation document) |
+| [build_pptx.py](build_pptx.py) | The deck's source: builds it in GSA's PowerPoint template |
+| [out/TOBI-deck.pptx](out/TOBI-deck.pptx) | The deck (the file to upload) |
+| [deck.md](deck.md) | The deck's text and speaker notes, generated from the `.pptx` for reading and diffs |
 | [demo.md](demo.md) | The 5-minute demo script |
 | [templates/](templates/) | GSA's sample evaluation document and deck, byte for byte, used as templates |
 | [diagrams/](diagrams/) | The flow diagram |
@@ -24,6 +26,16 @@ It needs python-docx (not a project dependency). It keeps the template's
 styles and replaces its body; blockquotes in the Markdown are drafting
 notes and are left out. Rebuild and commit the `.docx` whenever
 `evaluation.md` changes.
+
+## Building the deck
+
+```bash
+python3 docs/hackathon/build_pptx.py docs/hackathon/out/TOBI-deck.pptx
+```
+
+Needs python-pptx. Every figure in it is copied from `evaluation.md`:
+change both together, rebuild both files, and regenerate `deck.md` with the
+pptx skill's `slide_text.py` (or any `.pptx` text dump).
 
 ## Where the figures come from (Abby, 2026-11-18)
 
