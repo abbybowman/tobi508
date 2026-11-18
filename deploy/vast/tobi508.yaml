@@ -5,6 +5,7 @@
 #   <namespace>    where the admins put the app
 #   <app host>     the app's subdomain on VAST's gateway
 #   <keycloak host>, <client id>, <group>   from the app's Keycloak client
+#   <gateway>, <the gateway's model name>    the judge's Messages API gateway (Luna)
 # The secrets are not in this file: create them first (guide, section 9).
 #
 # Results are agent-assisted findings, never a certified Trusted Tester result.
@@ -33,13 +34,20 @@ data:
   # What may be tested. DEV_MODE must stay off on VAST.
   ALLOWED_DOMAINS: '[".gov", ".mil"]'
   DEV_MODE: "false"
-  # Open questions go to the calling agent. For the server's own judge
-  # (Luna or another Messages API gateway), see the guide, section 2.
-  JUDGE_BACKEND: client
+  # The server's own judge answers every test's open questions (Abby,
+  # 2026-11-18). Explicit "api": the server will not start without the
+  # gateway's URL here and JUDGE_API_KEY in the secret (guide, section 9).
+  JUDGE_BACKEND: api
+  JUDGE_BASE_URL: https://<gateway>
+  JUDGE_MODEL: <the gateway's model name>
   # Capacity. Keep CALL_WAIT_S under the gateway's read timeout (at least 50 s).
   MAX_CONCURRENT_RUNS: "2"
   CALL_WAIT_S: "45"
   RUN_TTL_HOURS: "24"
+  # The live log for a demo (guide, section 2, "Live log"): every caller's
+  # calls, page text and pictures at /live, for whoever holds the token
+  # (LIVE_LOG_TOKEN, in tobi508-secrets). Off; set "true" only for the demo.
+  LIVE_LOG: "false"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -278,7 +278,7 @@ by TT test ID. Package: `tobi508`.
 
 ```
 src/tobi508/
-  app.py        FastMCP server (stdio by default); routes.py: /health
+  app.py        FastMCP server (stdio by default); routes.py: /health, /viewer (the pre-SCRT viewer), /live
   config.py     Settings (env / .env)
   models.py     Pydantic models
   policy.py     URL allowlist decision (pure)
@@ -286,6 +286,8 @@ src/tobi508/
   egress.py     the proxy every browser connection goes through: address checks at connection time
   access.py     hosted sign-in (AUTH=oidc): OIDC proxy, group gate, run owners, audit lines
   redact.py     redaction for tool errors and logs
+  livelog.py    the demo's live log (off by default): every call, response and run step in memory;
+                livepage.py and live/ serve it at /live with LIVE_LOG_TOKEN
   browser.py    Chrome launch, fresh contexts, NavigationGuard
   capture.py    HAR record and replay; the media store (2.A-2.D); the chunk store; unrecorded_code() for guard GU
   frozen.py     frozen pages for evals

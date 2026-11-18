@@ -100,6 +100,22 @@ a hosted deployment" are done.
   pages whose content you may store; a recording of a signed-in page can
   hold personal data. **[TO CONFIRM: whether runs/ needs an access or
   retention rule beyond the 24 h deletion on NASA machines.]**
+- **The demo's live log is the exception, off by default** (`livelog.py`,
+  `LIVE_LOG`). When on, `/live` shows every caller's MCP calls with their
+  full arguments and responses (page text, pictures, answers) and each
+  run's steps, from memory, to whoever holds `LIVE_LOG_TOKEN`. It is a plain
+  HTTP route, not behind sign-in (as `/health` is); without the setting and
+  the token every `/live` path answers 404, and only GET is answered. The
+  token travels in the address's fragment and a header, never a query
+  string. Values are shown as text under a strict Content-Security-Policy
+  (`tests/test_livelog.py`, `tests/test_access_signin.py`). Turn it on for a
+  demo, then off.
+- **The viewer** (`GET /viewer`) is open without sign-in, as `/health` is.
+  It is a static page that holds no data: the person picks a saved file and
+  it is read in their own browser. Its Content-Security-Policy (in the file
+  and as a header, with `frame-ancestors 'none'`) blocks every request,
+  so it cannot reach `/mcp`, `/live` or anywhere else
+  (`tests/test_prescrt_viewer.py`).
 - **No secrets in the repository.** Keys (for example the agent eval's
   model API keys) go in environment variables or `.env`, which git ignores.
 

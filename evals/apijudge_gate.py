@@ -31,8 +31,9 @@ functions and writes `gate.json` (what each type did and which pass). The keys
 are read here, never copied. Any change to the prompt, the request or a
 question's rubric or input needs a new gate run.
 
-The gate writes the list of passing types; it does not switch them on. The
-server's default (`JUDGE_TYPES`) stays empty until Abby approves the list.
+The gate writes the list of passing types; it does not switch them on. Since
+2026-11-18 the server's default (`JUDGE_TYPES=all`) answers every type (Abby):
+the gate measures the judge, it no longer decides which types it answers.
 
 Agent-assisted results, not certified Trusted Tester results.
 """
@@ -341,7 +342,10 @@ def score(date: str, eval_dir: Path | None, rnd: int | None = None) -> dict:
         "judge_types_if_approved": ",".join(
             sorted(t for t, v in verdicts.items() if v["passes"])
         ),
-        "note": "Written by the gate; JUDGE_TYPES stays empty until Abby approves.",
+        "note": (
+            "Written by the gate, to measure; the server answers every type "
+            "by default (JUDGE_TYPES=all, Abby 2026-11-18)."
+        ),
     }
     (gd / "gate.json").write_text(json.dumps(out, indent=1) + "\n")
     for t, v in verdicts.items():

@@ -24,7 +24,8 @@ from fastmcp import Client, FastMCP
 from fastmcp.server.auth.providers.jwt import RSAKeyPair
 from joserfc import jwk
 
-from tobi508 import access
+from tobi508 import access, livelog
+from tobi508.routes import register_routes
 from tobi508.runlog import RunRecorder
 
 KEYS = RSAKeyPair.generate()
@@ -142,6 +143,7 @@ def server(tmp_path_factory):
             return False
         return True
 
+    register_routes(mcp)  # /health and the live log, as app.py does
     mcp.add_middleware(access.AuditMiddleware())
     app = mcp.http_app(transport="streamable-http", host_origin_protection=True)
     srv = uvicorn.Server(
@@ -274,6 +276,34 @@ async def test_a_person_outside_the_groups_cannot_call(server, monkeypatch):
             "content-type": "application/json",
             "accept": "application/json, text/event-stream",
         },
+    )
+    assert conn.getresponse().status == 401
+    conn.close()
+
+
+def test_live_log_and_viewer_answer_while_mcp_needs_sign_in(server, monkeypatch):
+    """The demo's live log is a plain route (as /health is): with sign-in on,
+    it opens with its token while /mcp still answers 401."""
+    from pydantic import SecretStr
+
+    monkeypatch.setattr(livelog.settings, "live_log", True)
+    monkeypatch.setattr(livelog.settings, "live_log_token", SecretStr("t0ken"))
+    u = urlsplit(server)
+
+    def get(path, headers=None):
+        conn = http.client.HTTPConnection(u.hostname, u.port, timeout=10)
+        conn.request("GET", path, headers=headers or {})
+        status = conn.getresponse().status
+        conn.close()
+        return status
+
+    assert get("/live") == 200
+    assert get("/viewer") == 200  # the static viewer, open like /health
+    assert get("/live/events", {"x-live-token": "t0ken"}) == 200
+    assert get("/live/events") == 404
+    conn = http.client.HTTPConnection(u.hostname, u.port, timeout=10)
+    conn.request(
+        "POST", "/mcp", body="{}", headers={"content-type": "application/json"}
     )
     assert conn.getresponse().status == 401
     conn.close()

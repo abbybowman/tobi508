@@ -101,18 +101,18 @@ case-insensitive; lists are JSON.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `JUDGE_BACKEND` | `client` | `client`: every open question goes back to the calling agent (in Claude Code, Claude answers it by rubric; the user can override with `tobi_answer_questions`). Nothing else to set, and no model key on the server. `api`: the server answers the question types in `JUDGE_TYPES` itself. |
-| `JUDGE_ROUTE` | `cli` | With `api`: `cli` runs `claude -p`, which is **not in the image**, so never use it on VAST; `anthropic-messages` calls a Messages API gateway. |
-| `JUDGE_BASE_URL`, `JUDGE_API_KEY` (**secret**) | unset | The gateway and its key. With `api` and `anthropic-messages`, the server refuses to start without both. |
+| `JUDGE_BACKEND` | `auto` | `auto`: `api` when `JUDGE_BASE_URL` and `JUDGE_API_KEY` are both set, else `client` (Abby, 2026-11-18: the server judge answers whenever it has a model). `api`: the server answers the question types in `JUDGE_TYPES` itself. `client`: every open question goes back to the calling agent (in Claude Code, Claude answers it by rubric). Either way a person can override with `tobi_answer_questions`. |
+| `JUDGE_ROUTE` | `anthropic-messages` | `anthropic-messages` calls a Messages API gateway; `cli` runs `claude -p`, which is **not in the image**, so never use it on VAST. |
+| `JUDGE_BASE_URL`, `JUDGE_API_KEY` (**secret**) | unset | The gateway (without `/v1`) and its key. Both set: the judge is on. With an explicit `api`, the server refuses to start without both. |
 | `JUDGE_AUTH_HEADER` | `x-api-key` | The header the key goes in. |
 | `JUDGE_MODEL` | `claude-sonnet-5-5` | The gateway's model name. |
-| `JUDGE_TYPES` | empty | Test IDs whose questions the server answers, e.g. `4.B`. Empty: none, even with `api`. |
+| `JUDGE_TYPES` | `all` | Test IDs whose questions the server answers: `all` (every implemented test), a list such as `4.B,5.H`, or empty for none. |
 | `JUDGE_CONCURRENCY`, `JUDGE_CALL_TIMEOUT_S`, `JUDGE_CAP_S` | `3`, `300`, `900` | Requests at once, one request's limit, a run's whole judging phase. |
 | `JUDGING_MODEL` | `none` | Recorded in every report; with `api`, set from the model and prompt. |
 
-**With no gateway** (today: Luna or another is not settled; roadmap,
-"Decisions waiting for Abby"), keep `JUDGE_BACKEND=client`. Runs work the
-same; open questions are answered by the connecting agent.
+**With no gateway,** leave `JUDGE_BASE_URL` and `JUDGE_API_KEY` unset:
+runs work the same, and open questions are answered by the connecting
+agent.
 
 ### Capacity
 
@@ -124,6 +124,21 @@ same; open questions are answered by the connecting agent.
 
 The dev container was 4 CPU and 16 GB; a run with `MAX_CONCURRENT_RUNS=2`
 can use two Chromiums at once, each with a page and its replays.
+
+### Live log (a demo only)
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `LIVE_LOG` | `false` | Keeps the last 2,000 events in memory (never on disk): every MCP call with its full arguments and response, pictures included, and each run's steps and progress lines. |
+| `LIVE_LOG_TOKEN` | unset | The secret that opens the page. Put it in `tobi508-secrets`, not the ConfigMap. Without it the page answers 404. |
+
+Open `https://<app host>/live#token=<LIVE_LOG_TOKEN>` in a browser. The
+token is in the address's fragment, which a browser never sends, so it stays
+out of the gateway's logs; the page sends it in a header when it asks for
+events. The page is not behind sign-in: anyone with the token sees **every
+caller's** calls, including page text and answers, which the audit lines
+never hold. Turn it on for the demo (ConfigMap `LIVE_LOG: "true"`, the token
+in the secret, a restart), then off again (another restart clears it).
 
 ## 3. Where runs live, and for how long
 
@@ -155,6 +170,11 @@ for the platform's liveness and readiness checks. It shows that the
 process serves HTTP, not that Keycloak or Chromium work: the server
 fetches Keycloak's discovery document at startup and does not start
 without it, and the smoke test (section 7) is what shows a run works.
+
+`GET /viewer` serves the pre-SCRT viewer (`demo/prescrt-viewer/viewer.html`,
+as built) without sign-in. It holds no data: the person picks a saved
+pre-SCRT or SCRT file and it is read in their own browser, and the page
+makes no request (its Content-Security-Policy, also sent as a header).
 
 ## 5. Connecting from Claude Code
 
@@ -193,8 +213,11 @@ From the plan (questions 1 to 3 are answered there):
    2026-11-15): yes. A Chromium container has been run on VAST as a test.
 4. Can the app's access tokens include `sub` and the groups claim, and an
    audience mapper for this server? (What it takes in Keycloak: section 8.)
-5. Can Anthropic's outbound IP ranges reach the app, for Claude Desktop
-   custom connectors? If not, Claude Code is the demo client.
+5. ~~Can Anthropic's outbound IP ranges reach the app, for Claude Desktop
+   custom connectors?~~ Answered (Abby, 2026-11-18): no. VAST's host names
+   exist only in NASA's internal DNS, so a client connecting from
+   Anthropic's cloud (claude.ai, Claude Desktop's custom connectors)
+   cannot reach them. The client is Claude Code on a NASA machine.
 
 Not confirmed from the code or VAST's documentation:
 
@@ -219,7 +242,10 @@ Not confirmed from the code or VAST's documentation:
    4.C on that page again, PASS (section 6a).
 9. Which path survives restarts for `/data`, and how large may it be? A
    run with recordings and screenshots is tens of MB; a page with video
-   more.
+   more. Answered for a dev environment (a VAST admin, 2026-11-18):
+   self-service up to 20 GB of storage and 4 GB of memory, beyond the
+   NAMS approval. Its home volume survives restarts unless `vastdev down`
+   is run; a Podman named volume lives there (section 6b).
 10. How do secrets reach the pod (a Kubernetes Secret as environment
     variables?), and how is one rotated?
 11. Does the platform collect the container's stderr into the consolidated
@@ -263,11 +289,88 @@ loopback):
 | Read timeout (question 13) | A request held 50 s answered 200 after 50.3 s: `CALL_WAIT_S` (45 s) fits. |
 | Settings given to the environment | No port, URL or OIDC variables (`env` names only). |
 
-**Still needed from the admins:** a confidential client in the `vast`
-realm with redirect `https://<you>-dev.<VAST domain>/auth/callback`, a
-Group Membership mapper (`claim_groups`) and an Audience mapper (section
-8). Then `AUTH=oidc` at the dev URL, the smoke test (section 7), and the
-YAML.
+**The Keycloak client exists (2026-11-18):** the VAST admins minted its
+client ID and secret for the dev URL (both kept out of git: the ID in
+the env file, the secret only there or in a Kubernetes Secret). Not yet
+checked: whether its access tokens carry `sub`, `claim_groups` and the
+audience (section 8); the smoke test's sign-in shows it (a 401 with
+`authn.no_subject` or `authz.denied` names what is missing). Next:
+`AUTH=oidc` at the dev URL (section 6b), the smoke test (section 7), one
+real page.
+
+**What the admins recommend (2026-11-18):**
+
+- **Read VAST's `py_auth_boilerplate`** for setting up sign-in with that
+  client. TOBI's sign-in is already built (FastMCP's OIDC proxy,
+  `access.py`): the boilerplate signs browsers in with a session cookie,
+  while MCP clients send a bearer token on every request, so its code is
+  not reused ([the hosted sign-in plan](../plans/2026-11-06-hosted-auth.md)).
+  Read it for what VAST's realm expects: the issuer and discovery URL,
+  scopes, claim names, the group strings, and the redirect path.
+- **Later, a namespace and a pod of TOBI's own,** with its own storage
+  volume, from a Kubernetes file; the boilerplate has an example. That is
+  section 9's YAML, compared with their example before it is handed over.
+- **Mirror the repository on VAST's git (Forgejo),** whose workflows
+  could release a new image when `main` moves. Images cannot be built on
+  VAST (FIPS mode; apt fails in nested containers:
+  [environment notes](../solutions/environment.md)), so a VAST workflow
+  would take GitHub's built image (by its commit tag) and update or
+  restart the deployment, not build it.
+
+## 6b. Hosting from the dev environment (self-service)
+
+A VAST admin (2026-11-18): every dev container gets
+`https://<you>-dev.<VAST domain>`, TLS ended at the gateway; listen for
+http on port 8000 inside the dev container. Within 20 GB of storage and
+4 GB of memory this needs nothing from the admins beyond the NAMS
+approval. (Code can also be pushed to VAST's Forgejo; signing in there
+adds the smartcard's SSH key from Active Directory, and `vastdev login`
+in a dev container reaches it.) So the dev URL is where TOBI is hosted
+for now, and the YAML (section 9) is for a deployment beyond it.
+
+Its settings go in one file only you can read, never in the command line
+or git. In the dev container:
+
+```bash
+mkdir -p ~/.config/tobi508 && umask 077
+cat > ~/.config/tobi508/env <<'END'
+# Without sign-in: loopback only, reached through the ssh tunnel.
+MCP_HOST=127.0.0.1
+# Within the 4 GB: one Chromium at a time until memory is measured.
+MAX_CONCURRENT_RUNS=1
+# The server's own judge (Luna): with these two it answers every
+# test's open questions (section 2 has every setting).
+JUDGE_BASE_URL=https://<gateway, without /v1>
+JUDGE_API_KEY=<key>
+JUDGE_MODEL=<the gateway's name for the model>
+# JUDGE_AUTH_HEADER=authorization   # if it wants "Bearer <key>" as the key
+END
+podman run -d --name tobi --network host --env-file ~/.config/tobi508/env \
+  -v tobi-data:/data ghcr.io/abbybowman/tobi508:latest
+```
+
+`tobi-data` is a Podman named volume, under the home volume, owned
+right for the image's user. To update: `podman pull` the image, then
+`podman rm -f tobi` and the same `podman run`. While a run goes,
+`podman stats --no-stream tobi` shows its memory against the 4 GB.
+
+**With sign-in, at the dev URL** (when the Keycloak client exists):
+remove `MCP_HOST` from the file and add
+
+```
+AUTH=oidc
+PUBLIC_BASE_URL=https://<you>-dev.<VAST domain>
+OIDC_CONFIG_URL=https://<keycloak host>/realms/<realm>/.well-known/openid-configuration
+OIDC_CLIENT_ID=<client id>
+OIDC_CLIENT_SECRET=<client secret>
+OIDC_JWT_SIGNING_KEY=<openssl rand -base64 48, kept the same>
+OIDC_AUDIENCE=<client id>
+REQUIRED_GROUPS=["<group>"]
+FORWARDED_ALLOW_IPS=10.42.0.0/16
+```
+
+The image's command then listens on `0.0.0.0:8000`, which the gateway
+reaches; the checklist (section 7) and the smoke test apply as written.
 
 ## 7. Checklist for the first deployment
 
@@ -399,6 +502,7 @@ umask 077
 cat > tobi508-secrets.env <<'END'
 OIDC_CLIENT_SECRET=<the Keycloak client's secret>
 OIDC_JWT_SIGNING_KEY=<a long random string, e.g. from: openssl rand -base64 48>
+JUDGE_API_KEY=<the judge gateway's key>
 END
 kubectl create secret generic tobi508-secrets -n <namespace> --from-env-file=tobi508-secrets.env
 rm tobi508-secrets.env
@@ -408,21 +512,19 @@ kubectl apply -f tobi508.yaml
 Keep `OIDC_JWT_SIGNING_KEY` the same across updates: a new one makes
 every client register and sign in again.
 
-**The server's own judge** (Luna or another Messages API gateway; off by
-default, section 2). In the ConfigMap:
+**The server's own judge** (Luna or another Messages API gateway; on for
+every test once both are set, section 2). In the ConfigMap:
 
 ```yaml
-  JUDGE_BACKEND: api
-  JUDGE_ROUTE: anthropic-messages
+  JUDGE_BACKEND: api                     # explicit: no key, no start
   JUDGE_BASE_URL: https://<gateway>      # without /v1: the server adds /v1/messages
   JUDGE_MODEL: <the gateway's model name>
-  JUDGE_TYPES: 4.B,5.H                   # only the types that pass the gate (ROADMAP.md)
   # JUDGE_AUTH_HEADER: authorization     # if the gateway wants a bearer token, not x-api-key
 ```
 
 and `JUDGE_API_KEY=<key>` in the secrets file (with `authorization` as the
-header, the key's value is `Bearer <key>`). The server refuses to start
-with `api` and no URL or key. The gateway must be reachable from the pod.
+header, the key's value is `Bearer <key>`). With `api` set, the server
+refuses to start with no URL or key. The gateway must be reachable from the pod.
 Locally the same names go in `.env`; with Podman, in a file passed with
 `--env-file` (mode 600).
 

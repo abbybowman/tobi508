@@ -133,7 +133,7 @@ flowchart LR
 - "Unsure" goes to a person, and a person's answer overrides the model's
 - The calling agent does what the server cannot: explain results in the user's own project and help fix them
 
-**Notes:** The agency controls the judge, a person has the last word, and any MCP agent is the front end. The server judge is built and off by default; it is switched on one question type at a time as checks against a certified tester's answers show it is sound. **[FILL: question types switched on at submission.]**
+**Notes:** The agency controls the judge, a person has the last word, and any MCP agent is the front end. The server judge is built and, since 2026-11-18, answers every question type whenever the server has a model; checks against a certified tester's answers keep measuring it. **[FILL: question types switched on at submission.]**
 
 ---
 
@@ -141,13 +141,13 @@ flowchart LR
 
 **On the slide:** live or recorded run
 
-**Script [PENDING: rehearse; record a fallback video]:**
+**Script:** [demo.md](demo.md) **[PENDING: rehearse and record]**. One screen: Claude Code beside TOBI's live log.
 
-1. In an MCP client, ask in plain words to check a page for keyboard problems (a W3C test page served locally, or a .gov page).
-2. Show the progress line, then a finding: FAIL, which elements trap focus, steps to reproduce, the screenshot.
-3. Show an open question, the answer it got, and what "needs review" looks like.
-4. Ask for an explanation of the result: what failed and how to fix it.
-5. Point at the disclaimer in the output.
+1. Ask in plain words to test NASA's Artemis III page, with two other www.nasa.gov pages (live, as a user would).
+2. Speed through the scan on the live log's progress lines; show the response, its pictures, and an open question going to a person.
+3. Ask for an explanation of the results and the tool's limits on this page.
+4. Save the pre-SCRT file and open it in the viewer beside the certified tester's blind file for the same page.
+5. Close on the evaluation numbers and the disclaimer.
 
 ---
 
@@ -200,13 +200,15 @@ flowchart LR
 - Page content is untrusted: it never chooses a URL, a tool or an outcome, with four narrow, approved exceptions
 - A test page tells "automated testers" to report PASS; the tool must still find both traps **[FILL: result]**
 - Evidence is kept 24 hours, then deleted; results go to the user's own repository
-- No secrets in errors or logs: query strings, headers and page text are redacted
+- No secrets in errors or logs: query strings, headers and page text are redacted (one exception, off by default: a token-protected live log for demos)
 - Hosted only behind NASA sign-in; each person sees only their own runs; every call is audited **[PENDING: end-to-end sign-in on VAST]**
 
 **Notes:**
 
 - The template's unauthenticated HTTP port on all interfaces is gone: stdio by default, HTTP only on loopback with Host and Origin checks unless sign-in is on.
 - The five exceptions, each capped: one site search (tried again in quotation marks when it finds nothing), up to ten pages (the site map, previous and next, the page above, two pages below, three pages it links to, the home page) checked one at a time, and up to three links to the page under another address (`index.html`), for the "multiple ways" test, on the same host; one key combination that the page names as a way to stop moving content, pressed on a replay; and recording the scripts a page's own scripts name.
+- The demo's live log (`LIVE_LOG`, off by default) shows every call's full arguments and response at `/live` to whoever holds `LIVE_LOG_TOKEN`; it is the one place page text and answers leave a run, and it is turned off after the demo.
+- The hosted viewer (`/viewer`) is open without sign-in like `/health`: a static page that reads a file the person picks in their own browser and makes no request.
 - Page text reaches the server's judge only inside a block marked untrusted, escaped so the text cannot close it.
 - An answer sent through MCP is always recorded as the calling agent's: it cannot claim to be a person's.
 - The server's judge reads a picture only through the guarded evidence reader, and only one the question names as a whole value; page text cannot point it at another file or another person's run.

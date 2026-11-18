@@ -60,10 +60,9 @@ file and the prompt file; other threads write to their plan.
 
 | Order | Steps | What | Model | When |
 | --- | --- | --- | --- | --- |
-| 1 | 31, 29 (small part) | 9.B's six false FAILs; 5.B's DOES NOT APPLY when 5.A could not decide | Sonnet | morning, beside the first |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
-| - | 12b | Hosted on VAST: sign-in at the dev URL, then YAML for the cluster admins | Opus | when the Keycloak client arrives |
+| - | 12b | Hosted on VAST: sign-in at the dev URL (client minted 2026-11-18; read `py_auth_boilerplate`), then YAML for the cluster admins | Opus | now |
 | - | 13 | The pitch: the scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
 
 ### Why these, and what they should do to the status table
@@ -73,16 +72,20 @@ tests are red (4.F, 5.F, 5.G) and six yellow (4.A, 4.D, 5.B, 5.D, 9.B,
 19.A); the script will give the real table. The rows above are the
 cheapest moves:
 
-- **21, 36 (5.F, 5.G):** red to yellow. The browser's own error
+- **21, 36 (5.F, 5.G; done, #109):** red to yellow. The browser's own error
   messages, and text that is not a message, become NEEDS REVIEW. Both
   tests then have no wrong cell and are mostly left for a person.
-- **22 (4.F, and 4.A, 5.D):** 4.F red to yellow; two false FAILs of
+- **22 (4.F, and 4.A, 5.D; done, #110, #111):** 4.F red to yellow; two false FAILs of
   4.A and two wrong cells of 5.D go.
 - **23 (done, #112):** the replay draws; on round 3's p07, p08 and
   p10, 4.E's three false FAILs, 5.F, 5.G and 5.H moved to NEEDS REVIEW,
   PASS or an agreeing DOES NOT APPLY (`evals/judging/gate-2026-11-17-step23/`).
-- **31 (9.B):** yellow to green.
-- **29, small part (5.B):** five wrong cells become NEEDS REVIEW.
+- **31 (9.B; done):** yellow to green.
+- **29, small part (5.B; done):** five wrong cells become NEEDS REVIEW.
+- **4.F 1.11.0 (done, #121, not planned):** step 23's rerun showed three
+  new 4.F false FAILs on round 2; the cause was measurement (a box read
+  while the page scrolled, a scroll box, a script-made id), not the
+  judge. Round 2's 4.F false FAILs 4 to 2 (`evals/judging/gate-2026-11-17-4f/`).
 - **9c where the search loads (19.A):** 8 of round 2's 19.A cells are
   undecided only because the site's search did not load in step 9b's
   container; with it, 19.A may go from yellow to green without a code
@@ -94,11 +97,6 @@ Left yellow after the cut, each needing more than a day: 4.A, 4.D,
 
 ### What each step covers
 
-- **31. 9.B pairs repeated links without crossing them.** An extra
-  copy of a link on one page is an insertion, not a swap; a real
-  reorder still FAILs.
-- **29, small part. 5.B is NEEDS REVIEW, not DOES NOT APPLY, when 5.A
-  could not decide.**
 - **9c. The last rerun.** As step 9b, one repeat, the judge on every
   type, plus round 3's pages (a rerun, never in place of its blind
   score). Before it starts: the sites' own search must load in its
@@ -139,7 +137,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | The judge | 40 | For a question type that fails the gate, the judge's FAIL is shown as "likely fails, a person should confirm", never handed to the calling agent (a rule change; Abby's decision first) |
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
 | Meaning to the judge | 16 | 5.H's, 4.B's and 2.x's word lists become questions |
-| Live status page | 41 | A read-only page on the server, open without sign-in, showing each run it holds as it goes (page, tests, progress) and, when done, its outcomes, with its pre-SCRT file opened in the viewer; a link to it in the tool's results. Runs the server still holds only; the lasting store is 17. Touches no test or spec, so it can run beside the rows above |
+| Live status page | 41 | A read-only page on the server, open without sign-in, showing each run it holds as it goes (page, tests, progress) and, when done, its outcomes, with its pre-SCRT file opened in the viewer; a link to it in the tool's results. Runs the server still holds only; the lasting store is 17. Touches no test or spec, so it can run beside the rows above. Not the demo's live log (`/live`, #123: a token-gated log of every call's payload, off by default); build on its parts, under its own path (e.g. `/status`): the `Job.progress` hook, the text-only page under a strict CSP (`livepage.py`, `live/`), the outcome line, and its tests (POST refused, markup stays text, open while `/mcp` answers 401) |
 | The service | 17, 18 | The store, a thin MCP surface, one writer per run (17); a person's answer only from TOBI's own page (18) |
 | Measures | 10b, 11, 19 | Round 4, a blind round, when Abby keys one (10b); the second look's trial (11), then as a guard (19) |
 | SCRT files | 20 | Review, merge, export ([plan](plans/2026-11-02-scrt-io.md)) |
@@ -151,8 +149,10 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 **Before the demo:**
 
-- **VAST** (step 12b): a Keycloak client for the dev URL (asked
-  2026-11-17); the app's token contents; a gateway for the judge.
+- **VAST** (step 12b): the Keycloak client is minted (2026-11-18);
+  next, sign-in at the dev URL checked against `py_auth_boilerplate`
+  (another session), the token contents, and whether 4 GB holds a run
+  (measure with `podman stats`).
 - **Publishing the repository.** GSA asks for a GitHub repository;
   SECURITY.md says NASA's release review comes first. Which comes
   first for the submission.
@@ -167,7 +167,9 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
   validation fail TT 5.F; three key cells (MySearchStory; the search
   page's 19.A; breadcrumbs as their own way in 19.A).
 - **The judge on types that fail the gate** (step 40). 4.B and 5.H
-  meet both halves of the gate today.
+  meet both halves of the gate today; since 2026-11-18 the judge
+  answers every type, so this decides how its FAILs on the others are
+  shown.
 - **Spec decisions left from the code review** (H-08, E-03, E-13,
   H-04, M-02, 4.F's "order does not matter"), the settle rule, 2.B's
   random content, a second browser, CLAUDE.md's lists, and
@@ -176,10 +178,34 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 **Decided (Abby, 2026-11-17): VAST runs `:latest`** while TOBI is a
 prototype, pulled at each restart, so it follows `main` (the guide,
-section 9, "Updating"). A pinned, automatic update (CI writing each
-build's commit into the YAML, deployed from VAST's Forgejo through a
-mirror of the GitHub repository) and recording the image build in
-every report wait until after the demo.
+section 9, "Updating"). A pinned, automatic update (a mirror of the
+GitHub repository on VAST's Forgejo, recommended by the VAST admins,
+whose workflow moves the deployment to each new build's commit tag;
+the image is still built on GitHub, since VAST cannot build it) and
+recording the image build in every report wait until after the demo.
+
+**Decided (Abby, 2026-11-18): the server judge answers everything.**
+With a gateway's URL and key set, the server's pinned model and prompt
+answer every test's open questions (`JUDGE_BACKEND=auto`,
+`JUDGE_TYPES=all`); without them, the calling agent does. The gate
+(`evals/apijudge_gate.py`) was informative, not decisive, and a pinned
+judge's answers, unsure ones included, are steadier than a calling
+agent's, which were often not thorough. The gate keeps measuring it.
+Step 40 (how a judge FAIL on a type that fails the gate is shown) is
+still open: until it is decided, such a FAIL is an outcome like any
+other.
+
+**VAST hosting (2026-11-18):** the dev environment's URL is the
+self-service host (20 GB, 4 GB of memory; a VAST admin), so TOBI is
+hosted there, from Podman (the guide, section 6b); the YAML is for a
+deployment beyond it. VAST's names are internal DNS only: Claude Code on
+a NASA machine is the client, not claude.ai or Claude Desktop's cloud
+connectors. VAST has no objection to the open status page (Abby).
+The Keycloak client for the dev URL is minted; the admins recommend
+VAST's `py_auth_boilerplate` as the reference for its sign-in, and later
+a namespace and pod of TOBI's own from a Kubernetes file, and a mirror
+on VAST's Forgejo whose workflows release each new image (the guide,
+section 6a).
 
 **Decided (Abby, 2026-11-17): the live status page is open.** The MCP
 server keeps sign-in. A read-only page of what the server is running

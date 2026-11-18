@@ -8,7 +8,7 @@ TOBI (`tobi508` in code) is an MCP server that helps people test web pages with 
 
 TOBI finds those failures for site owners and Trusted Testers. It runs the hands-on parts of the DHS Trusted Tester 5.1.3 process in a real Chrome browser, does the repetitive tabbing and comparing, and asks your AI agent the judgment questions. Clear failures surface early, and certified testers can spend their time on the cases that need a person.
 
-**What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT test, with plain-language explanations, evidence, and a pre-SCRT file: the same rows as DHS's SCRT report, plus where each result came from and which rows need a person. DHS's SCRT does not open it (by design: it is not a Trusted Tester's record). To read one, download [viewer.html](demo/prescrt-viewer/viewer.html) and open it in a browser; it works offline, and a second file can be loaded beside it ([how to use it](demo/prescrt-viewer/README.md)).
+**What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT test, with plain-language explanations, evidence, and a pre-SCRT file: the same rows as DHS's SCRT report, plus where each result came from and which rows need a person. DHS's SCRT does not open it (by design: it is not a Trusted Tester's record). To read one, open `/viewer` on a hosted TOBI server, or download [viewer.html](demo/prescrt-viewer/viewer.html) and open it in a browser. Either way it reads only the file you pick, in your own browser, and sends nothing anywhere; a second file can be loaded beside it ([how to use it](demo/prescrt-viewer/README.md)).
 - **Outcomes** come only from the rules specs in [specs/rules/](specs/rules/), one per TT test, checked against the TT 5.1.3 PDF.
 - **When the tool can't decide,** it says NEEDS REVIEW: a person should look at that row, usually the largest group in a report. It never guesses PASS. (3.A can say NOT TESTED, as the TT text requires, when it finds flashing.)
 
@@ -19,7 +19,7 @@ TOBI finds those failures for site owners and Trusted Testers. It runs the hands
 The diagram is the planned flow ([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
 
 - **Built:** recording and replay, the rules specs and checks, the pre-SCRT file, the server judge, and hosted sign-in with per-user runs (running on a VAST dev environment; not yet a finished service).
-- **Off by default:** the server judge (`JUDGE_BACKEND=api`, one question type at a time in `JUDGE_TYPES`). Until a type is switched on, its open questions go to the calling agent, by the same rubric.
+- **On whenever it has a model:** the server judge answers every test's open questions with a pinned model and prompt once a Messages API gateway's URL and key are set (`JUDGE_BASE_URL`, `JUDGE_API_KEY`; Abby, 2026-11-18). Without them, open questions go to the calling agent, by the same rubric.
 - **Not built yet:** the page where a signed-in person answers, and the export to a Trusted Tester's SCRT record.
 
 ## TT tests in scope
@@ -120,26 +120,35 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 
 **Examples.** Ask in plain words, and your agent makes calls like these. `tests/test_readme.py` checks each one against the tool's schema.
 
-"Check https://www.section508.gov/ for keyboard, focus and form problems":
+"Run the Trusted Tester tests TOBI can on https://www.nasa.gov/mission/artemis-iii/":
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/"}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/"}}
 ```
 
-"Also compare it with two other pages of the site" (for 9.A-9.C and 19.A):
+"Compare it with two other pages of the site" (for 9.A-9.C and 19.A):
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/", "other_pages": ["https://www.section508.gov/manage/", "https://www.section508.gov/test/"]}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/", "other_pages": ["https://www.nasa.gov/careers/", "https://www.nasa.gov/gallery/ksc-history/"]}}
 ```
 
 "Is there a keyboard trap, and is focus visible?":
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/", "tests": ["4.C", "4.D"]}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/", "tests": ["4.C", "4.D"]}}
 ```
+
+"Explain what failed, what's left for a person, and what TOBI can't check here":
+
+<!-- example -->
+```json
+{"tool": "tobi_explain", "arguments": {"run_id": "<run_id from the result>"}}
+```
+
+The run takes minutes: until it is done, each result says `"status": "running"` and what it is doing (`"progress": "Walking the page with Tab and Shift+Tab (45 s so far)"`), and the agent waits with `tobi_run_status`.
 
 <details>
 <summary>An open question, end to end, on a local test page (for contributors)</summary>
@@ -162,7 +171,32 @@ With `DEV_MODE=true`, this fixture's three links pass focus among themselves for
 
 </details>
 
-**Example output.** A recent run: the home page of science.data.nasa.gov, from round 3's blind evaluation (2026-11-16, the 22 built tests):
+**Example output.** The second example above, run live on 2026-11-18 (about 10.5 minutes), before the agent answered its open questions. One line per finding; `tobi_explain` gives the rest:
+
+```text
+5.A FAIL   "Search" (text field)'s only label is the gray example text inside it, which
+           disappears as soon as someone starts typing. Add a label that stays visible.
+           To find it, press Tab 2 times.
+9.A FAIL   This page starts with content repeated on the other pages you gave (for
+           example "Explore"), and we found no keyboard way to skip past it. [...] Add a
+           "Skip to main content" link as the first thing on the page.
+4.B PASS   Nothing on this page asks you to press keys at a certain speed, hold a key
+           down, or press a key several times quickly.
+9.B PASS   The navigation this page shares with the other pages you gave appears in the
+           same order on each of them.
+19.A PASS  This page can be found in more than one way: links from other pages and the
+           site search.
+2.A, 5.H   DOES NOT APPLY
+4.D        NEEDS REVIEW: 2 questions about it are still open. (The "Hide player
+           controls" button's focus ring is near black on black: a careful agent
+           answers "unsure", and it stays for a person.)
+...        NEEDS REVIEW for the other 14 built tests, and "This test could not be
+           performed" for the 39 not built.
+```
+
+A certified Trusted Tester's blind SCRT file for this page (2026-11-02) fails the same two. These are agent-assisted findings, not a certified Trusted Tester result, and www.nasa.gov is one of our development sites.
+
+Files from a run, from round 3's blind evaluation (the home page of science.data.nasa.gov, 2026-11-16, the 22 built tests):
 - [pre-scrt.json](evals/judging/round3/results/p01/pre-scrt.json): the SCRT rows, with rows for a person flagged. Download it and open it in the [viewer](demo/prescrt-viewer/viewer.html) to read it as a table.
 - [report.json](evals/judging/round3/results/p01/report.json): findings, questions and answers, and every version used.
 
@@ -173,7 +207,7 @@ Save your own reports in your repository: a run's files expire after 24 hours.
 **Settings** come from the environment or `.env`. `.env.example` lists them all with comments. The ones you are most likely to change:
 - `ALLOWED_DOMAINS`: the pages TOBI may test (default `.gov` and `.mil`);
 - `DEV_MODE=true`: also allows `file://` pages;
-- `JUDGE_BACKEND`: `client` (default; your agent answers open questions) or `api` (the server's own model answers the types in `JUDGE_TYPES`).
+- `JUDGE_BASE_URL` and `JUDGE_API_KEY`: a Messages API gateway (such as Luna); with both set, the server's own model answers every test's open questions (`JUDGE_TYPES`, default `all`). `JUDGE_BACKEND=client` sends them to your agent instead.
 
 **Safety:**
 - Every navigation and redirect is checked against the allowlist.

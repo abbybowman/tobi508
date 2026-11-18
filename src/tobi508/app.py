@@ -21,6 +21,7 @@ from fastmcp import FastMCP
 
 from tobi508.checks import REGISTRY
 from tobi508.config import settings
+from tobi508.livelog import LiveLogMiddleware
 from tobi508.models import TestId
 from tobi508.prompts import register_prompts
 from tobi508.resources import register_resources
@@ -81,6 +82,10 @@ register_tools(mcp)
 register_prompts(mcp)
 register_resources(mcp)
 register_routes(mcp)
+
+# The live log (livelog.py) watches every call while LIVE_LOG is on; off, it
+# passes each call straight through.
+mcp.add_middleware(LiveLogMiddleware())
 
 
 # Host and Origin headers are checked on every HTTP request (FastMCP's guard,
