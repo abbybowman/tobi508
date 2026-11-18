@@ -6,7 +6,7 @@ Agent-assisted results, not certified Trusted Tester results. **This is a refere
 
 **Source comparison (old recording against new).** No page's main document is byte-identical: the site's asset bundle names and cache-busting values changed on every page, and the site-wide news list in the header and footer changed (headlines, dates, counts). The text inside `<main>` is **identical on p01, p04, p07, p08 and p09**. It differs on p02 (the result count 23383 to 23481 and one other number), p03 (one link label, "Comments" to "X/Twitter") and p06 (a promotional block). p05's old recording has no `<main>` element to compare (not looked into). p03's first recorded document is a redirect placeholder in both freezes (its title names the tool that made it: "a11y-assist" then, "tobi508" now); its real page was compared after the redirect.
 
-**Results**, formal 9c run (original freeze) against the refrozen run, scored by round 1's scorer and keys. `compare.json` and `compare.md` have every cell and the rows.
+**Results**, formal 9c run (original freeze) against the refrozen run, scored by round 1's scorer and keys. `compare.json` and `compare.md` have every differing cell with its rows (the full per-cell rows are not kept here; the formal side is `../gate-2026-11-17-9c/compare-round1.json`).
 
 - **Same main content** (p01, p04, p07, p08, p09; 85 keyed cells): 80 the same, 5 differ.
 

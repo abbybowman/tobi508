@@ -7,7 +7,9 @@ formal 9c run on the original freeze (2026-11-04).
 Pages are in two groups: SAME (p01 p04 p07 p08 p09: the text inside `<main>` is
 identical in both freezes; the site's header and footer and its asset names
 changed) and CHANGED (p02 p03 p05 p06: the page's own content differs too).
-Writes `compare.json` and `compare.md`. Verdicts are the round scorer's own;
+Writes `compare.json` (the groups and every differing cell; the full per-cell
+rows are not kept: the formal side is `gate-2026-11-17-9c/compare-round1.json`)
+and `compare.md`. Verdicts are the round scorer's own;
 nothing here decides an outcome. Agent-assisted results, not certified Trusted
 Tester results.
 """
@@ -48,7 +50,6 @@ def main() -> None:
     out = {
         "note": "Agent-assisted results, not certified Trusted Tester results.",
         "groups": {},
-        "sides": {"refrozen": new, "formal": old},
     }
     lines = [
         "# Round 1 on the refreeze, beside the formal 9c run",
