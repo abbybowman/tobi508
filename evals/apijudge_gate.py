@@ -16,7 +16,7 @@ A type passes only when both hold:
 
     uv run python evals/apijudge_gate.py run   --date D [--repeat N]
         [--types 4.A,5.B] [--pages cilab,14592] [--round 1|2|3] [--dry]
-        [--tests 5.A,5.B,9.B] [--frozen-mode replay]
+        [--tests 5.A,5.B,9.B] [--frozen-mode replay] [--frozen-dir D]
     uv run python evals/apijudge_gate.py score --date D [--eval OUT] [--round 1|2|3]
 
 `--round N` (1, 2 or 3; omitted = round 2, into `gate-D/` as step 6 ran it) takes
@@ -181,6 +181,7 @@ async def run(
     rnd: int | None = None,
     only_tests: str = "",
     mode: str = "tested_frozen",
+    frozen_dir: str = "",
 ) -> None:
     from tobi508 import apijudge
     from tobi508.checks import REGISTRY
@@ -191,6 +192,8 @@ async def run(
         sys.exit("--types: the question types to switch on, e.g. 4.A,5.B")
     gd = gate_dir(date, rnd)
     src, keys_dir = round_dirs(rnd)
+    if frozen_dir:  # a refreeze kept apart from the locked one (`frozen/` inside)
+        src = Path(frozen_dir).resolve()
     listed = judging.parse_pages((keys_dir / "pages.txt").read_text("utf-8"))
     urls = [u for u, _ in listed]
     chosen = [
@@ -375,6 +378,7 @@ def main(argv: list[str]) -> None:
                 rnd,
                 opt("--tests"),
                 opt("--frozen-mode", "tested_frozen"),
+                opt("--frozen-dir"),
             )
         )
     else:
