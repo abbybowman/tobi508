@@ -367,9 +367,13 @@ Measured 2026-11-18 (one 4.C run, then every test on
 https://www.section508.gov/ with three other pages): the peak with
 cache was 4.21 GB; afterwards programs held 259 MB and cache 2.9 GB.
 The cache (recordings and browser files) is given back when memory is
-short, so a 4 GB limit would shrink it before a run failed; the
-programs' own peak during the run was not captured (1.07 GB a minute
-in). Keep `MAX_CONCURRENT_RUNS=1` until it is.
+short, so a 4 GB limit would shrink it before a run failed. The
+programs' own memory (`anon`, sampled every 5 s): at least 1.07 GB in
+the first full run (`podman stats` a minute in; its peak was not
+captured) and a peak of 0.93 GB when the same run was repeated (its
+other pages came from the server's page cache). So one run fits in
+4 GB with room to spare; two at once (about double) is likely to, but
+not measured. Keep `MAX_CONCURRENT_RUNS=1` for the demo.
 
 ### With sign-in, at the dev URL
 

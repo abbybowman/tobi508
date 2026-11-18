@@ -32,21 +32,28 @@ site: we fixed the tool with it. This is a demonstration, not a blind result.
 
 ## Before recording
 
-1. **VAST.** The server needs sign-in working end to end (roadmap 12b) and,
-   for the live log, the cluster admins set `LIVE_LOG: "true"` in the
-   ConfigMap, `LIVE_LOG_TOKEN` in `tobi508-secrets`, and restart
-   ([guide, "Live log"](../how-to/deploy-on-vast.md)). After the demo, set
-   it back to `"false"` and restart (the restart also clears the log).
-   GSA asks to see an MCP server, so the demo uses the hosted server on
-   VAST only, never a local one. If sign-in on VAST is not working in time,
-   that is the blocker to fix (roadmap 12b). The server's browser is
-   headless there, so the live log is how the audience sees what it does.
+1. **VAST.** The hosted server at the dev URL, with sign-in (working end
+   to end since 2026-11-18: [how-to](../how-to/deploy-on-vast.md), section
+   6b). GSA asks to see an MCP server, so the demo uses the hosted server
+   on VAST only, never a local one. Its browser is headless there, so the
+   live log is how the audience sees what it does. Turn the live log on in
+   the dev container: add `LIVE_LOG=true` and a random `LIVE_LOG_TOKEN` to
+   the env file, as the secret was added (never typed where it shows),
+   and restart the container ([guide, "Live log"](../how-to/deploy-on-vast.md)).
+   After the demo, remove both lines and restart (the restart also clears
+   the log).
 2. **Open the live log** at `https://<app host>/live#token=<token>`. Clear
    view. Leave Requests, Responses and Progress on; turn **Run steps** off
    for the recording if it is too busy (turn it on for one shot during the
-   scan).
-3. **Claude Code**, signed in to TOBI (`/mcp` shows it connected), in an
-   empty folder (`demo-output/`), large font.
+   scan). Never show the address bar: the token is in it.
+3. **Claude Code** in an empty folder (`demo-output/`), large font, with
+   `tobi508` added (`claude mcp add --transport http tobi508
+   https://<app host>/mcp`). Record the sign-in (0:25) first, as its own
+   take, then the rest right after it: Claude Code once had to sign in
+   again partway through a session (the how-to, section 6b). If it asks
+   during the scan, sign in and cut it; the run goes on in the server.
+   **Off screen or blurred:** the dev URL's host and Keycloak's (internal
+   NASA names), and the account on NASA's sign-in page.
 4. **The viewer**: `https://<app host>/viewer` (TOBI serves it; the files
    you load stay in your browser) opened in a browser tab, and the
    tester's file ready to load:
@@ -72,7 +79,21 @@ process in a real Chrome browser, so the clear failures surface early and
 certified testers spend their time on the hard calls. Its results are
 agent-assisted, never a certified Trusted Tester result."
 
-### 0:25–0:50 Ask in plain words
+### 0:25–0:55 Only NASA people get in
+
+**On screen:** Claude Code, `/mcp`: `tobi508` needs sign-in;
+**Authenticate**. The browser: TOBI's consent page (**Allow Access**),
+then NASA's sign-in (the account blurred), then back in Claude Code:
+`tobi508` connected, its tools listed. Optional, 3 seconds: a terminal
+with `curl -i -X POST https://<app host>/mcp` answering `401`.
+
+**Say:** "TOBI runs on NASA's VAST platform, and nobody reaches it
+without NASA sign-in. Claude Code signs in through VAST's Keycloak, which
+uses Launchpad, the same NASA sign-in everyone already has. Every call
+after that carries who made it, each person sees only their own runs,
+and every call is audited, without page text or answers."
+
+### 0:55–1:20 Ask in plain words
 
 **Type in Claude Code:**
 
@@ -82,15 +103,17 @@ agent-assisted, never a certified Trusted Tester result."
 > for the site-wide tests.
 
 **On screen:** the live log's **→ request** row for `tobi_run_tt_tests`:
-the URL and `other_pages`. Then, at 45 s, the first **← response**:
-`status: running`, and Claude Code saying the progress line.
+the URL and `other_pages`, and after `tools/call` the caller (Keycloak's
+ID for the signed-in person, not a name). Then, at 45 s, the first
+**← response**: `status: running`, and Claude Code saying the progress
+line.
 
-**Say:** "That's the whole request: a URL and two other pages of the same
-site. The server only goes to .gov and .mil addresses, checked on every
+**Say:** "That's the whole request, signed: a URL and two other pages of
+the same site. The server only goes to .gov and .mil addresses, checked on every
 redirect. It records the page once, and every key press after that goes to
 the recording, not the live site, so a run can be repeated."
 
-### 0:50–1:20 Fast forward (about 11 minutes, sped up)
+### 1:20–1:50 Fast forward (about 11 minutes, sped up)
 
 **On screen:** speed up. Caption: "11 minutes, sped up". Let the progress
 lines scroll on the right: "Walking the page with Tab and Shift+Tab",
@@ -104,7 +127,7 @@ fake it. It opens menus and tabs, watches for moving and flashing content,
 and compares the page with the other two. Each test's outcome comes from a
 rules file, one per Trusted Tester test, written from the DHS procedure."
 
-### 1:20–2:10 The result, and the questions only judgment can answer
+### 1:50–2:40 The result, and the questions only judgment can answer
 
 **On screen:** the long **← response** in the live log. Point at the
 outcome chips (5.A FAIL, 9.A FAIL, and many NEEDS_REVIEW), then scroll to
@@ -129,7 +152,7 @@ says what it saw."
 *If the agent answers "no" on 4.D in your recording, 4.D becomes FAIL:
 say "it agrees with the tester", not that the tool proved it.*
 
-### 2:10–3:10 Explain the results and the limits
+### 2:40–3:25 Explain the results and the limits
 
 **Type:**
 
@@ -147,7 +170,7 @@ the embedded video for flashing or every image for movement, so those go
 to a person, and some menus it opened held controls the Tab key didn't
 reach."
 
-### 3:10–4:20 The file a tester can use, beside the tester's own
+### 3:25–4:25 The file a tester can use, beside the tester's own
 
 **Type:**
 
@@ -171,12 +194,16 @@ is the one the tester missed and later confirmed as a failure."
 *In the dry run, 12 of 63 rows differed: 5.A and 9.A showed "Same
 result"; the rest were mostly NEEDS REVIEW against the tester's Pass.*
 
-### 4:20–5:00 Close
+### 4:25–5:00 Close
 
-**On screen:** the evaluation numbers (slide 11, or the README status
-table), then the disclaimer.
+**On screen:** 3 seconds of a terminal in the dev container with the
+run's audit line (`podman logs tobi | grep tobi_run_tt_tests | tail -1`):
+who, which tool, the URL without its query string, the outcome. Then the
+evaluation numbers (slide 11, or the README status table), then the
+disclaimer.
 
-**Say:** "We score every change against certified testers' blind answers.
+**Say:** "Every call leaves a line like this one: who, what, and
+whether it worked. We score every change against certified testers' blind answers.
 On our latest development rerun of 19 NASA pages, TOBI gave no pass and no
 'does not apply' where the tester found a failure (the blind round before
 those fixes had three). When it is wrong, it fails pages a tester passes or
@@ -206,6 +233,11 @@ Agent-assisted findings, not a certified Trusted Tester result.
   demo.
 - **The viewer** (checked): this run's pre-SCRT file beside the tester's
   file: 5.A and 9.A "Same result", 12 of 63 rows differ.
-- **Not checked:** through Claude Code against VAST with sign-in; the live
+- **On VAST, 2026-11-18 (another page):** Claude Code signed in at the
+  dev URL and ran every test on https://www.section508.gov/ with three
+  other pages; the smoke test passed there (the how-to, section 6b). The
+  sign-in segment and the audit line in the close come from that.
+- **Not checked:** this page through Claude Code on VAST (11 minutes; the
+  first heavy run there, so check memory: the how-to, section 6b); the live
   log on VAST (checked on loopback HTTP with a local test
   page: requests, responses with pictures, progress and steps).
