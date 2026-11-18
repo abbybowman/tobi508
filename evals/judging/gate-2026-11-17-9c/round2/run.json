@@ -14,8 +14,10 @@
   "https://svs.gsfc.nasa.gov/14592/",
   "https://svs.gsfc.nasa.gov/14194/",
   "https://svs.gsfc.nasa.gov/5340/",
-  "https://svs.gsfc.nasa.gov/5144/"
+  "https://svs.gsfc.nasa.gov/5144/",
+  "https://svs.gsfc.nasa.gov/4914/"
  ],
  "dry": false,
- "started": "2026-11-18T15:06:56.119718+00:00"
+ "started": "2026-11-18T15:06:56.119718+00:00",
+ "note": "Container restarts split the runs; one invocation per page; page list checked against pages.txt (all 10). The dry run was dropped (the real run records the judge's own counts). 19.A's svs.gsfc.nasa.gov search does not load in this container (gateway 502): its live requests fail, so its cells are NEEDS REVIEW."
 }

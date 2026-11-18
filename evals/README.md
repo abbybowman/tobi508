@@ -158,14 +158,14 @@ certified Trusted Tester results; a development site, one repeat.
 - **Not verified here:** repeats; 9.A-9.C beside the other tests in one
   full run (the cap changes no other test's read).
 
-## Gate 2026-11-17-9c: rounds 1 and 3 on the original freezes, the server judge on every type (roadmap step 9c, partial: round 2 not run)
+## Gate 2026-11-17-9c: all three rounds' frozen pages, the server judge on every type (roadmap step 9c)
 
-Round 1's 9 www.nasa.gov pages and round 3's 10 science.data.nasa.gov pages, each tested once, every TT test built (`checks.REGISTRY`), the server judge on 9b's 21 types (CLI route, `claude-sonnet-5-5`, prompt SHA-256 `e8320f2c…`, as in 9b), `tested_frozen` as 9b ran it (the tested page from the freeze; 19.A's site search and suggested pages load live under the usual rules). Code: `main` at `30e948c` (#120) with PR 121 (`b7ee9c0`, 4.F 1.11.0) merged in, as asked. Folder `evals/judging/gate-2026-11-17-9c/`: `compare-round1.json` and `compare-round3.json` (`sides.real`: page, test, key, tool, verdict for every cell, scored by each round's own scorer and keys; the baseline's side beside it; `moved`; `times`), the same as `.md`, `roundN/dry-r1.json` (the count), `roundN/gate.json`, `compare.py`. Page files (`roundN/r1/runs`, `roundN/r1/results`) stay out of git. Agent-assisted results, not certified Trusted Tester results. **Round 3's pages are development pages: this is a rerun and is never reported in place of round 3's blind score.** Both rounds ran on this container's default trust plus `UPSTREAM_PROXY` (the container's gateway).
+Round 1's 9 www.nasa.gov pages, round 2's 10 svs.gsfc.nasa.gov pages and round 3's 10 science.data.nasa.gov pages, each tested once, every TT test built (`checks.REGISTRY`), the server judge on 9b's 21 types (CLI route, `claude-sonnet-5-5`, prompt SHA-256 `e8320f2c…`, as in 9b), `tested_frozen` as 9b ran it (the tested page from the freeze; 19.A's site search and suggested pages load live under the usual rules). Code: `main` at `30e948c` (#120) with PR 121 (`b7ee9c0`, 4.F 1.11.0) merged in, as asked. Folder `evals/judging/gate-2026-11-17-9c/`: `compare-round1.json`, `compare-round2.json` and `compare-round3.json` (`sides.real`: page, test, key, tool, verdict for every cell, scored by each round's own scorer and keys; the baseline's side beside it; `moved`; `times`), the same as `.md`, `roundN/dry-r1.json` (the count), `roundN/gate.json`, `compare.py`. Page files (`roundN/r1/runs`, `roundN/r1/results`) stay out of git. Agent-assisted results, not certified Trusted Tester results. **Round 3's pages are development pages: this is a rerun and is never reported in place of round 3's blind score.** Both rounds ran on this container's default trust plus `UPSTREAM_PROXY` (the container's gateway).
 
-- **Round 2 (svs.gsfc.nasa.gov) was not run.** Its frozen archive is not in this container, and its site search does not load here (checked first: one load per host through the tool's browser: www.nasa.gov 200, science.data.nasa.gov 200, svs.gsfc.nasa.gov 502 from the platform's gateway, as in 9b; nothing was weakened). Abby chose to run rounds 1 and 3 now and decide round 2 later. The status table's round 2 entry is unchanged until it is run.
-- **Checked first.** Round 3's frozen archive (Abby's Drive zip `round3-frozen-2026-11-16b`): SHA-256 `2ce3446a…` as in `ARCHIVE.md`, and all 30 files match `frozen-MANIFEST.sha256`. Round 1's archive (Drive `round1-frozen.zip`, dated 2026-11-04): 9 recordings, `freeze.json` and `index.json` identical to git; **no hash to check the recordings against**, as in 9b. **Round 1's freeze predates the chunk store (2026-11-09)**, so its recordings may lack code loaded on use (guard GU); a refreeze and a repeat on unchanged pages is planned as a reference only, never in the tally.
-- **Cost.** Dry counts (judge off, no model call): round 1 27 requests, 58 questions, ~87.1k text tokens, 126 pictures; round 3 35 requests, 90 questions, ~81.0k tokens, 92 pictures. Real runs (the judge's own records): round 1 27 calls, 58 questions answered (6 "unsure"), 0 failed, 0 left open; round 3 43 calls, 109 questions answered (29 "unsure"), 0 failed, 0 left open (more than the dry count: the judge's answers open follow-up questions). Output tokens 12.0k and 18.4k. The container restarted three times; round 3 and round 1 were finished page by page, so each page was run once, and `run.json`'s page lists were restored by hand (noted in each).
-- **Totals per round, all scored cells (key given), this run beside the baseline.** Round 1 (153 cells) beside 9b: agree 79 (74), PASS or DOES NOT APPLY where the key fails **0 (0)**, FAIL or DOES NOT APPLY where the key passes 3 (2), other 0 (0), left for a person 71 (77). Round 3 (220 cells) beside the blind run: agree 121 (118), PASS or DOES NOT APPLY where the key fails **0 (3: 4.F, 5.F, 5.G)**, FAIL or DOES NOT APPLY where the key passes 11 (28), other 0 (0), left for a person 88 (71). **No unsafe cell** (PASS or DOES NOT APPLY where the key fails) in either round.
+- **Round 2 (svs.gsfc.nasa.gov), the search question.** Checked first, by one load per host through the tool's browser: www.nasa.gov 200, science.data.nasa.gov 200, svs.gsfc.nasa.gov **502** on a search address I guessed (`/search/?q=earth`; the tool's own form is `/search?search=<heading>`). **That check was wrong or out of date:** a re-probe after round 2's run loads all three svs addresses with 200 (the real form, my guess, and a suggested page). In the run itself svs's live search and suggested pages loaded for p03 to p10 and **did not for p01 and p02** (19.A: NEEDS REVIEW, "could not be loaded", rows W8 W4), the first pages of the run; so the failure was intermittent here, and 9b's explanation (the certificate chain) is not shown to hold or not hold today. Abby chose to run round 2 here and accept 19.A as it came. Round 2's dry run was dropped (the real run records the judge's own counts).
+- **Checked first.** Round 2's archive (Drive `round2-frozen.zip`, 12 parts): SHA-256 of the parts and of the rejoined zip match `SHA256SUMS.txt`, and all 12 files match `MANIFEST-round2-frozen.json`. Round 3's frozen archive (Abby's Drive zip `round3-frozen-2026-11-16b`): SHA-256 `2ce3446a…` as in `ARCHIVE.md`, and all 30 files match `frozen-MANIFEST.sha256`. Round 1's archive (Drive `round1-frozen.zip`, dated 2026-11-04): 9 recordings, `freeze.json` and `index.json` identical to git; **no hash to check the recordings against**, as in 9b. **Round 1's freeze predates the chunk store (2026-11-09)**, so its recordings may lack code loaded on use (guard GU); a refreeze and a repeat on unchanged pages is planned as a reference only, never in the tally.
+- **Cost.** Round 2's real run: 52 calls, 264 questions answered (54 "unsure"), 0 failed, 0 left open; output tokens 43.4k. Dry counts (judge off, no model call; round 1 and 3 only): round 1 27 requests, 58 questions, ~87.1k text tokens, 126 pictures; round 3 35 requests, 90 questions, ~81.0k tokens, 92 pictures. Real runs (the judge's own records): round 1 27 calls, 58 questions answered (6 "unsure"), 0 failed, 0 left open; round 3 43 calls, 109 questions answered (29 "unsure"), 0 failed, 0 left open (more than the dry count: the judge's answers open follow-up questions). Output tokens 12.0k and 18.4k. The container restarted three times; round 3 and round 1 were finished page by page, so each page was run once, and `run.json`'s page lists were restored by hand (noted in each).
+- **Totals per round, all scored cells (key given), this run beside the baseline.** Round 2 (220 cells) beside 9b: agree 130 (122), PASS or DOES NOT APPLY where the key fails **0 (0)**, FAIL or DOES NOT APPLY where the key passes 8 (11), other 1 (1: 3.A on 14194, as in 9b), left for a person 81 (86). Round 1 (153 cells) beside 9b: agree 79 (74), PASS or DOES NOT APPLY where the key fails **0 (0)**, FAIL or DOES NOT APPLY where the key passes 3 (2), other 0 (0), left for a person 71 (77). Round 3 (220 cells) beside the blind run: agree 121 (118), PASS or DOES NOT APPLY where the key fails **0 (3: 4.F, 5.F, 5.G)**, FAIL or DOES NOT APPLY where the key passes 11 (28), other 0 (0), left for a person 88 (71). **No unsafe cell** (PASS or DOES NOT APPLY where the key fails) in any of the three rounds.
 - **Per test** (this run beside the earlier figures; a test with no key on a round's pages is not listed):
 
   **Round 1** (agree / PASS or DNA where the key fails / FAIL or DNA where the key passes / other / left for a person):
@@ -200,6 +200,54 @@ Round 1's 9 www.nasa.gov pages and round 3's 10 science.data.nasa.gov pages, eac
   | p06 | 4.F | Pass | NEEDS REVIEW | Pass | yes |
   | p07 | 4.F | Pass | NEEDS REVIEW | Pass | yes |
   | p09 | 4.F | Pass | NEEDS REVIEW | Pass | yes |
+
+  **Round 2** (agree / PASS or DNA where the key fails / FAIL or DNA where the key passes / other / left for a person):
+
+  | Test | Gate 2026-11-17-9c | 9b |
+  | --- | --- | --- |
+  | 2.A | 7 / 0 / 0 / 0 / 3 | 7 / 0 / 0 / 0 / 3 |
+  | 2.B | 4 / 0 / 0 / 0 / 6 | 4 / 0 / 0 / 0 / 6 |
+  | 2.C | 4 / 0 / 0 / 0 / 6 | 4 / 0 / 0 / 0 / 6 |
+  | 2.D | 4 / 0 / 0 / 0 / 6 | 4 / 0 / 0 / 0 / 6 |
+  | 3.A | 7 / 0 / 0 / 1 / 2 | 6 / 0 / 0 / 1 / 3 |
+  | 4.A | 2 / 0 / 1 / 0 / 7 | 2 / 0 / 1 / 0 / 7 |
+  | 4.B | 9 / 0 / 0 / 0 / 1 | 9 / 0 / 0 / 0 / 1 |
+  | 4.C | 9 / 0 / 0 / 0 / 1 | 9 / 0 / 0 / 0 / 1 |
+  | 4.D | 1 / 0 / 2 / 0 / 7 | 1 / 0 / 2 / 0 / 7 |
+  | 4.E | 9 / 0 / 0 / 0 / 1 | 9 / 0 / 0 / 0 / 1 |
+  | 4.F | 3 / 0 / 1 / 0 / 6 | 2 / 0 / 2 / 0 / 6 |
+  | 5.A | 6 / 0 / 1 / 0 / 3 | 6 / 0 / 1 / 0 / 3 |
+  | 5.B | 6 / 0 / 2 / 0 / 2 | 6 / 0 / 3 / 0 / 1 |
+  | 5.C | 10 / 0 / 0 / 0 / 0 | 10 / 0 / 0 / 0 / 0 |
+  | 5.D | 3 / 0 / 0 / 0 / 7 | 3 / 0 / 0 / 0 / 7 |
+  | 5.F | 3 / 0 / 0 / 0 / 7 | 3 / 0 / 1 / 0 / 6 |
+  | 5.G | 3 / 0 / 0 / 0 / 7 | 3 / 0 / 1 / 0 / 6 |
+  | 5.H | 9 / 0 / 0 / 0 / 1 | 9 / 0 / 0 / 0 / 1 |
+  | 9.A | 10 / 0 / 0 / 0 / 0 | 10 / 0 / 0 / 0 / 0 |
+  | 9.B | 9 / 0 / 0 / 0 / 1 | 9 / 0 / 0 / 0 / 1 |
+  | 9.C | 5 / 0 / 0 / 0 / 5 | 4 / 0 / 0 / 0 / 6 |
+  | 19.A | 7 / 0 / 1 / 0 / 2 | 2 / 0 / 0 / 0 / 8 |
+
+  **Round 2: every cell that moved since 9b (16), with whether the key agrees:**
+
+  | Page | Test | Key | 9b | Now | Key |
+  | --- | --- | --- | --- | --- | --- |
+  | p01 | 9.C | Pass | Pass | NEEDS REVIEW | left for a person |
+  | p02 | 4.F | Pass | NEEDS REVIEW | Pass | yes |
+  | p03 | 4.F | Pass | Fail | Pass | yes |
+  | p03 | 5.B | Pass | Fail | NEEDS REVIEW | left for a person |
+  | p04 | 4.F | Pass | Pass | NEEDS REVIEW | left for a person |
+  | p05 | 19.A | Pass | NEEDS REVIEW | Fail | no |
+  | p06 | 19.A | Pass | NEEDS REVIEW | Pass | yes |
+  | p07 | 19.A | Pass | NEEDS REVIEW | Pass | yes |
+  | p08 | 3.A | Does Not Apply | NEEDS REVIEW | Does Not Apply | yes |
+  | p08 | 5.F | Pass | Fail | NEEDS REVIEW | left for a person |
+  | p08 | 5.G | Pass | Fail | NEEDS REVIEW | left for a person |
+  | p08 | 9.C | Pass | NEEDS REVIEW | Pass | yes |
+  | p08 | 19.A | Pass | NEEDS REVIEW | Pass | yes |
+  | p09 | 9.C | Pass | NEEDS REVIEW | Pass | yes |
+  | p09 | 19.A | Pass | NEEDS REVIEW | Pass | yes |
+  | p10 | 19.A | Pass | NEEDS REVIEW | Pass | yes |
 
   **Round 3** (agree / PASS or DNA where the key fails / FAIL or DNA where the key passes / other / left for a person):
 
@@ -263,8 +311,9 @@ Round 1's 9 www.nasa.gov pages and round 3's 10 science.data.nasa.gov pages, eac
 
 - **What moved, round 1.** Five cells went from NEEDS REVIEW to an agreeing PASS (4.C on p01, 4.F on p05, p06, p07, p09). **One went from NEEDS REVIEW to a false FAIL: 5.B on p05 (the missions page, where the key passes); a judge answer, one repeat, I did not trace it.** 19.A is as in 9b (4 agree, 5 left): its site search and suggested pages loaded live on this site.
 - **What moved, round 3, since the blind run (28 cells; counts from `compare-round3.json`).** To an agreeing outcome: 6 (NEEDS REVIEW to agree: 5.H on p07 and p08, 2.C and 2.D on p10, 4.A on p10; false FAIL to agree: 4.E on p10). **The blind run's three unsafe cells are gone, all now NEEDS REVIEW:** 5.F and 5.G on p03 (PASS where the key fails) and 4.F on p08 (DOES NOT APPLY where the key fails). 11 false FAILs went to NEEDS REVIEW (9.B on p01 to p06, 4.E on p07 and p08, 4.A on p07 and p08, 4.F on p09) and 5 DOES NOT APPLY cells where the key passes went to NEEDS REVIEW (5.B on p01 and p06, 4.F on p07, 5.D on p07 and p08). **Three cells that agreed with the key are now left for a person** (4.F on p01, 5.A on p03, 4.A on p09). No cell moved to a wrong outcome. Steps 21, 22, 23, 31 and 36 explain most of this; 9.B's NEEDS REVIEW on every page is step 31 (rows N5, N6), so 9.B has 0 agreeing cells on this site.
-- **Time budgets.** Round 1: 5.D ran out on p05 (the missions page, 592.0 s of 600 s), as in 9a and 9b. Round 3: 4.E ran out on p07 (52.1 s of 60 s) and p08 (53.4 s); on both it is NEEDS REVIEW (a dialog opens on focus and the walk could not tell whether it takes over the page). Nothing else ran out in either round.
-- **Not verified here:** repeats (one run per round); round 2; whether round 1's old freeze gives the same cells as a new one (planned, reference only); why 5.B on round 1's p05 became a false FAIL.
+- **What moved, round 2, since 9b (16 cells; from `compare-round2.json`).** To an agreeing outcome: 10 (NEEDS REVIEW to agree: 4.F on p02, 3.A on p08, 9.C on p08 and p09, and 19.A on p06 to p10; false FAIL to agree: 4.F on p03). Three false FAILs of 9b went to NEEDS REVIEW (5.B on p03, 5.F and 5.G on p08). **Two cells that agreed with the key are now left for a person** (9.C on p01, 4.F on p04). **One new wrong cell: 19.A on p05 (CILab), FAIL where the key passes**: the site search loaded and did not find the page by its heading (rows W6, W3), the same false FAIL 9a had; 9b had NEEDS REVIEW there because nothing could load. 19.A on p01 and p02 stay NEEDS REVIEW (could not load). 19.A overall: 7 agree, 1 false FAIL, 2 left (9b: 2, 0, 8).
+- **Time budgets.** Round 2: nothing ran out. Round 1: 5.D ran out on p05 (the missions page, 592.0 s of 600 s), as in 9a and 9b. Round 3: 4.E ran out on p07 (52.1 s of 60 s) and p08 (53.4 s); on both it is NEEDS REVIEW (a dialog opens on focus and the walk could not tell whether it takes over the page). Nothing else ran out in either round.
+- **Not verified here:** repeats (one run per round); whether round 1's old freeze gives the same cells as a new one (an experiment, in its own pull request); why 5.B on round 1's p05 became a false FAIL.
 
 ## Gate 2026-11-17, step 23: the rerun after the page is drawn, all three rounds' frozen pages
 
