@@ -9,7 +9,8 @@
   "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel",
   "https://science.data.nasa.gov/fits/verifier",
   "https://science.data.nasa.gov/fits/sample-files",
-  "https://science.data.nasa.gov/data-governance-community/home"
+  "https://science.data.nasa.gov/data-governance-community/home",
+  "https://science.data.nasa.gov/data-governance-community/forum"
  ],
  "dry": false,
  "started": "2026-11-18T01:10:49.743490+00:00"
