@@ -125,6 +125,21 @@ same; open questions are answered by the connecting agent.
 The dev container was 4 CPU and 16 GB; a run with `MAX_CONCURRENT_RUNS=2`
 can use two Chromiums at once, each with a page and its replays.
 
+### Live log (a demo only)
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `LIVE_LOG` | `false` | Keeps the last 2,000 events in memory (never on disk): every MCP call with its full arguments and response, pictures included, and each run's steps and progress lines. |
+| `LIVE_LOG_TOKEN` | unset | The secret that opens the page. Put it in `tobi508-secrets`, not the ConfigMap. Without it the page answers 404. |
+
+Open `https://<app host>/live#token=<LIVE_LOG_TOKEN>` in a browser. The
+token is in the address's fragment, which a browser never sends, so it stays
+out of the gateway's logs; the page sends it in a header when it asks for
+events. The page is not behind sign-in: anyone with the token sees **every
+caller's** calls, including page text and answers, which the audit lines
+never hold. Turn it on for the demo (ConfigMap `LIVE_LOG: "true"`, the token
+in the secret, a restart), then off again (another restart clears it).
+
 ## 3. Where runs live, and for how long
 
 - A run's folder is `RUNS_DIR/<run id>/`. It is deleted once it is older

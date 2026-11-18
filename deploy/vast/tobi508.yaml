@@ -40,6 +40,10 @@ data:
   MAX_CONCURRENT_RUNS: "2"
   CALL_WAIT_S: "45"
   RUN_TTL_HOURS: "24"
+  # The live log for a demo (guide, section 2, "Live log"): every caller's
+  # calls, page text and pictures at /live, for whoever holds the token
+  # (LIVE_LOG_TOKEN, in tobi508-secrets). Off; set "true" only for the demo.
+  LIVE_LOG: "false"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

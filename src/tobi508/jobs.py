@@ -34,7 +34,7 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 from typing import Any
 
-from tobi508 import access
+from tobi508 import access, livelog
 from tobi508.config import Settings
 from tobi508.models import RunPending, RunResult
 
@@ -57,6 +57,7 @@ class Job:
 
     async def progress(self, step: float, total: float | None, message: str) -> None:
         self.step, self.message = step, message
+        livelog.emit("progress", job=self.id, target=self.url, message=message)
         for w in list(self.waiters):
             try:
                 await w(step, total, message)

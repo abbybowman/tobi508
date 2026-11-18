@@ -120,26 +120,35 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 
 **Examples.** Ask in plain words, and your agent makes calls like these. `tests/test_readme.py` checks each one against the tool's schema.
 
-"Check https://www.section508.gov/ for keyboard, focus and form problems":
+"Run the Trusted Tester tests TOBI can on https://www.nasa.gov/mission/artemis-iii/":
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/"}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/"}}
 ```
 
-"Also compare it with two other pages of the site" (for 9.A-9.C and 19.A):
+"Compare it with two other pages of the site" (for 9.A-9.C and 19.A):
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/", "other_pages": ["https://www.section508.gov/manage/", "https://www.section508.gov/test/"]}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/", "other_pages": ["https://www.nasa.gov/careers/", "https://www.nasa.gov/gallery/ksc-history/"]}}
 ```
 
 "Is there a keyboard trap, and is focus visible?":
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/", "tests": ["4.C", "4.D"]}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/", "tests": ["4.C", "4.D"]}}
 ```
+
+"Explain what failed, what's left for a person, and what TOBI can't check here":
+
+<!-- example -->
+```json
+{"tool": "tobi_explain", "arguments": {"run_id": "<run_id from the result>"}}
+```
+
+The run takes minutes: until it is done, each result says `"status": "running"` and what it is doing (`"progress": "Walking the page with Tab and Shift+Tab (45 s so far)"`), and the agent waits with `tobi_run_status`.
 
 <details>
 <summary>An open question, end to end, on a local test page (for contributors)</summary>
@@ -162,7 +171,32 @@ With `DEV_MODE=true`, this fixture's three links pass focus among themselves for
 
 </details>
 
-**Example output.** A recent run: the home page of science.data.nasa.gov, from round 3's blind evaluation (2026-11-16, the 22 built tests):
+**Example output.** The second example above, run live on 2026-11-18 (about 10.5 minutes), before the agent answered its open questions. One line per finding; `tobi_explain` gives the rest:
+
+```text
+5.A FAIL   "Search" (text field)'s only label is the gray example text inside it, which
+           disappears as soon as someone starts typing. Add a label that stays visible.
+           To find it, press Tab 2 times.
+9.A FAIL   This page starts with content repeated on the other pages you gave (for
+           example "Explore"), and we found no keyboard way to skip past it. [...] Add a
+           "Skip to main content" link as the first thing on the page.
+4.B PASS   Nothing on this page asks you to press keys at a certain speed, hold a key
+           down, or press a key several times quickly.
+9.B PASS   The navigation this page shares with the other pages you gave appears in the
+           same order on each of them.
+19.A PASS  This page can be found in more than one way: links from other pages and the
+           site search.
+2.A, 5.H   DOES NOT APPLY
+4.D        NEEDS REVIEW: 2 questions about it are still open. (The "Hide player
+           controls" button's focus ring is near black on black: a careful agent
+           answers "unsure", and it stays for a person.)
+...        NEEDS REVIEW for the other 14 built tests, and "This test could not be
+           performed" for the 39 not built.
+```
+
+A certified Trusted Tester's blind SCRT file for this page (2026-11-02) fails the same two. These are agent-assisted findings, not a certified Trusted Tester result, and www.nasa.gov is one of our development sites.
+
+Files from a run, from round 3's blind evaluation (the home page of science.data.nasa.gov, 2026-11-16, the 22 built tests):
 - [pre-scrt.json](evals/judging/round3/results/p01/pre-scrt.json): the SCRT rows, with rows for a person flagged. Download it and open it in the [viewer](demo/prescrt-viewer/viewer.html) to read it as a table.
 - [report.json](evals/judging/round3/results/p01/report.json): findings, questions and answers, and every version used.
 

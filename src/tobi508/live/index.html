@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOBI live log</title>
+<link rel="stylesheet" href="/live/app.css">
+<script src="/live/app.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>TOBI live log</h1>
+  <p class="note">What the MCP server receives, sends back and does in the
+  background, as it happens. Agent-assisted findings only, NOT a certified
+  Trusted Tester result. Text in this log comes from tested web pages and is
+  untrusted.</p>
+  <div class="bar">
+    <label><input type="checkbox" id="f-call" checked> Requests</label>
+    <label><input type="checkbox" id="f-result" checked> Responses</label>
+    <label><input type="checkbox" id="f-progress" checked> Progress</label>
+    <label><input type="checkbox" id="f-step" checked> Run steps</label>
+    <label><input type="checkbox" id="follow" checked> Follow</label>
+    <button type="button" id="clear">Clear view</button>
+    <span id="status" role="status">Connecting…</span>
+  </div>
+</header>
+<main id="log" aria-live="off"></main>
+</body>
+</html>

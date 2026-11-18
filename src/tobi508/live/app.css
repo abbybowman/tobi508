@@ -1,0 +1,38 @@
+:root { color-scheme: light dark; --bg:#fff; --fg:#1b1b1b; --mut:#5c5c5c;
+  --line:#dfe1e2; --call:#005ea2; --res:#00a91c; --err:#b50909; --step:#71767a;
+  --prog:#936f38; --code:#f0f0f0; }
+@media (prefers-color-scheme: dark) { :root { --bg:#111; --fg:#eee; --mut:#aaa;
+  --line:#333; --call:#73b3e7; --res:#70e17b; --err:#f39268; --step:#a9aeb1;
+  --prog:#e5b85c; --code:#1d1d1d; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg);
+  font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--line);
+  padding:12px 16px; z-index:1; }
+h1 { margin:0; font-size:1.3rem; }
+.note { margin:4px 0 8px; color:var(--mut); font-size:.9rem; }
+.bar { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+#status { color:var(--mut); font-size:.9rem; }
+main { padding:8px 16px 48px; }
+.ev { border-left:4px solid var(--line); padding:6px 10px; margin:6px 0; }
+.ev .head { display:flex; gap:10px; flex-wrap:wrap; align-items:baseline; }
+.ev time { color:var(--mut); font: .85rem ui-monospace, monospace; }
+.kind { font-weight:700; font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+.call { border-color:var(--call); } .call .kind { color:var(--call); }
+.result { border-color:var(--res); } .result .kind { color:var(--res); }
+.error { border-color:var(--err); } .error .kind { color:var(--err); }
+.step { border-color:var(--step); padding:2px 10px; font-size:.9rem; }
+.step .kind { color:var(--step); }
+.progress { border-color:var(--prog); } .progress .kind { color:var(--prog); }
+.name { font-weight:600; }
+details { margin-top:4px; }
+summary { cursor:pointer; color:var(--mut); }
+pre { background:var(--code); padding:8px; overflow:auto; max-height:60vh; margin:4px 0;
+  font: .82rem/1.4 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap;
+  word-break:break-word; }
+img.ev-img { width:min(100%, 640px); height:auto; image-rendering:pixelated;
+  border:1px solid var(--line); display:block; margin:6px 0; }
+.outcomes { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0; }
+.chip { border:1px solid var(--line); border-radius:4px; padding:0 6px;
+  font: .85rem ui-monospace, monospace; }
+.mut { color:var(--mut); }

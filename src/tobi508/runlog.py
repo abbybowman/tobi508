@@ -11,6 +11,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from tobi508 import livelog
 from tobi508.access import claim_run, may_open
 from tobi508.models import StepLog, utcnow
 from tobi508.redact import safe_detail
@@ -49,6 +50,9 @@ class RunRecorder:
         entry = StepLog(step=step, status=status, detail=safe_detail(detail))
         with self.steps_path.open("a", encoding="utf-8") as f:
             f.write(entry.model_dump_json() + "\n")
+        livelog.emit(
+            "step", run_id=self.run_id, step=step, status=status, detail=entry.detail
+        )
 
     def rel(self, path: Path) -> str:
         return path.resolve().relative_to(self.dir).as_posix()
