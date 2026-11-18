@@ -463,7 +463,7 @@ log. With `--login browser` it skips the second person, which needs a
 second NASA identity at the same computer; CI's run checks that on every
 image build (section 8).
 
-**Found on the way, not yet fixed:**
+**Found on the way:**
 
 - **Claude Code had to sign in again** after its token was refused: the
   sign-in proxy logged "Refresh token not found ... already rotated,
@@ -471,10 +471,11 @@ image build (section 8).
   survived it). Unconfirmed: two Claude Code processes sharing one saved
   sign-in (refresh tokens are single use), or a short token lifetime in
   VAST's realm. If it recurs, checklist item 9 fails.
-- **Uvicorn's access log keeps sign-in codes.** Each request's whole
-  address is logged, including `/auth/callback?...code=...`. The codes
-  are single use and expire in about a minute, but this contradicts "no
-  query strings in logs".
+
+**Fixed since:** uvicorn's access log kept each request's whole address,
+including the one-time code in `/auth/callback?...code=...`. It now keeps
+the path and status without the query string (`redact.py`,
+`tests/test_leakage.py`).
 
 ## 7. Checklist for the first deployment
 

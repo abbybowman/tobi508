@@ -15,6 +15,7 @@ Rules:
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 from urllib.parse import urlsplit, urlunsplit
@@ -39,6 +40,29 @@ def safe_url(url: str) -> str:
 def scrub(text: str) -> str:
     """Redact every URL in free text."""
     return _URL.sub(lambda m: safe_url(m.group(0)), text)
+
+
+class AccessLogWithoutQuery(logging.Filter):
+    """Uvicorn's access log, each path without its query string. The
+    sign-in callback's query carries a one-time code from the identity
+    provider (seen in the log on VAST, 2026-11-18); the path and status
+    stay, since they are what a failed sign-in is diagnosed by."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        args = record.args
+        # uvicorn's access record: (client, method, path, http version, status)
+        if isinstance(args, tuple) and len(args) == 5 and isinstance(args[2], str):
+            record.args = (*args[:2], args[2].split("?", 1)[0], *args[3:])
+        return True
+
+
+def strip_queries_from_access_log() -> None:
+    """Install the filter once on uvicorn's access logger. Uvicorn's own
+    logging setup, which runs later at startup, replaces the logger's
+    handlers but keeps its filters (tests/test_leakage.py)."""
+    log = logging.getLogger("uvicorn.access")
+    if not any(isinstance(f, AccessLogWithoutQuery) for f in log.filters):
+        log.addFilter(AccessLogWithoutQuery())
 
 
 def safe_error(exc: BaseException) -> str:

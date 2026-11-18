@@ -24,6 +24,7 @@ from tobi508.config import settings
 from tobi508.livelog import LiveLogMiddleware
 from tobi508.models import TestId
 from tobi508.prompts import register_prompts
+from tobi508.redact import strip_queries_from_access_log
 from tobi508.resources import register_resources
 from tobi508.routes import register_routes
 from tobi508.tools import register_tools
@@ -104,6 +105,7 @@ def http_options(s=None) -> dict:
     be a public interface (0.0.0.0 in a container behind the platform's
     HTTPS). Raises SystemExit on any setting that would serve without it."""
     s = s or settings
+    strip_queries_from_access_log()
     opts: dict = {"host": s.mcp_host, "port": s.mcp_port, **HTTP_SECURITY}
     if s.auth == "none":
         if s.mcp_host not in LOOPBACK_HOSTS:
