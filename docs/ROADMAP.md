@@ -166,7 +166,9 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
   validation fail TT 5.F; three key cells (MySearchStory; the search
   page's 19.A; breadcrumbs as their own way in 19.A).
 - **The judge on types that fail the gate** (step 40). 4.B and 5.H
-  meet both halves of the gate today.
+  meet both halves of the gate today; since 2026-11-18 the judge
+  answers every type, so this decides how its FAILs on the others are
+  shown.
 - **Spec decisions left from the code review** (H-08, E-03, E-13,
   H-04, M-02, 4.F's "order does not matter"), the settle rule, 2.B's
   random content, a second browser, CLAUDE.md's lists, and
@@ -179,6 +181,17 @@ section 9, "Updating"). A pinned, automatic update (CI writing each
 build's commit into the YAML, deployed from VAST's Forgejo through a
 mirror of the GitHub repository) and recording the image build in
 every report wait until after the demo.
+
+**Decided (Abby, 2026-11-18): the server judge answers everything.**
+With a gateway's URL and key set, the server's pinned model and prompt
+answer every test's open questions (`JUDGE_BACKEND=auto`,
+`JUDGE_TYPES=all`); without them, the calling agent does. The gate
+(`evals/apijudge_gate.py`) was informative, not decisive, and a pinned
+judge's answers, unsure ones included, are steadier than a calling
+agent's, which were often not thorough. The gate keeps measuring it.
+Step 40 (how a judge FAIL on a type that fails the gate is shown) is
+still open: until it is decided, such a FAIL is an outcome like any
+other.
 
 **VAST hosting (2026-11-18):** the dev environment's URL is the
 self-service host (20 GB, 4 GB of memory; a VAST admin), so TOBI is

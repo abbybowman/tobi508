@@ -70,5 +70,7 @@ def test_an_unknown_judge_backend_is_refused_at_startup():
         Settings(_env_file=None, judge_backend="clinet")
     # "api" is built (apijudge.py); what its route needs is checked in
     # tests/test_apijudge.py.
-    assert Settings(_env_file=None, judge_backend="api").judge_backend == "api"
+    api = Settings(_env_file=None, judge_backend="api", judge_route="cli")
+    assert api.judge_backend == "api"
+    # "auto" with no gateway resolves to the calling agent.
     assert Settings(_env_file=None).judge_backend == "client"

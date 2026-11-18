@@ -101,18 +101,18 @@ case-insensitive; lists are JSON.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| `JUDGE_BACKEND` | `client` | `client`: every open question goes back to the calling agent (in Claude Code, Claude answers it by rubric; the user can override with `tobi_answer_questions`). Nothing else to set, and no model key on the server. `api`: the server answers the question types in `JUDGE_TYPES` itself. |
-| `JUDGE_ROUTE` | `cli` | With `api`: `cli` runs `claude -p`, which is **not in the image**, so never use it on VAST; `anthropic-messages` calls a Messages API gateway. |
-| `JUDGE_BASE_URL`, `JUDGE_API_KEY` (**secret**) | unset | The gateway and its key. With `api` and `anthropic-messages`, the server refuses to start without both. |
+| `JUDGE_BACKEND` | `auto` | `auto`: `api` when `JUDGE_BASE_URL` and `JUDGE_API_KEY` are both set, else `client` (Abby, 2026-11-18: the server judge answers whenever it has a model). `api`: the server answers the question types in `JUDGE_TYPES` itself. `client`: every open question goes back to the calling agent (in Claude Code, Claude answers it by rubric). Either way a person can override with `tobi_answer_questions`. |
+| `JUDGE_ROUTE` | `anthropic-messages` | `anthropic-messages` calls a Messages API gateway; `cli` runs `claude -p`, which is **not in the image**, so never use it on VAST. |
+| `JUDGE_BASE_URL`, `JUDGE_API_KEY` (**secret**) | unset | The gateway (without `/v1`) and its key. Both set: the judge is on. With an explicit `api`, the server refuses to start without both. |
 | `JUDGE_AUTH_HEADER` | `x-api-key` | The header the key goes in. |
 | `JUDGE_MODEL` | `claude-sonnet-5-5` | The gateway's model name. |
-| `JUDGE_TYPES` | empty | Test IDs whose questions the server answers, e.g. `4.B`. Empty: none, even with `api`. |
+| `JUDGE_TYPES` | `all` | Test IDs whose questions the server answers: `all` (every implemented test), a list such as `4.B,5.H`, or empty for none. |
 | `JUDGE_CONCURRENCY`, `JUDGE_CALL_TIMEOUT_S`, `JUDGE_CAP_S` | `3`, `300`, `900` | Requests at once, one request's limit, a run's whole judging phase. |
 | `JUDGING_MODEL` | `none` | Recorded in every report; with `api`, set from the model and prompt. |
 
-**With no gateway** (today: Luna or another is not settled; roadmap,
-"Decisions waiting for Abby"), keep `JUDGE_BACKEND=client`. Runs work the
-same; open questions are answered by the connecting agent.
+**With no gateway,** leave `JUDGE_BASE_URL` and `JUDGE_API_KEY` unset:
+runs work the same, and open questions are answered by the connecting
+agent.
 
 ### Capacity
 
@@ -316,13 +316,12 @@ cat > ~/.config/tobi508/env <<'END'
 MCP_HOST=127.0.0.1
 # Within the 4 GB: one Chromium at a time until memory is measured.
 MAX_CONCURRENT_RUNS=1
-# The server's own judge (optional; section 9 has every setting).
-# JUDGE_BACKEND=api
-# JUDGE_ROUTE=anthropic-messages
-# JUDGE_BASE_URL=https://<gateway, without /v1>
-# JUDGE_API_KEY=<key>
-# JUDGE_MODEL=<the gateway's model name>
-# JUDGE_TYPES=4.B,5.H
+# The server's own judge (Luna): with these two it answers every
+# test's open questions (section 2 has every setting).
+JUDGE_BASE_URL=https://<gateway, without /v1>
+JUDGE_API_KEY=<key>
+JUDGE_MODEL=<the gateway's name for the model>
+# JUDGE_AUTH_HEADER=authorization   # if it wants "Bearer <key>" as the key
 END
 podman run -d --name tobi --network host --env-file ~/.config/tobi508/env \
   -v tobi-data:/data ghcr.io/abbybowman/tobi508:latest
@@ -481,6 +480,7 @@ umask 077
 cat > tobi508-secrets.env <<'END'
 OIDC_CLIENT_SECRET=<the Keycloak client's secret>
 OIDC_JWT_SIGNING_KEY=<a long random string, e.g. from: openssl rand -base64 48>
+JUDGE_API_KEY=<the judge gateway's key>
 END
 kubectl create secret generic tobi508-secrets -n <namespace> --from-env-file=tobi508-secrets.env
 rm tobi508-secrets.env
@@ -490,21 +490,19 @@ kubectl apply -f tobi508.yaml
 Keep `OIDC_JWT_SIGNING_KEY` the same across updates: a new one makes
 every client register and sign in again.
 
-**The server's own judge** (Luna or another Messages API gateway; off by
-default, section 2). In the ConfigMap:
+**The server's own judge** (Luna or another Messages API gateway; on for
+every test once both are set, section 2). In the ConfigMap:
 
 ```yaml
-  JUDGE_BACKEND: api
-  JUDGE_ROUTE: anthropic-messages
+  JUDGE_BACKEND: api                     # explicit: no key, no start
   JUDGE_BASE_URL: https://<gateway>      # without /v1: the server adds /v1/messages
   JUDGE_MODEL: <the gateway's model name>
-  JUDGE_TYPES: 4.B,5.H                   # only the types that pass the gate (ROADMAP.md)
   # JUDGE_AUTH_HEADER: authorization     # if the gateway wants a bearer token, not x-api-key
 ```
 
 and `JUDGE_API_KEY=<key>` in the secrets file (with `authorization` as the
-header, the key's value is `Bearer <key>`). The server refuses to start
-with `api` and no URL or key. The gateway must be reachable from the pod.
+header, the key's value is `Bearer <key>`). With `api` set, the server
+refuses to start with no URL or key. The gateway must be reachable from the pod.
 Locally the same names go in `.env`; with Podman, in a file passed with
 `--env-file` (mode 600).
 
