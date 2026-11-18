@@ -157,9 +157,9 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 - **VAST** (step 12b): sign-in at the dev URL works (2026-11-18; the
   smoke test passed there with one person). Next: the token's groups and
-  audience, so a group can limit who signs in; the programs' own memory
-  peak during a full run (with cache it reached 4.21 GB; the how-to,
-  section 6b).
+  audience, so a group can limit who signs in. Memory: a full run's
+  programs take about 1 GB (cache aside), well within 4 GB; two runs at
+  once not measured (the how-to, section 6b).
 - **Publishing the repository.** GSA asks for a GitHub repository;
   SECURITY.md says NASA's release review comes first. Which comes
   first for the submission.
