@@ -8,12 +8,12 @@ working rules).
 **A prompt is removed from this file when its step is merged,** so what
 is listed here is what is left to start or still running.
 
-**Done:** steps 1 to 10, 6b to 6h, 9b, 10a, 10c, 12a, 21, 22, 23, 29's
-small part, 31 and 36, and 4.F 1.11.0 (PRs #39 to #121; `docs/archive/`). Round 3 is scored.
+**Done:** steps 1 to 10, 6b to 6h, 9b, 9c, 10a, 10c, 10d, 12a, 21, 22, 23, 29's
+small part, 31 and 36, and 4.F 1.11.0 (PRs #39 to #121, and 9c's;
+`docs/archive/`). Round 3 is scored.
 
-**Order to start them** (the roadmap's "Order of work"): 9c now (both
-pre-cut threads are merged); 10d after
-9c; 12b now (the Keycloak client is minted); 41 after the demo, beside the test rows; the after-demo rows one
+**Order to start them** (the roadmap's "Order of work"): 12b now (the
+Keycloak client is minted, a fresh thread); 41 after the demo, beside the test rows; the after-demo rows one
 thread at a time each, in the roadmap's order.
 
 ## Starting a thread
@@ -234,88 +234,6 @@ thread at a time each, in the roadmap's order.
 > Report verified (test or command) apart from assumed, and update the
 > README's "Known wrong outcomes" table and `docs/KNOWN-LIMITS.md` for
 > what you fixed, in the same commit (not the README's status table).
-
-**Step 9c, Sonnet: the last rerun** (when the two pre-cut threads are merged; by early afternoon on Nov 17)
-
-> Read `CLAUDE.md`, `docs/plans/2026-11-08-apijudge-build.md` ("The
-> gate"), the docstring of `evals/apijudge_gate.py`, and step 9b's
-> write-up in `evals/README.md` ("Gate 2026-11-16") with its folder
-> (`compare.py` is the comparison to reuse). Your work is step 9c of
-> `docs/ROADMAP.md` "Order of work": step 9b again, on `main`'s head
-> (record the commit), one repeat, the server judge answering every
-> question type it can take, on all three sites' frozen pages: rounds
-> 1 and 2 as 9b ran them, and round 3's ten pages (the pre-cut
-> threads added `--round 3` to the gate script; if not, add it:
-> round 3's frozen copies and keys, writing under your own gate
-> folder, never under `evals/judging/round3/`, which is locked).
-> Round 3's pages are development pages now: this is a rerun and is
-> never reported in place of round 3's blind score.
->
-> Before anything else, check and tell me if any fails: the three
-> frozen archives are restored (ask me; never fetch a tested page
-> live); and the sites' own search loads in your container for all
-> three hosts. In step 9b, svs.gsfc.nasa.gov's new certificate chain
-> stopped its search loading, and 8 of round 2's 19.A cells were left
-> undecided for that reason alone: run one search per host through
-> the tool's browser and show me the result before the run. Do not
-> weaken any check to make it load; if it cannot load, say so and I
-> will decide whether to run elsewhere.
->
-> Run `--dry` first and tell me the request and token estimate. Keep
-> each page's report and pre-SCRT file out of git; commit the scores,
-> the comparison and the write-up. Report, per site and per test,
-> beside step 9b's figures and round 3's blind score: agree, PASS or
-> DOES NOT APPLY where my key fails, FAIL or DOES NOT APPLY where it
-> passes, left for a person; every cell that moved since 9b (and, on
-> round 3's pages, since the blind score) with whether my key agrees;
-> and each test that ran out of its time budget. Put the result in
-> `evals/README.md`. Do not edit the README's status table (step 10d
-> writes it from your results), `docs/ROADMAP.md` or the prompt file.
-> Give me the paths of your score files for step 10d.
-
-**Step 10d, Sonnet: the README's status table, made by a script** (after step 9c)
-
-> Read `README.md` ("TT tests in scope"), `tests/test_readme.py`, and
-> step 9c's results for all three sites (I will give you the paths;
-> until it is done, build against step 9b's,
-> `evals/judging/gate-2026-11-16/`, and round 3's blind score,
-> `evals/judging/round3/score.json`). The README's status
-> table has grown into a list of results per round. It is to be a
-> very high-level view: one colour and at most a few words per test.
->
-> Write `evals/status_table.py`. It reads the latest scored result of
-> each site (step 9c's rerun of all three; the judge answered every
-> question type) and, per test, counts over all three: agree, PASS or DOES NOT
-> APPLY where the key fails, FAIL or DOES NOT APPLY where the key
-> passes, and left for a person. One rule gives the colour and the
-> words, first match:
-> - red, "passed a page a tester failed": any PASS or DOES NOT APPLY
->   where the key fails;
-> - red, "wrong more often than right": more wrong than agreeing
->   among decided cells;
-> - yellow, "often fails pages a tester passes": wrong on more than 1
->   in 5 decided cells;
-> - yellow, "mostly left for a person": fewer than half the cells
->   decided;
-> - green, "agrees with a tester": otherwise.
-> Show me the table this gives and the counts behind it before you
-> change the README: I may move a threshold.
->
-> Then: the README table has the columns ID, test name, spec (version
-> and link, as now) and status (the colour and those words, nothing
-> else), with one line above it saying what the colours mean, which
-> results it is from and that the counts are in `evals/STATUS.md`.
-> The script writes the rows between two marker comments in the
-> README, and writes `evals/STATUS.md`: per test and site, the counts,
-> and which run each is from (round 3 blind; rounds 1 and 2 reruns on
-> development pages). `tests/test_readme.py` fails when the README's
-> rows are not what the script writes. Everything the old rows said
-> about what a test reads or cannot do is already in
-> `docs/KNOWN-LIMITS.md` or the specs: check each sentence you remove
-> is there, and add the ones that are not. Never write "certified",
-> "compliant" or "conformant" about a page; "agrees with a tester"
-> is about our evaluation pages only, and the line above the table
-> says so.
 
 **Step 12b, Opus: sign-in at the dev URL** (now: the Keycloak client is minted, 2026-11-18)
 

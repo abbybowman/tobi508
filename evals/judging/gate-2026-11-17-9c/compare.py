@@ -152,7 +152,7 @@ def main_round(rnd: int) -> None:
     for m in moved:
         lines.append(
             f"| {m['page']} | {m['test']} | {m['key']} | "
-            f"{m[base_name + '_tool'] or 'NEEDS REVIEW'} ({m[base_name + '_verdict']}) | "
+            f"{m[base_name + '_tool'] or 'NEEDS REVIEW'} ({m[base_name + '_verdict']}) | "  # noqa: E501
             f"{m['tool'] or 'NEEDS REVIEW'} ({m['verdict']}) | {m['key_agrees']} |"
         )
     ran = {t: v["ran_out"] for t, v in times.items() if v["ran_out"]}
