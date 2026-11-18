@@ -1,0 +1,178 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "groups": {
+  "same main content": {
+   "pages": [
+    "p01",
+    "p04",
+    "p07",
+    "p08",
+    "p09"
+   ],
+   "cells": 85,
+   "same_cells": 80,
+   "differ": [
+    {
+     "page": "p01",
+     "test": "4.A",
+     "key": "Fail",
+     "formal": null,
+     "formal_verdict": "needs_review",
+     "refrozen": "Fail",
+     "refrozen_verdict": "agree",
+     "key_agrees": "yes",
+     "rows_formal": [
+      "A3",
+      "WK",
+      "G3"
+     ],
+     "rows_refrozen": [
+      "A3",
+      "G2"
+     ]
+    },
+    {
+     "page": "p01",
+     "test": "9.A",
+     "key": "Fail",
+     "formal": "Fail",
+     "formal_verdict": "agree",
+     "refrozen": null,
+     "refrozen_verdict": "needs_review",
+     "key_agrees": "left for a person",
+     "rows_formal": [
+      "A5",
+      "G5"
+     ],
+     "rows_refrozen": [
+      "A5",
+      "G3"
+     ]
+    },
+    {
+     "page": "p04",
+     "test": "4.A",
+     "key": "Pass",
+     "formal": null,
+     "formal_verdict": "needs_review",
+     "refrozen": "Fail",
+     "refrozen_verdict": "false_fail",
+     "key_agrees": "no",
+     "rows_formal": [
+      "A3",
+      "G3"
+     ],
+     "rows_refrozen": [
+      "A3",
+      "G2"
+     ]
+    },
+    {
+     "page": "p07",
+     "test": "4.D",
+     "key": "Fail",
+     "formal": "Fail",
+     "formal_verdict": "agree",
+     "refrozen": null,
+     "refrozen_verdict": "needs_review",
+     "key_agrees": "left for a person",
+     "rows_formal": [
+      "A3",
+      "G2"
+     ],
+     "rows_refrozen": [
+      "A3",
+      "WK",
+      "G3"
+     ]
+    },
+    {
+     "page": "p07",
+     "test": "4.E",
+     "key": "Pass",
+     "formal": "Pass",
+     "formal_verdict": "agree",
+     "refrozen": null,
+     "refrozen_verdict": "needs_review",
+     "key_agrees": "left for a person",
+     "rows_formal": [
+      "A3",
+      "G4"
+     ],
+     "rows_refrozen": [
+      "A3",
+      "WK",
+      "G3"
+     ]
+    }
+   ]
+  },
+  "changed content": {
+   "pages": [
+    "p02",
+    "p03",
+    "p05",
+    "p06"
+   ],
+   "cells": 68,
+   "same_cells": 65,
+   "differ": [
+    {
+     "page": "p02",
+     "test": "4.A",
+     "key": "Pass",
+     "formal": null,
+     "formal_verdict": "needs_review",
+     "refrozen": "Fail",
+     "refrozen_verdict": "false_fail",
+     "key_agrees": "no",
+     "rows_formal": [
+      "A3",
+      "G3"
+     ],
+     "rows_refrozen": [
+      "A3",
+      "G2"
+     ]
+    },
+    {
+     "page": "p05",
+     "test": "4.F",
+     "key": "Pass",
+     "formal": "Pass",
+     "formal_verdict": "agree",
+     "refrozen": null,
+     "refrozen_verdict": "needs_review",
+     "key_agrees": "left for a person",
+     "rows_formal": [
+      "A4",
+      "G5"
+     ],
+     "rows_refrozen": [
+      "A4",
+      "G3"
+     ]
+    },
+    {
+     "page": "p06",
+     "test": "4.D",
+     "key": "Pass",
+     "formal": "Fail",
+     "formal_verdict": "agree",
+     "refrozen": null,
+     "refrozen_verdict": "needs_review",
+     "key_agrees": "left for a person",
+     "rows_formal": [
+      "A3",
+      "G2"
+     ],
+     "rows_refrozen": [
+      "A3",
+      "WK",
+      "G3"
+     ]
+    }
+   ]
+  }
+ }
+}
