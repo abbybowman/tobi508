@@ -213,8 +213,11 @@ From the plan (questions 1 to 3 are answered there):
    2026-11-15): yes. A Chromium container has been run on VAST as a test.
 4. Can the app's access tokens include `sub` and the groups claim, and an
    audience mapper for this server? (What it takes in Keycloak: section 8.)
-5. Can Anthropic's outbound IP ranges reach the app, for Claude Desktop
-   custom connectors? If not, Claude Code is the demo client.
+5. ~~Can Anthropic's outbound IP ranges reach the app, for Claude Desktop
+   custom connectors?~~ Answered (Abby, 2026-11-18): no. VAST's host names
+   exist only in NASA's internal DNS, so a client connecting from
+   Anthropic's cloud (claude.ai, Claude Desktop's custom connectors)
+   cannot reach them. The client is Claude Code on a NASA machine.
 
 Not confirmed from the code or VAST's documentation:
 
@@ -239,7 +242,10 @@ Not confirmed from the code or VAST's documentation:
    4.C on that page again, PASS (section 6a).
 9. Which path survives restarts for `/data`, and how large may it be? A
    run with recordings and screenshots is tens of MB; a page with video
-   more.
+   more. Answered for a dev environment (a VAST admin, 2026-11-18):
+   self-service up to 20 GB of storage and 4 GB of memory, beyond the
+   NAMS approval. Its home volume survives restarts unless `vastdev down`
+   is run; a Podman named volume lives there (section 6b).
 10. How do secrets reach the pod (a Kubernetes Secret as environment
     variables?), and how is one rotated?
 11. Does the platform collect the container's stderr into the consolidated
@@ -288,6 +294,62 @@ realm with redirect `https://<you>-dev.<VAST domain>/auth/callback`, a
 Group Membership mapper (`claim_groups`) and an Audience mapper (section
 8). Then `AUTH=oidc` at the dev URL, the smoke test (section 7), and the
 YAML.
+
+## 6b. Hosting from the dev environment (self-service)
+
+A VAST admin (2026-11-18): every dev container gets
+`https://<you>-dev.<VAST domain>`, TLS ended at the gateway; listen for
+http on port 8000 inside the dev container. Within 20 GB of storage and
+4 GB of memory this needs nothing from the admins beyond the NAMS
+approval. (Code can also be pushed to VAST's Forgejo; signing in there
+adds the smartcard's SSH key from Active Directory, and `vastdev login`
+in a dev container reaches it.) So the dev URL is where TOBI is hosted
+for now, and the YAML (section 9) is for a deployment beyond it.
+
+Its settings go in one file only you can read, never in the command line
+or git. In the dev container:
+
+```bash
+mkdir -p ~/.config/tobi508 && umask 077
+cat > ~/.config/tobi508/env <<'END'
+# Without sign-in: loopback only, reached through the ssh tunnel.
+MCP_HOST=127.0.0.1
+# Within the 4 GB: one Chromium at a time until memory is measured.
+MAX_CONCURRENT_RUNS=1
+# The server's own judge (optional; section 9 has every setting).
+# JUDGE_BACKEND=api
+# JUDGE_ROUTE=anthropic-messages
+# JUDGE_BASE_URL=https://<gateway, without /v1>
+# JUDGE_API_KEY=<key>
+# JUDGE_MODEL=<the gateway's model name>
+# JUDGE_TYPES=4.B,5.H
+END
+podman run -d --name tobi --network host --env-file ~/.config/tobi508/env \
+  -v tobi-data:/data ghcr.io/abbybowman/tobi508:latest
+```
+
+`tobi-data` is a Podman named volume, under the home volume, owned
+right for the image's user. To update: `podman pull` the image, then
+`podman rm -f tobi` and the same `podman run`. While a run goes,
+`podman stats --no-stream tobi` shows its memory against the 4 GB.
+
+**With sign-in, at the dev URL** (when the Keycloak client exists):
+remove `MCP_HOST` from the file and add
+
+```
+AUTH=oidc
+PUBLIC_BASE_URL=https://<you>-dev.<VAST domain>
+OIDC_CONFIG_URL=https://<keycloak host>/realms/<realm>/.well-known/openid-configuration
+OIDC_CLIENT_ID=<client id>
+OIDC_CLIENT_SECRET=<client secret>
+OIDC_JWT_SIGNING_KEY=<openssl rand -base64 48, kept the same>
+OIDC_AUDIENCE=<client id>
+REQUIRED_GROUPS=["<group>"]
+FORWARDED_ALLOW_IPS=10.42.0.0/16
+```
+
+The image's command then listens on `0.0.0.0:8000`, which the gateway
+reaches; the checklist (section 7) and the smoke test apply as written.
 
 ## 7. Checklist for the first deployment
 

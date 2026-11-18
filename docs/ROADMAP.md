@@ -150,7 +150,8 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 **Before the demo:**
 
 - **VAST** (step 12b): a Keycloak client for the dev URL (asked
-  2026-11-17); the app's token contents; a gateway for the judge.
+  2026-11-17); the app's token contents; whether 4 GB holds a run
+  (measure with `podman stats`).
 - **Publishing the repository.** GSA asks for a GitHub repository;
   SECURITY.md says NASA's release review comes first. Which comes
   first for the submission.
@@ -178,6 +179,13 @@ section 9, "Updating"). A pinned, automatic update (CI writing each
 build's commit into the YAML, deployed from VAST's Forgejo through a
 mirror of the GitHub repository) and recording the image build in
 every report wait until after the demo.
+
+**VAST hosting (2026-11-18):** the dev environment's URL is the
+self-service host (20 GB, 4 GB of memory; a VAST admin), so TOBI is
+hosted there, from Podman (the guide, section 6b); the YAML is for a
+deployment beyond it. VAST's names are internal DNS only: Claude Code on
+a NASA machine is the client, not claude.ai or Claude Desktop's cloud
+connectors. VAST has no objection to the open status page (Abby).
 
 **Decided (Abby, 2026-11-17): the live status page is open.** The MCP
 server keeps sign-in. A read-only page of what the server is running
