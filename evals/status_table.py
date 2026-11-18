@@ -64,10 +64,10 @@ SITES = {
     },
     3: {
         "site": "science.data.nasa.gov",
-        "run": "the blind round 3 (locked 2026-11-16, kept as the record in "
-        "evals/judging/round3/score.md); step 9c's rerun of these pages "
-        "(gate 2026-11-17-9c) is a development rerun and is not used here",
-        "base": None,
+        "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
+        "the server judge on every type it can take (the blind round 3, "
+        "locked 2026-11-16, stays the record in evals/judging/round3/score.md)",
+        "base": JUD / "gate-2026-11-17-9c" / "compare-round3.json",
         "overlay": [],
     },
 }
