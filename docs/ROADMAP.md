@@ -62,7 +62,7 @@ file and the prompt file; other threads write to their plan.
 | --- | --- | --- | --- | --- |
 | 2 | 9c | The last rerun: all three sites' frozen pages on `main` after the rows above, where the sites' own search loads | Sonnet | early afternoon |
 | 3 | 10d | The README's status table, by a script, from 9c | Sonnet | after 9c |
-| - | 12b | Hosted on VAST: sign-in at the dev URL, then YAML for the cluster admins | Opus | when the Keycloak client arrives |
+| - | 12b | Hosted on VAST: sign-in at the dev URL (client minted 2026-11-18; read `py_auth_boilerplate`), then YAML for the cluster admins | Opus | now |
 | - | 13 | The pitch: the scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
 
 ### Why these, and what they should do to the status table
@@ -149,8 +149,9 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 **Before the demo:**
 
-- **VAST** (step 12b): a Keycloak client for the dev URL (asked
-  2026-11-17); the app's token contents; whether 4 GB holds a run
+- **VAST** (step 12b): the Keycloak client is minted (2026-11-18);
+  next, sign-in at the dev URL checked against `py_auth_boilerplate`
+  (another session), the token contents, and whether 4 GB holds a run
   (measure with `podman stats`).
 - **Publishing the repository.** GSA asks for a GitHub repository;
   SECURITY.md says NASA's release review comes first. Which comes
@@ -177,10 +178,11 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 
 **Decided (Abby, 2026-11-17): VAST runs `:latest`** while TOBI is a
 prototype, pulled at each restart, so it follows `main` (the guide,
-section 9, "Updating"). A pinned, automatic update (CI writing each
-build's commit into the YAML, deployed from VAST's Forgejo through a
-mirror of the GitHub repository) and recording the image build in
-every report wait until after the demo.
+section 9, "Updating"). A pinned, automatic update (a mirror of the
+GitHub repository on VAST's Forgejo, recommended by the VAST admins,
+whose workflow moves the deployment to each new build's commit tag;
+the image is still built on GitHub, since VAST cannot build it) and
+recording the image build in every report wait until after the demo.
 
 **Decided (Abby, 2026-11-18): the server judge answers everything.**
 With a gateway's URL and key set, the server's pinned model and prompt
@@ -199,6 +201,11 @@ hosted there, from Podman (the guide, section 6b); the YAML is for a
 deployment beyond it. VAST's names are internal DNS only: Claude Code on
 a NASA machine is the client, not claude.ai or Claude Desktop's cloud
 connectors. VAST has no objection to the open status page (Abby).
+The Keycloak client for the dev URL is minted; the admins recommend
+VAST's `py_auth_boilerplate` as the reference for its sign-in, and later
+a namespace and pod of TOBI's own from a Kubernetes file, and a mirror
+on VAST's Forgejo whose workflows release each new image (the guide,
+section 6a).
 
 **Decided (Abby, 2026-11-17): the live status page is open.** The MCP
 server keeps sign-in. A read-only page of what the server is running

@@ -289,11 +289,33 @@ loopback):
 | Read timeout (question 13) | A request held 50 s answered 200 after 50.3 s: `CALL_WAIT_S` (45 s) fits. |
 | Settings given to the environment | No port, URL or OIDC variables (`env` names only). |
 
-**Still needed from the admins:** a confidential client in the `vast`
-realm with redirect `https://<you>-dev.<VAST domain>/auth/callback`, a
-Group Membership mapper (`claim_groups`) and an Audience mapper (section
-8). Then `AUTH=oidc` at the dev URL, the smoke test (section 7), and the
-YAML.
+**The Keycloak client exists (2026-11-18):** the VAST admins minted its
+client ID and secret for the dev URL (both kept out of git: the ID in
+the env file, the secret only there or in a Kubernetes Secret). Not yet
+checked: whether its access tokens carry `sub`, `claim_groups` and the
+audience (section 8); the smoke test's sign-in shows it (a 401 with
+`authn.no_subject` or `authz.denied` names what is missing). Next:
+`AUTH=oidc` at the dev URL (section 6b), the smoke test (section 7), one
+real page.
+
+**What the admins recommend (2026-11-18):**
+
+- **Read VAST's `py_auth_boilerplate`** for setting up sign-in with that
+  client. TOBI's sign-in is already built (FastMCP's OIDC proxy,
+  `access.py`): the boilerplate signs browsers in with a session cookie,
+  while MCP clients send a bearer token on every request, so its code is
+  not reused ([the hosted sign-in plan](../plans/2026-11-06-hosted-auth.md)).
+  Read it for what VAST's realm expects: the issuer and discovery URL,
+  scopes, claim names, the group strings, and the redirect path.
+- **Later, a namespace and a pod of TOBI's own,** with its own storage
+  volume, from a Kubernetes file; the boilerplate has an example. That is
+  section 9's YAML, compared with their example before it is handed over.
+- **Mirror the repository on VAST's git (Forgejo),** whose workflows
+  could release a new image when `main` moves. Images cannot be built on
+  VAST (FIPS mode; apt fails in nested containers:
+  [environment notes](../solutions/environment.md)), so a VAST workflow
+  would take GitHub's built image (by its commit tag) and update or
+  restart the deployment, not build it.
 
 ## 6b. Hosting from the dev environment (self-service)
 
