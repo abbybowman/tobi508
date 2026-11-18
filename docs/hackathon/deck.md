@@ -133,7 +133,7 @@ flowchart LR
 - "Unsure" goes to a person, and a person's answer overrides the model's
 - The calling agent does what the server cannot: explain results in the user's own project and help fix them
 
-**Notes:** The agency controls the judge, a person has the last word, and any MCP agent is the front end. The server judge is built and off by default; it is switched on one question type at a time as checks against a certified tester's answers show it is sound. **[FILL: question types switched on at submission.]**
+**Notes:** The agency controls the judge, a person has the last word, and any MCP agent is the front end. The server judge is built and, since 2026-11-18, answers every question type whenever the server has a model; checks against a certified tester's answers keep measuring it. **[FILL: question types switched on at submission.]**
 
 ---
 

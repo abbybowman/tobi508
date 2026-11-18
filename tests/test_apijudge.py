@@ -353,7 +353,7 @@ async def test_end_to_end_the_server_answers_4d_and_the_spec_gives_the_outcome(
         "server:claude-sonnet-5-5 prompt:"
     )
     j = out.report.judge
-    assert j["route"] == "cli" and j["switched_on"] == ["4.D"]
+    assert j["route"] == "anthropic-messages" and j["switched_on"] == ["4.D"]
     assert j["prompt_sha256"] == apijudge.prompt_sha()
     assert j["answered"] == len(rec) and j["failed_calls"] == 0
     # a progress line and a `judge` step per request, with no page text
@@ -493,8 +493,29 @@ def test_api_backend_fails_at_startup_without_what_its_route_needs():
         judge_types="4.A, 4.D,",
     )
     assert s.judge_types_set == {"4.A", "4.D"}
-    assert Settings(_env_file=None).judge_backend == "client"
-    assert Settings(_env_file=None).judge_types_set == set()
+    assert Settings(_env_file=None, judge_types="").judge_types_set == set()
+
+
+def test_the_judge_is_on_when_a_gateway_is_given_and_answers_every_test():
+    """Abby, 2026-11-18: the server judge answers every test's questions by
+    default; "auto" turns it on when the gateway's URL and key are set."""
+    from tobi508.checks import REGISTRY
+
+    plain = Settings(_env_file=None)
+    assert plain.judge_backend == "client"  # no gateway: the server still starts
+    assert plain.judge_types_set == {t.value for t in REGISTRY}
+    luna = Settings(_env_file=None, judge_base_url="https://x", judge_api_key="k")
+    assert luna.judge_backend == "api"
+    assert luna.judge_route == "anthropic-messages"
+    url_only = Settings(_env_file=None, judge_base_url="https://x")
+    assert url_only.judge_backend == "client"
+    off = Settings(
+        _env_file=None,
+        judge_backend="client",
+        judge_base_url="https://x",
+        judge_api_key="k",
+    )
+    assert off.judge_backend == "client"  # an explicit choice wins
 
 
 async def test_the_key_never_appears_in_a_report_a_log_or_an_error(

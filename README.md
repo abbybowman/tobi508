@@ -19,7 +19,7 @@ TOBI finds those failures for site owners and Trusted Testers. It runs the hands
 The diagram is the planned flow ([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
 
 - **Built:** recording and replay, the rules specs and checks, the pre-SCRT file, the server judge, and hosted sign-in with per-user runs (running on a VAST dev environment; not yet a finished service).
-- **Off by default:** the server judge (`JUDGE_BACKEND=api`, one question type at a time in `JUDGE_TYPES`). Until a type is switched on, its open questions go to the calling agent, by the same rubric.
+- **On whenever it has a model:** the server judge answers every test's open questions with a pinned model and prompt once a Messages API gateway's URL and key are set (`JUDGE_BASE_URL`, `JUDGE_API_KEY`; Abby, 2026-11-18). Without them, open questions go to the calling agent, by the same rubric.
 - **Not built yet:** the page where a signed-in person answers, and the export to a Trusted Tester's SCRT record.
 
 ## TT tests in scope
@@ -207,7 +207,7 @@ Save your own reports in your repository: a run's files expire after 24 hours.
 **Settings** come from the environment or `.env`. `.env.example` lists them all with comments. The ones you are most likely to change:
 - `ALLOWED_DOMAINS`: the pages TOBI may test (default `.gov` and `.mil`);
 - `DEV_MODE=true`: also allows `file://` pages;
-- `JUDGE_BACKEND`: `client` (default; your agent answers open questions) or `api` (the server's own model answers the types in `JUDGE_TYPES`).
+- `JUDGE_BASE_URL` and `JUDGE_API_KEY`: a Messages API gateway (such as Luna); with both set, the server's own model answers every test's open questions (`JUDGE_TYPES`, default `all`). `JUDGE_BACKEND=client` sends them to your agent instead.
 
 **Safety:**
 - Every navigation and redirect is checked against the allowlist.

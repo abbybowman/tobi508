@@ -254,22 +254,27 @@ class Settings(BaseSettings):
     rules_dir: Path = REPO_ROOT / "specs" / "rules"
 
     # ── Versions recorded in every report ─────────────────────────────────────
-    # "client": open questions go to the calling agent (tobi_answer_questions).
     # "api": the server answers the question types in JUDGE_TYPES itself
-    # (apijudge.py; the rest still go to the calling agent). Settings come
-    # from the environment only; startup fails if "api" lacks what its route
-    # needs, so a misconfigured server never starts.
-    judge_backend: Literal["client", "api"] = "client"
-    # "cli": `claude -p` (development and the gate). "anthropic-messages": a
-    # Messages API gateway (production).
-    judge_route: Literal["cli", "anthropic-messages"] = "cli"
+    # (apijudge.py; the rest still go to the calling agent). "client": open
+    # questions go to the calling agent (tobi_answer_questions). "auto" (the
+    # default; Abby, 2026-11-18): "api" when JUDGE_BASE_URL and JUDGE_API_KEY
+    # are both set, otherwise "client", resolved at startup, so a server
+    # given a gateway judges and one without still runs. The report records
+    # the resolved value. Settings come from the environment only; startup
+    # fails if an explicit "api" lacks what its route needs.
+    judge_backend: Literal["auto", "client", "api"] = "auto"
+    # "anthropic-messages": a Messages API gateway (Luna; production).
+    # "cli": `claude -p` (development and the gate; not in the image).
+    judge_route: Literal["cli", "anthropic-messages"] = "anthropic-messages"
     judge_base_url: str | None = None
     judge_api_key: SecretStr | None = None
     judge_auth_header: str = "x-api-key"
     judge_model: str = "claude-sonnet-5-5"
     # Test ids whose questions the server answers, comma separated (for
-    # example "4.A,4.D"). Empty: nothing is switched on until the gate passes.
-    judge_types: str = ""
+    # example "4.A,4.D"), or "all": every implemented test (the default;
+    # Abby, 2026-11-18: a pinned server judge, unsure included, beats the
+    # calling agent's answers). Empty: none.
+    judge_types: str = "all"
     judge_concurrency: int = Field(default=3, ge=1, le=16)
     judge_call_timeout_s: int = Field(default=300, ge=10)
     # A run's whole judging phase stops here; what is left stays open.
@@ -280,10 +285,19 @@ class Settings(BaseSettings):
 
     @property
     def judge_types_set(self) -> set[str]:
-        return {t.strip() for t in self.judge_types.split(",") if t.strip()}
+        types = {t.strip() for t in self.judge_types.split(",") if t.strip()}
+        if "all" in {t.lower() for t in types}:
+            from tobi508.checks import REGISTRY
+
+            return {t.value for t in REGISTRY}
+        return types
 
     @model_validator(mode="after")
     def _judge_is_complete(self) -> Settings:
+        if self.judge_backend == "auto":
+            have_gateway = bool(self.judge_base_url and self.judge_api_key)
+            self.judge_backend = "api" if have_gateway else "client"
+            return self
         if self.judge_backend == "api" and self.judge_route == "anthropic-messages":
             missing = [
                 n

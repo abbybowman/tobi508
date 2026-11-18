@@ -95,10 +95,12 @@ claude mcp add --transport http tobi508 http://127.0.0.1:8000/mcp
 own loopback, which a published port cannot reach. Stop it with
 `docker rm -f tobi`.
 
-Open questions go to your agent by default. To have the server answer
-some itself through a Messages API gateway (Luna or another), set the
-`JUDGE_*` settings in `.env`, or with the image in a file passed with
-`--env-file`: [deploy-on-vast.md, section 9](deploy-on-vast.md#9-the-yaml-for-the-cluster-admins).
+Open questions are answered by the server's own judge whenever it has a
+model: set `JUDGE_BASE_URL` and `JUDGE_API_KEY` (a Messages API gateway
+such as Luna; `JUDGE_MODEL` for its model name) in `.env`, or with the
+image in a file passed with `--env-file`
+([deploy-on-vast.md, section 2](deploy-on-vast.md#open-questions-the-judge)).
+Without them, your agent answers them.
 
 ## Check it works
 
