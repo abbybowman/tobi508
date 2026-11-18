@@ -1449,12 +1449,17 @@ async def run_tt_tests(
                 run.log("hidden", never_shown=len(hc.never_shown), why_not=hc.why_not)
             report.counts["page"] = ctx.cache["count"]
             run.write_json(run.evidence_dir / "count.json", ctx.cache["count"])
-            for c in checks:
+            # The count is over this run's tests, skipped ones included, so it
+            # never jumps back; the bar moves from stage 2 to 3 through them.
+            for n, c in enumerate(checks, 1):
                 if pages_cut and uses_pages(c):
                     continue  # NEEDS REVIEW, not performed: pages_cut says why
                 if needs_walk(c, ctx) and walk is None:
                     continue  # NEEDS REVIEW: the run did not complete (errors say why)
-                await say(2, f"Checking {c.test_id.value}")
+                await say(
+                    2 + (n - 1) / len(checks),
+                    f"Checking {c.test_id.value} (test {n} of {len(checks)})",
+                )
                 # The test's own time, inside the run limit (step 6c): its
                 # budget or a share of what is left, whichever is smaller. It
                 # stops starting work a little before (ctx.out_of_time) and is

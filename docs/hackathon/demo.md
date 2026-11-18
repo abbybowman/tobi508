@@ -118,7 +118,8 @@ the recording, not the live site, so a run can be repeated."
 **On screen:** speed up. Caption: "11 minutes, sped up". Let the progress
 lines scroll on the right: "Walking the page with Tab and Shift+Tab",
 "Opening menus and expandable sections", "Checking which hidden fields can
-ever be shown", "Checking 9.A", "Checking 19.A". Show **Run steps** on for
+ever be shown", "Checking 9.A (test … of 22)", one line per test,
+counted. Show **Run steps** on for
 a few seconds (`walk`: 82 presses each way, ending where it started).
 
 **Say:** "It presses Tab and Shift+Tab through the whole page, the way a
