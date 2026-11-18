@@ -37,13 +37,10 @@ site: we fixed the tool with it. This is a demonstration, not a blind result.
    ConfigMap, `LIVE_LOG_TOKEN` in `tobi508-secrets`, and restart
    ([guide, "Live log"](../how-to/deploy-on-vast.md)). After the demo, set
    it back to `"false"` and restart (the restart also clears the log).
-   - **Fallback, the same view locally:** `MCP_TRANSPORT=streamable-http
-     LIVE_LOG=true LIVE_LOG_TOKEN=<token> uv run tobi508` (loopback, no
-     sign-in), `claude mcp add --transport http tobi508
-     http://127.0.0.1:8000/mcp`, and the log at
-     `http://127.0.0.1:8000/live#token=<token>`. Locally, with the defaults
-     (`BROWSER_CHANNEL=chrome`, `HEADLESS=false`), a real Chrome window
-     also opens and tabs through the page; on VAST nothing is visible.
+   GSA asks to see an MCP server, so the demo uses the hosted server on
+   VAST only, never a local one. If sign-in on VAST is not working in time,
+   that is the blocker to fix (roadmap 12b). The server's browser is
+   headless there, so the live log is how the audience sees what it does.
 2. **Open the live log** at `https://<app host>/live#token=<token>`. Clear
    view. Leave Requests, Responses and Progress on; turn **Run steps** off
    for the recording if it is too busy (turn it on for one shot during the
@@ -187,8 +184,9 @@ never a certified Trusted Tester result."
 
 ## Dry run, 2026-11-18
 
-The live page, the script's prompts' calls made in-process (not through
-Claude Code), headless Chromium in a cloud container, the client judge.
+The live page, the script's first call made in-process (not through
+Claude Code, not on VAST), headless Chromium in a cloud container, the
+client judge.
 Agent-assisted findings, not a certified Trusted Tester result.
 
 - **Time:** 10 min 31 s to the result; then 10 open questions and 1 more.
@@ -198,16 +196,14 @@ Agent-assisted findings, not a certified Trusted Tester result.
   of 40 images, 2.C and 2.D could not be performed; 4.C, 4.E and 5.D did
   not reach every control in the menus it opened; 5.F and 5.G found 4
   fields hidden until something opens them).
-- **After answers given as a careful agent would** (4.A "unsure" on a
-  feedback pop-up the page picture does not show; 4.D "unsure" on the
-  near-black ring; 4.F "preserves"; 9.C "different function" on two section
-  menus): 4.F PASS; 4.A and 4.D stay NEEDS REVIEW. 5.B's answer was refused
-  until the agent looked at the field's pictures (the guard above).
+- **Open questions:** Claude Code answers them in the recording, from the
+  pictures and rubrics in the result. 4.D's pictures show a near-black ring
+  on black: expect "unsure", so it stays for a person.
 - **The 9.A summary has a lowercase sentence start** ("…skip past it. the
   "Explore" button did not…"): a wording fix after the freeze, not for the
   demo.
 - **The viewer** (checked): this run's pre-SCRT file beside the tester's
   file: 5.A and 9.A "Same result", 12 of 63 rows differ.
-- **Not checked:** through Claude Code against VAST with sign-in; headed
-  Chrome; the live log on VAST (checked on loopback HTTP with a local test
+- **Not checked:** through Claude Code against VAST with sign-in; the live
+  log on VAST (checked on loopback HTTP with a local test
   page: requests, responses with pictures, progress and steps).
