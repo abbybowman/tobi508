@@ -213,7 +213,22 @@ thread at a time each, in the roadmap's order.
 > child page is a way of its own (the spec counts it as navigation)
 > and whether a search results page is one page whatever its query;
 > the spec text to me before you build (round 3's home page, blog and
-> search page). Then **19b**, 9.C pairs by function, as the roadmap
+> search page).
+>
+> **Then W4 and a script that draws nothing** (Abby, 2026-11-18; roadmap,
+> site tests row): on round 3's p01 to p03, 19.A's live site search is
+> "not verified" (rows W1 W4) because one script of the results page
+> failed, `script.crazyegg.com/pages/scripts/0013/2090.js`, an analytics
+> tag (Chromium in the cloud container: `ERR_BLOCKED_BY_ORB`; `curl` gets
+> 200; the same in gate 9c and in the 2026-11-19 comparison). The search
+> address is right (`/search?rendered_item=<heading>`). W4 exists so that a
+> results page drawn by script, whose scripts failed, is never a false
+> FAIL (step 6c's six false FAILs): keep that. Find out why Chromium
+> blocks the one script, then write to me the spec text that counts only a
+> script that could draw the results (`capture.failed_scripts` counts
+> every one now), with a fixture that has such a tag beside one that
+> breaks the results, before you build; a cell that turns NEEDS REVIEW
+> into PASS or FAIL waits for my yes. Then **19b**, 9.C pairs by function, as the roadmap
 > entry says, each candidate rule with a pair that must not FAIL and a
 > judge eval. The applications row changed 9.A to 9.C and 19.A's A2 (one document at
 > every address): build on it.
