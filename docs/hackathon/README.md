@@ -11,7 +11,7 @@ https://www.gsa.gov/super-intelligence/si-community-of-practice/events-and-train
 | [out/TOBI-evaluation.docx](out/TOBI-evaluation.docx) | The same, built in GSA's Word template (the file to upload) |
 | [build_pptx.py](build_pptx.py) | The deck's source: builds it in GSA's PowerPoint template |
 | [out/TOBI-deck.pptx](out/TOBI-deck.pptx) | The deck (the file to upload) |
-| [deck.md](deck.md) | The deck's text and speaker notes, generated from the `.pptx` for reading and diffs |
+| [deck.md](deck.md) | The deck's text, generated from the `.pptx` for reading and diffs |
 | [demo.md](demo.md) | The 5-minute demo script |
 | [templates/](templates/) | GSA's sample evaluation document and deck, byte for byte, used as templates |
 | [diagrams/](diagrams/) | The flow diagram |
