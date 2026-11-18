@@ -110,6 +110,12 @@ a hosted deployment" are done.
   string. Values are shown as text under a strict Content-Security-Policy
   (`tests/test_livelog.py`, `tests/test_access_signin.py`). Turn it on for a
   demo, then off.
+- **The viewer** (`GET /viewer`) is open without sign-in, as `/health` is.
+  It is a static page that holds no data: the person picks a saved file and
+  it is read in their own browser. Its Content-Security-Policy (in the file
+  and as a header, with `frame-ancestors 'none'`) blocks every request,
+  so it cannot reach `/mcp`, `/live` or anywhere else
+  (`tests/test_prescrt_viewer.py`).
 - **No secrets in the repository.** Keys (for example the agent eval's
   model API keys) go in environment variables or `.env`, which git ignores.
 

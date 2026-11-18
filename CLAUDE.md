@@ -278,7 +278,7 @@ by TT test ID. Package: `tobi508`.
 
 ```
 src/tobi508/
-  app.py        FastMCP server (stdio by default); routes.py: /health
+  app.py        FastMCP server (stdio by default); routes.py: /health, /viewer (the pre-SCRT viewer), /live
   config.py     Settings (env / .env)
   models.py     Pydantic models
   policy.py     URL allowlist decision (pure)
