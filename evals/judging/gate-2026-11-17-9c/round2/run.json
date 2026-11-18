@@ -7,7 +7,8 @@
  "repeat": 1,
  "pages": [
   "https://svs.gsfc.nasa.gov/",
-  "https://svs.gsfc.nasa.gov/help/"
+  "https://svs.gsfc.nasa.gov/help/",
+  "https://svs.gsfc.nasa.gov/search/"
  ],
  "dry": false,
  "started": "2026-11-18T15:06:56.119718+00:00"
