@@ -112,8 +112,8 @@
   "4.F": {
    "now": {
     "left": 6,
-    "agree": 3,
-    "key_passes": 1
+    "key_passes": 2,
+    "agree": 2
    },
    "9b": {
     "left": 6,
@@ -225,8 +225,7 @@
   },
   "19.A": {
    "now": {
-    "left": 2,
-    "agree": 7,
+    "agree": 9,
     "key_passes": 1
    },
    "9b": {
@@ -252,18 +251,52 @@
    ]
   },
   {
+   "page": "p01",
+   "test": "19.A",
+   "key": "Fail",
+   "9b_tool": null,
+   "9b_verdict": "needs_review",
+   "tool": "Fail",
+   "verdict": "agree",
+   "key_agrees": "yes",
+   "judge_decided": false,
+   "rows": [
+    "A5",
+    "W1",
+    "W3",
+    "G4"
+   ]
+  },
+  {
    "page": "p02",
    "test": "4.F",
    "key": "Pass",
    "9b_tool": null,
    "9b_verdict": "needs_review",
-   "tool": "Pass",
-   "verdict": "agree",
-   "key_agrees": "yes",
+   "tool": "Fail",
+   "verdict": "false_fail",
+   "key_agrees": "no",
    "judge_decided": true,
    "rows": [
     "A4",
-    "G5"
+    "G2"
+   ]
+  },
+  {
+   "page": "p02",
+   "test": "19.A",
+   "key": "Fail",
+   "9b_tool": null,
+   "9b_verdict": "needs_review",
+   "tool": "Fail",
+   "verdict": "agree",
+   "key_agrees": "yes",
+   "judge_decided": false,
+   "rows": [
+    "A5",
+    "W1",
+    "W3",
+    "G4"
    ]
   },
   {
@@ -542,7 +575,7 @@
   },
   "5.H": {
    "budget_s": 120,
-   "max_s": 3.1,
+   "max_s": 3.0,
    "max_page": "p01",
    "ran_out": []
   },
@@ -808,7 +841,7 @@
     "verdict": "needs_review",
     "key": "Pass",
     "tool": null,
-    "judge_decided": true,
+    "judge_decided": false,
     "cn": false,
     "inside": false,
     "rows": [
@@ -1463,18 +1496,17 @@
     "page": "p01",
     "url": "https://svs.gsfc.nasa.gov/",
     "test": "19.A",
-    "verdict": "needs_review",
+    "verdict": "agree",
     "key": "Fail",
-    "tool": null,
+    "tool": "Fail",
     "judge_decided": false,
     "cn": false,
     "inside": false,
     "rows": [
      "A5",
      "W1",
-     "W8",
-     "W4",
-     "G3"
+     "W3",
+     "G4"
     ],
     "instance_rows": 0
    },
@@ -1678,7 +1710,7 @@
     "verdict": "needs_review",
     "key": "Pass",
     "tool": null,
-    "judge_decided": false,
+    "judge_decided": true,
     "cn": false,
     "inside": false,
     "rows": [
@@ -1707,15 +1739,15 @@
     "page": "p02",
     "url": "https://svs.gsfc.nasa.gov/help/",
     "test": "4.F",
-    "verdict": "agree",
+    "verdict": "false_fail",
     "key": "Pass",
-    "tool": "Pass",
+    "tool": "Fail",
     "judge_decided": true,
     "cn": false,
     "inside": false,
     "rows": [
      "A4",
-     "G5"
+     "G2"
     ],
     "instance_rows": 2
    },
@@ -2328,18 +2360,17 @@
     "page": "p02",
     "url": "https://svs.gsfc.nasa.gov/help/",
     "test": "19.A",
-    "verdict": "needs_review",
+    "verdict": "agree",
     "key": "Fail",
-    "tool": null,
+    "tool": "Fail",
     "judge_decided": false,
     "cn": false,
     "inside": false,
     "rows": [
      "A5",
      "W1",
-     "W8",
-     "W4",
-     "G3"
+     "W3",
+     "G4"
     ],
     "instance_rows": 0
    },

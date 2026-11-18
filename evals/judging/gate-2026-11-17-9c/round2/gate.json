@@ -1,7 +1,7 @@
 {
  "full_gate": false,
  "date": "2026-11-17-9c",
- "scored_at": "2026-11-18T16:35:54.277692+00:00",
+ "scored_at": "2026-11-18T18:16:16.404622+00:00",
  "types_switched_on": [
   "2.A",
   "2.B",
@@ -111,10 +111,10 @@
   },
   "4.F": {
    "cells": 9,
-   "agree": 2,
+   "agree": 1,
    "wrong_pass": 0,
    "wrong_dna": 0,
-   "wrong_fail": 1,
+   "wrong_fail": 2,
    "pass_vs_dna": 0,
    "unsure": 6,
    "other": 0,
@@ -122,6 +122,7 @@
    "passes": false,
    "why_not": [
     "too few cells to judge: 3 decided, 6 needed",
+    "more than 1 wrong FAIL in a repeat",
     "wrong FAILs over 20% of the type's decided cells",
     "the test pages were not run",
     "a trial: 10 of 10 pages, 1 of 3 repeats"
@@ -367,21 +368,6 @@
   {
    "repeat": 1,
    "page": "p01",
-   "test": "4.D",
-   "verdict": "not_performed",
-   "key": "Pass",
-   "tool": null,
-   "answers": [
-    {
-     "q": "4.D-d72-J1",
-     "choice": "unsure",
-     "by": "server:claude-sonnet-5-5"
-    }
-   ]
-  },
-  {
-   "repeat": 1,
-   "page": "p01",
    "test": "4.F",
    "verdict": "not_performed",
    "key": "Pass",
@@ -459,147 +445,162 @@
    "answers": [
     {
      "q": "9.C-p3-14-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-15-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-20-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-26-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-28-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-29-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-34-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-35-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-36-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-37-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-39-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-40-J1",
-     "choice": "unsure",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-41-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-42-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-43-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-44-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-45-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-46-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-47-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-48-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-49-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-50-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-51-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p3-57-J1",
-     "choice": "different_function",
+     "choice": "unsure",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p5-15-J1",
-     "choice": "different_function",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p6-15-J1",
-     "choice": "different_function",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p7-25-J1",
-     "choice": "different_function",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p8-15-J1",
-     "choice": "different_function",
+     "choice": "consistent",
      "by": "server:claude-sonnet-5-5"
     },
     {
      "q": "9.C-p9-25-J1",
-     "choice": "different_function",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "4.D",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.D-d28-J1",
+     "choice": "yes",
      "by": "server:claude-sonnet-5-5"
     }
    ]
@@ -608,13 +609,13 @@
    "repeat": 1,
    "page": "p02",
    "test": "4.F",
-   "verdict": "agree",
+   "verdict": "false_fail",
    "key": "Pass",
-   "tool": "Pass",
+   "tool": "Fail",
    "answers": [
     {
      "q": "4.F-o1-J1",
-     "choice": "preserves",
+     "choice": "does_not_preserve",
      "by": "server:claude-sonnet-5-5"
     }
    ]
