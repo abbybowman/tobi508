@@ -31,7 +31,7 @@ to test: it loads real agency sites.
 
 Pre-release. Only `main` is supported; there are no tagged releases yet.
 
-## Status: local use; hosted sign-in built, not yet deployed
+## Status: local use; hosted sign-in verified on a VAST dev environment, not yet deployed for others
 
 The server runs on the user's own machine, over stdio by default. Without
 sign-in its HTTP transport listens on loopback only (127.0.0.1 or ::1; any
@@ -39,9 +39,11 @@ other host is refused at start) and checks the Host and Origin headers on
 every request. Hosted sign-in exists (`AUTH=oidc`: an OIDC proxy, a group
 gate, runs private to the person who made them, audit lines) and is tested
 against a stand-in provider and, on every image build, by a sign-in
-through a real Keycloak behind TLS (`scripts/smoke_hosted.py`); it has
-not yet run against NASA's identity provider. Do not host the server for others until the items under "Before
-a hosted deployment" are done.
+through a real Keycloak behind TLS (`scripts/smoke_hosted.py`). On
+2026-11-18 it signed in through VAST's Keycloak and NASA's sign-in at a
+VAST dev environment, with Claude Code and the smoke test (one person;
+the second-person check runs in CI). Do not host the server for others
+until the items under "Before a hosted deployment" are done.
 
 ## What the server does to stay safe
 
@@ -131,7 +133,10 @@ a hosted deployment" are done.
 Hosting is the target (see `docs/plans/2026-11-07-server-judge-pivot.md`).
 Sign-in and per-user separation of runs are built
 (`docs/plans/2026-11-06-hosted-auth.md`). Not done yet:
-- sign-in verified end to end against NASA's identity provider;
+- a group (`REQUIRED_GROUPS`) so that only TOBI's users can sign in: in
+  VAST's shared realm, without one, any VAST user can;
+- sign-in codes kept out of the web server's access log (today it logs
+  each request's whole address);
 - network-level egress rules on the host, as a second layer behind the
   proxy;
 - a retention rule for stored runs, and a store that outlives a restart;

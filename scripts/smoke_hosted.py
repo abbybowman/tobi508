@@ -19,11 +19,12 @@ It checks, in order, and stops at the first failure (exit 1):
                  carries the disclaimer and a finding for each test asked.
   5. report      The report is read through its run:// link.
   6. second      A second person signs in and can open neither that run's
-     person      report nor its job.
+     person      report nor its job. --login form only: with --login browser
+                 it is skipped and says so.
   7. audit       The audit lines name the caller: the run's tool call with
                  the first person's subject (and, with --login form, their
                  name), the second person's refused read with another
-                 subject, and no token anywhere in the log.
+                 subject (--login form), and no token anywhere in the log.
 
 Sign-in, two ways:
   --login form     Fill the identity provider's own username and password
@@ -31,9 +32,9 @@ Sign-in, two ways:
                    NAME:PASSWORD.
   --login browser  Print a link for a person to open (NASA Launchpad on
                    VAST); this script listens on a localhost port for the
-                   redirect, as Claude Code does. Sign the second person in
-                   from a private window, or the provider's session signs
-                   the first person in again.
+                   redirect, as Claude Code does. One person: a second
+                   NASA identity at the same computer is rarely at hand, so
+                   step 6 is left to CI's --login form run.
 
 Audit lines come from the server's log, which this script cannot reach
 through the server: --audit-cmd runs a command that prints it (for example
@@ -310,8 +311,7 @@ def sign_in_browser(base: str, cacert: str | None, who: str) -> str:
     verifier, challenge = _pkce()
     state = secrets.token_urlsafe(8)
     print(
-        f"\nSign in as the {who} person (a private window for the second), "
-        "then come back here:\n  "
+        f"\nSign in as the {who} person, then come back here:\n  "
         + _authorize_url(base, client_id, redirect_uri, challenge, state)
         + "\n",
         flush=True,
@@ -562,13 +562,25 @@ def main(argv: list[str]) -> int:
         f"frozen pages {report.get('frozen_pages')}",
     )
 
-    # 6. second person
-    second = sign_in("second", a.second_user)
-    opened = asyncio.run(second_person_reaches(base, second, uri, data.get("_job_id")))
-    if opened:
-        fail("second person", f"opened the first person's {' and '.join(opened)}")
-    asked = "report" + (" and job" if data.get("_job_id") else "")
-    ok("second person", f"signed in; could not open the first person's {asked}")
+    # 6. second person. With browser sign-in it needs a second NASA identity
+    # at the same computer, which one tester does not have (VAST,
+    # 2026-11-18); CI's --login form run checks it on every image build.
+    second = None
+    if a.login == "browser":
+        print(
+            "skip  second person: not run with --login browser; "
+            "checked in CI (--login form, two Keycloak users)",
+            flush=True,
+        )
+    else:
+        second = sign_in("second", a.second_user)
+        opened = asyncio.run(
+            second_person_reaches(base, second, uri, data.get("_job_id"))
+        )
+        if opened:
+            fail("second person", f"opened the first person's {' and '.join(opened)}")
+        asked = "report" + (" and job" if data.get("_job_id") else "")
+        ok("second person", f"signed in; could not open the first person's {asked}")
 
     # 7. audit
     if a.skip_audit:
@@ -580,7 +592,7 @@ def main(argv: list[str]) -> int:
             "give --audit-cmd or --audit-file (or --skip-audit to leave it out)",
         )
     text = read_log(a)
-    if first in text or second in text:
+    if first in text or (second and second in text):
         fail("audit", "a sign-in token appears in the server's log")
     lines = [e for e in audit_lines(text) if e.get("ts", 0) >= started - 5]
     runs = [
@@ -603,6 +615,12 @@ def main(argv: list[str]) -> int:
         name1 = (a.user or "").split(":", 1)[0].lower()
         if name1 not in str(who1).lower():
             fail("audit", f"the run's audit line names {who1!r}, not {name1!r}")
+    if second is None:
+        ok(
+            "audit",
+            f"run by {who1} ({len(lines)} lines; tool.call ok); no token in the log",
+        )
+        return 0
     reads = [
         e
         for e in lines

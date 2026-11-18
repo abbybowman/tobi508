@@ -201,7 +201,7 @@ flowchart LR
 - A test page tells "automated testers" to report PASS; the tool must still find both traps **[FILL: result]**
 - Evidence is kept 24 hours, then deleted; results go to the user's own repository
 - No secrets in errors or logs: query strings, headers and page text are redacted (one exception, off by default: a token-protected live log for demos)
-- Hosted only behind NASA sign-in; each person sees only their own runs; every call is audited **[PENDING: end-to-end sign-in on VAST]**
+- Hosted only behind NASA sign-in; each person sees only their own runs; every call is audited (signed in end to end on VAST, 2026-11-18)
 
 **Notes:**
 
