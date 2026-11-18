@@ -13,8 +13,10 @@
   "https://www.nasa.gov/missions/",
   "https://www.nasa.gov/mission/artemis-iii/",
   "https://www.nasa.gov/feature/naca-at-110-special-feature/",
-  "https://www.nasa.gov/news-release/nasa-releases-max-power-key-events-for-media-participants/"
+  "https://www.nasa.gov/news-release/nasa-releases-max-power-key-events-for-media-participants/",
+  "https://www.nasa.gov/gallery/ksc-history/"
  ],
  "dry": false,
- "started": "2026-11-18T01:39:22.726590+00:00"
+ "started": "2026-11-18T01:39:22.726590+00:00",
+ "note": "Container restarts split the run into one invocation per page; page list restored to all 9 by hand after the last page."
 }
