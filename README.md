@@ -46,7 +46,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). What eac
 | 4.C | 2.1.2-no-keyboard-trap | [1.17.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester |
 | 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes |
 | 4.E | 3.2.1-on-focus | [1.8.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester |
-| 4.F | 2.4.3-focus-order-meaning | [1.11.0](specs/rules/4f-focus-order-meaning.md) | ⚠️ often fails pages a tester passes |
+| 4.F | 2.4.3-focus-order-meaning | [1.11.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester |
 | 5.A | 3.3.2-label-provided | [1.15.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
 | 5.B | 2.4.6-label-descriptive | [1.12.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
 | 5.C | 1.3.1-programmatic-label | [1.14.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
