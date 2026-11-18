@@ -38,10 +38,11 @@ site: we fixed the tool with it. This is a demonstration, not a blind result.
    on VAST only, never a local one. Its browser is headless there, so the
    live log is how the audience sees what it does. Turn the live log on in
    the dev container: add `LIVE_LOG=true` and a random `LIVE_LOG_TOKEN` to
-   the env file, as the secret was added (never typed where it shows),
-   and restart the container ([guide, "Live log"](../how-to/deploy-on-vast.md)).
-   After the demo, remove both lines and restart (the restart also clears
-   the log).
+   the env file and restart with the how-to's start command, the one that
+   mounts NASA's certificates (section 6b, "With sign-in"; a restart
+   without that mount stops at startup). The how-to's "Live log" has
+   both commands. After the demo, remove both lines and restart (the
+   restart also clears the log).
 2. **Open the live log** at `https://<app host>/live#token=<token>`. Clear
    view. Leave Requests, Responses and Progress on; turn **Run steps** off
    for the recording if it is too busy (turn it on for one shot during the

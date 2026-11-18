@@ -139,8 +139,22 @@ token is in the address's fragment, which a browser never sends, so it stays
 out of the gateway's logs; the page sends it in a header when it asks for
 events. The page is not behind sign-in: anyone with the token sees **every
 caller's** calls, including page text and answers, which the audit lines
-never hold. Turn it on for the demo (ConfigMap `LIVE_LOG: "true"`, the token
-in the secret, a restart), then off again (another restart clears it).
+never hold. Turn it on for the demo, then off again (another restart
+clears it). In a deployment of its own: ConfigMap `LIVE_LOG: "true"`, the
+token in the secret, a restart. At the dev URL (section 6b), add both to
+the env file without printing the token, then restart with section 6b's
+start command (the one that mounts NASA's certificates):
+
+```bash
+printf 'LIVE_LOG=true\nLIVE_LOG_TOKEN=%s\n' "$(openssl rand -base64 24 | tr -d '/+=')" >> ~/.config/tobi508/env
+```
+
+Read the token when you open the page
+(`grep '^LIVE_LOG_TOKEN=' ~/.config/tobi508/env | cut -d= -f2`). Once
+other people use the server, keep it out of shared places (an issue, a
+recording): whoever has it sees their calls too. To change it, replace
+the line and restart. To turn it off, delete both
+lines (`sed -i '/^LIVE_LOG/d' ~/.config/tobi508/env`) and restart.
 
 ## 3. Where runs live, and for how long
 
@@ -330,7 +344,8 @@ in a dev container reaches it.) So the dev URL is where TOBI is hosted
 for now, and the YAML (section 9) is for a deployment beyond it.
 
 Its settings go in one file only you can read, never in the command line
-or git. In the dev container:
+or git. **Without sign-in** (the first setup, 2026-11-17: loopback only,
+reached through an ssh tunnel), in the dev container:
 
 ```bash
 mkdir -p ~/.config/tobi508 && umask 077
@@ -351,8 +366,13 @@ podman run -d --name tobi --network host --env-file ~/.config/tobi508/env \
 ```
 
 `tobi-data` is a Podman named volume, under the home volume, owned
-right for the image's user. To update: `podman pull` the image, then
-`podman rm -f tobi` and the same `podman run`.
+right for the image's user. **That `podman run` is for this setup
+only.** Once the file has the sign-in settings, every start, restart and
+update uses the command under "With sign-in" below, which mounts NASA's
+certificates: without the mount the server stops at startup with
+`FileNotFoundError` from `ssl.create_default_context` (`SSL_CERT_FILE`
+names a file that is not there). To update, `podman pull` the image
+first.
 
 **Memory.** `podman stats` leaves out file cache, and Podman sets no
 limit of its own (it shows the dev container's 16 GiB, not the 4 GB).
