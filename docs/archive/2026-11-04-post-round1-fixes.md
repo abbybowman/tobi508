@@ -1,5 +1,7 @@
 # Fixes after agent eval round 1: index
 
+**Archived 2026-11-18: all built.** Kept as the index for the "post-round 1 fix N" citations in code, specs and tests.
+
 All 20 fixes were built on 2026-11-05 and 2026-11-06 (PR #14 and after).
 Code, specs and tests cite them as "post-round 1 fix N"; this index says
 what each number was and where it lives now. The evidence and the long
