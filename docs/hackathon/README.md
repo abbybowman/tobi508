@@ -1,23 +1,49 @@
 # Hackathon submission docs
 
-Drafts of the two documents the GSA MCP and AI Agent Hackathon asks for, kept
-in Markdown so they change with the code.
+The documents for the GSA MCP and AI Agent Hackathon (Service "Read"
+Integration track). Due Nov 20, 2026; reviewed asynchronously with a
+5-minute demo video. Hackathon page:
+https://www.gsa.gov/super-intelligence/si-community-of-practice/events-and-training/mcp-server-and-si-agent-government-hackathon
 
-| File | GSA deliverable |
+| File | What it is |
 | --- | --- |
-| [evaluation.md](evaluation.md) | Evaluation document (GSA's sample: `MCP-hackathon-sample-evaluation-document.docx`) |
-| [deck.md](deck.md) | Presentation deck, one section per slide (GSA's sample: `MCP-hackathon-sample-deck.pptx`) |
+| [evaluation.md](evaluation.md) | Evaluation document, the source |
+| [out/TOBI-evaluation.docx](out/TOBI-evaluation.docx) | The same, built in GSA's Word template (the file to upload) |
+| [deck.md](deck.md) | Presentation deck, one section per slide (being rewritten to match the evaluation document) |
+| [demo.md](demo.md) | The 5-minute demo script |
+| [templates/](templates/) | GSA's sample evaluation document and deck, byte for byte, used as templates |
+| [diagrams/](diagrams/) | The flow diagram |
+
+## Building the Word file
+
+```bash
+python3 docs/hackathon/build_docx.py docs/hackathon/evaluation.md docs/hackathon/out/TOBI-evaluation.docx
+```
+
+It needs python-docx (not a project dependency). It keeps the template's
+styles and replaces its body; blockquotes in the Markdown are drafting
+notes and are left out. Rebuild and commit the `.docx` whenever
+`evaluation.md` changes.
+
+## Where the figures come from (Abby, 2026-11-18)
+
+- **The three blind rounds** (`evals/judging/round1`, `round2`,
+  `round2-armc`, `round3`): each scored once, before the site was used for
+  development. Never replaced by a later run.
+- **The rerun after the fixes** (`evals/judging/gate-2026-11-17-9c/`,
+  `evals/README.md` "Gate 2026-11-17-9c"): all 29 pages, labelled as
+  development evidence. The README's status table reads the same run.
+- **The comparison of the calling agent, the server judge and the
+  baseline on round 3's pages** (`evals/judging/compare-2026-11-19-r3/`,
+  in progress): fills the remaining [FILL] markers.
+- **Published answer keys:** the ACT and Baseline tests at the commit
+  named in the document.
+
+There is no separate scored run at the submission commit.
 
 ## Markers
 
-- **[FILL: …]** a final figure. Copy it from the scored submission run, never from a run during development.
-- **[PENDING]** work not done yet. Remove the marker only when the work exists and has been checked.
-
-## Keeping them current
-
-- **These Markdown files are the source.** Render them into GSA's Word and PowerPoint templates only at submission time.
-- **Update in the same commit.** When a TT test, spec version, evaluation method or security control changes, update `evaluation.md` and the matching slide in `deck.md` in the same commit. Keep figures as [FILL] until the submission run.
-- **Fill in from one run.** At submission, run the scored suite once at the submission commit and fill every [FILL] from that run, with its commit, date and environment.
-- **No certification claims.** Never describe a tested page as certified, compliant or Section 508 conformant (CLAUDE.md principle 1).
-
-Submission is due Nov 20, 2026 (subject to change). Hackathon page: https://www.gsa.gov/super-intelligence/si-community-of-practice/events-and-training/mcp-server-and-si-agent-government-hackathon
+- **[FILL: …]** a figure a run still in progress will supply. Copy it from
+  that run's files, never estimate it.
+- **No certification claims.** Never describe a tested page as certified,
+  compliant or Section 508 conformant (CLAUDE.md principle 1).
