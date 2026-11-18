@@ -1,0 +1,306 @@
+<title>How TOBI Tests a Page</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; three views (overview, two zoom-ins) chosen from a view bar; each step is a row with who acts on the left. */
+:root {
+  --bg: #FFFFFF;
+  --fg: #1C2430;
+  --muted: #4B5563;
+  --line: #C9D2DE;
+  --panel: #F2F5F9;
+  --accent: #0B3364;
+  --accent-fg: #FFFFFF;
+  --browser-bg: #E6EDF7; --browser-fg: #0B3364;
+  --rule-bg: #ECEEF1;    --rule-fg: #2B3340;
+  --model-bg: #FFF1C7;   --model-fg: #5C4100;
+  --person-bg: #E3F2E6;  --person-fg: #14532D;
+  --pass: #14532D; --fail: #8B1A1A; --review: #5C4100;
+  --focus: #B45309;
+  --sans: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1620; --fg: #E5EAF1; --muted: #A9B4C2; --line: #334155; --panel: #18212D;
+    --accent: #9CC0F0; --accent-fg: #0F1620;
+    --browser-bg: #1D2D45; --browser-fg: #C9DCF7;
+    --rule-bg: #252D38;    --rule-fg: #DDE3EA;
+    --model-bg: #3A2F12;   --model-fg: #F6DC92;
+    --person-bg: #173323;  --person-fg: #A7E3B8;
+    --pass: #8FDCA6; --fail: #F4A3A3; --review: #F6DC92;
+    --focus: #F59E0B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1620; --fg: #E5EAF1; --muted: #A9B4C2; --line: #334155; --panel: #18212D;
+  --accent: #9CC0F0; --accent-fg: #0F1620;
+  --browser-bg: #1D2D45; --browser-fg: #C9DCF7;
+  --rule-bg: #252D38;    --rule-fg: #DDE3EA;
+  --model-bg: #3A2F12;   --model-fg: #F6DC92;
+  --person-bg: #173323;  --person-fg: #A7E3B8;
+  --pass: #8FDCA6; --fail: #F4A3A3; --review: #F6DC92;
+  --focus: #F59E0B;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font: 17px/1.55 var(--sans);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.wrap { max-width: 980px; margin: 0 auto; }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+.skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: var(--accent-fg); padding: 8px 12px; z-index: 20; }
+.skip:focus { left: max(16px, env(safe-area-inset-left, 0px)); }
+header { padding-block: 32px 8px; }
+h1, h2, h3 { line-height: 1.2; text-wrap: balance; margin: 0; }
+h1 { font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+h2 { font-size: 1.55rem; font-weight: 700; margin-top: 8px; }
+h3 { font-size: 1.15rem; font-weight: 600; margin-top: 32px; }
+p { margin: 10px 0; max-width: 68ch; }
+.lede { font-size: 1.1rem; color: var(--muted); }
+.note { font-size: 0.92rem; color: var(--muted); }
+kbd { font: 500 0.85em var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--panel); white-space: nowrap; }
+.views { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); margin-top: 16px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.views ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 10px 0; }
+.views a { display: inline-block; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: var(--fg); font-weight: 600; font-size: 0.95rem; }
+.views a[aria-current="page"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.views a span { font-family: var(--mono); font-weight: 500; margin-right: 6px; }
+section.view { padding-top: 24px; scroll-margin-top: 120px; }
+section.view h2 { scroll-margin-top: 140px; }
+.who { display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.who.browser { background: var(--browser-bg); color: var(--browser-fg); }
+.who.rule { background: var(--rule-bg); color: var(--rule-fg); }
+.who.model { background: var(--model-bg); color: var(--model-fg); }
+.who.person { background: var(--person-bg); color: var(--person-fg); }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 0; margin: 14px 0 0; list-style: none; font-size: 0.93rem; color: var(--muted); }
+.legend li { display: flex; gap: 8px; align-items: center; }
+ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 16px 0 0; display: grid; gap: 0; }
+ol.steps > li { counter-increment: step; display: grid; grid-template-columns: 2.2rem 1fr; gap: 0 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+ol.steps > li::before { content: counter(step); font: 600 1rem var(--mono); color: var(--accent); border: 2px solid var(--accent); border-radius: 50%; width: 2.1rem; height: 2.1rem; display: grid; place-items: center; }
+ol.steps > li > div { min-width: 0; }
+ol.steps .head { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+ol.steps .head strong { font-size: 1.05rem; }
+ol.steps p { margin: 6px 0 0; }
+.table-wrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+caption { text-align: left; font-weight: 600; padding: 10px 12px; background: var(--panel); }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-top: 1px solid var(--line); }
+thead th { background: var(--panel); font-weight: 600; }
+td.id { font-family: var(--mono); white-space: nowrap; }
+.out { font-weight: 700; white-space: nowrap; }
+.out.pass { color: var(--pass); } .out.fail { color: var(--fail); } .out.review { color: var(--review); }
+.callout { background: var(--panel); border-radius: 10px; padding: 14px 18px; margin-top: 16px; }
+.callout > :first-child { margin-top: 0; }
+blockquote.q { margin: 10px 0 0; padding: 12px 16px; border-radius: 8px; background: var(--model-bg); color: var(--model-fg); max-width: 68ch; }
+figure { margin: 14px 0 0; }
+.shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.shot { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.shot .pane { height: 92px; display: grid; place-items: center; background: #FFFFFF; }
+.shot .pane.diff { background: #111827; }
+.shot .label { font-size: 0.85rem; padding: 6px 10px; background: var(--panel); }
+.fake-link { color: #0B3364; text-decoration: underline; font-size: 1rem; padding: 4px 6px; }
+.fake-link.on { outline: 3px solid #B45309; outline-offset: 2px; }
+.ring { width: 104px; height: 34px; border: 3px solid #FBBF24; border-radius: 3px; }
+figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 8px; max-width: 68ch; }
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+.compare > div { background: var(--panel); border-radius: 10px; padding: 14px 16px; min-width: 0; }
+.compare h4 { margin: 0 0 6px; font-size: 1rem; }
+.compare p { margin: 4px 0; }
+footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--muted); }
+@media (max-width: 640px) {
+  h1 { font-size: 1.75rem; }
+  .shots, .compare { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+<header>
+  <h1>How TOBI tests a page</h1>
+  <p class="lede">TOBI follows the DHS Trusted Tester 5.1.3 procedure in a real Chrome browser. Rules decide outcomes; a model only answers the narrow questions a rule asks; anything it is unsure of goes to a person.</p>
+  <ul class="legend" aria-label="Who acts at each step">
+    <li><span class="who browser">Browser</span> TOBI drives Chrome</li>
+    <li><span class="who rule">Rule</span> a written rule decides</li>
+    <li><span class="who model">Model</span> TOBI's pinned model answers a question</li>
+    <li><span class="who person">Person</span> a person settles it</li>
+  </ul>
+</header>
+
+<nav class="views" aria-label="Views">
+  <ul>
+    <li><a href="#overview" data-view="overview">Every test</a></li>
+    <li><a href="#focus-visible" data-view="focus-visible"><span>4.D</span>Focus visible</a></li>
+    <li><a href="#keyboard-trap" data-view="keyboard-trap"><span>4.C</span>No keyboard trap</a></li>
+  </ul>
+</nav>
+
+<main id="main">
+
+<section class="view" id="overview" aria-labelledby="h-overview">
+  <h2 id="h-overview" tabindex="-1">One path for every test</h2>
+  <p>All 22 tests TOBI performs follow the same path. What differs between tests is how the evidence is collected and how much a rule needs a judgment.</p>
+  <ol class="steps">
+    <li><div><div class="head"><strong>Record the page once</strong><span class="who browser">Browser</span></div>
+      <p>In real Chrome. Every check after this runs on the recording, so key presses and form entries never reach the live site, and the same recording gives the same evidence.</p></div></li>
+    <li><div><div class="head"><strong>Walk the page and take an inventory</strong><span class="who browser">Browser</span></div>
+      <p>One keyboard walk, <kbd>Tab</kbd> forward and <kbd>Shift</kbd>+<kbd>Tab</kbd> back, shared by every test. Focus is read from Chrome itself, so a page script cannot fake it. The inventory lists what the page holds, inside frames and web components too.</p></div></li>
+    <li><div><div class="head"><strong>Collect the test's own evidence</strong><span class="who browser">Browser</span></div>
+      <p>Pictures, key presses, form entries, a period of watching, or other pages of the site: one of five families, below.</p></div></li>
+    <li><div><div class="head"><strong>Rules decide what they can</strong><span class="who rule">Rule</span></div>
+      <p>Each test has one rules file. Its rows are tried in order and the first that matches decides; each row cites the step of the Trusted Tester PDF it rests on.</p></div></li>
+    <li><div><div class="head"><strong>A rule asks an open question</strong><span class="who model">Model</span></div>
+      <p>Only when the procedure calls for a judgment. The model gets the evidence, the pictures and a rubric with examples, and answers yes, no or unsure. Page text reaches it only marked as untrusted.</p></div></li>
+    <li><div><div class="head"><strong>The rule uses the answer</strong><span class="who rule">Rule</span><span class="who person">Person</span></div>
+      <p>A sure answer goes back to the rule, which decides. "Unsure", or a call that failed, goes to a person.</p></div></li>
+    <li><div><div class="head"><strong>Hold back anything not fully read</strong><span class="who rule">Rule</span></div>
+      <p>If a test did not read everything the inventory holds, a PASS or DOES NOT APPLY becomes NEEDS REVIEW, with a sentence saying what was not checked. Never the other way round.</p></div></li>
+    <li><div><div class="head"><strong>Report by Trusted Tester test</strong><span class="who rule">Rule</span></div>
+      <p>Findings in plain language with their evidence, and a draft in the same rows as DHS's SCRT, marked "not certified by a Trusted Tester".</p></div></li>
+  </ol>
+
+  <h3>Five ways of collecting evidence</h3>
+  <div class="table-wrap" role="region" tabindex="0" aria-label="The 22 tests by family (scrolls sideways on small screens)">
+    <table>
+      <caption>The 22 tests by how TOBI collects their evidence</caption>
+      <thead><tr><th scope="col">Family</th><th scope="col">Tests</th><th scope="col">What TOBI does</th><th scope="col">What the model is asked, for example</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Keyboard walk</th><td>4.A Keyboard access<br>4.B No keystroke timing<br>4.C No keyboard trap<br>4.D Focus visible<br>4.E On focus<br>4.F Focus order</td><td>Tabs forward and back through every element, pictures each one as it gets focus, and tries keys to leave a trap.</td><td>"Does this change show where focus is?" (4.D) "Does this text name a key that leaves this section?" (4.C)</td></tr>
+        <tr><th scope="row">Watching over time</th><td>2.A Audio control<br>2.B Blinking, moving, scrolling<br>2.C Auto-updating<br>2.D Change notification<br>3.A Flashing</td><td>Loads the page and watches with no input for sound, motion and updates; for 3.A, captures frames and counts flashes.</td><td>"Is this a control that pauses or stops the content?" 3.A asks nothing.</td></tr>
+        <tr><th scope="row">Reading labels</th><td>5.A Label provided<br>5.B Label descriptive<br>5.C Programmatic label</td><td>ANDI reads each field's name; TOBI pictures each field with what surrounds it.</td><td>"Is there a visible label for this field, and does it describe it?"</td></tr>
+        <tr><th scope="row">Using forms</th><td>5.D On input<br>5.F Error identification<br>5.G Error suggestion<br>5.H Error prevention</td><td>Types, chooses and submits on the recording, never the live site, and records what changed.</td><td>"Is this new text an error message, and does it name the field?"</td></tr>
+        <tr><th scope="row">Comparing pages</th><td>9.A Bypass blocks<br>9.B Consistent navigation<br>9.C Consistent identification<br>19.A Multiple ways</td><td>Reads other pages of the same site; for 19.A also the site map, the site's own search and nearby pages.</td><td>"Do these two differently named links do the same thing?" 9.B asks nothing.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Two tests use no model at all: 3.A Flashing counts flashes frame by frame, and 9.B Consistent navigation compares the order of repeated links across pages. The other 20 combine rules with model questions; how far a model's answer can go differs by test, and the two views above show two examples.</p>
+</section>
+
+<section class="view" id="focus-visible" aria-labelledby="h-fv">
+  <h2 id="h-fv" tabindex="-1">4.D Focus visible: the model looks at pictures</h2>
+  <p>The Trusted Tester PDF (p. 22) asks the tester to move focus to each element and check that they can see where focus is. TOBI does the same, and measures the change before it asks anyone.</p>
+  <ol class="steps">
+    <li><div><div class="head"><strong>Tab to each element</strong><span class="who browser">Browser</span></div>
+      <p>The shared keyboard walk reaches every element that takes focus, forward and back.</p></div></li>
+    <li><div><div class="head"><strong>Take three pictures of it</strong><span class="who browser">Browser</span></div>
+      <p>Without focus (A), with focus (B), and the pixels that differ (C). On a page that moves by itself, TOBI looks twice and ignores pixels that change on their own, so a slideshow behind a link cannot count as its focus indicator.</p>
+      <figure aria-describedby="fv-cap">
+        <div class="shots">
+          <div class="shot"><div class="pane"><span class="fake-link">Contact us</span></div><div class="label">A: without focus</div></div>
+          <div class="shot"><div class="pane"><span class="fake-link on">Contact us</span></div><div class="label">B: with focus</div></div>
+          <div class="shot"><div class="pane diff"><div class="ring"></div></div><div class="label">C: pixels that changed</div></div>
+        </div>
+        <figcaption id="fv-cap">An illustration: a link without focus, the same link with a focus outline, and only the outline's pixels lit in the difference picture.</figcaption>
+      </figure></div></li>
+    <li><div><div class="head"><strong>Rules decide the clear cases</strong><span class="who rule">Rule</span></div>
+      <p>The first row that matches decides:</p>
+      <div class="table-wrap" role="region" tabindex="0" aria-label="4.D outcomes, one element at a time (scrolls sideways on small screens)"><table>
+        <caption>4.D, one element at a time</caption>
+        <thead><tr><th scope="col">What TOBI measured</th><th scope="col">Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>TOBI could not see the element fully (never fully in view, or covered)</td><td class="out review">NEEDS REVIEW</td></tr>
+          <tr><td>A text field showing its blinking caret</td><td class="out pass">PASS</td></tr>
+          <tr><td>A style change (outline, border, shadow, background, colour, underline) and enough changed pixels</td><td class="out pass">PASS</td></tr>
+          <tr><td>Something changed, but not a clear style change</td><td>Ask the model</td></tr>
+          <tr><td>Almost nothing changed</td><td class="out fail">FAIL</td></tr>
+        </tbody>
+      </table></div></div></li>
+    <li><div><div class="head"><strong>The model looks at the pictures</strong><span class="who model">Model</span></div>
+      <blockquote class="q">"Image A shows part of a web page without keyboard focus; image B shows the same part with keyboard focus on the outlined element. Image C marks the pixels that differ. Is there a change on or right around the outlined element in B that a sighted user would notice as showing it has focus?"</blockquote>
+      <div class="table-wrap" role="region" tabindex="0" aria-label="Rubric examples for 4.D (scrolls sideways on small screens)"><table>
+        <caption>From the rubric the model is given</caption>
+        <thead><tr><th scope="col">The picture shows</th><th scope="col">Answer</th></tr></thead>
+        <tbody>
+          <tr><td>An underline appears under the link text</td><td>Yes</td></tr>
+          <tr><td>A small square appears just before the link</td><td>Yes</td></tr>
+          <tr><td>The slide behind the link changed; the link looks the same</td><td>No</td></tr>
+          <tr><td>A tooltip appears beside the button; the button looks the same</td><td>Unsure</td></tr>
+          <tr><td>A 1 px very light grey outline on white</td><td>Unsure</td></tr>
+        </tbody>
+      </table></div></div></li>
+    <li><div><div class="head"><strong>The rule uses the answer</strong><span class="who rule">Rule</span><span class="who person">Person</span></div>
+      <p>Yes: <span class="out pass">PASS</span>, because TOBI also measured a change. No: <span class="out fail">FAIL</span>. Unsure: <span class="out review">NEEDS REVIEW</span>, for a person to look.</p></div></li>
+    <li><div><div class="head"><strong>The page's result</strong><span class="who rule">Rule</span></div>
+      <p>Any element that fails makes the page <span class="out fail">FAIL</span>, listing each one. Otherwise, any element left for review, or a walk that did not reach every element, makes it <span class="out review">NEEDS REVIEW</span>. Only when every element passes is the page a <span class="out pass">PASS</span>.</p></div></li>
+  </ol>
+</section>
+
+<section class="view" id="keyboard-trap" aria-labelledby="h-kt">
+  <h2 id="h-kt" tabindex="-1">4.C No keyboard trap: the model reads, then TOBI presses the key</h2>
+  <p>The Trusted Tester PDF (p. 21) asks the tester to move through the page with the keyboard and, where focus gets stuck, try the standard keys and then any key the page documents. A scanner cannot do this: it never presses a key.</p>
+  <ol class="steps">
+    <li><div><div class="head"><strong>Walk the whole page, both ways</strong><span class="who browser">Browser</span></div>
+      <p><kbd>Tab</kbd> forward through the page from a fresh load, then <kbd>Shift</kbd>+<kbd>Tab</kbd> backward from another. A trap is focus stuck on one element, or circling a few, never reaching the rest.</p></div></li>
+    <li><div><div class="head"><strong>Make sure the trap is real</strong><span class="who rule">Rule</span></div>
+      <p>A second walk from a fresh load must find it again. A trap seen only once is <span class="out review">NEEDS REVIEW</span>.</p></div></li>
+    <li><div><div class="head"><strong>Try the standard ways out</strong><span class="who browser">Browser</span></div>
+      <p>Each from a fresh replay of the steps that reached the trap: the opposite direction, the arrow keys, <kbd>Esc</kbd> then <kbd>Tab</kbd>, and <kbd>Enter</kbd> on each control in the trap. If focus leaves, <span class="out pass">PASS</span>. Leaving the page itself (a reload or a new page) is not a way out.</p></div></li>
+    <li><div><div class="head"><strong>The model reads the page for a documented key</strong><span class="who model">Model</span></div>
+      <blockquote class="q">"Does this text tell users a specific key or key combination that moves keyboard focus out of this section? If yes, give the keys, the exact quote and where it appears."</blockquote>
+      <p>A shortcut list with no exit key counts as no. Text a user cannot perceive does not count.</p></div></li>
+    <li><div><div class="head"><strong>TOBI presses that key</strong><span class="who browser">Browser</span></div>
+      <p>On a fresh replay. If focus leaves, <span class="out pass">PASS</span>. If not, the model's answer counts for nothing.</p></div></li>
+    <li><div><div class="head"><strong>A loop of form fields</strong><span class="who model">Model</span><span class="who person">Person</span></div>
+      <blockquote class="q">"Does this section ask the user to enter or choose something before they can continue?"</blockquote>
+      <p>A consent box or a required field can hold focus on purpose. If the model says yes, the result is <span class="out review">NEEDS REVIEW</span>, with the values a person should try.</p></div></li>
+    <li><div><div class="head"><strong>Nothing worked</strong><span class="who rule">Rule</span></div>
+      <p>Stuck, or looping, with every way out tried: <span class="out fail">FAIL</span>. The page fails if any trap fails; it passes only when both walks finished and every trap had a way out.</p></div></li>
+  </ol>
+
+  <h3>Two tests, two jobs for the model</h3>
+  <div class="compare">
+    <div>
+      <h4>4.D Focus visible</h4>
+      <p><strong>The model looks</strong> at three pictures.</p>
+      <p><strong>What backs it:</strong> TOBI measured a change before asking.</p>
+    </div>
+    <div>
+      <h4>4.C No keyboard trap</h4>
+      <p><strong>The model reads</strong> the page's text.</p>
+      <p><strong>What backs it:</strong> TOBI presses the key it found.</p>
+    </div>
+  </div>
+  <div class="callout"><p>In both, the model never decides an outcome. It answers one narrow question; the rule decides; "unsure" goes to a person.</p></div>
+</section>
+
+</main>
+
+<footer>
+  <p>Agent-assisted results, not certified Trusted Tester results. Steps summarize TOBI's rules files for 4.C and 4.D (<a href="https://github.com/abbybowman/tobi508/tree/main/specs/rules">specs/rules</a> in the repository), which follow the DHS Trusted Tester 5.1.3 procedure.</p>
+</footer>
+</div>
+
+<script>
+(function () {
+  var views = ["overview", "focus-visible", "keyboard-trap"];
+  var links = document.querySelectorAll(".views a");
+  function show(name, moveFocus) {
+    if (views.indexOf(name) < 0) name = "overview";
+    views.forEach(function (v) { document.getElementById(v).hidden = v !== name; });
+    links.forEach(function (a) {
+      if (a.dataset.view === name) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+    if (moveFocus) {
+      var h = document.getElementById(name).querySelector("h2");
+      if (h) h.focus();
+    }
+  }
+  show(location.hash.slice(1), false);
+  window.addEventListener("hashchange", function () { show(location.hash.slice(1), true); });
+  links.forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      if (location.hash.slice(1) === a.dataset.view) { e.preventDefault(); show(a.dataset.view, true); }
+    });
+  });
+})();
+</script>

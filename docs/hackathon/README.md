@@ -14,7 +14,7 @@ https://www.gsa.gov/super-intelligence/si-community-of-practice/events-and-train
 | [deck.md](deck.md) | The deck's text, generated from the `.pptx` for reading and diffs |
 | [demo.md](demo.md) | The 5-minute demo script |
 | [templates/](templates/) | GSA's sample evaluation document and deck, byte for byte, used as templates |
-| [diagrams/](diagrams/) | The flow diagram |
+| [diagrams/](diagrams/) | `tobi-flow.svg` (source) and `.png` (in the deck): the flow, built vs planned. `walkthrough.html`: the interactive walkthrough of the common path and of 4.D and 4.C, published as an artifact |
 
 ## Building the Word file
 
@@ -36,6 +36,12 @@ python3 docs/hackathon/build_pptx.py docs/hackathon/out/TOBI-deck.pptx
 Needs python-pptx. Every figure in it is copied from `evaluation.md`:
 change both together, rebuild both files, and regenerate `deck.md` with the
 pptx skill's `slide_text.py` (or any `.pptx` text dump).
+
+## Rebuilding the diagram
+
+The SVG is hand-written. Render the PNG the deck uses at 3200 x 1800 with
+Chromium (Playwright: load the SVG in a 1600 x 900 page at device scale 2 and
+screenshot the `svg` element), then rebuild the deck.
 
 ## Where the figures come from (Abby, 2026-11-18)
 

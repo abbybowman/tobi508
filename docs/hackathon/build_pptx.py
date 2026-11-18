@@ -491,27 +491,34 @@ def build(out: Path) -> None:
     pic._element.nvPicPr.cNvPr.set(
         "descr",
         (
-            "Flow diagram. 1: the developer's AI agent, any MCP client, asks TOBI to "
-            "test a page. Inside the TOBI MCP server: 2, record the page once in real "
-            "Chrome, every test runs on the same replayed copy; 3, rules decide, one "
-            "written rules spec per Trusted Tester test; when a rule needs a judgment "
-            "it asks an open question; 4, the server judge, TOBI's own pinned model, "
-            "answers by rubric from evidence and pictures. If it is sure, the rule "
-            "uses "
-            "the answer and gives an outcome (PASS, FAIL or DOES NOT APPLY) with "
-            "evidence; if unsure or the call failed, 5, a person reviews (planned). "
-            "Results go back to the agent with a link to the full report, and into 6, "
-            "a pre-SCRT file with a not-certified banner, and later 7, the Trusted "
-            "Tester's own SCRT record (planned). The rules decide every outcome; "
-            "unsure never becomes PASS; agent-assisted, not certified."
+            "Flow diagram, How TOBI tests a page. Solid lines are built and running "
+            "today; dashed lines are planned. 1: the developer's AI agent, any MCP "
+            "client, asks TOBI to test a page with tobi_run_tt_tests. Inside the "
+            "TOBI MCP server: 2, record the page once in real Chrome, and every "
+            "check runs on the replay, not the live site; 3, walk and collect: Tab "
+            "through the page, fill in forms, watch for motion, compare other "
+            "pages; 4, rules decide, one rules spec per Trusted Tester test with "
+            "each step citing the DHS PDF, giving an outcome of PASS, FAIL, DOES "
+            "NOT APPLY or NEEDS REVIEW with evidence. Held back when unsure: a rule "
+            "that cannot decide says NEEDS REVIEW, and a PASS or DOES NOT APPLY "
+            "becomes NEEDS REVIEW when a test did not read everything. When a rule "
+            "needs a judgment it asks an open question; 5, the server judge, TOBI's "
+            "own pinned model given evidence, pictures and a rubric, answers yes, "
+            "no or unsure. A sure answer goes back to the rule. Unsure, or a failed "
+            "call, goes to 7, a person on a signed-in review page whose answer "
+            "overrides the model's (planned). Outcomes go to 6, a draft report "
+            "(pre-SCRT) marked not certified, recording who answered what, and "
+            "later to 8, the Trusted Tester's own SCRT record once they certify "
+            "every row (planned). Results and a link to the full report go back to "
+            "the agent."
         ),
     )
 
     foot(
         s,
-        "Solid lines are built; dashed are planned (a person's review page, the "
-        "SCRT record). The server judge now answers every question type "
-        "whenever the server has a model.",
+        "One module per Trusted Tester test, one rules spec per module, one "
+        "tool per file: adding a test changes no tool. The server judge "
+        "answers every question type whenever the server has a model.",
     )
 
     # 7. Key decision: the procedure is the code
