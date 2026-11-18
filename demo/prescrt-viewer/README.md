@@ -4,9 +4,14 @@ A view-only page that shows a pre-SCRT file (TOBI's agent-assisted record)
 or an SCRT file (the record a person saves in DHS's SCRT), optionally beside
 a second file for the same page. It is a demo, not part of the MCP server.
 
-**Open `viewer.html` by double-click** (it works from `file://`). It is one
-self-contained file: no network requests (a Content-Security-Policy blocks
-them), no editing, no saving.
+**Open `viewer.html` by double-click** (it works from `file://`), or open
+`/viewer` on a TOBI server running over HTTP (the hosted server serves this
+same built file). It is one self-contained file: no network requests (a
+Content-Security-Policy blocks them), no editing, no saving. Served, the
+server sends the same policy as a header, plus `frame-ancestors 'none'`;
+the page asks the server for nothing after itself, and the file you pick
+stays in your browser. `/viewer` is open without sign-in, as `/health` is:
+it holds no data.
 
 ## What it shows
 

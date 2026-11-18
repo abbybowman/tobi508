@@ -164,3 +164,73 @@ async def test_viewer_shows_scrt_and_pre_scrt_files_as_text(tmp_path):
         assert errors == []
         assert requests == [VIEWER.as_uri()]
         await browser.close()
+
+
+def test_server_serves_the_built_viewer_under_its_own_policy():
+    """GET /viewer: the built file as it is, its own policy as a header too
+    (plus frame-ancestors), GET only."""
+    import re
+
+    from starlette.testclient import TestClient
+
+    from tobi508.app import mcp
+    from tobi508.routes import VIEWER_CSP
+
+    http = TestClient(mcp.http_app(transport="streamable-http"))
+    r = http.get("/viewer")
+    assert r.status_code == 200 and r.text == VIEWER.read_text(encoding="utf-8")
+    assert r.headers["content-type"].startswith("text/html")
+    assert r.headers["x-content-type-options"] == "nosniff"
+    header = {d.strip() for d in r.headers["content-security-policy"].split(";")}
+    meta = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', r.text)
+    assert {d.strip() for d in meta.group(1).split(";")} <= header  # no drift
+    assert "frame-ancestors 'none'" in header and "default-src 'none'" in header
+    assert VIEWER_CSP.count("connect-src") == 0  # default-src 'none': no requests
+    assert http.post("/viewer", content=b"x").status_code == 405
+
+
+async def test_served_viewer_opens_a_local_file_and_requests_nothing(tmp_path):
+    """Served over HTTP, the viewer reads a file the person picks, shows it,
+    and asks the server (or anyone) for nothing after the page itself."""
+    import socket
+    import threading
+    import time
+
+    import uvicorn
+
+    from tobi508.app import mcp
+
+    pre = tmp_path / "page.pre-scrt.json"
+    pre.write_text(_pre_scrt())
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+    srv = uvicorn.Server(
+        uvicorn.Config(
+            mcp.http_app(transport="streamable-http"),
+            host="127.0.0.1",
+            port=port,
+            log_level="error",
+        )
+    )
+    threading.Thread(target=srv.run, daemon=True).start()
+    deadline = time.monotonic() + 10
+    while not srv.started and time.monotonic() < deadline:
+        time.sleep(0.05)
+    try:
+        async with async_playwright() as pw:
+            browser = await pw.chromium.launch()
+            page = await browser.new_page()
+            requests: list[str] = []
+            page.on("request", lambda req: requests.append(req.url))
+            await page.goto(f"http://127.0.0.1:{port}/viewer")
+            await page.set_input_files("#primary-file", str(pre))
+            await page.wait_for_selector("#results tbody tr >> nth=4")
+            assert "pre-SCRT file" in await page.inner_text("#status")
+            hostile = page.locator("#results tbody tr").nth(1)
+            assert HOSTILE in await hostile.inner_text()
+            assert await page.evaluate("window.__pwned") is None
+            assert requests == [f"http://127.0.0.1:{port}/viewer"]
+            await browser.close()
+    finally:
+        srv.should_exit = True

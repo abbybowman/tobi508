@@ -171,6 +171,11 @@ process serves HTTP, not that Keycloak or Chromium work: the server
 fetches Keycloak's discovery document at startup and does not start
 without it, and the smoke test (section 7) is what shows a run works.
 
+`GET /viewer` serves the pre-SCRT viewer (`demo/prescrt-viewer/viewer.html`,
+as built) without sign-in. It holds no data: the person picks a saved
+pre-SCRT or SCRT file and it is read in their own browser, and the page
+makes no request (its Content-Security-Policy, also sent as a header).
+
 ## 5. Connecting from Claude Code
 
 On the user's own machine (Claude's custom connectors on claude.ai and

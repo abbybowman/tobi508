@@ -47,8 +47,9 @@ site: we fixed the tool with it. This is a demonstration, not a blind result.
    scan).
 3. **Claude Code**, signed in to TOBI (`/mcp` shows it connected), in an
    empty folder (`demo-output/`), large font.
-4. **The viewer**: `demo/prescrt-viewer/viewer.html` opened in a browser
-   tab, and the tester's file ready to load:
+4. **The viewer**: `https://<app host>/viewer` (TOBI serves it; the files
+   you load stay in your browser) opened in a browser tab, and the
+   tester's file ready to load:
    `evals/judging/round1/keys/www.nasa.gov_mission_artemis-iii_2026-11-02.json`.
 5. **Dry run the morning of the recording** (the page is live and changes).
    Check 5.A and 9.A still FAIL. If either does not, say what you see, and
@@ -153,7 +154,8 @@ reach."
 > Save the pre-SCRT file and the full report into this folder.
 
 **On screen:** the `resources/read` rows in the live log, the two files in
-Claude Code. Switch to the viewer tab: load the pre-SCRT file. Show the
+Claude Code. Switch to the viewer tab (served by TOBI at `/viewer`): load the
+pre-SCRT file Claude Code saved. Show the
 banner (agent-assisted, not a Trusted Tester's record), the counts, then
 **Only needs review**. Then **Compare with** the tester's SCRT file and
 **Only tests whose results differ**.

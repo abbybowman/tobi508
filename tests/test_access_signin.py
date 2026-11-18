@@ -281,7 +281,7 @@ async def test_a_person_outside_the_groups_cannot_call(server, monkeypatch):
     conn.close()
 
 
-def test_live_log_answers_while_mcp_needs_sign_in(server, monkeypatch):
+def test_live_log_and_viewer_answer_while_mcp_needs_sign_in(server, monkeypatch):
     """The demo's live log is a plain route (as /health is): with sign-in on,
     it opens with its token while /mcp still answers 401."""
     from pydantic import SecretStr
@@ -298,6 +298,7 @@ def test_live_log_answers_while_mcp_needs_sign_in(server, monkeypatch):
         return status
 
     assert get("/live") == 200
+    assert get("/viewer") == 200  # the static viewer, open like /health
     assert get("/live/events", {"x-live-token": "t0ken"}) == 200
     assert get("/live/events") == 404
     conn = http.client.HTTPConnection(u.hostname, u.port, timeout=10)
