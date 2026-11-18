@@ -112,13 +112,22 @@ admins.
   (`FORWARDED_ALLOW_IPS`), or its Origin check refuses the consent page
   (403), so nobody can sign in. And the audit lines were never printed:
   the logger had no handler (fixed, `tests/test_access.py`).
-- Not verified: a sign-in with VAST's Keycloak, NASA Launchpad and a real
-  client; whether VAST's access tokens carry `sub` and `claim_groups`
-  (FastMCP's `verify_id_token` option is the fallback if only the ID token
-  has them) and which audience; VAST's ingress headers and addresses; live
-  egress from the app's own environment (from a personal VAST sandbox it
-  works directly, with real certificates: Abby, 2026-11-15; the how-to's
-  question 8).
+- Verified on VAST (2026-11-18, a dev URL, [how-to](../how-to/deploy-on-vast.md)
+  section 6b): Claude Code signed in through VAST's Keycloak and NASA's
+  sign-in and ran a live page; `scripts/smoke_hosted.py --login browser`
+  passed (sign-in, a live run, its report, the audit line naming the
+  person, no token in the log). VAST's tokens carry `sub` and a name.
+  The proxy now asks Keycloak for `openid email profile`, the scopes
+  VAST's realm is set up for (`tests/test_access_signin.py`). Learned:
+  the client sits in VAST's shared realm; Keycloak's certificate is from
+  NASA's internal authority, trusted by mounting the dev container's
+  bundle (`SSL_CERT_FILE`), never in the image or git.
+- Not verified: a second person refused a run on VAST (needs a second
+  NASA identity at one computer; CI checks it with two Keycloak users);
+  whether VAST's tokens carry `claim_groups` and the client's own
+  audience, so neither `REQUIRED_GROUPS` nor `OIDC_AUDIENCE` is set yet;
+  Claude Code staying signed in (once it had to sign in again: "refresh
+  token not found"); live egress from a deployment of its own.
 
 ## Open questions for the VAST admin
 

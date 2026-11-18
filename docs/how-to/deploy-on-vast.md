@@ -4,15 +4,17 @@ For whoever puts the server on VAST (roadmap step 12) and the VAST admin
 who answers its questions. Follow it top to bottom; the checklist at the
 end is what to confirm on the first deployment.
 
-**Status:** no hosted deployment on VAST yet. The image runs in a VAST
-dev environment, reached through an ssh tunnel without sign-in, and ran a
-live page from there (2026-11-17, section 6a). Every value here is taken from the
+**Status:** hosted with sign-in at a VAST dev URL (2026-11-18, section
+6b): Claude Code signed in through VAST's Keycloak and NASA's sign-in
+and ran a live page, and the smoke test passed there. No deployment of
+its own yet (section 9). Every value here is taken from the
 code (`src/tobi508/config.py`, `app.py`, `access.py`, `routes.py`,
 `runlog.py`), the `Dockerfile` and `.env.example`, not from memory. The
 sign-in is tested against a stand-in provider (`tests/test_access_signin.py`);
 `scripts/smoke_hosted.py` checks a deployed server end to end, and CI runs
-it on every image build against a real Keycloak (section 8). Not yet
-against VAST's Keycloak and NASA Launchpad (step 12b). Design and
+it on every image build against a real Keycloak (section 8), and it
+passed against VAST's Keycloak and NASA's sign-in at the dev URL with
+one person (section 6b). Design and
 reasons: [the hosted sign-in plan](../plans/2026-11-06-hosted-auth.md).
 
 Results are agent-assisted, never a certified Trusted Tester result, on
@@ -290,13 +292,12 @@ loopback):
 | Settings given to the environment | No port, URL or OIDC variables (`env` names only). |
 
 **The Keycloak client exists (2026-11-18):** the VAST admins minted its
-client ID and secret for the dev URL (both kept out of git: the ID in
-the env file, the secret only there or in a Kubernetes Secret). Not yet
-checked: whether its access tokens carry `sub`, `claim_groups` and the
-audience (section 8); the smoke test's sign-in shows it (a 401 with
-`authn.no_subject` or `authz.denied` names what is missing). Next:
-`AUTH=oidc` at the dev URL (section 6b), the smoke test (section 7), one
-real page.
+client ID and secret (both kept out of git: the ID in the env file, the
+secret only there or in a Kubernetes Secret). Signing in with it took
+the realm, the Client ID, the redirect URI and NASA's certificates
+right first (section 6b). Its access tokens carry `sub` and a name for
+the audit line; whether they carry `claim_groups` and the client's own
+audience is not yet checked (section 8).
 
 **What the admins recommend (2026-11-18):**
 
@@ -351,26 +352,129 @@ podman run -d --name tobi --network host --env-file ~/.config/tobi508/env \
 
 `tobi-data` is a Podman named volume, under the home volume, owned
 right for the image's user. To update: `podman pull` the image, then
-`podman rm -f tobi` and the same `podman run`. While a run goes,
-`podman stats --no-stream tobi` shows its memory against the 4 GB.
+`podman rm -f tobi` and the same `podman run`.
 
-**With sign-in, at the dev URL** (when the Keycloak client exists):
-remove `MCP_HOST` from the file and add
+**Memory.** `podman stats` leaves out file cache, and Podman sets no
+limit of its own (it shows the dev container's 16 GiB, not the 4 GB).
+The kernel's own figures, from inside the container:
 
+```bash
+podman exec tobi cat /sys/fs/cgroup/memory.peak    # highest since start, cache included
+podman exec tobi grep -E '^(anon|file) ' /sys/fs/cgroup/memory.stat   # programs, cache now
 ```
+
+Measured 2026-11-18 (one 4.C run, then every test on
+https://www.section508.gov/ with three other pages): the peak with
+cache was 4.21 GB; afterwards programs held 259 MB and cache 2.9 GB.
+The cache (recordings and browser files) is given back when memory is
+short, so a 4 GB limit would shrink it before a run failed; the
+programs' own peak during the run was not captured (1.07 GB a minute
+in). Keep `MAX_CONCURRENT_RUNS=1` until it is.
+
+### With sign-in, at the dev URL
+
+First signed in on 2026-11-18. Before writing the file, check three
+things with the admins or the commands here; each one cost a round trip.
+
+- **Which realm, and which Client ID.** The client may be in VAST's
+  shared cluster realm rather than a realm of the app's own (the
+  boilerplate assumes one per app). A realm that exists answers its
+  discovery URL (`curl -s -o /dev/null -w '%{http_code}\n'
+  https://<keycloak host>/realms/<realm>/.well-known/openid-configuration`
+  prints 200; a wrong name, or the wrong case, 404). Keycloak gives a
+  client two identifiers: a Client ID (a name, which sign-in uses) and an
+  internal UUID (admin console only). Given the UUID, Keycloak's sign-in
+  page says "Client not found".
+- **The redirect URI.** Keycloak sends people back only to the exact
+  addresses registered on the client. Ask for
+  `https://<you>-dev.<VAST domain>/auth/callback` by its full address,
+  not a wildcard (a wildcard such as `https://<you>*` also matches
+  addresses that are not yours). A client registered only for the app's
+  own subdomain gives "Invalid parameter: redirect_uri"; that subdomain
+  answers the gateway's 404 until the gateway routes it.
+- **Keycloak's certificate.** VAST's Keycloak (and the dev URL) use
+  NASA's internal certificate authority, which the image does not trust:
+  with `AUTH=oidc` the server stops at startup with
+  `CERTIFICATE_VERIFY_FAILED`. The dev container already trusts it, so
+  mount its bundle read-only and point `SSL_CERT_FILE` at it (below).
+  The bundle also holds the public authorities, so the judge gateway
+  still works. The browser that tests pages keeps its own trust store
+  and is not affected. NASA's certificates are never added to the image
+  or to git: this repository is public.
+
+Write the file without the secret reaching the screen, shell history or
+a chat. The prompts ask for the dev URL (with `https://`), the realm, the
+Client ID and the secret (hidden as you type):
+
+```bash
+umask 077 && mkdir -p ~/.config/tobi508
+read -r -p 'Dev URL (https://...): ' URL; read -r -p 'Realm: ' REALM; read -r -p 'Client ID: ' CID; read -rs -p 'Client secret (hidden): ' CSECRET; echo
+cat > ~/.config/tobi508/env <<END
 AUTH=oidc
-PUBLIC_BASE_URL=https://<you>-dev.<VAST domain>
-OIDC_CONFIG_URL=https://<keycloak host>/realms/<realm>/.well-known/openid-configuration
-OIDC_CLIENT_ID=<client id>
-OIDC_CLIENT_SECRET=<client secret>
-OIDC_JWT_SIGNING_KEY=<openssl rand -base64 48, kept the same>
-OIDC_AUDIENCE=<client id>
-REQUIRED_GROUPS=["<group>"]
+PUBLIC_BASE_URL=$URL
+OIDC_CONFIG_URL=https://<keycloak host>/realms/$REALM/.well-known/openid-configuration
+OIDC_CLIENT_ID=$CID
+OIDC_CLIENT_SECRET=$CSECRET
+OIDC_JWT_SIGNING_KEY=$(openssl rand -base64 48)
 FORWARDED_ALLOW_IPS=10.42.0.0/16
+SSL_CERT_FILE=/etc/ssl/vast-ca.pem
+MAX_CONCURRENT_RUNS=1
+END
+unset CSECRET CID
+chmod 600 ~/.config/tobi508/env && cut -d= -f1 ~/.config/tobi508/env
 ```
 
-The image's command then listens on `0.0.0.0:8000`, which the gateway
-reaches; the checklist (section 7) and the smoke test apply as written.
+The last line lists the setting names only. `PUBLIC_BASE_URL` must start
+with `https://`, or the server refuses to start. Add the judge settings
+above the same way if there is a gateway. Then start it with the dev
+container's certificate bundle mounted:
+
+```bash
+podman rm -f tobi; podman run -d --name tobi --network host \
+  --env-file ~/.config/tobi508/env \
+  -v /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem:/etc/ssl/vast-ca.pem:ro \
+  -v tobi-data:/data ghcr.io/abbybowman/tobi508:latest
+```
+
+The container reads the file only when it starts: after any change to
+it, run both lines again. The image's command listens on `0.0.0.0:8000`,
+which the gateway reaches; section 7's checklist applies.
+
+**Left out on purpose until the first sign-in shows the token:**
+`OIDC_AUDIENCE` (it refuses every token unless the client has an
+audience mapper) and `REQUIRED_GROUPS` (it refuses everyone unless the
+client has a group mapper writing `claim_groups`; section 8). Without
+the group gate, anyone the realm signs in can use the server, and a
+shared realm is every VAST user: set a group before the URL is shared.
+
+**The smoke test runs on your own computer,** not in the dev container
+(the repository is there, and so is the browser that signs in). Give it
+a file holding NASA's two CA certificates for the dev URL and Keycloak
+(`--cacert`, kept outside the repository), and read the audit lines
+over ssh:
+
+```bash
+uv run python scripts/smoke_hosted.py https://<you>-dev.<VAST domain> --page https://www.section508.gov/ --login browser --cacert <NASA CA file> --audit-cmd "ssh <dev container host> podman logs tobi"
+```
+
+It passed on 2026-11-18: health, no token, sign-in, a live 4.C run,
+its report, and the audit line naming the person with no token in the
+log. With `--login browser` it skips the second person, which needs a
+second NASA identity at the same computer; CI's run checks that on every
+image build (section 8).
+
+**Found on the way, not yet fixed:**
+
+- **Claude Code had to sign in again** after its token was refused: the
+  sign-in proxy logged "Refresh token not found ... already rotated,
+  expired, or revoked". Not the restart (the store on `tobi-data`
+  survived it). Unconfirmed: two Claude Code processes sharing one saved
+  sign-in (refresh tokens are single use), or a short token lifetime in
+  VAST's realm. If it recurs, checklist item 9 fails.
+- **Uvicorn's access log keeps sign-in codes.** Each request's whole
+  address is logged, including `/auth/callback?...code=...`. The codes
+  are single use and expire in about a minute, but this contradicts "no
+  query strings in logs".
 
 ## 7. Checklist for the first deployment
 
@@ -381,17 +485,17 @@ reaches; the checklist (section 7) and the smoke test apply as written.
 4. `curl -i -X POST https://<app host>/mcp` answers 401 with
    `WWW-Authenticate: Bearer resource_metadata="https://<app host>/.well-known/oauth-protected-resource/mcp"`
    (the host is the public one, https).
-5. The smoke test passes. Two people sign in by hand (the second from a
-   private window, or Keycloak signs the first in again); save the
+5. The smoke test passes. One person signs in by hand; save the
    server's log to a file first, or give `--audit-cmd` a command that
-   prints it:
+   prints it (section 6b has the dev URL's form, with `--cacert`):
 
    ```bash
    uv run python scripts/smoke_hosted.py https://<app host> --page https://www.section508.gov/ --login browser --audit-file tobi.log
    ```
 
    It prints one line per check (health, no token, sign-in, run, report,
-   second person, audit) and stops at the first failure. A 403 at the
+   second person, audit) and stops at the first failure; with
+   `--login browser` the second person is skipped and says so. A 403 at the
    consent page means `FORWARDED_ALLOW_IPS` or the ingress's
    `X-Forwarded-Proto` (question 6). A 401 after signing in means the
    token lacks `sub`, the group or the audience: look for
@@ -401,12 +505,14 @@ reaches; the checklist (section 7) and the smoke test apply as written.
    resource read and prompt, with `sub`, `who`, `action`, `tool`, the URL
    without its query, `outcome` and `seconds`; no token, answer or page
    text.
-8. The second person cannot open the first person's run.
+8. The second person cannot open the first person's run: checked in CI
+   against a real Keycloak with two users (section 8). On VAST it needs
+   two people.
 9. After a restart: the run folder is still there, and Claude Code still
    connects without registering again (`FASTMCP_HOME` survived).
-10. Then step 12b is done: the [PENDING] markers in
-    `docs/hackathon/evaluation.md` and `deck.md` can go, and the plan's
-    "Verified and not" says so.
+10. Then step 12b's sign-in is done (2026-11-18 at the dev URL: items 2
+    to 5 and 7 passed; 6 ran a page, its saved report not checked; 8 in
+    CI; 9 not yet seen to hold).
 
 ## 8. What a real Keycloak showed
 
