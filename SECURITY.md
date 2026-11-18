@@ -93,7 +93,9 @@ until the items under "Before a hosted deployment" are done.
 - **Errors and logs are redacted** (`redact.py`): tool errors, the result's
   `errors` and the run log keep a URL's scheme, host, port and path only (no
   query string, fragment or credentials), one line per error, no stack
-  traces, request headers or page text. `tests/test_leakage.py` seeds
+  traces, request headers or page text. The web server's access log keeps
+  each request's path and status without its query string, where the
+  sign-in callback carries a one-time code. `tests/test_leakage.py` seeds
   secrets and checks they do not appear.
 - **Run folders** (`runs/<run_id>/`) hold the report, recordings and
   screenshots of the tested pages, including the full tested URL. They are
@@ -135,8 +137,6 @@ Sign-in and per-user separation of runs are built
 (`docs/plans/2026-11-06-hosted-auth.md`). Not done yet:
 - a group (`REQUIRED_GROUPS`) so that only TOBI's users can sign in: in
   VAST's shared realm, without one, any VAST user can;
-- sign-in codes kept out of the web server's access log (today it logs
-  each request's whole address);
 - network-level egress rules on the host, as a second layer behind the
   proxy;
 - a retention rule for stored runs, and a store that outlives a restart;

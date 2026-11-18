@@ -168,3 +168,26 @@ def test_redaction_rules():
     assert scrub("go to https://x.gov/p?t=1 now") == "go to https://x.gov/p now"
     err = safe_error(ValueError("x" * 500))
     assert len(err) <= 200 and err.startswith("ValueError: ")
+
+
+def test_access_log_keeps_the_path_without_the_sign_in_code(capsys):
+    # Uvicorn configures its loggers at startup, after http_options has
+    # installed the filter: build its Config here so that setup runs too.
+    import uvicorn
+
+    from tobi508.redact import strip_queries_from_access_log
+
+    strip_queries_from_access_log()
+    uvicorn.Config(app=lambda *a: None, log_level="info")
+    logging.getLogger("uvicorn.access").info(
+        '%s - "%s %s HTTP/%s" %d',
+        "10.42.0.1:0",
+        "GET",
+        f"/auth/callback?state=s1&code={QUERY_SECRET}",
+        "1.1",
+        302,
+    )
+    out = capsys.readouterr()
+    logged = out.out + out.err
+    assert '"GET /auth/callback HTTP/1.1" 302' in logged
+    assert QUERY_SECRET not in logged
