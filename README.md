@@ -57,7 +57,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). What eac
 | 9.A | 2.4.1-bypass-function | [1.7.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
 | 9.B | 3.2.3-consistent-navigation | [1.7.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
 | 9.C | 3.2.4-consistent-identification | [1.10.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester |
-| 19.A | 2.4.5-multiple-ways | [1.15.0](specs/rules/19a-multiple-ways.md) | ⚠️ mostly left for a person |
+| 19.A | 2.4.5-multiple-ways | [1.15.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
 
 <!-- status-table:end -->
 

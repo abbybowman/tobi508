@@ -55,9 +55,9 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 | 4.E | R3 science.data.nasa.gov | 10 | 7 | 0 | 0 | 0 | 3 |
 | **4.E** | **all: ✅ agrees with a tester** | 29 | 22 | 0 | 0 | 0 | 7 |
 | 4.F | R1 www.nasa.gov | 9 | 8 | 0 | 0 | 0 | 1 |
-| 4.F | R2 svs.gsfc.nasa.gov | 10 | 3 | 0 | 1 | 0 | 6 |
+| 4.F | R2 svs.gsfc.nasa.gov | 10 | 2 | 0 | 2 | 0 | 6 |
 | 4.F | R3 science.data.nasa.gov | 10 | 3 | 0 | 1 | 0 | 6 |
-| **4.F** | **all: ✅ agrees with a tester** | 29 | 14 | 0 | 2 | 0 | 13 |
+| **4.F** | **all: ✅ agrees with a tester** | 29 | 13 | 0 | 3 | 0 | 13 |
 | 5.A | R1 www.nasa.gov | 9 | 9 | 0 | 0 | 0 | 0 |
 | 5.A | R2 svs.gsfc.nasa.gov | 10 | 6 | 0 | 1 | 0 | 3 |
 | 5.A | R3 science.data.nasa.gov | 10 | 2 | 0 | 3 | 0 | 5 |
@@ -99,6 +99,6 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 | 9.C | R3 science.data.nasa.gov | 10 | 6 | 0 | 0 | 0 | 4 |
 | **9.C** | **all: ✅ agrees with a tester** | 29 | 20 | 0 | 0 | 0 | 9 |
 | 19.A | R1 www.nasa.gov | 9 | 4 | 0 | 0 | 0 | 5 |
-| 19.A | R2 svs.gsfc.nasa.gov | 10 | 7 | 0 | 1 | 0 | 2 |
+| 19.A | R2 svs.gsfc.nasa.gov | 10 | 9 | 0 | 1 | 0 | 0 |
 | 19.A | R3 science.data.nasa.gov | 10 | 2 | 0 | 0 | 0 | 8 |
-| **19.A** | **all: ⚠️ mostly left for a person** | 29 | 13 | 0 | 1 | 0 | 15 |
+| **19.A** | **all: ✅ agrees with a tester** | 29 | 15 | 0 | 1 | 0 | 13 |
