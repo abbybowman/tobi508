@@ -283,7 +283,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
         read_errors=site.errors,
         read=site.read,
     )
-    # A2 (1.4.0): a page over the read cap is not read whole, so what
+    # A2: a page over the read cap is not read whole, so what
     # repeats and where the main content starts cannot be told.
     st.read_errors += [
         f"Only the first {UNIT_CAP:,} pieces of content of {page_label(p)} were read."
@@ -657,7 +657,7 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="", note=False):
 
 
 def _a3o(st: State9A) -> bool:
-    """A3o (1.6.0): the tested page has navigation of its own, and nothing on
+    """A3o: the tested page has navigation of its own, and nothing on
     it repeats or every other page shares almost nothing with it."""
     k = st.kinship
     return k is not None and k.own_navigation and (k.all_unrelated or not any(st.rep))

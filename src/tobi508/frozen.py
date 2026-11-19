@@ -119,7 +119,7 @@ async def obtain(
     folder.mkdir(parents=True, exist_ok=True)
     (folder / "pages").mkdir(exist_ok=True)
     # A name no recording uses yet: counting the index would reuse the name
-    # of a removed entry's neighbour (round 1, 2026-11-04).
+    # of a removed entry's neighbour (round 1).
     used = {p.har for p in index.values()} | {
         f"pages/{f.name}" for f in (folder / "pages").glob("*.har.zip")
     }

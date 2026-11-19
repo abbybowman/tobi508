@@ -365,7 +365,7 @@ class Comp(BaseModel):
     host: str = ""
     # Inside a frame: the iframe elements' CSS paths, top first (the walk's
     # frame chain), the frame's address and title. Pass L reads a frame on a
-    # page of its own (TT 12.D; Abby, 2026-11-14), so `css` is its path in
+    # page of its own (TT 12.D), so `css` is its path in
     # the frame's document.
     frame_chain: list[str] = Field(default_factory=list)
     frame_url: str = ""
@@ -420,7 +420,7 @@ class Comp(BaseModel):
     image: str | None = None
     # name, desc, group, dangers, warnings; inside a web component, which
     # ANDI does not analyse, Chrome's accessibility tree's name and
-    # description instead, with source "accessibility tree" (Abby, 2026-11-14)
+    # description instead, with source "accessibility tree"
     andi: dict[str, Any] | None = None
     origin: str = "load"  # or how a replay revealed it
     tab_index: int | None = None  # P1 step index, when it is a walk stop
@@ -546,7 +546,7 @@ async def read_session(
                 c.image = None
     # Inside a web component ANDI analyses nothing (checked 2026-11-14): the
     # name and description come from Chrome's accessibility tree, the tree a
-    # screen reader reads (5.C Terms, ANDI output; Abby, 2026-11-14).
+    # screen reader reads (5.C Terms, ANDI output).
     for i, c in enumerate(out.components):
         if c.where != "shadow":
             continue

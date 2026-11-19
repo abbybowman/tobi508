@@ -1,5 +1,5 @@
 """Compare two report files test by test: what each file says, and whether
-it changed. Neutral on purpose (Abby, 2026-11-02): either file may be the
+it changed. Neutral on purpose: either file may be the
 earlier one (before and after a fix), and neither is taken as the truth.
 Scoring one file against an answer key is evaluation methodology and lives
 on top of this, in evals/scoring.py.

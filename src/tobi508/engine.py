@@ -100,7 +100,7 @@ def apply_guards(
     """The shared page guards a spec declares in its front matter (their rows
     are in the spec and `_template.md`; this runs them). A guard moves a
     would-be PASS, or (CN only) a DOES NOT APPLY, to NEEDS REVIEW, never the
-    other way (Abby, 2026-11-12). `state`: the check's evidence, whose `read`
+    other way. `state`: the check's evidence, whose `read`
     CN compares with the inventory; `count`: the spec's `count:` keys.
 
     GU (`unrecorded-code`): the recording lacks code that the page's own
@@ -122,7 +122,7 @@ def apply_guards(
         )
     rv = getattr(report, "reveal", None) or {}
     # RV (`reveal`): something that opens was not opened or not read, so what
-    # is inside it was not checked (Abby, 2026-11-09, fix 9b).
+    # is inside it was not checked (fix 9b).
     if "reveal" in guards and f.outcome is Outcome.PASS and rv:
         bad = [x["name"] for x in rv.get("not_opened", [])] + list(
             rv.get("read_failed", [])
@@ -160,7 +160,7 @@ def apply_guards(
             f" Guard RC: {rv['opened_with_focusable']} opened section(s) hold "
             "controls that were not checked."
         )
-    # RC narrowed (`reveal-walk`; 4.C 1.14.0, 4.E 1.7.0; step 6g): for a test
+    # RC narrowed (`reveal-walk`): for a test
     # whose walk goes through opened content, only the opened content the
     # walk did not reach holds a PASS. A trigger not opened or read is RV's.
     if "reveal-walk" in guards and f.outcome is Outcome.PASS and rv.get("not_walked"):
@@ -265,7 +265,7 @@ def _page_label(page: str) -> str:
 def _count_guard(f: Finding, report: Any, state: Any, keys: tuple[str, ...]) -> Finding:
     """CN (`count:`): the page's inventory (`report.counts`, count.py) shows
     more of a thing than the test read (`state.read`): a would-be PASS or DOES
-    NOT APPLY becomes NEEDS REVIEW (Abby, 2026-11-12). A key marked `@dna`
+    NOT APPLY becomes NEEDS REVIEW. A key marked `@dna`
     holds DOES NOT APPLY only. FAIL and NOT TESTED are unchanged. A run made
     before the inventory existed (no `counts`) is left as it was."""
     if not keys or f.outcome not in (Outcome.PASS, Outcome.DNA):
@@ -296,7 +296,7 @@ def _count_guard(f: Finding, report: Any, state: Any, keys: tuple[str, ...]) -> 
             there, done = c.get(key), int(got.get(key, 0))
             if key.startswith("fields_hidden") and c.openers == 0:
                 # Nothing on the page could show them: hidden for everyone,
-                # as DHS's Baseline TC10.A-ic-dna-1 and -2 (Abby, 2026-11-12).
+                # as DHS's Baseline TC10.A-ic-dna-1 and -2.
                 there = 0
             elif key in ("fields_hidden", "fields_hidden.light"):
                 # Hidden fields nothing a careful tester does shows (hidden.py;

@@ -301,7 +301,7 @@ def questions_for(st: State2D, evidence_refs: list[str]) -> list[OpenQuestion]:
                     instance=i.id,
                     question=J1_QUESTION,
                     rubric=J1_RUBRIC,
-                    # 2.D 1.0.1 (Abby, 2026-11-07): settled by reading the
+                    # 2.D 1.0.1: settled by reading the
                     # words, so the pictures are evidence only, not input.
                     input={"focused": i.region.text},
                     evidence_paths=evidence_refs + imgs,

@@ -225,7 +225,7 @@ Details: [SECURITY.md](SECURITY.md). What TOBI can't do yet, test by test (and i
 ## Contribute
 
 - **Testers:** certified Trusted Testers can run their own judging round and contribute it: [docs/how-to/run-a-judging-round.md](docs/how-to/run-a-judging-round.md).
-- **Developers:** set up with [Get started](docs/how-to/get-started.md), then read [CLAUDE.md](CLAUDE.md) and [docs/ROADMAP.md](docs/ROADMAP.md). Run the tests with `uv sync --group dev`, then `uv run pytest`. On Windows, `TEST_BROWSER_CHANNEL=chrome TEST_HEADED=1` checks it in real Chrome; run natively, not in WSL2, keep the screen unlocked and don't click in the test windows ([what the first Windows runs found](docs/solutions/windows-chrome-results.md)).
+- **Developers:** set up with [Get started](docs/how-to/get-started.md), then read [how TOBI is built](docs/ARCHITECTURE.md), [CLAUDE.md](CLAUDE.md) and [docs/ROADMAP.md](docs/ROADMAP.md). Run the tests with `uv sync --group dev`, then `uv run pytest`. On Windows, `TEST_BROWSER_CHANNEL=chrome TEST_HEADED=1` checks it in real Chrome; run natively, not in WSL2, keep the screen unlocked and don't click in the test windows ([what the first Windows runs found](docs/solutions/windows-chrome-results.md)).
 
 ## License
 

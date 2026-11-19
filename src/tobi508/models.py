@@ -467,7 +467,7 @@ class StepLog(BaseModel):
 
 
 class TestTime(BaseModel):
-    """One test's collect in a run (step 6c): its configured budget, the time
+    """One test's collect in a run: its configured budget, the time
     it was given (the budget or a share of what was left of the run,
     whichever was smaller), the seconds it took, and whether its time ran
     out."""
@@ -607,7 +607,7 @@ class Count(BaseModel):
     draggable: Part = Field(default_factory=Part)
     images: Part = Field(default_factory=Part)
     # The distinct image addresses `images` counts (at most 1000), kept for
-    # 2.B and 3.A, which count as read only the ones pass T read (2.B 1.5.0).
+    # 2.B and 3.A, which count as read only the ones pass T read.
     # Not in the report: the number is.
     image_srcs: list[str] = Field(default_factory=list, exclude=True)
     focusable: Part = Field(default_factory=Part)
@@ -616,7 +616,7 @@ class Count(BaseModel):
     frames: int = 0
     frames_unread: int = 0
     # Frames shown on the page whose document did not load from the recording
-    # (decision 3, Abby 2026-11-14): what is inside them was never seen.
+    # (decision 3): what is inside them was never seen.
     frames_missing: int = 0
     players: int = 0
     shadow_roots: int = 0
@@ -880,7 +880,7 @@ SHARED_DESC = (
 
 def unsure_by_server(report: Report) -> list[str]:
     """Ids of the questions whose answer in force is the server judge's
-    "unsure": they wait for a person (server judge pivot, 2026-11-07)."""
+    "unsure": they wait for a person (server judge pivot)."""
     latest: dict[str, Answer] = {}
     for r in report.answers:
         latest[r.answer.question_id] = r.answer

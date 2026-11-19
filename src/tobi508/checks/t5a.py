@@ -40,7 +40,7 @@ class State5A(BaseModel):
 
 def in_set(c: Comp) -> bool:
     """A radio button or checkbox with others under one legend: the legend
-    asks the question, so it labels none of the answers (spec 1.1.0)."""
+    asks the question, so it labels none of the answers."""
     return c.option and c.set_size > 1
 
 
@@ -48,7 +48,7 @@ def _shown_label(c: Comp) -> bool:
     return any(
         x.get("shown")
         # A word, not only a symbol: a label that shows "*" while its words
-        # are hidden is no visible label (5.A 1.10.0, review H-01).
+        # are hidden is no visible label (review H-01).
         and re.search(r"[^\W_]", x.get("text") or "")
         and not (x.get("group") and in_set(c))
         for x in c.label_shown
@@ -129,7 +129,7 @@ def instance_rows(st: State5A) -> list[Row]:
             "M4",
             lambda c: (
                 # The quote holds a word: "*" alone is a required marker,
-                # not a label (5.A 1.12.0, review H-01; judge eval 2026-11-14).
+                # not a label (review H-01; judge eval 2026-11-14).
                 (
                     _j(st, c) == "labeled"
                     and _quote_ok(st, c)

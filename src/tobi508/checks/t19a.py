@@ -2,12 +2,12 @@
 
 Reads the site read (`site.py`): links to the tested page on the caller's
 other pages, by kind of way. While they show fewer than two kinds, it
-checks suspected aliases of the page (1.10.0), then the site map, its
+checks suspected aliases of the page, then the site map, its
 previous and next pages, its parent, up to two child pages, up to three
-pages it links to (1.13.0) and the home page one by one (1.11.0;
+pages it links to and the home page one by one (1.11.0;
 Abby, 2026-11-15), each loaded as a caller's other page, then the site's
 own search on the live site, once more with the heading quoted if that
-finds nothing (CLAUDE.md, Abby 2026-11-02; fix 11). It stops at two kinds.
+finds nothing (CLAUDE.md; fix 11). It stops at two kinds.
 J1 asks
 whether the page is a step in a process, only when hinted. Only evaluate()
 and the rules decide outcomes.
@@ -35,14 +35,14 @@ from tobi508.site import PageRead, norm_href, page_label, read_page, site_read
 from tobi508.traverse import settle
 from tobi508.walk import KeyboardWalk
 
-SUGGEST_MAX = 10  # 1.13.0 (5 before; Abby, 2026-11-15)
+SUGGEST_MAX = 10  # 1.13.0 (5 before)
 CHILD_MAX = 2
 PREV_NEXT_MAX = 2
 RELATED_MAX = 3  # Abby, 2026-11-15: start with 3
-# Related links loaded in all, when some turn out not to be pages (1.14.0).
+# Related links loaded in all, when some turn out not to be pages.
 RELATED_LOAD_MAX = 6
 HTML_TYPES = {"text/html", "application/xhtml+xml"}
-# A link group repeated on T is the site's shared navigation (1.14.0).
+# A link group repeated on T is the site's shared navigation.
 GROUP_MIN = 3
 GROUP_SHARE = 0.8
 PREV_NEXT = re.compile(r"^(previous|prev|next)(\s+page)?$", re.I)
@@ -74,12 +74,12 @@ class Search(BaseModel):
     term: str = ""
     tries: list[str] = Field(default_factory=list)  # every term searched
     reason: str = ""
-    # Scripts its results page asked for that did not load (W4, 1.7.0).
+    # Scripts its results page asked for that did not load (W4).
     failed_scripts: list[str] = Field(default_factory=list)
 
 
 class Alias(BaseModel):
-    """A suspected alias of T (spec Terms, 1.10.0) and how it was settled."""
+    """A suspected alias of T (spec Terms) and how it was settled."""
 
     url: str
     page: int  # the other page whose link named it
@@ -90,11 +90,11 @@ class Alias(BaseModel):
 
 
 class Suggested(BaseModel):
-    """A suggested page (spec Terms, 1.11.0) and what came of checking it."""
+    """A suggested page (spec Terms) and what came of checking it."""
 
     url: str
     role: str  # site_map | parent | child | home
-    # checked | not_checked | is_this_page | not_needed | not_a_page (1.14.0)
+    # checked | not_checked | is_this_page | not_needed | not_a_page
     status: str = "pending"
     final_url: str = ""
     reason: str = ""  # why not checked
@@ -110,26 +110,26 @@ class State19A(BaseModel):
     read: dict[str, dict[str, int]] = Field(default_factory=dict)
     links: list[LinkTo] = Field(default_factory=list)
     # Links to T shown by opening the one visible button that controls them
-    # in a closed navigation menu (W9, 1.15.0; step 6g): navigation links.
+    # in a closed navigation menu (W9): navigation links.
     menu_links: list[LinkTo] = Field(default_factory=list)
     # Each closed menu tried: page n, url, the link, the button, how it was
     # opened, whether the link was then shown, or why not.
     menus_opened: list[dict[str, Any]] = Field(default_factory=list)
     search_forms: int = 0
-    # T is the address a search form submits to (W5, 1.4.0)
+    # T is the address a search form submits to (W5)
     search_target: str = ""
     search: Search = Field(default_factory=Search)
-    # Suspected aliases of T, in the order their links were read (1.10.0).
+    # Suspected aliases of T, in the order their links were read.
     aliases: list[Alias] = Field(default_factory=list)
-    # Pages read with links in closed menus (W9, 1.12.0): page n, its url,
+    # Pages read with links in closed menus (W9): page n, its url,
     # how many, and how many lead to T or a verified alias.
     hidden_nav: list[dict[str, Any]] = Field(default_factory=list)
-    # The destinations of each link group on T (1.14.0): a link to T in a
+    # The destinations of each link group on T: a link to T in a
     # group repeated here is navigation.
     t_groups: list[list[str]] = Field(default_factory=list)
-    # Related links held back, taking the place of one not a page (1.14.0).
+    # Related links held back, taking the place of one not a page.
     spares: list[str] = Field(default_factory=list)
-    # The suggested pages, in the order they are checked (1.11.0).
+    # The suggested pages, in the order they are checked.
     checked: list[Suggested] = Field(default_factory=list)
     hint: bool = False
     text: list[str] = Field(default_factory=list)  # J1 input
@@ -153,7 +153,7 @@ def _same(a: str, b: str) -> bool:
     return norm_href(a) == norm_href(b) and bool(norm_href(a))
 
 
-ALIAS_MAX = 3  # suspected aliases checked a run (Abby, 2026-11-14)
+ALIAS_MAX = 3  # suspected aliases checked a run
 ALIAS_FILE = re.compile(r"^(index|default)\.[a-z0-9]+$", re.I)
 
 
@@ -161,7 +161,7 @@ def _alias_key(u: str) -> tuple[str, int | None, str, str]:
     """An address with what an alias may change taken out (spec Terms,
     1.10.0): the scheme, a leading "www.", a last segment named index.* or
     default.*, a trailing slash and the fragment. The query string stays: a
-    link that differs only by it is another page (Abby, 2026-11-15)."""
+    link that differs only by it is another page."""
     p = urlsplit(u)
     host = (p.hostname or "").lower().rstrip(".")
     host = host[4:] if host.startswith("www.") else host
@@ -179,7 +179,7 @@ def _alias_key(u: str) -> tuple[str, int | None, str, str]:
 
 def suspected_alias(href: str, t: str) -> bool:
     """A link destination that is not T but differs from it only as an alias
-    may (spec Terms, 1.10.0)."""
+    may (spec Terms)."""
     if not href or not t or _same(href, t):
         return False
     if urlsplit(href).scheme not in ("http", "https", "file"):
@@ -193,7 +193,7 @@ def _path(u: str) -> tuple[str, str, str]:
 
 
 def search_target(forms: list[dict[str, Any]], t: tuple[str, ...]) -> str:
-    """The action of a search form that submits to T (spec W5, 1.4.0): a GET
+    """The action of a search form that submits to T (spec W5): a GET
     form whose own action attribute names T's address (query and trailing
     slash aside). Submitting any search lands on T, so the site search
     reaches it. A form with no action submits to the page it is on and
@@ -244,7 +244,7 @@ def template_groups(main: PageRead) -> list[list[str]]:
 
 
 def repeated_on_t(dests: set[str], t_groups: list[list[str]]) -> bool:
-    """A link group repeated on T (spec Terms, 1.14.0): 3 or more links, and
+    """A link group repeated on T (spec Terms): 3 or more links, and
     at least GROUP_SHARE of their destinations in one group on T itself."""
     if len(dests) < GROUP_MIN:
         return False
@@ -277,7 +277,7 @@ def _kind(
 
 def results_link_to(res: PageRead, t_url: str | tuple[str, ...]) -> bool:
     """Only the results count: a results page's own menus, header and footer
-    link to T whatever the search found (spec 1.1.0, Abby 2026-11-02)."""
+    link to T whatever the search found."""
     return any(
         u.role == "link" and _to_t(u.href, t_url) and u.region_role not in TEMPLATE
         for u in res.units
@@ -336,12 +336,12 @@ PAGE_EXT = {"", "html", "htm", "shtml", "php", "asp", "aspx", "jsp", "cfm"}
 
 def _dir(path: str) -> str:
     """T's own directory: its path when it ends in "/", else up to the last
-    "/" (spec Terms, 1.11.0)."""
+    "/" (spec Terms)."""
     return path if path.endswith("/") else path.rsplit("/", 1)[0] + "/"
 
 
 def parent_of(t_url: str) -> str | None:
-    """The address one level up from T's own path (spec Terms, 1.11.0): from
+    """The address one level up from T's own path (spec Terms): from
     T's address, never from page content. None for T at the root."""
     p = urlsplit(t_url)
     segs = p.path.rstrip("/").split("/")
@@ -407,7 +407,7 @@ def linked_pages(
     skip: tuple[str, ...] = (),
     related_max: int = RELATED_MAX,
 ) -> list[tuple[str, str]]:
-    """Pages T itself links to that may link back (spec Terms, 1.13.0): its
+    """Pages T itself links to that may link back (spec Terms): its
     previous and next pages (links so named, or rel prev or next; at most
     2), then the first RELATED_MAX other links in its content (outside
     navigation, banner and contentinfo regions), in reading order. A link
@@ -475,7 +475,7 @@ def suggested_pages(
     )
     linked = linked_pages(t_url, main, skip, RELATED_LOAD_MAX)
     rel = [x for x in linked if x[0] == "related"]
-    if spares is not None:  # past the 3, to take a non-page's place (1.14.0)
+    if spares is not None:  # past the 3, to take a non-page's place
         spares.extend(u for _, u in rel[RELATED_MAX:])
     linked = [x for x in linked if x[0] == "prev_next"] + rel[:RELATED_MAX]
     found += [x for x in linked if x[0] == "prev_next"]
@@ -568,7 +568,7 @@ def _load_reason(exc: Exception) -> str:
     return "it could not be loaded"
 
 
-# W9's closed menus (1.15.0): on a page read whose links in navigation,
+# W9's closed menus: on a page read whose links in navigation,
 # banner or contentinfo regions hidden on load include one to T, the one
 # visible button that controls such a link: it names an ancestor of the link
 # in aria-controls, or it is the toggle (aria-expanded, aria-haspopup, a
@@ -606,7 +606,7 @@ SHOWN_FN = """() => {
 async def _open_menus(
     ctx: RunContext, st: State19A, read: list[PageRead], loaders: dict[int, Any]
 ) -> None:
-    """W9 (1.15.0): open the closed menu that holds a link to T, on each
+    """W9: open the closed menu that holds a link to T, on each
     page read that has one (at most MENUS_MAX), until a link to T is shown.
     A link no visible button controls (a mobile copy) is not a way."""
     tried = 0
@@ -679,11 +679,11 @@ def _targets(st: State19A) -> tuple[str, ...]:
 async def _check_aliases(
     ctx: RunContext, st: State19A, pages: list[PageRead], maps: set[int]
 ) -> None:
-    """Suspected aliases of T on the pages read (spec Terms, 1.10.0): at
+    """Suspected aliases of T on the pages read (spec Terms): at
     most ALIAS_MAX loaded in a run, each as a caller's other page is loaded;
     the same page only by its final address or its document's bytes. Links
     to a verified alias then count as links to T (W6); any other is not
-    verified (W7). Called again for each suggested page read (1.11.0)."""
+    verified (W7). Called again for each suggested page read."""
     for p in pages:
         for u in p.units:
             if u.role != "link" or not suspected_alias(u.href, st.t_url):
@@ -748,7 +748,7 @@ async def _check_suggested(
         kind = document_type(ref.har, ref.final_url) if ref.har else ""
         if kind and kind not in HTML_TYPES:
             # Not a page (an API's JSON, XML): it shows no way and takes no
-            # place; a related link held back takes it (1.14.0).
+            # place; a related link held back takes it.
             c.status, c.reason = "not_a_page", f"it is not a web page ({kind})"
             while c.role == "related" and st.spares:
                 url = st.spares.pop(0)
@@ -818,7 +818,7 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
         failed = []
     st.search.failed_scripts = failed[:10]
     if not found and failed:
-        # W4 (1.7.0): the results page did not finish loading, so finding
+        # W4: the results page did not finish loading, so finding
         # nothing says nothing (step 6: the container refused its scripts).
         st.search.status, st.search.reason = (
             "cannot_run",
@@ -920,7 +920,7 @@ ROLE_WORDS = {
 
 
 def _checked_words(st: State19A) -> list[str]:
-    """What G4's FAIL names as checked (Abby, 2026-11-15)."""
+    """What G4's FAIL names as checked."""
     n = len(st.pages)
     out = [f"the {n} other page{'s' if n != 1 else ''} you gave"]
     done = [c for c in st.checked if c.status in ("checked", "is_this_page")]
@@ -1086,7 +1086,7 @@ def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
             evidence_refs,
             rationale,
         )
-    # G5 (1.13.0, Abby 2026-11-15): everything was checked and one way was
+    # G5: everything was checked and one way was
     # found (in practice the site search); a tester may still find a second
     # way on a related page the tool cannot reach, so NEEDS REVIEW, naming
     # what was found and what was checked.

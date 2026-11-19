@@ -201,7 +201,7 @@ def evaluate(st: State9B, evidence_refs: list[str]) -> Finding:
         for c in st.cmps
         if c.incomplete or (c.matched > 0 and not kin.almost_nothing(c.n))
     ]
-    # A3o (1.5.0): nothing matches and the page has navigation of its own.
+    # A3o: nothing matches and the page has navigation of its own.
     if not compared and kin.own_navigation:
         return _finding(
             Outcome.NEEDS_REVIEW,

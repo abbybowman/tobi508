@@ -211,7 +211,7 @@ class Reveal(BaseModel):
             ),
             # Guard RC for the tests that walk opened content (4.C, 4.E; spec
             # 4.C P8): opened with controls, and the walk did not reach every
-            # control Tab is expected to reach (step 6g).
+            # control Tab is expected to reach.
             "not_walked": [
                 t.name or t.css_path
                 for t in self.triggers

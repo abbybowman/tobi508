@@ -216,7 +216,7 @@ def _quote_ok(st: State5C, c: Comp) -> bool:
     texts = shown(c) + ([c.heading] if c.heading and not c.button else [])
     if c.button and c.row_text:
         texts = [*texts, c.row_text]
-    # One answer covers a whole set of same-named buttons (1.5.0), so its quote
+    # One answer covers a whole set of same-named buttons, so its quote
     # may hold words from several of their rows ("Earth; Sun"): each piece
     # must be shown in some row of the set, and none announced.
     rows = [
@@ -496,7 +496,7 @@ def apply_answers(st: State5C, report) -> None:
     for c in st.lp.components:
         a = current_answer(report, f"5.C-c{c.n}-J1")
         if a is None and head.get(c.n, c.n) != c.n:
-            # One answer for a set of options (J1, 1.2.0): recorded for each.
+            # One answer for a set of options (J1): recorded for each.
             a = current_answer(report, f"5.C-c{head[c.n]}-J1")
         if a is not None and a.choice is not None:
             st.j[f"c{c.n}-J1"] = {

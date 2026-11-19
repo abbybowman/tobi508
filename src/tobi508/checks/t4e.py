@@ -108,7 +108,7 @@ class ContextHook:
 
     async def on_step(self, t: Traversal, step: Step) -> Any:
         out: dict[str, Any] = {}
-        # The dialog keeping focus (1.8.0): the step ends in an open modal
+        # The dialog keeping focus: the step ends in an open modal
         # dialog and the element that first took focus is outside it, so the
         # dialog sent focus back in (TT p. 23, 4.F HtT 3), not a jump.
         first = next(
@@ -197,7 +197,7 @@ class Inst4E(BaseModel):
     before_shot: str | None = None
     after_shot: str | None = None
     j1: dict[str, Any] | None = None
-    # Found in opened content (4.C's P8, 1.8.0): how to open it again before
+    # Found in opened content (4.C's P8): how to open it again before
     # the Tabs ({frame_chain, css_path, by, name}); None for P1 and P2.
     opened: dict[str, Any] | None = None
 
@@ -269,7 +269,7 @@ def classify(
             None,
         )
         pulled_back = prev is not None and step.stop.path_key == prev.stop.path_key
-        # An open modal dialog sent focus back inside it (1.8.0): not a jump.
+        # An open modal dialog sent focus back inside it: not a jump.
         kept = bool(extra.get("kept_in_modal"))
         if (
             lost is not None
@@ -324,7 +324,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
         b = {s.stop.path_key for s in p2.steps[-6:]}
         if not (a & b):
             st.different_traps = True
-    # Row WK (1.5.0): an element no pass reached was not checked, whatever
+    # Row WK: an element no pass reached was not checked, whatever
     # the passes ended in (a trap another pass went round is complete).
     cov = walk_coverage(walk)
     if cov.counted is not None:
@@ -359,7 +359,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
                     after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
                 )
             )
-    # Opened content (4.C's P8; 1.8.0): every Tab step of the shared walk
+    # Opened content (4.C's P8): every Tab step of the shared walk
     # through what each trigger opened (opened.py). Opening it is not a step
     # this test judges (activation, not focus).
     rv = ctx.cache.get("reveal")
@@ -434,7 +434,7 @@ async def _opened_at(
     ctx: RunContext, inst: Inst4E, keys: list[str], hooks=None, shots=False
 ):
     """A fresh load with the trigger opened as reveal.py opened it, then
-    `keys` (an instance in opened content, 1.8.0)."""
+    `keys` (an instance in opened content)."""
     o = inst.opened or {}
     s = await open_session(
         ctx.new_page,
@@ -590,7 +590,7 @@ NO_INSTANCE = "none"  # M2, M10: not an instance
 
 
 def covering(i: Inst4E) -> bool:
-    """The dialog covers most of the window, or is modal (1.2.0): J1's
+    """The dialog covers most of the window, or is modal: J1's
     content_only cannot hold. Read from the DOM at the step; a dialog read
     without these facts (older evidence) is not guarded."""
     other = i.signal.other or {}

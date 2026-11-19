@@ -31,7 +31,7 @@ from tobi508.walk import KeyboardWalk
 HINT = re.compile(
     r"\b(pay|payment|purchase|order|checkout|cart|buy|donat\w*|transfer|credit card|card number|"
     r"agree|terms|sign and submit|delete|remove|exam|quiz|test answers|legal|contract|application|"
-    # Changes to saved data and benefits (spec 1.1.0, Abby 2026-11-02).
+    # Changes to saved data and benefits.
     r"update|change|save changes|apply|claim|renew|enroll|withdraw|deposit)\b",
     re.I,
 )
@@ -100,7 +100,7 @@ HIDDEN_FORMS_JS = (
 
 async def read_hidden_forms(ctx: RunContext, ps: Any) -> dict[str, Any] | None:
     """The inventory's forms and hidden fields pass E did not read, read on
-    one fresh load (1.9.0). None when there is nothing to read or the load
+    one fresh load. None when there is nothing to read or the load
     failed (guard CN then holds the page as before)."""
     count = ctx.cache.get("count")
     if count is None or getattr(ctx, "new_page", None) is None:
@@ -134,7 +134,7 @@ class Form5H(BaseModel):
     left: bool = False  # the page left on submit: nothing to see after
     checked: bool = False
     hint: bool = False
-    # Hidden when the page loaded and not taken by pass E (1.9.0): read from
+    # Hidden when the page loaded and not taken by pass E: read from
     # the page's elements for applicability only, never submitted.
     hidden: bool = False
     text: str = ""  # a hidden form's own words (scripts left out)
@@ -174,7 +174,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
     if walk is None:
         return State5H(ran=False, incomplete=["The keyboard walk did not run."])
     ps = await error_pass(ctx, walk)
-    # 5.F's whole list: a cut walk, unread forms or reads (spec A2, 1.1.0).
+    # 5.F's whole list: a cut walk, unread forms or reads (spec A2).
     # A copy: 5.H counts the hidden forms it reads below; 5.F and 5.G, which
     # share pass E, never read them.
     st = State5H(incomplete=incomplete_of(ps), read=copy.deepcopy(ps.read))
@@ -229,7 +229,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5H:
         )
         form.hint = bool(HINT.search(words))
         st.forms.append(form)
-    # Forms and hidden fields pass E did not read (1.9.0): read for
+    # Forms and hidden fields pass E did not read: read for
     # applicability, counted as read for guard CN only when found.
     got = await read_hidden_forms(ctx, ps)
     if got:
@@ -482,7 +482,7 @@ def evaluate(st: State5H, evidence_refs: list[str]) -> Finding:
         )
     if not _hinted(st) and st.incomplete:
         # Unread forms or text may hold the hint: never DNA on part of the
-        # page (spec A2, 1.1.0).
+        # page (spec A2).
         return _finding(
             Outcome.NEEDS_REVIEW,
             " ".join([REVIEW_HEAD, *st.incomplete]),

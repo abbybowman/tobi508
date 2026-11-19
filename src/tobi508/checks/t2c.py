@@ -30,7 +30,7 @@ from tobi508.models import (
 from tobi508.motion import Element, MotionPass, Probe, Region
 from tobi508.walk import KeyboardWalk
 
-# Still changing at this time: an instance (spec O1; Abby, 2026-11-04).
+# Still changing at this time: an instance (spec O1).
 STILL_CHANGING_S = 5.0
 # Walk steps whose DOM never settled: a sign of updates pass T missed (A2).
 WALK_UNSETTLED = 3
@@ -73,7 +73,7 @@ def instances(mp: MotionPass) -> list[tuple[str, Region]]:
 def hints(mp: MotionPass, timers: bool = True) -> list[str]:
     """Signs the page updates more slowly than the watch, or with data a
     recording cannot replay (A2). Plain words; no outcome. A timer longer
-    than the watch is no sign once the clock check cleared it (1.2.0);
+    than the watch is no sign once the clock check cleared it;
     `timers=False` leaves timers out (needs_clock_check)."""
     out = []
     if mp.walk_unsettled >= WALK_UNSETTLED:
@@ -106,7 +106,7 @@ def hints(mp: MotionPass, timers: bool = True) -> list[str]:
 
 def needs_clock_check(mp: MotionPass) -> bool:
     """The clock check is worth a load only when the long timers alone hold
-    the page at A2: no instance and no other sign (1.2.0)."""
+    the page at A2: no instance and no other sign."""
     return (
         mp.ok
         and bool(motion.slow_timers(mp))
@@ -327,7 +327,7 @@ INSTANCE_ROWS = [
 ]
 
 
-# 3c: the tests a mechanism needs (ER 3; Abby, 2026-11-03, plan Q4).
+# 3c: the tests a mechanism needs (ER 3, plan Q4).
 def er3_tests(mech: Element, in_frame: bool) -> list[str]:
     out = ["4.A", "4.B", "4.C"]
     if mech.stop or mech.kind == "control":

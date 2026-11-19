@@ -143,7 +143,7 @@ def kind_of(el: Element) -> str:
 
 
 def activation(el: Element) -> list[str] | str:
-    """The keys that operate a control (spec section 2, step 1), or why it
+    """The keys that operate a control (spec section 2), or why it
     is not pressed: "field" (needs a value), "not_operable" (a link that
     goes somewhere: following it is not pausing)."""
     if el.role in FIELD_ROLES:

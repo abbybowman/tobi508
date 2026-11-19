@@ -234,7 +234,7 @@ async def stepped(
     start = time.monotonic()
     t = lead_ms
     for k, ms in enumerate([0, *flash.steps_ms(STEP_S, FPS)]):
-        # Every step (step 6c): the test's own budget can end mid-capture.
+        # Every step: the test's own budget can end mid-capture.
         if k and out_of_time():
             info.cut = True
             break

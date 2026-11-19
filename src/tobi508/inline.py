@@ -1,5 +1,5 @@
 """Pictures sent with a result, for the open questions that ask what an
-image shows (post-round 1 fix 19, option 3; Abby, 2026-11-05).
+image shows (post-round 1 fix 19, option 3).
 
 Judge eval run 19: without its picture an agent answered a 5.A question
 "not_labeled" with confidence, though a magnifier icon labels the field; a

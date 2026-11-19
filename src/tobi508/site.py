@@ -26,12 +26,12 @@ from tobi508.jslib import JSLIB
 from tobi508.models import Count
 from tobi508.traverse import DEST_JS, PATH_JS, NewPage
 
-# Units read per page (9.A spec section 2, 1.4.0). 600 until roadmap step 6c:
+# Units read per page (9.A spec section 2). 600 until roadmap step 6c:
 # round 2's home page has 772, which held every 9.x cell. The read is
 # quadratic on one flat list (traverse.PATH_JS): 5 s at 5,000 links.
 UNIT_CAP = 5000
 # A site search's results page is read whole: its first page of results,
-# often filled in by script after load (19.A 1.5.0, post-round 2 fix 11).
+# often filled in by script after load (post-round 2 fix 11).
 RESULTS_CAP = 2000
 RESULTS_SETTLE_MS = 5000
 
@@ -256,7 +256,7 @@ class Unit(BaseModel):
     href_attr: str | None = None
     rel: str = ""  # a link's rel attribute (19.A 1.13.0: prev, next)
     # The group a link sits in: its nearest ancestor (4 levels at most) with
-    # 3 or more links, an id on its page; "" when none (19.A 1.14.0).
+    # 3 or more links, an id on its page; "" when none.
     group: str = ""
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
@@ -287,7 +287,7 @@ class PageRead(BaseModel):
     # the inventory's keys, so guard CN compares them.
     shadow_read: dict[str, int] = Field(default_factory=dict)
     # Addresses of links in navigation, banner or footer regions that were
-    # not shown on load (closed menus; 19.A W9, 1.12.0).
+    # not shown on load (closed menus; 19.A W9).
     hidden_nav: list[str] = Field(default_factory=list)
     # The same document as the tested page, under another address (K-01).
     identical: bool = False
@@ -355,7 +355,7 @@ async def read_page(
 ) -> PageRead:
     """One fresh load of a page's HAR and one DOM read (no key pressed).
     `results`: a site search's results page, read after its scripts have
-    fetched what they fetch, with a larger cap (19.A 1.5.0)."""
+    fetched what they fetch, with a larger cap."""
     try:
         context, page = await new_page()
     except Exception as exc:
@@ -525,7 +525,7 @@ def pair_in_order(left: list[tuple[str, int]], right: list[tuple[str, int]]):
 
 def pair_aligned(left: list[tuple[str, int]], right: list[tuple[str, int]]):
     """Pair items with equal keys by an alignment that keeps their order where
-    it can (9.B 1.7.0, Terms). Each item is (key, position); returns (left
+    it can (Terms). Each item is (key, position); returns (left
     position, right position) pairs in left order.
 
     The longest common subsequence of the two key lists is the alignment (a

@@ -61,7 +61,7 @@ from tobi508.walk import KeyboardWalk, field_coverage
 FIELD_MAX = 40
 # Per-field cost of pass F, for the early stop's estimate (measured with
 # evals/time_budget.py; see docs/solutions/time-budget.md).
-FIELD_SECONDS = 1.1  # benefits form: 22.5 s for 21 fields (2026-11-01)
+FIELD_SECONDS = 1.1  # benefits form: 22.5 s for 21 fields
 RADIO_MAX = 10
 
 TEXT_VALUES = {
@@ -86,7 +86,7 @@ BETWEEN_FN = """function (fieldCss, nextCss) {
 }"""
 
 # Does `this` come before the field in the page, with no positive tabindex on
-# either? Tab never goes backward then (1.4.0).
+# either? Tab never goes backward then.
 BEFORE_FN = """function (fieldCss) {
   const doc = this.ownerDocument;
   let f = null;
@@ -175,7 +175,7 @@ class Attempt(BaseModel):
     focus_moved_on_complete: dict[str, Any] | None = None
     focus_after_leave: dict[str, Any] | None = None
     leave_expected: bool | None = None
-    # Which read of where focus landed counted (1.4.0): "immediate" (after the
+    # Which read of where focus landed counted: "immediate" (after the
     # Tab's settle; the 1,000 ms read found it in the same place) or
     # "after_wait" (the 1,000 ms read found it somewhere else: a handler that
     # moves focus a moment after the field was left).
@@ -186,7 +186,7 @@ class Attempt(BaseModel):
     rejected: bool = False
     shot_before: str | None = None
     shot_after: str | None = None
-    # How much of the window the change covers (1.2.0, J2's guard, row M15):
+    # How much of the window the change covers (J2's guard, row M15):
     # the share of pixels that differ between the two pictures, the largest
     # new dialog's or positioned layer's share, and whether a new dialog is
     # modal.
@@ -386,7 +386,7 @@ async def _attempt(
             first = await _read(s)
             # A handler can move focus a moment after the field is left, with
             # no DOM change for the settle rule to wait on: read again after
-            # 4.C's 1,000 ms window and say which read counted (1.4.0).
+            # 4.C's 1,000 ms window and say which read counted.
             await settle(s.page, RERUN_WINDOW_MS, RERUN_WINDOW_MS + SETTLE_MAX_MS)
             land = await _read(s)
             a.leave_read = (
@@ -415,7 +415,7 @@ async def _attempt(
             a.leave_expected = await _expected(s, f, land)
             back = await reader.call(cur, FIELD_FN)  # the field, after leaving
             if back is not None:
-                # A date reads back in ISO form (2026-01-15), not as typed.
+                # A date reads back in ISO form, not as typed.
                 differs = (
                     not back.get("value")
                     if f.control == "date"
@@ -482,7 +482,7 @@ async def _expected(s: Session, f: Field5D, land: Stop) -> bool:
         return False
     if land.path_key == f.next_path:
         # The keyboard walk follows a jump the page makes when the field is
-        # left, so its "next stop" can be the jump's target (1.4.0). A target
+        # left, so its "next stop" can be the jump's target. A target
         # in the same frame that comes before the field is not where Tab goes.
         if land.frame_chain == f.frame_chain:
             back = await s.traversal.reader.call(land, BEFORE_FN, [f.css_path])
@@ -624,7 +624,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State5D:
         field_stops=_field_stops(walk),
         inventory_fields=walk.fields_after,
     )
-    # Row WK (1.7.0): a field no pass read was not checked, whatever the walk
+    # Row WK: a field no pass read was not checked, whatever the walk
     # ended in; guard CN (count: fields) stays beside it.
     cov = field_coverage(walk)
     if cov.counted is not None:

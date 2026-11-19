@@ -10,7 +10,7 @@ Verified in tests/test_andi.py.
 
 Injection uses an inline script tag, which a page Content-Security-Policy
 that forbids inline scripts would block. Contexts bypass the policy by
-default (config `bypass_csp`, Abby, 2026-11-07); with it off, ANDI does not
+default (config `bypass_csp`); with it off, ANDI does not
 run on such pages and the checks that read it say so.
 """
 
