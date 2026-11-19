@@ -1,0 +1,498 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner "Site header" [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link [ref=e10] [cursor=pointer]:
+            - /url: https://www.nasa.gov
+            - img "Home" [ref=e11]
+          - link "Science Data Portal" [ref=e13] [cursor=pointer]:
+            - /url: /
+        - navigation [ref=e15]:
+          - heading "Main navigation" [level=2] [ref=e16]
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - link "Data Sites " [ref=e21] [cursor=pointer]:
+                - /url: /
+                - text: Data Sites
+                - generic [ref=e22]: 
+              - text:          
+            - listitem [ref=e23]:
+              - link "Data Services " [ref=e24] [cursor=pointer]:
+                - /url: /
+                - text: Data Services
+                - generic [ref=e25]: 
+            - listitem [ref=e26]:
+              - link "Data Search " [ref=e27] [cursor=pointer]:
+                - /url: /
+                - text: Data Search
+                - generic [ref=e28]: 
+            - listitem [ref=e29]:
+              - link "News & Events " [ref=e30] [cursor=pointer]:
+                - /url: /features-events
+                - text: News & Events
+                - generic [ref=e31]: 
+            - listitem [ref=e32]:
+              - link "About " [ref=e33] [cursor=pointer]:
+                - /url: /about
+                - text: About
+                - generic [ref=e34]: 
+        - generic [ref=e40]:
+          - generic [ref=e41]: Search NASA science data
+          - searchbox "Search NASA science data" [ref=e42]
+    - complementary "Featured content" [ref=e44]:
+      - article [ref=e48]:
+        - generic [ref=e60]:
+          - heading "Discover Science Data at NASA" [level=1] [ref=e64]
+          - generic [ref=e65]: The Science Data Portal is your guide to NASA's collections of open scientific data and tools.
+          - link "Search Data with the Science Discovery Engine" [ref=e72] [cursor=pointer]:
+            - /url: /science-discovery-engine/search/app/nasa-sba-smd/
+    - generic:
+      - complementary "Page messages"
+    - main [ref=e77]:
+      - article [ref=e81]:
+        - generic [ref=e88]:
+          - generic [ref=e91]:
+            - heading "Data Repositories by Discipline" [level=2] [ref=e92]
+            - paragraph [ref=e95]: The five scientific divisions of NASA's Science Mission Directorate (SMD) maintain repositories of data that are open for anyone to access.
+          - generic [ref=e100]:
+            - generic [ref=e104]:
+              - img "Astro" [ref=e112]
+              - generic [ref=e115]:
+                - link "Astrophysics  " [ref=e119] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/astrophysics/data/
+                  - text: Astrophysics
+                  - generic [ref=e120]:  
+                - generic [ref=e121]: Explore NASA’s astrophysics data repositories, including exoplanet, extragalactic, and high-energy data.
+            - generic [ref=e127]:
+              - img "Physics" [ref=e135]
+              - generic [ref=e138]:
+                - link "Biological and Physical Sciences  " [ref=e142] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/biological-physical/data/
+                  - text: Biological and Physical Sciences
+                  - generic [ref=e143]:  
+                - generic [ref=e144]: Access open NASA data for biological and physical sciences, including human spaceflight studies.
+            - generic [ref=e150]:
+              - img "earth" [ref=e158]
+              - generic [ref=e161]:
+                - link "Earth Science  " [ref=e165] [cursor=pointer]:
+                  - /url: https://www.earthdata.nasa.gov/
+                  - text: Earth Science
+                  - generic [ref=e166]:  
+                - generic [ref=e167]: Discover NASA’s collection of Earth science data and tools on the EarthData website.
+            - generic [ref=e173]:
+              - img "Surface of the Sun." [ref=e181]
+              - generic [ref=e184]:
+                - link "Heliophysics  " [ref=e188] [cursor=pointer]:
+                  - /url: https://science.nasa.gov/heliophysics/data
+                  - text: Heliophysics
+                  - generic [ref=e189]:  
+                - generic [ref=e190]: Explore NASA’s stores of data and tools for heliophysics, space physics, and space weather through the Heliophysics Data Portal.
+            - generic [ref=e196]:
+              - img "Saturn" [ref=e204]
+              - generic [ref=e207]:
+                - link "Planetary Science  " [ref=e211] [cursor=pointer]:
+                  - /url: https://planetary.data.nasa.gov/
+                  - text: Planetary Science
+                  - generic [ref=e212]:  
+                - generic [ref=e213]: Find NASA planetary science data, tools, and resources through the Planetary Data website.
+          - generic [ref=e218]:
+            - heading "Data Services" [level=2] [ref=e219]
+            - paragraph [ref=e222]: Services that support discoveries from NASA science data.
+          - generic [ref=e227]:
+            - generic [ref=e229]:
+              - link [ref=e231] [cursor=pointer]:
+                - /url: https://science.nasa.gov/citizen-science
+                - img "Galaxies" [ref=e234]
+              - generic [ref=e236]:
+                - heading [level=3] [ref=e237]:
+                  - link "Citizen Science  " [ref=e238] [cursor=pointer]:
+                    - /url: https://science.nasa.gov/citizen-science
+                    - text: Citizen Science
+                    - generic [ref=e239]:  
+                - paragraph [ref=e240]: Learn how volunteers around the world can help NASA make scientific discoveries, no citizenship required.
+                - generic [ref=e241]:
+                  - link "Astrophysics" [ref=e242] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Planetary Science" [ref=e243] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+                  - link "Earth Science" [ref=e244] [cursor=pointer]:
+                    - /url: /search?rendered_item=earth+science
+                  - link "Heliophysics" [ref=e245] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+                  - link "Biological and Physical Sciences" [ref=e246] [cursor=pointer]:
+                    - /url: /search?rendered_item=biological+and+physical+sciences
+                  - link "Science" [ref=e247] [cursor=pointer]:
+                    - /url: https://science.nasa.gov/
+            - generic [ref=e249]:
+              - link [ref=e251] [cursor=pointer]:
+                - /url: https://www.nasa.gov/computing/hec/
+                - img "NASA's Athena supercomputer." [ref=e254]
+              - generic [ref=e256]:
+                - heading [level=3] [ref=e257]:
+                  - link "High-End Computing  " [ref=e258] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/computing/hec/
+                    - text: High-End Computing
+                    - generic [ref=e259]:  
+                - paragraph [ref=e260]: NASA-sponsored scientists and engineers can access computing time on the agency’s advanced supercomputers.
+                - generic [ref=e261]:
+                  - link "Astrophysics" [ref=e262] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Planetary Science" [ref=e263] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+                  - link "Earth Science" [ref=e264] [cursor=pointer]:
+                    - /url: /search?rendered_item=earth+science
+                  - link "Heliophysics" [ref=e265] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+                  - link "Biological and Physical Sciences" [ref=e266] [cursor=pointer]:
+                    - /url: /search?rendered_item=biological+and+physical+sciences
+                  - link "Aeronautics Research" [ref=e267] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/directorates/armd/
+                  - link "Mission Support" [ref=e268] [cursor=pointer]:
+                    - /url: https://www.nasa.gov/msd/
+            - generic [ref=e270]:
+              - link [ref=e272] [cursor=pointer]:
+                - /url: https://science.data.nasa.gov/science-cloud
+                - img "Hubble Space Telescope view of clouds in the Large Magellanic Cloud." [ref=e275]
+              - generic [ref=e277]:
+                - heading [level=3] [ref=e278]:
+                  - link "Science Cloud  " [ref=e279] [cursor=pointer]:
+                    - /url: /science-cloud
+                    - text: Science Cloud
+                    - generic [ref=e280]:  
+                - paragraph [ref=e281]: A single, unified NASA cloud computing environment that accelerates science discovery.
+                - generic [ref=e282]:
+                  - link "Astrophysics" [ref=e283] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Planetary Science" [ref=e284] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+                  - link "Earth Science" [ref=e285] [cursor=pointer]:
+                    - /url: /search?rendered_item=earth+science
+                  - link "Heliophysics" [ref=e286] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+                  - link "Biological and Physical Sciences" [ref=e287] [cursor=pointer]:
+                    - /url: /search?rendered_item=biological+and+physical+sciences
+                  - link "Science" [ref=e288] [cursor=pointer]:
+                    - /url: https://science.nasa.gov/
+            - generic [ref=e290]:
+              - link [ref=e292] [cursor=pointer]:
+                - /url: https://science.data.nasa.gov/data-governance-community
+                - img "Image of Mercury taken by NASA's MESSENGER mission." [ref=e295]
+              - generic [ref=e297]:
+                - heading [level=3] [ref=e298]:
+                  - link "Data Governance Knowledge Hub  " [ref=e299] [cursor=pointer]:
+                    - /url: https://science.data.nasa.gov/data-governance-community
+                    - text: Data Governance Knowledge Hub
+                    - generic [ref=e300]:  
+                - paragraph [ref=e301]: An online platform designed for developing and improving data governance, stewardship, and collaboration across NASA's Science Mission Directorate.
+                - generic [ref=e302]:
+                  - link "Astrophysics" [ref=e303] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Planetary Science" [ref=e304] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+                  - link "Earth Science" [ref=e305] [cursor=pointer]:
+                    - /url: /search?rendered_item=earth+science
+                  - link "Heliophysics" [ref=e306] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+                  - link "Biological and Physical Sciences" [ref=e307] [cursor=pointer]:
+                    - /url: /search?rendered_item=biological+and+physical+sciences
+                  - link "Science" [ref=e308] [cursor=pointer]:
+                    - /url: https://science.nasa.gov/
+          - generic [ref=e311]:
+            - heading "Interdisciplinary Data Sites" [level=2] [ref=e312]
+            - paragraph [ref=e315]: Other resources for finding and using NASA science data that are not run by a single scientific division.
+          - generic [ref=e320]:
+            - generic [ref=e322]:
+              - link [ref=e324] [cursor=pointer]:
+                - /url: /data-sites/astronomical-geodesy
+                - img "Earth with magnetic field lines." [ref=e327]
+              - generic [ref=e329]:
+                - heading [level=3] [ref=e330]:
+                  - link "Astronomy and Geodesy  " [ref=e331] [cursor=pointer]:
+                    - /url: /data-sites/astronomy-geodesy
+                    - text: Astronomy and Geodesy
+                    - generic [ref=e332]:  
+                - paragraph [ref=e333]: Explore science data relating to astronomy and geodesy, the study of Earth’s characteristics and position in space.
+                - generic [ref=e334]:
+                  - link "Astrophysics" [ref=e335] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Planetary Science" [ref=e336] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+                  - link "Earth Science" [ref=e337] [cursor=pointer]:
+                    - /url: /search?rendered_item=earth+science
+            - generic [ref=e339]:
+              - link [ref=e341] [cursor=pointer]:
+                - /url: /data-sites/opacities
+                - img "opacities" [ref=e344]
+              - generic [ref=e346]:
+                - heading [level=3] [ref=e347]:
+                  - link "Opacities  " [ref=e348] [cursor=pointer]:
+                    - /url: /data-sites/opacities
+                    - text: Opacities
+                    - generic [ref=e349]:  
+                - paragraph [ref=e350]: Access exoplanet opacity data to study the atmospheres of distant planets.
+                - generic [ref=e351]:
+                  - link "Astrophysics" [ref=e352] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Planetary Science" [ref=e353] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+                  - link "Earth Science" [ref=e354] [cursor=pointer]:
+                    - /url: /search?rendered_item=earth+science
+                  - link "Heliophysics" [ref=e355] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+            - generic [ref=e357]:
+              - link [ref=e359] [cursor=pointer]:
+                - /url: /data-sites/pegasus-stellar-spectra
+                - img "Image of the Sun in ultraviolet." [ref=e362]
+              - generic [ref=e364]:
+                - heading [level=3] [ref=e365]:
+                  - link "PEGASUS Stellar Spectra  " [ref=e366] [cursor=pointer]:
+                    - /url: /data-sites/pegasus-stellar-spectra
+                    - text: PEGASUS Stellar Spectra
+                    - generic [ref=e367]:  
+                - paragraph [ref=e368]: Generate complete stellar spectra, including the extreme ultraviolet portion, with the Phoenix EUV Grid and Stellar UV Spectra (PEGASUS) web tool.
+                - generic [ref=e369]:
+                  - link "Astrophysics" [ref=e370] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Heliophysics" [ref=e371] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+            - generic [ref=e373]:
+              - link [ref=e375] [cursor=pointer]:
+                - /url: /data-sites/across
+                - img "Artist's impression of a supermassive black hole." [ref=e378]
+              - generic [ref=e380]:
+                - heading [level=3] [ref=e381]:
+                  - link "ACROSS  " [ref=e382] [cursor=pointer]:
+                    - /url: /data-sites/across
+                    - text: ACROSS
+                    - generic [ref=e383]:  
+                - paragraph [ref=e384]: The Astrophysics Cross-Observatory Science Support (ACROSS) center coordinates NASA resources for time-domain and multimessenger astrophysics.
+                - link "Astrophysics" [ref=e386] [cursor=pointer]:
+                  - /url: /search?rendered_item=astrophysics
+            - generic [ref=e388]:
+              - link [ref=e390] [cursor=pointer]:
+                - /url: /nessie
+                - img "Blue Marble image of Earth." [ref=e393]
+              - generic [ref=e395]:
+                - heading [level=3] [ref=e396]:
+                  - link "NESSIE  " [ref=e397] [cursor=pointer]:
+                    - /url: /nessie
+                    - text: NESSIE
+                    - generic [ref=e398]:  
+                - paragraph [ref=e399]: The NASA Earth Science Strategic Integration Environment (NESSIE) is a web application that provides a unified view of Earth observation capabilities.
+                - link "Earth Science" [ref=e401] [cursor=pointer]:
+                  - /url: /search?rendered_item=earth+science
+            - generic [ref=e403]:
+              - link [ref=e405] [cursor=pointer]:
+                - /url: /fits
+                - img "James Webb Space Telescope image of a sliver of the Cat's Paw Nebula." [ref=e408]
+              - generic [ref=e410]:
+                - heading [level=3] [ref=e411]:
+                  - link "FITS  " [ref=e412] [cursor=pointer]:
+                    - /url: /fits
+                    - text: FITS
+                    - generic [ref=e413]:  
+                - paragraph [ref=e414]: The Flexible Image Transport System (FITS) is the data format most widely used in astronomy for transporting, analyzing, and archiving scientific data files.
+                - generic [ref=e415]:
+                  - link "Astrophysics" [ref=e416] [cursor=pointer]:
+                    - /url: /search?rendered_item=astrophysics
+                  - link "Heliophysics" [ref=e417] [cursor=pointer]:
+                    - /url: /search?rendered_item=heliophysics
+                  - link "Planetary Science" [ref=e418] [cursor=pointer]:
+                    - /url: /search?rendered_item=planetary+science
+          - generic [ref=e421]:
+            - heading "News and Events" [level=2] [ref=e422]
+            - generic [ref=e426]:
+              - link "View All News and Events " [ref=e430] [cursor=pointer]:
+                - /url: /features-events
+                - text: View All News and Events
+                - generic [ref=e431]: 
+              - generic [ref=e433]:
+                - article [ref=e435]:
+                  - generic [ref=e440]:
+                    - generic [ref=e443]:
+                      - generic [ref=e444]: 
+                      - text: News
+                    - link "October 2026 Science Data and Software Highlights" [ref=e448] [cursor=pointer]:
+                      - /url: /features-events/data-software-highlights-october-2026
+                    - paragraph [ref=e452]: Selected monthly updates about NASA science data and resources, including an Artemis II data release, Swift mission archives, and new space biology datasets.
+                    - time [ref=e456]: PUBLISHED Nov 3, 2026
+                - article [ref=e458]:
+                  - generic [ref=e463]:
+                    - generic [ref=e466]:
+                      - generic [ref=e467]: 
+                      - text: News
+                    - link "September 2026 Science Data and Software Highlights" [ref=e471] [cursor=pointer]:
+                      - /url: /features-events/data-software-highlights-september-2026
+                    - paragraph [ref=e475]: Selected monthly updates about NASA science data and resources, including a new citizen science project, space weather modeling infrastructure improvements, and reprocessed IXPE data.
+                    - time [ref=e479]: PUBLISHED Sep 30, 2026
+                - article [ref=e481]:
+                  - generic [ref=e486]:
+                    - generic [ref=e489]:
+                      - generic [ref=e490]: 
+                      - text: News
+                    - link "June 2026 Science Data and Software Highlights" [ref=e494] [cursor=pointer]:
+                      - /url: /features-events/data-software-highlights-june-2026
+                    - paragraph [ref=e498]: Selected monthly updates about NASA science data and resources, including a New Horizons data release, a new Swift point source catalog, and updates to biological data visualization tools.
+                    - time [ref=e502]: PUBLISHED Jul 8, 2026
+                - article [ref=e504]:
+                  - generic [ref=e509]:
+                    - generic [ref=e512]:
+                      - generic [ref=e513]: 
+                      - text: News
+                    - link "May 2026 Science Data and Software Highlights" [ref=e517] [cursor=pointer]:
+                      - /url: /features-events/data-software-highlights-may-2026
+                    - paragraph [ref=e521]: Selected monthly updates about NASA science data and resources, including visualizations of Artemis I radiation data, Bennu sample updates, and newly released biological and physical sciences datasets.
+                    - time [ref=e525]: PUBLISHED Jun 4, 2026
+          - generic [ref=e533]:
+            - generic [ref=e534]:
+              - heading "Search for NASA Science Data" [level=2] [ref=e535]
+              - paragraph [ref=e536]: NASA’s Science Mission Directorate (SMD) provides web tools to search across all of NASA’s science data, publications, software, and resources.
+            - generic [ref=e537]:
+              - generic [ref=e538]:
+                - generic [ref=e539]:
+                  - heading [level=3] [ref=e540]:
+                    - link "Science Discovery Engine" [ref=e541] [cursor=pointer]:
+                      - /url: /science-discovery-engine
+                  - paragraph [ref=e542]: An integrated search platform to help you find what you need across NASA’s vast stores of open science data, documentation, code, and tools.
+                - paragraph [ref=e543]:
+                  - link [aria-hidden] [ref=e544] [cursor=pointer]:
+                    - /url: /science-discovery-engine
+                    - generic [ref=e545]:  
+              - generic [ref=e546]:
+                - generic [ref=e547]:
+                  - heading [level=3] [ref=e548]:
+                    - link "Science Explorer (SciX)" [ref=e549] [cursor=pointer]:
+                      - /url: /science-explorer
+                  - paragraph [ref=e550]: A digital library portal for scientific publications and software related to astronomy, Earth science, heliophysics, physics, and planetary science.
+                - paragraph [ref=e551]:
+                  - link [aria-hidden] [ref=e552] [cursor=pointer]:
+                    - /url: /science-explorer
+                    - generic [ref=e553]:  
+    - contentinfo [ref=e554]:
+      - generic [ref=e557]:
+        - generic [ref=e558]:
+          - generic [ref=e564]:
+            - link [ref=e566] [cursor=pointer]:
+              - /url: https://www.nasa.gov/
+              - img "Home" [ref=e567]
+            - list [ref=e569]:
+              - listitem [ref=e570]:
+                - link [ref=e571] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASAScience/
+                  - img "NASA Science on Facebook" [ref=e572]
+              - listitem [ref=e573]:
+                - link [ref=e574] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasascience_/
+                  - img "NASA Science on Instagram" [ref=e575]
+              - listitem [ref=e576]:
+                - link [ref=e577] [cursor=pointer]:
+                  - /url: https://x.com/NASAScience_
+                  - img "NASA Science on X" [ref=e578]
+              - listitem [ref=e579]:
+                - link [ref=e580] [cursor=pointer]:
+                  - /url: https://www.youtube.com/user/ScienceAtNASA
+                  - img "NASA Science on YouTube" [ref=e581]
+          - generic [ref=e582]:
+            - generic [ref=e585]:
+              - heading "NASA Science Data Portal" [level=2] [ref=e586]
+              - paragraph [ref=e587]: The Science Data Portal provides a comprehensive list of NASA Science data repositories to increase data discovery and accessibility.
+            - navigation [ref=e588]:
+              - heading "Site information" [level=2] [ref=e589]
+              - list [ref=e590]:
+                - listitem [ref=e591]:
+                  - link "Home" [ref=e592] [cursor=pointer]:
+                    - /url: /
+                - listitem [ref=e593]:
+                  - link "About" [ref=e594] [cursor=pointer]:
+                    - /url: /about
+                - listitem [ref=e595]:
+                  - link "News & Events" [ref=e596] [cursor=pointer]:
+                    - /url: /features-events
+                - listitem [ref=e597]:
+                  - link "Contact" [ref=e598] [cursor=pointer]:
+                    - /url: /contact
+            - navigation [ref=e599]:
+              - heading "Data search tools" [level=2] [ref=e600]
+              - list [ref=e601]:
+                - listitem [ref=e602]:
+                  - link "DATA SEARCH" [ref=e603] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=e604]:
+                    - listitem [ref=e605]:
+                      - link "Science Discovery Engine" [ref=e606] [cursor=pointer]:
+                        - /url: /science-discovery-engine
+                    - listitem [ref=e607]:
+                      - link "Science Explorer Digital Library" [ref=e608] [cursor=pointer]:
+                        - /url: /science-explorer
+            - navigation [ref=e609]:
+              - heading "NASA science data sites" [level=2] [ref=e610]
+              - list [ref=e611]:
+                - listitem [ref=e612]:
+                  - link "DATA SITES" [ref=e613] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=e614]:
+                    - listitem [ref=e615]:
+                      - link "Astrophysics" [ref=e616] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/astrophysics/data/
+                    - listitem [ref=e617]:
+                      - link "Biological & Physical Sciences" [ref=e618] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/biological-physical/data/
+                    - listitem [ref=e619]:
+                      - link "Earth Science" [ref=e620] [cursor=pointer]:
+                        - /url: https://www.earthdata.nasa.gov
+                    - listitem [ref=e621]:
+                      - link "Heliophysics" [ref=e622] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/heliophysics/data
+                    - listitem [ref=e623]:
+                      - link "Planetary Science" [ref=e624] [cursor=pointer]:
+                        - /url: https://planetary.data.nasa.gov/
+                    - listitem [ref=e625]:
+                      - link "ACROSS" [ref=e626] [cursor=pointer]:
+                        - /url: /data-sites/across
+                    - listitem [ref=e627]:
+                      - link "Astronomy and Geodesy" [ref=e628] [cursor=pointer]:
+                        - /url: /data-sites/astronomy-geodesy
+                    - listitem [ref=e629]:
+                      - link "Citizen Science" [ref=e630] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/citizen-science
+                    - listitem [ref=e631]:
+                      - link "High End Computing" [ref=e632] [cursor=pointer]:
+                        - /url: https://www.nasa.gov/computing/hec/
+                    - listitem [ref=e633]:
+                      - link "Opacities" [ref=e634] [cursor=pointer]:
+                        - /url: /data-sites/opacities
+                    - listitem [ref=e635]:
+                      - link "PEGASUS Stellar Spectra" [ref=e636] [cursor=pointer]:
+                        - /url: /data-sites/pegasus-stellar-spectra
+        - generic [ref=e638]:
+          - list [ref=e642]:
+            - listitem [ref=e643]: "Last updated: 11/19/2026"
+            - listitem [ref=e644]: "NASA Official: Andrew Mitchell"
+            - listitem [ref=e645]: "Webmaster: Justin Peacock"
+          - navigation [ref=e646]:
+            - heading "NASA policies and notices" [level=2] [ref=e647]
+            - list [ref=e648]:
+              - listitem [ref=e649]:
+                - link "About NASA" [ref=e650] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/about/
+              - listitem [ref=e651]:
+                - link "Accessibility" [ref=e652] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/accessibility/
+              - listitem [ref=e653]:
+                - link "FOIA" [ref=e654] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/foia/
+              - listitem [ref=e655]:
+                - link "No FEAR Act" [ref=e656] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/odeo/no-fear-act/
+              - listitem [ref=e657]:
+                - link "Privacy Policy" [ref=e658] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/privacy/
+              - listitem [ref=e659]:
+                - link "Science Data License" [ref=e660] [cursor=pointer]:
+                  - /url: /about/license
+              - listitem [ref=e661]:
+                - link "Vulnerability Disclosure Policy" [ref=e662] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/vulnerability-disclosure-policy/

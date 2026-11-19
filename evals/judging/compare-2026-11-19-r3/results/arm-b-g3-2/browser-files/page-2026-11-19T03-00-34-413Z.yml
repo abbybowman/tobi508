@@ -1,0 +1,448 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner "Site header" [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link [ref=e10] [cursor=pointer]:
+            - /url: https://www.nasa.gov
+            - img "Home" [ref=e11]
+          - link "Science Data Portal" [ref=e13] [cursor=pointer]:
+            - /url: /
+        - navigation [ref=e15]:
+          - heading "Main navigation" [level=2] [ref=e16]
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - link "Data Sites " [ref=e21] [cursor=pointer]:
+                - /url: /
+                - text: Data Sites
+                - generic [ref=e22]: 
+              - text:          
+            - listitem [ref=e23]:
+              - link "Data Services " [ref=e24] [cursor=pointer]:
+                - /url: /
+                - text: Data Services
+                - generic [ref=e25]: 
+            - listitem [ref=e26]:
+              - link "Data Search " [ref=e27] [cursor=pointer]:
+                - /url: /
+                - text: Data Search
+                - generic [ref=e28]: 
+            - listitem [ref=e29]:
+              - link "News & Events " [ref=e30] [cursor=pointer]:
+                - /url: /features-events
+                - text: News & Events
+                - generic [ref=e31]: 
+            - listitem [ref=e32]:
+              - link "About " [ref=e33] [cursor=pointer]:
+                - /url: /about
+                - text: About
+                - generic [ref=e34]: 
+        - generic [ref=e40]:
+          - generic [ref=e41]: Search NASA science data
+          - searchbox "Search NASA science data" [ref=e42]
+      - navigation [ref=e45]:
+        - heading "FITS" [level=2] [ref=e46]
+        - generic [ref=e47]:
+          - text: 
+          - list [ref=e49]:
+            - listitem [ref=e50]:
+              - link "FITS Overview" [ref=e51] [cursor=pointer]:
+                - /url: /fits
+            - listitem [ref=e52]:
+              - link "Verifier" [ref=e53] [cursor=pointer]:
+                - /url: /fits/verifier
+            - listitem [ref=e54]:
+              - link "Software" [ref=e55] [cursor=pointer]:
+                - /url: /fits/software
+            - listitem [ref=e56]:
+              - link "Sample Files" [ref=e57] [cursor=pointer]:
+                - /url: /fits/sample-files
+            - listitem [ref=e58]:
+              - link "Libraries" [ref=e59] [cursor=pointer]:
+                - /url: /fits/libraries
+            - listitem [ref=e60]:
+              - link "Documentation" [ref=e61] [cursor=pointer]:
+                - /url: /fits/documentation
+            - listitem [ref=e62]:
+              - link "Working Groups" [ref=e63] [cursor=pointer]:
+                - /url: /fits/iau-working-group
+            - listitem [ref=e64]:
+              - link "Archives" [ref=e65] [cursor=pointer]:
+                - /url: /fits/archives
+    - navigation "breadcrumb" [ref=e66]:
+      - list [ref=e67]:
+        - listitem [ref=e68]:
+          - link "Home" [ref=e69] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e70]:
+          - text: /
+          - link "FITS" [ref=e71] [cursor=pointer]:
+            - /url: /fits
+        - listitem [ref=e72]: / Sample FITS Files
+    - complementary "Featured content" [ref=e74]:
+      - article [ref=e78]:
+        - generic [ref=e90]:
+          - heading "Sample FITS Files" [level=1] [ref=e94]
+          - generic [ref=e95]: Find links to sample Flexible Image Transport System (FITS) files from various sources to help with properly formatting astronomy data.
+    - generic:
+      - complementary "Page messages"
+    - main [ref=e102]:
+      - article [ref=e106]:
+        - generic [ref=e117]:
+          - navigation "Table of contents" [ref=e126]:
+            - list [ref=e128]:
+              - listitem [ref=e129]:
+                - link "Individual Sample FITS Files" [ref=e130] [cursor=pointer]:
+                  - /url: "#toc-individual-sample-fits-files"
+              - listitem [ref=e131]:
+                - link "Public Archives That Provide Astronomical Data in FITS Format" [ref=e132] [cursor=pointer]:
+                  - /url: "#toc-public-archives-that-provide-astronomical-data-in-fits-format"
+              - listitem [ref=e133]:
+                - link "Experimental FITS Files" [ref=e134] [cursor=pointer]:
+                  - /url: "#toc-experimental-fits-files"
+              - listitem [ref=e135]:
+                - link "Sample FITS Files From NRAO" [ref=e136] [cursor=pointer]:
+                  - /url: "#toc-sample-fits-files-from-nrao"
+                - list [ref=e137]:
+                  - listitem [ref=e138]:
+                    - link "Sample Files From Various Facilities" [ref=e139] [cursor=pointer]:
+                      - /url: "#toc-sample-files-from-various-facilities"
+                  - listitem [ref=e140]:
+                    - link "Test Data Sets" [ref=e141] [cursor=pointer]:
+                      - /url: "#toc-test-data-sets"
+          - generic [ref=e142]:
+            - paragraph [ref=e146]:
+              - text: This page contains links to sample FITS (Flexible Image Transport System) files from various sources. These files do not necessarily conform to all the latest FITS format recommendations, as can be determined by testing the file with the
+              - link "FITS File Verifier" [ref=e147] [cursor=pointer]:
+                - /url: /fits/verifier
+              - text: .
+            - generic [ref=e149]:
+              - heading "Individual Sample FITS Files" [level=2] [ref=e150]
+              - generic [ref=e152]:
+                - paragraph [ref=e153]:
+                  - text: Most of the following sample FITS files were obtained from the
+                  - link "MAST" [ref=e154] [cursor=pointer]:
+                    - /url: https://archive.stsci.edu
+                  - text: (Mikulski Archive for Space Telescopes) data archive.
+                - table [ref=e155]:
+                  - rowgroup [ref=e156]:
+                    - row [ref=e157]:
+                      - columnheader "Telescope/Inst" [ref=e158]
+                      - columnheader "Description" [ref=e159]
+                  - rowgroup [ref=e160]:
+                    - row [ref=e161]:
+                      - cell [ref=e162]:
+                        - link "HST WFPC II" [ref=e163] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-wfpc-II-800-800-4.fits
+                      - cell "HST (Hubble Space Telescope) WFPC (Wide Field and Planetary Camera) II 800 x 800 x 4 primary array data cube containing the four CCD (charge-coupled device) images, plus a table extension containing world coordinate parameters. This sample file has been trimmed to 200 x 200 x 4 pixels to save disk space." [ref=e164]
+                    - row [ref=e165]:
+                      - cell [ref=e166]:
+                        - link "HST WFPC II" [ref=e167] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-wfpc-II-1600-1600.fits
+                      - cell "WFPC II 1600 x 1600 primary array mosaic constructed from the four individual CCD chips. (Image has been trimmed to 100 x 100 pixels to save disk space)." [ref=e168]
+                    - row [ref=e169]:
+                      - cell [ref=e170]:
+                        - link "HST FOC" [ref=e171] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-foc-1024-1024.fits
+                      - cell "FOC (Faint Object Camera) (1024 x 1024) primary array image, plus a table extension containing world coordinate parameters." [ref=e172]
+                    - row [ref=e173]:
+                      - cell [ref=e174]:
+                        - link "HST FOS" [ref=e175] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-fos-2-2064.fits
+                      - cell "FOS (Faint Object Spectrograph) 2 x 2064 primary array spectrum containing the flux and wavelength arrays, plus a small table extension." [ref=e176]
+                    - row [ref=e177]:
+                      - cell [ref=e178]:
+                        - link "HST HRS" [ref=e179] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-hrs-2000-4.fits
+                      - cell "HRS (High Resolution Spectrograph) 2000 x 4 primary array spectrum, plus a small table extension." [ref=e180]
+                    - row [ref=e181]:
+                      - cell [ref=e182]:
+                        - link "HST NICMOS" [ref=e183] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-nicmos.fits
+                      - cell "NICMOS (Near Infrared Camera and Multi-Object Spectrometer) null primary array plus five image extensions (270 x 263) containing the science, error, data quality, samples, and time images." [ref=e184]
+                    - row [ref=e185]:
+                      - cell [ref=e186]:
+                        - link "HST FGS" [ref=e187] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/hst-fgs.fits
+                      - cell "FGS (Fine Guidance Sensor) file with a 89688 x 7 two-dimensional primary array and one table extension. The primary array contains a time series of seven astrometric quantities." [ref=e188]
+                    - row [ref=e189]:
+                      - cell [ref=e190]:
+                        - link "Astro UIT" [ref=e191] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/astro-uit.fits
+                      - cell "Astro1 UIT (Ultraviolet Imaging Telescope) (512 x 512) primary array image." [ref=e192]
+                    - row [ref=e193]:
+                      - cell [ref=e194]:
+                        - link "IUE LWP" [ref=e195] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/iue-lwp.fits
+                      - cell "IUE (International Ultraviolet Explorer) LWP (Long-Wavelength Prime) spectrum contained in vector columns of a binary table." [ref=e196]
+                    - row [ref=e197]:
+                      - cell [ref=e198]:
+                        - link "EUVE" [ref=e199] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/euve.fits
+                      - cell "EUVE (Extreme Ultraviolet Explorer) sky image and 2D spectra, contained in multiple image extensions, with associated binary table extensions. The first image extension has been rebinned by a factor of four to save disk space." [ref=e200]
+                    - row [ref=e201]:
+                      - cell [ref=e202]:
+                        - link "Random Groups" [ref=e203] [cursor=pointer]:
+                          - /url: https://science.data.nasa.gov/sites/default/files/2026-06/random-groups.fits
+                      - cell "This example file illustrates the Random Groups FITS file format which has the keywords NAXIS1 = 0 and GROUPS = T. This format has been used almost exclusively for applications in radio interferometry and should not be used for applications outside of this field. It is recommended that new applications should use FITS binary tables to store this type of data. This example file comes from the Classic AIPS (Astronomical Image Processing System) 'DDT' (Dirty Dozen Test) benchmarking suite." [ref=e204]
+            - generic [ref=e206]:
+              - heading "Public Archives That Provide Astronomical Data in FITS Format" [level=2] [ref=e207]
+              - list [ref=e210]:
+                - listitem [ref=e211]:
+                  - link "Sample World Coordinate System FITS Files" [ref=e212] [cursor=pointer]:
+                    - /url: http://www.atnf.csiro.au/people/mcalabre/WCS/example_data.html
+                  - text: have been prepared for each of the ~27 projections described in the "
+                  - link "Representations of Celestial Coordinates in FITS" [ref=e213] [cursor=pointer]:
+                    - /url: /fits/documentation/wcs
+                  - text: "\" paper using the same projection parameters as in the paper (where applicable)"
+                - listitem [ref=e214]:
+                  - link "Anglo-Australian Telescope" [ref=e215] [cursor=pointer]:
+                    - /url: http://www.aao.gov.au/science/aat-data-archive
+                - listitem [ref=e216]:
+                  - link "ATNF" [ref=e217] [cursor=pointer]:
+                    - /url: http://www.atnf.csiro.au/observers/data.html
+                  - text: (Australia Telescope National Facility) radio telescopes data archive
+                - listitem [ref=e218]:
+                  - link "Canadian Astronomical Data Center" [ref=e219] [cursor=pointer]:
+                    - /url: http://cadcwww.dao.nrc.ca/
+                  - text: (CADC) archive of observations taken with HST, Gemini, JCMT (James Clerk Maxwell Telescope), CFHT (Canada France Hawaii Telescope), CGPS (Canadian Galactic Plane Survey), and other archives and catalogues
+                - listitem [ref=e220]:
+                  - link "CASU" [ref=e221] [cursor=pointer]:
+                    - /url: http://casu.ast.cam.ac.uk/casuadc
+                  - text: (Cambridge Astronomical Survey Unit) Data Center, including archives of the Isaac Newton Group of telescopes and other U.K. affiliated observatories
+                - listitem [ref=e222]:
+                  - link "Chandra X-ray telescope" [ref=e223] [cursor=pointer]:
+                    - /url: http://cxc.harvard.edu/cda/
+                  - text: data archive
+                - listitem [ref=e224]:
+                  - link "Deep Extragalactic Evolutionary Probe" [ref=e225] [cursor=pointer]:
+                    - /url: http://deep.ucolick.org/
+                  - text: (DEEP) survey of distant galaxies observed with Keck and HST
+                - listitem [ref=e226]:
+                  - text: ESO (European Southern Observatory)/ST-ECF (Space Telescope – European Coordinating Facility)
+                  - link "Science Archive" [ref=e227] [cursor=pointer]:
+                    - /url: http://archive.eso.org/
+                  - text: contains non-proprietary data from the VLT (Very Large Telescope), NTT (New Technology Telescope), MPG (Max Planck Society)/ESO 2.2m, and the ESO 3.6m telescopes, as well as the Hubble Space Telescope
+                - listitem [ref=e228]:
+                  - link "HEASARC" [ref=e229] [cursor=pointer]:
+                    - /url: http://heasarc.gsfc.nasa.gov/docs/corp/data.html
+                  - text: (High Energy Astrophysics Science Archive Research Center) archive of X-ray and Gamma-ray observations from space. See also
+                  - link "sample FITS files" [ref=e230] [cursor=pointer]:
+                    - /url: http://heasarc.gsfc.nasa.gov/docs/heasarc/ofwg/ofwg_samples.html
+                - listitem [ref=e231]:
+                  - link "IRSA" [ref=e232] [cursor=pointer]:
+                    - /url: http://irsa.ipac.caltech.edu/
+                  - text: (NASA/IPAC Infrared Science Archive), NASA's archive node for infrared and sub-millimeter data
+                - listitem [ref=e233]:
+                  - link "JIVE" [ref=e234] [cursor=pointer]:
+                    - /url: http://www.jive.nl/archive/scripts/listarch.php
+                  - text: (Joint Institute for Very Long Baseline Interferometry European Research Infrastructure Consortium) in Europe
+                - listitem [ref=e235]:
+                  - link "LAMBDA" [ref=e236] [cursor=pointer]:
+                    - /url: http://lambda.gsfc.nasa.gov/
+                  - text: (Legacy Archive for Microwave Background Data Analysis) archive of WMAP (Wilkinson Microwave Anisotropy Probe) and COBE (Cosmic Background Explorer) microwave background data
+                - listitem [ref=e237]:
+                  - link "Mikulski Archive for Space Telescopes" [ref=e238] [cursor=pointer]:
+                    - /url: http://archive.stsci.edu/
+                  - text: (MAST)
+                - listitem [ref=e239]:
+                  - link "National Radio Astronomical Observatory" [ref=e240] [cursor=pointer]:
+                    - /url: https://archive.nrao.edu/archive/e2earchive.jsp
+                  - text: (NRAO) Data Archive of observation with the VLA (Very Large Array), VLBA (Very Long Baseline Array), and GBT (Green Bank Telescope) radio telescopes
+                - listitem [ref=e241]:
+                  - link "Sloan Digital Sky Survey" [ref=e242] [cursor=pointer]:
+                    - /url: http://www.sdss.org/
+                - listitem [ref=e243]:
+                  - link "Spitzer Space Telescope" [ref=e244] [cursor=pointer]:
+                    - /url: http://ssc.spitzer.caltech.edu/archanaly/
+            - generic [ref=e246]:
+              - heading "Experimental FITS Files" [level=2] [ref=e247]
+              - generic [ref=e249]:
+                - paragraph [ref=e250]: These files contain unusual features that may not conform to the current FITS standard.
+                - list [ref=e251]:
+                  - listitem [ref=e252]:
+                    - link "keyword-test.fits" [ref=e253] [cursor=pointer]:
+                      - /url: https://science.data.nasa.gov/sites/default/files/2026-06/keyword-test.fits
+                    - text: "- this FITS image contains unorthodox header keywords that do not have an equals sign character in byte 9 of the header record."
+                  - listitem [ref=e254]:
+                    - link "keyword-test-2.fits" [ref=e255] [cursor=pointer]:
+                      - /url: https://science.data.nasa.gov/sites/default/files/2026-06/keyword-test-2.fits
+                    - text: "- this FITS image contains a keyword that has an illegal \".\" character in the name."
+            - generic [ref=e257]:
+              - heading "Sample FITS Files From NRAO" [level=2] [ref=e258]
+              - generic [ref=e260]:
+                - paragraph [ref=e261]: These FITS files were collected by Don Wells and were originally available on the NRAO website. These are relatively early examples of FITS usage, so they do not necessarily conform to the latest FITS format recommendations.
+                - heading "Sample Files From Various Facilities" [level=3] [ref=e262]
+            - generic [ref=e263]:
+              - tablist [ref=e265]:
+                - tab [ref=e266]:
+                  - heading [level=4] [ref=e267]:
+                    - button "Astrophysical Data Facility (ADC/NASA/GSFC) Sample Tables" [ref=e268] [cursor=pointer]
+                - tab [ref=e269]:
+                  - heading [level=4] [ref=e270]:
+                    - button "Binary Table Examples" [ref=e271] [cursor=pointer]
+                - tab [ref=e272]:
+                  - heading [level=4] [ref=e273]:
+                    - button "3D Data Cube" [ref=e274] [cursor=pointer]
+                - tab [ref=e275]:
+                  - heading [level=4] [ref=e276]:
+                    - button "Hierarchical Grouping" [ref=e277] [cursor=pointer]
+                - tab [ref=e278]:
+                  - heading [level=4] [ref=e279]:
+                    - button "Hubble Space Telescope" [ref=e280] [cursor=pointer]
+                - tab [ref=e281]:
+                  - heading [level=4] [ref=e282]:
+                    - button "IMAGE Extensions" [ref=e283] [cursor=pointer]
+                - tab [ref=e284]:
+                  - heading [level=4] [ref=e285]:
+                    - button "Single Disk Radio Data" [ref=e286] [cursor=pointer]
+                - tab [ref=e287]:
+                  - heading [level=4] [ref=e288]:
+                    - button "World Coordinate System (WCS) Examples" [ref=e289] [cursor=pointer]
+                - tab [ref=e290]:
+                  - heading [level=4] [ref=e291]:
+                    - button "XTE X-ray Satellite Data" [ref=e292] [cursor=pointer]
+                - tab [ref=e293]:
+                  - heading [level=4] [ref=e294]:
+                    - button "Year-2000 DATE Keyword Examples" [ref=e295] [cursor=pointer]
+              - heading "Test Data Sets" [level=3] [ref=e299]
+              - tablist [ref=e302]:
+                - tab [ref=e303]:
+                  - heading [level=4] [ref=e304]:
+                    - button "FITS Test Tape 4b" [ref=e305] [cursor=pointer]
+                - tab [ref=e306]:
+                  - heading [level=4] [ref=e307]:
+                    - button "Headers" [ref=e308] [cursor=pointer]
+                - tab [ref=e309]:
+                  - heading [level=4] [ref=e310]:
+                    - button "Incunabula" [ref=e311] [cursor=pointer]
+                - tab [ref=e312]:
+                  - heading [level=4] [ref=e313]:
+                    - button "PG93" [ref=e314] [cursor=pointer]
+    - contentinfo [ref=e315]:
+      - generic [ref=e318]:
+        - generic [ref=e319]:
+          - generic [ref=e325]:
+            - link [ref=e327] [cursor=pointer]:
+              - /url: https://www.nasa.gov/
+              - img "Home" [ref=e328]
+            - list [ref=e330]:
+              - listitem [ref=e331]:
+                - link [ref=e332] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASAScience/
+                  - img "NASA Science on Facebook" [ref=e333]
+              - listitem [ref=e334]:
+                - link [ref=e335] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasascience_/
+                  - img "NASA Science on Instagram" [ref=e336]
+              - listitem [ref=e337]:
+                - link [ref=e338] [cursor=pointer]:
+                  - /url: https://x.com/NASAScience_
+                  - img "NASA Science on X" [ref=e339]
+              - listitem [ref=e340]:
+                - link [ref=e341] [cursor=pointer]:
+                  - /url: https://www.youtube.com/user/ScienceAtNASA
+                  - img "NASA Science on YouTube" [ref=e342]
+          - generic [ref=e343]:
+            - generic [ref=e346]:
+              - heading "NASA Science Data Portal" [level=2] [ref=e347]
+              - paragraph [ref=e348]: The Science Data Portal provides a comprehensive list of NASA Science data repositories to increase data discovery and accessibility.
+            - navigation [ref=e349]:
+              - heading "Site information" [level=2] [ref=e350]
+              - list [ref=e351]:
+                - listitem [ref=e352]:
+                  - link "Home" [ref=e353] [cursor=pointer]:
+                    - /url: /
+                - listitem [ref=e354]:
+                  - link "About" [ref=e355] [cursor=pointer]:
+                    - /url: /about
+                - listitem [ref=e356]:
+                  - link "News & Events" [ref=e357] [cursor=pointer]:
+                    - /url: /features-events
+                - listitem [ref=e358]:
+                  - link "Contact" [ref=e359] [cursor=pointer]:
+                    - /url: /contact
+            - navigation [ref=e360]:
+              - heading "Data search tools" [level=2] [ref=e361]
+              - list [ref=e362]:
+                - listitem [ref=e363]:
+                  - link "DATA SEARCH" [ref=e364] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=e365]:
+                    - listitem [ref=e366]:
+                      - link "Science Discovery Engine" [ref=e367] [cursor=pointer]:
+                        - /url: /science-discovery-engine
+                    - listitem [ref=e368]:
+                      - link "Science Explorer Digital Library" [ref=e369] [cursor=pointer]:
+                        - /url: /science-explorer
+            - navigation [ref=e370]:
+              - heading "NASA science data sites" [level=2] [ref=e371]
+              - list [ref=e372]:
+                - listitem [ref=e373]:
+                  - link "DATA SITES" [ref=e374] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=e375]:
+                    - listitem [ref=e376]:
+                      - link "Astrophysics" [ref=e377] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/astrophysics/data/
+                    - listitem [ref=e378]:
+                      - link "Biological & Physical Sciences" [ref=e379] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/biological-physical/data/
+                    - listitem [ref=e380]:
+                      - link "Earth Science" [ref=e381] [cursor=pointer]:
+                        - /url: https://www.earthdata.nasa.gov
+                    - listitem [ref=e382]:
+                      - link "Heliophysics" [ref=e383] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/heliophysics/data
+                    - listitem [ref=e384]:
+                      - link "Planetary Science" [ref=e385] [cursor=pointer]:
+                        - /url: https://planetary.data.nasa.gov/
+                    - listitem [ref=e386]:
+                      - link "ACROSS" [ref=e387] [cursor=pointer]:
+                        - /url: /data-sites/across
+                    - listitem [ref=e388]:
+                      - link "Astronomy and Geodesy" [ref=e389] [cursor=pointer]:
+                        - /url: /data-sites/astronomy-geodesy
+                    - listitem [ref=e390]:
+                      - link "Citizen Science" [ref=e391] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/citizen-science
+                    - listitem [ref=e392]:
+                      - link "High End Computing" [ref=e393] [cursor=pointer]:
+                        - /url: https://www.nasa.gov/computing/hec/
+                    - listitem [ref=e394]:
+                      - link "Opacities" [ref=e395] [cursor=pointer]:
+                        - /url: /data-sites/opacities
+                    - listitem [ref=e396]:
+                      - link "PEGASUS Stellar Spectra" [ref=e397] [cursor=pointer]:
+                        - /url: /data-sites/pegasus-stellar-spectra
+        - generic [ref=e399]:
+          - list [ref=e403]:
+            - listitem [ref=e404]: "Last updated: 11/19/2026"
+            - listitem [ref=e405]: "NASA Official: Andrew Mitchell"
+            - listitem [ref=e406]: "Webmaster: Justin Peacock"
+          - navigation [ref=e407]:
+            - heading "NASA policies and notices" [level=2] [ref=e408]
+            - list [ref=e409]:
+              - listitem [ref=e410]:
+                - link "About NASA" [ref=e411] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/about/
+              - listitem [ref=e412]:
+                - link "Accessibility" [ref=e413] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/accessibility/
+              - listitem [ref=e414]:
+                - link "FOIA" [ref=e415] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/foia/
+              - listitem [ref=e416]:
+                - link "No FEAR Act" [ref=e417] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/odeo/no-fear-act/
+              - listitem [ref=e418]:
+                - link "Privacy Policy" [ref=e419] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/privacy/
+              - listitem [ref=e420]:
+                - link "Science Data License" [ref=e421] [cursor=pointer]:
+                  - /url: /about/license
+              - listitem [ref=e422]:
+                - link "Vulnerability Disclosure Policy" [ref=e423] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/vulnerability-disclosure-policy/

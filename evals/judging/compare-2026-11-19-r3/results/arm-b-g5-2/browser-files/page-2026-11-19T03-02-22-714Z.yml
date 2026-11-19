@@ -1,0 +1,60 @@
+- generic [ref=e2]:
+  - generic [ref=e3]: The systems powering the Science Discovery Engine were recently updated to provide users with a better search experience.
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - banner [ref=e8]:
+        - generic [ref=e9]:
+          - link "NASA Logo" [ref=e10] [cursor=pointer]:
+            - /url: https://www.nasa.gov/
+            - img "NASA Logo"
+          - generic:
+            - img "vertical-vector"
+          - generic:
+            - img "SDE Graphical Identifier"
+        - generic [ref=e11]:
+          - generic [ref=e12]: Search Stories
+          - button "SDE SDE" [ref=e14] [cursor=pointer]:
+            - img "SDE"
+            - generic [ref=e15]: SDE
+          - button "Help and Support":
+            - img "Help and Support"
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - heading [level=1]
+          - generic [ref=e20]:
+            - text: Empowering open science, the Science Discovery Engine allows you to explore the universe, from the tiniest of cells to the vastness of space, through discovery of NASA's science data, documentation, and code.
+            - button "Learn more about the purpose and scope of the Science Discovery Engine." [ref=e21] [cursor=pointer]: Read More
+        - generic [ref=e22]:
+          - button [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]:
+              - img "All" [ref=e26]
+              - paragraph [ref=e28]: All
+          - generic [ref=e33]:
+            - textbox "Type to search..." [ref=e34]
+            - button [ref=e35] [cursor=pointer]:
+              - img "Microphone" [ref=e36]
+            - button "SEARCH search-icon" [ref=e37] [cursor=pointer]:
+              - generic [ref=e38]: SEARCH
+              - img "search-icon" [ref=e39]
+    - contentinfo [ref=e41]:
+      - generic [ref=e42]:
+        - generic [ref=e44]:
+          - img "NASA meatball logo"
+          - img "vertical-vector"
+          - generic:
+            - img "SDE Graphical Identifier"
+        - generic [ref=e45]:
+          - generic [ref=e46]:
+            - heading "The National Aeronautics and Space Administration" [level=1] [ref=e47]
+            - paragraph [ref=e48]: "The Science Discovery Engine (SDE) is an integrated search capability that enables discovery of open data and information across the five focus areas of NASA's Science Mission Directorate (SMD): astrophysics, biological and physical sciences, Earth science, heliophysics and planetary science."
+          - generic [ref=e49]:
+            - heading "RESOURCES" [level=3] [ref=e50]
+            - list [ref=e51]:
+              - listitem [ref=e52]:
+                - link "Click to learn more about SciX" [ref=e53] [cursor=pointer]:
+                  - /url: https://scixplorer.org/
+                  - text: SciX Digital Library
+              - listitem [ref=e54]: Time Domain & Multi Messenger Astronomy
+          - generic [ref=e55]:
+            - paragraph [ref=e56]: Last updated:10/8/2026
+            - paragraph [ref=e57]: NASA Official:Kaylin Bugbee

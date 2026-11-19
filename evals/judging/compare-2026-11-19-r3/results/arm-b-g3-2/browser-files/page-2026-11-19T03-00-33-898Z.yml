@@ -1,0 +1,331 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner "Site header" [ref=e6]:
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - link [ref=e10] [cursor=pointer]:
+            - /url: https://www.nasa.gov
+            - img "Home" [ref=e11]
+          - link "Science Data Portal" [ref=e13] [cursor=pointer]:
+            - /url: /
+        - navigation [ref=e15]:
+          - heading "Main navigation" [level=2] [ref=e16]
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - link "Data Sites " [ref=e21] [cursor=pointer]:
+                - /url: /
+                - text: Data Sites
+                - generic [ref=e22]: 
+              - text:          
+            - listitem [ref=e23]:
+              - link "Data Services " [ref=e24] [cursor=pointer]:
+                - /url: /
+                - text: Data Services
+                - generic [ref=e25]: 
+            - listitem [ref=e26]:
+              - link "Data Search " [ref=e27] [cursor=pointer]:
+                - /url: /
+                - text: Data Search
+                - generic [ref=e28]: 
+            - listitem [ref=e29]:
+              - link "News & Events " [ref=e30] [cursor=pointer]:
+                - /url: /features-events
+                - text: News & Events
+                - generic [ref=e31]: 
+            - listitem [ref=e32]:
+              - link "About " [ref=e33] [cursor=pointer]:
+                - /url: /about
+                - text: About
+                - generic [ref=e34]: 
+        - generic [ref=e40]:
+          - generic [ref=e41]: Search NASA science data
+          - searchbox "Search NASA science data" [ref=e42]
+      - navigation [ref=e45]:
+        - heading "FITS" [level=2] [ref=e46]
+        - generic [ref=e47]:
+          - text: 
+          - list [ref=e49]:
+            - listitem [ref=e50]:
+              - link "FITS Overview" [ref=e51] [cursor=pointer]:
+                - /url: /fits
+            - listitem [ref=e52]:
+              - link "Verifier" [ref=e53] [cursor=pointer]:
+                - /url: /fits/verifier
+            - listitem [ref=e54]:
+              - link "Software" [ref=e55] [cursor=pointer]:
+                - /url: /fits/software
+            - listitem [ref=e56]:
+              - link "Sample Files" [ref=e57] [cursor=pointer]:
+                - /url: /fits/sample-files
+            - listitem [ref=e58]:
+              - link "Libraries" [ref=e59] [cursor=pointer]:
+                - /url: /fits/libraries
+            - listitem [ref=e60]:
+              - link "Documentation" [ref=e61] [cursor=pointer]:
+                - /url: /fits/documentation
+            - listitem [ref=e62]:
+              - link "Working Groups" [ref=e63] [cursor=pointer]:
+                - /url: /fits/iau-working-group
+            - listitem [ref=e64]:
+              - link "Archives" [ref=e65] [cursor=pointer]:
+                - /url: /fits/archives
+    - navigation "breadcrumb" [ref=e66]:
+      - list [ref=e67]:
+        - listitem [ref=e68]:
+          - link "Home" [ref=e69] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=e70]:
+          - text: /
+          - link "FITS" [ref=e71] [cursor=pointer]:
+            - /url: /fits
+        - listitem [ref=e72]: / FITS Verifier
+    - complementary "Featured content" [ref=e74]:
+      - article [ref=e78]:
+        - generic [ref=e90]:
+          - heading "FITS Verifier" [level=1] [ref=e94]
+          - generic [ref=e95]: The FITS File Verifier web tool checks whether your Flexible Image Transport System (FITS) file meets the standards for this common astronomy data format.
+    - generic:
+      - complementary "Page messages"
+    - main [ref=e102]:
+      - article [ref=e106]:
+        - generic [ref=e113]:
+          - generic [ref=e117]:
+            - paragraph [ref=e118]:
+              - text: Use this web form to verify the format of any Flexible Image Transport System (FITS) data file on your local computer or on the web. The file will be uploaded and scanned for any
+              - link "violations" [ref=e119] [cursor=pointer]:
+                - /url: "#errors"
+              - text: of the requirements specified in the
+              - link "FITS Standard" [ref=e120] [cursor=pointer]:
+                - /url: /fits/documentation/standard
+              - text: document. You may also
+              - link "download this FITSverify program" [ref=e121] [cursor=pointer]:
+                - /url: http://heasarc.gsfc.nasa.gov/docs/software/ftools/fitsverify
+              - text: and run it locally.
+            - paragraph [ref=e122]:
+              - text: The file size limit for this tool is 100 MB. The FITS Verifier was created by NASA's High Energy Astrophysics Science Archive Research Center (
+              - link "HEASARC" [ref=e123] [cursor=pointer]:
+                - /url: https://heasarc.gsfc.nasa.gov/
+              - text: ).
+          - generic [ref=e131]:
+            - heading "HEASARC FITS Verifier" [level=2] [ref=e132]
+            - paragraph [ref=e133]:
+              - text: Select a FITS file to verify it directly in your browser.
+              - emphasis [ref=e134]: Files are processed locally and never uploaded.
+            - generic [ref=e135]:
+              - button "Choose File" [ref=e136]
+              - generic [ref=e138] [cursor=pointer]:
+                - checkbox "Print Header Contents (-l)" [ref=e139]
+                - text: Print Header Contents (-l)
+            - heading "Verification Report:" [level=2] [ref=e140]
+            - generic [ref=e141]: Ready. Please select a FITS file to verify.
+          - generic [ref=e145]:
+            - paragraph [ref=e146]:
+              - text: The
+              - link "fv FITS file viewer and editor" [ref=e147] [cursor=pointer]:
+                - /url: http://heasarc.gsfc.nasa.gov/docs/software/ftools/fv/
+              - text: may be used to examine the contents of the FITS file in greater detail.
+            - paragraph [ref=e148]:
+              - text: This form uses the
+              - link "FITSverify utility program" [ref=e149] [cursor=pointer]:
+                - /url: http://heasarc.gsfc.nasa.gov/docs/software/ftools/fitsverify
+              - text: that is freely available from
+              - link "HEASARC" [ref=e150] [cursor=pointer]:
+                - /url: http://heasarc.gsfc.nasa.gov/
+              - text: . When installed locally, FITSverify may be used to verify multiple files at once in batch mode.
+            - paragraph [ref=e151]:
+              - text: Please report any problems or questions about FITSverify to the
+              - link "ftools help desk" [ref=e152] [cursor=pointer]:
+                - /url: http://heasarc.gsfc.nasa.gov/cgi-bin/ftoolshelp
+              - text: .
+            - paragraph [ref=e153]
+            - separator [ref=e154]
+          - generic [ref=e158]:
+            - heading "Error List" [level=2] [ref=e159]
+            - paragraph [ref=e160]:
+              - text: FITSverify tests whether a FITS file meets the requirements of Version 3.0 of the
+              - link "FITS Standard" [ref=e161] [cursor=pointer]:
+                - /url: /fits/documentation/standard
+              - text: ". It will test for any of the following error or warning conditions:"
+            - heading "Error Conditions" [level=3] [ref=e162]
+            - list [ref=e163]:
+              - listitem [ref=e164]: Mandatory keyword not present or out of order
+              - listitem [ref=e165]: Mandatory keyword has wrong datatype or illegal value
+              - listitem [ref=e166]: END header keyword is not present
+              - listitem [ref=e167]: Sum of table column widths is inconsistent with NAXIS1 value
+              - listitem [ref=e168]: BLANK keyword present in image with floating-point datatype
+              - listitem [ref=e169]: TNULLn keyword present for floating-point binary table column
+              - listitem [ref=e170]: Bit column has non-zero fill bits or is not left adjusted
+              - listitem [ref=e171]: ASCII (American Standard Code for Information Interchange) TABLE column contains illegal value inconsistent with TFORMn
+              - listitem [ref=e172]: Address to a variable length array not within the data heap
+              - listitem [ref=e173]: Extraneous bytes in the FITS file following the last HDU (Header Data Unit)
+              - listitem [ref=e174]: Mandatory keyword values not expressed in fixed format
+              - listitem [ref=e175]: Mandatory keyword duplicated elsewhere in the header
+              - listitem [ref=e176]: Header contains illegal ASCII character (not ASCII 32 - 126)
+              - listitem [ref=e177]: Keyword name contains illegal character
+              - listitem [ref=e178]: Keyword value field has illegal format
+              - listitem [ref=e179]: Value and comment fields not separated by a slash character
+              - listitem [ref=e180]: END keyword not filled with blanks in columns 9 - 80
+              - listitem [ref=e181]: Reserved keyword with wrong datatype or illegal value
+              - listitem [ref=e182]: XTENSION keyword in the primary array
+              - listitem [ref=e183]: Column related keyword (TFIELDS, TTYPEn,TFORMn, etc.) in an image
+              - listitem [ref=e184]: SIMPLE, EXTEND, or BLOCKED keyword in any extension
+              - listitem [ref=e185]: BSCALE, BZERO, BUNIT, BLANK, DATAMAX, DATAMIN keywords in a table
+              - listitem [ref=e186]: Table WCS keywords (TCTYPn, TCRPXn, TCRVLn, etc.) in an image
+              - listitem [ref=e187]: TDIMn or THEAP keyword in an ASCII table
+              - listitem [ref=e188]: TBCOLn keyword in a Binary table
+              - listitem [ref=e189]: THEAP keyword in a binary table that has PCOUNT = 0
+              - listitem [ref=e190]: XTENSION, TFORMn, TDISPn or TDIMn value contains leading space(s)
+              - listitem [ref=e191]: WCSAXES keyword appears after other WCS keywords
+              - listitem [ref=e192]: Index of any WCS (World Coordinate Systems) keyword (CRPIXn, CRVALn, etc.) greater than value of WCSNAXES
+              - listitem [ref=e193]: Index of any table column descriptor keyword (TTYPEn, TFORMn, etc.) greater than value of TFIELDS
+              - listitem [ref=e194]: TSCALn or TZEROn present for an ASCII, logical, or Bit column
+              - listitem [ref=e195]: TDISPn value is inconsistent with the column datatype
+              - listitem [ref=e196]: Length of a variable length array greater than the maximum length as given by the TFORMn keyword
+              - listitem [ref=e197]: ASCII table floating-point column value does not have decimal point(*)
+              - listitem [ref=e198]: ASCII table numeric column value has embedded space character
+              - listitem [ref=e199]: Logical column contains illegal value not equal to 'T', 'F', or 0
+              - listitem [ref=e200]: Character string column contains non-ASCII text character
+              - listitem [ref=e201]: Header fill bytes not all blanks
+              - listitem [ref=e202]: Data fill bytes not all blanks in ASCII tables or all zeros in any other type of HDU
+              - listitem [ref=e203]: Gaps between defined ASCII table columns contain characters with ASCII value > 127
+            - heading "Warning Conditions" [level=3] [ref=e204]
+            - list [ref=e205]:
+              - listitem [ref=e206]: SIMPLE = F
+              - listitem [ref=e207]: Presence of deprecated keywords BLOCKED or EPOCH
+              - listitem [ref=e208]: 2 HDUs have identical EXTNAME, EXTVER, and EXTLEVEL values
+              - listitem [ref=e209]: BSCALE or TSCALn value = 0.
+              - listitem [ref=e210]: BLANK OR TNULLn value exceeds the legal range
+              - listitem [ref=e211]: TFORMn has 'rAw' format and r is not a multiple of w
+              - listitem [ref=e212]: DATE = 'dd/mm/yy' and yy is less than 10 (Y2K problem??)
+              - listitem [ref=e213]: Index of any WCS keyword (CRPIXn, CRVALn, etc.) greater than value of NAXIS, if the WCSAXES keyword is not present
+              - listitem [ref=e214]: Duplicated keyword (except COMMENT, HISTORY, blank, etc.)
+              - listitem [ref=e215]: Column name (TTYPEn) does not exist or contains characters other than letter, digit and underscore
+              - listitem [ref=e216]: Binary table has PCOUNT > 0, but no variable-length array columns
+              - listitem [ref=e217]: Calculated checksum inconsistent with CHECKSUM or DATASUM keyword
+    - contentinfo [ref=e218]:
+      - generic [ref=e221]:
+        - generic [ref=e222]:
+          - generic [ref=e228]:
+            - link [ref=e230] [cursor=pointer]:
+              - /url: https://www.nasa.gov/
+              - img "Home" [ref=e231]
+            - list [ref=e233]:
+              - listitem [ref=e234]:
+                - link [ref=e235] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASAScience/
+                  - img "NASA Science on Facebook" [ref=e236]
+              - listitem [ref=e237]:
+                - link [ref=e238] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasascience_/
+                  - img "NASA Science on Instagram" [ref=e239]
+              - listitem [ref=e240]:
+                - link [ref=e241] [cursor=pointer]:
+                  - /url: https://x.com/NASAScience_
+                  - img "NASA Science on X" [ref=e242]
+              - listitem [ref=e243]:
+                - link [ref=e244] [cursor=pointer]:
+                  - /url: https://www.youtube.com/user/ScienceAtNASA
+                  - img "NASA Science on YouTube" [ref=e245]
+          - generic [ref=e246]:
+            - generic [ref=e249]:
+              - heading "NASA Science Data Portal" [level=2] [ref=e250]
+              - paragraph [ref=e251]: The Science Data Portal provides a comprehensive list of NASA Science data repositories to increase data discovery and accessibility.
+            - navigation [ref=e252]:
+              - heading "Site information" [level=2] [ref=e253]
+              - list [ref=e254]:
+                - listitem [ref=e255]:
+                  - link "Home" [ref=e256] [cursor=pointer]:
+                    - /url: /
+                - listitem [ref=e257]:
+                  - link "About" [ref=e258] [cursor=pointer]:
+                    - /url: /about
+                - listitem [ref=e259]:
+                  - link "News & Events" [ref=e260] [cursor=pointer]:
+                    - /url: /features-events
+                - listitem [ref=e261]:
+                  - link "Contact" [ref=e262] [cursor=pointer]:
+                    - /url: /contact
+            - navigation [ref=e263]:
+              - heading "Data search tools" [level=2] [ref=e264]
+              - list [ref=e265]:
+                - listitem [ref=e266]:
+                  - link "DATA SEARCH" [ref=e267] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=e268]:
+                    - listitem [ref=e269]:
+                      - link "Science Discovery Engine" [ref=e270] [cursor=pointer]:
+                        - /url: /science-discovery-engine
+                    - listitem [ref=e271]:
+                      - link "Science Explorer Digital Library" [ref=e272] [cursor=pointer]:
+                        - /url: /science-explorer
+            - navigation [ref=e273]:
+              - heading "NASA science data sites" [level=2] [ref=e274]
+              - list [ref=e275]:
+                - listitem [ref=e276]:
+                  - link "DATA SITES" [ref=e277] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=e278]:
+                    - listitem [ref=e279]:
+                      - link "Astrophysics" [ref=e280] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/astrophysics/data/
+                    - listitem [ref=e281]:
+                      - link "Biological & Physical Sciences" [ref=e282] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/biological-physical/data/
+                    - listitem [ref=e283]:
+                      - link "Earth Science" [ref=e284] [cursor=pointer]:
+                        - /url: https://www.earthdata.nasa.gov
+                    - listitem [ref=e285]:
+                      - link "Heliophysics" [ref=e286] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/heliophysics/data
+                    - listitem [ref=e287]:
+                      - link "Planetary Science" [ref=e288] [cursor=pointer]:
+                        - /url: https://planetary.data.nasa.gov/
+                    - listitem [ref=e289]:
+                      - link "ACROSS" [ref=e290] [cursor=pointer]:
+                        - /url: /data-sites/across
+                    - listitem [ref=e291]:
+                      - link "Astronomy and Geodesy" [ref=e292] [cursor=pointer]:
+                        - /url: /data-sites/astronomy-geodesy
+                    - listitem [ref=e293]:
+                      - link "Citizen Science" [ref=e294] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/citizen-science
+                    - listitem [ref=e295]:
+                      - link "High End Computing" [ref=e296] [cursor=pointer]:
+                        - /url: https://www.nasa.gov/computing/hec/
+                    - listitem [ref=e297]:
+                      - link "Opacities" [ref=e298] [cursor=pointer]:
+                        - /url: /data-sites/opacities
+                    - listitem [ref=e299]:
+                      - link "PEGASUS Stellar Spectra" [ref=e300] [cursor=pointer]:
+                        - /url: /data-sites/pegasus-stellar-spectra
+        - generic [ref=e302]:
+          - list [ref=e306]:
+            - listitem [ref=e307]: "Last updated: 11/19/2026"
+            - listitem [ref=e308]: "NASA Official: Andrew Mitchell"
+            - listitem [ref=e309]: "Webmaster: Justin Peacock"
+          - navigation [ref=e310]:
+            - heading "NASA policies and notices" [level=2] [ref=e311]
+            - list [ref=e312]:
+              - listitem [ref=e313]:
+                - link "About NASA" [ref=e314] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/about/
+              - listitem [ref=e315]:
+                - link "Accessibility" [ref=e316] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/accessibility/
+              - listitem [ref=e317]:
+                - link "FOIA" [ref=e318] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/foia/
+              - listitem [ref=e319]:
+                - link "No FEAR Act" [ref=e320] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/odeo/no-fear-act/
+              - listitem [ref=e321]:
+                - link "Privacy Policy" [ref=e322] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/privacy/
+              - listitem [ref=e323]:
+                - link "Science Data License" [ref=e324] [cursor=pointer]:
+                  - /url: /about/license
+              - listitem [ref=e325]:
+                - link "Vulnerability Disclosure Policy" [ref=e326] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/vulnerability-disclosure-policy/
