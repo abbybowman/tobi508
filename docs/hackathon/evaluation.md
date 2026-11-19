@@ -63,56 +63,39 @@ Results left for a person are always reported beside accuracy: leaving everythin
 
 ## 3. Performance Metrics
 
-### Published answer keys
+### Headline results
 
-On 49 W3C cases with DHS verdicts (tests 2.C, 4.C, 4.D, 5.B), TOBI agrees on 43, makes no unsafe error, leaves 5 for a person, and gives DOES NOT APPLY on one case DHS passes. It matches all 80 expected results on the Baseline Alignment pages. Both sets are development cases, and here the model's questions get scripted answers, so they test the rules, not the model.
+On Nov 18 we reran all 29 NASA pages from their original recordings with the current tool, the server judge answering every open question:
 
-### Real pages: the blind rounds
+- **0 unsafe errors in 593 results:** no PASS or DOES NOT APPLY where the certified tester found a failure.
+- **93% agreement where TOBI decided** (331 of 355), with 23 false FAILs.
+- **40% left for a person** (238 of 593): the price of never guessing.
 
-| Round | Arm | Unsafe errors per run | Agree (of decided) | False FAIL | Left for a person |
-| --- | --- | --- | --- | --- | --- |
-| 1, www.nasa.gov (per WCAG criterion) | A: agent with TOBI, 3 runs | **0, 0, 0** | 42/44 to 45/48 | 2-4 | 65-69% |
-| | B: agent with a browser, 2 runs | **20, 16** | 86/112, 95/117 | 0 | 24-27% |
-| 2, svs.gsfc.nasa.gov (per WCAG criterion) | A: agent with TOBI, 2 runs | **3, 5** | 74/92, 87/108 | 12, 14 | 46-54% |
-| | B: agent with a browser, 2 runs | **20, 17** | 117/144, 99/124 | 0 | 28-38% |
-| | C: server judge, 3 repeats | **6, 6, 6** | 84/125 to 84/127 | 27-29 | 36-37% |
-| 3, science.data.nasa.gov (per TT test) | TOBI with its server judge | **3** | 118/149 (79%) | 18 | 32% |
-| | B: agent with a browser | **[FILL]** | **[FILL]** | **[FILL]** | **[FILL]** |
+These sites were used to fix the tool, so this is development evidence, not a blind result. Per test and per site: [evals/STATUS.md](https://github.com/abbybowman/tobi508/blob/main/evals/STATUS.md), summarized in the [README's status table](https://github.com/abbybowman/tobi508/blob/main/README.md#tt-tests-in-scope).
 
-- **The general-purpose agent passes pages that fail:** 16-20 unsafe errors per run. In round 1 it reported no failure on any page.
-- **TOBI's unsafe errors came from rules deciding alone,** never from a model's answer: the same cells in every round 2 run. Round 3's three came from reading Chrome's own form messages as the page's, and from walking a page before it finished drawing. Both are fixed.
-- **Caution costs review work:** about a third of round 3's results went to a person.
+**Against a general-purpose agent,** the same model with a browser and the same instructions made 16 to 20 unsafe errors per run on the same pages (rounds 1 and 2; round 3: **[FILL]**), and in round 1 it reported no failure on any page. TOBI's own blind runs made 0 to 6. In rounds 1 and 2 every one came from a rule deciding alone; in round 3, one of the three came from the judge, which had been shown Chrome's own error message as if it were the page's (now never shown to it).
 
-Scores: [round 1](https://github.com/abbybowman/tobi508/blob/main/evals/judging/round1/agent-score.md), [round 2](https://github.com/abbybowman/tobi508/blob/main/evals/judging/round2-armc/abc-score.md), [round 3](https://github.com/abbybowman/tobi508/blob/main/evals/judging/round3/score.md).
+On published answer keys, TOBI agrees with 43 of 49 DHS verdicts on W3C test cases, with no unsafe error and 5 left for a person, and matches all 80 expected results on the Section 508 Baseline Alignment pages. Both are development sets, and there the model's questions get scripted answers, so they test the rules, not the model.
 
-### After the fixes (development evidence)
+### What the blind rounds uncovered
 
-On Nov 18 all 29 pages were rerun from their original recordings with the server judge answering every question: **0 unsafe errors in 593 results, 93% agreement where TOBI decided (331 of 355), 23 false FAILs, and 40% left for a person.** These sites were used to fix the tool, so this is not a blind result. Per test and per site: [evals/STATUS.md](https://github.com/abbybowman/tobi508/blob/main/evals/STATUS.md), summarized in the [README's status table](https://github.com/abbybowman/tobi508/blob/main/README.md#tt-tests-in-scope).
+Each round was a NASA site TOBI had never been developed on, scored once before any fix ([round 1](https://github.com/abbybowman/tobi508/blob/main/evals/judging/round1/agent-score.md), [round 2](https://github.com/abbybowman/tobi508/blob/main/evals/judging/round2-armc/abc-score.md), [round 3](https://github.com/abbybowman/tobi508/blob/main/evals/judging/round3/score.md)). Their value was in what they exposed:
+
+| Round | What it uncovered | What changed |
+| --- | --- | --- |
+| 1: www.nasa.gov, 9 pages (Nov 4) | The calling agent left TOBI's judgment questions unanswered; long runs hit client timeouts | Runs continue as jobs; results end with the work left; the judge moved into the server |
+| 2: svs.gsfc.nasa.gov, 10 pages (Nov 8) | A recording missing code the page loads on use hid a keyboard trap; failures sat behind menus TOBI never opened | Such code is recorded; menus and panels are opened and read |
+| 3: science.data.nasa.gov, 10 pages (Nov 16) | Pages that draw themselves after loading; Chrome's own form messages read as the page's | TOBI waits for the page to draw; browser messages go to a person |
 
 Early fixes made TOBI more cautious than a careful tester; most later work gave it the evidence to decide again. On svs.gsfc.nasa.gov, decided results rose from 68 to 141 over four reruns with no unsafe error.
 
 ### Calling agent vs. server judge
 
-In round 2 the server judge answered all 194 questions in each of 3 repeats, and the repeats agreed on 194 of 200 results, but it was not more accurate than the calling agent: its errors all leaned toward FAIL, mostly from one question with faulty evidence. After fixing evidence and rubrics, we compared the two again on round 3's pages, three runs each:
-
-| Measure | A: calling agent answers | C: server judge answers |
-| --- | --- | --- |
-| Questions answered / left unanswered | **[FILL]** | **[FILL]** |
-| Same outcome in all 3 runs | **[FILL]** | **[FILL]** |
-| Unsafe errors / false FAILs / agree, per run | **[FILL]** | **[FILL]** |
-| Model spend and time per page | **[FILL]** | **[FILL]** |
+In round 2 the server judge answered all 194 questions in each of 3 repeats, and the repeats agreed on 194 of 200 results, but it was no more accurate than the calling agent: its errors leaned toward FAIL, mostly from one question with faulty evidence. Rerun on round 3's pages after the fixes, three runs each: the calling agent answered **[FILL]** of the questions and the server judge **[FILL]**; their outcomes matched across runs on **[FILL]** and **[FILL]** of results; unsafe errors per run were **[FILL]** and **[FILL]**.
 
 ### Cost and time
 
-| Per page | Model spend (list price) | Clock time |
-| --- | --- | --- |
-| TOBI's browser work | none | 1-6 min; 6-8 min with other pages of the site |
-| TOBI's server judge | $0.13 cached, $0.67 uncached | about 1 min |
-| Calling agent driving TOBI | $0.07-0.26 | mostly TOBI's browser time |
-| B: general agent with a browser | $0.02-0.05 | 10-20 s |
-| Certified tester, by hand | staff time | about 10-15 min **[FILL: timed]** |
-
-Model spend is small; browser time is the cost, because every shortcut we measured (fewer images, not waiting for late-drawing pages) produced wrong results. Per page, TOBI is not faster than an experienced tester. It runs unattended and in parallel, needs no certified tester for what it decides, and gives the same evidence every time.
+Model spend is under $1 a page: the server judge costs about $0.13 a page with prompt caching. Browser time is the real cost: 1 to 8 minutes a page, because every shortcut we measured (fewer images, not waiting for late-drawing pages) produced wrong results. A certified tester takes about 10 to 15 minutes a page for these 22 tests **[FILL: timed]**, so TOBI is not faster per page; it runs unattended and in parallel, needs no certified tester for what it decides, and gives the same evidence every time. The baseline agent took seconds and cents, and passed pages that fail.
 
 ### Where TOBI is wrong
 

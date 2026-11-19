@@ -189,6 +189,9 @@ def add_table(doc, rows: list[list[str]], header: bool) -> None:
         gc.set(qn("w:w"), str(w))
     for ri, row in enumerate(rows):
         tr = t.rows[ri]
+        tr._tr.get_or_add_trPr().append(
+            OxmlElement("w:cantSplit")
+        )  # no row across pages
         if header and ri == 0:
             trpr = tr._tr.get_or_add_trPr()
             h = OxmlElement("w:tblHeader")
