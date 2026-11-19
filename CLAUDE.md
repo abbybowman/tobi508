@@ -98,8 +98,10 @@ settled by looking), `tests/CLAUDE.md` (fixtures, test commands),
   walk, its extras and existing collectors; put shared logic where the next
   check can call it; write down what cost time.
 - Adding a TT test: the steps at the top of `src/tobi508/checks/base.py`.
-- Docs: what to build next is in `docs/ROADMAP.md`; the detail of an item in
-  `docs/plans/`. Lessons that save the next test time go in
+- Docs: what to build next is in `docs/ROADMAP.md`, whose rows link their
+  GitHub issue where one is filed; an issue is worked as
+  `docs/how-to/work-an-issue.md` says. The detail of an item is in the issue
+  or `docs/plans/`. Lessons that save the next test time go in
   `docs/solutions/`, in the file of their topic (read its README before
   building).
 

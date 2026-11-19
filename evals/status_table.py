@@ -37,7 +37,7 @@ START = "<!-- status-table:start -->"
 END = "<!-- status-table:end -->"
 GAPS_START = "<!-- known-gaps:start -->"
 GAPS_END = "<!-- known-gaps:end -->"
-GAPS_NOTE = "; see known gaps below"
+GAPS_NOTE = "; see known wrong outcomes below"
 
 # Each site's latest scored result. `base` gives every cell; `overlay` is a
 # later rerun's `moved.json` (only the cells that differ from the base, for the
@@ -193,7 +193,7 @@ def total(by_site: dict[int, Counter]) -> Counter:
 
 
 def gap_tests(text: str | None = None) -> set[str]:
-    """Test ids named in the bold lead of each README "Known gaps" bullet.
+    """Test ids named in the bold lead of each README "Known wrong outcomes" bullet.
 
     "5.A-5.D" names 5.A, 5.B, 5.C and 5.D. The status table marks these rows,
     so a green row cannot read as "nothing known wrong"."""

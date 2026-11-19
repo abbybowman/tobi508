@@ -21,7 +21,7 @@ re-testing): confirm and remove, or remove the mark.
     recording; guard GU then holds a PASS at NEEDS REVIEW
     ([solutions](solutions/recordings-miss-lazy-scripts.md)). The freeze
     does not run the chunk store, so a frozen copy can lack such code
-    (round 3's community pages: guard GU held 4.B). Step 25.
+    (round 3's community pages: guard GU held 4.B). Step 25, [#134](https://github.com/abbybowman/tobi508/issues/134).
   - A frame whose address changes on every load (reCAPTCHA, a lazy
     video embed, an OpenID Connect sign-in frame) is not in a frozen
     copy: its replay asks for an address the recording never saw and is
@@ -33,7 +33,7 @@ re-testing): confirm and remove, or remove the mark.
     another page's recording byte for byte the tested page's, so 9.A to
     9.C and 19.A read it as the tested page again and are not
     performed. On such a site 19.A's alias check would also verify
-    `/index.html` as the tested page (not run; a PASS risk). Step 26.
+    `/index.html` as the tested page (not run; a PASS risk). Step 26, [#134](https://github.com/abbybowman/tobi508/issues/134).
     Found in round 3.
   - A page whose script fails on load shows what a visitor sees, but
     the report does not say so: page script errors are not recorded as
@@ -63,7 +63,7 @@ re-testing): confirm and remove, or remove the mark.
   frame the recording lacks (PASS and DOES NOT APPLY are held,
   `frames_missing`). A frame's fields are pictured with the frame
   opened alone, so the judge does not see text beside the frame on the
-  page (round 2: 5.A and 5.B; step 37).
+  page (round 2: 5.A and 5.B; step 37, [#137](https://github.com/abbybowman/tobi508/issues/137)).
 - **Content that opens.** Menus, tabs, accordions and filters are opened
   on a fresh load (`reveal.py`; guards RV and RC), and 4.C and 4.E walk
   what opened (`opened.py`, step 6g). Not opened: a form behind a button
@@ -72,7 +72,7 @@ re-testing): confirm and remove, or remove the mark.
   4.C to 4.F do not see the controls inside such a form, so on a page
   whose only form opens from a plain button they can PASS (read, not
   run). 4.D, 5.D and 4.A do not walk or scan opened content yet
-  (step 15).
+  (step 15; 4.D and 5.D in [#135](https://github.com/abbybowman/tobi508/issues/135)).
 - **Guard CN matches hidden fields by their place in the page:** a page
   that rebuilds its elements when a section opens can make a field that
   was read look unread, so a test is NEEDS REVIEW when it need not be.
@@ -164,9 +164,9 @@ re-testing): confirm and remove, or remove the mark.
   that opens are not scanned (step 15). J1 can answer "alternative"
   while its reasons say it is not sure, and M8 passes any effect of
   Enter or Space, even one that is not what the click does (round 3's
-  MySearchStory; step 28). Every Drupal page of round 3 was NEEDS
+  MySearchStory; step 28, [#136](https://github.com/abbybowman/tobi508/issues/136)). Every Drupal page of round 3 was NEEDS
   REVIEW for a hidden share frame, a page-level wheel or touch listener
-  and `HOVER_MAX` (40) (step 32). Its caps (`HOVER_MAX`, `CLICK_MAX`,
+  and `HOVER_MAX` (40) (step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)). Its caps (`HOVER_MAX`, `CLICK_MAX`,
   `EXECUTE_MAX`) are not calibrated on real pages. A page with embedded
   players or frames is often NEEDS REVIEW.
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
@@ -177,7 +177,7 @@ re-testing): confirm and remove, or remove the mark.
   reach, or that could not be opened, is NEEDS REVIEW (as in 4.E and
   5.D).
 - **4.D:** `MIN_CHANGED_PX` is absolute, so about 50 changed pixels pass
-  a large image link (round 3's blog; held only by guard RC; step 27). A
+  a large image link (round 3's blog; held only by guard RC; step 27, [#135](https://github.com/abbybowman/tobi508/issues/135)). A
   link whose only sign of focus is that its box moved is NEEDS REVIEW
   unless it is shown only on focus (F-02, 4.D 1.8.0); if more than 1 in
   5 of a round's 4.D stops end there, Abby's option B: take the two
@@ -190,12 +190,12 @@ re-testing): confirm and remove, or remove the mark.
   could not be opened, NEEDS REVIEW.
 - **4.E:** an address change the page makes on its own soon after load
   is read as caused by focus when it lands on the first key press
-  (round 3: 3 false FAILs; step 24). **⚑ Check:** step 23's rerun moved
+  (round 3: 3 false FAILs; step 24, [#134](https://github.com/abbybowman/tobi508/issues/134)). **⚑ Check:** step 23's rerun moved
   all three (two to NEEDS REVIEW, one to an agreeing PASS); the cause
   may only be hidden now.
 - **4.F:** a footer of link columns raises S3 on every page, and a
   dropdown whose options take arrow keys raises S6; J1's order list can
-  leave out what the signals name. Step 33. (Round 2's p02, p03 and p07,
+  leave out what the signals name. Step 33, [#136](https://github.com/abbybowman/tobi508/issues/136). (Round 2's p02, p03 and p07,
   unsure in one rerun and a false FAIL in the next, came from elements
   placed out of line while the page scrolled, a sidebar that scrolls by
   itself and a player's new id on each load: fixed in 4.F 1.11.0.) The judge is often
@@ -212,14 +212,14 @@ re-testing): confirm and remove, or remove the mark.
   when no other field is judged (A2u, 1.10.0); beside other judged
   fields it is not counted, so a PASS there is "in what 5.B judged". Not
   done: opening the panel a magnifier opens, and a magnifier as a label
-  (step 29). Controls with no `<form>` all have form "none", so a
-  header's menu button joins a search field's form (step 35). The judge
+  (step 29, [#137](https://github.com/abbybowman/tobi508/issues/137)). Controls with no `<form>` all have form "none", so a
+  header's menu button joins a search field's form (step 35a, [#134](https://github.com/abbybowman/tobi508/issues/134)). The judge
   is often unsure, so many cells wait for a person.
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (only the wording differs); a jump forward past a field
   after Tab-away is not detected; on a filter whose request the
   recording lacks, focus landing on the field's own label reads as a
-  move (round 3's blog: a false FAIL; step 35). `FIELD_MAX` (40) and
+  move (round 3's blog: a false FAIL; step 35b, [#137](https://github.com/abbybowman/tobi508/issues/137)). `FIELD_MAX` (40) and
   `FIELD_SECONDS` (1.1 s) are not calibrated on real pages. A menu or
   section that opens leaves it NEEDS REVIEW (as in 4.C and 4.E).
 - **5.F and 5.G:** the browser's own error messages are left for a
@@ -257,7 +257,7 @@ re-testing): confirm and remove, or remove the mark.
   different names are not paired unless they share an `id`, so 9.C can
   PASS or say DOES NOT APPLY without comparing them. Pictures that are
   not controls are not compared (the PDF's how-to is ANDI's focusable
-  elements). Step 19b.
+  elements). Step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138).
 - **9.A to 9.C:** an application that serves one document at every
   address (above, "Recordings"). 9.B's region match and 9.C's
   same-place pairing are not calibrated on real templates. A page with
@@ -275,7 +275,7 @@ re-testing): confirm and remove, or remove the mark.
   too.
 - **Breadcrumbs** count as navigation links, the same kind as the
   menus; Abby's round 3 keys count breadcrumbs on child pages as a way
-  of their own (a question for Abby, step 34).
+  of their own (a question for Abby, step 34, [#138](https://github.com/abbybowman/tobi508/issues/138)).
 
 ## Not limits: kept here until they have a home
 
