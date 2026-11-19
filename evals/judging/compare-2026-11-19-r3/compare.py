@@ -122,7 +122,10 @@ def tool_side(
 ) -> tuple[list[dict], dict]:
     arm_dir = link_runs(tmp, name, dirs)
     merged = ascore.tool_files(arm_dir)
-    return cells(dirs, merged, who), merged
+    # the linked folders, not `dirs`: they carry a pre-scrt.json (rebuilt from
+    # report.json where git does not keep it), which 9c's cell scorer requires
+    linked = sorted(p for p in (arm_dir / "runs").glob("*") if p.is_dir())
+    return cells(linked, merged, who), merged
 
 
 # ── Tables ───────────────────────────────────────────────────────────────────
