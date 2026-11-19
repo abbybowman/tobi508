@@ -39,6 +39,8 @@ runs/
 evals/judging/**/*.har.zip
 evals/judging/**/*.png
 evals/judging/**/runs/*/evidence/
+# Gate-style compare rounds: per-page pre-SCRT copies are derivable from report.json
+evals/judging/compare-*/results/c/r*/results/*/pre-scrt.json
 tests/.act_scores/
 
 # Other temp files
