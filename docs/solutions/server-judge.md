@@ -98,3 +98,55 @@ were false FAILs, mostly 4.F J1 (5-6 pages) and 9.C J1 (2).
 **How we know.** `evals/judging/round2-armc/abc-score.md`;
 `tests/test_agent_judge_c.py` (schema, answers never defaulted, gate
 order, request blocks and slices).
+
+## Why the judge is unsure more often than the calling agent (compare 2026-11-19)
+
+Round 3's pages, 3 runs each: the server judge was unsure on about 33 of 110
+questions, the calling agent on about 19 of 104. The totals alone read as "the
+judge is timid". The recorded reasons say otherwise. Figures and the script
+that makes them: `evals/judging/compare-2026-11-19-r3/compare.md` ("Why the
+judge is unsure more often than the agent") and `compare.py`. Development
+pages, one model, one site; agent-assisted results, not certified Trusted
+Tester results.
+
+**What happened.** On 299 question instances (same page, question and run
+number) both answered 173 times and gave the same answer 164 times (95%).
+The difference is who says "unsure": only the judge 69 times, only the agent
+27, both 30.
+
+- **The judge's reasons name what is missing.** On 4.E, all 24 of the judge's
+  unsure answers say the page marks the card as modal while the picture
+  shows only a small card and no dimmed page (4 also name the rubric); the
+  agent answered `content_only` all 24 times. On 5.A, 5.B and 5.C the
+  reasons are that the picture shows a magnifier icon but no search field,
+  or that the control is not visible, so a label cannot be checked. On 4.F
+  they are that the picture shows only part of the order. The judge sees only
+  the pictures the question names; these are gaps in the evidence, not
+  hesitation.
+- **The agent's answers often rest on looking it did not do.** 12 of its 15
+  debriefs say it did not open the pictures its answers name, or that its
+  `seen` note described what it assumed (one: "My `seen` text overstated what
+  I had checked."). Where only the judge was unsure, the agent wrote a `seen`
+  note on 63 of 69 answers; a note is not proof of looking. Its own unsure
+  answers are not more careful: on 5.D it was unsure 20 times in 61 against
+  the judge's 2 in 59, and its debriefs call those answers "not examined
+  closely".
+- **The judge's answers can be audited, the agent's cannot the same way.**
+  Every judge answer has a rationale the next person can read. That is the
+  closest thing to a debrief the judge has.
+- **What unsure costs.** The judge leaves more cells for a person (89, 91 and
+  90 of 220 a run against the agent's 77) and its answer-decided cells had 11
+  FAIL-against-a-passing-key over the 3 runs (the agent's: 1). Neither side
+  produced a PASS or DOES NOT APPLY where the key fails.
+
+**What we do now.** Read the unsure rate with its reasons, not as a score:
+"unsure" is the answer principle 8 asks for when the evidence does not settle
+the question, and a judge that says so with a reason is the safer way to
+leave a cell for a person. Where the reasons repeat, the fix is evidence (add
+the picture the question needs), not a more confident judge. Roadmap step 42
+asks every unsure answer to say what would settle it.
+
+**How we know.** `compare.json` key `unsure` (counts by test, the pair
+counts, the first example per test, all from the committed reports);
+`tests/test_compare_r3.py` checks that the committed file is what the script
+computes.

@@ -1,0 +1,198 @@
+- generic [active] [ref=f6e1]:
+  - link "Skip to main content" [ref=f6e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f6e5]:
+    - banner "Site header" [ref=f6e6]:
+      - generic [ref=f6e8]:
+        - generic [ref=f6e9]:
+          - link [ref=f6e10] [cursor=pointer]:
+            - /url: https://www.nasa.gov
+            - img "Home" [ref=f6e11]
+          - link "Science Data Portal" [ref=f6e13] [cursor=pointer]:
+            - /url: /
+        - navigation [ref=f6e15]:
+          - heading "Main navigation" [level=2] [ref=f6e16]
+          - list [ref=f6e19]:
+            - listitem [ref=f6e20]:
+              - link "Data Sites " [ref=f6e21] [cursor=pointer]:
+                - /url: /
+                - text: Data Sites
+                - generic [ref=f6e22]: 
+              - text:          
+            - listitem [ref=f6e23]:
+              - link "Data Services " [ref=f6e24] [cursor=pointer]:
+                - /url: /
+                - text: Data Services
+                - generic [ref=f6e25]: 
+            - listitem [ref=f6e26]:
+              - link "Data Search " [ref=f6e27] [cursor=pointer]:
+                - /url: /
+                - text: Data Search
+                - generic [ref=f6e28]: 
+            - listitem [ref=f6e29]:
+              - link "News & Events " [ref=f6e30] [cursor=pointer]:
+                - /url: /features-events
+                - text: News & Events
+                - generic [ref=f6e31]: 
+            - listitem [ref=f6e32]:
+              - link "About " [ref=f6e33] [cursor=pointer]:
+                - /url: /about
+                - text: About
+                - generic [ref=f6e34]: 
+        - generic [ref=f6e40]:
+          - generic [ref=f6e41]: Search NASA science data
+          - searchbox "Search NASA science data" [ref=f6e42]
+    - navigation "breadcrumb" [ref=f6e48]:
+      - list [ref=f6e49]:
+        - listitem [ref=f6e50]:
+          - link "Home" [ref=f6e51] [cursor=pointer]:
+            - /url: /
+        - listitem [ref=f6e52]: / Contact
+    - generic:
+      - complementary "Page messages"
+    - main [ref=f6e56]:
+      - generic [ref=f6e57]:
+        - heading "Website feedback" [level=1] [ref=f6e60]
+        - generic [ref=f6e63]:
+          - generic [ref=f6e64]:
+            - generic [ref=f6e65]: Your name
+            - textbox "Your name" [ref=f6e66]
+          - generic [ref=f6e67]:
+            - generic [ref=f6e68]: Your email address
+            - textbox "Your email address" [ref=f6e69]
+          - generic [ref=f6e71]:
+            - generic [ref=f6e72]: Subject
+            - textbox "Subject" [ref=f6e73]:
+              - /placeholder: ""
+          - generic [ref=f6e75]:
+            - generic [ref=f6e76]: Message
+            - textbox "Message" [ref=f6e78]:
+              - /placeholder: ""
+          - generic [ref=f6e79]:
+            - button "Send message" [ref=f6e80] [cursor=pointer]
+            - button "Preview" [ref=f6e81] [cursor=pointer]
+    - contentinfo [ref=f6e82]:
+      - generic [ref=f6e85]:
+        - generic [ref=f6e86]:
+          - generic [ref=f6e92]:
+            - link [ref=f6e94] [cursor=pointer]:
+              - /url: https://www.nasa.gov/
+              - img "Home" [ref=f6e95]
+            - list [ref=f6e97]:
+              - listitem [ref=f6e98]:
+                - link [ref=f6e99] [cursor=pointer]:
+                  - /url: https://www.facebook.com/NASAScience/
+                  - img "NASA Science on Facebook" [ref=f6e100]
+              - listitem [ref=f6e101]:
+                - link [ref=f6e102] [cursor=pointer]:
+                  - /url: https://www.instagram.com/nasascience_/
+                  - img "NASA Science on Instagram" [ref=f6e103]
+              - listitem [ref=f6e104]:
+                - link [ref=f6e105] [cursor=pointer]:
+                  - /url: https://x.com/NASAScience_
+                  - img "NASA Science on X" [ref=f6e106]
+              - listitem [ref=f6e107]:
+                - link [ref=f6e108] [cursor=pointer]:
+                  - /url: https://www.youtube.com/user/ScienceAtNASA
+                  - img "NASA Science on YouTube" [ref=f6e109]
+          - generic [ref=f6e110]:
+            - generic [ref=f6e113]:
+              - heading "NASA Science Data Portal" [level=2] [ref=f6e114]
+              - paragraph [ref=f6e115]: The Science Data Portal provides a comprehensive list of NASA Science data repositories to increase data discovery and accessibility.
+            - navigation [ref=f6e116]:
+              - heading "Site information" [level=2] [ref=f6e117]
+              - list [ref=f6e118]:
+                - listitem [ref=f6e119]:
+                  - link "Home" [ref=f6e120] [cursor=pointer]:
+                    - /url: /
+                - listitem [ref=f6e121]:
+                  - link "About" [ref=f6e122] [cursor=pointer]:
+                    - /url: /about
+                - listitem [ref=f6e123]:
+                  - link "News & Events" [ref=f6e124] [cursor=pointer]:
+                    - /url: /features-events
+                - listitem [ref=f6e125]:
+                  - link "Contact" [ref=f6e126] [cursor=pointer]:
+                    - /url: /contact
+            - navigation [ref=f6e127]:
+              - heading "Data search tools" [level=2] [ref=f6e128]
+              - list [ref=f6e129]:
+                - listitem [ref=f6e130]:
+                  - link "DATA SEARCH" [ref=f6e131] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=f6e132]:
+                    - listitem [ref=f6e133]:
+                      - link "Science Discovery Engine" [ref=f6e134] [cursor=pointer]:
+                        - /url: /science-discovery-engine
+                    - listitem [ref=f6e135]:
+                      - link "Science Explorer Digital Library" [ref=f6e136] [cursor=pointer]:
+                        - /url: /science-explorer
+            - navigation [ref=f6e137]:
+              - heading "NASA science data sites" [level=2] [ref=f6e138]
+              - list [ref=f6e139]:
+                - listitem [ref=f6e140]:
+                  - link "DATA SITES" [ref=f6e141] [cursor=pointer]:
+                    - /url: ""
+                  - list [ref=f6e142]:
+                    - listitem [ref=f6e143]:
+                      - link "Astrophysics" [ref=f6e144] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/astrophysics/data/
+                    - listitem [ref=f6e145]:
+                      - link "Biological & Physical Sciences" [ref=f6e146] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/biological-physical/data/
+                    - listitem [ref=f6e147]:
+                      - link "Earth Science" [ref=f6e148] [cursor=pointer]:
+                        - /url: https://www.earthdata.nasa.gov
+                    - listitem [ref=f6e149]:
+                      - link "Heliophysics" [ref=f6e150] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/heliophysics/data
+                    - listitem [ref=f6e151]:
+                      - link "Planetary Science" [ref=f6e152] [cursor=pointer]:
+                        - /url: https://planetary.data.nasa.gov/
+                    - listitem [ref=f6e153]:
+                      - link "ACROSS" [ref=f6e154] [cursor=pointer]:
+                        - /url: /data-sites/across
+                    - listitem [ref=f6e155]:
+                      - link "Astronomy and Geodesy" [ref=f6e156] [cursor=pointer]:
+                        - /url: /data-sites/astronomy-geodesy
+                    - listitem [ref=f6e157]:
+                      - link "Citizen Science" [ref=f6e158] [cursor=pointer]:
+                        - /url: https://science.nasa.gov/citizen-science
+                    - listitem [ref=f6e159]:
+                      - link "High End Computing" [ref=f6e160] [cursor=pointer]:
+                        - /url: https://www.nasa.gov/computing/hec/
+                    - listitem [ref=f6e161]:
+                      - link "Opacities" [ref=f6e162] [cursor=pointer]:
+                        - /url: /data-sites/opacities
+                    - listitem [ref=f6e163]:
+                      - link "PEGASUS Stellar Spectra" [ref=f6e164] [cursor=pointer]:
+                        - /url: /data-sites/pegasus-stellar-spectra
+        - generic [ref=f6e166]:
+          - list [ref=f6e170]:
+            - listitem [ref=f6e171]: "Last updated: 11/19/2026"
+            - listitem [ref=f6e172]: "NASA Official: Andrew Mitchell"
+            - listitem [ref=f6e173]: "Webmaster: Justin Peacock"
+          - navigation [ref=f6e174]:
+            - heading "NASA policies and notices" [level=2] [ref=f6e175]
+            - list [ref=f6e176]:
+              - listitem [ref=f6e177]:
+                - link "About NASA" [ref=f6e178] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/about/
+              - listitem [ref=f6e179]:
+                - link "Accessibility" [ref=f6e180] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/accessibility/
+              - listitem [ref=f6e181]:
+                - link "FOIA" [ref=f6e182] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/foia/
+              - listitem [ref=f6e183]:
+                - link "No FEAR Act" [ref=f6e184] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/odeo/no-fear-act/
+              - listitem [ref=f6e185]:
+                - link "Privacy Policy" [ref=f6e186] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/privacy/
+              - listitem [ref=f6e187]:
+                - link "Science Data License" [ref=f6e188] [cursor=pointer]:
+                  - /url: /about/license
+              - listitem [ref=f6e189]:
+                - link "Vulnerability Disclosure Policy" [ref=f6e190] [cursor=pointer]:
+                  - /url: https://www.nasa.gov/vulnerability-disclosure-policy/

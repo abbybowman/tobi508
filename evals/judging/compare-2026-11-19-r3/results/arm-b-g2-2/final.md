@@ -1,0 +1,20 @@
+I've tested both pages. Here is what I found.
+
+**Contact page**
+- Every visible form field has a `<label for>` that matches its id. The fields are Your name, Your email address, Subject and Message, plus the header search box.
+- The labels describe each field's purpose.
+- Required fields use native `required` validation. I did not submit the form, so I can't say whether error messages identify the problem or suggest a fix.
+- There is a "Skip to main content" link. The header and footer match the search page.
+
+**Search results page**
+- The text box in the results form (`#edit-rendered-item--2`, with value "test") has no label, no `aria-label` and no `title`. This fails 1.3.1, 2.4.6, 3.3.2 and 4.1.2.
+- The "Sort:" select submits the form as soon as the selection changes. I confirmed this: choosing "Title" reloaded the page with `sort_by=title`. I saw no advance warning, so 3.2.2 fails.
+- The results-form submit button (`#edit-submit-search-api-search--2`) is an icon button with no accessible name. It isn't a form field, so I'm not counting it against any criterion in scope. It's still worth fixing.
+- The facet checkboxes (Page, News, Blog, Event) are labeled correctly.
+
+**Not verified**
+- I did not step through either page with a keyboard, so 2.1.1, 2.1.2, 2.4.3, 2.4.7 and 3.2.1 are NEEDS_REVIEW.
+- I saw no audio, video or animation in the page structure. 2.2.2 and 2.3.1 are still NEEDS_REVIEW because I didn't watch the pages for motion or flashing.
+- 3.3.4 is DNA on the contact page because a feedback form is not a legal or financial transaction. The search page has no data-submission form, so I marked it DNA too.
+
+RESULT: {"https://science.data.nasa.gov/contact": {"1.3.1": {"result": "PASS", "elements": []}, "1.4.2": {"result": "DNA", "elements": []}, "2.1.1": {"result": "NEEDS_REVIEW", "elements": []}, "2.1.2": {"result": "NEEDS_REVIEW", "elements": []}, "2.2.2": {"result": "NEEDS_REVIEW", "elements": []}, "2.3.1": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.1": {"result": "PASS", "elements": []}, "2.4.3": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.5": {"result": "PASS", "elements": []}, "2.4.6": {"result": "PASS", "elements": []}, "2.4.7": {"result": "NEEDS_REVIEW", "elements": []}, "3.2.1": {"result": "NEEDS_REVIEW", "elements": []}, "3.2.2": {"result": "PASS", "elements": []}, "3.2.3": {"result": "PASS", "elements": []}, "3.2.4": {"result": "PASS", "elements": []}, "3.3.1": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.2": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.3": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.4": {"result": "DNA", "elements": []}, "4.1.2": {"result": "PASS", "elements": []}}, "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel": {"1.3.1": {"result": "FAIL", "elements": ["input#edit-rendered-item--2 (results-form text box, no label)"]}, "1.4.2": {"result": "DNA", "elements": []}, "2.1.1": {"result": "NEEDS_REVIEW", "elements": []}, "2.1.2": {"result": "NEEDS_REVIEW", "elements": []}, "2.2.2": {"result": "NEEDS_REVIEW", "elements": []}, "2.3.1": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.1": {"result": "PASS", "elements": []}, "2.4.3": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.5": {"result": "PASS", "elements": []}, "2.4.6": {"result": "FAIL", "elements": ["input#edit-rendered-item--2 (no label describing its purpose)"]}, "2.4.7": {"result": "NEEDS_REVIEW", "elements": []}, "3.2.1": {"result": "NEEDS_REVIEW", "elements": []}, "3.2.2": {"result": "FAIL", "elements": ["select#edit-sort-by--2 (Sort: submits and reloads the page on change with no advance warning)"]}, "3.2.3": {"result": "PASS", "elements": []}, "3.2.4": {"result": "PASS", "elements": []}, "3.3.1": {"result": "DNA", "elements": []}, "3.3.2": {"result": "FAIL", "elements": ["input#edit-rendered-item--2 (no label or instruction)"]}, "3.3.3": {"result": "DNA", "elements": []}, "3.3.4": {"result": "DNA", "elements": []}, "4.1.2": {"result": "FAIL", "elements": ["input#edit-rendered-item--2 (no accessible name)"]}}}

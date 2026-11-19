@@ -1,0 +1,56 @@
+- generic [ref=f1e2]:
+  - generic [ref=f1e3]: The systems powering the Science Discovery Engine were recently updated to provide users with a better search experience.
+  - generic [ref=f1e5]:
+    - banner [ref=f1e7]:
+      - generic [ref=f1e8]:
+        - link [ref=f1e9] [cursor=pointer]:
+          - /url: https://www.nasa.gov/
+          - img "NASA Logo" [ref=f1e49]
+        - img "vertical-vector" [ref=f1e51]
+        - img "SDE Graphical Identifier" [ref=f1e53] [cursor=pointer]
+      - generic [ref=f1e10]:
+        - generic: Search Stories
+        - button "SDE SDE" [ref=f1e12] [cursor=pointer]:
+          - img "SDE" [ref=f1e54]
+          - generic [ref=f1e13]: SDE
+        - button [ref=f1e55] [cursor=pointer]:
+          - img "Help and Support" [ref=f1e56]
+    - navigation "Breadcrumb" [ref=f1e17]:
+      - list [ref=f1e18]:
+        - listitem [ref=f1e19]:
+          - generic [ref=f1e20]: Home
+        - listitem [ref=f1e22]:
+          - generic [ref=f1e23]:
+            - generic [ref=f1e24]: /
+            - generic [ref=f1e25]: My Search Stories
+    - generic [ref=f1e27]:
+      - list:
+        - listitem
+        - listitem
+        - listitem
+        - listitem
+        - listitem
+        - listitem
+      - generic [ref=f1e31]:
+        - img "image slide" [ref=f1e32]
+        - generic [ref=f1e33]:
+          - generic [ref=f1e34]:
+            - generic [ref=f1e35]: My Search Stories
+            - button "Submit Your Story" [ref=f1e36] [cursor=pointer]
+          - generic [ref=f1e40] [cursor=pointer]:
+            - generic [ref=f1e41]: How Cities and Suburbs Affect Chesapeake Bay
+            - button [ref=f1e43]:
+              - text: SEARCH
+              - img "search-icon" [ref=f1e57]
+        - generic:
+          - generic: The pavement, asphalt, and other impervious surfaces found in cities act as both conduits and sources of pollution. Rather than being absorbed by soil or vegetation, rain that falls on roadways and other hard surfaces tends to flow rapidly toward gutters and urban streams. In the process, that water picks up nitrogen, phosphorous, and a range of oils, salts, heavy metals, pharmaceuticals, and other pollutants. The rapid flow also means that urban stream banks tend to erode rapidly and yield large amounts of sediment pollution.
+          - generic:
+            - img "profile_picture"
+          - generic: Eli Walker
+    - generic [ref=f1e44]:
+      - generic [ref=f1e45]: 1 / 6
+      - generic [ref=f1e46]:
+        - button [disabled] [ref=f1e47]:
+          - img "previous-icon" [ref=f1e58]
+        - button [ref=f1e48] [cursor=pointer]:
+          - img "next-icon" [ref=f1e59]

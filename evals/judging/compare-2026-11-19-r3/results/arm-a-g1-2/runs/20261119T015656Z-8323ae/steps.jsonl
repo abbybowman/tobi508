@@ -1,0 +1,62 @@
+{"ts":"2026-11-19T01:56:56.733702Z","step":"run_start","status":"ok","detail":{"target":"https://science.data.nasa.gov/","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-19T01:56:57.136982Z","step":"browser_launched","status":"ok","detail":{"version":"157.0.8103.78"}}
+{"ts":"2026-11-19T01:56:57.139977Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-19T01:56:57.238767Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog","har":"pages/002.har.zip"}}
+{"ts":"2026-11-19T01:56:57.248075Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/blog","seconds":0.06}}
+{"ts":"2026-11-19T01:56:57.248169Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/","redirects":[],"seconds":0.11}}
+{"ts":"2026-11-19T01:56:57.411178Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T01:56:57.431285Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-19T01:57:00.913420Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:57:00.987645Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:57:27.366533Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:57:29.291606Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:15.412772Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":114,"cap":386},"P2":{"end":"wrap","presses":114,"cap":386},"cost":{"loads":2,"presses":228,"quick":0,"slow_redos":0,"seconds":78.15}}}
+{"ts":"2026-11-19T01:58:20.322537Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:21.651953Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:40.295716Z","step":"reveal","status":"ok","detail":{"triggers":5,"opened":5,"cost":{"loads":10,"presses":29,"quick":0,"slow_redos":0,"seconds":24.88}}}
+{"ts":"2026-11-19T01:58:40.922983Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.63}}}
+{"ts":"2026-11-19T01:58:43.029397Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.1}}}
+{"ts":"2026-11-19T01:58:43.031683Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:43.032988Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:43.034002Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:46.169163Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":3.13}}}
+{"ts":"2026-11-19T01:58:46.170139Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:51.667702Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":28,"quick":22,"slow_redos":0,"seconds":5.5}}}
+{"ts":"2026-11-19T01:58:51.670416Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:51.672886Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:52.230165Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.56}}}
+{"ts":"2026-11-19T01:58:56.868492Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":3,"quick":0,"slow_redos":0,"seconds":4.64}}}
+{"ts":"2026-11-19T01:58:56.871866Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:58:58.572090Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.7}}}
+{"ts":"2026-11-19T01:59:01.071051Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.5}}}
+{"ts":"2026-11-19T01:59:01.073758Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/app/nasa-sba-smd/","live":true}}
+{"ts":"2026-11-19T01:59:04.500194Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:59:04.983599Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-WZY2TD5O.js","bytes":142253,"missing":null}}
+{"ts":"2026-11-19T01:59:04.983725Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-CLTHYVQ7.js","bytes":20312,"missing":null}}
+{"ts":"2026-11-19T01:59:04.983755Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-EUSS2TO4.js","bytes":21805,"missing":null}}
+{"ts":"2026-11-19T01:59:04.983779Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-3OOKWMOU.js","bytes":22449,"missing":null}}
+{"ts":"2026-11-19T01:59:04.983800Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-4O7Z777M.js","bytes":26154,"missing":null}}
+{"ts":"2026-11-19T01:59:04.983820Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-SFZRAABW.js","bytes":2190,"missing":null}}
+{"ts":"2026-11-19T01:59:05.217405Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-CXSUCQCJ.js","bytes":6657,"missing":null}}
+{"ts":"2026-11-19T01:59:05.217598Z","step":"chunk_store","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/chunk-IMMYNBZB.js","bytes":5438,"missing":null}}
+{"ts":"2026-11-19T01:59:05.357004Z","step":"captured_live","status":"ok","detail":{"n":1,"purpose":"suggested","seconds":4.28}}
+{"ts":"2026-11-19T01:59:07.724073Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/search","live":true}}
+{"ts":"2026-11-19T01:59:10.282686Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:59:10.282876Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:59:10.490744Z","step":"captured_live","status":"ok","detail":{"n":2,"purpose":"suggested","seconds":2.77}}
+{"ts":"2026-11-19T01:59:13.014878Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-cloud","live":true}}
+{"ts":"2026-11-19T01:59:15.649140Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:59:15.649325Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:59:15.855738Z","step":"captured_live","status":"ok","detail":{"n":3,"purpose":"suggested","seconds":2.84}}
+{"ts":"2026-11-19T01:59:18.504734Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/search","har":"pages/011.har.zip"}}
+{"ts":"2026-11-19T01:59:18.504959Z","step":"captured_live","status":"ok","detail":{"n":4,"purpose":"search","seconds":0.0}}
+{"ts":"2026-11-19T01:59:21.796118Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":20.72}}}
+{"ts":"2026-11-19T01:59:34.167254Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":6,"presses":30,"quick":25,"slow_redos":0,"seconds":12.37}}}
+{"ts":"2026-11-19T01:59:46.373473Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":12.2}}}
+{"ts":"2026-11-19T01:59:49.567188Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":9,"quick":8,"slow_redos":0,"seconds":3.19}}}
+{"ts":"2026-11-19T01:59:51.072313Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.5}}}
+{"ts":"2026-11-19T01:59:51.072778Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:51.073047Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:51.229735Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T02:00:54.145409Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.A-c1-J1","5.H-J1","9.C-p1-40-J1"],"rejected":["4.F-o1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure"],"errors":[]}}
+{"ts":"2026-11-19T02:01:17.459878Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.F-o1-J1","5.B-f1-J1"],"rejected":[],"errors":[]}}

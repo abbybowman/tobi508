@@ -1,0 +1,62 @@
+{"ts":"2026-11-19T01:57:41.761308Z","step":"run_start","status":"ok","detail":{"target":"https://science.data.nasa.gov/blog","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-19T01:57:42.168896Z","step":"browser_launched","status":"ok","detail":{"version":"157.0.8103.78"}}
+{"ts":"2026-11-19T01:57:42.170317Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog","har":"pages/002.har.zip"}}
+{"ts":"2026-11-19T01:57:42.214511Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-19T01:57:42.223235Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/","seconds":0.01}}
+{"ts":"2026-11-19T01:57:42.223335Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/blog","redirects":[],"seconds":0.05}}
+{"ts":"2026-11-19T01:57:42.354994Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T01:57:42.404187Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-19T01:57:45.828554Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:57:46.267255Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:10.594089Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:14.937259Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:54.579176Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":84,"cap":296},"P2":{"end":"wrap","presses":84,"cap":296},"cost":{"loads":2,"presses":168,"quick":0,"slow_redos":0,"seconds":72.34}}}
+{"ts":"2026-11-19T01:58:55.497783Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:58:59.868662Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:59:21.544267Z","step":"reveal","status":"ok","detail":{"triggers":5,"opened":5,"cost":{"loads":10,"presses":29,"quick":0,"slow_redos":0,"seconds":26.96}}}
+{"ts":"2026-11-19T01:59:22.315571Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.77}}}
+{"ts":"2026-11-19T01:59:23.493185Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.17}}}
+{"ts":"2026-11-19T01:59:23.495077Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:23.496196Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:23.497616Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:26.638113Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":3.14}}}
+{"ts":"2026-11-19T01:59:26.639338Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:32.523558Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":28,"quick":22,"slow_redos":0,"seconds":5.88}}}
+{"ts":"2026-11-19T01:59:32.526049Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:32.528365Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:33.195028Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.67}}}
+{"ts":"2026-11-19T01:59:38.177968Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":3,"quick":0,"slow_redos":0,"seconds":4.98}}}
+{"ts":"2026-11-19T01:59:38.182654Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:59:39.784295Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.6}}}
+{"ts":"2026-11-19T01:59:42.240578Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.45}}}
+{"ts":"2026-11-19T01:59:42.247134Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog","live":true}}
+{"ts":"2026-11-19T01:59:45.498703Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:59:45.498917Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:59:45.855584Z","step":"captured_live","status":"ok","detail":{"n":1,"purpose":"suggested","seconds":3.61}}
+{"ts":"2026-11-19T01:59:48.705472Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog/indus-sde-language-model","live":true}}
+{"ts":"2026-11-19T01:59:51.564898Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:59:51.565085Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:59:51.744424Z","step":"captured_live","status":"ok","detail":{"n":2,"purpose":"suggested","seconds":3.04}}
+{"ts":"2026-11-19T01:59:54.309908Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog/prithvi-foundation-model-coastal-mapping","live":true}}
+{"ts":"2026-11-19T01:59:56.814056Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:59:56.814248Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:59:56.979492Z","step":"captured_live","status":"ok","detail":{"n":3,"purpose":"suggested","seconds":2.67}}
+{"ts":"2026-11-19T01:59:59.532670Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog/science-explorer-research-management","live":true}}
+{"ts":"2026-11-19T02:00:02.097606Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T02:00:02.097802Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":2}}
+{"ts":"2026-11-19T02:00:02.496070Z","step":"captured_live","status":"ok","detail":{"n":4,"purpose":"suggested","seconds":2.96}}
+{"ts":"2026-11-19T02:00:05.395371Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/search","har":"pages/013.har.zip"}}
+{"ts":"2026-11-19T02:00:05.395850Z","step":"captured_live","status":"ok","detail":{"n":5,"purpose":"search","seconds":0.0}}
+{"ts":"2026-11-19T02:00:08.455248Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":26.21}}}
+{"ts":"2026-11-19T02:00:18.107946Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":6,"presses":30,"quick":25,"slow_redos":0,"seconds":9.65}}}
+{"ts":"2026-11-19T02:00:34.006027Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":15.9}}}
+{"ts":"2026-11-19T02:00:44.903117Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:00:56.527281Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:01:05.960491Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":2,"presses":36,"quick":16,"slow_redos":0,"seconds":31.95}}}
+{"ts":"2026-11-19T02:01:07.837857Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.88}}}
+{"ts":"2026-11-19T02:01:07.839613Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:01:07.840779Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:01:08.030259Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T02:01:22.163180Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.F-o1-J1","5.A-c1-J1","5.B-f1-J1","5.D-f2-J2","5.D-f3-J2","5.D-f4-J2","5.D-f5-J2","5.D-f2-J1"],"rejected":["4.A-t51-J2: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure","4.A-t59-J2: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure"],"errors":[]}}
+{"ts":"2026-11-19T02:01:32.471095Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-t51-J2","4.A-t59-J2","5.D-f6-J2","5.D-f7-J2","5.D-f7-J1","5.D-f8-J2","5.D-f9-J1","5.D-f10-J2","5.D-f10-J1","5.D-f11-J2"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-19T02:01:36.063981Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.H-J1","9.C-p1-40-J1","5.B-f2-J1"],"rejected":[],"errors":[]}}
