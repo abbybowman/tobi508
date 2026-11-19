@@ -28,62 +28,6 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 - **Against the same model with a general browser tool**, and between TOBI's own judge and the calling agent, three runs each: [the comparison](evals/judging/compare-2026-11-19-r3/compare.md).
 - **On published answer keys:** 43 of 49 of DHS's Trusted Tester verdicts on W3C test cases, with no unsafe result, and all 80 expected results on the Section 508 Baseline Alignment pages (development sets; `uv run pytest tests/test_act_cases.py tests/test_baseline_cases.py`).
 
-## TT tests in scope
-
-TT 5.1.3 has 61 active tests. TOBI performs 22 of them, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
-
-Status describes 29 evaluation pages on three NASA sites, scored against a Trusted Tester's blind SCRT files. It says nothing about any other page.
-- ✅ **green:** agrees with the tester.
-- ⚠️ **yellow:** often fails pages the tester passes, or leaves most cells for a person.
-- ❌ **red:** passed a page the tester failed, or was wrong more often than right.
-
-Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). What each test can't do: [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
-
-<!-- status-table:start -->
-| ID | TT test name | Spec | Status |
-| --- | --- | --- | --- |
-| 2.A | 1.4.2-audio-control | [1.2.0](specs/rules/2a-audio-control.md) | ✅ agrees with a tester |
-| 2.B | 2.2.2-blinking-moving-scrolling | [1.5.0](specs/rules/2b-blinking-moving-scrolling.md) | ✅ agrees with a tester |
-| 2.C | 2.2.2-auto-updating | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester |
-| 2.D | 4.1.2-change-notify-auto | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
-| 3.A | 2.3.1-flashing | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester |
-| 4.A | 2.1.1-keyboard-access | [1.14.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes |
-| 4.B | 2.1.1-no-keystroke-timing | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester |
-| 4.C | 2.1.2-no-keyboard-trap | [1.17.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester |
-| 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes |
-| 4.E | 3.2.1-on-focus | [1.8.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester |
-| 4.F | 2.4.3-focus-order-meaning | [1.11.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester |
-| 5.A | 3.3.2-label-provided | [1.15.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
-| 5.B | 2.4.6-label-descriptive | [1.12.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
-| 5.C | 1.3.1-programmatic-label | [1.14.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
-| 5.D | 3.2.2-on-input | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
-| 5.F | 3.3.1-error-identification | [1.16.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
-| 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
-| 5.H | 3.3.4-error-prevention | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester |
-| 9.A | 2.4.1-bypass-function | [1.7.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
-| 9.B | 3.2.3-consistent-navigation | [1.7.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
-| 9.C | 3.2.4-consistent-identification | [1.10.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester |
-| 19.A | 2.4.5-multiple-ways | [1.15.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
-
-<!-- status-table:end -->
-
-## Known wrong outcomes
-
-A code review built small pages aimed at each test's blind spots and found wrong PASS and DOES NOT APPLY results. These are the ones still unfixed. Each was reproduced by a run unless marked "(read)". Until they are fixed, read a PASS or DOES NOT APPLY as "in what the tool looked at". The pages are in [the code review](docs/reviews/2026-11-11-code-review.md); a fix removes its row.
-
-| Test | Gives | On a page with |
-| --- | --- | --- |
-| 2.A | Does Not Apply | audio that a script starts after about 4.5 s (audio that starts by itself at 3.5 s is now found) |
-| 2.B | Does Not Apply | text that blinks by `visibility`; a blink or jump about 2.5 times a second; motion that fills most of the screen; motion that starts after 6.5 s |
-| 2.C | Does Not Apply | a counter that starts when the second of several elements scrolls into view |
-| 3.A | Does Not Apply | flashing below the first screen; flashing that starts after 6.5 s |
-| 4.B | PASS | timing instructions not in English, or worded "press Enter twice" (read) |
-| 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
-| 5.H | Does Not Apply | a payment form not in English |
-| 9.C | PASS or Does Not Apply | controls in the pages' own content that do the same thing under different names on different pages, unless they share an `id` (read) |
-| 4.A, 4.C, 4.F, 5.A-5.D, 5.F-5.H | PASS or Does Not Apply | a page that draws its controls more than 10 s after it loads, and more than doubles them after a keyboard walk that took less than 3 s (every load waits up to 10 s for the page to draw) (read) |
-| 4.D | PASS | a large linked image whose focus shows only a faint mark: about 50 changed pixels pass, whatever the element's size (read) |
-
 ## Tools
 
 | Tool | What it does | Main inputs |
@@ -97,6 +41,59 @@ A code review built small pages aimed at each test's blind spots and found wrong
 **Also:**
 - **Resources:** `run://{run_id}/...` (a run's files, kept 24 hours) and `tt://5.1.3/...` (the TT text).
 - **Prompt:** `explain` (a test or a result in plain language; the same material as `tobi_explain`, as a command for the user).
+
+## TT tests in scope
+
+TT 5.1.3 has 61 active tests. TOBI performs 22 of them, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
+
+Status describes 29 evaluation pages on three NASA sites, scored against a Trusted Tester's blind SCRT files. It says nothing about any other page.
+- ✅ **green:** agrees with the tester.
+- ⚠️ **yellow:** often fails pages the tester passes, or leaves most cells for a person.
+- ❌ **red:** passed a page the tester failed, or was wrong more often than right.
+
+Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test marked "see known gaps below" has wrong results open on test pages built to probe it, even where it agrees with the tester on our evaluation pages.
+
+<!-- status-table:start -->
+| ID | TT test name | Spec | Status |
+| --- | --- | --- | --- |
+| 2.A | 1.4.2-audio-control | [1.2.0](specs/rules/2a-audio-control.md) | ✅ agrees with a tester; see known gaps below |
+| 2.B | 2.2.2-blinking-moving-scrolling | [1.5.0](specs/rules/2b-blinking-moving-scrolling.md) | ✅ agrees with a tester; see known gaps below |
+| 2.C | 2.2.2-auto-updating | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester; see known gaps below |
+| 2.D | 4.1.2-change-notify-auto | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
+| 3.A | 2.3.1-flashing | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known gaps below |
+| 4.A | 2.1.1-keyboard-access | [1.14.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known gaps below |
+| 4.B | 2.1.1-no-keystroke-timing | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known gaps below |
+| 4.C | 2.1.2-no-keyboard-trap | [1.17.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known gaps below |
+| 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known gaps below |
+| 4.E | 3.2.1-on-focus | [1.8.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known gaps below |
+| 4.F | 2.4.3-focus-order-meaning | [1.11.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known gaps below |
+| 5.A | 3.3.2-label-provided | [1.15.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester; see known gaps below |
+| 5.B | 2.4.6-label-descriptive | [1.12.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes; see known gaps below |
+| 5.C | 1.3.1-programmatic-label | [1.14.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester; see known gaps below |
+| 5.D | 3.2.2-on-input | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes; see known gaps below |
+| 5.F | 3.3.1-error-identification | [1.16.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person; see known gaps below |
+| 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person; see known gaps below |
+| 5.H | 3.3.4-error-prevention | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known gaps below |
+| 9.A | 2.4.1-bypass-function | [1.7.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
+| 9.B | 3.2.3-consistent-navigation | [1.7.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
+| 9.C | 3.2.4-consistent-identification | [1.10.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known gaps below |
+| 19.A | 2.4.5-multiple-ways | [1.15.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
+
+<!-- status-table:end -->
+
+## Known gaps
+
+Wrong PASS or DOES NOT APPLY results found on test pages built to probe each test's blind spots, and not yet fixed. For these tests, read a PASS or DOES NOT APPLY as "in what the tool looked at". Each links to where its fix is tracked.
+
+<!-- known-gaps:start -->
+- **2.A, 2.B, 2.C, 3.A:** content the 6.5-second watch misses: audio or motion that starts late, a blink by `visibility` or about 2.5 times a second, motion that fills the screen, a counter started by scrolling, flashing below the first screen ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
+- **4.A, 4.C, 4.D, 4.E, 4.F:** controls inside a form that opens from a plain button are not reached; 4.D also passes a faint focus mark on a large linked image ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
+- **4.A, 4.C, 4.F, 5.A-5.D, 5.F-5.H:** a page that draws its controls more than 10 seconds after loading ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
+- **4.B, 5.H:** timing instructions or a payment form not in English, or worded "press Enter twice" ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
+- **9.C:** controls in a page's content that do the same thing under different names ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
+<!-- known-gaps:end -->
+
+The pages that found them are in [the code review](docs/reviews/2026-11-11-code-review.md); what each test cannot do by design is in [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
 
 ## How long it takes
 

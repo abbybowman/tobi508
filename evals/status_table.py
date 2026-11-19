@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -34,6 +35,9 @@ README = REPO / "README.md"
 STATUS_MD = HERE / "STATUS.md"
 START = "<!-- status-table:start -->"
 END = "<!-- status-table:end -->"
+GAPS_START = "<!-- known-gaps:start -->"
+GAPS_END = "<!-- known-gaps:end -->"
+GAPS_NOTE = "; see known gaps below"
 
 # Each site's latest scored result. `base` gives every cell; `overlay` is a
 # later rerun's `moved.json` (only the cells that differ from the base, for the
@@ -188,12 +192,30 @@ def total(by_site: dict[int, Counter]) -> Counter:
     return out
 
 
+def gap_tests(text: str | None = None) -> set[str]:
+    """Test ids named in the bold lead of each README "Known gaps" bullet.
+
+    "5.A-5.D" names 5.A, 5.B, 5.C and 5.D. The status table marks these rows,
+    so a green row cannot read as "nothing known wrong"."""
+    text = README.read_text("utf-8") if text is None else text
+    block = text[text.index(GAPS_START) : text.index(GAPS_END)]
+    ids: set[str] = set()
+    for lead in re.findall(r"^- \*\*([^*]+)\*\*", block, re.M):
+        for m in re.finditer(
+            r"(\d{1,2})\.([A-H])(?:\s*[-\u2013]\s*(?:\1\.)?([A-H]))?", lead
+        ):
+            first, last = m.group(2), m.group(3) or m.group(2)
+            ids |= {f"{m.group(1)}.{chr(c)}" for c in range(ord(first), ord(last) + 1)}
+    return ids
+
+
 def readme_rows() -> list[str]:
     from tobi508 import catalog, rules
     from tobi508.models import TestId
 
     specs = rules.load_specs(REPO / "specs" / "rules")
     counts = compute()
+    gaps = gap_tests()
     rows = ["| ID | TT test name | Spec | Status |", "| --- | --- | --- | --- |"]
     for tid, by_site in counts.items():
         spec = specs[TestId(tid)]
@@ -201,7 +223,7 @@ def readme_rows() -> list[str]:
         rows.append(
             f"| {tid} | {catalog.tests()[tid]['name']} | "
             f"[{spec.spec_version}](specs/rules/{spec.path.name}) | "
-            f"{EMOJI[colour]} {words} |"
+            f"{EMOJI[colour]} {words}{GAPS_NOTE if tid in gaps else ''} |"
         )
     return rows
 
