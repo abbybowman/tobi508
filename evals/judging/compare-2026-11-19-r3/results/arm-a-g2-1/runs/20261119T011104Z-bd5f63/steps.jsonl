@@ -8,3 +8,17 @@
 {"ts":"2026-11-19T01:11:05.743958Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
 {"ts":"2026-11-19T01:11:09.035640Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
 {"ts":"2026-11-19T01:11:09.260136Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:11:33.532775Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:11:36.198070Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:11:38.578023Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":49,"cap":191},"P2":{"end":"wrap","presses":49,"cap":191},"cost":{"loads":2,"presses":98,"quick":0,"slow_redos":0,"seconds":33.35}}}
+{"ts":"2026-11-19T01:12:02.989466Z","step":"reveal","status":"ok","detail":{"triggers":5,"opened":5,"cost":{"loads":10,"presses":29,"quick":0,"slow_redos":0,"seconds":24.41}}}
+{"ts":"2026-11-19T01:12:19.584123Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:12:24.763693Z","step":"hidden","status":"ok","detail":{"never_shown":1,"why_not":""}}
+{"ts":"2026-11-19T01:12:25.304252Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.54}}}
+{"ts":"2026-11-19T01:12:25.900825Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.59}}}
+{"ts":"2026-11-19T01:12:25.902233Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:12:25.903123Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:12:25.903758Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:12:27.444419Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.54}}}
+{"ts":"2026-11-19T01:12:27.444961Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:12:27.504367Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
