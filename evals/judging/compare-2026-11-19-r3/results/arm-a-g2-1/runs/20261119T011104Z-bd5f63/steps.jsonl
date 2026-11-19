@@ -36,3 +36,13 @@
 {"ts":"2026-11-19T01:13:36.793605Z","step":"captured_live","status":"ok","detail":{"n":2,"purpose":"search","seconds":0.11}}
 {"ts":"2026-11-19T01:13:39.969339Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":6.24}}}
 {"ts":"2026-11-19T01:13:46.640868Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:13:51.397592Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":6,"presses":30,"quick":20,"slow_redos":0,"seconds":11.43}}}
+{"ts":"2026-11-19T01:13:58.410330Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":7.01}}}
+{"ts":"2026-11-19T01:14:04.195577Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:14:08.044599Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":10,"quick":7,"slow_redos":0,"seconds":9.63}}}
+{"ts":"2026-11-19T01:14:09.549279Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.5}}}
+{"ts":"2026-11-19T01:14:09.550553Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:14:09.551681Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:14:09.699564Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T01:15:50.151360Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-t24-J2","5.A-c1-J1"],"rejected":["4.F-o1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure","5.B-f1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure"],"errors":[]}}
+{"ts":"2026-11-19T01:16:06.597308Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.F-o1-J1","5.B-f1-J1"],"rejected":[],"errors":[]}}
