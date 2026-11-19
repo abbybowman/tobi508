@@ -4,3 +4,7 @@
 {"ts":"2026-11-19T00:56:47.092428Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog","har":"pages/002.har.zip"}}
 {"ts":"2026-11-19T00:56:47.101340Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/blog","seconds":0.13}}
 {"ts":"2026-11-19T00:56:47.101429Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/","redirects":[],"seconds":0.38}}
+{"ts":"2026-11-19T00:56:54.370911Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T00:56:54.515501Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-19T00:56:59.499150Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T00:56:59.541266Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
