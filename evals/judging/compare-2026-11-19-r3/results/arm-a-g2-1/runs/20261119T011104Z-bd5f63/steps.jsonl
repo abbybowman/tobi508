@@ -22,3 +22,6 @@
 {"ts":"2026-11-19T01:12:27.444419Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.54}}}
 {"ts":"2026-11-19T01:12:27.444961Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
 {"ts":"2026-11-19T01:12:27.504367Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:12:37.917983Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":5,"presses":62,"quick":43,"slow_redos":0,"seconds":10.47}}}
+{"ts":"2026-11-19T01:12:37.920898Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:12:38.320402Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.4}}}
