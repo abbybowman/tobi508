@@ -1,0 +1,62 @@
+{"ts":"2026-11-19T00:59:48.606738Z","step":"run_start","status":"ok","detail":{"target":"https://science.data.nasa.gov/blog","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-19T00:59:49.038107Z","step":"browser_launched","status":"ok","detail":{"version":"157.0.8103.78"}}
+{"ts":"2026-11-19T00:59:49.039959Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog","har":"pages/002.har.zip"}}
+{"ts":"2026-11-19T00:59:49.083827Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-19T00:59:49.188689Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/","seconds":0.11}}
+{"ts":"2026-11-19T00:59:49.188818Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/blog","redirects":[],"seconds":0.15}}
+{"ts":"2026-11-19T00:59:49.319738Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T00:59:49.327545Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-19T00:59:52.817138Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T00:59:53.098930Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:00:20.972453Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:00:21.101050Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:00:58.326519Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":84,"cap":296},"P2":{"end":"wrap","presses":84,"cap":296},"cost":{"loads":2,"presses":168,"quick":0,"slow_redos":0,"seconds":69.13}}}
+{"ts":"2026-11-19T01:01:11.146055Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:01:12.421902Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:01:24.943342Z","step":"reveal","status":"ok","detail":{"triggers":5,"opened":5,"cost":{"loads":10,"presses":29,"quick":0,"slow_redos":0,"seconds":26.61}}}
+{"ts":"2026-11-19T01:01:25.537481Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.59}}}
+{"ts":"2026-11-19T01:01:26.762911Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.22}}}
+{"ts":"2026-11-19T01:01:26.764891Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:01:26.766602Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:01:26.829358Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.06}}}
+{"ts":"2026-11-19T01:01:29.882370Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":3.05}}}
+{"ts":"2026-11-19T01:01:29.883400Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:01:35.417786Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":28,"quick":22,"slow_redos":0,"seconds":5.53}}}
+{"ts":"2026-11-19T01:01:35.420216Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:01:35.422349Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:01:35.955614Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.53}}}
+{"ts":"2026-11-19T01:01:40.546489Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":3,"quick":0,"slow_redos":0,"seconds":4.59}}}
+{"ts":"2026-11-19T01:01:40.549626Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:01:42.115930Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.57}}}
+{"ts":"2026-11-19T01:01:44.602830Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.49}}}
+{"ts":"2026-11-19T01:01:44.608015Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog","live":true}}
+{"ts":"2026-11-19T01:01:47.961693Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:01:47.961876Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:01:48.258134Z","step":"captured_live","status":"ok","detail":{"n":1,"purpose":"suggested","seconds":3.65}}
+{"ts":"2026-11-19T01:01:50.935926Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog/indus-sde-language-model","live":true}}
+{"ts":"2026-11-19T01:01:53.461506Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:01:53.461701Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:01:53.662161Z","step":"captured_live","status":"ok","detail":{"n":2,"purpose":"suggested","seconds":2.73}}
+{"ts":"2026-11-19T01:01:56.299660Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog/prithvi-foundation-model-coastal-mapping","live":true}}
+{"ts":"2026-11-19T01:01:58.761745Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:01:58.761967Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T01:01:58.965645Z","step":"captured_live","status":"ok","detail":{"n":3,"purpose":"suggested","seconds":2.67}}
+{"ts":"2026-11-19T01:02:01.548205Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/blog/science-explorer-research-management","live":true}}
+{"ts":"2026-11-19T01:02:04.045057Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T01:02:04.045259Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":2}}
+{"ts":"2026-11-19T01:02:04.505480Z","step":"captured_live","status":"ok","detail":{"n":4,"purpose":"suggested","seconds":2.96}}
+{"ts":"2026-11-19T01:02:07.747300Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/search","har":"pages/013.har.zip"}}
+{"ts":"2026-11-19T01:02:07.747756Z","step":"captured_live","status":"ok","detail":{"n":5,"purpose":"search","seconds":0.1}}
+{"ts":"2026-11-19T01:02:10.836948Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":26.23}}}
+{"ts":"2026-11-19T01:02:20.534942Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":6,"presses":30,"quick":25,"slow_redos":0,"seconds":9.7}}}
+{"ts":"2026-11-19T01:02:33.658948Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:02:36.453881Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":15.92}}}
+{"ts":"2026-11-19T01:02:51.211317Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:03:08.193600Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":2,"presses":36,"quick":16,"slow_redos":0,"seconds":31.74}}}
+{"ts":"2026-11-19T01:03:10.042809Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.85}}}
+{"ts":"2026-11-19T01:03:10.044318Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:03:10.045541Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:03:10.228010Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T01:03:27.458266Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-t51-J2","4.A-t59-J2","4.F-o1-J1","5.A-c1-J1","5.B-f1-J1","5.D-f2-J1","5.D-f2-J2","5.D-f3-J2","5.D-f4-J2","5.D-f5-J2"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-19T01:03:36.045387Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.D-f6-J2","5.D-f7-J2","5.D-f7-J1","5.D-f8-J2","5.D-f9-J1","5.D-f10-J2","5.D-f10-J1","5.D-f11-J2","5.H-J1","9.C-p1-40-J1"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-19T01:03:38.163579Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.B-f2-J1"],"rejected":[],"errors":[]}}
