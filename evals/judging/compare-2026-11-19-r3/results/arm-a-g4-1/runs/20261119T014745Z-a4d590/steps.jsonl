@@ -6,3 +6,5 @@
 {"ts":"2026-11-19T01:47:45.857044Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/data-governance-community/home","redirects":[],"seconds":0.3}}
 {"ts":"2026-11-19T01:47:46.032171Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
 {"ts":"2026-11-19T01:47:46.265134Z","step":"replay_signin_answer","status":"ok","detail":{"url":"https://auth.sciencecloud.nasa.gov/realms/GUAC/protocol/openid-connect/auth","to":"https://science.data.nasa.gov/data-governance-community/assets/silent-check-sso.html"}}
+{"ts":"2026-11-19T01:47:46.451063Z","step":"replay_signin_answer","status":"ok","detail":{"url":"https://auth.sciencecloud.nasa.gov/realms/GUAC/protocol/openid-connect/auth","to":"https://science.data.nasa.gov/data-governance-community/assets/silent-check-sso.html"}}
+{"ts":"2026-11-19T01:47:49.298145Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
