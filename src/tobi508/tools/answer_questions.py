@@ -69,15 +69,15 @@ def register(mcp: FastMCP) -> None:
     ) -> AnswerResult:
         """Answer the open questions a tobi_run_tt_tests run left for you; re-evaluate.
 
-        Used when the server has no judge model of its own (the run's
-        `next_step` says so); when it has one, the server answers and this
-        tool is not needed. Inspect each question's evidence, apply its
-        rubric and answer it yourself (or through one subagent for all of
-        them, keeping only the answer objects); ask the user only if you
-        cannot tell. Answers are facts, never outcomes: the server checks
-        them (unknown ids, wrong answer types and choices outside the list
-        are rejected), presses any keys they name in the recorded page to
-        confirm them, and applies the rules again.
+        Used when the server has no judge model of its own, or its judge
+        could not be reached (the run's `next_step` says so); otherwise the
+        server answers and this tool is not needed. Inspect each question's
+        evidence, apply its rubric and answer it yourself (or through one
+        subagent for all of them, keeping only the answer objects); ask the
+        user only if you cannot tell. Answers are facts, never outcomes: the
+        server checks them (unknown ids, wrong answer types and choices
+        outside the list are rejected), presses any keys they name in the
+        recorded page to confirm them, and applies the rules again.
 
         Returns accepted ids, rejected answers with reasons, questions still
         open (answering can raise a follow-up: repeat until none are open),

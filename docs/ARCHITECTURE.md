@@ -24,7 +24,8 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
    only here and in the spec.
 5. **Open questions go to a judge** (`judgment.py`): the server's own pinned
    model (`apijudge.py`, prompt in `judge_prompt.md`) when one is configured,
-   otherwise the calling agent through `tobi_answer_questions`. Answers are
+   otherwise, or when that model cannot be reached, the calling agent through
+   `tobi_answer_questions`. Answers are
    facts for a rule, never outcomes; the check decides again.
 6. **The result is written** (`pipeline.py` orchestrates steps 2 to 6): a
    short tool result (one line per finding, the questions, pictures attached

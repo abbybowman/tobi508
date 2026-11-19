@@ -44,7 +44,8 @@ def _description() -> str:
     judge = (
         "The server's own pinned model answers them by rubric and records its "
         "reason; any it is unsure of stay NEEDS_REVIEW for a person, so you "
-        "relay them, you do not answer them."
+        "relay them, you do not answer them. If the judge cannot be reached, "
+        "its questions come to you instead (next_step says so)."
         if s.judge_backend == "api"
         else "This server has no judge model, so they come to you: answer them "
         "with tobi_answer_questions, by their rubric and evidence, and say "

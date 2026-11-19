@@ -90,7 +90,8 @@ outcome. These six exceptions are approved, each with exactly these limits.
     `job_id`, list the work left across the session's runs; with
     `finish=true`, also make the follow-up calls the server may make itself.
   - `tobi_answer_questions`: record the calling agent's answers to open
-    questions, when the server has no judge model of its own.
+    questions, when the server has no judge model of its own or its judge
+    could not be reached (`pipeline._judge_phase` leaves them open).
   - `tobi_explain`: a test's explanation, or a run's full findings, from
     `explain.py`, which the `explain` prompt shares (agents cannot call
     prompts and seldom read resources; results keep one line per finding).
