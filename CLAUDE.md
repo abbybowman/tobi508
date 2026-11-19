@@ -259,12 +259,6 @@ by TT test ID. Package: `tobi508`.
   `docs/plans/`. Lessons that save the next test time go in
   `docs/solutions/`, in the file of their topic (read its README before
   building).
-- Hackathon docs: when a TT test, spec version, evaluation method or
-  security control changes, update `docs/hackathon/evaluation.md` and the
-  matching slide in `docs/hackathon/deck.md` in the same commit. Remove a
-  [PENDING] marker only when the work exists and is checked; never fill a
-  [FILL] placeholder (final figures come from one scored run at the
-  submission commit; see `docs/hackathon/README.md`).
 - Every judging round's folder has the same layout (the how-to, "The
   round's folder"): no per-round `.gitignore` lines, no working papers in
   it, `ARCHIVE.md` at its root, and nothing added to `results/` after the

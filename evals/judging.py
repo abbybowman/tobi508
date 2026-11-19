@@ -22,8 +22,7 @@ Trusted Tester's blind SCRT files, by commit and reveal.
    matches no page, a changed result, a changed pages.txt or changed
    comparison code stops the score. Output: <round>/score.md and score.json.
 
-Scores are recorded per round (evals/README.md) and are not written into
-docs/hackathon/evaluation.md until Abby picks the final round.
+Scores are recorded per round in evals/README.md.
 """
 
 from __future__ import annotations

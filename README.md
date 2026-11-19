@@ -14,7 +14,7 @@ TOBI finds those failures for site owners and Trusted Testers. It runs the hands
 
 ## How it works
 
-![A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once, and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric: a sure answer goes back to the rule, an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into their own SCRT record. The results and a link to the report go back to the agent, which explains them.](docs/hackathon/diagrams/tobi-flow.png)
+![A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once, and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric: a sure answer goes back to the rule, an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into their own SCRT record. The results and a link to the report go back to the agent, which explains them.](docs/diagrams/tobi-flow.png)
 
 The diagram is the planned flow ([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
 
@@ -216,7 +216,7 @@ Save your own reports in your repository: a run's files expire after 24 hours.
 - Page content is treated as data: it never chooses a URL, a tool or an outcome.
 - Every report records all versions.
 
-Details: [docs/hackathon/evaluation.md](docs/hackathon/evaluation.md). What TOBI can't do yet, test by test (and in general, such as replays not freezing randomness or time): [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
+Details: [evals/README.md](evals/README.md). What TOBI can't do yet, test by test (and in general, such as replays not freezing randomness or time): [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
 
 ## Contribute
 
