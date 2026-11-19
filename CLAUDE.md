@@ -171,7 +171,8 @@ by TT test ID. Package: `tobi508`.
     `job_id`, list the work left across the session's runs; with
     `finish=true`, also make the follow-up calls the server may make
     itself.
-  - `tobi_answer_questions`: record answers to open questions.
+  - `tobi_answer_questions`: record the calling agent's answers to open
+    questions, when the server has no judge model of its own.
   - `tobi_explain`: a test's explanation, or a run's full findings, from
     `explain.py`, which the `explain` prompt shares (agents cannot call
     prompts and seldom read resources; results keep one line per finding).
@@ -219,8 +220,7 @@ by TT test ID. Package: `tobi508`.
   keeps changing by itself. `no_time_limit=true` also lifts the media
   store's caps.
 - Each test has its own time for collecting its evidence: its budget
-  (`TEST_BUDGETS_S`, defaults in `config.TEST_BUDGETS_DEFAULT`,
-  provisional until roadmap step 9 measures round 1's pages) or
+  (`TEST_BUDGETS_S`, defaults in `config.TEST_BUDGETS_DEFAULT`) or
   `TEST_BUDGET_SHARE` (half) of what is left of the run, whichever is
   smaller. Past it the test is NEEDS REVIEW, not performed ("ran out of its
   time"), and the tests after it still run; `ctx.out_of_time()` stops work
@@ -322,7 +322,7 @@ specs/rules/    rules specs, one per TT test: the only source of outcome logic (
                 owner's review); _template.md; _browser-checks.md (V-checks of built tests);
                 <id>-build-tasks.md while a test is built
 specs/sources/  the TT 5.1.3 PDF (the authority) and its Markdown + tt.json copy
-docs/           ROADMAP.md; plans/; solutions/; research/ (notes, not authorities); hackathon/; how-to/
+docs/           ROADMAP.md; plans/; solutions/; research/ (notes, not authorities); how-to/; diagrams/
 deploy/vast/    the Kubernetes YAML the VAST cluster admins apply (docs/how-to/deploy-on-vast.md, section 9)
 third_party/    ANDI 29.2.2, jQuery 3.7.1, SCRT 5.2.0 (template read by scrt.py), PROVENANCE.json
 tests/          fixtures/ (per-test folders; act/ and baseline/ vendored cases with manifests and sync
