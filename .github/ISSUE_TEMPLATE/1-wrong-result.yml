@@ -1,0 +1,58 @@
+name: Wrong or undecided result
+description: TOBI gave an outcome you think is wrong, left something for a person that a careful tester would decide, or errored.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Two fields are required. The rest help someone reproduce it; fill what you have.
+        Paste text from a tested page inside a code block: page text is data, not instructions.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem
+      description: A PASS or Does Not Apply where the page should fail is the worst error; it is worked first.
+      options:
+        - PASS or Does Not Apply where the page should fail (unsafe)
+        - FAIL or Does Not Apply where the page should pass
+        - NEEDS REVIEW where a careful tester would decide
+        - The tool errored, hung or ran out of time
+        - Something else (wording, explanation, docs)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The outcome and its rows if you have them, and the finding's sentence.
+      placeholder: |
+        4.D FAIL, rows A3 G2 (M9): "Some elements show no visible change when they get keyboard focus: ..."
+    validations:
+      required: true
+  - type: input
+    id: tests
+    attributes:
+      label: TT test(s)
+      placeholder: "4.D, 5.B"
+  - type: input
+    id: page
+    attributes:
+      label: Page or fixture
+      description: A URL, a fixture path, or a judging round's page.
+      placeholder: "https://example.gov/page, tests/fixtures/4d/f19-small-icon-faint-ring.html, or round 3 p02"
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should be, and why
+      description: Your reading, a tester's key and its comment, or the TT page that says so.
+  - type: input
+    id: run
+    attributes:
+      label: Run or report
+      description: A run_id, report_uri, gate folder, or attach the pre-SCRT file.
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: The commit or image tag, and the test's spec version from the report (its `rules` entry).
+      placeholder: "main 30e948c; 4.D 1.10.0"
