@@ -145,6 +145,47 @@ B's final messages with an unparseable RESULT line (the outer brace missing), wh
 
 `source`: `judge` = an answer (the agent's for A, the server judge's for C) decided the cell in at least one run; `scan` = only the rules' own evidence changed between loads.
 
+## Why the judge is unsure more often than the agent
+
+The totals say the server judge is unsure on more questions (about 33 of 110 against the agent's 19 of 104). The two answers agree almost everywhere both give one; the difference is who says "unsure", and the recorded reasons say why. Same page, same question, same run number:
+
+| Pairs | Count |
+| --- | --- |
+| question instances both answered | 299 |
+| both gave an answer | 173 |
+| …and it was the same answer | 164 |
+| only the judge was unsure | 69 |
+| only the agent was unsure | 27 |
+| both unsure | 30 |
+
+Unsure answers by test, 3 runs together (unsure / asked):
+
+| Test | Agent | Judge | Only the judge unsure: pairs | …the agent wrote a `seen` note | …the judge's reason cites the rubric | …the judge's reason says the page marks it modal |
+| --- | --- | --- | --- | --- | --- | --- |
+| 4.A | 1/33 | 9/33 | 9 | 9 | 0 | 0 |
+| 4.B | 0/3 | 0/3 | 0 | 0 | 0 | 0 |
+| 4.E | 12/36 | 36/36 | 24 | 24 | 4 | 24 |
+| 4.F | 14/31 | 17/33 | 9 | 9 | 0 | 0 |
+| 5.A | 7/27 | 17/27 | 11 | 11 | 0 | 0 |
+| 5.B | 2/31 | 10/25 | 7 | 7 | 0 | 0 |
+| 5.C | 2/30 | 9/30 | 9 | 3 | 0 | 0 |
+| 5.D | 20/61 | 2/59 | 0 | 0 | 0 | 0 |
+| 5.F | 0/18 | 0/18 | 0 | 0 | 0 | 0 |
+| 5.G | 0/15 | 0/15 | 0 | 0 | 0 | 0 |
+| 5.H | 0/18 | 0/18 | 0 | 0 | 0 | 0 |
+| 9.C | 0/6 | 0/30 | 0 | 0 | 0 | 0 |
+
+A `seen` note is not proof that the agent looked: its debriefs say several notes overstated what it had checked.
+
+First example per test where only the judge was unsure (the judge's own words, then the agent's answer):
+
+- **4.A**, `/science-discovery-engine/search/sde/MySearchStory` 4.A-k1-J1 (run 1): judge: "Nothing reached is a plain link to the SDE home. The 'SDE' button might open a menu, but that is not settled." Agent answered `no_alternative`: "Logo area goes home; no reached stop goes home"
+- **4.E**, `/data-governance-community/forum` 4.E-e1-J1 (run 1): judge: "Small profile card, 2% of window, page not dimmed, but flagged modal; images don't show a takeover." Agent answered `content_only`: "small hover card"
+- **4.F**, `/` 4.F-o1-J1 (run 2): judge: "Card grid is read row by row with each card's image, title and tags together, which is fine. But several signals (Contact, DATA SEARCH, DATA SITES, ACROSS) name elements past the listed order and not in the image, so I can't judge them." Agent answered `preserves`: "Header, then card grid read row by row with each card's image, title and tags together; backward jumps are between independent columns/menus."
+- **5.A**, `/` 5.A-c1-J1 (run 1): judge: "The picture shows only a magnifier icon in the nav bar. No search field is visible, so I can't tell if the icon belongs to the field as its label. The input lists no text or buttons." Agent answered `graphic`: "The attached picture of the header shows a magnifier icon next to the search field, which plainly labels it."
+- **5.B**, `/blog` 5.B-f2-J1 (run 2): judge: "The search field has no words. A magnifier is a clear search symbol. But it sits in the nav bar and no field is visible, so it may be a button that opens search. It does not clearly belong to the field." Agent answered `all_descriptive`: "Magnifier is a common search symbol."
+- **5.C**, `/fits/verifier` 5.C-c3-J1 (run 1): judge: "Announced name states a purpose. The checkbox is not visible in the picture, so I can't check for cues, such as visible label text, that it leaves out." Agent answered `complete`: "Name matches visible label"
+
 ## Cost and time
 
 | Run | List price $ | Tokens in / out / cache read / cache write | Wall s | Model calls | Per page $ | Per page s |

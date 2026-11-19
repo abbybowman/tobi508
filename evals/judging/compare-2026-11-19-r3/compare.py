@@ -683,6 +683,132 @@ def quotes() -> dict:
     return out
 
 
+# ── Why the judge is unsure more often than the agent ───────────────────────
+
+
+def _choice_word(a: dict) -> str | None:
+    c = a.get("choice")
+    return c.get("choice") if isinstance(c, dict) else c
+
+
+def _answers_by_key(dirs_by_run: dict[int, list[Path]]) -> dict[tuple, dict]:
+    """(page, question, run) -> the answer in force."""
+    out = {}
+    for n, dirs in dirs_by_run.items():
+        for d in dirs:
+            rep = json.loads((d / "report.json").read_text("utf-8"))
+            for qid, a in _latest_answers(rep).items():
+                out[(rep["target"], qid, n)] = a
+    return out
+
+
+def unsure_analysis() -> dict:
+    """Where the server judge and the calling agent are unsure, and why, from
+    their recorded answers (same question, same page, same run number). A `seen`
+    note is not proof that a picture was looked at: A's debriefs say several
+    notes overstated it, so it is reported as a note only."""
+    ad = {n: a_run_dirs("a", n) for n in RUNS}
+    cd = {n: c_run_dirs(n) for n in RUNS}
+    A, C = _answers_by_key(ad), _answers_by_key(cd)
+
+    def per_test(ans: dict) -> dict:
+        asked, unsure = Counter(), Counter()
+        for (_, qid, _), a in ans.items():
+            t = qid.split("-")[0]
+            asked[t] += 1
+            unsure[t] += _choice_word(a) == "unsure"
+        return {
+            t: {"asked": asked[t], "unsure": unsure[t]}
+            for t in sorted(asked, key=g16._tests_key)
+        }
+
+    shared = sorted(k for k in A if k in C)
+    both = [
+        k
+        for k in shared
+        if _choice_word(A[k]) != "unsure" and _choice_word(C[k]) != "unsure"
+    ]
+    c_only = [
+        k
+        for k in shared
+        if _choice_word(C[k]) == "unsure" and _choice_word(A[k]) != "unsure"
+    ]
+    a_only = [
+        k
+        for k in shared
+        if _choice_word(A[k]) == "unsure" and _choice_word(C[k]) != "unsure"
+    ]
+    both_unsure = [
+        k
+        for k in shared
+        if _choice_word(A[k]) == "unsure" and _choice_word(C[k]) == "unsure"
+    ]
+
+    def seen_note(a: dict) -> bool:
+        return (
+            bool(a.get("seen"))
+            and not a.get("picture_error")
+            and not a.get("not_viewed")
+        )
+
+    by_test: dict[str, dict] = {}
+    for k in c_only:
+        t = k[1].split("-")[0]
+        row = by_test.setdefault(
+            t,
+            {
+                "pairs": 0,
+                "agent_wrote_a_seen_note": 0,
+                "judge_reason_cites_rubric": 0,
+                "judge_reason_says_marked_modal": 0,
+            },
+        )
+        row["pairs"] += 1
+        row["agent_wrote_a_seen_note"] += seen_note(A[k])
+        row["judge_reason_cites_rubric"] += (
+            "rubric" in (C[k].get("rationale") or "").lower()
+        )
+        row["judge_reason_says_marked_modal"] += (
+            "modal" in (C[k].get("rationale") or "").lower()
+        )
+    examples = {}
+    for k in c_only:  # first per test in (page, question, run) order
+        t = k[1].split("-")[0]
+        if t not in examples:
+            examples[t] = {
+                "page": k[0].replace("https://science.data.nasa.gov", "") or "/",
+                "question": k[1],
+                "run": k[2],
+                "agent_answer": _choice_word(A[k]),
+                "agent_reason": A[k].get("rationale"),
+                "judge_reason": C[k].get("rationale"),
+            }
+    return {
+        "per_test_agent": per_test(A),
+        "per_test_judge": per_test(C),
+        "shared_question_instances": len(shared),
+        "both_answered": len(both),
+        "both_answered_same_choice": sum(
+            _choice_word(A[k]) == _choice_word(C[k]) for k in both
+        ),
+        "judge_only_unsure": len(c_only),
+        "agent_only_unsure": len(a_only),
+        "both_unsure": len(both_unsure),
+        "judge_only_unsure_by_test": dict(
+            sorted(by_test.items(), key=lambda kv: g16._tests_key(kv[0]))
+        ),
+        "agent_only_unsure_by_test": dict(
+            sorted(
+                Counter(k[1].split("-")[0] for k in a_only).items(),
+                key=lambda kv: g16._tests_key(kv[0]),
+            )
+        ),
+        "examples_judge_only_unsure": dict(
+            sorted(examples.items(), key=lambda kv: g16._tests_key(kv[0]))
+        ),
+    }
+
+
 # ── Assemble ─────────────────────────────────────────────────────────────────
 
 
@@ -817,6 +943,7 @@ def build() -> dict:
         "c": {f"run{n}": c_cost_time(n, fit) for n in RUNS},
         "price_fit": {k: v for k, v in fit.items() if k != "_rates"},
     }
+    out["unsure"] = unsure_analysis()
     out["cells"] = {
         "a": {
             f"run{n}": [
@@ -1163,6 +1290,67 @@ def markdown(o: dict) -> str:
         "`source`: `judge` = an answer (the agent's for A, the server judge's for C) decided the cell in at least one run; `scan` = only the rules' own evidence changed between loads.",
         "",
     ]
+    u = o["unsure"]
+    L += [
+        "## Why the judge is unsure more often than the agent",
+        "",
+        'The totals say the server judge is unsure on more questions (about 33 of 110 against the agent\'s 19 of 104). The two answers agree almost everywhere both give one; the difference is who says "unsure", and the recorded reasons say why. Same page, same question, same run number:',
+        "",
+        *_md_table(
+            ["Pairs", "Count"],
+            [
+                ["question instances both answered", u["shared_question_instances"]],
+                ["both gave an answer", u["both_answered"]],
+                ["…and it was the same answer", u["both_answered_same_choice"]],
+                ["only the judge was unsure", u["judge_only_unsure"]],
+                ["only the agent was unsure", u["agent_only_unsure"]],
+                ["both unsure", u["both_unsure"]],
+            ],
+        ),
+        "Unsure answers by test, 3 runs together (unsure / asked):",
+        "",
+        *_md_table(
+            [
+                "Test",
+                "Agent",
+                "Judge",
+                "Only the judge unsure: pairs",
+                "…the agent wrote a `seen` note",
+                "…the judge's reason cites the rubric",
+                "…the judge's reason says the page marks it modal",
+            ],
+            [
+                [
+                    t,
+                    f"{u['per_test_agent'].get(t, {}).get('unsure', 0)}/{u['per_test_agent'].get(t, {}).get('asked', 0)}",
+                    f"{u['per_test_judge'].get(t, {}).get('unsure', 0)}/{u['per_test_judge'].get(t, {}).get('asked', 0)}",
+                    u["judge_only_unsure_by_test"].get(t, {}).get("pairs", 0),
+                    u["judge_only_unsure_by_test"]
+                    .get(t, {})
+                    .get("agent_wrote_a_seen_note", 0),
+                    u["judge_only_unsure_by_test"]
+                    .get(t, {})
+                    .get("judge_reason_cites_rubric", 0),
+                    u["judge_only_unsure_by_test"]
+                    .get(t, {})
+                    .get("judge_reason_says_marked_modal", 0),
+                ]
+                for t in sorted(
+                    set(u["per_test_agent"]) | set(u["per_test_judge"]),
+                    key=g16._tests_key,
+                )
+            ],
+        ),
+        "A `seen` note is not proof that the agent looked: its debriefs say several notes overstated what it had checked.",
+        "",
+        "First example per test where only the judge was unsure (the judge's own words, then the agent's answer):",
+        "",
+    ]
+    for t, e in u["examples_judge_only_unsure"].items():
+        L.append(
+            f'- **{t}**, `{e["page"]}` {e["question"]} (run {e["run"]}): judge: "{e["judge_reason"]}" Agent answered `{e["agent_answer"]}`: "{e["agent_reason"]}"'
+        )
+    L.append("")
     ct = o["cost_time"]
     L += [
         "## Cost and time",
