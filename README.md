@@ -1,26 +1,32 @@
 # Section 508 TOBI — Tester-Oriented Browser Inspector
 
-TOBI (`tobi508` in code) is an MCP server that helps people test web pages with the DHS Trusted Tester 5.1.3 process for Section 508. The name follows the tradition of ANDI, SSA's Accessible Name & Description Inspector, which TOBI runs inside the browser. TOBI is independent of DHS and SSA.
+TOBI (`tobi508` in code) is an MCP server that runs the DHS Trusted Tester 5.1.3 process for Section 508 on a web page, in a real Chrome browser, and reports what it finds by Trusted Tester test ID. It is named after ANDI, SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
 
-> **Not a certified Trusted Tester result.** This tool produces agent-assisted findings only. Its output is not a DHS Trusted Tester certified test result and must not be reported, cited or relied on as one. A certified Trusted Tester must perform any test that counts for Section 508 conformance.
+> **Not a certified Trusted Tester result.** TOBI produces agent-assisted findings only. They must not be reported, cited or relied on as a DHS Trusted Tester result. A certified Trusted Tester must perform any test that counts for Section 508 conformance.
 
-**Why it exists.** Automated accessibility scanners read a page's code. They miss failures you only find by using the page: a keyboard trap, focus you can't see, a field whose only label disappears when you type, no way to skip the header.
+**Why it exists.** Automated scanners read a page's code; they never press a key. They miss the failures you only find by using the page: a keyboard trap, focus you can't see, a label that vanishes when you type, no way to skip the header. The Trusted Tester process finds them, step by step, and there are too few certified testers to run it on every page. TOBI does the repetitive tabbing, typing and comparing, decides what the procedure decides mechanically, and leaves the cases that need a person to a person.
 
-TOBI finds those failures for site owners and Trusted Testers. It runs the hands-on parts of the DHS Trusted Tester 5.1.3 process in a real Chrome browser, does the repetitive tabbing and comparing, and asks your AI agent the judgment questions. Clear failures surface early, and certified testers can spend their time on the cases that need a person.
-
-**What you get:** PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW for each TT test, with plain-language explanations, evidence, and a pre-SCRT file: the same rows as DHS's SCRT report, plus where each result came from and which rows need a person. DHS's SCRT does not open it (by design: it is not a Trusted Tester's record). To read one, open `/viewer` on a hosted TOBI server, or download [viewer.html](demo/prescrt-viewer/viewer.html) and open it in a browser. Either way it reads only the file you pick, in your own browser, and sends nothing anywhere; a second file can be loaded beside it ([how to use it](demo/prescrt-viewer/README.md)).
-- **Outcomes** come only from the rules specs in [specs/rules/](specs/rules/), one per TT test, checked against the TT 5.1.3 PDF.
-- **When the tool can't decide,** it says NEEDS REVIEW: a person should look at that row, usually the largest group in a report. It never guesses PASS. (3.A can say NOT TESTED, as the TT text requires, when it finds flashing.)
+**What you get** for each of the 22 Trusted Tester tests it performs: PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW, a plain-language explanation with evidence, and a pre-SCRT file with the same rows as DHS's SCRT report, marked as not certified, saying where each result came from. Open it in the [viewer](demo/prescrt-viewer/viewer.html), which reads the file in your own browser and sends nothing anywhere ([how to use it](demo/prescrt-viewer/README.md)).
 
 ## How it works
 
-![A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once, and its rules specs decide each Trusted Tester test. When a rule asks an open question, the server's judge model answers by rubric: a sure answer goes back to the rule, an unsure one goes to a signed-in person. Results are written to a pre-SCRT file, which a Trusted Tester can certify into their own SCRT record. The results and a link to the report go back to the agent, which explains them.](docs/diagrams/tobi-flow.png)
+![How TOBI tests a page. Solid lines are built; dashed are planned. A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once in real Chrome and runs every check on the recording; walks it with the keyboard, fills in forms, watches for motion and compares pages; and its rules, one spec per Trusted Tester test citing the DHS PDF, decide PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW. A PASS or DOES NOT APPLY is held back to NEEDS REVIEW when a test did not read everything. When a rule needs a judgment it asks an open question, which the server judge, a pinned model given evidence, pictures and a rubric, answers yes, no or unsure; unsure goes to a person (planned: a signed-in review page). Results go into a draft pre-SCRT report and back to the agent, which explains them.](docs/diagrams/tobi-flow.png)
 
-The diagram is the planned flow ([plan](docs/plans/2026-11-07-server-judge-pivot.md)). Today:
+- **Rules decide every outcome.** Each test has one rules spec in [specs/rules/](specs/rules/), every row citing the Trusted Tester PDF page it rests on. Every report records each spec's version.
+- **One recording per page.** Key presses and form entries go to the recording, never the live site, and every check sees the same page.
+- **A model answers only narrow questions,** by rubric, and may answer "unsure". With a model gateway configured (`JUDGE_BASE_URL`, `JUDGE_API_KEY`), TOBI's own pinned model answers them and records its reason; without one, your calling agent answers by the same rubric. Either way, "unsure" stays NEEDS REVIEW for a person, and TOBI never guesses PASS.
+- **Planned, not built:** the signed-in page where a person answers what the model left, and export to a Trusted Tester's own SCRT record.
 
-- **Built:** recording and replay, the rules specs and checks, the pre-SCRT file, the server judge, and hosted sign-in with per-user runs (running on a VAST dev environment; not yet a finished service).
-- **On whenever it has a model:** the server judge answers every test's open questions with a pinned model and prompt once a Messages API gateway's URL and key are set (`JUDGE_BASE_URL`, `JUDGE_API_KEY`; Abby, 2026-11-18). Without them, open questions go to the calling agent, by the same rubric.
-- **Not built yet:** the page where a signed-in person answers, and the export to a Trusted Tester's SCRT record.
+Why the judging moved into the server: [the decision record](docs/plans/2026-11-07-server-judge-pivot.md) and [what the evaluations showed](docs/solutions/server-judge.md).
+
+## How well it works
+
+Agent-assisted results on our evaluation pages, scored against a certified Trusted Tester's blind reports. They say nothing about any other page.
+
+- **On 29 NASA pages from three sites** (rerun 2026-11-18 with the current tool): no PASS or DOES NOT APPLY where the tester found a failure in 593 results; 93% agreement where TOBI decided (331 of 355); 40% left for a person. Per test and site: [evals/STATUS.md](evals/STATUS.md).
+- **Each site was first tested blind,** with TOBI's results locked in git before the tester's answers were added ([how a round runs](docs/how-to/run-a-judging-round.md)); the rounds and every rerun are logged in [evals/README.md](evals/README.md).
+- **Against the same model with a general browser tool**, and between TOBI's own judge and the calling agent, three runs each: [the comparison](evals/judging/compare-2026-11-19-r3/compare.md).
+- **On published answer keys:** 43 of 49 of DHS's Trusted Tester verdicts on W3C test cases, with no unsafe result, and all 80 expected results on the Section 508 Baseline Alignment pages (development sets; `uv run pytest tests/test_act_cases.py tests/test_baseline_cases.py`).
 
 ## TT tests in scope
 
@@ -63,9 +69,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). What eac
 
 ## Known wrong outcomes
 
-A code review on 2026-11-11 built small pages aimed at each test's blind spots and found wrong PASS and DOES NOT APPLY results. These are the ones still unfixed (checked against the code on 2026-11-17). Each was reproduced by a run unless marked "(read)". Until they are fixed, read a PASS or DOES NOT APPLY as "in what the tool looked at".
-
-The pages are in [the code review](docs/reviews/2026-11-11-code-review.md); fixes are planned in [the plan after the review](docs/plans/2026-11-12-coverage-second-look-thin-agent.md) and, for the rows naming round 3 (the blind round on science.data.nasa.gov, 2026-11-16), [the plan after round 3](docs/plans/2026-11-16-after-round3.md). A fix removes its row in the same commit.
+A code review built small pages aimed at each test's blind spots and found wrong PASS and DOES NOT APPLY results. These are the ones still unfixed. Each was reproduced by a run unless marked "(read)". Until they are fixed, read a PASS or DOES NOT APPLY as "in what the tool looked at". The pages are in [the code review](docs/reviews/2026-11-11-code-review.md); a fix removes its row.
 
 | Test | Gives | On a page with |
 | --- | --- | --- |
@@ -77,14 +81,14 @@ The pages are in [the code review](docs/reviews/2026-11-11-code-review.md); fixe
 | 4.A, 4.C-4.F | PASS | a page whose only form opens from a plain button, for the controls inside it (grid; 5.A-5.H say NEEDS REVIEW) |
 | 5.H | Does Not Apply | a payment form not in English |
 | 9.C | PASS or Does Not Apply | controls in the pages' own content that do the same thing under different names on different pages, unless they share an `id` (read) |
-| 4.A, 4.C, 4.F, 5.A-5.D, 5.F-5.H | PASS or Does Not Apply | a page that draws its controls more than 10 s after it loads, and more than doubles them after a walk that took less than 3 s: every load waits up to 10 s for the page to draw (step 23), and the walk counts the page again 3 s after its last load (step 22) (read) |
-| 4.D | PASS | a large linked image whose focus shows only a faint mark: about 50 changed pixels pass, whatever the element's size (round 3's blog page, held at NEEDS REVIEW there only by guard RC) (read) |
+| 4.A, 4.C, 4.F, 5.A-5.D, 5.F-5.H | PASS or Does Not Apply | a page that draws its controls more than 10 s after it loads, and more than doubles them after a keyboard walk that took less than 3 s (every load waits up to 10 s for the page to draw) (read) |
+| 4.D | PASS | a large linked image whose focus shows only a faint mark: about 50 changed pixels pass, whatever the element's size (read) |
 
 ## Tools
 
 | Tool | What it does | Main inputs |
 | --- | --- | --- |
-| `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, open questions for your agent, and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A); `no_time_limit` |
+| `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, any open questions (answered by the server's judge when it has a model, otherwise left for your agent), and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A); `no_time_limit` |
 | `tobi_answer_questions` | Records answers to the open questions and decides again by the spec. Every answer sent here is recorded as the calling agent's; a person's answer, which overrides it, is to come from TOBI's own page. | `run_id`; `answers` (one per question) |
 | `tobi_run_status` | Waits for a run that was still going when its call returned, and gives its result. Without `job_id`: what is left across the session's runs (open questions, follow-up calls, runs still going); with `finish=true` it also makes the follow-up calls the server may make itself. | `job_id` (optional); `finish` |
 | `tobi_explain` | Explains tests in plain language: what a test checks, or, with a `run_id`, what that run found and why (full summaries, the reasoning, the places on the page, what can still change a result, and the W3C links for fixing it). Results carry one line per finding; this holds the detail. | `about` (test IDs, a WCAG criterion or words); `run_id` |
@@ -207,7 +211,7 @@ Save your own reports in your repository: a run's files expire after 24 hours.
 **Settings** come from the environment or `.env`. `.env.example` lists them all with comments. The ones you are most likely to change:
 - `ALLOWED_DOMAINS`: the pages TOBI may test (default `.gov` and `.mil`);
 - `DEV_MODE=true`: also allows `file://` pages;
-- `JUDGE_BASE_URL` and `JUDGE_API_KEY`: a Messages API gateway (such as Luna); with both set, the server's own model answers every test's open questions (`JUDGE_TYPES`, default `all`). `JUDGE_BACKEND=client` sends them to your agent instead.
+- `JUDGE_BASE_URL` and `JUDGE_API_KEY`: a Messages API endpoint (Anthropic's API, `https://api.anthropic.com`, or an agency gateway). With both set, the server's own pinned model answers every test's open questions (`JUDGE_TYPES`, default `all`); `JUDGE_BACKEND=client` sends them to your agent instead.
 
 **Safety:**
 - Every navigation and redirect is checked against the allowlist.
@@ -216,7 +220,7 @@ Save your own reports in your repository: a run's files expire after 24 hours.
 - Page content is treated as data: it never chooses a URL, a tool or an outcome.
 - Every report records all versions.
 
-Details: [evals/README.md](evals/README.md). What TOBI can't do yet, test by test (and in general, such as replays not freezing randomness or time): [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
+Details: [SECURITY.md](SECURITY.md). What TOBI can't do yet, test by test (and in general, such as replays not freezing randomness or time): [KNOWN-LIMITS.md](docs/KNOWN-LIMITS.md).
 
 ## Contribute
 
