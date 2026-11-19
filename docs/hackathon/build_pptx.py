@@ -542,14 +542,11 @@ def build(out: Path) -> None:
         1.2,
         [
             (
-                "**Why:** repeatable, auditable and measurable, not smarter. Fixing "
-                "the "
-                "evidence fixed most wrong answers.",
+                "**Why:** grounded and auditable, not smarter. Rerun on round 3, 3 "
+                "runs each: the agent scored higher (407 agreements to 358), but 12 "
+                "of its 15 debriefs say it never opened the pictures it answered "
+                'about. The judge\'s "unsure" names the missing evidence.',
                 {"size": 14},
-            ),
-            (
-                f"Re-measured Nov 19 on round 3's pages, 3 runs each: {FILL}",
-                {"size": 13, "color": MUTED},
             ),
         ],
     )
@@ -610,8 +607,8 @@ def build(out: Path) -> None:
             "Commit and reveal: TOBI's results are locked before the answers go in",
             "Exact match, no LLM grader; an unsafe error (a PASS where the tester "
             "found a failure) weighs -3",
-            "Baseline: the same model with a general browser tool and the same "
-            "instructions",
+            "Baseline: the same model with a general browser tool; every agent "
+            "run ends with a debrief on what it skipped",
         ],
         size=14,
         bullets=True,
@@ -668,9 +665,9 @@ def build(out: Path) -> None:
         2.4,
         [
             (
-                "**A general agent with a browser:** 16-20 unsafe errors per run on "
-                "the same pages, and in round 1 no failure reported anywhere "
-                f"(round 3: {FILL})",
+                "**A general agent with a browser:** 16-20 unsafe errors per run in "
+                "rounds 1 and 2; on round 3, unreliable instead: its results matched "
+                "across 3 runs on 95 of 200 criteria, against 195 with TOBI",
                 {"bullet": 0},
             ),
             (
@@ -679,11 +676,15 @@ def build(out: Path) -> None:
                 {"bullet": 0},
             ),
             (
-                "**Cost:** under $1 of model spend and 1-8 minutes of browser time a "
-                f"page; a certified tester takes 10-15 minutes {FILL}",
+                "**Cost:** about $0.15 of model spend and 3.5 minutes of browser "
+                f"time a page; a certified tester takes 10-15 minutes {FILL}",
                 {"bullet": 0},
             ),
-            (f"**Calling agent vs. server judge,** 3 runs each: {FILL}", {"bullet": 0}),
+            (
+                "**Calling agent vs. server judge,** 3 runs each: both safe, same "
+                "outcome in all 3 runs on 216 and 214 of 220 results",
+                {"bullet": 0},
+            ),
         ],
         size=14,
         space=8,
@@ -753,45 +754,34 @@ def build(out: Path) -> None:
     )
 
     # 12. MCP lessons
-    s = slide_with_title(prs, "Six lessons for building MCP servers")
+    s = slide_with_title(prs, "Four lessons for building MCP servers")
     lessons = [
         (
-            "1. Don't depend on the agent's diligence",
-            "Agents skipped questions and pictures, and filled proof fields without "
-            "looking. Put correctness-critical steps in the server.",
+            "1. Don't depend on the calling agent's diligence",
+            "Wording moved the shortcut; structure helped for a while. In the final "
+            "run the agent made no finish=true call in 15 conversations. Put every "
+            "step correctness depends on in the server.",
         ),
         (
-            "2. Put the next step in the data",
-            "Wording lost to the agent's idea of done. One finish=true call and a "
-            "to-do list at the end worked.",
+            "2. The server owns the verdict",
+            "Any model can call an MCP server. Pin the one that decides and record "
+            "its reasons; let the calling agent explain results and help fix them.",
         ),
         (
-            "3. In practice, only tools count",
-            "Agents seldom read resources and cannot start prompts. Attach what they "
-            "must see to tool results.",
+            "3. Encode the expertise as rules",
+            "Versioned rules a domain expert can review, narrow rubric questions, "
+            "and tests every change must pass. Fix the evidence before the model.",
         ),
         (
-            "4. Design for the client's limits",
-            "Timeouts, result size, unseen progress: return in 45 s and keep the run "
-            "going; one page's 96 questions became 4.",
-        ),
-        (
-            "5. The server owns the verdict",
-            "Pin the model that decides; let the client agent explain and fix. "
-            "Sampling would borrow the user's model.",
-        ),
-        (
-            "6. Encode the expertise as rules",
-            "Versioned rules a domain expert can review; narrow rubric questions; "
-            "tests every change must pass.",
+            "4. Ask the agent what it skipped",
+            "A tools-off debrief after each run exposed what no score shows: "
+            'pictures never opened, notes that "overstated what I had checked".',
         ),
     ]
     for i, (h, b) in enumerate(lessons):
-        x = 0.4 + (i % 3) * 3.125
-        y = 0.8 + (i // 3) * 2.2
-        card(
-            s, x, y, 2.95, 2.05, h, b, fill=TINT if i in (0, 4) else CARD, head_size=13
-        )
+        x = 0.4 + (i % 2) * 4.7
+        y = 0.8 + (i // 2) * 2.15
+        card(s, x, y, 4.5, 2.0, h, b, fill=TINT if i in (0, 3) else CARD, size=14)
 
     # 13. Limits and next
     s = slide_with_title(prs, "Limits, and what comes next")

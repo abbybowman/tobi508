@@ -85,8 +85,7 @@ Now: the server judges
 One pinned model and prompt, recorded in every report.
 Unsure goes to a person.
 The calling agent explains results in the user's project and helps fix them.
-Why: repeatable, auditable and measurable, not smarter. Fixing the evidence fixed most wrong answers.
-Re-measured Nov 19 on round 3's pages, 3 runs each: [FILL]
+Why: grounded and auditable, not smarter. Rerun on round 3, 3 runs each: the agent scored higher (407 agreements to 358), but 12 of its 15 debriefs say it never opened the pictures it answered about. The judge's "unsure" names the missing evidence.
 Round 2's server judge erred only toward FAIL, mostly because elements were placed while the page was still scrolling. Fixing that evidence, not the prompt, fixed the answers.
 
 <!-- Slide number: 8 -->
@@ -117,7 +116,7 @@ How we scored
 29 NASA pages on 3 sites, each tested by hand in DHS's own report tool
 Commit and reveal: TOBI's results are locked before the answers go in
 Exact match, no LLM grader; an unsafe error (a PASS where the tester found a failure) weighs -3
-Baseline: the same model with a general browser tool and the same instructions
+Baseline: the same model with a general browser tool; every agent run ends with a debrief on what it skipped
 What each round uncovered
 Round 1, www.nasa.gov: agents left judgment questions unanswered. The judge moved into the server.
 Round 2, svs.gsfc.nasa.gov: a recording missing code hid a keyboard trap; failures sat behind closed menus. Both are now read.
@@ -132,10 +131,10 @@ Each site was new to TOBI and scored once before any fix; then it became a devel
 unsafe errors on all 29 pages, rerun Nov 18
 agreement with the certified tester where TOBI decided (331 of 355)
 left for a person (238 of 593): the price of never guessing
-A general agent with a browser: 16-20 unsafe errors per run on the same pages, and in round 1 no failure reported anywhere (round 3: [FILL])
+A general agent with a browser: 16-20 unsafe errors per run in rounds 1 and 2; on round 3, unreliable instead: its results matched across 3 runs on 95 of 200 criteria, against 195 with TOBI
 DHS's published verdicts on W3C test pages: 43 of 49 agree, no unsafe error
-Cost: under $1 of model spend and 1-8 minutes of browser time a page; a certified tester takes 10-15 minutes [FILL]
-Calling agent vs. server judge, 3 runs each: [FILL]
+Cost: about $0.15 of model spend and 3.5 minutes of browser time a page; a certified tester takes 10-15 minutes [FILL]
+Calling agent vs. server judge, 3 runs each: both safe, same outcome in all 3 runs on 216 and 214 of 220 results
 The rerun used sites the tool was then fixed on: development evidence, not a blind result. Per test and site: evals/STATUS.md. Too few true failures per test to prove a miss rate: promising, not proven.
 
 <!-- Slide number: 11 -->
@@ -156,19 +155,15 @@ Every result says "not a certified Trusted Tester result"; a report cannot be ma
 Known gap: no network-level egress rules on the host yet, as a second layer. Page content may shape a request only in a few capped, approved cases, all on the tested page's own host.
 
 <!-- Slide number: 12 -->
-# Six lessons for building MCP servers
-1. Don't depend on the agent's diligence
-Agents skipped questions and pictures, and filled proof fields without looking. Put correctness-critical steps in the server.
-2. Put the next step in the data
-Wording lost to the agent's idea of done. One finish=true call and a to-do list at the end worked.
-3. In practice, only tools count
-Agents seldom read resources and cannot start prompts. Attach what they must see to tool results.
-4. Design for the client's limits
-Timeouts, result size, unseen progress: return in 45 s and keep the run going; one page's 96 questions became 4.
-5. The server owns the verdict
-Pin the model that decides; let the client agent explain and fix. Sampling would borrow the user's model.
-6. Encode the expertise as rules
-Versioned rules a domain expert can review; narrow rubric questions; tests every change must pass.
+# Four lessons for building MCP servers
+1. Don't depend on the calling agent's diligence
+Wording moved the shortcut; structure helped for a while. In the final run the agent made no finish=true call in 15 conversations. Put every step correctness depends on in the server.
+2. The server owns the verdict
+Any model can call an MCP server. Pin the one that decides and record its reasons; let the calling agent explain results and help fix them.
+3. Encode the expertise as rules
+Versioned rules a domain expert can review, narrow rubric questions, and tests every change must pass. Fix the evidence before the model.
+4. Ask the agent what it skipped
+A tools-off debrief after each run exposed what no score shows: pictures never opened, notes that "overstated what I had checked".
 
 <!-- Slide number: 13 -->
 # Limits, and what comes next

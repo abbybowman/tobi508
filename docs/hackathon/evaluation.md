@@ -59,6 +59,7 @@ Results left for a person are always reported beside accuracy: leaving everythin
 - **Weighted for the worst error:** agree +1, left for a person 0, unsafe −3, other error −1. A false PASS hides a barrier from someone who cannot use a mouse; a false FAIL costs a developer time.
 - **Three arms, same model, same prompt, same pages:** **A**, an agent using TOBI that answers TOBI's questions itself; **B**, the baseline, the same agent with a general browser tool (Playwright MCP) and the web instead of TOBI; **C**, TOBI's server judge answering its own questions.
 - **Rule-decided and model-decided results are scored apart,** so neither is blamed for the other's errors.
+- **A debrief after every agent run:** with its tools off, the agent is asked what it skipped and why; its answers are kept beside the transcript, never scored.
 - **A judge eval after every question change:** a fresh agent answers from TOBI's output alone ([37 runs logged](https://github.com/abbybowman/tobi508/blob/main/evals/README.md)).
 
 ## 3. Performance Metrics
@@ -73,7 +74,7 @@ On Nov 18 we reran all 29 NASA pages from their original recordings with the cur
 
 These sites were used to fix the tool, so this is development evidence, not a blind result. Per test and per site: [evals/STATUS.md](https://github.com/abbybowman/tobi508/blob/main/evals/STATUS.md), summarized in the [README's status table](https://github.com/abbybowman/tobi508/blob/main/README.md#tt-tests-in-scope).
 
-**Against a general-purpose agent,** the same model with a browser and the same instructions made 16 to 20 unsafe errors per run on the same pages (rounds 1 and 2; round 3: **[FILL]**), and in round 1 it reported no failure on any page. TOBI's own blind runs made 0 to 6. In rounds 1 and 2 every one came from a rule deciding alone; in round 3, one of the three came from the judge, which had been shown Chrome's own error message as if it were the page's (now never shown to it).
+**Against a general-purpose agent** (the same model and instructions, a browser instead of TOBI): on rounds 1 and 2 it made 16 to 20 unsafe errors per run, and in round 1 it reported no failure on any page. On round 3's pages it made at most one, but it was unreliable instead: 3 of its 15 final answers could not be read, and its results matched across three runs on 95 of 200 criteria, against 195 for the same agent using TOBI ([comparison](https://github.com/abbybowman/tobi508/blob/main/evals/judging/compare-2026-11-19-r3/compare.md)). TOBI's own blind runs made 0 to 6 unsafe errors. In rounds 1 and 2 every one came from a rule deciding alone; in round 3, one of the three came from the judge, which had been shown Chrome's own error message as if it were the page's (now never shown to it).
 
 On published answer keys, TOBI agrees with 43 of 49 DHS verdicts on W3C test cases, with no unsafe error and 5 left for a person, and matches all 80 expected results on the Section 508 Baseline Alignment pages. Both are development sets, and there the model's questions get scripted answers, so they test the rules, not the model.
 
@@ -91,11 +92,18 @@ Early fixes made TOBI more cautious than a careful tester; most later work gave 
 
 ### Calling agent vs. server judge
 
-In round 2 the server judge answered all 194 questions in each of 3 repeats, and the repeats agreed on 194 of 200 results, but it was no more accurate than the calling agent: its errors leaned toward FAIL, mostly from one question with faulty evidence. Rerun on round 3's pages after the fixes, three runs each: the calling agent answered **[FILL]** of the questions and the server judge **[FILL]**; their outcomes matched across runs on **[FILL]** and **[FILL]** of results; unsafe errors per run were **[FILL]** and **[FILL]**.
+On round 3's pages, three runs each after the fixes ([comparison](https://github.com/abbybowman/tobi508/blob/main/evals/judging/compare-2026-11-19-r3/compare.md)):
+
+- **Both were safe and about equally consistent:** no unsafe error in any run; the same outcome in all three runs on 216 (agent) and 214 (judge) of 220 results.
+- **By score the calling agent did better:** 407 agreements to 358 over the three runs, 22 false FAILs to 32. The gap is in answered questions: the judge said "unsure" on about 30% of them, the agent on about 18%. Where both answered, they gave the same answer 95% of the time.
+- **The agent's lead rests on looking it did not do.** In 12 of its 15 debriefs it says it did not open the pictures its answers name ("My `seen` text overstated what I had checked."). It made no `finish=true` and no `tobi_explain` call in any run.
+- **The judge's "unsure" answers name what was missing,** such as "no search field is visible in the picture": gaps in the evidence to fix, not hesitation. Every judge answer has a reason a person can audit.
+
+So the server judge trades some coverage for answers that are grounded and auditable. We keep it, and the next fix is the evidence its reasons point to.
 
 ### Cost and time
 
-Model spend is under $1 a page: the server judge costs about $0.13 a page with prompt caching. Browser time is the real cost: 1 to 8 minutes a page, because every shortcut we measured (fewer images, not waiting for late-drawing pages) produced wrong results. A certified tester takes about 10 to 15 minutes a page for these 22 tests **[FILL: timed]**, so TOBI is not faster per page; it runs unattended and in parallel, needs no certified tester for what it decides, and gives the same evidence every time. The baseline agent took seconds and cents, and passed pages that fail.
+Model spend is under $0.20 a page: about $0.15 for the server judge and $0.17 for a calling agent driving TOBI (the baseline agent: $0.06). Browser time is the real cost, about 3.5 minutes a page on round 3 and up to 8 with other pages of the site, because every shortcut we measured (fewer images, not waiting for late-drawing pages) produced wrong results. A certified tester takes about 10 to 15 minutes a page for these 22 tests **[FILL: timed]**, so TOBI is not faster per page; it runs unattended and in parallel, needs no certified tester for what it decides, and gives the same evidence every time.
 
 ### Where TOBI is wrong
 
@@ -128,47 +136,34 @@ Page content can shape a request only in a few capped cases, all on the tested p
 
 **1. Don't make correctness depend on the calling agent's diligence.**
 
-*Observation.* Agents treat "I can write the report now" as done. None answered TOBI's questions unless told to, and asked to say what a picture showed, one wrote it "as if I had looked, but I never opened those images." More wording in tool descriptions moved the shortcut; it never removed it.
+*Observation.* Agents treat "I can write the report now" as done. In round 1 none answered TOBI's questions unless told to. More wording in tool descriptions moved the shortcut but never removed it. Structure helped for a while: a `finish=true` option that made the follow-up calls in one call was used in 5 of 6 early runs. In the final comparison it was used in none of 15 conversations, and the agent answered picture questions without opening the pictures.
 
-*Recommendation.* Put every step correctness depends on inside the server, so a skipped step can only leave a result incomplete, never wrong.
+*Recommendation.* Put every step correctness depends on inside the server, so a skipped step can only leave a result incomplete, never wrong. Treat structure and wording as help for a willing agent, not a control.
 
-**2. Put the next step in the data, not the prose.**
+**2. The server owns the verdict; the client agent owns the user's context.**
 
-*Observation.* What worked was structure: a `finish=true` option that made the follow-up calls in one call (used in 5 of 6 runs once it existed, almost never before), a status field that could not be relayed as complete, and the to-do list placed last in the result.
+*Observation.* A user may bring any model to an MCP server, so a judgment made by the caller can be neither pinned nor audited. MCP's sampling feature would borrow that same model (and it is deprecated as of the 2026-07-28 specification). Our server judge scored a little below the calling agent, but every answer it gave rests on evidence it was shown and carries a reason; when it is unsure, the reason names the missing evidence.
 
-*Recommendation.* Return machine-readable state (work left, who it waits on) and collapse follow-ups into one call.
+*Recommendation.* Where results must be repeatable and defensible, keep the decisions on the server, record the model, prompt and reason with every answer, and let the calling agent do what the server cannot: explain results in the user's project and help fix them.
 
-**3. In practice, only tools count.**
+**3. Encode the expertise as versioned rules, and ask the model narrow questions.**
 
-*Observation.* Agents seldom read MCP resources, even with a tool for it, and prompts are started by users, not agents. Pictures attached to a tool result were looked at; links were not.
-
-*Recommendation.* Attach what the agent must see to tool results, size-capped; make what it must do a tool.
-
-**4. Design for the client's limits, not the protocol's.**
-
-*Observation.* Clients time out long calls, truncate large results and may not show progress; agents never put optional choices to users. We return within 45 seconds and keep the run going as a job, ask similar questions once (one page's 96 became 4) and halved the largest result. MCP's elicitation, which lets a server ask the user directly, is what we would try next.
-
-*Recommendation.* Test through real agent clients early, with long runs and large results.
-
-**5. The server owns the verdict; the client agent owns the user's context.**
-
-*Observation.* We moved judgment into the server not because its model was smarter but because it answered everything and could be pinned, recorded and measured; a user may bring any model to an MCP server. MCP's sampling feature would borrow the user's model, which is the problem (and it is deprecated as of the 2026-07-28 specification). The calling agent now explains results in the user's project and helps fix them.
-
-*Recommendation.* Where results must be repeatable, keep the decisions on the server, with model, prompt and parameters recorded in every result.
-
-**6. Encode the expertise as versioned rules, and ask the model narrow questions.**
-
-*Observation.* The DHS procedure became one rules file per test, each step citing the PDF; the model answers rubric questions and may say "unsure." Fixes almost always went to the evidence or the rubric, not the model. Objective checks (the test pages and the version lock) kept many parallel AI coding sessions from breaking each other.
+*Observation.* The DHS procedure became one rules file per test, each step citing the PDF; the model answers rubric questions and may say "unsure". Wrong answers were almost always fixed in the evidence or the rubric, not the model. Objective checks (the test pages and the version lock) kept many parallel AI coding sessions from breaking each other.
 
 *Recommendation.* Encode the procedure, not a prompt about it: rules a domain expert can review, every outcome traced to a rule, and tests every change must pass.
+
+**4. Ask the agent what it skipped.**
+
+*Observation.* After every evaluation run, one more turn with its tools off asks the agent where it struggled and what it left undone. The debriefs exposed what no score shows: pictures it never opened, `seen` notes that "overstated what I had checked", a step skipped because "I wanted to finish", a page the tool had compared with itself. Its final reports said none of this.
+
+*Recommendation.* Debrief the agent after every evaluation run, and count its behavior from the transcript, not its final report.
 
 ### Recommendations for evaluating an MCP server
 
 1. Look for an official answer key before writing your own; DHS's verdicts gave us one on day one.
 2. Name your worst error and weight your score by it.
-3. Compare against a capable agent with general tools, not only against no tool.
-4. Count what agents do from their transcripts, not their final reports.
-5. Score rule-decided and model-decided results apart, and report work left for a person beside accuracy.
+3. Compare against a capable agent with general tools, not only against no tool, and run each arm more than once: the baseline's failure on round 3 was inconsistency, which one run hides.
+4. Score rule-decided and model-decided results apart, and report work left for a person beside accuracy.
 
 ### Limitations
 
