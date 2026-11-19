@@ -57,6 +57,10 @@ def tool_arm(frozen: Path, model: str, runs_dir: Path) -> list[Server]:
         # tested site, and 19.A's search, live as usual (Abby, 2026-11-04).
         "FROZEN_PAGES_MODE": "tested_frozen",
         "JUDGING_MODEL": model,  # Agent A answers the open questions
+        # The calling agent answers, never the server's own judge: since
+        # 2026-11-18 the default ("auto") turns the judge on whenever the
+        # server has a gateway, so say "client" outright.
+        "JUDGE_BACKEND": "client",
         "RUNS_DIR": str(runs_dir),
         "RUN_TTL_HOURS": "720",  # kept until the round is locked
     }

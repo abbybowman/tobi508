@@ -1,0 +1,37 @@
+{"ts":"2026-11-19T01:54:26.806404Z","step":"run_start","status":"ok","detail":{"target":"https://science.data.nasa.gov/science-discovery-engine/search/sde/home","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-19T01:54:27.189876Z","step":"browser_launched","status":"ok","detail":{"version":"157.0.8103.78"}}
+{"ts":"2026-11-19T01:54:27.341416Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/home","har":"pages/009.har.zip"}}
+{"ts":"2026-11-19T01:54:27.516398Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory","har":"pages/010.har.zip"}}
+{"ts":"2026-11-19T01:54:27.529745Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory","seconds":0.15}}
+{"ts":"2026-11-19T01:54:27.529843Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/home","redirects":[],"seconds":0.34}}
+{"ts":"2026-11-19T01:54:27.674059Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T01:54:31.417649Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:54:38.407926Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":11,"cap":77},"P2":{"end":"wrap","presses":11,"cap":77},"cost":{"loads":2,"presses":22,"quick":0,"slow_redos":0,"seconds":10.87}}}
+{"ts":"2026-11-19T01:54:45.685524Z","step":"reveal","status":"ok","detail":{"triggers":1,"opened":1,"cost":{"loads":2,"presses":1,"quick":0,"slow_redos":0,"seconds":7.28}}}
+{"ts":"2026-11-19T01:54:48.051539Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":2.37}}}
+{"ts":"2026-11-19T01:54:48.177571Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.13}}}
+{"ts":"2026-11-19T01:54:48.178928Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:54:48.179775Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:54:48.180620Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:54:51.063102Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.88}}}
+{"ts":"2026-11-19T01:54:51.063796Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:54:52.645526Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:55:02.481157Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":23,"quick":14,"slow_redos":0,"seconds":11.42}}}
+{"ts":"2026-11-19T01:55:02.482755Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:55:02.487027Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:55:16.831711Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":4,"presses":35,"quick":16,"slow_redos":0,"seconds":14.34}}}
+{"ts":"2026-11-19T01:55:19.921658Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":3.09}}}
+{"ts":"2026-11-19T01:55:19.921933Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:55:21.413508Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.49}}}
+{"ts":"2026-11-19T01:55:23.794963Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.38}}}
+{"ts":"2026-11-19T01:55:23.795416Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:55:30.951200Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":2,"presses":6,"quick":4,"slow_redos":0,"seconds":7.16}}}
+{"ts":"2026-11-19T01:55:36.959599Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:55:44.536679Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":4,"presses":4,"quick":3,"slow_redos":0,"seconds":13.59}}}
+{"ts":"2026-11-19T01:55:49.199196Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":6,"quick":5,"slow_redos":0,"seconds":4.66}}}
+{"ts":"2026-11-19T01:55:52.291876Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":3.09}}}
+{"ts":"2026-11-19T01:55:52.292537Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:55:52.293197Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:55:52.381509Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T01:56:12.900751Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.C-c1-J1","5.F-a1-f1-J1","5.F-a2-f1-J1","5.G-a1-f1-J1","5.G-a2-f1-J1","5.H-J1"],"rejected":["4.A-k2-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure","4.F-r1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure","5.B-f1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure","5.C-c5-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure"],"errors":[]}}
+{"ts":"2026-11-19T01:56:20.485134Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-k2-J1","4.F-r1-J1","5.B-f1-J1","5.C-c5-J1"],"rejected":[],"errors":[]}}

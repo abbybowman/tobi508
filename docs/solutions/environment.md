@@ -211,3 +211,51 @@ set it in each new container. The test suite builds its settings without
 script failed (without it: 13 scripts refused, W4). A recording made in a
 new environment must have its CSS and scripts at status 200; the freeze
 calls a page whose CSS, fonts and scripts mostly failed suspect.
+
+## A cloud container: long jobs die while the session is idle (2026-11-19)
+
+**What happened.** The compare of 2026-11-19 (calling agent vs server
+judge, round 3's pages) ran hours of jobs in the background. Four times
+the container rebooted (`uptime -s` jumped; the new uptime was under two
+minutes), each time killing the group of pages in flight: about 15 min of
+arm A's group 1, then groups 3 (twice) and 2 again. Nothing showed in
+`dmesg` and memory was fine (2 GB of 16 GB used), so it was not our load.
+The reboots landed exactly on the moments a scheduled wake-up or a new
+message reached an idle session (01:29:31 and 01:40:14, the wake times of
+the check-ins I had scheduled). While I kept the session busy, with a
+watcher running inside the turn, 12 groups in a row finished with no
+reboot (a group's runs of 2-7 min each, six in a row at the time of
+writing). The cause is an inference from timing; nothing in the
+container says it directly. The first two reboots (about 00:56 and 01:10)
+came at the first activity after a quiet stretch, not at a scheduled
+wake-up, so "idle" is the pattern, not the wake-up as such.
+
+**What to do now.**
+
+- Treat a cloud session's background jobs as alive only while the session
+  is working. Do not start a multi-hour job and wait idle; do not schedule
+  check-ins to "watch" it (a wake-up from idle is when the container comes
+  back fresh and the job is gone).
+- Run long work as **small, restartable units**: one unit's result is
+  written whole before the next starts, and a loop skips units that have
+  a result. Round 2's and the compare's arm runs do this (one group per
+  `evals.agent.run` call, `--label g<group>-<run>`, a result folder per
+  group). `chainA.sh` in the compare was this loop: delete a unit's
+  partial folder, run it, repeat; start it again after any reboot.
+- **Stay in the turn while it runs**: a watcher (`Monitor`) with an
+  until-loop that ends on "a unit finished", "all done" or "boot time
+  changed" (`uptime -s`), 11 minutes at most, re-armed each time. Foreground
+  `sleep` is blocked; the loop does the waiting.
+- After any reboot: check what the run left on disk (a half-written folder
+  is deleted, not kept), set `UPSTREAM_PROXY` again from the new
+  `HTTPS_PROXY` (its port changes), and write the reboot in the round's
+  `restarts.md` (time, what was in flight, what was redone).
+- Pick units that finish in minutes, not hours: a unit longer than the gap
+  between reboots may never finish.
+- Commit and push after each unit; a reboot keeps the clone's disk (our
+  results survived every time) but the push is the only copy that
+  outlives the session.
+
+**How we know.** 4 reboots, each at the first activity after the session
+had been quiet; the group started at 01:40:24 ended at 01:47:37, and the
+next ones also finished while a watcher kept the turn busy (`restarts.md` in `evals/judging/compare-2026-11-19-r3/`).

@@ -17,6 +17,7 @@ A type passes only when both hold:
     uv run python evals/apijudge_gate.py run   --date D [--repeat N]
         [--types 4.A,5.B] [--pages cilab,14592 | =EXACT_URL] [--round 1|2|3] [--dry]
         [--tests 5.A,5.B,9.B] [--frozen-mode replay] [--frozen-dir D]
+        [--out DIR] [--from-repeat K]
     uv run python evals/apijudge_gate.py score --date D [--eval OUT] [--round 1|2|3]
 
 `--round N` (1, 2 or 3; omitted = round 2, into `gate-D/` as step 6 ran it) takes
@@ -79,8 +80,16 @@ MAX_WRONG_FAIL_SHARE = 0.20
 MIN_DECIDED_CELLS = 6
 
 
+# `--out DIR`: write one run's folder here instead of `gate-D/roundN/` (the
+# comparison folders, which also hold the calling agent's runs). Set by main.
+OUT_DIR: Path | None = None
+
+
 def gate_dir(date: str, rnd: int | None = None) -> Path:
-    """`gate-D/` (round 2 alone, as step 6 ran it) or `gate-D/roundN/`."""
+    """`gate-D/` (round 2 alone, as step 6 ran it) or `gate-D/roundN/`, or the
+    folder `--out` names."""
+    if OUT_DIR is not None:
+        return OUT_DIR
     d = REPO / "evals" / "judging" / f"gate-{date}"
     return d if rnd is None else d / f"round{rnd}"
 
@@ -173,6 +182,20 @@ def _keep(run_dir: Path, dest: Path) -> None:
         shutil.copyfile(run_dir / name, dest / name)
 
 
+def _timing(dest: Path, started: datetime) -> None:
+    """When the page's tool call began and ended (the browser time per page;
+    the report's own `started_at` and `finished_at` are kept beside it)."""
+    (dest / "timing.json").write_text(
+        json.dumps(
+            {
+                "call_started": started.isoformat(),
+                "call_finished": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+        + "\n"
+    )
+
+
 async def run(
     date: str,
     repeat: int,
@@ -183,6 +206,7 @@ async def run(
     only_tests: str = "",
     mode: str = "tested_frozen",
     frozen_dir: str = "",
+    first_repeat: int = 1,
 ) -> None:
     from tobi508 import apijudge
     from tobi508.checks import REGISTRY
@@ -207,7 +231,7 @@ async def run(
     if only_tests:  # a rerun of the tests a change touched, not the whole set
         want = set(only_tests.split(","))
         tests = [t for t in tests if t.value in want]
-    for k in range(1, repeat + 1):
+    for k in range(first_repeat, repeat + 1):
         runs = gd / f"r{k}" / "runs"
         runs.mkdir(parents=True, exist_ok=True)
         s = _settings(gd / f"r{k}", types, judge_on=not dry, src=src, mode=mode)
@@ -216,12 +240,14 @@ async def run(
             pid = f"p{n:02d}"
             others = judging.other_pages(url, urls)
             print(f"r{k} {pid} {url}", flush=True)
+            t0 = datetime.now(timezone.utc)
             res = await run_tt_tests(
                 s, url, tests, no_time_limit=True, other_pages=others
             )
             run_ids.append(res.run_id)
             if not dry:
                 _keep(s.runs_dir / res.run_id, gd / f"r{k}" / "results" / pid)
+                _timing(gd / f"r{k}" / "results" / pid, t0)
         if dry:
             got = apijudge.dry(s, run_ids, set(types.split(",")))
             (gd / f"dry-r{k}.json").write_text(json.dumps(got, indent=1))
@@ -368,7 +394,12 @@ def main(argv: list[str]) -> None:
     rnd = int(opt("--round")) if opt("--round") else None
     if rnd is not None and rnd not in ROUNDS:
         sys.exit("--round: 1, 2 or 3")
+    global OUT_DIR
+    if opt("--out"):
+        OUT_DIR = Path(opt("--out")).resolve()
     src, _ = round_dirs(rnd)
+    if opt("--frozen-dir"):  # a copy kept apart from the locked round's
+        src = Path(opt("--frozen-dir")).resolve()
     if not (src / "frozen" / "pages").is_dir():
         sys.exit(f"{src / 'frozen' / 'pages'} is missing: restore the frozen archive")
     if argv[0] == "run":
@@ -384,6 +415,7 @@ def main(argv: list[str]) -> None:
                 opt("--tests"),
                 opt("--frozen-mode", "tested_frozen"),
                 opt("--frozen-dir"),
+                int(opt("--from-repeat", "1")),
             )
         )
     else:

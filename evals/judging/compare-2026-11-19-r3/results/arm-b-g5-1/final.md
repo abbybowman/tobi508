@@ -1,0 +1,26 @@
+I tested both pages with DOM inspection and a screenshot. I did not do a full keyboard walkthrough, and I did not test error states, the search dropdown, or whether the story slider advances on its own beyond 12 seconds.
+
+**Home page**
+- **2.1.1 Keyboard: FAIL.** "Search Stories" in the header is a `span` with a click handler. It has no link or button role and is not focusable, so it can't be reached by keyboard.
+- **2.4.7 Focus Visible: FAIL.** The SDE button, the help button and the search input have `outline: none`. In a screenshot with the input focused, nothing showed focus.
+- **2.4.1 Bypass Blocks: FAIL.** There is no skip link, no `main` landmark and no usable headings. The page's only `h1` in the main area is empty, and a second `h1` sits in the footer.
+- **1.3.1 and 3.3.2: the search input has no `label`, `aria-label` or `aria-labelledby`.** Its only label is the placeholder text. I marked 1.3.1 FAIL. I marked 3.3.2 NEEDS_REVIEW.
+- **2.4.6 and 4.1.2: NEEDS_REVIEW.** The placeholder "Type to search..." describes the field and supplies its accessible name. It is not a real label, so a person should decide. The "All" scope dropdown also needs a check.
+- **2.4.5 Multiple Ways: NEEDS_REVIEW.** I can't judge this from two pages. Search is present.
+- **3.2.2 On Input: NEEDS_REVIEW.** I did not exercise the "All" dropdown.
+- **3.3.1 and 3.3.3: NEEDS_REVIEW.** I did not trigger a search error.
+- **3.3.4 Error Prevention: DNA.** The page has no legal, financial or data submission.
+
+**My Search Stories page**
+- **2.1.1 Keyboard: FAIL.** "Search Stories" is again a non-focusable `span`.
+- **2.4.7 Focus Visible: FAIL.** The SDE button, help button, "Home" breadcrumb and slider previous/next controls have `outline: none`. I did not confirm visually that nothing else replaces the outline.
+- **2.4.1 Bypass Blocks: FAIL.** There is no skip link and no `main` landmark. The breadcrumb navigation doesn't help skip the header.
+- **2.2.2 Pause, Stop, Hide: NEEDS_REVIEW.** The slider ("1 / 6") did not advance in 12 seconds. It may rotate on a longer timer, and no pause control is visible.
+- **Form criteria (1.3.1, 2.4.6, 3.2.2, 3.3.x, 4.1.2): DNA.** The page has no form fields.
+- **2.4.5 Multiple Ways: NEEDS_REVIEW,** for the same reason as the home page.
+
+**Both pages**
+- **PASS:** 1.4.2, 2.1.2, 2.3.1, 2.4.3, 3.2.1, 3.2.3 and 3.2.4. I found no audio, traps, flashing, focus-order problems or focus-triggered context changes. The header is the same on both pages, and the "SEARCH" button is identified the same way on both.
+- **2.2.2 Pause, Stop, Hide on the home page: PASS.** I found no moving content there.
+
+RESULT: {"https://science.data.nasa.gov/science-discovery-engine/search/sde/home": {"1.3.1": {"result": "FAIL", "elements": ["input[placeholder='Type to search...'] (no programmatic label)"]}, "1.4.2": {"result": "PASS", "elements": []}, "2.1.1": {"result": "FAIL", "elements": ["span 'Search Stories' (click-only, not focusable)"]}, "2.1.2": {"result": "PASS", "elements": []}, "2.2.2": {"result": "PASS", "elements": []}, "2.3.1": {"result": "PASS", "elements": []}, "2.4.1": {"result": "FAIL", "elements": ["page (no skip link, no main landmark, empty h1)"]}, "2.4.3": {"result": "PASS", "elements": []}, "2.4.5": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.6": {"result": "NEEDS_REVIEW", "elements": ["search input (placeholder only)"]}, "2.4.7": {"result": "FAIL", "elements": ["search input", "SDE button", "Help and Support button"]}, "3.2.1": {"result": "PASS", "elements": []}, "3.2.2": {"result": "NEEDS_REVIEW", "elements": ["'All' scope dropdown"]}, "3.2.3": {"result": "PASS", "elements": []}, "3.2.4": {"result": "PASS", "elements": []}, "3.3.1": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.2": {"result": "NEEDS_REVIEW", "elements": ["search input (placeholder only)"]}, "3.3.3": {"result": "NEEDS_REVIEW", "elements": []}, "3.3.4": {"result": "DNA", "elements": []}, "4.1.2": {"result": "NEEDS_REVIEW", "elements": ["search input (name from placeholder only)", "'All' scope dropdown button"]}}, "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory": {"1.3.1": {"result": "DNA", "elements": []}, "1.4.2": {"result": "PASS", "elements": []}, "2.1.1": {"result": "FAIL", "elements": ["span 'Search Stories' (click-only, not focusable)"]}, "2.1.2": {"result": "PASS", "elements": []}, "2.2.2": {"result": "NEEDS_REVIEW", "elements": ["story slider (1 / 6)"]}, "2.3.1": {"result": "PASS", "elements": []}, "2.4.1": {"result": "FAIL", "elements": ["page (no skip link, no main landmark)"]}, "2.4.3": {"result": "PASS", "elements": []}, "2.4.5": {"result": "NEEDS_REVIEW", "elements": []}, "2.4.6": {"result": "DNA", "elements": []}, "2.4.7": {"result": "FAIL", "elements": ["SDE button", "Help and Support button", "Home breadcrumb", "slider previous/next controls"]}, "3.2.1": {"result": "PASS", "elements": []}, "3.2.2": {"result": "DNA", "elements": []}, "3.2.3": {"result": "PASS", "elements": []}, "3.2.4": {"result": "PASS", "elements": []}, "3.3.1": {"result": "DNA", "elements": []}, "3.3.2": {"result": "DNA", "elements": []}, "3.3.3": {"result": "DNA", "elements": []}, "3.3.4": {"result": "DNA", "elements": []}, "4.1.2": {"result": "DNA", "elements": []}}

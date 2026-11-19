@@ -1,0 +1,35 @@
+{"ts":"2026-11-19T02:22:31.965037Z","step":"run_start","status":"ok","detail":{"target":"https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-19T02:22:32.467038Z","step":"browser_launched","status":"ok","detail":{"version":"157.0.8103.78"}}
+{"ts":"2026-11-19T02:22:32.470569Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory","har":"pages/010.har.zip"}}
+{"ts":"2026-11-19T02:22:32.508970Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/home","har":"pages/009.har.zip"}}
+{"ts":"2026-11-19T02:22:32.514423Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/home","seconds":0.01}}
+{"ts":"2026-11-19T02:22:32.514501Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory","redirects":[],"seconds":0.05}}
+{"ts":"2026-11-19T02:22:32.735170Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T02:22:36.339104Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:22:43.890535Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":9,"cap":71},"P2":{"end":"wrap","presses":9,"cap":71},"cost":{"loads":2,"presses":18,"quick":0,"slow_redos":0,"seconds":11.37}}}
+{"ts":"2026-11-19T02:22:43.891315Z","step":"reveal","status":"ok","detail":{"triggers":0,"opened":0,"cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:46.636555Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":2.74}}}
+{"ts":"2026-11-19T02:22:46.997935Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.36}}}
+{"ts":"2026-11-19T02:22:46.999129Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.000264Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.001419Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.002649Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.003651Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.004395Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.004994Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:47.005614Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:49.790199Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":2.78}}}
+{"ts":"2026-11-19T02:22:52.698156Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.91}}}
+{"ts":"2026-11-19T02:22:52.698832Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:54.025081Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.33}}}
+{"ts":"2026-11-19T02:22:56.627719Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.6}}}
+{"ts":"2026-11-19T02:22:56.628269Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:22:59.857998Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":3.23}}}
+{"ts":"2026-11-19T02:23:04.462242Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:23:14.023552Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":4,"presses":4,"quick":3,"slow_redos":0,"seconds":14.16}}}
+{"ts":"2026-11-19T02:23:14.024662Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:23:17.414252Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":3.39}}}
+{"ts":"2026-11-19T02:23:17.415008Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:23:17.415456Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:23:17.512753Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T02:23:36.477680Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-k1-J1","4.A-k2-J1","4.B-p-J1","5.C-c1-J1","5.C-c4-J1"],"rejected":["4.F-o1-J1: this question's picture was attached to a result, so it was in front of you: look at it and say in `seen` what it shows (a dark, blank or cut-off picture is described too, then answer unsure if it does not settle the question). picture_error is only for a picture you could not open"],"errors":[]}}
