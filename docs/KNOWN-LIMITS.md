@@ -49,12 +49,15 @@ re-testing): confirm and remove, or remove the mark.
   elements that take focus has not changed for 2 s (at most 10 s;
   step 23, 4.C 1.17.0), so a page drawn about a second after load is
   read as drawn (round 3's applications, 0.7 to 1.1 s on replay). The
-  first load of each address costs 2 s more. A page drawn later than
-  that and walked faster can still slip: then, when the page more than
+  first load of each address costs 2 s more. When the page more than
   doubled its elements after the walk began (or had no form field and
   then had some), the tests that read the walk decide nothing (row WL,
-  step 22: 4.A, 4.C, 4.F, 5.A to 5.D, 5.F). A page that adds fewer late
-  is read as before.
+  step 22: 4.A, 4.C, 4.F, 5.A to 5.D, 5.F). **The limit:** a page still
+  drawing its controls after the 10 s wait is tested as it stood then;
+  if its walk also took less than 3 s, the recount can miss the change,
+  and 4.A, 4.C, 4.F, 5.A to 5.D and 5.F to 5.H could PASS or say DOES
+  NOT APPLY on what they did not see. Found by reading the code; no page
+  has shown it. A page that adds fewer late is read as before.
 - **Web components and frames** are read by every reader and decided
   on the same rows (step 8). Not read: a closed shadow root, and a
   frame the recording lacks (PASS and DOES NOT APPLY are held,
