@@ -47,8 +47,15 @@ def _base_env() -> dict[str, str]:
     return {k: os.environ[k] for k in keep if k in os.environ}
 
 
-def tool_arm(frozen: Path, model: str, runs_dir: Path) -> list[Server]:
-    """Agent A: this server, replaying `frozen` only."""
+def tool_arm(
+    frozen: Path, model: str, runs_dir: Path, judge: str = "client"
+) -> list[Server]:
+    """Agent A: this server, replaying `frozen` only. judge "client": the
+    calling agent answers the open questions (the rounds); "api": the
+    server's own judge does, through `claude -p` (JUDGE_ROUTE=cli, a
+    development run: the server then needs the CLI's credentials, so it
+    gets this process's environment less the variables that identify the
+    user or session, as apijudge.ClaudeCli passes to its own `claude`)."""
     env = _base_env() | {
         "BROWSER_CHANNEL": "chromium",
         "HEADLESS": "true",
@@ -64,6 +71,21 @@ def tool_arm(frozen: Path, model: str, runs_dir: Path) -> list[Server]:
         "RUNS_DIR": str(runs_dir),
         "RUN_TTL_HOURS": "720",  # kept until the round is locked
     }
+    if judge == "api":
+        from evals.agent.cli import DROP
+
+        env = (
+            {k: v for k, v in os.environ.items() if k not in DROP}
+            | env
+            | {
+                "JUDGE_BACKEND": "api",
+                "JUDGE_ROUTE": "cli",
+                "JUDGE_MODEL": model,
+                "JUDGING_MODEL": "none",  # set from the judge model (versions.py)
+            }
+        )
+    elif judge != "client":
+        raise ValueError(f"judge must be client or api, not {judge!r}")
     if os.environ.get("UPSTREAM_PROXY"):  # a cloud container (egress.py)
         env["UPSTREAM_PROXY"] = os.environ["UPSTREAM_PROXY"]
     return [Server("a11y", sys.executable, ["-m", "tobi508.app"], env)]

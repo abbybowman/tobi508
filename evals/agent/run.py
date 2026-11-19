@@ -427,6 +427,7 @@ async def run_arm(
     prompt_version: str | None = None,
     group: int | None = None,
     group_size: int | None = None,
+    judge: str = "client",
 ) -> dict:
     """Run arm "a" or "b" on round folder `rd`; returns the summary.
 
@@ -445,6 +446,7 @@ async def run_arm(
             prompt_version,
             group,
             group_size,
+            judge,
         )
     from tobi508.config import Settings
     from tobi508.egress import EgressProxy
@@ -484,6 +486,7 @@ async def _run_arm(
     prompt_version=None,
     group=None,
     group_size=None,
+    judge="client",
 ) -> dict:
     from evals.agent import prompt_dev
     from evals.judging import _pages
@@ -507,7 +510,7 @@ async def _run_arm(
         )
     task = prompt_dev.task(urls, version)
     if servers is None:
-        servers = tool_arm(frozen, provider.model, out / "runs")
+        servers = tool_arm(frozen, provider.model, out / "runs", judge)
     log = StepLog(out / "steps.jsonl")
     agent = Agent(provider, log)
     summary: dict[str, Any] = {
@@ -520,6 +523,7 @@ async def _run_arm(
         "pages": urls,
         "group": group,
         "group_size": group_size,
+        "judge": judge if arm == "a" else None,
         "debrief_question": getattr(provider, "debrief", None),
         "servers": [
             {"name": s.name, "command": s.command, "args": s.args} for s in servers
@@ -637,6 +641,13 @@ def main(argv: list[str]) -> None:
         help="with --group: cut pages.txt, in order, into groups of this many "
         'pages instead of its "# Group" lines',
     )
+    ap.add_argument(
+        "--judge",
+        choices=["client", "api"],
+        default="client",
+        help="Agent A only: who answers the open questions; api is the "
+        "server's own judge through `claude -p` (development runs)",
+    )
     ap.add_argument("round", type=Path)
     a = ap.parse_args(argv)
     provider = (
@@ -657,6 +668,7 @@ def main(argv: list[str]) -> None:
             prompt_version=a.prompt,
             group=a.group,
             group_size=a.group_size,
+            judge=a.judge,
         )
     )
     print(json.dumps({k: s[k] for k in ("ended", "wall_s", "tokens", "tool_calls")}))
