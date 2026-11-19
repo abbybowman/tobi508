@@ -1,0 +1,97 @@
+name: Roadmap work (one thread)
+description: A row of the roadmap's "Next" table, planned to be worked by one thread with its own agent prompt.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One issue is one thread: one branch, no TT test shared with another open thread at the same time.
+        How every thread works, reruns and reports is in `docs/how-to/work-an-issue.md`; do not repeat it here.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is wrong today and why it matters, in a few sentences. Name the pages it shows on.
+    validations:
+      required: true
+  - type: input
+    id: tests
+    attributes:
+      label: TT tests this changes
+      description: Used to find overlaps with other open issues.
+      placeholder: "4.D, 5.D"
+    validations:
+      required: true
+  - type: input
+    id: order
+    attributes:
+      label: Depends on, blocks, overlaps
+      placeholder: "Waits for #134 (step 26). Blocks #137. Shares 5.D with #137."
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps, in order
+      description: Wrong outcomes first, then a cell one step from unsafe, then NEEDS REVIEW turned into outcomes. "Approval" when the step turns NEEDS REVIEW into an outcome or removes a FAIL a key confirms.
+      value: |
+        | Step | What changes | Cells it should move | Approval | Must keep |
+        | --- | --- | --- | --- | --- |
+        |  |  |  | no |  |
+    validations:
+      required: true
+  - type: textarea
+    id: now
+    attributes:
+      label: Where it stands now
+      description: Each cell the steps target, from the latest gate (say which, its date and commit), with the key.
+      value: |
+        From gate <folder> (<date>, <commit>):
+
+        | Round | Page | Test | Key | Now (rows) | Step |
+        | --- | --- | --- | --- | --- | --- |
+  - type: textarea
+    id: decisions
+    attributes:
+      label: Decisions for Abby
+      value: |
+        - [ ]
+  - type: textarea
+    id: limits
+    attributes:
+      label: Known limits and README rows this closes
+      description: Link the KNOWN-LIMITS section and name its bullet; quote the README "Known wrong outcomes" row.
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      value: |
+        - [ ] Each step merged, or moved to another issue with a reason
+        - [ ] Spec versions bumped and locked; Abby approved every "approval" step's spec text
+        - [ ] Judge eval run for each changed question, rubric or input
+        - [ ] The rerun on all three rounds' frozen pages (docs/how-to/work-an-issue.md), every moved cell shown beside the key
+        - [ ] README "Known wrong outcomes", docs/KNOWN-LIMITS.md, docs/ROADMAP.md and (if a spec version changed) docs/hackathon updated in the same commits
+  - type: textarea
+    id: detail
+    attributes:
+      label: Detail
+      description: Links to the plan sections, gate write-ups and code. Quote a short passage instead of linking to it.
+  - type: dropdown
+    id: model
+    attributes:
+      label: Model for the thread
+      options:
+        - Opus
+        - Sonnet
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Agent prompt
+      description: Starts from this issue. Only what the issue does not already say.
+      value: |
+        ```text
+        Work issue abbybowman/tobi508#<n>. The issue is the scope: read its body and its comments first; where it and a plan disagree, the issue wins, and say so. Then read CLAUDE.md, docs/how-to/work-an-issue.md and <plan sections>.
+
+        <context the thread needs that the issue does not hold>
+
+        Order: <steps, with the approval gates>.
+
+        At the end, the rerun as the how-to says, for <tests>, and tick the issue's "Done when".
+        ```
