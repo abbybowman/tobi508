@@ -355,134 +355,7 @@ def build(out: Path) -> None:
         "them.",
     )
 
-    # 4. Why not just give an agent a browser?
-    s = slide_with_title(prs, "Why not just give an AI agent a browser?")
-    text(
-        s,
-        0.4,
-        0.8,
-        9.2,
-        0.6,
-        [
-            (
-                "Same model, same instructions, same pages, scored blind against a "
-                "certified Trusted Tester. Unsafe error: a PASS where the tester "
-                "found a "
-                "failure.",
-                {"size": 13, "color": MUTED},
-            )
-        ],
-    )
-    card(
-        s,
-        0.4,
-        1.45,
-        4.4,
-        2.3,
-        "Agent with a general browser tool",
-        [
-            "Unsafe errors per run:",
-            "**20, 16** (round 1)   **20, 17** (round 2)",
-            "In round 1 it reported no failure on any page. It passed every "
-            "unlabeled search field and took page landmarks for a way to skip "
-            "repeated content.",
-        ],
-    )
-    card(
-        s,
-        5.2,
-        1.45,
-        4.4,
-        2.3,
-        "Agent with TOBI",
-        [
-            "Unsafe errors per run:",
-            "**0, 0, 0** (round 1)   **3, 5** (round 2)",
-            "Every round 2 unsafe error came from a rule deciding alone, the same "
-            "cells each run; those rules are fixed. None came from a model's answer.",
-        ],
-        fill=TINT,
-    )
-    text(
-        s,
-        0.4,
-        3.95,
-        9.2,
-        1.2,
-        [
-            (
-                "**The procedure has to be encoded, not prompted.** A capable agent "
-                "knows "
-                "what WCAG says; it does not follow a 90-page test procedure step by "
-                "step.",
-                {"size": 15},
-            )
-        ],
-    )
-
-    foot(
-        s,
-        "Round 1: 9 www.nasa.gov pages (Nov 4). Round 2: 10 svs.gsfc.nasa.gov "
-        "pages (Nov 8). Both agents: Claude Sonnet 5.5; the baseline had "
-        "Playwright MCP and web access instead of TOBI. Scored per WCAG "
-        "criterion.",
-    )
-
-    # 5. The solution
-    s = slide_with_title(prs, "The solution: an MCP server that follows the procedure")
-    steps = [
-        "**Record** the page once in real Chrome; replay it for every check",
-        "**Walk** it with the keyboard, fill in forms, watch for motion, compare pages",
-        "**Decide** what the procedure decides mechanically, from versioned rules",
-        "**Ask** a pinned model narrow questions with evidence and a rubric; "
-        '"unsure" goes to a person',
-        "**Report** by Trusted Tester test ID, in plain language, with screenshots, "
-        "and a draft in DHS's own report format",
-    ]
-    for i, st in enumerate(steps):
-        y = 0.85 + i * 0.8
-        box(s, 0.4, y + 0.1, 0.5, 0.5, NAVY, name=f"Step {i + 1}")
-        text(
-            s,
-            0.4,
-            y + 0.1,
-            0.5,
-            0.5,
-            [(str(i + 1), {"size": 16, "bold": True, "color": WHITE})],
-            anchor=MSO_ANCHOR.MIDDLE,
-            align=PP_ALIGN.CENTER,
-        )
-        text(s, 1.05, y, 4.6, 0.72, [(st, {"size": 13})], anchor=MSO_ANCHOR.MIDDLE)
-    card(
-        s,
-        6.0,
-        0.95,
-        3.6,
-        3.9,
-        "Five tools, each a whole task",
-        [
-            "tobi_run_tt_tests: test a page",
-            "tobi_run_status: wait for a long run",
-            "tobi_answer_questions: record answers",
-            "tobi_explain: a result in plain words",
-            "tobi_read_report: read or compare report files",
-            "Resources: the TT text (tt://) and a run's evidence (run://)",
-            "**22 of 61 tests:** keyboard, focus, forms, moving and flashing content, "
-            "consistency across a site's pages",
-        ],
-        fill=TINT,
-        size=13,
-        bullets=True,
-    )
-
-    foot(
-        s,
-        "Python, FastMCP, Pydantic and Playwright, from GSA's template. stdio "
-        "by default; hosted over HTTP only behind the agency's sign-in. Any MCP "
-        "client is the front end.",
-    )
-
-    # 6. Architecture
+    # 4. Architecture
     s = slide_with_title(prs, "Server design: how a page gets tested")
     pic = s.shapes.add_picture(
         str(DIAGRAM), Inches(1.25), Inches(0.68), height=Inches(4.25)
@@ -516,140 +389,59 @@ def build(out: Path) -> None:
 
     foot(
         s,
-        "One module per Trusted Tester test, one rules spec per module, one "
-        "tool per file: adding a test changes no tool. The server judge "
-        "answers every question type whenever the server has a model.",
+        "Five tools, each a whole task: test a page, wait for a long run, "
+        "answer open questions, explain a result, read or compare reports. "
+        "Python, FastMCP, Pydantic and Playwright, from GSA's template.",
     )
 
-    # 7. Key decision: the procedure is the code
+    # 5. Key decision: the procedure is the code
     s = slide_with_title(prs, "Key decision: the DHS procedure is the code")
     card(
         s,
         0.4,
         0.85,
-        2.95,
-        2.25,
-        "One rules file per test",
+        4.4,
+        3.95,
+        "Rules, not prompts",
         [
-            "Every step cites the Trusted Tester PDF's page.",
-            "No outcome is decided anywhere else: not in evidence collection, the "
-            "judge or the tools.",
+            "One rules file per Trusted Tester test; every row cites the PDF "
+            "page it rests on",
+            "Only rules decide outcomes; every report records each rule's version",
+            "CI refuses a rule change without a new version number, which kept "
+            "parallel AI coding sessions from overwriting each other",
+            "A step must match something the PDF asks a person to do; anything "
+            "past it goes to a person",
         ],
+        size=14,
+        bullets=True,
     )
     card(
         s,
-        3.525,
+        5.2,
         0.85,
-        2.95,
-        2.25,
-        "Versioned and locked",
+        4.4,
+        3.95,
+        "Record once, replay every check",
         [
-            "Every report records each rule's version.",
-            "CI refuses a rule change without a new version number: what kept "
-            "parallel AI coding sessions from overwriting each other.",
+            "Key presses and form entries never reach the live site",
+            "Same recording, same evidence: variation can only come from "
+            "judgment, where it can be measured",
+            "Focus is read from Chrome itself, so page scripts cannot fake it",
+            "Browser, rules, judge model and prompt are pinned and recorded in "
+            "every report",
         ],
+        fill=TINT,
+        size=14,
+        bullets=True,
     )
-    card(
-        s,
-        6.65,
-        0.85,
-        2.95,
-        2.25,
-        "Proportionate to the PDF",
-        [
-            "A step must match something the PDF asks a person to do.",
-            "Anything past that goes to a person. The aim: a careful tester, not more.",
-        ],
-    )
-    stat(s, 0.4, 3.4, 3.0, "1,557", "tests run on every change", big_size=26)
-    stat(
-        s,
-        3.5,
-        3.4,
-        3.0,
-        "149",
-        "published answer-key pages (W3C, DHS, Section 508 Baseline)",
-        big_size=26,
-    )
-    stat(
-        s,
-        6.6,
-        3.4,
-        3.0,
-        "~560",
-        "test pages of our own: frames, dialogs, trick text, late-drawing pages",
-        big_size=26,
-    )
-
     foot(
         s,
-        "Built Oct 30 to Nov 18, 2026 by one person with Claude Code: about 990 "
-        "commits, 137 merged pull requests. The developer reviewed rules and "
-        "results, not each line of AI-written code; the tests made that safe.",
+        "1,557 tests run on every change, over 149 published answer-key pages "
+        "and about 560 of our own. Built Oct 30 to Nov 18, 2026 by one person "
+        "with Claude Code: about 990 commits, 137 merged pull requests.",
     )
 
-    # 8. Key decision: record once
-    s = slide_with_title(prs, "Key decision: record once, replay every check")
-    text(
-        s,
-        0.4,
-        0.85,
-        4.4,
-        3.9,
-        [
-            (
-                "Every key press, form entry and screenshot happens on one recording "
-                "of "
-                "the page.",
-                {"size": 15, "bold": True, "color": NAVY},
-            ),
-            (
-                "Testing never touches the live site: no form is really submitted.",
-                {"size": 14, "bullet": 0},
-            ),
-            (
-                "Same recording, same evidence: run-to-run variation can only come "
-                "from "
-                "judgment, where it can be measured.",
-                {"size": 14, "bullet": 0},
-            ),
-            (
-                "Browser, ANDI, Playwright, rules, judge model and prompt hash are "
-                "recorded in every report.",
-                {"size": 14, "bullet": 0},
-            ),
-        ],
-        space=10,
-    )
-    card(
-        s,
-        5.2,
-        0.85,
-        4.4,
-        1.55,
-        "Pages can lie; the browser cannot",
-        [
-            "Focus is read through Chrome's DevTools protocol, outside the page's "
-            "reach. A test page whose script fakes focus still fails."
-        ],
-        fill=TINT,
-    )
-    card(
-        s,
-        5.2,
-        2.6,
-        4.4,
-        1.75,
-        "What a recording missed",
-        [
-            "A NASA page loaded a script only when used, so a keyboard trap did "
-            "nothing on replay. Such scripts are now saved, and a test cannot PASS "
-            "without them."
-        ],
-        fill=TINT,
-    )
-
-    # 9. Key decision: false PASS
+    # 6. Key decision: false PASS
     s = slide_with_title(prs, "Key decision: a false PASS is the worst error")
     ladder = [
         (
@@ -708,7 +500,7 @@ def build(out: Path) -> None:
         ],
     )
 
-    # 10. Key decision: the judge moves into the server
+    # 7. Key decision: the judge moves into the server
     s = slide_with_title(prs, "Key decision: the judge moved into the server")
     cols = [
         (
@@ -769,7 +561,7 @@ def build(out: Path) -> None:
         "not the prompt, fixed the answers.",
     )
 
-    # 11. Demo
+    # 8. Demo
     s = slide_with_title(prs, "Demo: NASA's Artemis III page, in plain words")
     beats = [
         ("0:00", "What TOBI is, and why scanners cannot do this"),
@@ -804,81 +596,54 @@ def build(out: Path) -> None:
         fill=TINT,
     )
 
-    # 12. Evaluation setup
-    s = slide_with_title(prs, "Evaluation: three comparisons, scored by exact match")
+    # 9. Evaluation
+    s = slide_with_title(prs, "Evaluation: blind rounds against a certified tester")
     card(
         s,
         0.4,
         0.85,
-        2.95,
-        2.35,
-        "vs. published answer keys",
+        4.4,
+        3.95,
+        "How we scored",
         [
-            "114 W3C test cases with DHS's Trusted Tester verdicts; 35 Section 508 "
-            "Baseline Alignment pages.",
-            "A development set: the rules were written with them in view.",
+            "29 NASA pages on 3 sites, each tested by hand in DHS's own report tool",
+            "Commit and reveal: TOBI's results are locked before the answers go in",
+            "Exact match, no LLM grader; an unsafe error (a PASS where the tester "
+            "found a failure) weighs -3",
+            "Baseline: the same model with a general browser tool and the same "
+            "instructions",
         ],
+        size=14,
+        bullets=True,
     )
     card(
         s,
-        3.525,
+        5.2,
         0.85,
-        2.95,
-        2.35,
-        "vs. a certified Trusted Tester",
+        4.4,
+        3.95,
+        "What each round uncovered",
         [
-            "29 NASA pages on 3 sites, each tested by hand in DHS's own report tool.",
-            "Commit and reveal: TOBI's results are locked before the answers go in.",
+            "**Round 1, www.nasa.gov:** agents left judgment questions "
+            "unanswered. The judge moved into the server.",
+            "**Round 2, svs.gsfc.nasa.gov:** a recording missing code hid a "
+            "keyboard trap; failures sat behind closed menus. Both are now read.",
+            "**Round 3, science.data.nasa.gov:** pages that draw themselves "
+            "late; Chrome's own form messages. TOBI waits; those go to a person.",
         ],
         fill=TINT,
+        size=14,
+        bullets=True,
     )
-    card(
+    foot(
         s,
-        6.65,
-        0.85,
-        2.95,
-        2.35,
-        "vs. a general-purpose agent",
-        [
-            "The same model and instructions with Playwright MCP and the web instead "
-            "of TOBI.",
-            "Harder than a no-tool baseline.",
-        ],
-    )
-    text(
-        s,
-        0.4,
-        3.45,
-        9.2,
-        1.5,
-        [
-            (
-                "No LLM grades the results: outcomes are categories, compared in code.",
-                {"size": 14, "bullet": 0},
-            ),
-            (
-                "Results a rule decided are scored apart from results a model's answer "
-                "decided.",
-                {"size": 14, "bullet": 0},
-            ),
-            (
-                "After any change to a question, a fresh agent answers it from TOBI's "
-                "output alone (37 runs).",
-                {"size": 14, "bullet": 0},
-            ),
-        ],
+        "Each site was new to TOBI and scored once before any fix; then it "
+        "became a development site. Scores: evals/judging/ in the repository.",
     )
 
-    # 13. Results
-    s = slide_with_title(prs, "Results: no unsafe errors after the fixes")
-    stat(
-        s,
-        0.4,
-        0.8,
-        3.0,
-        "0 of 593",
-        "unsafe errors on all 29 pages, rerun Nov 18 after the fixes",
-    )
+    # 10. Results
+    s = slide_with_title(prs, "Results: no unsafe errors with the current tool")
+    stat(s, 0.4, 0.8, 3.0, "0 of 593", "unsafe errors on all 29 pages, rerun Nov 18")
     stat(
         s,
         3.5,
@@ -888,106 +653,49 @@ def build(out: Path) -> None:
         "agreement with the certified tester where TOBI decided (331 of 355)",
     )
     stat(
-        s, 6.6, 0.8, 3.0, "40%", "left for a person (238 of 593): the price of caution"
-    )
-    table(
         s,
-        0.4,
-        2.6,
-        9.2,
-        [
-            ["Evidence", "Agree", "Unsafe errors", "Left for a person"],
-            [
-                "Round 3, blind: a site never used before (10 pages)",
-                "118 of 149 (79%)",
-                "3 (both causes fixed)",
-                "32%",
-            ],
-            ["Same pages, general agent with a browser", FILL, FILL, FILL],
-            ["DHS's published verdicts (49 W3C cases)", "43 of 49", "0", "5 of 49"],
-        ],
-        [4.2, 1.6, 1.8, 1.6],
-        size=12,
-        row_h=0.42,
+        6.6,
+        0.8,
+        3.0,
+        "40%",
+        "left for a person (238 of 593): the price of never guessing",
     )
     text(
         s,
         0.4,
-        4.32,
+        2.55,
         9.2,
-        0.5,
+        2.4,
         [
             (
-                "The rerun used sites the tool was then fixed on: development "
-                "evidence, not "
-                "a blind result. Too few true failures per test to prove a miss rate: "
-                "promising, not proven.",
-                {"size": 11, "color": MUTED},
-            )
-        ],
-    )
-
-    foot(
-        s,
-        "Per site after the fixes: www.nasa.gov 79 of 82 agree, "
-        "svs.gsfc.nasa.gov 131 of 141, science.data.nasa.gov 121 of 132; 0 "
-        "unsafe on each. Round 3's 3 unsafe errors: Chrome's own form messages "
-        "read as the page's, and a page that drew itself late.",
-    )
-
-    # 14. Cost and time
-    s = slide_with_title(prs, "What it costs: cents per page, minutes per page")
-    table(
-        s,
-        0.4,
-        0.85,
-        9.2,
-        [
-            ["Per page", "Model spend (list price)", "Clock time"],
-            [
-                "TOBI's browser work",
-                "none",
-                "1-6 min; 6-8 min with other pages of the site",
-            ],
-            ["TOBI's server judge", "$0.13 cached, $0.67 uncached", "about 1 min"],
-            ["Calling agent driving TOBI", "$0.07-0.26", "mostly TOBI's browser time"],
-            ["General agent with a browser", "$0.02-0.05", "10-20 s, and wrong"],
-            ["Certified tester, by hand", "staff time", f"about 10-15 min {FILL}"],
-        ],
-        [3.0, 3.0, 3.2],
-        size=12,
-        row_h=0.42,
-    )
-    text(
-        s,
-        0.4,
-        3.6,
-        9.2,
-        1.5,
-        [
-            (
-                "**Model spend is small; browser time is the cost.** Every shortcut we "
-                "measured (fewer images, not waiting for late pages) gave wrong "
-                "results.",
-                {"size": 14},
+                "**A general agent with a browser:** 16-20 unsafe errors per run on "
+                "the same pages, and in round 1 no failure reported anywhere "
+                f"(round 3: {FILL})",
+                {"bullet": 0},
             ),
             (
-                "Per page, TOBI is not faster than an experienced tester. It runs "
-                "unattended and in parallel, needs no certified tester for what it "
-                "decides, and gives the same evidence every time.",
-                {"size": 14},
+                "**DHS's published verdicts on W3C test pages:** 43 of 49 agree, "
+                "no unsafe error",
+                {"bullet": 0},
             ),
+            (
+                "**Cost:** under $1 of model spend and 1-8 minutes of browser time a "
+                f"page; a certified tester takes 10-15 minutes {FILL}",
+                {"bullet": 0},
+            ),
+            (f"**Calling agent vs. server judge,** 3 runs each: {FILL}", {"bullet": 0}),
         ],
+        size=14,
+        space=8,
     )
-
     foot(
         s,
-        "Model spend: Claude Sonnet 5.5 list prices as Claude Code reports "
-        "them; an agency's own route will differ. Prompt caching cut the "
-        "judge's cost about five times.",
+        "The rerun used sites the tool was then fixed on: development evidence, "
+        "not a blind result. Per test and site: evals/STATUS.md. Too few true "
+        "failures per test to prove a miss rate: promising, not proven.",
     )
 
-    # 15. Security
+    # 11. Security
     s = slide_with_title(
         prs, "Security: public pages, untrusted content, signed-in hosting"
     )
@@ -1044,7 +752,7 @@ def build(out: Path) -> None:
         "cases, all on the tested page's own host.",
     )
 
-    # 16. MCP lessons
+    # 12. MCP lessons
     s = slide_with_title(prs, "Six lessons for building MCP servers")
     lessons = [
         (
@@ -1085,14 +793,14 @@ def build(out: Path) -> None:
             s, x, y, 2.95, 2.05, h, b, fill=TINT if i in (0, 4) else CARD, head_size=13
         )
 
-    # 17. Limits and next
+    # 13. Limits and next
     s = slide_with_title(prs, "Limits, and what comes next")
     card(
         s,
         0.4,
         0.85,
         4.4,
-        3.9,
+        3.0,
         "Limits",
         [
             "22 of 61 Trusted Tester tests",
@@ -1109,7 +817,7 @@ def build(out: Path) -> None:
         5.2,
         0.85,
         4.4,
-        3.9,
+        3.0,
         "Next",
         [
             "A blind round on a new site, with a second certified tester",

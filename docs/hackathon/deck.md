@@ -38,77 +38,25 @@ certified testers can cover far more pages, and site owners can fix obvious prob
 In the spirit of SSA's ANDI, the free inspector Trusted Testers already use: TOBI supports certified testers; it does not replace them.
 
 <!-- Slide number: 4 -->
-# Why not just give an AI agent a browser?
-Same model, same instructions, same pages, scored blind against a certified Trusted Tester. Unsafe error: a PASS where the tester found a failure.
-Agent with a general browser tool
-Unsafe errors per run:
-20, 16 (round 1)   20, 17 (round 2)
-In round 1 it reported no failure on any page. It passed every unlabeled search field and took page landmarks for a way to skip repeated content.
-Agent with TOBI
-Unsafe errors per run:
-0, 0, 0 (round 1)   3, 5 (round 2)
-Every round 2 unsafe error came from a rule deciding alone, the same cells each run; those rules are fixed. None came from a model's answer.
-The procedure has to be encoded, not prompted. A capable agent knows what WCAG says; it does not follow a 90-page test procedure step by step.
-Round 1: 9 www.nasa.gov pages (Nov 4). Round 2: 10 svs.gsfc.nasa.gov pages (Nov 8). Both agents: Claude Sonnet 5.5; the baseline had Playwright MCP and web access instead of TOBI. Scored per WCAG criterion.
-
-<!-- Slide number: 5 -->
-# The solution: an MCP server that follows the procedure
-Record the page once in real Chrome; replay it for every check
-1
-Five tools, each a whole task
-tobi_run_tt_tests: test a page
-tobi_run_status: wait for a long run
-tobi_answer_questions: record answers
-tobi_explain: a result in plain words
-tobi_read_report: read or compare report files
-Resources: the TT text (tt://) and a run's evidence (run://)
-22 of 61 tests: keyboard, focus, forms, moving and flashing content, consistency across a site's pages
-Walk it with the keyboard, fill in forms, watch for motion, compare pages
-2
-Decide what the procedure decides mechanically, from versioned rules
-3
-Ask a pinned model narrow questions with evidence and a rubric; "unsure" goes to a person
-4
-Report by Trusted Tester test ID, in plain language, with screenshots, and a draft in DHS's own report format
-5
-Python, FastMCP, Pydantic and Playwright, from GSA's template. stdio by default; hosted over HTTP only behind the agency's sign-in. Any MCP client is the front end.
-
-<!-- Slide number: 6 -->
 # Server design: how a page gets tested
 ![Flow diagram, How TOBI tests a page. Solid lines are built and running today; dashed lines are planned. 1: the developer's AI agent, any MCP client, asks TOBI to test a page with tobi_run_tt_tests. Inside the TOBI MCP server: 2, record the page once in real Chrome, and every check runs on the replay, not the live site; 3, walk and collect: Tab through the page, fill in forms, watch for motion, compare other pages; 4, rules decide, one rules spec per Trusted Tester test with each step citing the DHS PDF, giving an outcome of PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW with evidence. Held back when unsure: a rule that cannot decide says NEEDS REVIEW, and a PASS or DOES NOT APPLY becomes NEEDS REVIEW when a test did not read everything. When a rule needs a judgment it asks an open question; 5, the server judge, TOBI's own pinned model given evidence, pictures and a rubric, answers yes, no or unsure. A sure answer goes back to the rule. Unsure, or a failed call, goes to 7, a person on a signed-in review page whose answer overrides the model's (planned). Outcomes go to 6, a draft report (pre-SCRT) marked not certified, recording who answered what, and later to 8, the Trusted Tester's own SCRT record once they certify every row (planned). Results and a link to the full report go back to the agent.](Flow diagram)
-One module per Trusted Tester test, one rules spec per module, one tool per file: adding a test changes no tool. The server judge answers every question type whenever the server has a model.
+Five tools, each a whole task: test a page, wait for a long run, answer open questions, explain a result, read or compare reports. Python, FastMCP, Pydantic and Playwright, from GSA's template.
 
-<!-- Slide number: 7 -->
+<!-- Slide number: 5 -->
 # Key decision: the DHS procedure is the code
-One rules file per test
-Every step cites the Trusted Tester PDF's page.
-No outcome is decided anywhere else: not in evidence collection, the judge or the tools.
-Versioned and locked
-Every report records each rule's version.
-CI refuses a rule change without a new version number: what kept parallel AI coding sessions from overwriting each other.
-Proportionate to the PDF
-A step must match something the PDF asks a person to do.
-Anything past that goes to a person. The aim: a careful tester, not more.
-1,557
-149
-~560
-tests run on every change
-published answer-key pages (W3C, DHS, Section 508 Baseline)
-test pages of our own: frames, dialogs, trick text, late-drawing pages
-Built Oct 30 to Nov 18, 2026 by one person with Claude Code: about 990 commits, 137 merged pull requests. The developer reviewed rules and results, not each line of AI-written code; the tests made that safe.
+Rules, not prompts
+One rules file per Trusted Tester test; every row cites the PDF page it rests on
+Only rules decide outcomes; every report records each rule's version
+CI refuses a rule change without a new version number, which kept parallel AI coding sessions from overwriting each other
+A step must match something the PDF asks a person to do; anything past it goes to a person
+Record once, replay every check
+Key presses and form entries never reach the live site
+Same recording, same evidence: variation can only come from judgment, where it can be measured
+Focus is read from Chrome itself, so page scripts cannot fake it
+Browser, rules, judge model and prompt are pinned and recorded in every report
+1,557 tests run on every change, over 149 published answer-key pages and about 560 of our own. Built Oct 30 to Nov 18, 2026 by one person with Claude Code: about 990 commits, 137 merged pull requests.
 
-<!-- Slide number: 8 -->
-# Key decision: record once, replay every check
-Every key press, form entry and screenshot happens on one recording of the page.
-Testing never touches the live site: no form is really submitted.
-Same recording, same evidence: run-to-run variation can only come from judgment, where it can be measured.
-Browser, ANDI, Playwright, rules, judge model and prompt hash are recorded in every report.
-Pages can lie; the browser cannot
-Focus is read through Chrome's DevTools protocol, outside the page's reach. A test page whose script fakes focus still fails.
-What a recording missed
-A NASA page loaded a script only when used, so a keyboard trap did nothing on replay. Such scripts are now saved, and a test cannot PASS without them.
-
-<!-- Slide number: 9 -->
+<!-- Slide number: 6 -->
 # Key decision: a false PASS is the worst error
 A rule decides
 PASS, FAIL or DOES NOT APPLY, with the PDF step it rests on
@@ -124,7 +72,7 @@ A model gives an opinion
 PASS only when a key press or measurement confirms it
 A false PASS hides a barrier from someone who cannot use a mouse; a false FAIL costs a developer time. Our score weights an unsafe error -3, any other error -1, agreement +1, and a result left for a person 0.
 
-<!-- Slide number: 10 -->
+<!-- Slide number: 7 -->
 # Key decision: the judge moved into the server
 Round 1: the calling agent judges
 No agent answered TOBI's questions unless told to.
@@ -141,7 +89,7 @@ Why: repeatable, auditable and measurable, not smarter. Fixing the evidence fixe
 Re-measured Nov 19 on round 3's pages, 3 runs each: [FILL]
 Round 2's server judge erred only toward FAIL, mostly because elements were placed while the page was still scrolling. Fixing that evidence, not the prompt, fixed the answers.
 
-<!-- Slide number: 11 -->
+<!-- Slide number: 8 -->
 # Demo: NASA's Artemis III page, in plain words
 0:00
 What TOBI is, and why scanners cannot do this
@@ -163,55 +111,34 @@ The draft report beside the certified tester's own
 4:25
 Every call audited; not certified
 
-<!-- Slide number: 12 -->
-# Evaluation: three comparisons, scored by exact match
-vs. published answer keys
-114 W3C test cases with DHS's Trusted Tester verdicts; 35 Section 508 Baseline Alignment pages.
-A development set: the rules were written with them in view.
-vs. a certified Trusted Tester
-29 NASA pages on 3 sites, each tested by hand in DHS's own report tool.
-Commit and reveal: TOBI's results are locked before the answers go in.
-vs. a general-purpose agent
-The same model and instructions with Playwright MCP and the web instead of TOBI.
-Harder than a no-tool baseline.
-No LLM grades the results: outcomes are categories, compared in code.
-Results a rule decided are scored apart from results a model's answer decided.
-After any change to a question, a fresh agent answers it from TOBI's output alone (37 runs).
+<!-- Slide number: 9 -->
+# Evaluation: blind rounds against a certified tester
+How we scored
+29 NASA pages on 3 sites, each tested by hand in DHS's own report tool
+Commit and reveal: TOBI's results are locked before the answers go in
+Exact match, no LLM grader; an unsafe error (a PASS where the tester found a failure) weighs -3
+Baseline: the same model with a general browser tool and the same instructions
+What each round uncovered
+Round 1, www.nasa.gov: agents left judgment questions unanswered. The judge moved into the server.
+Round 2, svs.gsfc.nasa.gov: a recording missing code hid a keyboard trap; failures sat behind closed menus. Both are now read.
+Round 3, science.data.nasa.gov: pages that draw themselves late; Chrome's own form messages. TOBI waits; those go to a person.
+Each site was new to TOBI and scored once before any fix; then it became a development site. Scores: evals/judging/ in the repository.
 
-<!-- Slide number: 13 -->
-# Results: no unsafe errors after the fixes
+<!-- Slide number: 10 -->
+# Results: no unsafe errors with the current tool
 0 of 593
 93%
 40%
-unsafe errors on all 29 pages, rerun Nov 18 after the fixes
+unsafe errors on all 29 pages, rerun Nov 18
 agreement with the certified tester where TOBI decided (331 of 355)
-left for a person (238 of 593): the price of caution
+left for a person (238 of 593): the price of never guessing
+A general agent with a browser: 16-20 unsafe errors per run on the same pages, and in round 1 no failure reported anywhere (round 3: [FILL])
+DHS's published verdicts on W3C test pages: 43 of 49 agree, no unsafe error
+Cost: under $1 of model spend and 1-8 minutes of browser time a page; a certified tester takes 10-15 minutes [FILL]
+Calling agent vs. server judge, 3 runs each: [FILL]
+The rerun used sites the tool was then fixed on: development evidence, not a blind result. Per test and site: evals/STATUS.md. Too few true failures per test to prove a miss rate: promising, not proven.
 
-| Evidence | Agree | Unsafe errors | Left for a person |
-| --- | --- | --- | --- |
-| Round 3, blind: a site never used before (10 pages) | 118 of 149 (79%) | 3 (both causes fixed) | 32% |
-| Same pages, general agent with a browser | [FILL] | [FILL] | [FILL] |
-| DHS's published verdicts (49 W3C cases) | 43 of 49 | 0 | 5 of 49 |
-
-The rerun used sites the tool was then fixed on: development evidence, not a blind result. Too few true failures per test to prove a miss rate: promising, not proven.
-Per site after the fixes: www.nasa.gov 79 of 82 agree, svs.gsfc.nasa.gov 131 of 141, science.data.nasa.gov 121 of 132; 0 unsafe on each. Round 3's 3 unsafe errors: Chrome's own form messages read as the page's, and a page that drew itself late.
-
-<!-- Slide number: 14 -->
-# What it costs: cents per page, minutes per page
-
-| Per page | Model spend (list price) | Clock time |
-| --- | --- | --- |
-| TOBI's browser work | none | 1-6 min; 6-8 min with other pages of the site |
-| TOBI's server judge | $0.13 cached, $0.67 uncached | about 1 min |
-| Calling agent driving TOBI | $0.07-0.26 | mostly TOBI's browser time |
-| General agent with a browser | $0.02-0.05 | 10-20 s, and wrong |
-| Certified tester, by hand | staff time | about 10-15 min [FILL] |
-
-Model spend is small; browser time is the cost. Every shortcut we measured (fewer images, not waiting for late pages) gave wrong results.
-Per page, TOBI is not faster than an experienced tester. It runs unattended and in parallel, needs no certified tester for what it decides, and gives the same evidence every time.
-Model spend: Claude Sonnet 5.5 list prices as Claude Code reports them; an agency's own route will differ. Prompt caching cut the judge's cost about five times.
-
-<!-- Slide number: 15 -->
+<!-- Slide number: 11 -->
 # Security: public pages, untrusted content, signed-in hosting
 Internal networks
 Every browser connection is checked when it connects; private and cloud-metadata addresses refused (56 tests).
@@ -228,7 +155,7 @@ Agency sign-in (OIDC); runs visible only to their owner; one audit line per call
 Every result says "not a certified Trusted Tester result"; a report cannot be marked certified.
 Known gap: no network-level egress rules on the host yet, as a second layer. Page content may shape a request only in a few capped, approved cases, all on the tested page's own host.
 
-<!-- Slide number: 16 -->
+<!-- Slide number: 12 -->
 # Six lessons for building MCP servers
 1. Don't depend on the agent's diligence
 Agents skipped questions and pictures, and filled proof fields without looking. Put correctness-critical steps in the server.
@@ -243,7 +170,7 @@ Pin the model that decides; let the client agent explain and fix. Sampling would
 6. Encode the expertise as rules
 Versioned rules a domain expert can review; narrow rubric questions; tests every change must pass.
 
-<!-- Slide number: 17 -->
+<!-- Slide number: 13 -->
 # Limits, and what comes next
 Limits
 22 of 61 Trusted Tester tests
