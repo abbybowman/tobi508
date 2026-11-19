@@ -1,5 +1,5 @@
-"""The ApiJudge gate: when a question type may be switched on (plan
-docs/plans/2026-11-08-apijudge-build.md, "The gate").
+"""The ApiJudge gate: how well the server judge answers each question type
+on real pages (docs/solutions/server-judge.md).
 
 A type passes only when both hold:
 

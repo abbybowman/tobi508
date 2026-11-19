@@ -5,17 +5,18 @@ What to know before changing `apijudge.py`, and what Agent C showed on real page
 ## ApiJudge: what to know before changing it
 
 The server answers its own open questions (`src/tobi508/apijudge.py`,
-`judge_prompt.md`; plan `docs/plans/2026-11-08-apijudge-build.md`).
+`judge_prompt.md`; why: `docs/plans/2026-11-07-server-judge-pivot.md`).
 
 - **Rules decide, the model answers.** Answers go through
   `pipeline.answer_questions` like an agent's: `record_answers`' guards, the
   spec's rows. `answered_by` is `server:<model>`. A client answer (even
   `decided_by: human` through MCP) to a question the server answered is
   refused; a person answers on TOBI's own page (not built yet: ROADMAP).
-- **Off until the gate.** `JUDGE_TYPES` is empty by default; with
-  `JUDGE_BACKEND=client` nothing changes. Any change to the prompt, the
+- **On whenever it has a model.** With `JUDGE_BASE_URL` and `JUDGE_API_KEY`
+  set, the server answers every test's questions (`JUDGE_BACKEND=auto`,
+  `JUDGE_TYPES=all`); without them, the calling agent does. Any change to the prompt, the
   request, the groups table or a question's rubric or input needs a new gate
-  run (`docs/plans/2026-11-08-apijudge-build.md`), and the judge eval for the changed types.
+  run (`evals/apijudge_gate.py`), and the judge eval for the changed types.
 - **Page data stays in one `<untrusted_page_data>` block**: the shared block
   (Tab stops as lines, page-text excerpts) and each question's block. Never
   put page text in the system prompt.

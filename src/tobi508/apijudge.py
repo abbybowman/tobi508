@@ -1,5 +1,5 @@
-"""ApiJudge: the server answers its own open questions (server judge pivot,
-2026-11-07; docs/plans/2026-11-08-apijudge-build.md).
+"""ApiJudge: the server answers its own open questions
+(docs/plans/2026-11-07-server-judge-pivot.md; docs/solutions/server-judge.md).
 
 A run finishes its checks and has open questions. For the question types
 switched on in `Settings.judge_types`, the server groups a page's related
