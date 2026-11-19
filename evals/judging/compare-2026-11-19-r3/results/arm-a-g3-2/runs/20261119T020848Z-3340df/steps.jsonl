@@ -10,3 +10,39 @@
 {"ts":"2026-11-19T02:08:53.321235Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
 {"ts":"2026-11-19T02:09:17.574831Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
 {"ts":"2026-11-19T02:09:17.833506Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:10:03.355675Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:10:04.823972Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":105,"cap":359},"P2":{"end":"wrap","presses":105,"cap":359},"cost":{"loads":2,"presses":210,"quick":0,"slow_redos":0,"seconds":75.32}}}
+{"ts":"2026-11-19T02:10:09.674922Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:11:25.533622Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:11:34.916663Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T02:12:31.399846Z","step":"reveal","status":"ok","detail":{"triggers":19,"opened":19,"cost":{"loads":38,"presses":232,"quick":0,"slow_redos":0,"seconds":146.56}}}
+{"ts":"2026-11-19T02:12:31.873282Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.47}}}
+{"ts":"2026-11-19T02:13:05.449990Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":4,"presses":268,"quick":222,"slow_redos":0,"seconds":33.57}}}
+{"ts":"2026-11-19T02:13:05.453685Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:05.454576Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:05.455382Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:08.126033Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.67}}}
+{"ts":"2026-11-19T02:13:08.127015Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:13.337082Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":28,"quick":22,"slow_redos":0,"seconds":5.21}}}
+{"ts":"2026-11-19T02:13:13.339840Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:13.343379Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:33.626632Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":3,"presses":144,"quick":111,"slow_redos":0,"seconds":20.28}}}
+{"ts":"2026-11-19T02:13:37.957360Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":3,"quick":0,"slow_redos":0,"seconds":4.33}}}
+{"ts":"2026-11-19T02:13:37.961057Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:13:39.319345Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.36}}}
+{"ts":"2026-11-19T02:13:41.710323Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.39}}}
+{"ts":"2026-11-19T02:13:41.717330Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/fits/","live":true}}
+{"ts":"2026-11-19T02:13:42.065105Z","step":"redirect_held","status":"info","detail":{"http_status":301,"to":"https://science.data.nasa.gov/fits"}}
+{"ts":"2026-11-19T02:13:44.648748Z","step":"capture_scroll","status":"ok","detail":{"pass_":1,"page_grew":false}}
+{"ts":"2026-11-19T02:13:44.648930Z","step":"capture_cross_site_frames","status":"ok","detail":{"count":1}}
+{"ts":"2026-11-19T02:13:44.834638Z","step":"captured_live","status":"ok","detail":{"n":1,"purpose":"suggested","seconds":3.12}}
+{"ts":"2026-11-19T02:13:47.465359Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":5.75}}}
+{"ts":"2026-11-19T02:14:04.204293Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":7,"presses":90,"quick":77,"slow_redos":0,"seconds":16.74}}}
+{"ts":"2026-11-19T02:14:17.622974Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":13.42}}}
+{"ts":"2026-11-19T02:14:20.638801Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":9,"quick":8,"slow_redos":0,"seconds":3.02}}}
+{"ts":"2026-11-19T02:14:21.916941Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.28}}}
+{"ts":"2026-11-19T02:14:21.918054Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:14:21.919976Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:14:22.075864Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T02:14:27.270699Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-t80-J2","4.F-o1-J1","5.A-c1-J1"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-19T02:14:29.444481Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.B-f1-J1"],"rejected":[],"errors":[]}}
