@@ -73,3 +73,4 @@
 {"ts":"2026-11-19T02:19:48.196870Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
 {"ts":"2026-11-19T02:19:48.198792Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
 {"ts":"2026-11-19T02:19:48.289152Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T02:20:39.138171Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.E-e1-J1","4.E-e2-J1","4.E-e3-J1","4.E-e4-J1","4.E-e5-J1","4.E-e6-J1","4.F-o1-J1","5.C-c39-J1","5.F-a2-f1-J1","5.G-a2-f1-J1"],"rejected":[],"errors":[]}}

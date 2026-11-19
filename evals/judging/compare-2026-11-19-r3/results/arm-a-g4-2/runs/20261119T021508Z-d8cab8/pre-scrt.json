@@ -39,7 +39,7 @@
  "runs": [
   {
    "run_id": "20261119T021508Z-d8cab8",
-   "report_sha256": "d14c6d762c4448d49265713f15e99e3ccf2512f10c46a07ac2957879450db010",
+   "report_sha256": "173c2409804839c71b0cba6e9388e1dc8fdfa015fa6f00e64f49d9202c660dd6",
    "versions": {
     "tobi508": "0.1.0",
     "andi": "29.2.2 (e491d9553bf0)",
@@ -803,7 +803,7 @@
    ],
    "TestResult": null,
    "needs_review": true,
-   "TesterComment": "This test is not finished yet: 6 questions about it are still open. When \"View profile of Kaylin Bugbee\" (button) gets keyboard focus, a dialog appears; a question about it is still open. To see it, load the page and press Tab 15 times. When \"View profile of Josie Nelson\" (button) gets keyboard focus, a dialog appears; a question about it is still open. To see it, load the page and press Tab 22 times. When \"View profile of Megan Seritan\" (button) gets keyboard focus, a dialog appears; a question about it is still open. To see it, load the page and press Tab 34 times. When \"View profile of Kaylin Bugbee\" (button) gets keyboard focus, a dialog appears; a question about it is still open. To see it, load the page and press Tab 46 times. When \"View profile of Kaylin Bugbee\" (button) gets keyboard focus, a dialog appears; a question about it is still open. To see it, load the page and press Tab 52 times. When \"View profile of Kaylin Bugbee\" (button) got focus, a dialog appeared, but we ran out of checks to confirm it. Please check it: load the page and press Tab 58 times. When \"#tour-profile-menu\" got focus, focus jumped somewhere else, but we ran out of checks to confirm it. Please check it: load the page and press Enter on \"User menu for Guest User\", then Tab. The run time limit was reached before every possible change of context was confirmed.",
+   "TesterComment": "We could not finish this test, so a person needs to check it. When \"View profile of Kaylin Bugbee\" (button) gets keyboard focus, a dialog appears that covers most of the window or is marked as modal, so it may take over the page. Please look: load the page and press Tab 15 times. When \"View profile of Josie Nelson\" (button) gets keyboard focus, a dialog appears that covers most of the window or is marked as modal, so it may take over the page. Please look: load the page and press Tab 22 times. When \"View profile of Megan Seritan\" (button) gets keyboard focus, a dialog appears that covers most of the window or is marked as modal, so it may take over the page. Please look: load the page and press Tab 34 times. When \"View profile of Kaylin Bugbee\" (button) gets keyboard focus, a dialog appears that covers most of the window or is marked as modal, so it may take over the page. Please look: load the page and press Tab 46 times. When \"View profile of Kaylin Bugbee\" (button) gets keyboard focus, a dialog appears, and we could not tell whether it takes over the page. Please look: load the page and press Tab 52 times. When \"View profile of Kaylin Bugbee\" (button) got focus, a dialog appeared, but we ran out of checks to confirm it. Please check it: load the page and press Tab 58 times. When \"#tour-profile-menu\" got focus, focus jumped somewhere else, but we ran out of checks to confirm it. Please check it: load the page and press Enter on \"User menu for Guest User\", then Tab. The run time limit was reached before every possible change of context was confirmed.",
    "location": null,
    "GlobalIssue": null,
    "ImageSrc": null,
@@ -819,11 +819,11 @@
     "performed": false,
     "rows": [
      "A3",
-     "e1:J1?",
-     "e2:J1?",
-     "e3:J1?",
-     "e4:J1?",
-     "e5:J1?",
+     "e1:M12",
+     "e2:M12",
+     "e3:M12",
+     "e4:M12",
+     "e5:M11",
      "e6:R?",
      "e7:R?",
      "G3"
@@ -847,7 +847,7 @@
    ],
    "TestResult": null,
    "needs_review": true,
-   "TesterComment": "This test is not finished yet: 1 question about it is still open. The focus order departs from the reading order (focus jumps back up the page from \"Bookmark post\" (button) to \"Go to updates and events\" (link)), and we could not tell whether that matters. Please tab through the page and check.",
+   "TesterComment": "We could not finish this test, so a person needs to check it. The focus order departs from the reading order (focus jumps back up the page from \"Bookmark post\" (button) to \"Go to updates and events\" (link)), and we could not tell whether that matters. Please tab through the page and check.",
    "location": null,
    "GlobalIssue": null,
    "ImageSrc": null,
@@ -956,9 +956,9 @@
     "With Limited Vision",
     "With Limited Language, Cognitive, and Learning Abilities"
    ],
-   "TestResult": null,
-   "needs_review": true,
-   "TesterComment": "This test is not finished yet: 1 question about it is still open. A question about what screen readers announce for \"Data Governance Coffee Chat, upcoming event, starts Dec 1...\" (button) is still open.",
+   "TestResult": "Pass",
+   "needs_review": false,
+   "TesterComment": "Each form field and button tells screen reader users what it is for, including the instructions shown next to it.",
    "location": null,
    "GlobalIssue": null,
    "ImageSrc": null,
@@ -970,8 +970,8 @@
     "by": "tool",
     "run_id": "20261119T021508Z-d8cab8",
     "spec_version": "1.14.0 (sha256:58bc799f4db9)",
-    "outcome": "NEEDS_REVIEW",
-    "performed": false,
+    "outcome": "PASS",
+    "performed": true,
     "rows": [
      "A3",
      "c1:M5",
@@ -1012,8 +1012,8 @@
      "c36:M5",
      "c37:M5",
      "c38:M5",
-     "c39:J1?",
-     "G3"
+     "c39:M6",
+     "G4"
     ],
     "decided_by": "rule"
    },
@@ -1069,9 +1069,9 @@
     "Without Perception of Color",
     "With Limited Language, Cognitive, and Learning Abilities"
    ],
-   "TestResult": null,
-   "needs_review": true,
-   "TesterComment": "This test is not finished yet: 1 question about it is still open. An error appeared after \"Global search across forum, events, and announcements\" (text field) was typed \"abc\"; a question about it is still open. To see it, load the page and tab 2 times, type a wrong value into each text field (\"abc\"), pressing Tab after each, press Enter in the last text field.",
+   "TestResult": "Does Not Apply",
+   "needs_review": false,
+   "TesterComment": "The page's only form that was sent is a site search: it accepts anything typed into it and showed no error on the page, so there is nothing to get wrong and this test does not apply.",
    "location": null,
    "GlobalIssue": null,
    "ImageSrc": null,
@@ -1083,12 +1083,12 @@
     "by": "tool",
     "run_id": "20261119T021508Z-d8cab8",
     "spec_version": "1.16.0 (sha256:32443c2676e8)",
-    "outcome": "NEEDS_REVIEW",
-    "performed": false,
+    "outcome": "DNA",
+    "performed": true,
     "rows": [
      "A5",
-     "a2-f1:J1?",
-     "G3"
+     "A3s",
+     "G1"
     ],
     "decided_by": "rule"
    },
@@ -1107,9 +1107,9 @@
     "With Limited Manipulation",
     "With Limited Language, Cognitive, and Learning Abilities"
    ],
-   "TestResult": null,
-   "needs_review": true,
-   "TesterComment": "This test is not finished yet: 1 question about it is still open. An error appeared for \"Global search across forum, events, and announcements\" (text field); a question about it is still open. To see it, load the page and tab 2 times, type a wrong value into each text field (\"abc\"), pressing Tab after each, press Enter in the last text field.",
+   "TestResult": "Does Not Apply",
+   "needs_review": false,
+   "TesterComment": "The page's only form that was sent is a site search: it accepts anything typed into it and showed no error on the page, so there is nothing to get wrong and this test does not apply.",
    "location": null,
    "GlobalIssue": null,
    "ImageSrc": null,
@@ -1121,12 +1121,12 @@
     "by": "tool",
     "run_id": "20261119T021508Z-d8cab8",
     "spec_version": "1.12.0 (sha256:c7245848dc02)",
-    "outcome": "NEEDS_REVIEW",
-    "performed": false,
+    "outcome": "DNA",
+    "performed": true,
     "rows": [
      "A5",
-     "a2-f1:J1?",
-     "G3"
+     "A1",
+     "G1"
     ],
     "decided_by": "rule"
    },
