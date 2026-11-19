@@ -8,3 +8,34 @@
 {"ts":"2026-11-19T01:40:34.722952Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
 {"ts":"2026-11-19T01:40:38.323447Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
 {"ts":"2026-11-19T01:40:38.456421Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:40:59.438877Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:41:05.951428Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:41:20.123708Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":63,"cap":233},"P2":{"end":"wrap","presses":63,"cap":233},"cost":{"loads":2,"presses":126,"quick":0,"slow_redos":0,"seconds":45.92}}}
+{"ts":"2026-11-19T01:41:44.483675Z","step":"reveal","status":"ok","detail":{"triggers":5,"opened":5,"cost":{"loads":10,"presses":29,"quick":0,"slow_redos":0,"seconds":24.36}}}
+{"ts":"2026-11-19T01:41:45.035645Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.55}}}
+{"ts":"2026-11-19T01:41:45.873927Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.84}}}
+{"ts":"2026-11-19T01:41:45.876123Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:41:45.877835Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:41:45.878646Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:41:48.577447Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.7}}}
+{"ts":"2026-11-19T01:41:48.578568Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:41:49.598317Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:41:53.874619Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":3,"presses":28,"quick":22,"slow_redos":0,"seconds":5.3}}}
+{"ts":"2026-11-19T01:41:53.876861Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:41:53.879043Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:41:54.488385Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.61}}}
+{"ts":"2026-11-19T01:41:55.733361Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:41:59.051042Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":3,"quick":0,"slow_redos":0,"seconds":4.56}}}
+{"ts":"2026-11-19T01:41:59.058108Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.01}}}
+{"ts":"2026-11-19T01:42:00.563573Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.5}}}
+{"ts":"2026-11-19T01:42:03.049434Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.49}}}
+{"ts":"2026-11-19T01:42:03.050926Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:42:12.581794Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":6,"presses":30,"quick":25,"slow_redos":0,"seconds":9.53}}}
+{"ts":"2026-11-19T01:42:22.017321Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":9.43}}}
+{"ts":"2026-11-19T01:42:28.425267Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":24,"quick":21,"slow_redos":0,"seconds":6.41}}}
+{"ts":"2026-11-19T01:42:29.789041Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.36}}}
+{"ts":"2026-11-19T01:42:29.789632Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:42:29.789975Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:42:29.948493Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T01:42:59.832565Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-t38-J2","4.F-o1-J1","5.A-c1-J1","5.A-c2-J1","5.A-c3-J1","5.C-c3-J1","5.H-J1"],"rejected":["5.B-f1-J1: this question names a picture. Open it (read the run:// resource, or look at the image attached to the result) and say in `seen` something it shows, then answer again. If it cannot be opened or shows nothing, say what happened in `picture_error` and answer unsure"],"errors":[]}}
+{"ts":"2026-11-19T01:43:50.285966Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.B-f1-J1","5.B-f2-J1"],"rejected":[],"errors":[]}}
