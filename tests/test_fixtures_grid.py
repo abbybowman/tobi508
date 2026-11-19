@@ -16,7 +16,7 @@ outcome the run gives today, so the day a fix lands the cell fails and must
 be updated, as an expected failure that is no longer one. A cell the grid
 found that the review has no item for is `NEW-n`, described in `UNFILED`.
 
-Expected outcomes live here, never in a page (CLAUDE.md, "Fixtures"). Pages
+Expected outcomes live here, never in a page (tests/CLAUDE.md, "Fixtures"). Pages
 are served from `tests/fixtures/` by the shared fixture server (conftest).
 Step 8 (part D) moves a cell from NEEDS REVIEW to PASS only with its twin.
 """
