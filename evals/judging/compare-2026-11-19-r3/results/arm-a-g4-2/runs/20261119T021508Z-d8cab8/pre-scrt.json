@@ -39,7 +39,7 @@
  "runs": [
   {
    "run_id": "20261119T021508Z-d8cab8",
-   "report_sha256": "173c2409804839c71b0cba6e9388e1dc8fdfa015fa6f00e64f49d9202c660dd6",
+   "report_sha256": "0d44831cddf1bc154c74ef80828d0b61b223abae4d077f670de403d499506b7a",
    "versions": {
     "tobi508": "0.1.0",
     "andi": "29.2.2 (e491d9553bf0)",
@@ -1145,9 +1145,9 @@
     "With Limited Manipulation",
     "With Limited Language, Cognitive, and Learning Abilities"
    ],
-   "TestResult": null,
-   "needs_review": true,
-   "TesterComment": "This test is not finished yet: 1 question about it is still open.",
+   "TestResult": "Does Not Apply",
+   "needs_review": false,
+   "TesterComment": "This form either has no such consequences or is completed on one page, where people can review it before submitting, so this test does not apply.",
    "location": null,
    "GlobalIssue": null,
    "ImageSrc": null,
@@ -1159,10 +1159,10 @@
     "by": "tool",
     "run_id": "20261119T021508Z-d8cab8",
     "spec_version": "1.10.0 (sha256:159b987d1e1b)",
-    "outcome": "NEEDS_REVIEW",
-    "performed": false,
+    "outcome": "DNA",
+    "performed": true,
     "rows": [
-     "J1?",
+     "A4",
      "G1"
     ],
     "decided_by": "rule"

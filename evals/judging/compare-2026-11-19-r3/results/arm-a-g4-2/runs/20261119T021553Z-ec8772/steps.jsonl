@@ -73,3 +73,11 @@
 {"ts":"2026-11-19T02:20:35.107193Z","step":"replay_signin_answer","status":"ok","detail":{"url":"https://auth.sciencecloud.nasa.gov/realms/GUAC/protocol/openid-connect/auth","to":"https://science.data.nasa.gov/data-governance-community/assets/silent-check-sso.html"}}
 {"ts":"2026-11-19T02:20:42.049519Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":11,"presses":155,"quick":64,"slow_redos":0,"seconds":79.27}}}
 {"ts":"2026-11-19T02:20:42.312754Z","step":"replay_signin_answer","status":"ok","detail":{"url":"https://auth.sciencecloud.nasa.gov/realms/GUAC/protocol/openid-connect/auth","to":"https://science.data.nasa.gov/data-governance-community/assets/silent-check-sso.html"}}
+{"ts":"2026-11-19T02:20:50.736249Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":7,"quick":5,"slow_redos":0,"seconds":8.69}}}
+{"ts":"2026-11-19T02:20:50.976352Z","step":"replay_signin_answer","status":"ok","detail":{"url":"https://auth.sciencecloud.nasa.gov/realms/GUAC/protocol/openid-connect/auth","to":"https://science.data.nasa.gov/data-governance-community/assets/silent-check-sso.html"}}
+{"ts":"2026-11-19T02:20:54.495296Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":3.76}}}
+{"ts":"2026-11-19T02:20:54.497613Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:20:54.499524Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T02:20:54.635332Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T02:21:03.721412Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.E-e1-J1","4.E-e2-J1","4.E-e3-J1","4.E-e4-J1","4.E-e5-J1","4.E-e6-J1","4.F-o1-J1","5.D-f1-J2","5.D-f1-J1","5.D-f2-J2"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-19T02:21:06.888488Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.D-f2-J1","5.F-a2-f1-J1","5.F-a4-f2-J1","5.G-a2-f1-J1","5.G-a4-f2-J1","5.H-J1"],"rejected":[],"errors":[]}}
