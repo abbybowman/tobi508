@@ -1,0 +1,10 @@
+{"ts":"2026-11-19T01:29:48.125922Z","step":"run_start","status":"ok","detail":{"target":"https://science.data.nasa.gov/fits/verifier","tests":["2.A","2.B","2.C","2.D","3.A","4.A","4.B","4.C","4.D","4.E","4.F","5.A","5.B","5.C","5.D","5.F","5.G","5.H","9.A","9.B","9.C","19.A"]}}
+{"ts":"2026-11-19T01:29:49.049294Z","step":"browser_launched","status":"ok","detail":{"version":"157.0.8103.78"}}
+{"ts":"2026-11-19T01:29:49.053525Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/fits/verifier","har":"pages/005.har.zip"}}
+{"ts":"2026-11-19T01:29:49.116318Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/fits/sample-files","har":"pages/006.har.zip"}}
+{"ts":"2026-11-19T01:29:49.121243Z","step":"captured_other","status":"ok","detail":{"n":1,"reused":false,"final_url":"https://science.data.nasa.gov/fits/sample-files","seconds":0.01}}
+{"ts":"2026-11-19T01:29:49.121323Z","step":"captured","status":"ok","detail":{"final_url":"https://science.data.nasa.gov/fits/verifier","redirects":[],"seconds":0.07}}
+{"ts":"2026-11-19T01:29:49.619194Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium, headless, autoplay allowed"}}
+{"ts":"2026-11-19T01:29:49.622325Z","step":"browser_launched","status":"ok","detail":{"kind":"full Chromium"}}
+{"ts":"2026-11-19T01:29:53.142850Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:29:53.353004Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
