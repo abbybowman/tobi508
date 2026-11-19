@@ -11,7 +11,7 @@ Pass end conditions, the press cap and the settle rule are defined in the 4.C
 spec (section 2), which the other keyboard specs use by reference.
 
 A trap event ends a pass only when a second pass of the same key, from a
-fresh load, ends in the same trap (4.C 1.9.0). Some pages differ from load to
+fresh load, ends in the same trap. Some pages differ from load to
 load: Artemis III's survey dialog opens on about 1 load in 10, takes focus and
 keeps it, and ended P1 after 9-13 presses on those loads while every other
 walk and replay saw a page without it (docs/solutions/trap-seen-once.md).
@@ -52,7 +52,7 @@ class KeyboardWalk(BaseModel):
 
     @property
     def inventory_after(self) -> int:
-        """Elements that take focus, counted after the walk (step 22): the
+        """Elements that take focus, counted after the walk: the
         largest count, at the start or at either pass's end."""
         return max(
             self.inventory,
@@ -62,14 +62,14 @@ class KeyboardWalk(BaseModel):
     @property
     def grew(self) -> bool:
         """The page more than doubled its elements that take focus after the
-        walk began (step 22; the test 4.C uses for a page that grew): one
+        walk began (the test 4.C uses for a page that grew): one
         drawn after load. A late link or two on a page drawn by the server
         (round 2's home page: 145, then 146) is not."""
         return self.inventory_after > 2 * max(self.inventory, 1)
 
     @property
     def fields_after(self) -> int:
-        """Form fields, counted after the walk (step 22), as `inventory_after`."""
+        """Form fields, counted after the walk, as `inventory_after`."""
         return max(
             self.p1.form_fields,
             self.p2.form_fields,
@@ -141,7 +141,7 @@ async def _confirmed(
     count_after_s: float = 0.0,
 ) -> PassResult:
     """One pass; when it ends in a trap event, a second pass from a fresh load
-    (4.C spec section 2, 1.9.0). The same trap again: the first pass stands,
+    (4.C spec section 2). The same trap again: the first pass stands,
     confirmed. Anything else: the second pass stands, carrying the first as
     `unrepeated` (4.C row M1 leaves that trap for a person). Each pass gets
     fresh hooks: walk extras keep state per pass."""

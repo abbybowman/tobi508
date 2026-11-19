@@ -34,6 +34,7 @@ def is_spec(path: str) -> bool:
         and name.endswith(".md")
         and not name.startswith("_")
         and not name.endswith("-build-tasks.md")
+        and name != "CLAUDE.md"
     )
 
 

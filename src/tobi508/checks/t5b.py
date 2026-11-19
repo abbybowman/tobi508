@@ -45,10 +45,10 @@ class Item(BaseModel):
     type: str = ""
     image: str | None = None
     # Buttons with only a picture in the field's input group or search form:
-    # the field's graphic label (5.A M2i; 5.B 1.5.0)
+    # the field's graphic label (5.A M2i)
     icons: int = 0
     # A field with no words near it whose label the label test (5.A) found to be
-    # a picture (its J1 = graphic): 5.A's description of it (1.10.0)
+    # a picture (its J1 = graphic): 5.A's description of it
     graphic: str = ""
 
 
@@ -89,7 +89,7 @@ def _field_label(c: Comp) -> tuple[str, list[str]]:
 
 
 def _button_words(c: Comp, alone: bool) -> list[str]:
-    """A field's button that labels it (5.A M2i and J1; 5.B 1.6.0): one in
+    """A field's button that labels it (5.A M2i and J1): one in
     its input group or search form, or, in a form of one field, its form's
     button beside it. Its words are the field's near text (section 5)."""
     if c.button or c.readonly:
@@ -107,7 +107,7 @@ def scan(lp: LabelsPass) -> tuple[list[Item], list[str], list[int]]:
     items: list[Item] = []
     unlabelled: list[int] = []
     # A form counts only when one of its fields has a label to judge: buttons
-    # alone (a site header's menu) are not a form (1.2.0; Abby, 2026-11-04).
+    # alone (a site header's menu) are not a form.
     judged = {
         c.form
         for c in lp.components
@@ -123,14 +123,14 @@ def scan(lp: LabelsPass) -> tuple[list[Item], list[str], list[int]]:
             if not label:
                 continue  # an icon-only button: no visual text to judge
             if c.menu or c.form not in judged:
-                continue  # it does not act on a form's data (1.2.0)
+                continue  # it does not act on a form's data
             near: list[str] = []
         else:
             label, near = _field_label(c)
             if not label and not near:
                 near = _button_words(c, alone(c))
             # A field labelled only by an icon button beside it is an item:
-            # TT p. 26 Note 2, a label "can be graphical" (1.5.0).
+            # TT p. 26 Note 2, a label "can be graphical".
             if not label and not near and not c.icon_buttons:
                 unlabelled.append(c.n)
                 continue
@@ -174,7 +174,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State5B:
     )
 
 
-# What 5.A found about a field 5.B has no label to judge (5.B 1.10.0, step 29).
+# What 5.A found about a field 5.B has no label to judge.
 LABELLESS = {"M2o", "M3", "M5"}  # 5.A's rules, or its J1 = not_labeled: no label
 
 
@@ -370,7 +370,7 @@ def questions_for(st: State5B, evidence_refs: list[str]) -> list[OpenQuestion]:
 def apply_answers(st: State5B, report) -> None:
     from tobi508.judgment import current_answer
 
-    # 5.A's answers about the fields 5.B has no label for (5.B 1.10.0)
+    # 5.A's answers about the fields 5.B has no label for
     for n in st.unlabelled:
         a = current_answer(report, f"5.A-c{n}-J1")
         if a is not None and a.choice is not None:
@@ -440,7 +440,7 @@ def evaluate(st: State5B, evidence_refs: list[str]) -> Finding:
             note=True,
         )
     if not st.items and lp.incomplete:
-        # Unread fields may have labels to judge: not DNA (spec A2, 1.1.0).
+        # Unread fields may have labels to judge: not DNA (spec A2).
         return _finding(
             Outcome.NEEDS_REVIEW,
             REVIEW_HEAD + " " + " ".join(lp.incomplete),
@@ -450,7 +450,7 @@ def evaluate(st: State5B, evidence_refs: list[str]) -> Finding:
         )
     if not st.items and (und := undecided(st)):
         # 5.A did not find every field unlabelled: one may have a label to
-        # judge (spec A2u, 1.10.0; step 29). Not DNA.
+        # judge (spec A2u). Not DNA.
         many = len(und) > 1
         return _finding(
             Outcome.NEEDS_REVIEW,

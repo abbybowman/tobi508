@@ -37,7 +37,7 @@ INDICATOR_MARGIN_PX = 8
 PIXEL_DELTA_VISIBLE = 8
 PIXEL_DELTA_STRONG = 40
 MIN_CHANGED_PX = 12
-# Pictures for J1 (1.4.0, post-round 2 fix 26): a small element's pictures keep
+# Pictures for J1 (post-round 2 fix 26): a small element's pictures keep
 # at least this much of the page around it (CSS px), and a picture whose long
 # side is under JUDGE_MIN_SIDE device px is scaled up (whole steps, at most
 # JUDGE_MAX_SCALE) for the judge. Round 2: 48 x 47 px pictures ended in unsure.
@@ -344,7 +344,7 @@ class FocusHook:
             c["pseudo"] = [p for p in c["pseudo"] if (c["index"], p) not in noisy]
             if c["props"] or c["pseudo"]:
                 c["rect"] = prev["parts"][c["index"]]["rect"]
-                # The values of the indicator properties, on and off (1.2.0):
+                # The values of the indicator properties, on and off:
                 # whether the on style draws something (_draws).
                 on_s = prev["snap"]["parts"][c["index"]]["style"]
                 off_s = off["parts"][c["index"]]["style"]
@@ -425,7 +425,7 @@ class Attempt(BaseModel):
     strong_px: float | None = None
     mask_fraction: float | None = None
     next_inside_frame: bool = False
-    # Where the differing pixels sit, for J1 (1.3.0): CSS px on the element,
+    # Where the differing pixels sit, for J1: CSS px on the element,
     # touching it (within INDICATOR_MARGIN_PX) and elsewhere in the picture.
     places: dict[str, Any] | None = None
 
@@ -536,7 +536,7 @@ def compare(
 
 def places(rel: Path, e: dict[str, Any]) -> dict[str, Any]:
     """Where the pixels that differ between the off and on pictures sit
-    relative to the element (1.3.0, for J1): on its box, touching it (within
+    relative to the element (for J1): on its box, touching it (within
     INDICATOR_MARGIN_PX) or elsewhere in the picture, in CSS px. Pixels that
     change with focus held (noise) and the masked area are left out, as in
     compare(). Facts for the judge; no outcome reads them."""
@@ -604,7 +604,7 @@ def _sides_changed(
     size: tuple[int, int],
 ) -> list[str]:
     """The sides of the element along which changed pixels sit in the band of
-    INDICATOR_MARGIN_PX just outside its box, RING_SIDE_PX or more on each. A fact for J1 (1.6.0): all four sides is a ring or halo
+    INDICATOR_MARGIN_PX just outside its box, RING_SIDE_PX or more on each. A fact for J1: all four sides is a ring or halo
     around the element; it says nothing of how visible it is. Only outside the
     box: the text of a link reaches its edges, so a colour change in it looked
     like a ring on CI's fonts. No outcome reads it."""
@@ -872,7 +872,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
             & {s.stop.path_key for s in p2.steps[-6:]}
         ):
             st.different_traps = True
-    # Row WK (1.9.0): an element no pass reached was not checked, whatever
+    # Row WK: an element no pass reached was not checked, whatever
     # the passes ended in (a loop or trap another pass went round is complete).
     cov = walk_coverage(walk)
     if cov.counted is not None:
@@ -922,7 +922,7 @@ def _best(inst: Inst4D) -> Attempt | None:
             # 1 fix 11: NASA's Artemis III links failed at 0 px this way).
             # And when its move is the only sign of a focus style, and it is
             # not shown only on focus, the pixels that changed may be the
-            # shift's: no clear view (1.8.0, review F-02). A real style change
+            # shift's: no clear view (review F-02). A real style change
             # on it or around it (a ring, a border on its parent) still counts.
             e["incomplete"] = "it moved on the page while we took the pictures"
             continue

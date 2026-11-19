@@ -50,7 +50,7 @@ from tobi508.site import UNITS_FN
 from tobi508.traverse import PATH_JS, screenshot
 
 # TT: "more than 5 seconds" (2.B) and "more than 3 seconds" (2.A); the
-# watch is 6.5 s at the top of the page (Abby, 2026-11-03, plan Q3).
+# watch is 6.5 s at the top of the page (plan Q3).
 WATCH_S = 6.5
 # Frames alternate 0.35 s and 0.45 s apart (0.4 s on average): at a steady
 # 0.5 s, a blink of 0.5 s per state was seen in the same state every frame.
@@ -564,7 +564,7 @@ MOTION_INIT_JS = (
 )
 
 
-# Elements (2.C Terms; Abby, 2026-11-03, plan Q6): what a screen reader reads
+# Elements (2.C Terms, plan Q6): what a screen reader reads
 # as one unit, in reading order. site.UNITS_FN's units (as 9.A-9.C and 19.A
 # read them), with three rules of its own: a label on the same line as its
 # control is one element with it, content inside aria-hidden="true" is not an
@@ -746,7 +746,7 @@ class Region(BaseModel):
     changed_boxes: list[list[int]] = Field(default_factory=list)
     # Two pictures cut around it, about CROP_GAP_S apart (run-folder paths),
     # when no frame shows it whole: below the first screen, or found by the
-    # scrolled watch (2.B 1.1.0; judge eval run 16).
+    # scrolled watch (judge eval run 16).
     crops: list[str] = Field(default_factory=list)
 
 
@@ -892,7 +892,7 @@ class MotionPass(BaseModel):
     # IMAGE_READ_MAX, each in the recording, and decoded or known not to
     # animate), for guard CN; `image_srcs_read` lists them, and
     # `inventory_images_read` is how many of the inventory's addresses are
-    # among them (set by 2.B and 3.A once the inventory exists; 2.B 1.5.0).
+    # among them (set by 2.B and 3.A once the inventory exists).
     images_read: int = 0
     image_srcs_read: list[str] = Field(default_factory=list)
     inventory_images_read: int | None = None
@@ -928,7 +928,7 @@ class MotionPass(BaseModel):
     # than 3 times a second.
     fast_callbacks: list[dict[str, Any]] = Field(default_factory=list)
     fast_animations: list[dict[str, Any]] = Field(default_factory=list)
-    # The clock check (2.C 1.2.0), when it ran: set by timer_check_shared.
+    # The clock check, when it ran: set by timer_check_shared.
     timer_check: TimerCheck | None = None
 
 
@@ -1393,7 +1393,7 @@ async def _crops(
 ) -> None:
     """Two pictures cut from the whole page around each top-page region the
     frames do not show whole (or, after the scrolled watch, `every` region),
-    CROP_GAP_S apart and with animations running (2.B 1.1.0). Coordinates:
+    CROP_GAP_S apart and with animations running. Coordinates:
     region boxes are in the viewport as read, so the scroll is added."""
     vw, vh = (out.viewport + [0, 0])[:2] if out.viewport else (0, 0)
 
@@ -1517,7 +1517,7 @@ def _image_type(body: bytes) -> str | None:
     return None
 
 
-# At most this many image addresses are read per page (2.B 1.5.0; was 30).
+# At most this many image addresses are read per page (was 30).
 # Most are known not to animate from their first bytes and cost a zip read;
 # only GIFs and animated PNG or WebP files are decoded.
 IMAGE_READ_MAX = 300
@@ -1634,7 +1634,7 @@ async def _long_images(page, har: Path, out: MotionPass) -> dict[str, str]:
 
 
 def match_inventory(ctx: Any, mp: MotionPass) -> None:
-    """How many of the inventory's image addresses pass T read (2.B 1.5.0):
+    """How many of the inventory's image addresses pass T read:
     guard CN compares that, not pass T's own count, so addresses pass T read
     that the inventory never saw cannot stand in for ones it did."""
     count = getattr(ctx, "cache", {}).get("count")
@@ -1644,7 +1644,7 @@ def match_inventory(ctx: Any, mp: MotionPass) -> None:
     # An address the inventory saw that pass T's page never showed (a slide
     # never shown, an image another browser loads sooner): read from the
     # recording. A type that cannot animate is done from its first bytes; one
-    # that can is left unread, so guard CN holds the page (2.B 1.5.0).
+    # that can is left unread, so guard CN holds the page.
     har = getattr(ctx, "rel", None)
     har = har / "evidence" / "page.har.zip" if har is not None else None
     if har is not None and har.exists():
@@ -1924,7 +1924,7 @@ async def collect(ctx: Any, keep_shots: bool = True) -> MotionPass:
 # ── The clock check (2.C spec 1.2.0, section 2) ───────────────────────────
 # A timer longer than the watch is a sign the page may update (A2). The
 # check runs the page's clock past it on one more fresh load and looks at
-# what changed. Abby, 2026-11-15 (roadmap step 6e): round 2's long timers
+# what changed. Abby, 2026-11-15: round 2's long timers
 # were analytics heartbeats that change nothing on screen.
 
 # The page settles on the paused clock before the first look.
@@ -2013,7 +2013,7 @@ def _same_screen(a: bytes, b: bytes) -> bool:
 
 
 async def timer_check(open_page: OpenPage, mp: MotionPass) -> TimerCheck:
-    """Run the page's clock past the long timers pass T saw (2.C 1.2.0).
+    """Run the page's clock past the long timers pass T saw.
     Never raises; anything that goes wrong leaves the timers a sign."""
     t0 = time.monotonic()
     want = slow_timers(mp)

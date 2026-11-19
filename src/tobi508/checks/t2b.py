@@ -1,5 +1,5 @@
 """Test 2.B (2.2.2-blinking-moving-scrolling), from
-specs/rules/2b-blinking-moving-scrolling.md (spec 1.0.0).
+specs/rules/2b-blinking-moving-scrolling.md.
 
 Reads pass T (motion.py) and the mechanism probe (mechanism.probe_shared,
 one probe per content shared with 2.C). Uses 2.C's instance rows with 2.B's
@@ -66,7 +66,7 @@ class State2B(BaseModel):
 
 
 def still_moving(r: Region) -> bool:
-    """A moving region (spec Terms, 0.2.0): it changes after 5 s, and in at
+    """A moving region (spec Terms): it changes after 5 s, and in at
     least three frames over the watch; or the reads showed motion the frames
     could not (a long animation, a marquee, a playing video). 0.1.0 also
     asked that no gap be longer than its period plus 1 s, which random
@@ -76,7 +76,7 @@ def still_moving(r: Region) -> bool:
     if r.source != "pixels":
         return True
     if r.visible_px == 0:
-        return False  # its box changed by less than the eye sees (1.3.0)
+        return False  # its box changed by less than the eye sees
     return _changes_late(r)
 
 
@@ -326,7 +326,7 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="") -> Finding:
 
 def _unseen(mp: MotionPass) -> list[Region]:
     """Regions whose pixels changed for more than 5 s but never by enough to
-    see in their box (2.B 1.3.0): not counted as moving."""
+    see in their box: not counted as moving."""
     return [
         r
         for r in mp.regions
@@ -509,7 +509,7 @@ def questions_for(st: State2B, evidence_refs: list[str]) -> list[OpenQuestion]:
             else ""
         )
         # A region no frame shows whole (below the first screen, or found by
-        # the scrolled watch) is shown by its own two crops (1.1.0).
+        # the scrolled watch) is shown by its own two crops.
         crops = _images(evidence_refs, r.crops[:2])
         images = crops if len(crops) == 2 else frames
         out.append(

@@ -580,7 +580,14 @@ async def test_tool_descriptions_follow_the_registry():
     assert run.inputSchema["properties"]["tests"]["default"] == built
     for t in REGISTRY:
         assert f"{t.value} ({t.tt_name})" in run.description
-    assert "subagent" in run.description and "certified" in run.description
+    assert "certified" in run.description
+    # The answering advice matches who answers: the agent, or the server's judge.
+    from tobi508 import config
+
+    if config.settings.judge_backend == "client":
+        assert "subagent" in run.description
+    else:
+        assert "you do not answer them" in run.description
     answer = tools["tobi_answer_questions"].inputSchema
     assert "duration_ms" in str(answer)
 

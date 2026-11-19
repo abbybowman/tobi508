@@ -148,7 +148,7 @@ async def andi_page(n: int, new_page, third_party) -> AndiPage:
             for k, c in enumerate(got["comps"])
         ]
         # Inside a web component ANDI analyses nothing: Chrome's own name
-        # (9.C 1.9.0; Abby, 2026-11-14, as 5.C 1.10.0).
+        # (as 5.C 1.10.0).
         ax = await ax_names(
             page, "window.__a11yMarked || []", [c.k for c in out.comps if c.shadow]
         )
@@ -211,7 +211,7 @@ def make_pairs(
     """Spec Terms, in order: destination (within a repeated block), id, name,
     place. Each component is used once; equal names pair first within a
     destination. With a page of
-    another template (`by_name_and_place` False, spec 1.2.0) only destination
+    another template (`by_name_and_place` False) only destination
     and id pair: names and places on unrelated pages pair unlike things."""
     a = [c for c in main.comps if c.andi_name is not None]
     b = [c for c in other.comps if c.andi_name is not None]
@@ -243,9 +243,9 @@ def make_pairs(
         return ga, gb
 
     # 1. Same destination: equal names first, then in order. Only inside a
-    # repeated block (header, menu, search, footer; spec 1.5.0): the same
+    # repeated block (header, menu, search, footer): the same
     # address from the pages' own content says nothing about a component.
-    # And only within the same block (1.10.0): a footer link and a header
+    # And only within the same block: a footer link and a header
     # logo that go to one address are two components, not one named two ways.
     ga, gb = group(
         lambda c: (
@@ -529,7 +529,7 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
         f.rows = ["A2", "G1"]
         return f
     # Controls past the cap were never paired, so no DNA or PASS can rest on
-    # the pairs that were read (spec 1.1.0).
+    # the pairs that were read.
     unread = [
         f"Only the first {UNIT_CAP:,} pieces of content of {'the tested page' if p.n == 0 else f'other page {p.n}'} were read."
         for p in st.pages
@@ -544,7 +544,7 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
             rationale="Spec G3. Incomplete: " + "; ".join(unread),
             note=True,
         )
-    # A3o (1.8.0): no pair and the page has navigation of its own.
+    # A3o: no pair and the page has navigation of its own.
     if not st.pairs and st.kinship is not None and st.kinship.own_navigation:
         return _finding(
             Outcome.NEEDS_REVIEW,
@@ -599,7 +599,7 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
     )
     if not results and not unread and unnamed:
         # Components were shared and not compared: not "no such components"
-        # (DOES NOT APPLY), and never PASS (K-05, Abby 2026-11-13).
+        # (DOES NOT APPLY), and never PASS (K-05).
         return _finding(
             Outcome.NEEDS_REVIEW,
             " ".join(

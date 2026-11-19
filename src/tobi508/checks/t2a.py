@@ -74,7 +74,7 @@ class State2A(BaseModel):
     def read(self) -> dict[str, dict[str, int]]:
         """What pass T's media read covered, for guard CN (count.py): the
         played elements it lists, the media inside web components it read
-        (part D, 2.A 1.2.0), and media in frames; nothing played from a
+        (part D), and media in frames; nothing played from a
         script with no element on the page."""
         listed = self.mp.played_listed
         return {

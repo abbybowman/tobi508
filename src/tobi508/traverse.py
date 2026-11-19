@@ -255,7 +255,7 @@ _EVENTS_JS = "(from) => (window.__a11yLog ? window.__a11yLog.f.slice(from) : [])
 
 # Element paths, shared by the walk and the scans (4.A) so their paths match.
 # Defines seg(n) and path(n); a shadow boundary is a lone space.
-# A link's destination (spec 9.A Terms, "Destination"; Abby, 2026-11-12): the
+# A link's destination (spec 9.A Terms, "Destination"): the
 # address it goes to, or '' when it goes nowhere: not http, https, file,
 # mailto or tel (javascript:, data:), an empty address or "#", the page
 # itself, or a #name no element of the page has (#top always scrolls).

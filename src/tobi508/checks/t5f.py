@@ -69,7 +69,7 @@ _DLG = "dialog[open],[role=dialog],[role=alertdialog]"
 # world, uncapped, and returns the first NEW_MAX (5.H reads them as page text);
 # each later read returns only pieces not noted then (an error message is
 # new text, wherever it appears), at most NEW_MAX. "capped": more than that,
-# or the base read is gone (spec 1.1.0).
+# or the base read is gone.
 NEW_MAX = 200
 
 READ_JS = (
@@ -852,7 +852,7 @@ async def run_attempts(
         form.tried.append(btn_n)
     for kind in (1, 2):
         if kind == 2 and not (form.text or form.dates):
-            continue  # nothing to make wrong: attempt 2 does not apply (1.1.0)
+            continue  # nothing to make wrong: attempt 2 does not apply
         if ctx.out_of_time():
             ps.incomplete.append(
                 "The run time limit was reached before every form was checked."
@@ -938,7 +938,7 @@ WORD = re.compile(r"[^\W\d_]{2,}")
 
 
 def holds_word(text: str) -> bool:
-    """Step 36 (5.F 1.14.0): new text is a candidate error message only when
+    """Step 36: new text is a candidate error message only when
     it holds a word: two letters in a row, in any script. "4", "12:04" and
     "0/500" hold none."""
     return bool(WORD.search(text or ""))
@@ -1229,7 +1229,7 @@ def questions_for(
                         "action": _where_pressed(ps, a),
                         "errors": error_inputs(ps, a),
                     },
-                    # 5.F 1.2.1 (Abby, 2026-11-07): J1 is settled by reading
+                    # 5.F 1.2.1: J1 is settled by reading
                     # the error text; the pictures are evidence only.
                     evidence_paths=evidence_refs + images,
                 )
@@ -1476,7 +1476,7 @@ def incomplete_of(ps: PassE) -> list[str]:
     # A walk that ended in a trap is complete only when it reached every
     # field the page has (M-05; spec G3 "ended in a trap before the last
     # field"). The count comes from the DOM inventory, not from the walk.
-    # Row WK (1.8.0): a field no pass read was not checked, whatever the walk
+    # Row WK: a field no pass read was not checked, whatever the walk
     # ended in; the sentence is walk.field_coverage's.
     if ps.walk_gap:
         out.append(ps.walk_gap)
@@ -1540,7 +1540,7 @@ SORRY = " If you disagree, tell your assistant."
 
 
 def wordless_sentence(ps: PassE, i: Inst5F) -> str:
-    """5.F's M10 and 5.G's N9 (step 36)."""
+    """5.F's M10 and 5.G's N9."""
     a = ps.attempts[i.attempt]
     words = [" ".join(t.text.split())[:40] for t in new_texts(a, ps.fields)[:3]]
     shown = "; ".join(f'"{w}"' for w in words)
@@ -1553,7 +1553,7 @@ def wordless_sentence(ps: PassE, i: Inst5F) -> str:
 
 
 def native_sentence(ps: PassE, i: Inst5F, how: str = "") -> str:
-    """5.F's M2 and 5.G's N8 (step 21): the browser's own message is left for
+    """5.F's M2 and 5.G's N8: the browser's own message is left for
     a person, since it shows one field at a time and differs by browser."""
     msg = re.sub(r"\s+", " ", i.native or "").strip()
     msg = msg if len(msg) <= 120 else msg[:117] + "..."

@@ -119,9 +119,9 @@ TIME_NOTE = (
 
 Progress = Callable[[float, float | None, str], Awaitable[None]]
 
-# Other pages of the same site a caller may name (9.A-9.C; Abby, 2026-11-02).
+# Other pages of the same site a caller may name (9.A-9.C).
 # The cap keeps one call within its time limit; a caller who turns the limit
-# off may name more (Abby, 2026-11-03), up to a bound on the input itself.
+# off may name more, up to a bound on the input itself.
 OTHER_PAGES_MAX = 5
 OTHER_PAGES_NO_LIMIT_MAX = 50
 
@@ -310,7 +310,7 @@ def _soft_deadline(
 
 def _limit(settings: Settings, pages: int) -> int:
     """The run limit: `run_limit_s`, plus `other_page_s` for each other page
-    recorded (Abby, 2026-11-02: the limit is set per page)."""
+    recorded (2026-11-02: the limit is set per page)."""
     return settings.run_limit_s + pages * settings.other_page_s
 
 
@@ -318,7 +318,7 @@ BUDGET_GRACE_S = 10  # a test stops starting work this long before its end
 
 
 def run_order(checks: list, settings: Settings) -> list:
-    """Cheapest budget first (step 6c), each test after the selected tests
+    """Cheapest budget first, each test after the selected tests
     its collect reads (checks.base.AFTER); ties keep the registry's order."""
     left = list(checks)
     ids = {c.test_id.value for c in left}
@@ -468,9 +468,9 @@ def _live_recorder(
     browser, settings, run, report, proxy, final_url, get_browser, tested_har=None
 ):
     """Pages 19.A loads itself, each by the code a caller's other page uses
-    (`capture_other`): its live site search (CLAUDE.md, Abby 2026-11-02),
-    its suspected aliases of the tested page (19.A 1.10.0, Abby 2026-11-14)
-    and its suggested pages (1.11.0, Abby 2026-11-15).
+    (`capture_other`): its live site search (CLAUDE.md),
+    its suspected aliases of the tested page
+    and its suggested pages.
     Allowlisted on every hop and on the tested page's host after redirects;
     an alias may be asked for under the host with or without a leading
     "www." (its definition), and must still end on the tested page's host."""
@@ -599,7 +599,7 @@ async def _abandoned_at(aw, hard: float, log=None, name: str = ""):
     without waiting for its cleanup. `asyncio.wait_for` waits for a cancelled
     task to finish, and a test's cleanup can wait on a busy page (closing a
     context whose page is still running script): 14194's 3.A ran 1,178 s
-    against a 240 s budget that way (step 6c). The task finishes cancelling
+    against a 240 s budget that way. The task finishes cancelling
     on its own; the run's end closes the browsers. Where it was is logged."""
     left = hard - time.monotonic()
     if left <= 0:
@@ -719,7 +719,7 @@ def _evidence_uris(run: RunRecorder) -> list[str]:
 # development run 7's agent skipped the pictures of results 25-70k
 # characters long). The rest come with each tobi_answer_questions result.
 QUESTION_PAGE = 10
-# What one result's text may be, in characters (round 2, 2026-11-08). Claude
+# What one result's text may be, in characters (round 2). Claude
 # Code passes an MCP result on only up to two limits: about 25k tokens
 # (MAX_MCP_OUTPUT_TOKENS), and about 50 KB of text, over which it saves the
 # result to a file and shows the agent a 2 KB preview (CLI 2.1.319: a 51.2 KB
@@ -1127,11 +1127,11 @@ async def run_tt_tests(
         else t_start + _limit(settings, len(others)) - HARD_MARGIN_S
     )
     # Cheapest budget first, each after the tests whose replays it reads
-    # (checks.base.AFTER; step 6c). Findings keep the report's order.
+    # (checks.base.AFTER). Findings keep the report's order.
     checks = run_order(checks, settings)
     states: dict[TestId, Any] = {}
     skipped: dict[TestId, str] = {}  # tests left out, and why (fix 12)
-    ran_out: dict[TestId, str] = {}  # tests past their own budget (step 6c)
+    ran_out: dict[TestId, str] = {}  # tests past their own budget
     walk: KeyboardWalk | None = None
     motion_task: asyncio.Task | None = None
     allowance = [0]  # T1 (a): seconds added once pass T finds moving content
@@ -1247,7 +1247,7 @@ async def run_tt_tests(
                     )
                 # A query string can make another page, so the address was not
                 # refused; the same document bytes under another address is the
-                # tested page again (K-01, Abby 2026-11-12).
+                # tested page again (K-01).
                 tested_sha = document_sha(har, cap.final_url)
                 same_content = tested_sha is not None and (
                     tested_sha == document_sha(run.dir / rel, oc.final_url)
@@ -1460,7 +1460,7 @@ async def run_tt_tests(
                     2 + (n - 1) / len(checks),
                     f"Checking {c.test_id.value} (test {n} of {len(checks)})",
                 )
-                # The test's own time, inside the run limit (step 6c): its
+                # The test's own time, inside the run limit: its
                 # budget or a share of what is left, whichever is smaller. It
                 # stops starting work a little before (ctx.out_of_time) and is
                 # cancelled at the end.

@@ -12,7 +12,7 @@ holds LIVE_LOG_TOKEN (routes.py):
   * "progress": a running job's progress line (jobs.Job.progress).
 
 Unlike the audit lines, it holds page text, evidence and answers, for every
-caller (Abby, 2026-11-18: demo only, off by default). It decides nothing and
+caller (2026-11-18: demo only, off by default). It decides nothing and
 changes no result: a failure here is swallowed, never raised into a call.
 """
 

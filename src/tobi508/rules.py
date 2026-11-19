@@ -128,7 +128,11 @@ def load_specs(rules_dir: Path) -> dict[TestId, RuleSpec]:
     if not rules_dir.is_dir():
         return specs
     for path in sorted(rules_dir.glob("*.md")):
-        if path.name.endswith("-build-tasks.md") or path.name.startswith("_"):
+        if (
+            path.name.endswith("-build-tasks.md")
+            or path.name.startswith("_")
+            or path.name == "CLAUDE.md"  # instructions for AI sessions, not a spec
+        ):
             continue
         spec = load_spec(path)
         if spec.test_id in specs:

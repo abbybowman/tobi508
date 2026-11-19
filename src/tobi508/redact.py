@@ -45,7 +45,7 @@ def scrub(text: str) -> str:
 class AccessLogWithoutQuery(logging.Filter):
     """Uvicorn's access log, each path without its query string. The
     sign-in callback's query carries a one-time code from the identity
-    provider (seen in the log on VAST, 2026-11-18); the path and status
+    provider (seen in the log on VAST); the path and status
     stay, since they are what a failed sign-in is diagnosed by."""
 
     def filter(self, record: logging.LogRecord) -> bool:

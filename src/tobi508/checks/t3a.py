@@ -1,4 +1,4 @@
-"""Test 3.A (2.3.1-flashing), from specs/rules/3a-flashing.md (spec 1.0.0).
+"""Test 3.A (2.3.1-flashing), from specs/rules/3a-flashing.md.
 
 Triggers come from pass T (motion.py: fast animations and callbacks,
 animated images' frame delays, videos) and a 2 s screencast. Only when one
@@ -210,7 +210,7 @@ def _pictures(ctx, src: flashcap.Source, n: int, frames, scale: float = 1.0) -> 
 
 # One animated image's measurement (decoding its frames at the size shown,
 # then counting flashes) stops after this long; the image is then not
-# measured (A3), and the test goes on (3.A 1.4.0).
+# measured (A3), and the test goes on.
 IMAGE_MEASURE_S = 60
 # Nor is one measured whose frames at the size shown would come to more than
 # this many bytes of pixels (frames x width x height x 3).
@@ -376,7 +376,7 @@ async def _measure(
                 0,
             )
             if min(n, flashcap.IMAGE_MAX_FRAMES) * w * h * 3 > IMAGE_MEASURE_BYTES:
-                # A3 (1.4.0): every frame at the size shown would be sent back
+                # A3: every frame at the size shown would be sent back
                 # from the browser; at round 2's 14194 GIF (192 frames, shown
                 # large) that jammed the browser connection.
                 st.unmeasured.append(
@@ -417,7 +417,7 @@ async def _measure(
                     IMAGE_MEASURE_S,
                 )
             except TimeoutError:
-                # A3 (1.4.0): a measurement time cut short. Round 2's 14194 has
+                # A3: a measurement time cut short. Round 2's 14194 has
                 # a 192-frame GIF shown large; decoding every frame at that size
                 # took the whole test's time once every image was read.
                 st.unmeasured.append(

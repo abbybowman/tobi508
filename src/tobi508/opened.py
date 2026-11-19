@@ -1,4 +1,4 @@
-"""Opening everything, phase 2 (step 6g): a Tab walk through what each menu,
+"""Opening everything, phase 2: a Tab walk through what each menu,
 tab or section opened, made once per page on reveal.py's opening and shared
 by the tests that read it (4.C for traps, 4.E for changes on focus). Facts
 only; no outcome is decided here (CLAUDE.md principle 2): the rows are in

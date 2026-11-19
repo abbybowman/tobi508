@@ -343,7 +343,7 @@ for the Nov 20 demo and what comes after is in
 
 | # | Bundle | Contents | Status |
 | --- | --- | --- | --- |
-| 1 | `apijudge` | ApiJudge in the server; the judge-eval backend; the gate | Built, off by default; the gate has run as a 2-page trial only ([plan](2026-11-08-apijudge-build.md)) |
+| 1 | `apijudge` | ApiJudge in the server; the judge-eval backend; the gate | Built, off by default; the gate has run as a 2-page trial only |
 | 2 | `rules-principle3` | Fixes 1-6, 9b phase 1, the chunk store and guard GU | Built, except fix 3 (error values) |
 | 3 | `frames` | Fix 7: 5.x reads fields in frames; the per-test frame leftovers | Not started; built as part D of [the plan after the code review](2026-11-12-coverage-second-look-thin-agent.md) |
 | 4 | `questions-for-judges` | Fixes 12-14 and 24-27; then the gate for 4.F and 9.C | Not started |

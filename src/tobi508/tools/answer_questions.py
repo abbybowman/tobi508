@@ -36,7 +36,7 @@ def register(mcp: FastMCP) -> None:
                 min_length=1,
                 max_length=64,
                 pattern=r"^[A-Za-z0-9_-]+$",
-                description="run_id returned by run_tt_tests.",
+                description="run_id returned by tobi_run_tt_tests.",
             ),
         ],
         answers: Annotated[
@@ -67,13 +67,15 @@ def register(mcp: FastMCP) -> None:
             ),
         ],
     ) -> AnswerResult:
-        """Answer open questions from an tobi_run_tt_tests run, then re-evaluate.
+        """Answer the open questions a tobi_run_tt_tests run left for you; re-evaluate.
 
-        Inspect each question's evidence, apply its rubric and answer it
-        yourself (or through one subagent for all of them, keeping only the answer
-        objects); ask
-        the user only if you cannot tell. Answers are facts, never outcomes:
-        the server checks them (unknown ids, wrong answer types and choices
+        Used when the server has no judge model of its own, or its judge
+        could not be reached (the run's `next_step` says so); otherwise the
+        server answers and this tool is not needed. Inspect each question's
+        evidence, apply its rubric and answer it yourself (or through one
+        subagent for all of them, keeping only the answer objects); ask the
+        user only if you cannot tell. Answers are facts, never outcomes: the
+        server checks them (unknown ids, wrong answer types and choices
         outside the list are rejected), presses any keys they name in the
         recorded page to confirm them, and applies the rules again.
 

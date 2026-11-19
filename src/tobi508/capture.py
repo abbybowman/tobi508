@@ -48,7 +48,7 @@ class Capture:
     chunks: list[dict[str, Any]] = field(default_factory=list)
     frozen: bool = False  # replayed from a frozen pages folder (frozen.py)
     # Every http(s) frame address seen at the end of a live recording, query
-    # kept, so the freeze can say which the recording lacks (step 10a).
+    # kept, so the freeze can say which the recording lacks.
     frame_urls: list[str] = field(default_factory=list)
 
 
@@ -64,7 +64,7 @@ async def record(
     """Load `url` live in a fresh context and save every response to `har_path`.
     `with_media` False: no media store. Other pages and 19.A's own loads are
     read only for their links and text (no test plays their media), and on a
-    page of large videos the store took 342 s past a 20 s share (step 6h)."""
+    page of large videos the store took 342 s past a 20 s share."""
     ctx = await new_context(
         browser, settings, record_har_path=str(har_path), record_har_mode="full"
     )
@@ -395,7 +395,7 @@ def document_sha(har_path: Path, final_url: str) -> str | None:
     return hashlib.sha256(body).hexdigest() if body else None
 
 
-# ── Chunk store (Abby, 2026-11-09: a fourth exception to principle 5) ──────
+# ── Chunk store (2026-11-09: a fourth exception to principle 5) ──────
 # A page may load code only when it is used (`import("./chunk.js")`, code
 # splitting), so a recording made from a load never holds it, and on replay
 # the page's handlers silently do nothing: 5340's year popup and focus jump
@@ -811,7 +811,7 @@ async def replay_context(
     return Replay(ctx, guard, andi_aborted)
 
 
-# ── Silent sign-in checks (round 3, Abby 2026-11-16) ────────────────────────
+# ── Silent sign-in checks (round 3) ────────────────────────
 # Some apps draw nothing until a hidden frame asks their sign-in server
 # whether the visitor is signed in (keycloak-js check-sso: `prompt=none`).
 # The question carries a state value made on each load, so a replay asks an

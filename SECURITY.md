@@ -157,5 +157,4 @@ Sign-in and per-user separation of runs are built
 
 Do not weaken the allowlist, the egress proxy, the redaction or the
 untrusted-content rules to make a test pass. A change to any of them is
-recorded in `docs/hackathon/evaluation.md` and its deck slide in the same
-commit (`CLAUDE.md`).
+recorded in this file in the same commit.

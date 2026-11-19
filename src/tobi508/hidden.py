@@ -21,7 +21,7 @@ markup or a plugin's name:
    later step of a form that checks the first), with a read after each.
 
 Only a field inside a form that is shown on load can be hidden from
-everyone (Abby, 2026-11-15): a field whose whole form is hidden on load (a
+everyone: a field whose whole form is hidden on load (a
 popup, a panel, a mobile copy) stays counted, because a recording may not
 reproduce what shows it (round 1's feedback popup never opened on replay).
 A field any step shows stays counted (guard CN holds the tests until a
@@ -274,7 +274,7 @@ async def _check(ctx: Any, paths: list[str], rv: Any, out: HiddenCheck) -> None:
             out.kept[p] = "it is not in a form"
         elif not shown:
             # Only a hidden part of a form shown on load can be hidden from
-            # everyone (Abby, 2026-11-15): a whole form that is hidden (a
+            # everyone: a whole form that is hidden (a
             # popup, a panel, a mobile copy) stays counted, since a recording
             # may not reproduce what shows it (round 1's feedback popup).
             left.discard(p)

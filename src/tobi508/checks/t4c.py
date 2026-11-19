@@ -50,7 +50,7 @@ ARROWS = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"]
 P3_MAX_MEMBERS = 10
 P4_MAX_WIDGETS = 20
 # Smallest element holding the focused member (`this`) and the other members
-# (CSS paths in its frame); stored for CONTAINER_GONE_JS (M4, spec 1.11.0).
+# (CSS paths in its frame); stored for CONTAINER_GONE_JS (M4).
 CONTAINER_MARK_JS = """function (paths, whole) {
   if (whole) { window.__a4c_lca = document.body; return 'ok'; }
   let lca = this;
@@ -117,7 +117,7 @@ class Probe(BaseModel):
         description="Outside, and the trap did not happen again in the check."
     )
     keys: list[str] = Field(default_factory=list, description="Full key sequence.")
-    # Enter probes only (spec 1.11.0, M4): after Enter, the smallest element
+    # Enter probes only (M4): after Enter, the smallest element
     # holding every member of the trap is gone from the page (a dialog or
     # banner dismissed), not still there with other content in it. None: not
     # measured (not an Enter probe, or the trap fills the page).
@@ -136,14 +136,14 @@ class Inst(BaseModel):
     unresolved: bool
     unsettled: bool
     modal: bool
-    # The trap's section (spec 1.11.0, Terms): for a loop whose members all
+    # The trap's section (Terms): for a loop whose members all
     # sit in one frame, that frame's path-key prefix ("<frame css> >> "); an
     # exit must reach a stop outside it. None: the trap is the element or
     # the loop itself. section_size: the frame's distinct stops in the pass.
     section: str | None = None
     section_size: int = 0
     # Seen on one load only: a second pass from a fresh load did not repeat
-    # it (spec section 2, 1.9.0). Not probed: a replay would not reach it.
+    # it (spec section 2). Not probed: a replay would not reach it.
     once: bool = False
     fields: list[str]
     via: dict[str, Any] | None = Field(
@@ -192,7 +192,7 @@ def _members_at_end(steps: list[Step], end: str) -> list[str]:
     return []
 
 
-# Error states (spec section 2, pass E; 1.13.0): at most this many states the
+# Error states (spec section 2, pass E): at most this many states the
 # error pass found are replayed, and Tab is pressed this many times from each
 # (enough for a loop to repeat; a page that is not trapped ends in the cap).
 ERROR_STATES_MAX = 6
@@ -335,7 +335,7 @@ class Collector:
                     "frame_chain": s.stop.frame_chain,
                     "role": s.stop.role,
                     "name": s.stop.name,
-                    # Any form control (5.D's kinds, 1.8.0): "input or
+                    # Any form control (5.D's kinds): "input or
                     # interaction" (p. 21 HtT 2.b note 2), not only text,
                     # select and checkbox.
                     "field": s.stop.control,
@@ -656,9 +656,9 @@ class Collector:
                     await s.close()
 
     async def p8(self, rv) -> None:
-        """Opened content (spec section 2, P8; 1.14.0): the shared walk through
+        """Opened content (spec section 2, P8): the shared walk through
         what each trigger opened (opened.py). A trap it ended in is confirmed
-        by the same walk on a second fresh load (1.9.0) and becomes an event
+        by the same walk on a second fresh load and becomes an event
         like any other, replayed for the probes by opening the trigger again
         (`via["open"]`); a walk that did not finish is incomplete (G3)."""
         for t in rv.triggers:
@@ -850,7 +850,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
         first = p.unrepeated
         if first is not None and first.end in ("stuck", "loop"):
             # A trap the next fresh load did not repeat: kept for a person
-            # (row M1), never probed or asked about (spec section 2, 1.9.0).
+            # (row M1), never probed or asked about (spec section 2).
             inst = c.add_event(
                 first.end,
                 key,
@@ -898,7 +898,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4C:
                 await work()  # instances found by pass E
         except Exception as exc:
             st.incomplete.append(f"The error states were not checked: {exc!r}")
-    # Opened content (P8, 1.14.0): the shared walk through what menus and
+    # Opened content (P8): the shared walk through what menus and
     # sections opened (reveal.py, opened.py).
     rv = ctx.cache.get("reveal")
     if rv is not None:
@@ -915,7 +915,7 @@ def questions_for(st: State4C, evidence_paths: list[str]) -> list[OpenQuestion]:
     exits failed and that has no answer yet."""
     out = []
     # Screenshots are stored relative to the run folder; clients can only open
-    # run:// resources (found by the judge eval, 2026-10-31).
+    # run:// resources (found by the judge eval).
     base = evidence_paths[0].rsplit("/evidence/", 1)[0] if evidence_paths else ""
 
     def link(info: dict) -> dict:
@@ -1069,7 +1069,7 @@ def _enter_dismisses(inst: Inst) -> bool:
 def _counts(inst: Inst, p: Probe) -> bool:
     """A probe that exits and ends the search for a way out. One that needed
     Enter on a control ends it for a modal dialog (M4) or a dismissed
-    container (M4d, for a person); otherwise it is row M4o (1.11.0)."""
+    container (M4d, for a person); otherwise it is row M4o."""
     if not p.exit:
         return False
     if not p.name.startswith("Enter"):
@@ -1118,7 +1118,7 @@ def instance_rows(st: State4C) -> list[Row]:
             Outcome.PASS,
             "p. 21 HtT 2.b notes 1-2",
         ),
-        # M4d (1.11.0, Abby 2026-11-09): outside a modal dialog, Enter on a
+        # M4d: outside a modal dialog, Enter on a
         # control that closes the section (a banner) is a way out only if the
         # user knows to press it: a person looks.
         Row(
@@ -1127,7 +1127,7 @@ def instance_rows(st: State4C) -> list[Row]:
             Outcome.NEEDS_REVIEW,
             "p. 21 HtT 2.b note 2, HtT 3; Abby 2026-11-09",
         ),
-        # M4o (1.11.0): any other activation exit is not an exit: a keyboard
+        # M4o: any other activation exit is not an exit: a keyboard
         # user would have to know to press it. Not decisive; the table goes on.
         Row(
             "M4o",

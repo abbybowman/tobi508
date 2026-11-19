@@ -24,7 +24,7 @@ ENV_FILE = REPO_ROOT / ".env"
 # Each test's own time for collecting its evidence, inside the run limit
 # (roadmap step 6c, Abby 2026-11-14). PROVISIONAL until step 9 measures
 # round 1's pages too: about twice the longest collect on round 2's ten
-# frozen pages (2026-11-13, Linux headless, judge off; in brackets), at
+# frozen pages (Linux headless, judge off; in brackets), at
 # least 60 s. Ceilings: a test gets its budget or TEST_BUDGET_SHARE of what
 # is left of the run, whichever is smaller (checks.base.time_for).
 TEST_BUDGETS_DEFAULT: dict[str, int] = {
@@ -144,7 +144,7 @@ class Settings(BaseSettings):
     viewport_height: int = 900
     # Every browser context ignores the page's Content-Security-Policy
     # (Playwright bypass_csp), so ANDI's injected script runs on pages whose
-    # policy forbids inline scripts (Abby, 2026-11-07, approved). Every load
+    # policy forbids inline scripts. Every load
     # of a run (recording, replays, pass T) uses the same setting, so the
     # page behaves the same in each; the report records it
     # (Versions.run_settings). Set false to test pages under their policy.
@@ -174,7 +174,7 @@ class Settings(BaseSettings):
     # Extra milliseconds a recording waits after the page loads, and again
     # after its scroll, before the network-idle check, for apps that fetch
     # their data late (round 3's /data-governance-community/home recorded
-    # 27 of 152 lines at 0). 0 keeps the old behaviour. (Abby, 2026-11-16)
+    # 27 of 152 lines at 0). 0 keeps the old behaviour.
     record_extra_wait_ms: int = Field(default=0, ge=0, le=120_000)
     # The media store keeps the file each player chose (currentSrc) before
     # any alternative <source> (the freeze: those are the files a replay
@@ -195,13 +195,13 @@ class Settings(BaseSettings):
     test_budget_share: float = Field(default=0.5, gt=0, le=1)
     media_cap_s: float | None = Field(default=15, gt=0)
     # Wall clock for one run. Tests not finished in time are NEEDS_REVIEW
-    # with the reason. 600 s since long polling (Abby, 2026-11-05): a call
+    # with the reason. 600 s since long polling: a call
     # no longer waits for the whole run (call_wait_s), so the limit no
     # longer has to fit client and proxy timeouts; it was 120 s, and the
     # time limit was the largest loss left after the post-round 1 fixes.
     run_limit_s: int = Field(default=600, ge=10)
     # Seconds the run limit grows by for each other page of the same site the
-    # caller names (9.A-9.C: recording it and reading it; Abby, 2026-11-02).
+    # caller names (9.A-9.C: recording it and reading it).
     other_page_s: int = Field(default=20, ge=5)
     # Extra time for a page with content that keeps changing by itself (a
     # ticker, a carousel), added once pass T finds it (Abby, 2026-11-04, T1

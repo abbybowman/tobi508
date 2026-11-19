@@ -25,6 +25,14 @@ rows of the roadmap's "Order of work" and "Next" tables: A is steps 21,
 rows Applications, 4.D and 5.D on what opens, 4.A and 4.F, Forms, and
 Site tests. Cause numbers are this plan's own.
 
+**The bundles are GitHub issues now:** R1 Applications
+[#134](https://github.com/abbybowman/tobi508/issues/134), R2 4.D and 5.D on what opens [#135](https://github.com/abbybowman/tobi508/issues/135), R3 4.A and
+4.F [#136](https://github.com/abbybowman/tobi508/issues/136), R4 Forms [#137](https://github.com/abbybowman/tobi508/issues/137), R5 Site tests
+[#138](https://github.com/abbybowman/tobi508/issues/138). Each issue holds its current scope, the cells as gate 9c
+left them and the dependencies, which go further than the cut below (for
+example #137 waits for #134's step 35a as well as #135); where an issue
+and this plan disagree, the issue wins.
+
 ## Questions for Abby
 
 1. **Native validation in 5.F (and 5.G).** The contact form has no

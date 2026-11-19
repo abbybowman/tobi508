@@ -40,85 +40,21 @@ keep their own schedule.
   ([guide](how-to/deploy-on-vast.md)). On VAST (2026-11-17) the image
   runs in a dev environment and ran a live page there through Claude
   Code over an ssh tunnel; the dev URL's gateway is measured; sign-in
-  there waits for a Keycloak client from the admins. Without a gateway for the judge,
+  there works (the smoke test passed, 2026-11-18). Without a gateway for the judge,
   a hosted server leaves open questions to the calling agent.
 - Earlier steps and their notes: [archive](archive/).
 
-## Now: the last day of development (Nov 17)
+## Now
 
-**The cut** is the end of Nov 17: from Nov 18 only the deck and the
-presentation. What is not merged by then waits.
+**One numbering.** A step number in this file is the only name a piece of
+work has; plans keep their own cause numbers inside themselves. A row
+filed as a GitHub issue starts from the issue's own prompt and
+[how-to/work-an-issue.md](how-to/work-an-issue.md); the other steps' prompts
+are in [reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md).
 
-**One numbering.** A step number in this file is the only name a
-piece of work has; plans keep their own cause numbers inside
-themselves. Each row below is one thread, started with its prompt in
-[reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md);
-a prompt is removed when its step is merged. This thread keeps this
-file and the prompt file; other threads write to their plan.
-
-### Order of work
-
-| Order | Steps | What | Model | When |
-| --- | --- | --- | --- | --- |
-| - | 12b | Hosted on VAST: sign-in at the dev URL done 2026-11-18 (smoke test passed); next a group and the audience, then YAML for the cluster admins (after the demo) | Opus | now |
-| - | 13 | The pitch: the scored run at the submission commit, rehearsal, fallback video | Abby; Sonnet for the run | Nov 18-19 |
-
-### Why these, and what they should do to the status table
-
-Step 9c (done, 2026-11-18) ran all three sites' frozen pages after the
-rows below, and the README's status table (step 10d, done) is written
-from it: 16 tests green, 6 yellow (4.A, 4.D, 5.B, 5.D, 5.F, 5.G), none
-red. The rows below are what moved the tests:
-
-- **21, 36 (5.F, 5.G; done, #109):** red to yellow. The browser's own error
-  messages, and text that is not a message, become NEEDS REVIEW. Both
-  tests then have no wrong cell and are mostly left for a person.
-- **22 (4.F, and 4.A, 5.D; done, #110, #111):** 4.F red to yellow; two false FAILs of
-  4.A and two wrong cells of 5.D go.
-- **23 (done, #112):** the replay draws; on round 3's p07, p08 and
-  p10, 4.E's three false FAILs, 5.F, 5.G and 5.H moved to NEEDS REVIEW,
-  PASS or an agreeing DOES NOT APPLY (`evals/judging/gate-2026-11-17-step23/`).
-- **31 (9.B; done):** yellow to green.
-- **29, small part (5.B; done):** five wrong cells become NEEDS REVIEW.
-- **4.F 1.11.0 (done, #121, not planned):** step 23's rerun showed three
-  new 4.F false FAILs on round 2; the cause was measurement (a box read
-  while the page scrolled, a scroll box, a script-made id), not the
-  judge. Round 2's 4.F false FAILs 4 to 2 (`evals/judging/gate-2026-11-17-4f/`).
-- **9c where the search loads (19.A; done):** the sites' own search
-  loaded in this run's container for all three sites (svs's failed on
-  its first two pages and those two were run again), and 19.A went from
-  yellow to green with no code change: 9 of 10 cells agree on round 2
-  (one false FAIL, CILab) beside 2 in step 9b
-  (`evals/judging/gate-2026-11-17-9c/`).
-
-Left yellow after the cut, each needing more than a day: 4.A, 4.D
-and 5.B (the judge unsure or too strict; frames pictured alone),
-5.D (opened content), 5.F and 5.G (forms a recording cannot send).
-
-### What each step covers
-
-- **9c. The last rerun (done, 2026-11-18).** As step 9b, one repeat,
-  the judge on every type, plus round 3's pages (a rerun, never in
-  place of its blind score), on all three rounds' original freezes at
-  `main` `30e948c` with #121 (write-up in `evals/README.md`, "Gate
-  2026-11-17-9c"; folder `evals/judging/gate-2026-11-17-9c/`, per-page
-  reports out of git). No cell PASSes or DOES NOT APPLYs where the key
-  fails in any round. The README's status table (step 10d) reads its
-  `compare-roundN.json` files. A reference run of round 1 on a refreeze
-  is its own experiment (`evals/judging/gate-2026-11-17-9c-refrozen/`),
-  not in the table.
-- **10d. The README's status table.** One colour and a few words per
-  test by one stated rule, written by a script from 9c; a test fails
-  when the README's rows are not the script's. Counts per site go to
-  a generated `evals/STATUS.md`.
-- **12b.** No app namespace for developers on VAST (admin,
-  2026-11-17): make it work with sign-in at the dev environment's URL,
-  then hand the cluster admins YAML for its resources
-  ([guide, section 6a](how-to/deploy-on-vast.md)). Sign in from Claude
-  Code, run the smoke test, then one page; then the [PENDING] markers
-  about sign-in go.
-- **13.** The [FILL] figures from one scored run at the submission
-  commit ([docs/hackathon/](hackathon/README.md)).
+- **The five rows filed as issues** (the first five of "Next" below):
+  [#134](https://github.com/abbybowman/tobi508/issues/134) first; then [#135](https://github.com/abbybowman/tobi508/issues/135) and [#136](https://github.com/abbybowman/tobi508/issues/136) side by side; [#137](https://github.com/abbybowman/tobi508/issues/137) once [#135](https://github.com/abbybowman/tobi508/issues/135)'s 5.D change
+  and [#134](https://github.com/abbybowman/tobi508/issues/134)'s step 35a are merged; [#138](https://github.com/abbybowman/tobi508/issues/138) once [#134](https://github.com/abbybowman/tobi508/issues/134)'s step 26 is merged.
 
 ## Next: after the demo
 
@@ -127,24 +63,26 @@ test. Inside a row, a wrong outcome or a cell one step from unsafe
 comes before turning NEEDS REVIEW into answers. A step marked
 "approval" turns NEEDS REVIEW into an outcome and waits for Abby's yes
 on the spec text; every row reruns its tests on all three sites'
-frozen pages and shows Abby each moved cell. The detail of steps 23 to
-35 is in [the plan after round 3](plans/2026-11-16-after-round3.md);
+frozen pages and shows Abby each moved cell. The first five rows are
+GitHub issues, which hold their scope, cells and prompts. The detail of
+steps 23 to 35 is in [the plan after round 3](plans/2026-11-16-after-round3.md);
 of 14 to 20, in
 [the plan after the code review](plans/2026-11-12-coverage-second-look-thin-agent.md)
 and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 
 | Row | Steps | What |
 | --- | --- | --- |
-| Applications | 24, 25, 26, 35a, 35e | The app's own address changes read as caused by focus (24); the freeze saves code loaded on use (25); every address serving one document (26, approval, 16 cells); controls with no form element (35a, approval); a press that navigates (35e, approval) |
-| 4.D and 5.D on what opens | 27, then 15 | A faint mark on a large element is not a focus indicator (27; it must land first: one cell is a PASS the key fails, held only by a guard), then 4.D and 5.D read what menus and sections open (15) |
-| 4.A and 4.F | 28, 32, 33 | A hedged judge answer is "unsure" (28); 4.A's undecided signals (32, approval); 4.F's rubric, footer columns and dropdowns (33) |
-| Forms | 29 (rest), 30, 35b-d, 37 | The search box in a panel (29, approval); forms with nothing to get wrong (30, approval); the one-cell 5.B, 5.C and 5.D items (35b-d) with 5.B's rubric on a search page; a frame's fields pictured in place on the page, not opened alone (37) |
-| Site tests | 34, 19b | 19.A after round 3 and on CILab (34, approval), reruns serving other pages from the freeze, 9.C's sentence when other pages could not be read; 9.C pairs by function (19b). **19.A row W4 and a script that draws nothing (approval; Abby, 2026-11-18):** W4 turns the live site search into "not verified" when any script the results page asked for failed to load (`capture.failed_scripts`), including an analytics tag. On science.data.nasa.gov's p01 to p03 the only failure is `script.crazyegg.com/pages/scripts/0013/2090.js` (Chromium here: `ERR_BLOCKED_BY_ORB`; `curl` gets 200), so 19.A stays NEEDS REVIEW where the key passes, in 9c and in the 2026-11-19 comparison. W4 exists because a results page drawn by script shows nothing when its scripts fail (step 6c's six false FAILs), so the refinement must keep that: count only a script that could draw the results (same site or a known results script), never a tag from another host that the results page does not wait on, and prove it on a fixture with such a tag before it touches the rule; why Chromium blocks that one script in this container is unexplained |
+| Applications ([#134](https://github.com/abbybowman/tobi508/issues/134)) | 24, 25, 26, 35a, 35e | The app's own address change read as caused by focus (24); the freeze saves code loaded on use (25); every address serving one document (26, approval); controls with no form element (35a, approval); a press that navigates (35e, approval); the late-drawing guard |
+| 4.D and 5.D on what opens ([#135](https://github.com/abbybowman/tobi508/issues/135)) | 27, then 15 | A faint mark on a large element is not a focus indicator (27, first), then 4.D and 5.D read what menus and sections open ([15](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L278-L290)); the plain-button form (H-08). Step 15's 4.A and 4.F parts are in no issue yet |
+| 4.A and 4.F ([#136](https://github.com/abbybowman/tobi508/issues/136)) | 28, 33, 32 | A hedged judge answer is "unsure" (28); 4.F's rubric, footer columns and dropdowns (33); 4.A's undecided signals (32, approval) |
+| Forms ([#137](https://github.com/abbybowman/tobi508/issues/137)) | 35b-d, 37, 29 (rest), 30 | The one-cell 5.B, 5.C and 5.D items (35b-d); a frame's fields pictured in place (37); the search box in a panel (29, approval); forms with nothing to get wrong (30, approval); 5.D's wording after a retry |
+| Site tests ([#138](https://github.com/abbybowman/tobi508/issues/138)) | 34, 19b | CILab's 19.A; row W4 and the failed analytics script (approval); round 3's breadcrumbs and results-page questions (34, approval); reruns serving other pages from the freeze; 9.C pairs by function ([19b](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L316-L323)) |
 | The judge | 40 | For a question type that fails the gate, the judge's FAIL is shown as "likely fails, a person should confirm", never handed to the calling agent (a rule change; Abby's decision first) |
 | Unsure says what would settle it | 42 | Every "unsure" judge answer says what would settle it (a picture the question lacks, a clause of the rubric, a value the input does not give), so each one is a to-do for the evidence, not a dead end. Why: in the 2026-11-19 compare the judge was unsure 69 times where the calling agent answered, and its reasons were mostly missing pictures (5.A, 5.B, 5.C, 4.F) or the page's markup against the picture (4.E); `docs/solutions/server-judge.md`, "Why the judge is unsure more often". A new field in the answer, no change to any outcome rule; run the judge eval (`evals/`) after the change, and compare the unsure answers' new field against the missing pictures |
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
 | Meaning to the judge | 16 | 5.H's, 4.B's and 2.x's word lists become questions |
 | Live status page | 41 | A read-only page on the server, open without sign-in, showing each run it holds as it goes (page, tests, progress) and, when done, its outcomes, with its pre-SCRT file opened in the viewer; a link to it in the tool's results. Runs the server still holds only; the lasting store is 17. Touches no test or spec, so it can run beside the rows above. Not the demo's live log (`/live`, #123: a token-gated log of every call's payload, off by default); build on its parts, under its own path (e.g. `/status`): the `Job.progress` hook, the text-only page under a strict CSP (`livepage.py`, `live/`), the outcome line, and its tests (POST refused, markup stays text, open while `/mcp` answers 401) |
+| Hosting on VAST | 12b (rest) | Sign-in at the dev URL works (step 12b; the smoke test passed 2026-11-18). Left: the token's groups and audience, so a group can limit who signs in; a namespace and pod of TOBI's own from YAML for the cluster admins ([guide, sections 6a and 9](how-to/deploy-on-vast.md)); the Forgejo mirror that releases each image |
 | The service | 17, 18 | The store, a thin MCP surface, one writer per run (17); a person's answer only from TOBI's own page (18) |
 | Measures | 10b, 11, 19 | Round 4, a blind round, when Abby keys one (10b); the second look's trial (11), then as a guard (19) |
 | SCRT files | 20 | Review, merge, export ([plan](plans/2026-11-02-scrt-io.md)) |

@@ -57,7 +57,7 @@ body:
     id: limits
     attributes:
       label: Known limits and README rows this closes
-      description: Link the KNOWN-LIMITS section and name its bullet; quote the README "Known wrong outcomes" row.
+      description: Link the KNOWN-LIMITS section and name its bullet; quote the README "Known wrong outcomes" bullet.
   - type: textarea
     id: done
     attributes:
@@ -67,7 +67,7 @@ body:
         - [ ] Spec versions bumped and locked; Abby approved every "approval" step's spec text
         - [ ] Judge eval run for each changed question, rubric or input
         - [ ] The rerun on all three rounds' frozen pages (docs/how-to/work-an-issue.md), every moved cell shown beside the key
-        - [ ] README "Known wrong outcomes", docs/KNOWN-LIMITS.md, docs/ROADMAP.md and (if a spec version changed) docs/hackathon updated in the same commits
+        - [ ] README "Known wrong outcomes", docs/KNOWN-LIMITS.md and docs/ROADMAP.md updated in the same commits
   - type: textarea
     id: detail
     attributes:

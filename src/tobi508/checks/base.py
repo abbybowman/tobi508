@@ -120,7 +120,7 @@ AFTER: dict[str, tuple[str, ...]] = {
 # What a check records when the run's time limit cut work short (one wording
 # for every check; RunContext.out_of_time).
 OUT_OF_TIME_MSG = "The run time limit was reached before every check finished."
-# The same, when the test's own budget ended first (step 6c).
+# The same, when the test's own budget ended first.
 OUT_OF_BUDGET_MSG = "This test's own time ran out before it finished."
 
 
@@ -192,7 +192,7 @@ class RunContext:
 
     def time_reason(self) -> str:
         """Which limit `out_of_time` met, in the words of a "not measured"
-        note: the run's, or the test's own (step 6c)."""
+        note: the run's, or the test's own."""
         if time.monotonic() > self.deadline:
             return "the run reached its time limit"
         return "this test's own time ran out"

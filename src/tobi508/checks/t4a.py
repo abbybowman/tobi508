@@ -205,7 +205,7 @@ POINT_FN = (
 }"""
 )
 
-# Scroll check (1.8.0, fix 24). Before a click: every scrolling container, its
+# Scroll check (fix 24). Before a click: every scrolling container, its
 # scroll position and its items (its children, through single wrappers) with
 # their boxes. After: for each container that scrolled, the items that came
 # into view and how many of them are, or hold, a stop. Top document only.
@@ -395,7 +395,7 @@ class State4A(BaseModel):
     instances: list[Inst4A] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
     walk_gap: str | None = None  # row WK's sentence, when an element was not reached
-    late: str | None = None  # row WL's sentence (step 22): the page drew itself late
+    late: str | None = None  # row WL's sentence: the page drew itself late
     walk_reached: tuple[int, int] | None = None  # (reached, counted), the evidence
     notes: list[str] = Field(default_factory=list)
     shot: str | None = None
@@ -511,7 +511,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
     )
     # With no stops there is nothing past a trap to miss (judge eval: the note
     # made agents doubt an empty stop list).
-    # Row WK (1.11.0): an element no pass reached was not checked; its
+    # Row WK: an element no pass reached was not checked; its
     # sentence says what the generic line below only implies.
     cov = walk_coverage(walk)
     if cov.counted is not None:
@@ -538,7 +538,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
         s.stop.path_key for p in (p1, p2) for s in p.steps if s.stop.kind == "element"
     }
     # Focus on a part of a native date or time input reaches that input
-    # (spec 1.2.0, Terms): the parts sit in the input's own shadow root.
+    # (Terms): the parts sit in the input's own shadow root.
     all_stops |= {
         _host_key(s.stop)
         for p in (p1, p2)
@@ -755,7 +755,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
     text = ""
     titled = [(sr, (_hook(p1, sr) or {}).get("title")) for sr in st.stop_list]
     # Titles inside a native date input are the browser's own ("Show date
-    # picker"), not the page's (spec 1.2.0).
+    # picker"), not the page's.
     titled = [(sr, t) for sr, t in titled if t and not _native_part(p1, sr)]
     if titled:
         s = await open_session(ctx.new_page, ctx.quiet_ms)
@@ -785,7 +785,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
 def _native_part(p1: PassResult, sr: StopRef) -> bool:
     """A part Chrome focuses inside a native date or time input (month, day,
     year, picker button; walk control "date" with the input as its group):
-    part of a native control (spec 1.2.0, Terms; 5.D V3)."""
+    part of a native control (Terms; 5.D V3)."""
     stop = p1.steps[sr.index].stop
     return stop.control == "date" and bool(stop.group)
 
@@ -1035,7 +1035,7 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
 
 def _goes_to(inst: Inst4A) -> dict[str, str]:
     """Where the candidate goes: a link's destination, or the address a click
-    that navigated went to (1.8.1, fix 25). Empty when it goes nowhere."""
+    that navigated went to (fix 25). Empty when it goes nowhere."""
     dest = inst.target.get("dest")
     if not dest and inst.click and {"navigation", "fragment"} & set(inst.click.kinds):
         dest = inst.click.url

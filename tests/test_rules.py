@@ -51,8 +51,19 @@ def test_every_rules_file_is_a_spec_or_build_tasks() -> None:
     names = {p.name for p in RULES_DIR.glob("*.md")}
     spec_names = {s.path.name for s in load_specs(RULES_DIR).values()}
     assert names - spec_names <= {
-        p for p in names if p.endswith("-build-tasks.md") or p.startswith("_")
+        p
+        for p in names
+        if p.endswith("-build-tasks.md") or p.startswith("_") or p == "CLAUDE.md"
     }
+
+
+def test_a_claude_md_in_the_rules_folder_is_not_read_as_a_spec(tmp_path: Path):
+    # Claude Code reads a folder's CLAUDE.md; the spec loader must skip it.
+    (tmp_path / "4c-no-keyboard-trap.md").write_text(SPEC_4C)
+    (tmp_path / "CLAUDE.md").write_text("# Instructions, not a spec\n")
+    assert [s.path.name for s in load_specs(tmp_path).values()] == [
+        "4c-no-keyboard-trap.md"
+    ]
 
 
 def test_version_recorded_in_report_versions(tmp_path: Path) -> None:

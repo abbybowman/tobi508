@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Arial, Helvetica, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">How TOBI tests a page</title>
+<desc id="d">A developer's AI agent asks the TOBI MCP server to test a page with tobi_run_tt_tests. Inside the server: the page is recorded once in real Chrome; every check runs on that replay. TOBI walks the page with the keyboard, fills in forms, watches motion and reads other pages of the site. Rules, one spec per Trusted Tester test citing the DHS PDF, decide what they can and give an outcome: PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW, with evidence. A PASS or DOES NOT APPLY is held back to NEEDS REVIEW when a test did not read everything the page holds. When a rule needs a judgment it asks an open question; the server judge, TOBI's pinned model, answers by rubric with yes, no or unsure. A sure answer goes back to the rule. An unsure answer, or a failed call, goes to a person (planned: a signed-in review page whose answers override the model's). Outcomes go into a draft report, the pre-SCRT file, marked not certified and recording who answered what; a Trusted Tester's own SCRT record comes only when they certify every row (planned). Results and a link to the full report go back to the agent, which explains them and helps fix the code. Solid lines are built; dashed are planned.</desc>
+<defs>
+  <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0B3364"/></marker>
+</defs>
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<text x="40" y="62" font-size="34" font-weight="bold" fill="#0B3364">How TOBI tests a page</text>
+<text x="40" y="96" font-size="19" fill="#4A4A4A">Solid: built and running today. Dashed: planned.</text>
+
+<!-- 1 agent -->
+<rect x="30" y="200" width="230" height="300" rx="12" fill="#FFFFFF" stroke="#0B3364" stroke-width="3"/>
+<circle cx="58" cy="230" r="15" fill="#0B3364"/><text x="58" y="236" font-size="17" font-weight="bold" fill="#FFFFFF" text-anchor="middle">1</text>
+<text x="82" y="236" font-size="18" font-weight="bold" fill="#0B3364">Developer's</text>
+<text x="48" y="262" font-size="18" font-weight="bold" fill="#0B3364">AI agent</text>
+<g font-size="16" fill="#1F1F1F"><text x="48" y="296">Any MCP client, in the</text><text x="48" y="318">tool the developer uses.</text><text x="48" y="352">Asks TOBI to test a page.</text><text x="48" y="374">Then explains the results</text><text x="48" y="396">in plain words and helps</text><text x="48" y="418">fix the code.</text></g>
+
+<!-- server -->
+<rect x="285" y="140" width="950" height="575" rx="16" fill="#EDF2F8" stroke="#0B3364" stroke-width="3"/>
+<text x="305" y="174" font-size="21" font-weight="bold" fill="#0B3364">TOBI MCP server</text>
+
+<g font-size="16" fill="#1F1F1F">
+<rect x="305" y="200" width="190" height="150" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5"/>
+<circle cx="330" cy="228" r="14" fill="#0B3364"/><text x="330" y="234" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">2</text>
+<text x="352" y="234" font-size="18" font-weight="bold" fill="#0B3364">Record once</text>
+<text x="320" y="268">In real Chrome.</text><text x="320" y="290">Every check runs</text><text x="320" y="312">on the replay, not</text><text x="320" y="334">the live site.</text>
+
+<rect x="520" y="200" width="230" height="150" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5"/>
+<circle cx="545" cy="228" r="14" fill="#0B3364"/><text x="545" y="234" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">3</text>
+<text x="567" y="234" font-size="18" font-weight="bold" fill="#0B3364">Walk and collect</text>
+<text x="535" y="268">Tab through the page,</text><text x="535" y="290">fill in forms, watch</text><text x="535" y="312">for motion, compare</text><text x="535" y="334">other pages.</text>
+
+<rect x="775" y="200" width="210" height="150" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5"/>
+<circle cx="800" cy="228" r="14" fill="#0B3364"/><text x="800" y="234" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">4</text>
+<text x="822" y="234" font-size="18" font-weight="bold" fill="#0B3364">Rules decide</text>
+<text x="790" y="268">One rules spec per</text><text x="790" y="290">Trusted Tester test,</text><text x="790" y="312">each step citing the</text><text x="790" y="334">DHS PDF.</text>
+
+<rect x="1010" y="200" width="205" height="150" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5"/>
+<text x="1025" y="234" font-size="18" font-weight="bold" fill="#0B3364">Outcome</text>
+<text x="1025" y="268">PASS, FAIL, DOES</text><text x="1025" y="290">NOT APPLY or</text><text x="1025" y="312">NEEDS REVIEW,</text><text x="1025" y="334">with evidence.</text>
+
+<rect x="305" y="410" width="445" height="120" rx="10" fill="#F3F3F3" stroke="#4A4A4A" stroke-width="1.5"/>
+<text x="322" y="442" font-size="18" font-weight="bold" fill="#0B3364">Held back when unsure</text>
+<text x="322" y="472">A rule that cannot decide says NEEDS REVIEW.</text><text x="322" y="494">A PASS or DOES NOT APPLY becomes NEEDS</text><text x="322" y="516">REVIEW when a test did not read everything.</text>
+
+<rect x="775" y="410" width="210" height="70" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5"/>
+<text x="792" y="440" font-size="18" font-weight="bold" fill="#0B3364">A rule asks an</text><text x="792" y="464" font-size="18" font-weight="bold" fill="#0B3364">open question</text>
+
+<rect x="775" y="530" width="210" height="160" rx="10" fill="#FFF4D6" stroke="#8A6100" stroke-width="2.5"/>
+<circle cx="800" cy="558" r="14" fill="#0B3364"/><text x="800" y="564" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">5</text>
+<text x="822" y="564" font-size="18" font-weight="bold" fill="#3D2B00">Server judge</text>
+<text x="790" y="598">TOBI's own pinned</text><text x="790" y="620">model, given evidence,</text><text x="790" y="642">pictures and a rubric:</text><text x="790" y="664">yes, no or unsure.</text>
+</g>
+
+<!-- arrows inside server -->
+<g stroke="#0B3364" stroke-width="3" fill="none">
+<line x1="260" y1="275" x2="301" y2="275" marker-end="url(#a)"/>
+<line x1="495" y1="275" x2="516" y2="275" marker-end="url(#a)"/>
+<line x1="750" y1="275" x2="771" y2="275" marker-end="url(#a)"/>
+<line x1="985" y1="275" x2="1006" y2="275" marker-end="url(#a)"/>
+<line x1="880" y1="350" x2="880" y2="406" marker-end="url(#a)"/>
+<line x1="880" y1="480" x2="880" y2="526" marker-end="url(#a)"/>
+<polyline points="985,570 1112,570 1112,354" marker-end="url(#a)"/>
+<line x1="1215" y1="275" x2="1261" y2="275" marker-end="url(#a)"/>
+<polyline points="520,715 520,770 225,770 225,504" marker-end="url(#a)"/>
+</g>
+<g stroke="#0B3364" stroke-width="3" fill="none" stroke-dasharray="10 7">
+<line x1="985" y1="640" x2="1261" y2="640" marker-end="url(#a)"/>
+<line x1="1417" y1="350" x2="1417" y2="401" marker-end="url(#a)"/>
+<polyline points="1570,640 1588,640 1588,300 1574,300" marker-end="url(#a)"/>
+</g>
+<g font-size="15" fill="#1F1F1F">
+<text x="888" y="384">needs a judgment</text>
+<text x="1122" y="470" font-weight="bold">sure:</text><text x="1122" y="490">the rule uses</text><text x="1122" y="510">the answer</text>
+<text x="996" y="630" font-weight="bold">unsure, or the call failed</text>
+<text x="240" y="760" font-weight="bold">results, and a link to the full report</text>
+<text x="36" y="528" font-weight="bold">tobi_run_tt_tests</text>
+</g>
+
+<!-- right column -->
+<g font-size="16" fill="#1F1F1F">
+<rect x="1265" y="200" width="305" height="150" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5"/>
+<circle cx="1290" cy="228" r="14" fill="#0B3364"/><text x="1290" y="234" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">6</text>
+<text x="1312" y="234" font-size="18" font-weight="bold" fill="#0B3364">Draft report (pre-SCRT)</text>
+<text x="1280" y="268">Results by Trusted Tester test.</text><text x="1280" y="290">Marked "not certified by a</text><text x="1280" y="312">Trusted Tester". Records who</text><text x="1280" y="334">answered what.</text>
+
+<rect x="1265" y="405" width="305" height="125" rx="10" fill="#FFFFFF" stroke="#0B3364" stroke-width="2.5" stroke-dasharray="10 7"/>
+<circle cx="1290" cy="433" r="14" fill="#0B3364"/><text x="1290" y="439" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">8</text>
+<text x="1312" y="439" font-size="18" font-weight="bold" fill="#0B3364">SCRT record</text>
+<text x="1280" y="473">The Trusted Tester's own</text><text x="1280" y="495">record, once they have</text><text x="1280" y="517">certified every row.</text>
+
+<rect x="1265" y="560" width="305" height="160" rx="10" fill="#E8F4EA" stroke="#1E6B3A" stroke-width="2.5" stroke-dasharray="10 7"/>
+<circle cx="1290" cy="588" r="14" fill="#1E6B3A"/><text x="1290" y="594" font-size="16" font-weight="bold" fill="#FFFFFF" text-anchor="middle">7</text>
+<text x="1312" y="594" font-size="18" font-weight="bold" fill="#14532D">A person reviews</text>
+<text x="1280" y="628">On a signed-in review page:</text><text x="1280" y="650">a reviewer or a Trusted</text><text x="1280" y="672">Tester. Their answer</text><text x="1280" y="694">overrides the model's.</text>
+</g>
+
+<!-- principles and legend -->
+<rect x="30" y="800" width="1540" height="86" rx="12" fill="#FFFFFF" stroke="#8A8A8A" stroke-width="1.5"/>
+<g font-size="16" fill="#1F1F1F">
+<text x="52" y="830" font-size="18" font-weight="bold" fill="#0B3364">Rules decide every outcome.</text><text x="52" y="856">The model only answers the narrow</text><text x="52" y="876">questions a rule asks.</text>
+<text x="430" y="830" font-size="18" font-weight="bold" fill="#0B3364">Unsure never becomes PASS.</text><text x="430" y="856">It goes to a person. An answer sent</text><text x="430" y="876">through MCP counts as the agent's.</text>
+<text x="808" y="830" font-size="18" font-weight="bold" fill="#0B3364">Agent-assisted, not certified.</text><text x="808" y="856">Only a Trusted Tester's own review</text><text x="808" y="876">makes an SCRT record.</text>
+<line x1="1200" y1="836" x2="1260" y2="836" stroke="#0B3364" stroke-width="3"/><text x="1272" y="842">built and running today</text>
+<line x1="1200" y1="868" x2="1260" y2="868" stroke="#0B3364" stroke-width="3" stroke-dasharray="10 7"/><text x="1272" y="874">planned, not built yet</text>
+</g>
+</svg>

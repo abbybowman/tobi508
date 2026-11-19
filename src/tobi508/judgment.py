@@ -99,7 +99,7 @@ def _picture_links(value: Any) -> set[str]:
 
 
 def _picture_problem(q, answer: Answer, sent: set[str] = frozenset()) -> str | None:
-    """Agent follow-through plan, change 3 (Abby, 2026-11-06): development
+    """Agent follow-through plan, change 3: development
     runs 5 and 6's agents answered every picture question without opening a
     picture, mostly "unsure". A model's answer to a question whose input
     names a picture says what it shows (`seen`), or, if the picture could

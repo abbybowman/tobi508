@@ -2,7 +2,7 @@
 are fields, arriving at one with Tab, and page reads run on a field (label,
 kind, value, own widget, the text before it; the visible text outside its
 own widget). Facts only; no outcome is decided here (CLAUDE.md principle 2).
-Moved from checks/t5d.py unchanged (2026-11-01)."""
+Moved from checks/t5d.py unchanged."""
 
 from __future__ import annotations
 

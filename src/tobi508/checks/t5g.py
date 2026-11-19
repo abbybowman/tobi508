@@ -314,7 +314,7 @@ def evaluate(st: State5G, evidence_refs: list[str]) -> Finding:
         trace += ["A1", "G1"]  # 5.F's A3s
         return finding(Outcome.DNA, t5f.SEARCH_DNA, trace)
     if not results and not incomplete and t5f.changed_unread(ps):
-        trace += ["A1", "G1"]  # 5.F's A3c (5.G 1.9.0)
+        trace += ["A1", "G1"]  # 5.F's A3c
         return finding(Outcome.NEEDS_REVIEW, t5f.CHANGED_NR, trace)
     if not results and not incomplete:
         trace += ["A1", "G1"]

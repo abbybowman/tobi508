@@ -78,8 +78,7 @@ its developers see the pages or the answers first.
    code changed after the lock (to score with older code, check out the lock
    commit). The rates open with how many pages were scored and why any were
    not. Add a line for
-   the round below. Do not copy figures into `docs/hackathon/evaluation.md`
-   until a final round is chosen.
+   the round below.
 
 Tests the tool does not perform yet, and tests the tester left blank, are
 counted apart, never as agreement or disagreement.
