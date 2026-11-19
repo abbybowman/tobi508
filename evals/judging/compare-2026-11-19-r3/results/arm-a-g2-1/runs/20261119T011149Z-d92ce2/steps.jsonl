@@ -10,3 +10,14 @@
 {"ts":"2026-11-19T01:11:53.499367Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
 {"ts":"2026-11-19T01:12:19.587044Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
 {"ts":"2026-11-19T01:12:22.026358Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:13:03.336562Z","step":"walk","status":"ok","detail":{"P1":{"end":"wrap","presses":104,"cap":356},"P2":{"end":"wrap","presses":104,"cap":356},"cost":{"loads":2,"presses":208,"quick":0,"slow_redos":0,"seconds":73.5}}}
+{"ts":"2026-11-19T01:13:15.249457Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:13:16.303783Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
+{"ts":"2026-11-19T01:13:40.868151Z","step":"reveal","status":"ok","detail":{"triggers":9,"opened":9,"cost":{"loads":14,"presses":29,"quick":0,"slow_redos":0,"seconds":37.53}}}
+{"ts":"2026-11-19T01:13:41.512141Z","step":"collected","status":"ok","detail":{"test":"4.B","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":0.64}}}
+{"ts":"2026-11-19T01:13:42.839389Z","step":"collected","status":"ok","detail":{"test":"4.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.32}}}
+{"ts":"2026-11-19T01:13:42.841417Z","step":"collected","status":"ok","detail":{"test":"4.E","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:13:42.842530Z","step":"collected","status":"ok","detail":{"test":"2.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:13:42.843433Z","step":"collected","status":"ok","detail":{"test":"2.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:13:44.698637Z","step":"collected","status":"ok","detail":{"test":"2.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.85}}}
+{"ts":"2026-11-19T01:13:44.700149Z","step":"collected","status":"ok","detail":{"test":"2.D","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}

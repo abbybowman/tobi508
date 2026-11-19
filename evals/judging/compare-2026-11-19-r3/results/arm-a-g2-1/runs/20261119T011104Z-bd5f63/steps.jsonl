@@ -25,3 +25,14 @@
 {"ts":"2026-11-19T01:12:37.917983Z","step":"collected","status":"ok","detail":{"test":"5.F","cost":{"loads":5,"presses":62,"quick":43,"slow_redos":0,"seconds":10.47}}}
 {"ts":"2026-11-19T01:12:37.920898Z","step":"collected","status":"ok","detail":{"test":"5.G","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
 {"ts":"2026-11-19T01:12:38.320402Z","step":"collected","status":"ok","detail":{"test":"5.H","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.4}}}
+{"ts":"2026-11-19T01:13:24.818137Z","step":"collected","status":"ok","detail":{"test":"4.C","cost":{"loads":7,"presses":244,"quick":58,"slow_redos":0,"seconds":46.5}}}
+{"ts":"2026-11-19T01:13:29.362404Z","step":"collected","status":"ok","detail":{"test":"9.A","cost":{"loads":1,"presses":3,"quick":0,"slow_redos":0,"seconds":4.54}}}
+{"ts":"2026-11-19T01:13:29.365924Z","step":"collected","status":"ok","detail":{"test":"9.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:13:31.088485Z","step":"collected","status":"ok","detail":{"test":"9.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":1.72}}}
+{"ts":"2026-11-19T01:13:33.728732Z","step":"collected","status":"ok","detail":{"test":"3.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":2.64}}}
+{"ts":"2026-11-19T01:13:33.734436Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/","har":"pages/001.har.zip"}}
+{"ts":"2026-11-19T01:13:33.741128Z","step":"captured_live","status":"ok","detail":{"n":1,"purpose":"suggested","seconds":0.01}}
+{"ts":"2026-11-19T01:13:36.793225Z","step":"frozen_page","status":"ok","detail":{"url":"https://science.data.nasa.gov/search","har":"pages/015.har.zip"}}
+{"ts":"2026-11-19T01:13:36.793605Z","step":"captured_live","status":"ok","detail":{"n":2,"purpose":"search","seconds":0.11}}
+{"ts":"2026-11-19T01:13:39.969339Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":6.24}}}
+{"ts":"2026-11-19T01:13:46.640868Z","step":"egress_refused","status":"blocked","detail":{"host":"127.0.0.1","port":9,"reason":"resolves to a loopback address"}}
