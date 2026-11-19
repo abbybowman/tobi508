@@ -1,0 +1,291 @@
+# Tool selection cases: a plain-language request, any earlier turns it needs
+# (`prior`, a file in priors/, given to the agent as the conversation so
+# far), and the expected answer. Written and committed before any run
+# (2026-11-19). README.md says how they are run and scored.
+#
+# expect.tool    the tool the agent's FIRST tobi_* call must use, or "none"
+# expect.ok      other tools accepted as that first call (only schema validity
+#                is checked for them)
+# expect.forbid  tools that must not be called at all in the run
+# expect.equal   argument == value
+# expect.contains  list argument contains every value
+# expect.subset  list argument holds only these values
+# expect.match   regex searched in str(argument)
+# expect.present / expect.absent   argument given / not given
+# expect.any_of  a list of {arg = regex} tables: at least one must match fully
+# expect.text    regex the final message must contain (case-insensitive)
+# expect.no_claim  the final message must not call the page certified,
+#                compliant or conformant (a sentence without a negation)
+# modes          judge modes the case runs in (default both: client, api)
+#
+# {scrt} in a prompt is replaced by priors/tester-scrt.json's text.
+
+# ── tobi_run_tt_tests ─────────────────────────────────────────────────────
+
+[[case]]
+id = "run-plain"
+goal = "goal words only: check a page"
+prompt = "Can you check https://www.usa.gov/ for Section 508 accessibility problems?"
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.usa.gov/" }
+
+[[case]]
+id = "run-keyboard-goal"
+goal = "goal words: keyboard users, no test names"
+prompt = "Our team wants to know if someone who can't use a mouse can get around https://www.nasa.gov/careers/ with just the keyboard without getting stuck. Can you find out?"
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.nasa.gov/careers/" }
+
+[[case]]
+id = "run-subset-forms"
+goal = "tests for a subset, named by range"
+prompt = "Only run the form label tests, 5.A through 5.D, on https://www.irs.gov/payments. Nothing else, please; we're short on time."
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.irs.gov/payments" }
+contains = { tests = ["5.A", "5.B", "5.C", "5.D"] }
+subset = { tests = ["5.A", "5.B", "5.C", "5.D"] }
+
+[[case]]
+id = "run-single-trap"
+goal = "one test named by what it checks and its ID"
+prompt = "I only care about keyboard traps (that's TT 4.C, right?). Check https://www.cdc.gov/flu/index.html for that and nothing else."
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.cdc.gov/flu/index.html", tests = ["4.C"] }
+
+[[case]]
+id = "run-site-wide"
+goal = "other_pages for the tests that compare pages"
+prompt = "Is the navigation consistent across our site? Test https://www.section508.gov/ and compare it with https://www.section508.gov/manage/ and https://www.section508.gov/develop/."
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.section508.gov/" }
+contains = { other_pages = ["https://www.section508.gov/manage/", "https://www.section508.gov/develop/"] }
+
+[[case]]
+id = "run-multiple-ways"
+goal = "other_pages for 19.A, given as goal words"
+prompt = "Can people find https://www.energy.gov/about-us more than one way on the site? The home page is https://www.energy.gov/ and the site map is https://www.energy.gov/sitemap."
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.energy.gov/about-us" }
+contains = { other_pages = ["https://www.energy.gov/", "https://www.energy.gov/sitemap"] }
+
+[[case]]
+id = "run-no-limit-media"
+goal = "no_time_limit=true: the whole page, large media files in full"
+prompt = "Test https://www.nps.gov/yell/learn/photosmultimedia/videos.htm fully. It has big video files: save them in full too, and don't hold the run to any time limit."
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.nps.gov/yell/learn/photosmultimedia/videos.htm", no_time_limit = true }
+
+[[case]]
+id = "run-time-limit"
+goal = "no_time_limit=false: hold the run to the normal limit"
+prompt = "Test https://www.weather.gov/ but hold it to the normal run time limit. If the page is too big for that, I'd rather it refuse than run for half an hour."
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.weather.gov/", no_time_limit = false }
+
+[[case]]
+id = "run-retest-after-fix"
+goal = "verify a fix: the same page, the failed test"
+prior = "run_4d_fail"
+prompt = "We fixed the focus outlines on the footer links. Can you check that it worked?"
+[case.expect]
+tool = "tobi_run_tt_tests"
+equal = { url = "https://www.usa.gov/about-the-us" }
+contains = { tests = ["4.D"] }
+
+# ── tobi_run_status ───────────────────────────────────────────────────────
+
+[[case]]
+id = "status-done-yet"
+goal = "\"is it done yet\" with a running job"
+prior = "pending"
+prompt = "is it done yet?"
+[case.expect]
+tool = "tobi_run_status"
+equal = { job_id = "job-3fedace186a3" }
+forbid = ["tobi_run_tt_tests"]
+
+[[case]]
+id = "status-check-on-it"
+goal = "check on a running job; never start it again"
+prior = "pending"
+prompt = "It's been a few minutes. How's that careers page test going?"
+[case.expect]
+tool = "tobi_run_status"
+equal = { job_id = "job-3fedace186a3" }
+forbid = ["tobi_run_tt_tests"]
+
+[[case]]
+id = "status-anything-left"
+goal = "what is left across the session: no job_id"
+prior = "run_open"
+prompt = "Before you write this up for my manager: is anything still left to do across what we've tested?"
+[case.expect]
+tool = "tobi_run_status"
+absent = ["job_id"]
+ok = ["tobi_answer_questions"]
+
+[[case]]
+id = "status-finish"
+goal = "finish=true after the questions are answered"
+prior = "answered_followups"
+prompt = "Great. Go ahead and make whatever follow-up runs you can on your own, then tell me where things stand."
+[case.expect]
+tool = "tobi_run_status"
+absent = ["job_id"]
+equal = { finish = true }
+
+# ── tobi_answer_questions ─────────────────────────────────────────────────
+
+[[case]]
+id = "answers-from-user"
+goal = "\"here are my answers\": a person's answers"
+prior = "run_open"
+prompt = "Here are my answers. The card on the Search button is just a little hover card, it doesn't take over the page. And yes, \"Search\" and \"Find\" both go to the same search page."
+[case.expect]
+tool = "tobi_answer_questions"
+equal = { run_id = "20261119T014033Z-259f56" }
+match = { answers = "4\\.E-e1-J1" }
+
+[[case]]
+id = "answers-agent-finishes"
+goal = "the calling agent answers the open questions itself (no judge)"
+modes = ["client"]
+prior = "run_open"
+prompt = "Go ahead and settle the open questions yourself, then give me the results."
+[case.expect]
+tool = "tobi_answer_questions"
+equal = { run_id = "20261119T014033Z-259f56" }
+
+[[case]]
+id = "answers-override-judge"
+goal = "a person overrides the server judge's unsure answer"
+modes = ["api"]
+prior = "api_unsure"
+prompt = "I looked at the 4.E one myself: it's a small profile card, the page stays usable, it is not a dialog. Record that."
+[case.expect]
+tool = "tobi_answer_questions"
+equal = { run_id = "20261119T160501Z-77d2e9" }
+
+[[case]]
+id = "relay-judge-unsure"
+goal = "relay the judge's unsure answers, do not answer them"
+modes = ["api"]
+prior = "api_unsure"
+prompt = "OK, wrap it up and give me the final summary."
+[case.expect]
+tool = "none"
+ok = ["tobi_run_status", "tobi_explain"]
+forbid = ["tobi_answer_questions", "tobi_run_tt_tests"]
+text = "person|human|manual|review"
+
+# ── tobi_explain ──────────────────────────────────────────────────────────
+
+[[case]]
+id = "explain-why-fail"
+goal = "\"why did 4.D fail and how do I fix it\""
+prior = "run_4d_fail"
+prompt = "Why did 4.D fail, and how do I fix it?"
+[case.expect]
+tool = "tobi_explain"
+equal = { run_id = "20261119T150212Z-a81c04" }
+match = { about = "4\\.D|2\\.4\\.7|focus" }
+
+[[case]]
+id = "explain-all-findings"
+goal = "a run's full findings, not one line each"
+prior = "run_4d_fail"
+prompt = "Give me the full details on everything that run found, not just one line each."
+[case.expect]
+tool = "tobi_explain"
+equal = { run_id = "20261119T150212Z-a81c04" }
+
+[[case]]
+id = "explain-test"
+goal = "what a test checks, no run"
+prompt = "What does Trusted Tester test 5.C actually check, and who does it help?"
+[case.expect]
+tool = "tobi_explain"
+match = { about = "5\\.C" }
+absent = ["run_id"]
+
+[[case]]
+id = "explain-criterion"
+goal = "a WCAG criterion by number, no run"
+prompt = "Which of the tests you can run cover WCAG 2.4.3, and how does a Trusted Tester test it?"
+[case.expect]
+tool = "tobi_explain"
+match = { about = "2\\.4\\.3|4\\.E|4\\.F" }
+absent = ["run_id"]
+
+# ── tobi_read_report ──────────────────────────────────────────────────────
+
+[[case]]
+id = "read-tester-diff"
+goal = "\"here's my tester's SCRT file, what differs\""
+prior = "run_open"
+prompt = "Here's my tester's SCRT file for the same page. What differs from your results?\n\n```json\n{scrt}\n```"
+[case.expect]
+tool = "tobi_read_report"
+present = ["content", "compare_to"]
+any_of = [
+  { content = "(?s)^\\s*\\[.*TestResult", compare_to = "^run://20261119T014033Z-259f56/pre-scrt\\.json$" },
+  { compare_to = "(?s)^\\s*\\[.*TestResult", content = "^run://20261119T014033Z-259f56/pre-scrt\\.json$" },
+]
+
+[[case]]
+id = "read-what-changed"
+goal = "\"what changed since my last report\": before and after"
+prior = "two_runs"
+prompt = "What changed since my last report?"
+[case.expect]
+tool = "tobi_read_report"
+equal = { content = "run://20261119T171544Z-0c3e1f/pre-scrt.json", compare_to = "run://20261119T150212Z-a81c04/pre-scrt.json" }
+
+[[case]]
+id = "read-one-file"
+goal = "read one SCRT file: what failed, what needs a person"
+prompt = "My tester sent me this SCRT file. What failed, and what still needs a person to look at?\n\n```json\n{scrt}\n```"
+[case.expect]
+tool = "tobi_read_report"
+match = { content = "TestResult" }
+absent = ["compare_to"]
+
+# ── should not call, or call with a caveat ────────────────────────────────
+
+[[case]]
+id = "not-gov"
+goal = "a URL outside the allowlist"
+prompt = "Test https://www.amazon.com/ for Section 508 for me."
+[case.expect]
+tool = "none"
+ok = ["tobi_run_tt_tests"]
+text = "\\.gov|\\.mil|allow ?list|allowed|government"
+no_claim = true
+
+[[case]]
+id = "certify"
+goal = "\"certify this page\": never claim certification"
+prompt = "Certify https://www.usa.gov/ as Section 508 compliant so we can put the badge on it."
+[case.expect]
+tool = "none"
+ok = ["tobi_run_tt_tests", "tobi_explain"]
+text = "not (a )?certif|cannot certify|can't certify|can not certify|no certification|isn't a certif|is not a certif|not able to certify|unable to certify|agent-assisted"
+no_claim = true
+
+[[case]]
+id = "not-implemented"
+goal = "a TT test TOBI does not implement (7.A captions)"
+prompt = "Check whether the videos on https://www.nasa.gov/nasa-live/ have captions. That's TT test 7.A, I think."
+[case.expect]
+tool = "none"
+ok = ["tobi_run_tt_tests", "tobi_explain"]
+text = "not (yet )?(implemented|built|covered|supported|one of|among|included|available|in the list|in its list)|isn't (implemented|built|covered|supported|one of|among|included)|doesn't (implement|cover|support|include|test|run)|does not (implement|cover|support|include|test|run)|(can't|cannot|could not|unable to|can not) (be )?(test|perform|check|run)|could not be performed|needs[ _]review"
+no_claim = true
