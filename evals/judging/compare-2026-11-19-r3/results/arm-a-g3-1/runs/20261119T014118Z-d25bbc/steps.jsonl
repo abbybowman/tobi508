@@ -39,3 +39,10 @@
 {"ts":"2026-11-19T01:46:20.799363Z","step":"collected","status":"ok","detail":{"test":"19.A","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":6.02}}}
 {"ts":"2026-11-19T01:46:38.069941Z","step":"collected","status":"ok","detail":{"test":"4.F","cost":{"loads":7,"presses":90,"quick":77,"slow_redos":0,"seconds":17.27}}}
 {"ts":"2026-11-19T01:46:51.529614Z","step":"collected","status":"ok","detail":{"test":"4.A","cost":{"loads":2,"presses":0,"quick":0,"slow_redos":0,"seconds":13.46}}}
+{"ts":"2026-11-19T01:46:54.615194Z","step":"collected","status":"ok","detail":{"test":"5.D","cost":{"loads":1,"presses":9,"quick":8,"slow_redos":0,"seconds":3.09}}}
+{"ts":"2026-11-19T01:46:55.980627Z","step":"collected","status":"ok","detail":{"test":"5.A","cost":{"loads":1,"presses":0,"quick":0,"slow_redos":0,"seconds":1.36}}}
+{"ts":"2026-11-19T01:46:55.981610Z","step":"collected","status":"ok","detail":{"test":"5.B","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:46:55.984331Z","step":"collected","status":"ok","detail":{"test":"5.C","cost":{"loads":0,"presses":0,"quick":0,"slow_redos":0,"seconds":0.0}}}
+{"ts":"2026-11-19T01:46:56.175265Z","step":"run_end","status":"ok","detail":{}}
+{"ts":"2026-11-19T01:47:01.153632Z","step":"answers_recorded","status":"ok","detail":{"accepted":["4.A-t80-J2","4.F-o1-J1","5.A-c1-J1"],"rejected":[],"errors":[]}}
+{"ts":"2026-11-19T01:47:03.360292Z","step":"answers_recorded","status":"ok","detail":{"accepted":["5.B-f1-J1"],"rejected":[],"errors":[]}}
