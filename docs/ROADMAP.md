@@ -52,9 +52,6 @@ filed as a GitHub issue starts from the issue's own prompt and
 [how-to/work-an-issue.md](how-to/work-an-issue.md); the other steps' prompts
 are in [reviews/2026-11-11-code-review-fixing.md](reviews/2026-11-11-code-review-fixing.md).
 
-- **12b. Hosted on VAST.** Sign-in at the dev URL works (smoke test passed
-  2026-11-18). Next: the token's groups and audience, then YAML for the
-  cluster admins ([guide, section 6a](how-to/deploy-on-vast.md)).
 - **The five rows filed as issues** (the first five of "Next" below):
   [#134](https://github.com/abbybowman/tobi508/issues/134) first; then [#135](https://github.com/abbybowman/tobi508/issues/135) and [#136](https://github.com/abbybowman/tobi508/issues/136) side by side; [#137](https://github.com/abbybowman/tobi508/issues/137) once [#135](https://github.com/abbybowman/tobi508/issues/135)'s 5.D change
   and [#134](https://github.com/abbybowman/tobi508/issues/134)'s step 35a are merged; [#138](https://github.com/abbybowman/tobi508/issues/138) once [#134](https://github.com/abbybowman/tobi508/issues/134)'s step 26 is merged.
@@ -85,6 +82,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
 | Meaning to the judge | 16 | 5.H's, 4.B's and 2.x's word lists become questions |
 | Live status page | 41 | A read-only page on the server, open without sign-in, showing each run it holds as it goes (page, tests, progress) and, when done, its outcomes, with its pre-SCRT file opened in the viewer; a link to it in the tool's results. Runs the server still holds only; the lasting store is 17. Touches no test or spec, so it can run beside the rows above. Not the demo's live log (`/live`, #123: a token-gated log of every call's payload, off by default); build on its parts, under its own path (e.g. `/status`): the `Job.progress` hook, the text-only page under a strict CSP (`livepage.py`, `live/`), the outcome line, and its tests (POST refused, markup stays text, open while `/mcp` answers 401) |
+| Hosting on VAST | 12b (rest) | Sign-in at the dev URL works (step 12b; the smoke test passed 2026-11-18). Left: the token's groups and audience, so a group can limit who signs in; a namespace and pod of TOBI's own from YAML for the cluster admins ([guide, sections 6a and 9](how-to/deploy-on-vast.md)); the Forgejo mirror that releases each image |
 | The service | 17, 18 | The store, a thin MCP surface, one writer per run (17); a person's answer only from TOBI's own page (18) |
 | Measures | 10b, 11, 19 | Round 4, a blind round, when Abby keys one (10b); the second look's trial (11), then as a guard (19) |
 | SCRT files | 20 | Review, merge, export ([plan](plans/2026-11-02-scrt-io.md)) |

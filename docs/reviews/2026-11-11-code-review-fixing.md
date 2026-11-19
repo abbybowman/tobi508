@@ -12,8 +12,8 @@ is listed here is what is left to start or still running.
 small part, 31 and 36, and 4.F 1.11.0 (PRs #39 to #121, and 9c's;
 `docs/archive/`). Round 3 is scored.
 
-**Order to start them:** 12b (hosting on VAST) and 41 (the status page)
-touch no test or spec, so they can run beside the issues below.
+**Order to start them:** 41 (the status page) touches no test or spec, so
+it can run beside the issues below.
 
 ## Starting a thread
 
@@ -30,29 +30,6 @@ for the steps every thread shares, the rerun included:
 
 Order: #134 first; then #135 and #136 side by side; #137 once #135's 5.D
 change and #134's step 35a are merged; #138 once #134's step 26 is merged.
-
-**Step 12b, Opus: sign-in at the dev URL** (now: the Keycloak client is minted, 2026-11-18)
-
-> Read `CLAUDE.md`, then `docs/how-to/deploy-on-vast.md` (sections 2,
-> 6a, 6b, 7 and 8), `docs/plans/2026-11-06-hosted-auth.md` and
-> `src/tobi508/access.py`. The VAST admins minted a confidential
-> Keycloak client for my dev URL and recommend their
-> `py_auth_boilerplate` repository for setting up sign-in with it; I
-> will give you its files. TOBI's sign-in is already built (FastMCP's
-> OIDC proxy): the boilerplate signs browsers in with a session cookie
-> and MCP clients send bearer tokens, so do not port its code. Read it
-> for what VAST's realm expects (issuer and discovery URL, scopes,
-> claim names, group strings, redirect path) and compare with our
-> settings; change TOBI only where they differ, with a test. Then
-> follow section 6b with me: I run the commands in my dev environment
-> and paste what they print. The client's ID and secret go only in my
-> env file (mode 600), never in git or this chat. Sign in from Claude
-> Code at the dev URL, run `scripts/smoke_hosted.py` against it, then
-> one real page; measure memory against the 4 GB with `podman stats`.
-> Record what differed from the how-to and fix the how-to. Only when
-> the smoke test passes on VAST, update `SECURITY.md`'s status. The
-> namespace and pod of TOBI's own (section 9, against the
-> boilerplate's example) and the Forgejo mirror come after the demo.
 
 **Step 41, Opus: the live status page** (after the demo; beside the test rows, since it touches no test or spec)
 

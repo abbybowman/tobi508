@@ -40,18 +40,19 @@ you here for the parts that are the same in every issue.
 3. **Run what could have moved:** the check's own fixture file, its
    ACT and Baseline cases, and every check that calls a function you
    changed. For a long run keep one line per test in a log
-   (`CLAUDE.md`, "Commands").
+   (`tests/CLAUDE.md`, "Commands").
 4. **A question, its rubric or its input changed:** run the judge eval
    ([judge-eval.md](../solutions/judge-eval.md)). Scripted answers in
    `tests/` test the rules, not the questions.
 5. **Same commit as the fix:**
    - the spec's `spec_version`: rebase on `main`, take a number `main`
      has not used, run `uv run python -m tobi508.rules lock`;
-   - the README's "Known wrong outcomes" table and the line in
+   - the README's "Known wrong outcomes" list and the line in
      `docs/KNOWN-LIMITS.md` (remove what you fixed, add what you found);
-   - `docs/hackathon/evaluation.md` and its slide in
-     `docs/hackathon/deck.md` when a spec version, evaluation method or
-     security control changes;
+     the README's status table is generated (`evals/status_table.py
+     --write`), and its "see known wrong outcomes below" note follows the
+     list's test ids;
+   - `SECURITY.md` when a security control changes;
    - the issue's row in `docs/ROADMAP.md`.
 6. **Report verified (test or command) apart from assumed** (principle
    6), in the pull request and in a comment on the issue.
@@ -87,7 +88,7 @@ pages before it closes.
    round. A cell on round 1 or 2 that moved gets its own line and a
    reason. Round 3's pages are development pages: this is a rerun, never
    in place of round 3's blind score.
-5. **Update** the README's "Known wrong outcomes" table and
+5. **Update** the README's "Known wrong outcomes" list and
    `docs/KNOWN-LIMITS.md` for what you fixed, in the same commit (not
    the README's status table, which is generated).
 
