@@ -20,8 +20,9 @@ from tobi508.scrt import NotAReport, PreScrt, ScrtResult, parse
 MAX_FILE_CHARS = 40_000_000
 COMMENT_CHARS = 400
 FILE_FORMS = (
-    "the file's full text; or the run:// link tobi_run_tt_tests returned "
-    "(pre_scrt_uri), which saves sending a large file; or, only when the "
+    "the file's full text; or a run's pre_scrt_uri (run://.../pre-scrt.json; "
+    "not report_uri, which is not a report file), which saves sending a "
+    "large file; or, only when the "
     "server runs locally in DEV_MODE, a path to a file on this computer."
 )
 
@@ -206,7 +207,9 @@ def register(mcp: FastMCP) -> None:
             Field(
                 min_length=2,
                 max_length=MAX_FILE_CHARS,
-                description="One report file, as "
+                description="The report file to read; when comparing a page "
+                "before and after a fix, the newer one (compare_to takes the "
+                "older). As "
                 + FILE_FORMS
                 + " An SCRT JSON file (saved from DHS's SCRT) or a pre-SCRT "
                 "file (pre_scrt_uri from tobi_run_tt_tests). One file is one page.",
@@ -218,8 +221,8 @@ def register(mcp: FastMCP) -> None:
                 default=None,
                 max_length=MAX_FILE_CHARS,
                 description="Optional: another report file for the same page, in "
-                "the same forms, for example the earlier report before a fix, "
-                "or a person's report of the same page. The result lists what "
+                "the same forms: the older report (before a fix), or a "
+                "person's report of the same page. The result lists what "
                 "changed between the two, test by test.",
             ),
         ] = None,
