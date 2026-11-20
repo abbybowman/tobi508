@@ -1026,7 +1026,11 @@ class RunPending(BaseModel):
     target: str
     seconds_waiting: float = Field(description="Seconds it waited for a slot.")
     seconds_running: float = Field(description="Seconds since its run started.")
-    progress: str = Field(description="The phase it is in.")
+    progress: str = Field(
+        description="How far along it is: the page reading steps done or not "
+        "needed, then the tests done, each of its total with a rough "
+        "percentage, and what it is doing now (progress.py)."
+    )
     next_step: str
 
 

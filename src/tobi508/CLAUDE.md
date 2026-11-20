@@ -126,7 +126,8 @@ outcome. These six exceptions are approved, each with exactly these limits.
 - One tool call returns within `CALL_WAIT_S` (default 45 s, under common MCP
   client timeouts and HTTP proxies). A run not done by then goes on as a job
   (`jobs.py`) and `tobi_run_status` waits for it again; each still-running
-  result carries a progress line.
+  result carries a progress line: reading steps, then tests, done of total
+  with a rough percentage (`progress.py`).
 - By default a run is not held to a time limit (`NO_TIME_LIMIT_DEFAULT`): it
   tests the whole page and stops only at `MAX_RUN_S` (default 1800 s),
   because agents never put the `no_time_limit` choice to the user.

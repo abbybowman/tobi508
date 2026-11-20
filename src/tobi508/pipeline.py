@@ -1480,9 +1480,7 @@ async def run_tt_tests(
                     continue  # NEEDS REVIEW, not performed: pages_cut says why
                 if needs_walk(c, ctx) and walk is None:
                     continue  # NEEDS REVIEW: the run did not complete (errors say why)
-                await track.testing(
-                    n - 1, len(checks), f"Checking {c.test_id.value} (test {n})"
-                )
+                await track.testing(n - 1, len(checks), f"Checking {c.test_id.value}")
                 # The test's own time, inside the run limit: its
                 # budget or a share of what is left, whichever is smaller. It
                 # stops starting work a little before (ctx.out_of_time) and is
