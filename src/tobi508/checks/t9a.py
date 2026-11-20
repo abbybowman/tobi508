@@ -39,6 +39,7 @@ from tobi508.site import (
     page_label,
     repeated_flags,
     site_read,
+    with_compared,
 )
 from tobi508.traverse import Session, open_session
 from tobi508.walk import KeyboardWalk
@@ -120,6 +121,7 @@ class Cand(BaseModel):
 
 
 class State9A(BaseModel):
+    compared: str = ""  # step 26: other pages compared and left out
     no_pages: bool = False
     pages: list[dict[str, Any]] = Field(default_factory=list)  # n, url
     read_errors: list[str] = Field(default_factory=list)
@@ -278,18 +280,30 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
     if not ctx.pages:
         return State9A(no_pages=True)
     site = await site_read(ctx)
+    # A page over the read cap is not read whole, so what repeats and where
+    # the main content starts cannot be told from it: an other page is left
+    # out (step 26), the tested page is row A2.
+    site = site.leave_out(
+        lambda p: p.truncated,
+        lambda p: (
+            f"{page_label(p)} could not be read in full (more than "
+            f"{UNIT_CAP:,} pieces of content)"
+        ),
+    )
     st = State9A(
-        pages=[{"n": p.n, "url": p.final_url} for p in ctx.pages],
+        pages=[
+            {"n": r.n, "url": r.final_url}
+            for r in ctx.pages
+            if r.n in {p.n for p in site.others}
+        ],
         read_errors=site.errors,
         read=site.read,
+        compared=site.compared_sentence(),
     )
-    # A2: a page over the read cap is not read whole, so what
-    # repeats and where the main content starts cannot be told.
-    st.read_errors += [
-        f"Only the first {UNIT_CAP:,} pieces of content of {page_label(p)} were read."
-        for p in site.pages
-        if p.truncated
-    ]
+    if site.main.truncated:
+        st.read_errors.append(
+            f"Only the first {UNIT_CAP:,} pieces of content of the tested page were read."
+        )
     if st.read_errors:
         return st
     st.units = site.main.units
@@ -664,6 +678,12 @@ def _a3o(st: State9A) -> bool:
 
 
 def evaluate(st: State9A, evidence_refs: list[str]) -> Finding:
+    """The page outcome (`_decide`), with how many other pages were compared
+    (step 26)."""
+    return with_compared(_decide(st, evidence_refs), st.compared)
+
+
+def _decide(st: State9A, evidence_refs: list[str]) -> Finding:
     if st.no_pages:
         f = Finding.not_performed(TestId.T9A, NOT_PERFORMED_PAGES)
         f.rows = ["A1", "G1"]

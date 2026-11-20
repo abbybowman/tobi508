@@ -93,6 +93,7 @@ from tobi508.policy import check_url
 from tobi508.redact import safe_error, safe_url
 from tobi508.resources.runs import run_uri
 from tobi508.runlog import RunRecorder, expires_at, prune_runs
+from tobi508.site import same_place
 from tobi508.traverse import (
     Pace,
     ReplayPlan,
@@ -506,7 +507,15 @@ def _live_recorder(
         if not _same_site(lc.final_url, final_url):
             raise ValueError("it ended on another host after redirects")
         same = False
-        if purpose in ("alias", "suggested") and tested_har is not None:
+        # Step 26 (#134): the same document counts only at the tested page's
+        # host and path apart from the query string; an application sends one
+        # document for every address. An alias (index.*, www.) is then the
+        # tested page only when it ends at the tested page's address.
+        if (
+            purpose in ("alias", "suggested")
+            and tested_har is not None
+            and same_place(final_url, lc.final_url)
+        ):
             mine = document_sha(tested_har, final_url)
             same = mine is not None and mine == document_sha(
                 run.dir / rel, lc.final_url
@@ -1254,9 +1263,13 @@ async def run_tt_tests(
                 # A query string can make another page, so the address was not
                 # refused; the same document bytes under another address is the
                 # tested page again (K-01).
+                # Step 26: only at the same host and path apart from the query
+                # string (an application sends one document at every address).
                 tested_sha = document_sha(har, cap.final_url)
-                same_content = tested_sha is not None and (
-                    tested_sha == document_sha(run.dir / rel, oc.final_url)
+                same_content = (
+                    tested_sha is not None
+                    and same_place(cap.final_url, oc.final_url)
+                    and tested_sha == document_sha(run.dir / rel, oc.final_url)
                 )
                 report.other_pages.append(
                     OtherPage(

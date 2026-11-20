@@ -298,6 +298,38 @@ class PageRead(BaseModel):
 
 class SiteRead(BaseModel):
     pages: list[PageRead]
+    # Step 26 (#134): other pages set aside, one plain sentence each (could
+    # not be read in full, or the tested page again), and how many the
+    # caller gave. The tests compare the tested page with the rest.
+    left_out: list[str] = Field(default_factory=list)
+    given: int = 0
+
+    def leave_out(self, test, why) -> SiteRead:
+        """A copy without the other pages `test` picks, each named in
+        `left_out` with `why(page)` (9.A: a page over its read cap)."""
+        drop = [p for p in self.others if test(p)]
+        return self.model_copy(
+            update={
+                "pages": [p for p in self.pages if p not in drop],
+                "left_out": self.left_out + [why(p) for p in drop],
+            }
+        )
+
+    def compared_sentence(self) -> str:
+        """For the finding's summary (the pre-SCRT comment): how many other
+        pages were read in full and compared, and which were left out."""
+        n = len(self.others)
+        if not self.given:
+            return ""
+        names = ", ".join(str(p.n) for p in self.others)
+        s = (
+            f"We compared this page with {n} of the {self.given} other "
+            f"page{'' if self.given == 1 else 's'} given"
+            + (f" (other page{'' if n == 1 else 's'} {names})." if n else ".")
+        )
+        if self.left_out:
+            s += " Left out: " + "; ".join(self.left_out) + "."
+        return s
 
     @property
     def main(self) -> PageRead:
@@ -326,23 +358,18 @@ class SiteRead(BaseModel):
 
     @property
     def errors(self) -> list[str]:
+        """Rows A2 (step 26): the tested page could not be read, or no other
+        page is left to compare with."""
         out = [
             f"{page_label(p)} could not be read: {p.error}"
             for p in self.pages
             if p.error
         ]
-        out += [
-            f"{page_label(p)} has the same content as the tested page, so "
-            "comparing them would compare the page with itself"
-            for p in self.others
-            if p.identical
-        ]
-        out += [
-            f"{page_label(p)} is nearly the same page as the tested page, so "
-            "comparing them would compare the page with itself"
-            for p in self.others
-            if p.near_copy and not p.identical
-        ]
+        if self.given and not self.others:
+            out.append(
+                "none of the other pages given could be compared: "
+                + "; ".join(self.left_out)
+            )
         return out
 
 
@@ -454,8 +481,43 @@ async def site_read(ctx: Any) -> SiteRead:
                 pages[i] = pages[i].model_copy(update={"identical": True})
             elif near_copy(pages[0], pages[i]):
                 pages[i] = pages[i].model_copy(update={"near_copy": True})
-        ctx.cache["site"] = SiteRead(pages=pages)
+        # Step 26 (#134): an other page that could not be read, or that is
+        # the tested page again, is set aside; the rest are compared.
+        kept = [pages[0]]
+        left: list[str] = []
+        for p in pages[1:]:
+            why = left_out_reason(p)
+            if why:
+                left.append(f"{page_label(p)} {why}")
+            else:
+                kept.append(p)
+        ctx.cache["site"] = SiteRead(pages=kept, left_out=left, given=len(ctx.pages))
     return ctx.cache["site"]
+
+
+def left_out_reason(p: PageRead) -> str:
+    """Why an other page is not compared (step 26), or "" to compare it."""
+    if p.error:
+        return f"could not be read ({p.error})"
+    if p.identical:
+        return (
+            "is the tested page again (the same address apart from the query "
+            "string, and the same document)"
+        )
+    if p.near_copy:
+        return (
+            "is nearly the same page as the tested page (the same address "
+            "apart from the query string, and nearly the same text)"
+        )
+    return ""
+
+
+def same_place(a: str, b: str) -> bool:
+    """The same host and path apart from the query string (step 26): only
+    then can an identical document make an other page the tested page again.
+    An application can send one document for every address and draw each
+    page in the browser (round 3's p07 to p10)."""
+    return _address_no_query(a) == _address_no_query(b)
 
 
 # ── Facts about repetition and matching (no outcomes) ───────────────────────
@@ -713,3 +775,12 @@ def kinship(site: SiteRead) -> Kinship:
         all_unrelated=every,
         unrelated_review=every and own,
     )
+
+
+def with_compared(f: Any, sentence: str) -> Any:
+    """Step 26 (#134): every finding of 9.A to 9.C and 19.A says, in its
+    summary (the pre-SCRT comment), how many other pages it compared and
+    which were left out. Not on A1 (no pages) or A2 (it says why)."""
+    if sentence and f.rows[:1] not in (["A1"], ["A2"]):
+        f.summary = f"{f.summary} {sentence}".strip()
+    return f

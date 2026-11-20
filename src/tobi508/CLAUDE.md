@@ -35,9 +35,10 @@ outcome. These six exceptions are approved, each with exactly these limits.
    address: at most 3 a run, each loaded exactly as a caller's other page is
    (`pipeline.capture_other`: the allowlist on every hop, the tested page's
    host after redirects, its own HAR, the page cache). It is the same page
-   only when it ends at the tested page's address or its document is byte
-   for byte the same; any other one is "not verified" (NEEDS REVIEW), never
-   a FAIL or a match. Its links are never followed. A link that differs only
+   only when it ends at the tested page's address (an identical document is
+   not enough: an application can send one document for every address;
+   #134 step 26); any other one is "not verified" (NEEDS REVIEW), never a
+   FAIL or a match. Its links are never followed. A link that differs only
    by its query string is not an alias.
 4. **A key combination that page text names** as a way to stop moving
    content or audio (2.A-2.C J2): on a fresh replay, modifiers plus one key,

@@ -117,6 +117,11 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W4", "G3"],
         {},
     ),
+    # Step 26 (19.A, #134): an index.html alias with the same document is no
+    # longer verified by the document alone (an application sends one
+    # document for every address), so this page and the two lab pages below
+    # are NEEDS REVIEW (W7, alias not verified) where they were PASS, PASS
+    # and FAIL. Round 2's CILab (key Pass) depends on such an alias.
     # Step 6h (19.A 1.10.0; round 2 p05, svs.gsfc.nasa.gov/cilab/, key Pass):
     # every link to the microsite's home goes to its index.html. Loaded, it
     # is the same document, so those links count: the agency's labs page
@@ -124,8 +129,8 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     "alias-index-html-is-the-page": (
         "micro/",
         ["lab-home", "micro/people"],
-        "PASS",
-        ["W1", "W6", "G2"],
+        "NEEDS_REVIEW",
+        ["W1", "W7", "G3"],
         {},
     ),
     # The nearest case that must never PASS: thin/index.html is another page
@@ -213,15 +218,15 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     "repeated-link-row-is-navigation": (
         "lab2/",
         ["hub3"],
-        "PASS",
-        ["W1", "W6", "G2"],
+        "NEEDS_REVIEW",
+        ["W1", "W7", "G3"],
         {},
     ),
     "content-links-not-on-t-are-not-navigation": (
         "lab3/",
         ["hub3"],
-        "FAIL",
-        ["W1", "W6", "G4"],
+        "NEEDS_REVIEW",
+        ["W1", "W7", "G3"],
         {},
     ),
     # ... and a related link that is an API's JSON is not a page: it takes

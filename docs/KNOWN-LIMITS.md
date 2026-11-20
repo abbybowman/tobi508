@@ -19,9 +19,13 @@ re-testing): confirm and remove, or remove the mark.
 - **Recordings and replays.**
   - A page that loads code only when it is used may lack it in the
     recording; guard GU then holds a PASS at NEEDS REVIEW
-    ([solutions](solutions/recordings-miss-lazy-scripts.md)). The freeze
-    does not run the chunk store, so a frozen copy can lack such code
-    (round 3's community pages: guard GU held 4.B). Step 25, [#134](https://github.com/abbybowman/tobi508/issues/134).
+    ([solutions](solutions/recordings-miss-lazy-scripts.md)). The chunk
+    store saves such code (the freeze runs it too) up to 10 MB a file and
+    24 MB a page; a larger one stays unrecorded. Round 3's community pages
+    load 6.9 MB and 5.6 MB files, which the 3 MB limit before step 25
+    ([#134](https://github.com/abbybowman/tobi508/issues/134)) refused, so
+    guard GU held 4.B and 5.D there; round 3's frozen copy still lacks
+    them.
   - A frame whose address changes on every load (reCAPTCHA, a lazy
     video embed, an OpenID Connect sign-in frame) is not in a frozen
     copy: its replay asks for an address the recording never saw and is
@@ -29,12 +33,14 @@ re-testing): confirm and remove, or remove the mark.
     (`frames_not_recorded`, step 10a). On round 3's community pages the
     app may leave the page when its sign-in frame is missing (not shown
     in the reports).
-  - An application that serves the same HTML at every address makes
-    another page's recording byte for byte the tested page's, so 9.A to
-    9.C and 19.A read it as the tested page again and are not
-    performed. On such a site 19.A's alias check would also verify
-    `/index.html` as the tested page (not run; a PASS risk). Step 26, [#134](https://github.com/abbybowman/tobi508/issues/134).
-    Found in round 3.
+  - An application that serves the same HTML at every address: since
+    step 26 ([#134](https://github.com/abbybowman/tobi508/issues/134)) an
+    identical document is the tested page again only at the tested
+    page's host and path apart from the query string, so 9.A to 9.C and
+    19.A compare such pages once drawn. The cost: 19.A no longer verifies
+    an `index.html` alias by its document (round 2's CILab serves
+    `/cilab/index.html` as the same file as `/cilab/`, no redirect, key
+    Pass), so such a page can be NEEDS REVIEW where a person passes it.
   - A page whose script fails on load shows what a visitor sees, but
     the report does not say so: page script errors are not recorded as
     a note. Round 1's "Was this page helpful?" popup never opens, live
@@ -270,8 +276,11 @@ re-testing): confirm and remove, or remove the mark.
   PASS or say DOES NOT APPLY without comparing them. Pictures that are
   not controls are not compared (the PDF's how-to is ANDI's focusable
   elements). Step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138).
-- **9.A to 9.C:** an application that serves one document at every
-  address (above, "Recordings"). 9.B's region match and 9.C's
+- **9.A to 9.C and 19.A:** an other page that cannot be read in full, or
+  that is the tested page again, is left out and named, and the test
+  decides on the rest (step 26; Abby, 2026-11-20: one usable other page
+  is enough). With fewer pages, less is seen to repeat: 9.A's DOES NOT
+  APPLY rests on the pages that loaded. 9.B's region match and 9.C's
   same-place pairing are not calibrated on real templates. A page with
   more than 5,000 items is NEEDS REVIEW.
 

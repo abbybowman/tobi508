@@ -70,6 +70,13 @@ until the items under "Before a hosted deployment" are done.
   script, allowlisted, at most 150 files, 10 MB each and 24 MB in all, 3
   levels deep, 40 s; raised from 3 MB and 12 MB on 2026-11-20, #134 step
   25, for round 3's 6.9 MB and 5.6 MB chunks).
+- **An identical document is the tested page again only at its own
+  address** (host and path, apart from the query string; #134 step 26,
+  2026-11-20). An application can send one document for every address, so
+  19.A no longer takes a suspected alias (`index.html`, `www.`) as the
+  tested page on its document alone, and 9.A to 9.C and 19.A compare pages
+  at different paths. This narrows what counts as a match; it opens no
+  request.
 - **Tests run on a recording.** Each page is recorded once (HAR) and tested
   from the replay, so the tests' key presses and form entries never reach
   the live site. 5.F–5.H submit forms with wrong values only into the

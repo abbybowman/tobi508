@@ -338,14 +338,18 @@ async def test_page_over_the_cap_is_not_performed(case, settings, server, drafts
         answers,
         other_pages=[f"{server.base}/9x/{o}.html" for o in others],
     )
-    where = "the tested page" if case == "over-the-cap" else "other page 1"
     assert got["9.A"].rows == ["A2", "G1"], got["9.A"].rows
     assert got["9.A"].note == "This test could not be performed"
-    for t in ("9.A", "9.C"):
-        assert f"first {UNIT_CAP:,} pieces of content of {where}" in got[t].summary, (
-            t,
-            got[t].summary,
-        )
+    # Step 26 (#134): an other page 9.A cannot read in full is left out; with
+    # no other page left, A2 says so.
+    want_9a = (
+        f"first {UNIT_CAP:,} pieces of content of the tested page"
+        if case == "over-the-cap"
+        else f"other page 1 could not be read in full (more than {UNIT_CAP:,}"
+    )
+    assert want_9a in got["9.A"].summary, got["9.A"].summary
+    where = "the tested page" if case == "over-the-cap" else "other page 1"
+    assert f"first {UNIT_CAP:,} pieces of content of {where}" in got["9.C"].summary
     assert got["9.B"].rows[-1] == "G3", got["9.B"].rows
     assert got["9.C"].rows[-1] == "G3", got["9.C"].rows
 
