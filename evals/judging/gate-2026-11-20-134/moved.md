@@ -21,7 +21,7 @@ Loaded live: none (every page from the freeze)
 | p10 | 5.C | Pass |  | None (needs_review; A3 G3) | Pass (agree; A3 c1:M5 c2:M5 c3:M5 c4:M5 c5:M5 G4) |
 | p10 | 9.B | Pass | Consistent with other pages within the Science Discovery Engine microsite | None (needs_review; A2 G1) | Pass (agree; A4 p9:N6 G4) |
 
-## Round 2 (1 pages)
+## Round 2 (10 pages)
 
 Loaded live: none (every page from the freeze)
 
@@ -29,4 +29,23 @@ Loaded live: none (every page from the freeze)
 | --- | --- | --- | --- | --- | --- |
 | p01 | 19.A | Fail | Homepage can seemingly only be reached from linked site title in top nav. Page breadcrumbs don't include it, there's no site map, and it doe | Fail (agree; A5 W1 W3 G4) | None (needs_review; A5 W1 W8 W4 G3) |
 | p01 | 9.C | Pass |  | None (needs_review; A4 G3) | Pass (agree; A4 p1-1:C1 p1-2:C1 p1-3:C1 p1-4:C1 p1-5:C1 p1-6:C1 p1-7:C1) |
+| p02 | 19.A | Fail | Help page can seemingly only be reached from link in top nav. There's no site map, and it doesn't seem to appear in site search. | Fail (agree; A5 W1 W3 G4) | None (needs_review; A5 W1 W8 W4 G3) |
+| p02 | 4.F | Pass |  | Fail (false_fail; A4 G2) | Pass (agree; A4 o1:M7[S3] r1:M4 G5) |
+| p03 | 9.C | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 p1-1:C1 p1-2:C1 p1-3:C1 p1-4:C1 p1-5:C1 p1-6:C1 p1-7:C1) |
+| p05 | 19.A | Pass | CILAB homepage can be reached from linked card near bottom of homepage, as well as in the "top nav" of the CILAB subpages (like https://svs. | Fail (false_fail; A5 W1 W6 W3 G4) | None (needs_review; A5 W1 W7 W8 W4 G3) |
+| p06 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
+| p06 | 9.C | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 p1-1:C1 p1-2:C1 p1-3:C1 p1-4:C1 p1-5:C1 p1-6:C1 p1-7:C1) |
+| p07 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
+| p07 | 9.C | Pass |  | None (needs_review; A4 G3) | Pass (agree; A4 p1-1:C1 p1-2:C1 p1-3:C1 p1-4:C1 p1-5:C1 p1-6:C1 p1-7:C1) |
+| p08 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
+| p09 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
+| p10 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
+
+## Round 1 (2 pages)
+
+Loaded live: none (every page from the freeze)
+
+| Page | Test | Key | Key's comment | 9c (verdict, rows) | Now (verdict, rows) |
+| --- | --- | --- | --- | --- | --- |
+| p01 | 19.A | Pass | Page is linked from ISS mission hub (https://www.nasa.gov/international-space-station/) and found in site search. NOT available in Sitemap l | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
 
