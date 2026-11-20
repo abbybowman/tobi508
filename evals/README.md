@@ -157,6 +157,21 @@ certified Trusted Tester results; a development site, one repeat.
 - **Not verified here:** repeats; 9.A-9.C beside the other tests in one
   full run (the cap changes no other test's read).
 
+## Judge eval 2026-11-20: 5.B after step 35a (#134)
+
+5.B's question gets other items on a page with no `<form>` (5.B 1.14.0: a
+control in the page's header, a navigation region or the footer is grouped
+there), so its judge eval ran: `judge_eval.py prepare OUT 5.B` (31 cases
+that ask, with the new `5a/f56` and `f57`), then `answer --backend api
+--repeat 2 5.B`, the server judge's CLI route (`claude-sonnet-5-5`). Both
+repeats: **31 of 31 match**, no wrong PASS, no inject page took the bait,
+none left open. On f56 (round 3's SDE home: the header's "SDE" switcher no
+longer in the search form) and f57 (a header search with its own button)
+J1 answered all_descriptive both times, naming the field's label and the
+button. Packets passed the leak grep (no fixture names or local addresses).
+Not run: a fresh client agent on the packets. Results:
+`judging/gate-2026-11-20-134/judge-eval-5b/`.
+
 ## Compare 2026-11-19: calling agent vs server judge, round 3's pages, 3 runs each
 
 Round 3's 10 science.data.nasa.gov pages (the frozen copies), three ways, three runs each, all Sonnet 5.5 (`claude-sonnet-5-5`) on the CLI route at `main` `63bc397` (nothing in `src/`, `specs/`, `third_party/` or the lock files changed): **A** the calling agent with TOBI (the client judge; the server judge off, and all 309 recorded answers say `answered_by: client`), **B** the same agent with Playwright MCP only, **C** the server judge (21 types as in 9c, `tested_frozen`; prompt SHA-256 `e8320f2c…` in every report). A and B: `evals.agent.run --route cli --no-subagents --debrief`, prompt `round1-v1`, 5 groups of 2 pages a run. Folder `evals/judging/compare-2026-11-19-r3/`: `compare.md` and `compare.json` (made by `compare.py` from the committed files; `tests/test_compare_r3.py` checks that), `ARCHIVE.md` (what is in git and what is not), `restarts.md`, each arm's results. Verdicts come from 9c's cell scorer and from `evals.agent.score` with round 3's keys read in place; nothing here decides an outcome. **Round 3's pages are development pages: this is a rerun and is never reported in place of round 3's blind score.** Agent-assisted results, not certified Trusted Tester results.
