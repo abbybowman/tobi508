@@ -1,7 +1,7 @@
 ---
 tt_test: 4.E
 tt_name: 3.2.1-on-focus
-spec_version: 1.8.0
+spec_version: 1.9.0
 guards: unrecorded-code, reveal, reveal-walk
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -40,7 +40,7 @@ The same evidence as 4.C and 4.D: 4.E is DOES NOT APPLY only when nothing on the
 1. **Richer focus log.** For each focus-in and focus-out: whether the event is trusted, the element's CSS path, and for focus-out whether the element receiving focus (`relatedTarget`) is inside the one losing it. The current log records only tag and id.
 2. **Dialog visibility.** After each step, whether a dialog is visible that was not visible before the key press (`<dialog open>`, role dialog or alertdialog), and its CSS path; in the page, inside its web components and inside its frames (a frame's dialog is named by the frame's address and its path there; 1.6.0, plan 2026-11-12 part D, review F-08: a dialog a frame or a web component opened was never seen, so PASS). When the page's dialogs cannot be read after a step, the step's dialogs count as unread, never as all new. When one is, a viewport screenshot before the key press (from the previous step) and after it, for J1.
 
-**Confirmation replays** (4.E's own follow-up, only for steps with a context signal other than a dialog): (a) *reproduce*: fresh load, replay the keys up to that step, press the key, and check that the same signal happens again; (b) *control*, for navigation and new pages only: fresh load, replay the keys before that step, then wait as long as the original step took, without the final key. A signal that also happens in the control is caused by time, not by focus. At most 10 steps get replays; more is G3.
+**Confirmation replays** (4.E's own follow-up, only for steps with a context signal other than a dialog): (a) *reproduce*: fresh load, replay the keys up to that step, press the key, and check that the same signal happens again; (b) *control*, for navigation and new pages only: fresh load, replay the keys before that step, then, without the final key, wait until as long after the load as the original step was read after its own load (and at least 2 s; 1.9.0, step 24). A signal that also happens in the control is caused by time, not by focus. Waiting only as long as the step took missed an application that changes its address on its own while it starts: a replay presses its keys sooner after load than the walk did, which first waited for the page to draw. At most 10 steps get replays; more is G3.
 
 **Time budget:** the extras add a few milliseconds per step. Each confirmation is one fresh replay (about 2–5 s on a fixture page). Pages without context signals cost nothing more. The whole run stays within `run_limit_s` (4.C spec section 2, Run limits): no confirmation replay starts after the checks' deadline (1.1.0). The timing control replay and the before image use the 4.C replay rule (4.C spec section 2, 1.7.0); the reproduce replay presses every key fully settled, since what each press changes is its evidence.
 
@@ -53,7 +53,7 @@ Each step of P1, P2 or P8 (1.8.0) with a context signal is an *instance*. Focus 
 | # | Evidence pattern | Instance outcome | Source |
 | --- | --- | --- | --- |
 | M1 | The step is unsettled, unresolved or re-read (focus moved after the settle window), or a focus event in it is untrusted | NEEDS REVIEW | Spec rule |
-| M2 | The control replay shows the same navigation or new page without the key | No instance (caused by time, not focus); note for test 8.A | Spec rule |
+| M2 | The control replay, waiting until the original step's time after load (section 2), shows the same navigation or new page without the key | No instance (caused by time, not focus); note for test 8.A | Spec rule |
 | M3 | The reproduce replay does not show the signal again | NEEDS REVIEW | Spec rule |
 | R? | No replay was run (more than 10 signals) | NEEDS REVIEW | Spec rule |
 | M4 | The top URL changes or the page reloads after a Tab or Shift+Tab | FAIL | p. 22 HtT 2; Understanding 3.2.1 (change of user agent / viewport) |

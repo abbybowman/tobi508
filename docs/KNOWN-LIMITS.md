@@ -189,10 +189,18 @@ re-testing): confirm and remove, or remove the mark.
   also leaves a menu whose controls the Tab key does not reach, or that
   could not be opened, NEEDS REVIEW.
 - **4.E:** an address change the page makes on its own soon after load
-  is read as caused by focus when it lands on the first key press
-  (round 3: 3 false FAILs; step 24, [#134](https://github.com/abbybowman/tobi508/issues/134)). **⚑ Check:** step 23's rerun moved
-  all three (two to NEEDS REVIEW, one to an agreeing PASS); the cause
-  may only be hidden now.
+  was read as caused by focus when it landed on an early key press
+  (round 3: 3 false FAILs). Step 23 moved all three (the walk now starts
+  after the app has drawn and changed its address), and 1.9.0 (step 24,
+  [#134](https://github.com/abbybowman/tobi508/issues/134)) makes the
+  control replay wait as long after load as the original step, so a
+  change that still lands on a key press is the page's own (M2, fixture
+  `4e/f20`). The page stays NEEDS REVIEW: the walk left it. On round 3's
+  community pages 4.E is NEEDS REVIEW for another reason: six dialogs
+  that open on focus, each "unsure" for the judge (M11), and the seventh
+  not confirmed before 4.E's 60 s ran out (17.5 and 22.3 s in the blind
+  run; assumed, not measured: each confirmation is now a fresh load and
+  draw wait to a late Tab, since the walk reaches all 76 and 91 elements).
 - **4.F:** a footer of link columns raises S3 on every page, and a
   dropdown whose options take arrow keys raises S6; J1's order list can
   leave out what the signals name. Step 33, [#136](https://github.com/abbybowman/tobi508/issues/136). (Round 2's p02, p03 and p07,

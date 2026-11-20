@@ -1067,6 +1067,9 @@ class Traversal:
     shots_dir: Path | None = None
     rel_base: Path | None = None
     hooks: list[StepHook] = field(default_factory=list)
+    # When the load returned (time.monotonic()): steps record their time after
+    # it (Step.since_load_s), so a replay can wait as long after its own load.
+    loaded_at: float = field(default_factory=time.monotonic)
     reader: FocusReader = field(init=False)
     steps: list[Step] = field(default_factory=list)
     _seen_focus: dict[str, int] = field(default_factory=dict)
@@ -1148,6 +1151,7 @@ class Traversal:
             focus_events=await _focus_events(self.page, self._seen_focus),
             unsettled=not settled,
             quick=quick,
+            since_load_s=round(time.monotonic() - self.loaded_at, 2),
         )
         self._last_mutations, self._last_focus_total, self._last_q = m, f, q
         self.steps.append(step)
@@ -1233,11 +1237,13 @@ async def open_session(
 ) -> Session:
     _count("loads")
     context, page = await new_page()
+    loaded_at = time.monotonic()
     # Step 23: the inventory (and P1's and P2's press caps from it) is taken
     # once the page has drawn itself.
     await wait_drawn(page)
     inv = await dom_inventory(page)
     t = Traversal(context, page, quiet_ms, shots_dir, rel_base, list(hooks or []))
+    t.loaded_at = loaded_at
     await t.start()
     s = Session(t, inv, page.url, len(context.pages))
     # Requests the recorded page cannot answer (infinite-scroll sign, V10).

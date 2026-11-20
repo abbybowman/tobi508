@@ -182,6 +182,12 @@ class Step(BaseModel):
         description="A replay-prefix press read without the quiet window, because "
         "the walk saw this press change nothing (4.C spec section 2).",
     )
+    since_load_s: float | None = Field(
+        default=None,
+        description="Seconds from the load's end to when this step was read "
+        "(4.E's control replay waits as long after its own load; None in older "
+        "walks).",
+    )
     extras: dict[str, Any] = Field(
         default_factory=dict,
         description="Walk extras a check asked for (e.g. images, styles), by name.",
