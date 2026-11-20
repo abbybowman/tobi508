@@ -93,3 +93,4 @@ addopts = "-m 'not slow' -n auto"
 "src/tobi508/checks/t4f.py" = ["E501"]
 "src/tobi508/checks/t4a.py" = ["E501"]
 "src/tobi508/checks/t4b.py" = ["E501"]
+"scripts/draw_runs_diagram.py" = ["E501"]  # SVG markup in f-strings
