@@ -37,6 +37,7 @@ from tobi508.site import (
     a3o_reason,
     kinship,
     norm_href,
+    short_path,
     site_read,
     with_compared,
 )
@@ -330,7 +331,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
         if p.n not in site_ok:
             continue  # named in site.left_out
         if p.error:
-            left.append(f"other page {p.n} could not be read ({p.error})")
+            where = site.given_urls.get(p.n, p.url)
+            left.append(f"{short_path(where)} could not be read ({p.error[:80]})")
         else:
             kept.append(p)
     st = State9C(pages=kept)

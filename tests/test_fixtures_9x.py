@@ -345,7 +345,7 @@ async def test_page_over_the_cap_is_not_performed(case, settings, server, drafts
     want_9a = (
         f"first {UNIT_CAP:,} pieces of content of the tested page"
         if case == "over-the-cap"
-        else f"other page 1 could not be read in full (more than {UNIT_CAP:,}"
+        else f"could not be read in full (more than {UNIT_CAP:,}"
     )
     assert want_9a in got["9.A"].summary, got["9.A"].summary
     where = "the tested page" if case == "over-the-cap" else "other page 1"

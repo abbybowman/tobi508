@@ -303,6 +303,12 @@ class SiteRead(BaseModel):
     # caller gave. The tests compare the tested page with the rest.
     left_out: list[str] = Field(default_factory=list)
     given: int = 0
+    # Each other page's address as the caller gave it, by number (labels).
+    given_urls: dict[int, str] = Field(default_factory=dict)
+
+    def label(self, p: PageRead) -> str:
+        """An other page by its path, as the caller gave it (step 26)."""
+        return short_path(self.given_urls.get(p.n, p.url))
 
     def leave_out(self, test, why) -> SiteRead:
         """A copy without the other pages `test` picks, each named in
@@ -321,11 +327,11 @@ class SiteRead(BaseModel):
         n = len(self.others)
         if not self.given:
             return ""
-        names = ", ".join(str(p.n) for p in self.others)
+        names = ", ".join(self.label(p) for p in self.others)
         s = (
             f"We compared this page with {n} of the {self.given} other "
             f"page{'' if self.given == 1 else 's'} given"
-            + (f" (other page{'' if n == 1 else 's'} {names})." if n else ".")
+            + (f": {names}." if n else ".")
         )
         if self.left_out:
             s += " Left out: " + "; ".join(self.left_out) + "."
@@ -483,22 +489,25 @@ async def site_read(ctx: Any) -> SiteRead:
                 pages[i] = pages[i].model_copy(update={"near_copy": True})
         # Step 26 (#134): an other page that could not be read, or that is
         # the tested page again, is set aside; the rest are compared.
+        given_urls = {r.n: r.url for r in ctx.pages}
         kept = [pages[0]]
         left: list[str] = []
         for p in pages[1:]:
             why = left_out_reason(p)
             if why:
-                left.append(f"{page_label(p)} {why}")
+                left.append(f"{short_path(given_urls.get(p.n, p.url))} {why}")
             else:
                 kept.append(p)
-        ctx.cache["site"] = SiteRead(pages=kept, left_out=left, given=len(ctx.pages))
+        ctx.cache["site"] = SiteRead(
+            pages=kept, left_out=left, given=len(ctx.pages), given_urls=given_urls
+        )
     return ctx.cache["site"]
 
 
 def left_out_reason(p: PageRead) -> str:
     """Why an other page is not compared (step 26), or "" to compare it."""
     if p.error:
-        return f"could not be read ({p.error})"
+        return f"could not be read ({p.error[:80]})"
     if p.identical:
         return (
             "is the tested page again (the same address apart from the query "
@@ -510,6 +519,15 @@ def left_out_reason(p: PageRead) -> str:
             "apart from the query string, and nearly the same text)"
         )
     return ""
+
+
+def short_path(url: str) -> str:
+    """An other page's address without its scheme and host, which the
+    tested page's give (step 26's sentence: Abby, 2026-11-20). Redacted as
+    every address in output is: no query string (it can carry a token)."""
+    from tobi508.redact import safe_url
+
+    return urlsplit(safe_url(url)).path or "/"
 
 
 def same_place(a: str, b: str) -> bool:

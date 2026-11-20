@@ -189,8 +189,10 @@ async def test_a_copy_is_left_out_and_the_rest_are_compared(settings, server):
     )
     for f in out.report.findings:
         assert f.rows[0] != "A2", (f.test_id, f.rows, f.summary)
-        assert "We compared this page with 1 of the 2 other pages given" in f.summary
-        assert "other page 1 is the tested page again" in f.summary, f.summary
+        want = "compared this page with 1 of the 2 other pages given: /9x/a2-benefits"
+        assert want in f.summary, f.summary
+        # Addresses in output have no query string (redact.safe_url).
+        assert "/9x/a1-home.html is the tested page again" in f.summary, f.summary
 
 
 async def test_one_document_at_two_paths_is_two_pages(settings, server):
@@ -210,7 +212,8 @@ async def test_one_document_at_two_paths_is_two_pages(settings, server):
     assert out.report.other_pages[0].same_content_as_tested is False
     for f in out.report.findings:
         assert f.rows[0] != "A2", (f.test_id, f.rows, f.summary)
-        assert "We compared this page with 1 of the 1 other page given" in f.summary
+        want = "compared this page with 1 of the 1 other page given: /9x/app/forum"
+        assert want in f.summary, f.summary
     # The repeated header and menu, drawn on both, come before the main
     # content, and nothing bypasses them.
     nine_a = next(f for f in out.report.findings if f.test_id is TestId.T9A)

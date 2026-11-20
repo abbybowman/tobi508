@@ -36,7 +36,6 @@ from tobi508.site import (
     a3o_reason,
     kinship,
     norm_href,
-    page_label,
     repeated_flags,
     site_read,
     with_compared,
@@ -286,7 +285,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
     site = site.leave_out(
         lambda p: p.truncated,
         lambda p: (
-            f"{page_label(p)} could not be read in full (more than "
+            f"{site.label(p)} could not be read in full (more than "
             f"{UNIT_CAP:,} pieces of content)"
         ),
     )
