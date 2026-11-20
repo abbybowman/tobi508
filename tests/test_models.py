@@ -219,7 +219,7 @@ def test_open_questions_come_ten_at_a_time():
     """Agent follow-through plan, change 2b (2): a result shows at most 10
     open questions; its to-do list and next_step say the rest follow."""
     from tobi508.models import OpenQuestion
-    from tobi508.pipeline import QUESTION_PAGE, next_step, todo
+    from tobi508.next_steps import QUESTION_PAGE, next_step, todo
 
     report = Report(
         run_id="r",
@@ -294,13 +294,13 @@ def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
     inputs only for those shown, and cuts one question's long page text to
     the passages around what it quotes; the question's own input is never
     changed."""
-    from tobi508 import pipeline as P
+    from tobi508 import result_view as R
 
     quote = "Press and hold the space bar for two seconds to pause the animation."
     text = ("Filler sentence about the page. " * 20_000) + quote + (" Tail." * 5_000)
     stops = [{"n": i, "role": "link", "name": "L" * 400} for i in range(150)]
     monkeypatch.setattr(
-        P,
+        R,
         "_page_text",
         lambda r, s, qs=None: (
             [{"source": "top", "text": text}]
@@ -309,7 +309,7 @@ def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
         ),
     )
     monkeypatch.setattr(
-        P,
+        R,
         "_shared_inputs",
         lambda r, s, qs=None: (
             {"stops": stops}
@@ -318,8 +318,8 @@ def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
         ),
     )
     report = _big_report(12, quote)
-    out = P.fit(_result(report), report, {})
-    assert len(out.model_dump_json(exclude={"report"})) <= P.RESULT_CHARS
+    out = R.fit(_result(report), report, {})
+    assert len(out.model_dump_json(exclude={"report"})) <= R.RESULT_CHARS
     shown = len(out.open_questions)
     assert out.open_questions[0].question_id == "q0" and shown < 10
     assert out.more_questions == 12 - shown
@@ -336,8 +336,8 @@ def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
     # them.
     report = _big_report(12, quote)
     report.open_questions = report.open_questions[1:]
-    out = P.fit(_result(report), report, {})
-    assert len(out.model_dump_json(exclude={"report"})) <= P.RESULT_CHARS
+    out = R.fit(_result(report), report, {})
+    assert len(out.model_dump_json(exclude={"report"})) <= R.RESULT_CHARS
     assert 1 < len(out.open_questions) < 10
     assert out.page_text == [] and out.shared_inputs == {}
     assert out.more_questions == 11 - len(out.open_questions)
@@ -345,12 +345,12 @@ def test_a_result_stays_under_the_clients_size_limit(monkeypatch):
 
 
 def test_a_small_result_is_unchanged_by_fit():
-    from tobi508 import pipeline as P
+    from tobi508 import result_view as R
 
     report = _big_report(3, "short")
     for q in report.open_questions:
         q.input = {}
-    out = P.fit(_result(report), report, {})
+    out = R.fit(_result(report), report, {})
     assert len(out.open_questions) == 3 and out.more_questions == 0
 
 

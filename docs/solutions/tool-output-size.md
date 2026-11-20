@@ -64,7 +64,7 @@ debrief). A server can raise this per tool (`_meta`
 `anthropic/maxResultSizeChars`), but only Claude Code reads it; the tool
 stays under the default instead.
 
-**What we do now** (`pipeline.fit`, every RunResult and AnswerResult), by
+**What we do now** (`result_view.fit`, every RunResult and AnswerResult), by
 steps until the result is under `RESULT_CHARS` (45k, leaving room for
 pictures):
 1. Page text and shared inputs only for the questions shown (up to 10).

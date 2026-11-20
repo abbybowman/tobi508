@@ -248,5 +248,5 @@ class Check(Protocol):
 
     # Optional: `follow_up(state, report) -> dict | None`, the tool call that
     # would let this test decide (19.A: the same page with the pages it
-    # suggests). The pipeline names it in the result's next_step; it never
+    # suggests). next_steps.follow_ups names it in the result's next_step; it never
     # makes the call itself (post-round 1 fix 18).
