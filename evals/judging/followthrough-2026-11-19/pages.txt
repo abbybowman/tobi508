@@ -1,0 +1,5 @@
+# Behaviour check, not a scored round: there are no keys. Each hash is the
+# SHA-256 of the URL itself (pages.txt needs one; no SCRT file exists).
+https://www.section508.gov/  d8e10615b8761772f890e7f760f2345430ee5392776d0ec1c2b4bed481766344
+https://www.nasa.gov/careers/  67f0ecbd3b15a58f8e594c13f51337c8ea0891806104d13559cda0b9f3275cfb
+https://www.weather.gov/  d67054f6543d1274f244691023bf54695d3dd29eaed012ca66e1d6643b224c64

@@ -1,0 +1,49 @@
+{
+ "label": "before",
+ "commit": "cc86037612d16bc168a68dd5a7dc01de68df10de",
+ "models": [
+  "claude-sonnet-5-5",
+  "claude-haiku-5-5"
+ ],
+ "modes": [
+  "client",
+  "api"
+ ],
+ "repeats": 3,
+ "cases": [
+  "run-plain",
+  "run-keyboard-goal",
+  "run-subset-forms",
+  "run-single-trap",
+  "run-site-wide",
+  "run-multiple-ways",
+  "run-no-limit-media",
+  "run-time-limit",
+  "run-retest-after-fix",
+  "status-done-yet",
+  "status-check-on-it",
+  "status-anything-left",
+  "status-finish",
+  "answers-from-user",
+  "answers-agent-finishes",
+  "answers-override-judge",
+  "relay-judge-unsure",
+  "explain-why-fail",
+  "explain-all-findings",
+  "explain-test",
+  "explain-criterion",
+  "read-tester-diff",
+  "read-what-changed",
+  "read-one-file",
+  "not-gov",
+  "certify",
+  "not-implemented"
+ ],
+ "max_turns": 4,
+ "started_at": "2026-11-19T23:30:07.630492+00:00",
+ "tools_sha256": {
+  "client": "7b2163838bf64669247141f5cef968412e60fc6a5186fe3af5ea8dc34a942691",
+  "api": "cff29e031b4f33547e9e1770b9f3c7ffd9e1f07c1409cfb879fa9c39c1c8522d"
+ },
+ "claude_version": "2.1.329 (Claude Code)"
+}

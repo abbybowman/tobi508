@@ -1,0 +1,18 @@
+{
+ "about": "A run of a careers page that was still going when the call returned (RunPending, shape of r3 arm-a-g3-1).",
+ "turns": [
+  {"user": "Please test https://www.nasa.gov/careers/ for Section 508 issues."},
+  {"call": {"name": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/careers/"}},
+   "result": {
+    "disclaimer": "Agent-assisted findings only. This is NOT a certified DHS Trusted Tester result and must not be reported as one.",
+    "status": "running",
+    "job_id": "job-3fedace186a3",
+    "target": "https://www.nasa.gov/careers/",
+    "seconds_waiting": 0,
+    "seconds_running": 45,
+    "progress": "Walking the page with Tab and Shift+Tab (45 s so far)",
+    "next_step": "Tell the user the progress line in a few words, so they know the run is moving. The run is still going on in the server; nothing is lost. Call tobi_run_status with job_id 'job-3fedace186a3' to wait for it again (each call waits up to 45 s). Do not start the same run again, and do not end your turn while it runs: you would lose its result."
+   }},
+  {"assistant": "The test of the careers page is running: it is walking the page with Tab and Shift+Tab (45 s so far). I'll check back on it."}
+ ]
+}
