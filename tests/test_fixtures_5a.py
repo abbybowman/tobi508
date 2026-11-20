@@ -40,10 +40,16 @@ EXPECTED: dict[str, dict] = {
     # grouping is in test_fixtures_5b.py.
     "f56-no-form-header-switcher": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        # 5.B 1.14.0: the judge eval reads it (test_fixtures_5b.py checks
+        # which items J1 is shown).
+        "5.B": {"outcome": "PASS"},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M6"], "answers": COMPLETE},
     },
     "f57-no-form-header-search": {
         "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        # 5.B 1.14.0: the judge eval reads it (test_fixtures_5b.py checks
+        # which items J1 is shown).
+        "5.B": {"outcome": "PASS"},
         "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M6"], "answers": COMPLETE},
     },
     "f01-visually-hidden-label": {
