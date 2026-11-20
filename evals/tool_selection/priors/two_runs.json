@@ -1,0 +1,13 @@
+{
+ "about": "Two finished runs of the same page, before and after a fix, each with its pre-SCRT link.",
+ "turns": [
+  {"user": "Run the keyboard tests on https://www.usa.gov/about-the-us."},
+  {"call": {"name": "tobi_run_tt_tests", "arguments": {"url": "https://www.usa.gov/about-the-us", "tests": ["4.A", "4.B", "4.C", "4.D", "4.E", "4.F"]}},
+   "result": {"status": "done", "work": "complete", "run_id": "20261119T150212Z-a81c04", "findings": [{"test_id": "4.D", "outcome": "FAIL", "summary": "3 of 38 stops show no visible focus (the footer social links)."}], "report_uri": "run://20261119T150212Z-a81c04/report.json", "pre_scrt_uri": "run://20261119T150212Z-a81c04/pre-scrt.json", "note": "(other findings omitted here)"}},
+  {"assistant": "4.D failed: the footer social links show no visible focus. I saved the report as usa-about-before.json."},
+  {"user": "We pushed a fix for the focus outline. Run the same tests again."},
+  {"call": {"name": "tobi_run_tt_tests", "arguments": {"url": "https://www.usa.gov/about-the-us", "tests": ["4.A", "4.B", "4.C", "4.D", "4.E", "4.F"]}},
+   "result": {"status": "done", "work": "complete", "run_id": "20261119T171544Z-0c3e1f", "findings": [{"test_id": "4.D", "outcome": "PASS", "summary": "Every one of the 38 stops showed a visible change when it had focus."}], "report_uri": "run://20261119T171544Z-0c3e1f/report.json", "pre_scrt_uri": "run://20261119T171544Z-0c3e1f/pre-scrt.json", "note": "(other findings omitted here)"}},
+  {"assistant": "The new run is done. I saved its report as usa-about-after.json."}
+ ]
+}

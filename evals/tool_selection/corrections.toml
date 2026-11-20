@@ -1,0 +1,22 @@
+# Expected answers found wrong after the cases were committed (cc86037).
+# The report shows each pass as committed and as corrected, side by side;
+# cases.toml itself is not edited.
+
+[[correction]]
+id = "answers-override-judge"
+found = "2026-11-19, reading the first pass's failed runs"
+reason = """
+The real server refuses a calling agent's answer to a question its judge
+already answered, including a person's answer relayed through MCP
+(src/tobi508/judgment.py, record_answers: "a calling agent cannot replace
+its answer"; a person answers through TOBI's own page, roadmap row 18, not
+built yet). So in api mode the right move is not to call
+tobi_answer_questions but to tell the user their answer cannot be recorded
+here. The committed case expected the call. Sonnet's runs refused, and said
+why.
+"""
+[correction.expect]
+tool = "none"
+ok = ["tobi_run_status", "tobi_explain"]
+forbid = ["tobi_answer_questions", "tobi_run_tt_tests"]
+text = "can't|cannot|can not|couldn't|could not|unable|not able|not recorded|nothing is recorded|isn't possible|is not possible|no way|won't be|not be recorded|doesn't let|does not let|only through|not through"

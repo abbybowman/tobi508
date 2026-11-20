@@ -1,0 +1,33 @@
+{
+ "about": "After the agent answered every open question: the answer result has follow-up calls the server may make itself (AnswerResult shape).",
+ "turns": [
+  {"user": "Test https://www.section508.gov/ for Section 508 issues and answer whatever questions come up."},
+  {"call": {"name": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/"}},
+   "result": {"status": "done", "work": "incomplete", "run_id": "20261119T014033Z-259f56", "remaining": {"open_questions": 2, "follow_up_calls": 1}, "note": "(full result omitted here)"}},
+  {"call": {"name": "tobi_answer_questions", "arguments": {"run_id": "20261119T014033Z-259f56", "answers": [{"question_id": "4.E-e1-J1", "rationale": "small card, page usable", "choice": {"choice": "content_only", "reasons": "small card, not modal"}}, {"question_id": "9.C-n1-J1", "rationale": "both go to /search/", "choice": {"choice": "same_function", "reasons": "same target"}}]}},
+   "result": {
+    "disclaimer": "Agent-assisted findings only. This is NOT a certified DHS Trusted Tester result and must not be reported as one.",
+    "work": "incomplete",
+    "remaining": {"open_questions": 0, "follow_up_calls": 1, "waiting_for_person": 0, "tests_waiting": ["9.A", "9.B", "19.A"]},
+    "next_step": "No open questions. Relay each finding's summary; a NEEDS_REVIEW finding is reported as needs review (a person checks it), never as a pass or a fail. 1 follow-up call in follow_up_calls can let tests left for review decide: call tobi_run_status with finish=true and the server makes it. Then save the report (save_hint).",
+    "follow_up_calls": [{"url": "https://www.section508.gov/", "tests": ["9.A", "9.B", "19.A"], "other_pages": ["https://www.section508.gov/manage/", "https://www.section508.gov/develop/"]}],
+    "run_id": "20261119T014033Z-259f56",
+    "accepted": ["4.E-e1-J1", "9.C-n1-J1"],
+    "rejected": [],
+    "findings": [
+     {"test_id": "4.E", "outcome": "DNA", "summary": "The card on the Search button leaves the page usable; nothing takes over the page.", "waiting_on": []},
+     {"test_id": "9.C", "outcome": "FAIL", "summary": "\"Search\" and \"Find\" do the same thing on two pages but have different names.", "confirmed": true, "waiting_on": []}
+    ],
+    "unchanged": ["2.A", "2.B", "2.C", "2.D", "3.A", "4.A", "4.B", "4.C", "4.D", "4.F", "5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H", "9.A", "9.B", "19.A"],
+    "open_questions": [],
+    "report_uri": "run://20261119T014033Z-259f56/report.json",
+    "pre_scrt_uri": "run://20261119T014033Z-259f56/pre-scrt.json",
+    "todo": [
+     "[ ] Call tobi_run_status with finish=true: the server makes 1 follow-up call(s) itself and waits for them.",
+     "[ ] Before reporting: call tobi_run_status with no job_id, and repeat until it lists nothing left (it covers every run of this session).",
+     "[ ] Save report_uri and pre_scrt_uri before expires_at."
+    ]
+   }},
+  {"assistant": "Both questions are answered: 4.E does not apply, and 9.C fails (\"Search\" and \"Find\" are the same function with different names). One follow-up run is suggested for 9.A, 9.B and 19.A with two other pages of the site."}
+ ]
+}

@@ -1,0 +1,49 @@
+{
+ "label": "after",
+ "commit": "9e78e409029add64b0987135335be1a5d1594aba",
+ "models": [
+  "claude-sonnet-5-5",
+  "claude-haiku-5-5"
+ ],
+ "modes": [
+  "client",
+  "api"
+ ],
+ "repeats": 3,
+ "cases": [
+  "run-plain",
+  "run-keyboard-goal",
+  "run-subset-forms",
+  "run-single-trap",
+  "run-site-wide",
+  "run-multiple-ways",
+  "run-no-limit-media",
+  "run-time-limit",
+  "run-retest-after-fix",
+  "status-done-yet",
+  "status-check-on-it",
+  "status-anything-left",
+  "status-finish",
+  "answers-from-user",
+  "answers-agent-finishes",
+  "answers-override-judge",
+  "relay-judge-unsure",
+  "explain-why-fail",
+  "explain-all-findings",
+  "explain-test",
+  "explain-criterion",
+  "read-tester-diff",
+  "read-what-changed",
+  "read-one-file",
+  "not-gov",
+  "certify",
+  "not-implemented"
+ ],
+ "max_turns": 4,
+ "started_at": "2026-11-19T23:51:28.405356+00:00",
+ "tools_sha256": {
+  "client": "a07c93a15958995ab555100f232d6fc7fff19ae247359597ac59fd4d0bb34f39",
+  "api": "4e8dcef59c62e97620ac318bc8e588d8a83956d4e7cfd514c6323317334f7bee"
+ },
+ "claude_version": "2.1.329 (Claude Code)"
+}

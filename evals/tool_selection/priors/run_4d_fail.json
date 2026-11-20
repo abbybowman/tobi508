@@ -1,0 +1,36 @@
+{
+ "about": "A finished run with nothing open and one FAIL (4.D), one line per finding as results give them.",
+ "turns": [
+  {"user": "Run the keyboard tests on https://www.usa.gov/about-the-us."},
+  {"call": {"name": "tobi_run_tt_tests", "arguments": {"url": "https://www.usa.gov/about-the-us", "tests": ["4.A", "4.B", "4.C", "4.D", "4.E", "4.F"]}},
+   "result": {
+    "disclaimer": "Agent-assisted findings only. This is NOT a certified DHS Trusted Tester result and must not be reported as one.",
+    "status": "done",
+    "work": "complete",
+    "remaining": {"open_questions": 0, "follow_up_calls": 0, "waiting_for_person": 0, "tests_waiting": []},
+    "next_step": "No open questions. Relay each finding's summary; a NEEDS_REVIEW finding is reported as needs review (a person checks it), never as a pass or a fail. Then save the report (save_hint).",
+    "follow_up_calls": [],
+    "run_id": "20261119T150212Z-a81c04",
+    "target": "https://www.usa.gov/about-the-us",
+    "tests": ["4.A", "4.B", "4.C", "4.D", "4.E", "4.F"],
+    "findings": [
+     {"test_id": "4.A", "test_name": "2.1.1-keyboard-access", "outcome": "PASS", "summary": "Every control we found could be reached and used with the keyboard.", "waiting_on": []},
+     {"test_id": "4.B", "test_name": "2.1.1-keyboard-shortcuts", "outcome": "DNA", "summary": "No single-key shortcuts found.", "waiting_on": []},
+     {"test_id": "4.C", "test_name": "2.1.2-no-keyboard-trap", "outcome": "PASS", "summary": "No stop held focus.", "waiting_on": []},
+     {"test_id": "4.D", "test_name": "2.4.7-focus-visible", "outcome": "FAIL", "summary": "3 of 38 stops show no visible focus (the footer social links).", "confirmed": true, "waiting_on": []},
+     {"test_id": "4.E", "test_name": "2.4.3-focus-order-modal", "outcome": "DNA", "summary": "Nothing opened that takes over the page.", "waiting_on": []},
+     {"test_id": "4.F", "test_name": "2.4.3-focus-order", "outcome": "PASS", "summary": "The Tab order follows the reading order.", "waiting_on": []}
+    ],
+    "open_questions": [],
+    "report_uri": "run://20261119T150212Z-a81c04/report.json",
+    "pre_scrt_uri": "run://20261119T150212Z-a81c04/pre-scrt.json",
+    "expires_at": "2026-12-19T15:04:40Z",
+    "todo": [
+     "[ ] Before reporting: call tobi_run_status with no job_id, and repeat until it lists nothing left (it covers every run of this session).",
+     "[ ] Before writing your report: call tobi_explain with run_id 20261119T150212Z-a81c04 for the tests you report on (every FAIL at least).",
+     "[ ] Save report_uri and pre_scrt_uri before expires_at."
+    ]
+   }},
+  {"assistant": "Done. 4.D (focus visible) failed: 3 of 38 stops show no visible focus, the footer social links. 4.A, 4.C and 4.F passed; 4.B and 4.E do not apply. These are agent-assisted findings, not a certified Trusted Tester result."}
+ ]
+}

@@ -1,0 +1,168 @@
+[
+ {
+  "arm": "arm-a-api-g1",
+  "pages": 1,
+  "tool_runs": 1,
+  "asked": 3,
+  "answered": 3,
+  "unsure": 0,
+  "left_open": 0,
+  "answered_by": {
+   "server:claude-sonnet-5-5": 3
+  },
+  "picture_answers_by_agent": 0,
+  "picture_opened_before_answer": 0,
+  "pictures_attached_to_results": 0,
+  "picture_reads": 0,
+  "tobi_explain_calls": 0,
+  "finish_true_calls": 0,
+  "run_status_without_job_id": 0,
+  "report_or_pre_scrt_reads": 0,
+  "judge_unsure": 0,
+  "judge_unsure_answered_by_agent": 0,
+  "final_says_a_person_checks": true,
+  "tool_calls": {
+   "tobi_run_tt_tests": 1,
+   "tobi_run_status": 2
+  }
+ },
+ {
+  "arm": "arm-a-api-g2",
+  "pages": 1,
+  "tool_runs": 1,
+  "asked": 3,
+  "answered": 2,
+  "unsure": 1,
+  "left_open": 0,
+  "answered_by": {
+   "server:claude-sonnet-5-5": 3
+  },
+  "picture_answers_by_agent": 0,
+  "picture_opened_before_answer": 0,
+  "pictures_attached_to_results": 0,
+  "picture_reads": 0,
+  "tobi_explain_calls": 0,
+  "finish_true_calls": 0,
+  "run_status_without_job_id": 0,
+  "report_or_pre_scrt_reads": 0,
+  "judge_unsure": 1,
+  "judge_unsure_answered_by_agent": 0,
+  "final_says_a_person_checks": true,
+  "tool_calls": {
+   "tobi_run_tt_tests": 1,
+   "tobi_run_status": 8
+  }
+ },
+ {
+  "arm": "arm-a-api-g3",
+  "pages": 1,
+  "tool_runs": 1,
+  "asked": 13,
+  "answered": 11,
+  "unsure": 2,
+  "left_open": 0,
+  "answered_by": {
+   "server:claude-sonnet-5-5": 13
+  },
+  "picture_answers_by_agent": 0,
+  "picture_opened_before_answer": 0,
+  "pictures_attached_to_results": 0,
+  "picture_reads": 0,
+  "tobi_explain_calls": 0,
+  "finish_true_calls": 0,
+  "run_status_without_job_id": 0,
+  "report_or_pre_scrt_reads": 0,
+  "judge_unsure": 2,
+  "judge_unsure_answered_by_agent": 0,
+  "final_says_a_person_checks": true,
+  "tool_calls": {
+   "tobi_run_tt_tests": 1,
+   "tobi_run_status": 5
+  }
+ },
+ {
+  "arm": "arm-a-client-g1",
+  "pages": 1,
+  "tool_runs": 2,
+  "asked": 3,
+  "answered": 3,
+  "unsure": 0,
+  "left_open": 0,
+  "answered_by": {
+   "client": 3
+  },
+  "picture_answers_by_agent": 2,
+  "picture_opened_before_answer": 0,
+  "pictures_attached_to_results": 2,
+  "picture_reads": 0,
+  "tobi_explain_calls": 0,
+  "finish_true_calls": 0,
+  "run_status_without_job_id": 0,
+  "report_or_pre_scrt_reads": 0,
+  "judge_unsure": 0,
+  "judge_unsure_answered_by_agent": 0,
+  "final_says_a_person_checks": true,
+  "tool_calls": {
+   "tobi_run_tt_tests": 2,
+   "tobi_run_status": 3,
+   "tobi_answer_questions": 1
+  }
+ },
+ {
+  "arm": "arm-a-client-g2",
+  "pages": 1,
+  "tool_runs": 1,
+  "asked": 2,
+  "answered": 2,
+  "unsure": 0,
+  "left_open": 0,
+  "answered_by": {
+   "client": 2
+  },
+  "picture_answers_by_agent": 1,
+  "picture_opened_before_answer": 0,
+  "pictures_attached_to_results": 1,
+  "picture_reads": 0,
+  "tobi_explain_calls": 1,
+  "finish_true_calls": 0,
+  "run_status_without_job_id": 0,
+  "report_or_pre_scrt_reads": 0,
+  "judge_unsure": 0,
+  "judge_unsure_answered_by_agent": 0,
+  "final_says_a_person_checks": true,
+  "tool_calls": {
+   "tobi_run_tt_tests": 1,
+   "tobi_run_status": 8,
+   "tobi_answer_questions": 1,
+   "tobi_explain": 1
+  }
+ },
+ {
+  "arm": "arm-a-client-g3",
+  "pages": 1,
+  "tool_runs": 2,
+  "asked": 13,
+  "answered": 1,
+  "unsure": 0,
+  "left_open": 12,
+  "answered_by": {
+   "client": 1
+  },
+  "picture_answers_by_agent": 2,
+  "picture_opened_before_answer": 0,
+  "pictures_attached_to_results": 3,
+  "picture_reads": 0,
+  "tobi_explain_calls": 0,
+  "finish_true_calls": 0,
+  "run_status_without_job_id": 0,
+  "report_or_pre_scrt_reads": 0,
+  "judge_unsure": 0,
+  "judge_unsure_answered_by_agent": 0,
+  "final_says_a_person_checks": true,
+  "tool_calls": {
+   "tobi_run_tt_tests": 2,
+   "tobi_run_status": 8,
+   "tobi_answer_questions": 2
+  }
+ }
+]

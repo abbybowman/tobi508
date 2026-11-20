@@ -161,6 +161,38 @@ frozen round. Plan: `docs/plans/2026-10-31-agent-eval.md`. Runbook:
   said it marked criteria PASS it never tested, "because of cost and
   time"; Agent A said it stopped "after the first batch" of a large page.
 
+### The tool selection eval (2026-11-19)
+
+`evals/tool_selection/`: `claude -p` against a stub server that serves the
+real tool list. What cost time or money:
+- **Claude Code's system prompt names the working folder,** so a fresh
+  temporary folder per run defeated the prompt cache: 10k tokens written
+  on every run, about $0.05 a Sonnet run. One shared empty folder (the
+  agent has no file tools) brought it to about $0.017; Haiku costs about
+  $0.002-0.005. A 306-run pass is about $4.
+- **Read the tool list through the server's own client, one process per
+  judge mode.** Descriptions are built from settings at start-up
+  (`tobi_run_tt_tests`' judge paragraph), so one process cannot list both;
+  `tools.py` clears the settings that would change a description.
+- **The stub drops the output schema.** A client checks a result against
+  it, and a canned result does not match TOBI's; Claude Code does not show
+  it to the model. It also accepts every call (the scorer checks the
+  schema), so an invalid call is recorded, not refused before the stub
+  sees it.
+- **Earlier turns go in the prompt as text.** The CLI cannot be handed a
+  fabricated tool-call history; say plainly in the prompt that the calls
+  "really happened".
+- **Count the runs from the cases' modes,** not cases × modes: mode-only
+  cases make it 306, not the 318 a quick multiplication gave.
+- **Agent A with the server's judge** (`run.py --judge api`) needs the
+  CLI's credentials in the server's environment: the MCP server gets only
+  the variables `mcp.json` names, so `arms.tool_arm` passes this process's
+  environment less `cli.DROP`.
+- **Do not overlap browser runs with a busy pass.** Two Agent A runs and
+  four `claude -p` at once put a 4-CPU container at load 4.7; one was
+  stopped and rerun alone, and its orphaned `claude -p` and server had to
+  be killed by PID.
+
 ## Scoring and reading an agent eval round: what cost time
 
 Round 1 (2026-11-04) was the first round scored against real SCRT keys.

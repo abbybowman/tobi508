@@ -1,0 +1,142 @@
+{
+ "started_at": "2026-11-19T23:31:28.308124+00:00",
+ "pages": {
+  "https://www.section508.gov/": {
+   "status": "frozen",
+   "final_url": "https://www.section508.gov/",
+   "cross_site_frames": 0,
+   "scroll": [
+    {
+     "step": "capture_scroll_steps",
+     "status": "ok",
+     "steps": 5,
+     "cut": false,
+     "reached_end": true,
+     "stuck": false,
+     "top": 3543,
+     "height": 4443,
+     "window": 900
+    },
+    {
+     "step": "capture_scroll",
+     "status": "ok",
+     "pass_": 1,
+     "page_grew": false
+    }
+   ],
+   "scroll_reached_end": true,
+   "document_status": 200,
+   "assets": 11,
+   "assets_failed": 0,
+   "title": "Home | Section508.gov",
+   "heading": "Section 508 of the Rehabilitation Act",
+   "frames_not_recorded": [],
+   "seconds": 11.9
+  },
+  "https://www.nasa.gov/careers/": {
+   "status": "frozen",
+   "final_url": "https://www.nasa.gov/careers/",
+   "cross_site_frames": 0,
+   "scroll": [
+    {
+     "step": "capture_scroll_steps",
+     "status": "ok",
+     "steps": 9,
+     "cut": false,
+     "reached_end": true,
+     "stuck": false,
+     "top": 6940,
+     "height": 7840,
+     "window": 900
+    },
+    {
+     "step": "capture_scroll",
+     "status": "ok",
+     "pass_": 1,
+     "page_grew": false
+    }
+   ],
+   "scroll_reached_end": true,
+   "document_status": 200,
+   "assets": 30,
+   "assets_failed": 0,
+   "title": "Careers - NASA",
+   "heading": "Careers at NASA",
+   "frames_not_recorded": [],
+   "seconds": 24.9
+  },
+  "https://www.weather.gov/": {
+   "status": "frozen",
+   "final_url": "https://www.weather.gov/",
+   "cross_site_frames": 0,
+   "scroll": [
+    {
+     "step": "capture_scroll_steps",
+     "status": "ok",
+     "steps": 1,
+     "cut": false,
+     "reached_end": true,
+     "stuck": false,
+     "top": 485,
+     "height": 1385,
+     "window": 900
+    },
+    {
+     "step": "capture_scroll",
+     "status": "ok",
+     "pass_": 1,
+     "page_grew": false
+    }
+   ],
+   "scroll_reached_end": true,
+   "document_status": 200,
+   "assets": 26,
+   "assets_failed": 1,
+   "title": "National Weather Service",
+   "heading": "Heavy Precipitation in California; Heavy Rainfall Continues in East Florida",
+   "frames_not_recorded": [],
+   "seconds": 8.0
+  }
+ },
+ "searches": {
+  "https://www.section508.gov/": {
+   "searches": [
+    {
+     "url": "https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=gsa-section508-accessibility&query=Section+508+of+the+Rehabilitation+Act",
+     "status": "not allowed"
+    },
+    {
+     "url": "https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=gsa-section508-accessibility&query=%22Section+508+of+the+Rehabilitation+Act%22",
+     "status": "not allowed"
+    }
+   ]
+  },
+  "https://www.nasa.gov/careers/": {
+   "searches": [
+    {
+     "url": "https://www.nasa.gov/?search=Careers+at+NASA",
+     "status": "frozen",
+     "document_status": 200,
+     "assets": 33,
+     "assets_failed": 0,
+     "title": "23972 Search Results for \"Careers at NASA\"",
+     "heading": "Search Results for: Careers at NASA"
+    },
+    {
+     "url": "https://www.nasa.gov/?search=%22Careers+at+NASA%22",
+     "status": "frozen",
+     "document_status": 200,
+     "assets": 34,
+     "assets_failed": 0,
+     "title": "258 Search Results for \"\"Careers at NASA\"\"",
+     "heading": "Search Results for: \"Careers at NASA\""
+    }
+   ]
+  },
+  "https://www.weather.gov/": {
+   "searches": []
+  }
+ },
+ "finished_at": "2026-11-19T23:32:48.568209+00:00",
+ "recordings": 5
+}

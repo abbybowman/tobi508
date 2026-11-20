@@ -26,6 +26,46 @@ Still not solved by any wording:
   default;
 - calling `tobi_explain` before reporting.
 
+## Choosing the tool is solved; finishing is not (2026-11-19)
+
+The tool selection eval (`evals/tool_selection/`, `evals/README.md`
+"Tool selection 2026-11-19") and a follow-through check on three live
+pages ("Follow-through 2026-11-19") measured the two halves apart.
+
+- **From the descriptions alone, agents pick the right tool and
+  arguments** whenever nothing earlier is pending: every run, Sonnet and
+  Haiku, both judge modes, including `other_pages`, a test subset,
+  `no_time_limit`, job_id against none, and `finish=true`. So a missed
+  step in a real run is not a description that was misread.
+- **A result's to-do list outranks the user's next request.** Asked "why
+  did 4.D fail?", Sonnet first made the `tobi_run_status` call the earlier
+  result's to-do list asked for; asked to compare a tester's file, both
+  models first answered the open questions `next_step` said to "answer
+  now". Their debriefs say so. Our own lever (the to-do list last, change
+  2b) works, so its items should be the ones that matter: do not add more
+  without weighing what they push ahead of.
+- **Test a description against the code before writing its case.** One
+  committed case expected `tobi_answer_questions` for a person's answer
+  in api mode; the server refuses any calling agent's answer to a
+  judge-answered question (`judgment.py`), and the agents were right to
+  decline. Expectations found wrong go in `corrections.toml`, scored beside
+  the original, never edited in place.
+- **`finish=true` cannot be measured on pages that make no follow-up
+  call.** None of the compare's 30 reports or the check's 8 had one, so
+  "never called" there means "never needed". Measure it with a case that
+  has follow-up calls pending (6 of 6 per model in each pass).
+- **Paging lost the questions on a large page.** weather.gov's first
+  result showed 1 of 13 questions (the rest in `more_questions`) and the
+  answer result was 48k characters with the next one; the agent answered
+  one and moved on, leaving 12 open. The server's judge answered all 13 on
+  the same page. Count questions shown per result before blaming the
+  agent.
+- **A debrief with tools off cannot quote a description.** The resumed
+  turn has no tool definitions in context, so agents say "I can't quote
+  them" and that they "guessed" argument names they had in front of them.
+  Ask what they did and why; check any claim about a description against
+  the transcript.
+
 ## A required proof field gets filled, not followed
 
 Answers to picture questions must say what the picture shows (`seen`), or

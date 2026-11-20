@@ -1,0 +1,44 @@
+{
+ "about": "A finished run with two open questions (client mode: they come to the calling agent). Abbreviated from r3 arm-a-g3-1's result shape; findings cut to the ones that matter.",
+ "turns": [
+  {"user": "Test https://www.section508.gov/ for Section 508 issues."},
+  {"call": {"name": "tobi_run_tt_tests", "arguments": {"url": "https://www.section508.gov/"}},
+   "result": {
+    "disclaimer": "Agent-assisted findings only. This is NOT a certified DHS Trusted Tester result and must not be reported as one.",
+    "status": "done",
+    "work": "incomplete",
+    "remaining": {"open_questions": 2, "follow_up_calls": 0, "waiting_for_person": 0, "tests_waiting": ["4.E", "9.C"]},
+    "next_step": "Not finished: 4.E, 9.C stay NEEDS_REVIEW until you answer the 2 open question(s) in open_questions. Answer them now, yourself, in one tobi_answer_questions call per batch, each by its rubric; answer unsure only when the evidence does not settle it (only those go to a person). Until then, a NEEDS_REVIEW finding is reported as needs review (a person checks it), never as a pass or a fail.",
+    "follow_up_calls": [],
+    "run_id": "20261119T014033Z-259f56",
+    "target": "https://www.section508.gov/",
+    "tests": ["2.A", "2.B", "2.C", "2.D", "3.A", "4.A", "4.B", "4.C", "4.D", "4.E", "4.F", "5.A", "5.B", "5.C", "5.D", "5.F", "5.G", "5.H", "9.A", "9.B", "9.C", "19.A"],
+    "findings": [
+     {"test_id": "4.C", "test_name": "2.1.2-no-keyboard-trap", "outcome": "PASS", "summary": "Tab and Shift+Tab reached every stop and left the page; no stop held focus.", "waiting_on": []},
+     {"test_id": "4.D", "test_name": "2.4.7-focus-visible", "outcome": "PASS", "summary": "Every one of the 41 stops showed a visible change when it had focus.", "waiting_on": []},
+     {"test_id": "4.E", "test_name": "2.4.3-focus-order-modal", "outcome": "NEEDS_REVIEW", "summary": "A hover card opened on the search button; one question is open about whether it is a dialog.", "waiting_on": ["4.E-e1-J1"]},
+     {"test_id": "9.C", "test_name": "3.2.4-consistent-identification", "outcome": "NEEDS_REVIEW", "summary": "Without other pages there is nothing to compare; one question is open.", "waiting_on": ["9.C-n1-J1"]}
+    ],
+    "open_questions": [
+     {"question_id": "4.E-e1-J1", "test_id": "4.E", "kind": "choice", "choices": ["modal", "content_only", "unsure"], "instance": "e1",
+      "question": "Something opened when the element in input.trigger was used. Is it a dialog that takes over the page (modal), or content that shows beside the page (content_only)?",
+      "rubric": "modal: it covers or dims the page, or the page marks it aria-modal. content_only: a menu, tooltip or card that leaves the page usable. unsure: whenever the evidence does not settle it.",
+      "input": {"trigger": {"role": "button", "name": "Search"}, "opened": {"role": "dialog", "name": "", "area_pct": 2, "aria_modal": false}}},
+     {"question_id": "9.C-n1-J1", "test_id": "9.C", "kind": "choice", "choices": ["same_function", "different_function", "unsure"], "instance": "n1",
+      "question": "The two controls in input.pair have different names on two pages. Do they do the same thing?",
+      "rubric": "same_function: they lead to the same place or act the same way. different_function: otherwise. unsure: whenever the evidence does not settle it.",
+      "input": {"pair": [{"page": "https://www.section508.gov/", "name": "Search", "href": "/search/"}, {"page": "https://www.section508.gov/manage/", "name": "Find", "href": "/search/"}]}}
+    ],
+    "report_uri": "run://20261119T014033Z-259f56/report.json",
+    "pre_scrt_uri": "run://20261119T014033Z-259f56/pre-scrt.json",
+    "expires_at": "2026-12-19T01:42:29Z",
+    "todo": [
+     "[ ] Answer the 2 open question(s) in open_questions in one tobi_answer_questions call (run_id 20261119T014033Z-259f56).",
+     "[ ] Before reporting: call tobi_run_status with no job_id, and repeat until it lists nothing left (it covers every run of this session).",
+     "[ ] Before writing your report: call tobi_explain with run_id 20261119T014033Z-259f56 for the tests you report on (every FAIL at least).",
+     "[ ] Save report_uri and pre_scrt_uri before expires_at."
+    ]
+   }},
+  {"assistant": "The run is done but two questions are open: whether the card that opens on the Search button is a dialog (4.E), and whether \"Search\" and \"Find\" on two pages do the same thing (9.C). 4.C and 4.D passed."}
+ ]
+}

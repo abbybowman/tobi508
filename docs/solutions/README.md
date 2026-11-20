@@ -46,6 +46,6 @@ here.
 
 | File | What it covers |
 | --- | --- |
-| [agent-follow-through.md](agent-follow-through.md) | Getting a calling agent to finish: fewer steps, status in the data, the to-do list last, proof the picture was seen |
+| [agent-follow-through.md](agent-follow-through.md) | Getting a calling agent to finish: fewer steps, status in the data, the to-do list last, proof the picture was seen; tool choice is solved but finishing is not (a result's to-do list outranks the next request, paging lost questions, `finish` needs pending follow-ups to measure) |
 | [server-judge.md](server-judge.md) | ApiJudge: what to know before changing it; what Agent C showed on real pages |
-| [agent-eval.md](agent-eval.md) | The agent eval harness and scoring: what cost time |
+| [agent-eval.md](agent-eval.md) | The agent eval harness and scoring: what cost time; the tool selection eval's stub and prompt cache |
