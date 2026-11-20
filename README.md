@@ -148,7 +148,7 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 {"tool": "tobi_explain", "arguments": {"run_id": "<run_id from the result>"}}
 ```
 
-The run takes minutes: until it is done, each result says `"status": "running"` and what it is doing (`"progress": "Walking the page with Tab and Shift+Tab (45 s so far)"`), and the agent waits with `tobi_run_status`.
+The run takes minutes: until it is done, each result says `"status": "running"` and how far along it is: first the page reading steps done (or not needed), then the tests done, each with a rough percentage (`"progress": "Reading the page, 2 of 5 steps done or not needed (40%): walking the page with Tab and Shift+Tab (45 s so far)"`, later `"Page read (100%). Testing, 7 of 21 tests done (33%): checking 5.C (3 min 10 s so far)"`), and the agent waits with `tobi_run_status`.
 
 <details>
 <summary>An open question, end to end, on a local test page (for contributors)</summary>
