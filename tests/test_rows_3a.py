@@ -128,7 +128,7 @@ def test_page_assessment_is_the_worst_source():
 
 
 def test_triggers_from_pass_t():
-    from tobi508.motion import Media, MotionPass
+    from tobi508.motion_models import Media, MotionPass
 
     mp = MotionPass(
         fast_animations=[{"frame": 0, "css": "#a", "name": "f", "per_s": 10}],

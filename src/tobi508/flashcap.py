@@ -16,7 +16,7 @@ strobe down to a slow one (research section 4):
 And one net: a 2 s CDP screencast of an ordinary load, which only says
 whether to capture (a trigger), never that nothing flashes.
 
-Decoding happens in a tool page (motion._secure_tool_page), never the tested
+Decoding happens in a tool page (motion_media._secure_tool_page), never the tested
 page.
 """
 

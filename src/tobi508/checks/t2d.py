@@ -32,7 +32,7 @@ from tobi508.models import (
     Outcome,
     TestId,
 )
-from tobi508.motion import Change, MotionPass, Region
+from tobi508.motion_models import Change, MotionPass, Region
 from tobi508.walk import KeyboardWalk
 
 

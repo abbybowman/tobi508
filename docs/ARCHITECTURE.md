@@ -15,7 +15,8 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
    step replays this recording, never the live page.
 3. **Shared evidence is collected once:** the page's inventory (`count.py`),
    the keyboard walk, Tab and Shift+Tab (`walk.py`, `traverse.py`), menus and
-   panels opened (`reveal.py`), a watch for motion and sound (`motion.py`),
+   panels opened (`reveal.py`), a watch for motion and sound (`motion.py`;
+   what it records is in `motion_models.py`),
    form fields (`forms.py`), labels through ANDI (`labels.py`, `andi.py`),
    and other pages of the same site (`site.py`).
 4. **Each test's check decides** (`checks/t<id>.py`, one per Trusted Tester
@@ -40,7 +41,7 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
 | MCP surface | `app.py` (server), `tools/` (one file per tool), `resources/`, `prompts/`, `routes.py` (HTTP-only routes) |
 | Inputs, outputs, settings | `models.py`, `config.py` |
 | Browser and safety | `browser.py`, `policy.py`, `egress.py`, `capture.py`, `redact.py`, `access.py` (hosted sign-in) |
-| Evidence collectors | `walk.py`, `traverse.py`, `observe.py`, `reveal.py`, `count.py`, `motion.py`, `mechanism.py`, `flash.py`, `flashcap.py`, `forms.py`, `labels.py`, `andi.py`, `site.py`, `hidden.py`, `jslib.py` |
+| Evidence collectors | `walk.py`, `traverse.py`, `observe.py`, `reveal.py`, `count.py`, `motion.py` (pass T, the watch; its page script in `motion_init.js`), `motion_models.py` (what pass T records), `motion_media.py` (sound and animated images decoded from the recording), `motion_pictures.py` (crops and states of moving regions), `mechanism.py`, `flash.py`, `flashcap.py`, `forms.py`, `labels.py`, `andi.py`, `site.py`, `hidden.py`, `jslib.py` |
 | Decisions | `checks/` (one module per test), `engine.py` (rule tables), `rules.py` (loads specs), `catalog.py` (the Trusted Tester text) |
 | Judging | `judgment.py`, `apijudge.py`, `judge_prompt.md` |
 | Output | `pipeline.py`, `scrt.py`, `compare.py`, `explain.py`, `inline.py`, `runlog.py`, `versions.py` |

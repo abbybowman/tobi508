@@ -9,7 +9,7 @@ import pytest
 
 from tobi508.checks import t2c
 from tobi508.checks.t2c import State2C, evaluate, questions_for
-from tobi508.motion import Candidate, Element, MotionPass, Probe, Region
+from tobi508.motion_models import Candidate, Element, MotionPass, Probe, Region
 
 
 def _state(probe: Probe, j1=None, j2=None) -> State2C:
