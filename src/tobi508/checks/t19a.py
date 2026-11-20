@@ -31,7 +31,14 @@ from tobi508.models import (
     Outcome,
     TestId,
 )
-from tobi508.site import PageRead, norm_href, page_label, read_page, site_read
+from tobi508.site import (
+    PageRead,
+    norm_href,
+    page_label,
+    read_page,
+    site_read,
+    with_compared,
+)
 from tobi508.traverse import settle
 from tobi508.walk import KeyboardWalk
 
@@ -101,6 +108,7 @@ class Suggested(BaseModel):
 
 
 class State19A(BaseModel):
+    compared: str = ""  # step 26: other pages compared and left out
     no_pages: bool = False
     read_errors: list[str] = Field(default_factory=list)
     pages: list[dict[str, Any]] = Field(default_factory=list)
@@ -500,9 +508,14 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         return State19A(no_pages=True)
     site = await site_read(ctx)
     st = State19A(
-        pages=[{"n": p.n, "url": p.final_url} for p in ctx.pages],
+        pages=[
+            {"n": r.n, "url": r.final_url}
+            for r in ctx.pages
+            if r.n in {p.n for p in site.others}
+        ],
         read_errors=site.errors,
         read=site.read,
+        compared=site.compared_sentence(),
     )
     if st.read_errors:
         return st
@@ -941,6 +954,12 @@ def _checked_words(st: State19A) -> list[str]:
 
 
 def evaluate(st: State19A, evidence_refs: list[str]) -> Finding:
+    """The page outcome (`_decide`), with how many other pages were compared
+    (step 26)."""
+    return with_compared(_decide(st, evidence_refs), st.compared)
+
+
+def _decide(st: State19A, evidence_refs: list[str]) -> Finding:
     if st.no_pages:
         f = Finding.not_performed(
             TestId.T19A,

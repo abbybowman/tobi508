@@ -82,6 +82,13 @@ EXPECTED: dict[str, dict] = {
     "f41-error-popup-traps": {"outcome": "FAIL", "rows": ["M11"]},
     "f42-error-popup-escape": {"outcome": "PASS", "rows": ["M2"]},
     "f43-error-inline-text": {"outcome": "PASS", "rows": []},
+    # 1.19.0 (step 35e, #134; round 3's SDE home and community pages): the
+    # press that should show an error goes to another address. The walk
+    # from that state starts there, so a search that only shows its results
+    # is walked and passes (before: NEEDS REVIEW, "did not finish
+    # (navigation)"), and a server's error page that holds focus is found.
+    "f52-search-goes-to-results": {"outcome": "PASS", "rows": []},
+    "f54-form-goes-to-error-page": {"outcome": "FAIL", "rows": ["M11"]},
     # 1.14.0, P8 (step 6g): the walk through what a menu or section opened.
     # A menu panel that keeps Tab inside it fails like any loop; with Escape
     # closing it, it passes. A plain menu and a modal dialog that shows a link

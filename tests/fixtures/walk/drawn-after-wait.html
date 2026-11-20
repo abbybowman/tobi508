@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><title>Data community</title></head><body>
+<header><a href="#home">Data Knowledge Hub</a></header>
+<div id="app"></div>
+<p><a href="#status" id="status">Loading</a></p>
+<script>
+// An application still drawing when a 10 s wait would end: a status link
+// comes and goes every 400 ms while it loads, and its controls appear 11 s
+// after the document has loaded.
+var blink = setInterval(function () {
+  var s = document.getElementById('status');
+  if (s.hasAttribute('href')) s.removeAttribute('href'); else s.setAttribute('href', '#status');
+}, 400);
+setTimeout(function () {
+  clearInterval(blink);
+  document.getElementById('app').innerHTML =
+    '<nav aria-label="Main"><a href="#topics">Topics</a> <a href="#forum">Forum</a> <a href="#events">Events</a></nav>' +
+    '<main><h1>Forum</h1>' +
+    '<form id="s" role="search"><label for="q">Search posts</label> <input id="q" type="search" name="q"> <button type="submit">Search</button></form>' +
+    '<ul><li><a href="#p1">Sharing data across missions</a></li><li><a href="#p2">Metadata standards</a></li><li><a href="#p3">Archive formats</a></li></ul>' +
+    '<p><button type="button" id="more">Show more posts</button></p>' +
+    '<div class="tag" role="button" tabindex="0" onclick="location.hash=\'#t1\'" onkeydown="if(event.key===\'Enter\')location.hash=\'#t1\'">Missions</div>' +
+    '<div class="tag" role="button" tabindex="0" onclick="location.hash=\'#t2\'" onkeydown="if(event.key===\'Enter\')location.hash=\'#t2\'">Archives</div></main>' +
+    '<footer><a href="#privacy">Privacy</a> <a href="#contact">Contact</a></footer>';
+  document.getElementById('s').addEventListener('submit', function (e) { e.preventDefault(); });
+}, 11000);
+</script>
+</body></html>

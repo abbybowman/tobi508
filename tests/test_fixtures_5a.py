@@ -34,6 +34,24 @@ def missing(q: str) -> dict:
 # name -> test -> expected outcome, instance rows (non-PASS rows are listed
 # in the finding; PASS rows too, as instance_rows reads the trace), answers.
 EXPECTED: dict[str, dict] = {
+    # Step 35a (#134): pages with no <form> element (round 3's applications).
+    # f56: the header's "SDE" button is named "SDESDE" (an icon's text and
+    # the label run together): M5 (5.C 1.16.0), where J1 was unsure. Its 5.B
+    # grouping is in test_fixtures_5b.py.
+    "f56-no-form-header-switcher": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        # 5.B 1.14.0: the judge eval reads it (test_fixtures_5b.py checks
+        # which items J1 is shown).
+        "5.B": {"outcome": "PASS"},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M6"], "answers": COMPLETE},
+    },
+    "f57-no-form-header-search": {
+        "5.A": {"outcome": "PASS", "rows": ["M2"]},
+        # 5.B 1.14.0: the judge eval reads it (test_fixtures_5b.py checks
+        # which items J1 is shown).
+        "5.B": {"outcome": "PASS"},
+        "5.C": {"outcome": "PASS", "rows": ["M5", "M5", "M6"], "answers": COMPLETE},
+    },
     "f01-visually-hidden-label": {
         "5.A": {"outcome": "FAIL", "rows": ["M5"], "answers": NOT_LABELED},
         "5.C": {"outcome": "PASS", "rows": ["M5"]},
@@ -573,3 +591,18 @@ async def test_a_star_quoted_as_the_label_is_no_label(settings, server, drafts):
     f = got["5.A"]
     assert f.outcome is not Outcome.PASS, f.summary
     assert "M4" not in instance_rows(f), (instance_rows(f), f.rationale)
+
+
+def test_a_name_with_visible_words_run_together_holds_them():
+    """5.C 1.16.0 (M5, step 35a, #134): ANDI reads an icon's text and the
+    label run together ("SDESDE" for the visible "SDE", round 3's SDE home
+    and MySearchStory). A word made only of visible words holds them; part
+    of a word never does."""
+    from tobi508.checks.t5c import holds, words
+
+    assert holds("SDE", words("SDESDE"))
+    assert holds("First name", words("FirstName"))
+    assert holds("SEARCH", words("SEARCHsearch-icon"))
+    assert not holds("Go", words("Google"))
+    assert not holds("Name", words("Surname"))
+    assert not holds("Email address", words("Emailaddr"))

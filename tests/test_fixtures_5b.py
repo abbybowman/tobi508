@@ -312,3 +312,33 @@ async def test_a_placeholder_only_search_box_with_no_icon_is_still_dna(
     )
     assert (got["5.A"].outcome.value, instance_rows(got["5.A"])) == ("FAIL", ["M3"])
     assert (got["5.B"].outcome.value, got["5.B"].rows) == ("DNA", ["A2", "G1"])
+
+
+# Step 35a (5.B 1.14.0, #134): with no <form> element every control was in
+# one group, so the header's product switcher ("SDE", round 3's SDE home)
+# joined the search box in the page, and J1 was unsure what "SDE" means. A
+# button in the page's header, a navigation region or the page's footer now
+# counts with a field only in that same one; a search box in the header keeps
+# its own button (round 3's community pages).
+@pytest.mark.parametrize(
+    ("page", "judged", "left_out"),
+    [
+        ("f56-no-form-header-switcher", ["Search the data", "SEARCH"], "SDE"),
+        ("f57-no-form-header-search", ["Search the hub", "Find posts"], "Like"),
+    ],
+)
+async def test_a_page_with_no_form_groups_by_header_and_navigation(
+    page, judged, left_out, settings, server
+):
+    from tobi508.models import TestId
+
+    from .harness import run_check
+
+    got = await run_check(
+        settings, f"{server.base}/5a/{page}.html", TestId.T5B, "all_descriptive"
+    )
+    [q] = [q for q in got["asked"] if q.test_id is TestId.T5B]
+    labels = [i["label"] or (i.get("near") or [""])[0] for i in q.input["items"]]
+    assert labels == judged, labels
+    assert left_out not in labels
+    assert got["finding"].outcome.value == "PASS", got["finding"].rows

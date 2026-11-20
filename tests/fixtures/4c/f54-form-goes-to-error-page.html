@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F54 Request a copy</title></head><body>
+<div id="app">
+<h1>Request a copy</h1>
+<form id="f">
+<p><label for="e">Email address</label> <input id="e" name="e" type="text"></p>
+<p><button type="submit">Send request</button></p>
+</form>
+</div>
+<script>
+// An application: sending the form changes the address without loading a
+// page and draws an error view whose link keeps keyboard focus (Tab and
+// Shift+Tab stay on it, Escape does nothing).
+document.getElementById("f").addEventListener("submit", (e) => {
+  e.preventDefault();
+  history.pushState(null, "", "f54-request/error");
+  document.getElementById("app").innerHTML =
+    '<h1>Request not sent</h1><p role="alert">Enter an email address, such as name@example.gov.</p>' +
+    '<p><a href="#back" id="back">Go back to the form</a></p><p><a href="#help">Help</a></p>';
+  const back = document.getElementById("back");
+  back.addEventListener("keydown", (k) => { if (k.key === "Tab") { k.preventDefault(); back.focus(); } });
+});
+</script>
+</body></html>

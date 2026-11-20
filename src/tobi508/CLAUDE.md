@@ -35,9 +35,10 @@ outcome. These six exceptions are approved, each with exactly these limits.
    address: at most 3 a run, each loaded exactly as a caller's other page is
    (`pipeline.capture_other`: the allowlist on every hop, the tested page's
    host after redirects, its own HAR, the page cache). It is the same page
-   only when it ends at the tested page's address or its document is byte
-   for byte the same; any other one is "not verified" (NEEDS REVIEW), never
-   a FAIL or a match. Its links are never followed. A link that differs only
+   only when it ends at the tested page's address (an identical document is
+   not enough: an application can send one document for every address;
+   #134 step 26); any other one is "not verified" (NEEDS REVIEW), never a
+   FAIL or a match. Its links are never followed. A link that differs only
    by its query string is not an alias.
 4. **A key combination that page text names** as a way to stop moving
    content or audio (2.A-2.C J2): on a fresh replay, modifiers plus one key,
@@ -46,7 +47,7 @@ outcome. These six exceptions are approved, each with exactly these limits.
 5. **Scripts that recorded scripts name by a string literal** (code the page
    loads when it is used, so that a replay can run the page's handlers):
    relative to the script's own address, same host as that script,
-   allowlisted, a script, at most 150 files, 3 MB each and 12 MB in all, 3
+   allowlisted, a script, at most 300 files, 10 MB each and 24 MB in all, 5
    levels deep, 40 s, each saved in the recording's chunk store. One not
    saved is reported, and a test that presses keys or types cannot PASS
    while the recording lacks code the page loads (guard GU, in the spec's
@@ -126,7 +127,8 @@ outcome. These six exceptions are approved, each with exactly these limits.
 - One tool call returns within `CALL_WAIT_S` (default 45 s, under common MCP
   client timeouts and HTTP proxies). A run not done by then goes on as a job
   (`jobs.py`) and `tobi_run_status` waits for it again; each still-running
-  result carries a progress line.
+  result carries a progress line: reading steps, then tests, done of total
+  with a rough percentage (`progress.py`).
 - By default a run is not held to a time limit (`NO_TIME_LIMIT_DEFAULT`): it
   tests the whole page and stops only at `MAX_RUN_S` (default 1800 s),
   because agents never put the `no_time_limit` choice to the user.

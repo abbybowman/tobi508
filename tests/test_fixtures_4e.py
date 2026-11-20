@@ -92,6 +92,18 @@ EXPECTED: dict[str, dict] = {
     # in the dialog still is (1.8.0; round 2's Search, Bootstrap's trap).
     "f18-modal-dialog-keeps-focus": {"outcome": "PASS", "rows": [], "not": ["RC"]},
     "f19-modal-dialog-field-jumps": {"outcome": "FAIL", "rows": ["M6"]},
+    # Step 24 (1.9.0; plan after round 3, cause 14): an application changes
+    # its address on its own 2.5 s after load, among the walk's first presses.
+    # The control replay waits until the same time after its load as the
+    # original step was read, so the change is the page's own (M2), not
+    # focus. Before: M3, the control having waited only 2 s from a replay
+    # that skips the walk's draw wait. Still NEEDS REVIEW: the walk left the
+    # page, so the rest of it was not checked (G3).
+    "f20-navigates-by-itself-after-load": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M2"],
+        "page_rows": ["G3"],
+    },
 }
 HELPERS = {"f02-other"}
 # Pages from other tests that prove a "not an instance" rule for 4.E.

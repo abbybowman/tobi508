@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -35,6 +36,10 @@ from tobi508.walk import KeyboardWalk, walk_coverage
 
 MAX_REPLAYS = 10
 CONTROL_WAIT_MS = 2000
+# Row M2: the control waits past the original step's time after load by this
+# margin (the settle rule's own slack), and at most CONTROL_MAX_S in all.
+CONTROL_MARGIN_S = 0.5
+CONTROL_MAX_S = 30.0
 HOOK = "context4e"
 
 J1_QUESTION = (
@@ -194,6 +199,9 @@ class Inst4E(BaseModel):
     unreliable: bool = False
     reproduced: bool | None = None
     timed: bool | None = None
+    # When the original step was read, in seconds after its load ended: the
+    # control replay waits until as long after its own load (row M2, 1.9.0).
+    since_load_s: float | None = None
     before_shot: str | None = None
     after_shot: str | None = None
     j1: dict[str, Any] | None = None
@@ -357,6 +365,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
                     signal=sig,
                     unreliable=unreliable,
                     after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
+                    since_load_s=step.since_load_s,
                 )
             )
     # Opened content (4.C's P8): every Tab step of the shared walk
@@ -400,6 +409,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4E:
                     signal=sig,
                     unreliable=unreliable,
                     after_shot=(step.extras.get(HOOK) or {}).get("after_shot"),
+                    since_load_s=step.since_load_s,
                     opened=opener,
                 )
             )
@@ -493,7 +503,15 @@ async def _control(ctx: RunContext, inst: Inst4E) -> bool:
         return False
     try:
         url, pages = s.page.url, len(s.traversal.context.pages)
-        await asyncio.sleep(CONTROL_WAIT_MS / 1000)
+        # Row M2 (1.9.0, step 24): wait until the same time after load as the
+        # original step was read, and never less than CONTROL_WAIT_MS. A page
+        # that changes its address on its own while it starts does so in the
+        # control too, however many keys came before.
+        wait = CONTROL_WAIT_MS / 1000
+        if inst.since_load_s is not None:
+            since = time.monotonic() - s.traversal.loaded_at
+            wait = max(wait, inst.since_load_s - since + CONTROL_MARGIN_S)
+        await asyncio.sleep(min(wait, CONTROL_MAX_S))
         return (
             s.page.url.split("#")[0] != url.split("#")[0]
             or len(s.traversal.context.pages) > pages

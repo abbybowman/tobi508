@@ -48,9 +48,29 @@ def unreadable(t: str) -> bool:
     )
 
 
+def run_together(word: str, parts: set[str]) -> list[str] | None:
+    """`word` split into words of `parts` with nothing left over (M5, 1.16.0,
+    step 35a): ANDI reads an icon's text and a label run together ("SDESDE"
+    for the visible "SDE"; "firstname" for "First name"). None when it cannot
+    be split so ("google" has "go" and then "ogle")."""
+    best: list[list[str] | None] = [[]] + [None] * len(word)
+    for end in range(1, len(word) + 1):
+        for start in range(end):
+            if best[start] is not None and word[start:end] in parts:
+                best[end] = [*best[start], word[start:end]]
+                break
+    return best[-1] if best[-1] else None
+
+
 def holds(seen: str, prog: set[str]) -> bool:
-    """Every word of `seen` is in `prog`, and `seen` has words to hold."""
-    return not unreadable(seen) and words(seen) <= prog
+    """Every word of `seen` is in `prog`, and `seen` has words to hold. A
+    word of `prog` made only of words of `seen` run together holds those
+    words (M5, 1.16.0)."""
+    want = words(seen)
+    have = set(prog)
+    for w in prog - want:
+        have.update(run_together(w, want) or [])
+    return not unreadable(seen) and want <= have
 
 
 def norm(t: str) -> str:
