@@ -162,6 +162,13 @@ re-testing): confirm and remove, or remove the mark.
 
 ## 4.A to 4.F: keyboard and focus
 
+- **4.C, error states:** a form that sends to the server and gets a new
+  page back (its answer, perhaps with the error) is never walked: the
+  recording does not hold the answer, since the tool never sends a form
+  to the live site, so a trap there is not found; that page is tested as
+  a page of its own. An application that draws its results or error at
+  another address without loading a page is walked from there (step
+  35e, [#134](https://github.com/abbybowman/tobi508/issues/134)).
 - **Radio groups:** a group is one element that takes focus, since Tab
   lands on one radio of it; the walk does not visit a group's radios
   one by one (arrow keys are not walked), so how the others look on

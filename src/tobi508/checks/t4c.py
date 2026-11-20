@@ -106,6 +106,21 @@ J2_RUBRIC = (
 )
 
 
+def moved_to(s: Session) -> str:
+    """4.C P7 (1.19.0, step 35e, #134): when the keys that made an error state
+    took the page to another address, the walk from that state starts there:
+    its Tabs read as navigation only when they leave that address. A press
+    that opened a new window is not rebased (the walk stays incomplete).
+    Returns the new address's path, or ""."""
+    now = s.page.url.split("#")[0]
+    if now == s.start_url.split("#")[0]:
+        return ""
+    s.start_url = now
+    from tobi508.site import short_path
+
+    return short_path(now)
+
+
 class Probe(BaseModel):
     """One exit attempt from a fresh replay (P3, or a J1 probe)."""
 
@@ -211,6 +226,9 @@ def error_states(attempts) -> list[tuple[str, list[str]]]:
         if not a.replay:
             continue
         for r in a.reads:
+            # A press that loaded another page (a server's answer) cannot be
+            # read or replayed: the recording never holds it, as the tool never
+            # sends a form to the live site (1.19.0 note, step 35e).
             if not r.at or r.failed or not (r.texts or r.live or r.dialogs):
                 continue
             keys = a.replay[: r.at]
@@ -288,6 +306,7 @@ class Collector:
                 raise RuntimeError("the menu or section could not be opened again")
         for k in via["keys"]:
             await s.traversal.press(k)
+        moved_to(s)  # an error state at another address (P7, 1.19.0)
         if via["paths"]:  # an error state (E) is reached by keys alone
             await bypass(s.page, via["paths"])
 
@@ -631,6 +650,15 @@ class Collector:
             s = None
             try:
                 s = await self.session_at(None, keys)
+                # 1.19.0 (step 35e, #134): the press went to another address
+                # (a search's results, or a server's answer with the error):
+                # Tab from where it landed, as a person would.
+                moved = moved_to(s)
+                if moved:
+                    self.state.notes.append(
+                        f"After {label}, the page went to another address "
+                        f"({moved}); Tab was pressed from there."
+                    )
                 end, _, own = await drive(
                     s, "Tab", ERROR_WALK, detect_continuation, self.deadline
                 )

@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F52 Search the archive</title></head><body>
+<div id="app">
+<h1>Archive</h1>
+<form id="f">
+<p><label for="q">Search the archive</label> <input id="q" name="q" type="text"></p>
+<p><button type="submit">Search</button></p>
+</form>
+<p><a href="#about">About the archive</a></p>
+</div>
+<script>
+// An application (round 3's SDE home): searching changes the address without
+// loading a page and draws the results view. Nothing is wrong there.
+document.getElementById("f").addEventListener("submit", (e) => {
+  e.preventDefault();
+  history.pushState(null, "", "f52-search/results");
+  document.getElementById("app").innerHTML =
+    '<h1>Search results</h1><p><a href="#new">New search</a></p>' +
+    '<ul><li><a href="#r1">Mission reports</a></li><li><a href="#r2">Flight logs</a></li></ul>';
+});
+</script>
+</body></html>

@@ -63,7 +63,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 3.A | 2.3.1-flashing | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.A | 2.1.1-keyboard-access | [1.15.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.B | 2.1.1-no-keystroke-timing | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.C | 2.1.2-no-keyboard-trap | [1.18.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.C | 2.1.2-no-keyboard-trap | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.E | 3.2.1-on-focus | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.F | 2.4.3-focus-order-meaning | [1.12.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
