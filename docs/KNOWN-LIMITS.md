@@ -52,12 +52,16 @@ re-testing): confirm and remove, or remove the mark.
   first load of each address costs 2 s more. When the page more than
   doubled its elements after the walk began (or had no form field and
   then had some), the tests that read the walk decide nothing (row WL,
-  step 22: 4.A, 4.C, 4.F, 5.A to 5.D, 5.F). **The limit:** a page still
-  drawing its controls after the 10 s wait is tested as it stood then;
-  if its walk also took less than 3 s, the recount can miss the change,
-  and 4.A, 4.C, 4.F, 5.A to 5.D and 5.F to 5.H could PASS or say DOES
-  NOT APPLY on what they did not see. Found by reading the code; no page
-  has shown it. A page that adds fewer late is read as before.
+  step 22: 4.A, 4.C, 4.F, 5.A to 5.D, 5.F). A page still drawing itself
+  when the 10 s wait ends (its count changed in the wait's last 2 s) is
+  now caught: 4.A, 4.C, 4.F, 5.A to 5.C and 5.F cannot PASS or say DOES
+  NOT APPLY on it (guard WL, #134; fixture `walk/drawn-after-wait.html`,
+  controls drawn at 11 s: before, 4.A and 4.C PASS and 5.A to 5.F DOES
+  NOT APPLY). **Still open:** 5.D does not take the guard yet (#135 and
+  #137 hold its spec), nor 4.D, 4.E, 5.G and 5.H. A page whose count
+  does not change for its first 2 s and that draws only after the walk's
+  recount (at least 3 s after load, later on a long walk) ends the wait
+  early and is read as it stood: no guard sees it.
 - **Web components and frames** are read by every reader and decided
   on the same rows (step 8). Not read: a closed shadow root, and a
   frame the recording lacks (PASS and DOES NOT APPLY are held,

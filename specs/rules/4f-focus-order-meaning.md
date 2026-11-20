@@ -1,8 +1,8 @@
 ---
 tt_test: 4.F
 tt_name: 2.4.3-focus-order-meaning
-spec_version: 1.11.0
-guards: unrecorded-code, reveal
+spec_version: 1.12.0
+guards: unrecorded-code, reveal, drawn-past-wait
 count: focusable@dna
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -30,6 +30,8 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 
 
 **Row WL: a page that drew itself after the walk began** (1.9.0; step 22, plan after round 3 cause 2; moves PASS, DOES NOT APPLY and FAIL only toward NEEDS REVIEW). The walk's elements are counted again when P2 ends, no sooner than 3 s after its load (`walk.COUNT_AFTER_S`; 4.C section 2), and the *count after the walk* is the largest of the counts at the start and at each pass's end (`KeyboardWalk.inventory_after`, `fields_after`). Round 3's community pages (an application drawn after load) had 1 element when the walk began and 76 and 90 later. A3 (one element, no order) needs one element in the count after the walk, not one stop: one distinct stop on a page that counts more after the walk is row WL, NEEDS REVIEW with "This test could not be performed", and A1 needs no element in that count either (else A2). On any other page such a walk is incomplete (G3). Its sentence: "The page showed <N> element(s) that take focus when the keyboard walk began and <M> a few seconds later (it draws itself after it loads), and the walk reached <R> of them, so the page could not be checked as a person sees it." (`walk.drawn_late`). **Narrowed (step 22's first rerun, 2026-11-17):** "the page drew itself after the walk began" needs the count after the walk to be more than twice the count when the walk began (as 4.C's sign of a page that grew), or, for form fields, no field when it began and some after; only then do coverage rows count against the later count. Round 2's home page counted 145 elements, then 146 (one late link): that is not a page drawn late, and its 4.C and 4.E keep their outcomes.
+
+**Guard WL: a page still drawing when the wait for it ended** (1.12.0; front matter `guards: drawn-past-wait`; defined in [_template.md](_template.md); #134). A load of the tested page waits for the page to draw itself, at most 10 s (`traverse.DRAW_MAX_S`; 4.C section 2, "Waiting for the page to draw"). When that wait ended at its ceiling with the count of elements that take focus changed in its last 2 s (`Report.drawn_past_wait`), the page was still drawing when the walk and the readers began, and a walk that ends in under 3 s can read the page as it stood then. A reading from such a load decides nothing: a page outcome of PASS or DOES NOT APPLY becomes NEEDS REVIEW with "This test could not be performed" and the plain sentence "The page was still drawing itself 10 seconds after it loaded, when we began to check it, so we may have checked it before it was finished." Trace row `WL`. FAIL is unchanged. Fixture `walk/drawn-after-wait.html`: a status link comes and goes every 400 ms and the controls appear 11 s after load (before the guard: 4.A and 4.C PASS, 5.A to 5.F DOES NOT APPLY, "no form fields").
 
 ## 2. Evidence to collect
 

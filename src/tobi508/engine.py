@@ -90,6 +90,12 @@ UNRECORDED_CODE_SENTENCE = (
 )
 
 
+DRAWN_PAST_WAIT_SENTENCE = (
+    "The page was still drawing itself 10 seconds after it loaded, when we "
+    "began to check it, so we may have checked it before it was finished."
+)
+
+
 def apply_guards(
     f: Finding,
     guards: tuple[str, ...],
@@ -119,6 +125,22 @@ def apply_guards(
         f.rationale += (
             f" Guard GU: {report.unrecorded_code_count} script(s) the page "
             "loads when used are not in the recording."
+        )
+    # WL (`drawn-past-wait`, #134): a load of the tested page was still
+    # drawing itself when the wait for it ended, so the walk and readers may
+    # have read a page that was not finished.
+    if (
+        "drawn-past-wait" in guards
+        and f.outcome in (Outcome.PASS, Outcome.DNA)
+        and getattr(report, "drawn_past_wait", None)
+    ):
+        f.outcome = Outcome.NEEDS_REVIEW
+        f.rows = [*f.rows, "WL"]
+        f.summary = f"{REVIEW_HEAD} {DRAWN_PAST_WAIT_SENTENCE}"
+        f.note = TEST_NOT_PERFORMED_NOTE
+        f.rationale += (
+            " Guard WL: the page was still drawing itself when the 10 s wait "
+            "for it ended."
         )
     rv = getattr(report, "reveal", None) or {}
     # RV (`reveal`): something that opens was not opened or not read, so what

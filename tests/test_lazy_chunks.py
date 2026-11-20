@@ -188,9 +188,18 @@ def test_the_specs_that_press_keys_or_type_declare_the_guard():
     want |= {t: both for t in ("4.A", "4.D", "5.D")}
     want |= {t: ("unrecorded-code", "reveal", "reveal-walk") for t in ("4.C", "4.E")}
     want["4.F"] = ("unrecorded-code", "reveal")
+    # Row WL (#134): a load still drawing when its wait ended decides
+    # nothing, for the tests that carried step 22's row WL (5.D is held by
+    # #135 and #137 and does not take it yet).
+    late = ("4.A", "4.C", "4.F", "5.F")
+    for t in late:
+        want[t] = (*want[t], "drawn-past-wait")
     for t, g in want.items():
         assert specs[TestId(t)].guards == g, t
-    assert all(specs[TestId(t)].guards == ("reveal",) for t in ("5.A", "5.B", "5.C"))
+    assert all(
+        specs[TestId(t)].guards == ("reveal", "drawn-past-wait")
+        for t in ("5.A", "5.B", "5.C")
+    )
 
 
 def test_an_unknown_guard_in_front_matter_fails_loudly(tmp_path):

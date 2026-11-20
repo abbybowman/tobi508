@@ -20,7 +20,13 @@ from pathlib import Path
 from tobi508.models import COUNT_KEYS, TestId
 
 REQUIRED_KEYS = ("tt_test", "tt_name", "spec_version")
-KNOWN_GUARDS = ("unrecorded-code", "reveal", "reveal-content", "reveal-walk")
+KNOWN_GUARDS = (
+    "unrecorded-code",
+    "reveal",
+    "reveal-content",
+    "reveal-walk",
+    "drawn-past-wait",
+)
 _FILENAME = re.compile(r"^(?P<id>[0-9]+[a-z])-(?P<short>[a-z0-9-]+)\.md$")
 _SEMVER = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 

@@ -61,17 +61,17 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 2.C | 2.2.2-auto-updating | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 2.D | 4.1.2-change-notify-auto | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
 | 3.A | 2.3.1-flashing | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.A | 2.1.1-keyboard-access | [1.14.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
+| 4.A | 2.1.1-keyboard-access | [1.15.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.B | 2.1.1-no-keystroke-timing | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.C | 2.1.2-no-keyboard-trap | [1.17.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.C | 2.1.2-no-keyboard-trap | [1.18.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.E | 3.2.1-on-focus | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.F | 2.4.3-focus-order-meaning | [1.11.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 5.A | 3.3.2-label-provided | [1.15.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
-| 5.B | 2.4.6-label-descriptive | [1.12.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
-| 5.C | 1.3.1-programmatic-label | [1.14.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
+| 4.F | 2.4.3-focus-order-meaning | [1.12.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 5.A | 3.3.2-label-provided | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
+| 5.B | 2.4.6-label-descriptive | [1.13.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
+| 5.C | 1.3.1-programmatic-label | [1.15.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
 | 5.D | 3.2.2-on-input | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
-| 5.F | 3.3.1-error-identification | [1.16.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
+| 5.F | 3.3.1-error-identification | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
 | 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
 | 5.H | 3.3.4-error-prevention | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 9.A | 2.4.1-bypass-function | [1.7.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |

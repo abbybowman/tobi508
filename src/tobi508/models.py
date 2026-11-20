@@ -711,6 +711,14 @@ class Report(BaseModel):
         "that code, so tests that press keys or type cannot PASS (guard GU).",
     )
     unrecorded_code_count: int = Field(default=0, description="How many in all.")
+    drawn_past_wait: list[str] = Field(
+        default_factory=list,
+        description="Addresses of the tested page whose load was still drawing "
+        "itself when the 10 s wait for it ended (the count of elements that "
+        "take focus changed in the wait's last 2 s), without query strings. A "
+        "reading from such a load decides nothing (guard drawn-past-wait, row "
+        "WL): PASS and DOES NOT APPLY become NEEDS REVIEW.",
+    )
     reveal: dict[str, Any] = Field(
         default_factory=dict,
         description="What opening the page's menus, tabs and sections found "

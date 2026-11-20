@@ -1010,6 +1010,11 @@ def _evaluate(
 ) -> None:
     """Findings and questions for every selected test, from the checks' rules.
     `skipped`: tests the run left out on purpose, with the reason."""
+    from tobi508.traverse import DRAW_CUT
+
+    for u in DRAW_CUT.get() or []:
+        if safe_url(u) not in report.drawn_past_wait:
+            report.drawn_past_wait.append(safe_url(u))
     tests = report_tests(report)
     asked = {q.question_id for q in report.questions}
     findings: list[Finding] = []
@@ -1086,9 +1091,10 @@ async def run_tt_tests(
             await progress(step, 4, message)
 
     t_start = time.monotonic()
-    from tobi508.traverse import DRAWN
+    from tobi508.traverse import DRAW_CUT, DRAWN
 
     DRAWN.set({})  # step 23: which addresses of this run draw after load
+    DRAW_CUT.set([])  # row WL: loads still drawing when the wait ended
     if no_time_limit if lift_media_cap is None else lift_media_cap:
         # The user's choice also lifts the media store's cap (plan Q9); the
         # server's default of no time limit does not.

@@ -83,6 +83,10 @@ DRAW_QUIET_S = 2.0
 DRAW_MAX_S = 10.0
 DRAW_POLL_S = 0.2
 DRAWN: ContextVar[dict[str, float] | None] = ContextVar("a11y_drawn", default=None)
+# Row WL (#134): the tested page's loads whose wait ended at DRAW_MAX_S while
+# the count was still changing (the page was still drawing). A reading from
+# such a load decides nothing (guard `drawn-past-wait`). Per run.
+DRAW_CUT: ContextVar[list[str] | None] = ContextVar("a11y_draw_cut", default=None)
 
 
 async def _focus_count(page: Page) -> int:
@@ -95,13 +99,15 @@ async def _focus_count(page: Page) -> int:
     return total
 
 
-async def wait_drawn(page: Page) -> float:
+async def wait_drawn(page: Page, note_cut: bool = False) -> float:
     """Step 23: wait until the page has drawn itself (the count of elements
     that take focus unchanged for DRAW_QUIET_S, at most DRAW_MAX_S). The
     first load of an address in a run measures how long its count kept
     changing (DRAWN); a later load of it waits only when that was more than
     nothing, and at most that long plus the quiet window. Returns the seconds
-    waited."""
+    waited. `note_cut` (the tested page's loads): a wait that ended at
+    DRAW_MAX_S with the count changed in its last DRAW_QUIET_S is noted in
+    DRAW_CUT (row WL)."""
     seen = DRAWN.get()
     key = page.url.split("#", 1)[0]
     known = seen.get(key) if seen is not None else None
@@ -122,7 +128,19 @@ async def wait_drawn(page: Page) -> float:
             break
     if seen is not None and known is None:
         seen[key] = round(changed_at, 2) if changed_at is not None else 0.0
-    return round(time.monotonic() - t0, 2)
+    end = time.monotonic()
+    cut = DRAW_CUT.get()
+    if (
+        note_cut
+        and cut is not None
+        and cap >= DRAW_MAX_S
+        and end - t0 >= cap
+        and changed_at is not None
+        and end - stable < DRAW_QUIET_S
+        and key not in cut
+    ):
+        cut.append(key)
+    return round(end - t0, 2)
 
 
 # Settle rule (4.C spec section 2). The quiet window is settings.settle_quiet_ms.
@@ -1240,7 +1258,7 @@ async def open_session(
     loaded_at = time.monotonic()
     # Step 23: the inventory (and P1's and P2's press caps from it) is taken
     # once the page has drawn itself.
-    await wait_drawn(page)
+    await wait_drawn(page, note_cut=True)
     inv = await dom_inventory(page)
     t = Traversal(context, page, quiet_ms, shots_dir, rel_base, list(hooks or []))
     t.loaded_at = loaded_at
