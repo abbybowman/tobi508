@@ -186,6 +186,16 @@ ok = ["tobi_run_status", "tobi_explain"]
 forbid = ["tobi_answer_questions", "tobi_run_tt_tests"]
 text = "person|human|manual|review"
 
+[[case]]
+id = "cancel-on-request"
+goal = "the user stops a run still going (added 2026-11-20 with tobi_cancel_run)"
+prior = "pending"
+prompt = "Actually, stop that test. I don't need it any more."
+[case.expect]
+tool = "tobi_cancel_run"
+equal = { job_id = "job-3fedace186a3" }
+forbid = ["tobi_run_tt_tests"]
+
 # ── tobi_explain ──────────────────────────────────────────────────────────
 
 [[case]]
@@ -232,6 +242,19 @@ id = "read-tester-diff"
 goal = "\"here's my tester's SCRT file, what differs\""
 prior = "run_open"
 prompt = "Here's my tester's SCRT file for the same page. What differs from your results?\n\n```json\n{scrt}\n```"
+[case.expect]
+tool = "tobi_read_report"
+present = ["content", "compare_to"]
+any_of = [
+  { content = "(?s)^\\s*\\[.*TestResult", compare_to = "^run://20261119T014033Z-259f56/pre-scrt\\.json$" },
+  { compare_to = "(?s)^\\s*\\[.*TestResult", content = "^run://20261119T014033Z-259f56/pre-scrt\\.json$" },
+]
+
+[[case]]
+id = "read-tester-disagree-words"
+goal = "no word \"compare\": where our results differed or disagreed (added 2026-11-20: an agent wrote its own script for this)"
+prior = "run_open"
+prompt = "Tell me anywhere that our eval differed or disagreed with the human report below.\n\n```json\n{scrt}\n```"
 [case.expect]
 tool = "tobi_read_report"
 present = ["content", "compare_to"]
