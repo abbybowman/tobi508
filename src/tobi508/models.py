@@ -182,6 +182,12 @@ class Step(BaseModel):
         description="A replay-prefix press read without the quiet window, because "
         "the walk saw this press change nothing (4.C spec section 2).",
     )
+    since_load_s: float | None = Field(
+        default=None,
+        description="Seconds from the load's end to when this step was read "
+        "(4.E's control replay waits as long after its own load; None in older "
+        "walks).",
+    )
     extras: dict[str, Any] = Field(
         default_factory=dict,
         description="Walk extras a check asked for (e.g. images, styles), by name.",
@@ -705,6 +711,14 @@ class Report(BaseModel):
         "that code, so tests that press keys or type cannot PASS (guard GU).",
     )
     unrecorded_code_count: int = Field(default=0, description="How many in all.")
+    drawn_past_wait: list[str] = Field(
+        default_factory=list,
+        description="Addresses of the tested page whose load was still drawing "
+        "itself when the 10 s wait for it ended (the count of elements that "
+        "take focus changed in the wait's last 2 s), without query strings. A "
+        "reading from such a load decides nothing (guard drawn-past-wait, row "
+        "WL): PASS and DOES NOT APPLY become NEEDS REVIEW.",
+    )
     reveal: dict[str, Any] = Field(
         default_factory=dict,
         description="What opening the page's menus, tabs and sections found "
@@ -1026,7 +1040,11 @@ class RunPending(BaseModel):
     target: str
     seconds_waiting: float = Field(description="Seconds it waited for a slot.")
     seconds_running: float = Field(description="Seconds since its run started.")
-    progress: str = Field(description="The phase it is in.")
+    progress: str = Field(
+        description="How far along it is: the page reading steps done or not "
+        "needed, then the tests done, each of its total with a rough "
+        "percentage, and what it is doing now (progress.py)."
+    )
     next_step: str
 
 

@@ -170,7 +170,54 @@ async def test_an_other_page_with_the_tested_pages_own_content_is_not_compared(
     for f in out.report.findings:
         assert f.outcome.value == "NEEDS_REVIEW", (f.test_id, f.rows, f.summary)
         assert f.note == "This test could not be performed", f.test_id
-        assert "same content as the tested page" in f.summary, (f.test_id, f.summary)
+        assert "is the tested page again" in f.summary, (f.test_id, f.summary)
+
+
+async def test_a_copy_is_left_out_and_the_rest_are_compared(settings, server):
+    """Step 26 (#134; Abby, 2026-11-20): one usable other page is enough, so
+    a copy of the tested page among the pages given is left out, named, and
+    the test decides on the rest; it says how many it compared."""
+    from tobi508.models import TestId
+    from tobi508.pipeline import run_tt_tests
+
+    url = f"{server.base}/9x/a1-home.html"
+    out = await run_tt_tests(
+        settings,
+        url,
+        [TestId.T9A, TestId.T9B],
+        other_pages=[url + "?x=1", f"{server.base}/9x/a2-benefits.html"],
+    )
+    for f in out.report.findings:
+        assert f.rows[0] != "A2", (f.test_id, f.rows, f.summary)
+        want = "compared this page with 1 of the 2 other pages given: /9x/a2-benefits"
+        assert want in f.summary, f.summary
+        # Addresses in output have no query string (redact.safe_url).
+        assert "/9x/a1-home.html is the tested page again" in f.summary, f.summary
+
+
+async def test_one_document_at_two_paths_is_two_pages(settings, server):
+    """Step 26 (#134; plan after round 3, cause 5): an application sends one
+    document for every address and draws each page in the browser (round 3's
+    p07 to p10). The same bytes at another path are not the tested page
+    again: the pages are compared once drawn."""
+    from tobi508.models import TestId
+    from tobi508.pipeline import run_tt_tests
+
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/9x/app/home.html",
+        [TestId.T9A, TestId.T9B, TestId.T9C],
+        other_pages=[f"{server.base}/9x/app/forum.html"],
+    )
+    assert out.report.other_pages[0].same_content_as_tested is False
+    for f in out.report.findings:
+        assert f.rows[0] != "A2", (f.test_id, f.rows, f.summary)
+        want = "compared this page with 1 of the 1 other page given: /9x/app/forum"
+        assert want in f.summary, f.summary
+    # The repeated header and menu, drawn on both, come before the main
+    # content, and nothing bypasses them.
+    nine_a = next(f for f in out.report.findings if f.test_id is TestId.T9A)
+    assert nine_a.outcome.value == "FAIL", (nine_a.rows, nine_a.summary)
 
 
 def _pairs(a: str, b: str):

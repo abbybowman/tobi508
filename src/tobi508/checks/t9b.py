@@ -35,6 +35,7 @@ from tobi508.site import (
     page_label,
     pair_aligned,
     site_read,
+    with_compared,
 )
 from tobi508.walk import KeyboardWalk
 
@@ -63,6 +64,7 @@ class Cmp(BaseModel):
 
 
 class State9B(BaseModel):
+    compared: str = ""  # step 26: other pages compared and left out
     no_pages: bool = False
     read_errors: list[str] = Field(default_factory=list)
     cmps: list[Cmp] = Field(default_factory=list)
@@ -137,7 +139,9 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9B:
     if not ctx.pages:
         return State9B(no_pages=True)
     site = await site_read(ctx)
-    st = State9B(read_errors=site.errors, read=site.read)
+    st = State9B(
+        read_errors=site.errors, read=site.read, compared=site.compared_sentence()
+    )
     if st.read_errors:
         return st
     # The alignment is a table of up to millions of cells: off the event loop.
@@ -177,6 +181,12 @@ def _short(name: str) -> str:
 
 
 def evaluate(st: State9B, evidence_refs: list[str]) -> Finding:
+    """The page outcome (`_decide`), with how many other pages were compared
+    (step 26)."""
+    return with_compared(_decide(st, evidence_refs), st.compared)
+
+
+def _decide(st: State9B, evidence_refs: list[str]) -> Finding:
     if st.no_pages:
         f = Finding.not_performed(
             TestId.T9B,

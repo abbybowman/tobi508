@@ -90,9 +90,11 @@ from tobi508.models import (
 )
 from tobi508.motion import MOTION_INIT_JS
 from tobi508.policy import check_url
+from tobi508.progress import Tracker
 from tobi508.redact import safe_error, safe_url
 from tobi508.resources.runs import run_uri
 from tobi508.runlog import RunRecorder, expires_at, prune_runs
+from tobi508.site import same_place
 from tobi508.traverse import (
     Pace,
     ReplayPlan,
@@ -341,6 +343,10 @@ def uses_pages(check) -> bool:
     return bool(getattr(check, "uses_pages", False))
 
 
+def _reveals(check) -> bool:
+    return bool(getattr(check, "uses_reveal", False))
+
+
 def needs_walk(check, ctx: RunContext) -> bool:
     """A check that compares pages needs nothing (not even the walk) when no
     other pages were given: it is not performed."""
@@ -506,7 +512,15 @@ def _live_recorder(
         if not _same_site(lc.final_url, final_url):
             raise ValueError("it ended on another host after redirects")
         same = False
-        if purpose in ("alias", "suggested") and tested_har is not None:
+        # Step 26 (#134): the same document counts only at the tested page's
+        # host and path apart from the query string; an application sends one
+        # document for every address. An alias (index.*, www.) is then the
+        # tested page only when it ends at the tested page's address.
+        if (
+            purpose in ("alias", "suggested")
+            and tested_har is not None
+            and same_place(final_url, lc.final_url)
+        ):
             mine = document_sha(tested_har, final_url)
             same = mine is not None and mine == document_sha(
                 run.dir / rel, lc.final_url
@@ -1010,6 +1024,11 @@ def _evaluate(
 ) -> None:
     """Findings and questions for every selected test, from the checks' rules.
     `skipped`: tests the run left out on purpose, with the reason."""
+    from tobi508.traverse import DRAW_CUT
+
+    for u in DRAW_CUT.get() or []:
+        if safe_url(u) not in report.drawn_past_wait:
+            report.drawn_past_wait.append(safe_url(u))
     tests = report_tests(report)
     asked = {q.question_id for q in report.questions}
     findings: list[Finding] = []
@@ -1081,14 +1100,11 @@ async def run_tt_tests(
     other_pages: list[str] | None = None,
     lift_media_cap: bool | None = None,
 ) -> RunResult:
-    async def say(step: float, message: str) -> None:
-        if progress is not None:
-            await progress(step, 4, message)
-
     t_start = time.monotonic()
-    from tobi508.traverse import DRAWN
+    from tobi508.traverse import DRAW_CUT, DRAWN
 
     DRAWN.set({})  # step 23: which addresses of this run draw after load
+    DRAW_CUT.set([])  # row WL: loads still drawing when the wait ended
     if no_time_limit if lift_media_cap is None else lift_media_cap:
         # The user's choice also lifts the media store's cap (plan Q9); the
         # server's default of no time limit does not.
@@ -1129,6 +1145,24 @@ async def run_tt_tests(
     # Cheapest budget first, each after the tests whose replays it reads
     # (checks.base.AFTER). Findings keep the report's order.
     checks = run_order(checks, settings)
+    # The reading steps this run may take, fixed now so the counts in the
+    # progress line never go back: one not needed counts as done (progress.py).
+    walks = any(c.uses_walk or getattr(c, "uses_motion", False) for c in checks)
+    track = Tracker(
+        progress,
+        [
+            "record",
+            *(f"other{i}" for i in range(1, len(others) + 1)),
+            *(["walk"] if walks else []),
+            *(["reveal"] if walks and any(_reveals(c) for c in checks) else []),
+            "inventory",
+            *(
+                ["hidden"]
+                if any(c.test_id in HIDDEN_FIELD_TESTS for c in checks)
+                else []
+            ),
+        ],
+    )
     states: dict[TestId, Any] = {}
     skipped: dict[TestId, str] = {}  # tests left out, and why (fix 12)
     ran_out: dict[TestId, str] = {}  # tests past their own budget
@@ -1165,7 +1199,7 @@ async def run_tt_tests(
             report.versions = collect_versions(settings, browser, no_time_limit)
             report.versions.display = await measure_display(settings, browser)
             run.log("browser_launched", version=browser.version)
-            await say(0, "Recording the page")
+            await track.reading("Recording the page")
             har = run.evidence_dir / "page.har.zip"
             t0 = time.monotonic()
             try:
@@ -1190,9 +1224,10 @@ async def run_tt_tests(
             missing = unrecorded_code(har)
             report.unrecorded_code = [safe_url(u) for u in missing[:20]]
             report.unrecorded_code_count = len(missing)
+            track.close("record")
             pages_cut = ""
             for i, other in enumerate(others, 1):
-                await say(0.5, f"Recording other page {i} of {len(others)}")
+                await track.reading(f"Recording other page {i} of {len(others)}")
                 rel = f"evidence/pages/p{i}.har.zip"
                 t1 = time.monotonic()
                 try:
@@ -1214,6 +1249,7 @@ async def run_tt_tests(
                     run.log("captured_other", "error", n=i, error="time limit")
                     report.errors.append(pages_cut)
                     report.other_pages = []
+                    track.close(*(f"other{j}" for j in range(i, len(others) + 1)))
                     break
                 except Exception as exc:
                     shutil.rmtree(run.dir, ignore_errors=True)
@@ -1248,9 +1284,13 @@ async def run_tt_tests(
                 # A query string can make another page, so the address was not
                 # refused; the same document bytes under another address is the
                 # tested page again (K-01).
+                # Step 26: only at the same host and path apart from the query
+                # string (an application sends one document at every address).
                 tested_sha = document_sha(har, cap.final_url)
-                same_content = tested_sha is not None and (
-                    tested_sha == document_sha(run.dir / rel, oc.final_url)
+                same_content = (
+                    tested_sha is not None
+                    and same_place(cap.final_url, oc.final_url)
+                    and tested_sha == document_sha(run.dir / rel, oc.final_url)
                 )
                 report.other_pages.append(
                     OtherPage(
@@ -1273,6 +1313,7 @@ async def run_tt_tests(
                         ),
                     )
                 )
+                track.close(f"other{i}")
                 run.log(
                     "captured_other",
                     n=i,
@@ -1331,7 +1372,7 @@ async def run_tt_tests(
                 )
                 ctx.cache["motion_task"] = motion_task
             while any(needs_walk(c, ctx) for c in checks):
-                await say(1, "Walking the page with Tab and Shift+Tab")
+                await track.reading("Walking the page with Tab and Shift+Tab")
                 caps = [c.cap for c in checks if getattr(c, "cap", None)]
                 pace = None if no_time_limit else Pace(soft, caps=caps)
                 try:
@@ -1387,12 +1428,11 @@ async def run_tt_tests(
                     run.write_json(run.evidence_dir / "walk.json", walk)
                     run.log("walk", **_walk_summary(walk), cost=asdict(cost))
                 break
-            if walk is not None and any(
-                getattr(c, "uses_reveal", False) for c in checks
-            ):
+            track.close("walk")
+            if walk is not None and any(_reveals(c) for c in checks):
                 # Open every menu, tab and section the walk found, once, for
                 # the tests that read opened content (fix 9b, reveal.py).
-                await say(1.5, "Opening menus and expandable sections")
+                await track.reading("Opening menus and expandable sections")
                 try:
                     with metered() as cost:
                         rv = await _bounded(
@@ -1421,13 +1461,15 @@ async def run_tt_tests(
                     run.log("reveal", "error", error=err)
             # The page's inventory (count.py): taken at the walk's first load,
             # else on a load of its own, before the checks read it.
+            track.close("reveal")
             if "count" not in ctx.cache:
-                await say(1.8, "Taking an inventory of the page")
+                await track.reading("Taking an inventory of the page")
                 try:
                     ctx.cache["count"] = await _bounded(_own_count(ctx), hard)
                 except TimeoutError:
                     ctx.cache["count"] = Count(where="own load", error="time limit")
             count = ctx.cache["count"]
+            track.close("inventory")
             if (
                 not count.error
                 and count.openers > 0
@@ -1436,7 +1478,7 @@ async def run_tt_tests(
             ):
                 # Hidden fields nothing a careful tester does shows (hidden.py;
                 # guard CN; Abby, 2026-11-15).
-                await say(1.9, "Checking which hidden fields can ever be shown")
+                await track.reading("Checking which hidden fields can ever be shown")
                 hc = await hidden.bounded(
                     ctx, count.hidden_field_paths, ctx.cache.get("reveal"), hard
                 )
@@ -1451,15 +1493,13 @@ async def run_tt_tests(
             run.write_json(run.evidence_dir / "count.json", ctx.cache["count"])
             # The count is over this run's tests, skipped ones included, so it
             # never jumps back; the bar moves from stage 2 to 3 through them.
+            track.tests_total = len(checks)
             for n, c in enumerate(checks, 1):
                 if pages_cut and uses_pages(c):
                     continue  # NEEDS REVIEW, not performed: pages_cut says why
                 if needs_walk(c, ctx) and walk is None:
                     continue  # NEEDS REVIEW: the run did not complete (errors say why)
-                await say(
-                    2 + (n - 1) / len(checks),
-                    f"Checking {c.test_id.value} (test {n} of {len(checks)})",
-                )
+                await track.testing(n - 1, len(checks), f"Checking {c.test_id.value}")
                 # The test's own time, inside the run limit: its
                 # budget or a share of what is left, whichever is smaller. It
                 # stops starting work a little before (ctx.out_of_time) and is
@@ -1536,7 +1576,7 @@ async def run_tt_tests(
     # evaluated and judged (code review B-04).
     jobs.release_browser_slot()
 
-    await say(3, "Evaluating")
+    await track.finishing(3, "Evaluating")
     report.findings = []
     _evaluate(run, report, states, {**skipped, **ran_out})
     result = await get_judge(settings.judge_backend).judge(report.open_questions)
@@ -1546,7 +1586,9 @@ async def run_tt_tests(
     run.write_json(run.report_path, report)
     pre_scrt = scrt.write_for_run(run.dir, run.report_path, report)
     if settings.judge_backend == "api":
-        report, states = await _judge_phase(settings, run, report, states, say)
+        report, states = await _judge_phase(
+            settings, run, report, states, track.finishing
+        )
     run.log("run_end", status="error" if report.errors else "ok")
     qview = _question_view(report.open_questions[:QUESTION_PAGE])
     calls = report.follow_up_calls

@@ -1,7 +1,7 @@
 ---
 tt_test: 9.A
 tt_name: 2.4.1-bypass-function
-spec_version: 1.7.0
+spec_version: 1.8.0
 count: landmarks.shadow, links.shadow
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
 owner: Abby Bowman
@@ -31,11 +31,13 @@ The tool gives each page one 9.A outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | # | Evidence | Outcome | Source |
 | --- | --- | --- | --- |
 | A1 | No other pages were given | NEEDS REVIEW, not performed: "it needs other pages of the same site to know which content repeats" | Abby, 2026-11-02 (Q1: other pages required); p. 42 Identify Content |
-| A2 | A page could not be read (load, units), or was over the read cap and so was not read whole (1.4.0: before, a page over the cap could reach A3, A4 or G2, and a menu longer than the cap gave DOES NOT APPLY), or an other page whose recorded document is byte-for-byte the tested page's under another address (a query string), or that is nearly the same page (1.5.0; `site.near_copy`: the same host and path apart from the query string, and at least `NEAR_COPY` = 0.9 of the text keys of its units also on the tested page, as a share of all keys of the two; a server that changes the page on every request defeats the byte test; review K-01, Abby 2026-11-13, measured on live NASA search pages: the same page 1.00, the highest different page 0.44): comparing them would compare the page with itself | NEEDS REVIEW, not performed, naming the page and the reason (1.2.0; Abby, 2026-11-12) | Spec rule |
+| A2 | The tested page could not be read in full (it did not load, its contents could not be read, or it has more parts than the read limit of 5,000), or no other page is left to compare with (below) | NEEDS REVIEW, not performed, naming the page and the reason | Spec rule (1.2.0; Abby, 2026-11-12); read limit (1.4.0); step 26 (1.8.0) |
 | A3o | The tested page has navigation of its own, and no unit of it is repeated or every other page shares almost nothing with it | NEEDS REVIEW, not performed: the pages given look like another template, or nothing on the page appears on them, so what repeats cannot be told (1.1.0; 1.6.0: also when nothing repeats, whatever the other pages share) | Abby, 2026-11-09 (bundle 2 decision 3); Abby, 2026-11-14 (round 2 item 13: CILab, key Pass: its own top links match nothing on the main site's pages, and one of those pages names the lab in its content); p. 42 Applicability |
 | A3 | No unit of the tested page is repeated (and it has no navigation of its own) | DOES NOT APPLY | p. 42 Applicability |
 | A4 | Repeated units exist but B is empty (they all come after the main content, such as a footer), or B is small: one control, or fewer than 4 words in all | DOES NOT APPLY, naming what repeats and where: there is nothing before the main content to bypass, as forms tests do not apply to a page with no form | p. 42 Identify Content (EXCLUDE: small sections "are not considered repetitive blocks"; Note: a bypass for navigation "at the bottom of a web page may be unnecessary"); Baseline 4.A (the same limitations); ACT ye5d6e and 3e12e1 look only at repeated content before non-repeated content; Abby, 2026-11-02 (DNA: users who reach the footer have had the page's content and can stop) |
 | A5 | Otherwise | Applies; go to section 3 | |
+
+**Which other pages are compared** (step 26, #134). An other page is left out of the comparison, and named with the reason, when it could not be read in full (it did not load, or its contents could not be read, or it has more parts than the read limit of 5,000: what repeats cannot be told from part of a page), or when it is the tested page again: its address is the tested page's except for the query string, and its saved document is identical to the tested page's, or at least 90% of its text is the tested page's (`site.near_copy`, `NEAR_COPY` = 0.9). 9.A is decided on the other pages that are left: one is enough, as one is when only one is given (A1). Every outcome says, in its summary (the pre-SCRT comment), how many of the other pages given were compared, and which were left out and why, each named by its path, the address without the site (`SiteRead.compared_sentence`; Abby, 2026-11-20). Pages at different paths are never the tested page again, even with an identical document: some applications send the same document for every address and draw each page in the browser (round 3's p07 to p10). Sources: review K-01 (Abby, 2026-11-13; measured on live NASA search pages: the same page 1.00, the highest different page 0.44); Abby, 2026-11-20 (one usable other page is enough; a page that does not load, or a copy, is left out rather than holding the test).
 
 Small block, in numbers: B is one control, or B's units hold fewer than 4 words in all.
 

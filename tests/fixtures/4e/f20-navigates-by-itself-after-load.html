@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><title>F20 goes to another address by itself</title></head><body>
+<h1>Starting</h1>
+<a href="#a">First</a>
+<a href="#b">Second</a>
+<a href="#c">Third</a>
+<a href="#d">Fourth</a>
+<a href="#e">Fifth</a>
+<script>
+// An application that changes its address on its own while it starts (a
+// sign-in redirect), a little after load, with no key involved.
+setTimeout(() => { location.href = 'f02-other.html'; }, 2500);
+</script>
+</body></html>

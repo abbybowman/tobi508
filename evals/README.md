@@ -157,6 +157,21 @@ certified Trusted Tester results; a development site, one repeat.
 - **Not verified here:** repeats; 9.A-9.C beside the other tests in one
   full run (the cap changes no other test's read).
 
+## Judge eval 2026-11-20: 5.B after step 35a (#134)
+
+5.B's question gets other items on a page with no `<form>` (5.B 1.14.0: a
+control in the page's header, a navigation region or the footer is grouped
+there), so its judge eval ran: `judge_eval.py prepare OUT 5.B` (31 cases
+that ask, with the new `5a/f56` and `f57`), then `answer --backend api
+--repeat 2 5.B`, the server judge's CLI route (`claude-sonnet-5-5`). Both
+repeats: **31 of 31 match**, no wrong PASS, no inject page took the bait,
+none left open. On f56 (round 3's SDE home: the header's "SDE" switcher no
+longer in the search form) and f57 (a header search with its own button)
+J1 answered all_descriptive both times, naming the field's label and the
+button. Packets passed the leak grep (no fixture names or local addresses).
+Not run: a fresh client agent on the packets. Results:
+`judging/gate-2026-11-20-134/judge-eval-5b/`.
+
 ## Tool selection 2026-11-19: do agents pick TOBI's tools from the descriptions alone?
 
 Evidence for the GSA hackathon's criterion "tool names and descriptions precise enough for an LLM to select them without ambiguity". `evals/tool_selection/` (how it works: its `README.md`): 27 plain-language cases (25 run in client mode, 26 in api mode), written and committed before any run (`cc86037`); Claude Code's own client (`claude -p`, CLI 2.1.329, isolated as the agent eval's CLI route) against a stub MCP server that serves the real server's tool list word for word in each judge mode and records calls; Sonnet 5.5 (`claude-sonnet-5-5`) and Haiku 5.5 (`claude-haiku-5-5`), 3 repeats, 306 runs a pass; scored by script (right tool or rightly none, jsonschema against the served `inputSchema`, required arguments, a caveat regex), no grading model. Before: the descriptions at `main` `2ec2c69` (PR #140). After: `9e78e40`, one change (`tobi_read_report`'s `content` and `compare_to`). Results, served tool lists (hashes in `meta.json`), report and debriefs: `evals/tool_selection/results/2026-11-19/`. Agent-assisted results are not involved; nothing is tested.

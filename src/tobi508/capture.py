@@ -409,12 +409,15 @@ def document_sha(har_path: Path, final_url: str) -> str | None:
 # with the reason, and `unrecorded_code` reports it.
 
 CHUNKS_INDEX = "a11y-chunks.json"
-MAX_CHUNKS = 150
+MAX_CHUNKS = 300  # 150 before 2026-11-20 (#134: round 3 needs about 163)
 CHUNK_CONCURRENCY = 8
 CHUNK_STORE_S = 40  # the whole chunk store for one page
-MAX_CHUNK_BYTES = 3_000_000
-MAX_CHUNKS_TOTAL_BYTES = 12_000_000
-CHUNK_ROUNDS = 3
+# Raised from 3 MB and 12 MB (Abby, 2026-11-20; #134 step 25): round 3's
+# community pages load a post editor and an icon set of 5.6 MB and 6.9 MB
+# when used, 13.8 MB with the rest of their chunks.
+MAX_CHUNK_BYTES = 10_000_000
+MAX_CHUNKS_TOTAL_BYTES = 24_000_000
+CHUNK_ROUNDS = 5  # levels; 3 before 2026-11-20 (#134: round 3 needs 4)
 # `import("./x.js")`, `from"./x.js"` and `import"./x.js"` with a string
 # literal that is a relative or root path to a .js/.mjs file.
 _REF = re.compile(
@@ -477,9 +480,11 @@ def script_refs(text: str, base_url: str) -> list[str]:
     """Addresses of the scripts a script names by a string literal, resolved
     from its own address (fragment dropped, in order, once each)."""
     out: list[str] = []
+    seen: set[str] = set()  # a list's `in` made a large script quadratic (S-01)
     for m in _REF.finditer(text):
         ref = urljoin(base_url, m.group(1)).split("#", 1)[0]
-        if ref not in out:
+        if ref not in seen:
+            seen.add(ref)
             out.append(ref)
     return out
 

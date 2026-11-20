@@ -45,7 +45,7 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
 | Decisions | `checks/` (one module per test), `engine.py` (rule tables), `rules.py` (loads specs), `catalog.py` (the Trusted Tester text) |
 | Judging | `judgment.py`, `apijudge.py`, `judge_prompt.md` |
 | Output | `pipeline.py`, `scrt.py`, `compare.py`, `explain.py`, `inline.py`, `runlog.py`, `versions.py` |
-| Runs and hosting | `jobs.py` (runs longer than one call), `pagecache.py` (other pages recorded once a session), `frozen.py` (recorded pages for evaluations), `livelog.py` and `livepage.py` (a demo log, off by default) |
+| Runs and hosting | `jobs.py` (runs longer than one call), `progress.py` (its progress line: reading steps, then tests, done of total), `pagecache.py` (other pages recorded once a session), `frozen.py` (recorded pages for evaluations), `livelog.py` and `livepage.py` (a demo log, off by default) |
 
 Outside `src/tobi508/`: `specs/rules/` (one versioned rules spec per test,
 citing the Trusted Tester PDF in `specs/sources/`), `tests/` (unit tests and

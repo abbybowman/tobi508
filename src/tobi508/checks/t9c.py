@@ -37,7 +37,9 @@ from tobi508.site import (
     a3o_reason,
     kinship,
     norm_href,
+    short_path,
     site_read,
+    with_compared,
 )
 from tobi508.walk import KeyboardWalk
 
@@ -100,6 +102,8 @@ class Pair(BaseModel):
 
 
 class State9C(BaseModel):
+    compared: str = ""  # step 26: other pages compared and left out
+    none_left: str = ""  # step 26: row A2 when no other page could be compared
     no_pages: bool = False
     pages: list[AndiPage] = Field(default_factory=list)  # [0] is the tested page
     pairs: list[Pair] = Field(default_factory=list)
@@ -317,28 +321,32 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
         *(_cached_andi(p, ctx.third_party) for p in ctx.pages),
     )
     pages = list(pages)
-    # The tested page again under another address (K-01): not compared. A
-    # copy: the read may be the one pagecache keeps for other runs.
-    for i, ref in enumerate(ctx.pages, 1):
-        if getattr(ref, "same_content_as_tested", False) and not pages[i].error:
-            pages[i] = pages[i].model_copy(
-                update={
-                    "error": "it has the same content as the tested page, so "
-                    "comparing them would compare the page with itself"
-                }
-            )
-    # Nearly the same page (K-01, spec A2): the site read has both pages' units.
     site = await site_read(ctx)
-    for i, read in enumerate(site.pages):
-        if i and read.near_copy and not read.identical and not pages[i].error:
-            pages[i] = pages[i].model_copy(
-                update={
-                    "error": "it is nearly the same page as the tested page, so "
-                    "comparing them would compare the page with itself"
-                }
-            )
-    st = State9C(pages=pages)
-    if any(p.error for p in st.pages):
+    # Step 26 (#134): an other page ANDI or the site read could not read, or
+    # that is the tested page again, is left out; the rest are compared. The
+    # tested page unread, or no other page left, is row A2.
+    site_ok = {p.n for p in site.others}
+    kept, left = [pages[0]], list(site.left_out)
+    for p in pages[1:]:
+        if p.n not in site_ok:
+            continue  # named in site.left_out
+        if p.error:
+            where = site.given_urls.get(p.n, p.url)
+            left.append(f"{short_path(where)} could not be read ({p.error[:80]})")
+        else:
+            kept.append(p)
+    st = State9C(pages=kept)
+    ns = {k.n for k in kept}
+    view = site.model_copy(
+        update={"left_out": left, "pages": [p for p in site.pages if p.n in ns]}
+    )
+    st.compared = view.compared_sentence()
+    if pages[0].error:
+        return st
+    if len(kept) == 1:
+        st.none_left = "none of the other pages given could be compared: " + "; ".join(
+            left
+        )
         return st
     st.kinship = kinship(site)
     st.read = site.read
@@ -508,6 +516,12 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="", note=False):
 
 
 def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
+    """The page outcome (`_decide`), with how many other pages were compared
+    (step 26)."""
+    return with_compared(_decide(st, evidence_refs), st.compared)
+
+
+def _decide(st: State9C, evidence_refs: list[str]) -> Finding:
     if st.no_pages:
         f = Finding.not_performed(
             TestId.T9C,
@@ -523,7 +537,7 @@ def evaluate(st: State9C, evidence_refs: list[str]) -> Finding:
         f"{'the tested page' if p.n == 0 else f'other page {p.n}'}: {p.error}"
         for p in st.pages
         if p.error
-    ]
+    ] + ([st.none_left] if st.none_left else [])
     if errs:
         f = Finding.not_performed(TestId.T9C, "; ".join(errs))
         f.rows = ["A2", "G1"]
