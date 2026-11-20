@@ -320,6 +320,9 @@ def test_the_limits_hold_round_3s_largest_chunks():
     old 3 MB limit, so guard GU held 4.B and 5.D there."""
     assert capture.MAX_CHUNK_BYTES >= 6_878_283
     assert capture.MAX_CHUNKS_TOTAL_BYTES >= 6_878_283 + 5_597_547 + 1_316_771
+    # ... and with what those two name: about 163 files, 4 levels deep.
+    assert capture.MAX_CHUNKS >= 163 and capture.CHUNK_ROUNDS >= 4
+    assert capture.MAX_CHUNKS_TOTAL_BYTES >= 13_792_601 + 6_112_918
 
 
 async def test_a_chunk_over_the_size_limit_is_listed_with_why(

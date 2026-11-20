@@ -22,16 +22,17 @@ app used on 2026-11-16 (assumed, not verifiable).
 
 | Recording | Page | Original SHA-256 | This copy's SHA-256 |
 | --- | --- | --- | --- |
-| `pages/029.har.zip` | p07 `/data-governance-community/home` | `3005f2ea62c0d713362436a3e5fd24cbf25fa52ff89ab25fe350cdfe58c23ff3` | `2e9b0f5a6df9ba102c07183c4066e519be38fafda42d19b8c3a47cbbe19e83a2` |
-| `pages/030.har.zip` | p08 `/data-governance-community/forum` | `0e2e6b93ff4112055d40662294b6364245e531936ed3ad26559b171211c4d8c4` | `52f53fd383960db1c5c6aff9cbb9411157e00d421e7a01abb8c0c88598f19aaa` |
+| `pages/029.har.zip` | p07 `/data-governance-community/home` | `3005f2ea62c0d713362436a3e5fd24cbf25fa52ff89ab25fe350cdfe58c23ff3` | `34e95dbc7da283d7ccaa03bc2444f3ad6e598ffe462faef86ceeefbeceb0adc2` |
+| `pages/030.har.zip` | p08 `/data-governance-community/forum` | `0e2e6b93ff4112055d40662294b6364245e531936ed3ad26559b171211c4d8c4` | `26cb20bb54553d47645d14a5ae417c96165f70bbf3cbb9ef83d3581f579b7abd` |
 
 | File added | Bytes | SHA-256 (first 16) |
 | --- | --- | --- |
 | `chunk-HH7OQO3D.js` | 6,878,283 | `051ef36efdece707` |
 | `chunk-GCKNKALH.js` | 5,597,547 | `58d0c8080eae03d4` |
 
-**Still missing.** These two files name 101 more (6.1 MB), and those one
-more: about 163 files in all for the page, over the store's 150-file and
-3-level limits. Guard GU therefore still holds tests that press keys on p07
-and p08 with this copy. Adding them waits for Abby's decision on those
-limits. The recordings stay out of git (`*.har.zip`).
+**The files those name** (Abby, 2026-11-20: raise the file and depth
+limits to 300 and 5). The two files name 101 more and those one more,
+fetched the same way and added level by level: p07 now holds 161 code files
+(19.9 MB), p08 165 (19.9 MB), and `capture.unrecorded_code` lists none on
+either. Each added file is in `a11y-chunks.json` with its SHA-256. The
+recordings stay out of git (`*.har.zip`).

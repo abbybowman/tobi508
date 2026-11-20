@@ -20,12 +20,13 @@ re-testing): confirm and remove, or remove the mark.
   - A page that loads code only when it is used may lack it in the
     recording; guard GU then holds a PASS at NEEDS REVIEW
     ([solutions](solutions/recordings-miss-lazy-scripts.md)). The chunk
-    store saves such code (the freeze runs it too) up to 10 MB a file and
-    24 MB a page; a larger one stays unrecorded. Round 3's community pages
-    load 6.9 MB and 5.6 MB files, which the 3 MB limit before step 25
-    ([#134](https://github.com/abbybowman/tobi508/issues/134)) refused, so
-    guard GU held 4.B and 5.D there; round 3's frozen copy still lacks
-    them.
+    store saves such code (the freeze runs it too) up to 10 MB a file, 24
+    MB and 300 files a page, 5 levels deep; more stays unrecorded. Round
+    3's community pages need about 163 files, two of 6.9 MB and 5.6 MB,
+    which the limits before step 25 ([#134](https://github.com/abbybowman/tobi508/issues/134))
+    refused, so guard GU held 4.B and 5.D there. Round 3's own freeze
+    still lacks them; the rerun uses a copy with them added
+    (`evals/judging/gate-2026-11-20-134/`).
   - A frame whose address changes on every load (reCAPTCHA, a lazy
     video embed, an OpenID Connect sign-in frame) is not in a frozen
     copy: its replay asks for an address the recording never saw and is

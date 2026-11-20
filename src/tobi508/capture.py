@@ -409,7 +409,7 @@ def document_sha(har_path: Path, final_url: str) -> str | None:
 # with the reason, and `unrecorded_code` reports it.
 
 CHUNKS_INDEX = "a11y-chunks.json"
-MAX_CHUNKS = 150
+MAX_CHUNKS = 300  # 150 before 2026-11-20 (#134: round 3 needs about 163)
 CHUNK_CONCURRENCY = 8
 CHUNK_STORE_S = 40  # the whole chunk store for one page
 # Raised from 3 MB and 12 MB (Abby, 2026-11-20; #134 step 25): round 3's
@@ -417,7 +417,7 @@ CHUNK_STORE_S = 40  # the whole chunk store for one page
 # when used, 13.8 MB with the rest of their chunks.
 MAX_CHUNK_BYTES = 10_000_000
 MAX_CHUNKS_TOTAL_BYTES = 24_000_000
-CHUNK_ROUNDS = 3
+CHUNK_ROUNDS = 5  # levels; 3 before 2026-11-20 (#134: round 3 needs 4)
 # `import("./x.js")`, `from"./x.js"` and `import"./x.js"` with a string
 # literal that is a relative or root path to a .js/.mjs file.
 _REF = re.compile(

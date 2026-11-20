@@ -47,7 +47,7 @@ outcome. These six exceptions are approved, each with exactly these limits.
 5. **Scripts that recorded scripts name by a string literal** (code the page
    loads when it is used, so that a replay can run the page's handlers):
    relative to the script's own address, same host as that script,
-   allowlisted, a script, at most 150 files, 10 MB each and 24 MB in all, 3
+   allowlisted, a script, at most 300 files, 10 MB each and 24 MB in all, 5
    levels deep, 40 s, each saved in the recording's chunk store. One not
    saved is reported, and a test that presses keys or types cannot PASS
    while the recording lacks code the page loads (guard GU, in the spec's
