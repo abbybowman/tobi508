@@ -188,9 +188,18 @@ def test_the_specs_that_press_keys_or_type_declare_the_guard():
     want |= {t: both for t in ("4.A", "4.D", "5.D")}
     want |= {t: ("unrecorded-code", "reveal", "reveal-walk") for t in ("4.C", "4.E")}
     want["4.F"] = ("unrecorded-code", "reveal")
+    # Row WL (#134): a load still drawing when its wait ended decides
+    # nothing, for the tests that carried step 22's row WL (5.D is held by
+    # #135 and #137 and does not take it yet).
+    late = ("4.A", "4.C", "4.F", "5.F")
+    for t in late:
+        want[t] = (*want[t], "drawn-past-wait")
     for t, g in want.items():
         assert specs[TestId(t)].guards == g, t
-    assert all(specs[TestId(t)].guards == ("reveal",) for t in ("5.A", "5.B", "5.C"))
+    assert all(
+        specs[TestId(t)].guards == ("reveal", "drawn-past-wait")
+        for t in ("5.A", "5.B", "5.C")
+    )
 
 
 def test_an_unknown_guard_in_front_matter_fails_loudly(tmp_path):
@@ -303,3 +312,39 @@ def test_the_test_server_answers_404_outside_the_fixtures_folder(server):
         "/lazy/%2e%2e/%2e%2e/conftest.js",
     ):
         assert get(bad) == 404, bad
+
+
+def test_the_limits_hold_round_3s_largest_chunks():
+    """Step 25 (#134): round 3's community pages load a 6.9 MB and a 5.6 MB
+    chunk when used, beside 1.3 MB of others; the store refused both at the
+    old 3 MB limit, so guard GU held 4.B and 5.D there."""
+    assert capture.MAX_CHUNK_BYTES >= 6_878_283
+    assert capture.MAX_CHUNKS_TOTAL_BYTES >= 6_878_283 + 5_597_547 + 1_316_771
+    # ... and with what those two name: about 163 files, 4 levels deep.
+    assert capture.MAX_CHUNKS >= 163 and capture.CHUNK_ROUNDS >= 4
+    assert capture.MAX_CHUNKS_TOTAL_BYTES >= 13_792_601 + 6_112_918
+
+
+async def test_a_chunk_over_the_size_limit_is_listed_with_why(
+    settings, browser, server, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(capture, "MAX_CHUNK_BYTES", 10)
+    har = tmp_path / "page.har.zip"
+    cap = await record(
+        browser, settings, f"{server.base}/lazy/l01-lazy-on-click.html", har, noop_log
+    )
+    [c] = cap.chunks
+    assert c["missing"] == "over the size limit" and not c["file"]
+    assert [u.rsplit("/", 1)[-1] for u in unrecorded_code(har)] == ["l01-chunk.js"]
+
+
+def test_a_script_naming_many_files_is_read_quickly():
+    """Review S-01: the repeat check was a list, quadratic in the number of
+    names; a large chunk is scanned too now that 10 MB ones are stored."""
+    import time
+
+    text = "".join(f'import("./c{i}.js");' for i in range(50_000))
+    t0 = time.monotonic()
+    refs = script_refs(text + text, "https://a.gov/app/main.js")
+    assert len(refs) == 50_000 and refs[0] == "https://a.gov/app/c0.js"
+    assert time.monotonic() - t0 < 2.0

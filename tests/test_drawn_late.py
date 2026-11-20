@@ -141,3 +141,77 @@ async def test_a_page_drawn_late_is_read_as_it_is_drawn(settings, server):
     # Decided, not left for a person on the late page's account.
     assert late["4.F"][0] is Outcome.PASS and late["5.D"][0] is Outcome.PASS
     assert not any("WL" in rows for _, rows in late.values())
+
+
+# Row WL as a guard (#134): a page still drawing itself when the 10 s wait
+# ended (a status link comes and goes every 400 ms; the controls appear 11 s
+# after load), walked in under 3 s, was read as it stood: before the guard,
+# 4.A and 4.C PASS and 5.A to 5.F DOES NOT APPLY ("no form fields"). A reading
+# from such a load decides nothing. 5.D does not take the guard yet (#135 and
+# #137 hold its spec), so it still says DOES NOT APPLY: a known gap.
+AFTER_WAIT = "walk/drawn-after-wait.html"
+GUARDED = ("4.A", "4.C", "4.F", "5.A", "5.B", "5.C", "5.F")
+
+
+@pytest.mark.slow
+async def test_a_page_still_drawing_when_the_wait_ended_decides_nothing(
+    settings, server
+):
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/{AFTER_WAIT}",
+        [TestId(t) for t in (*GUARDED, "5.D")],
+    )
+    got = {f.test_id.value: f for f in out.report.findings}
+    assert out.report.drawn_past_wait, out.report.drawn_past_wait
+    for t in GUARDED:
+        f = got[t]
+        assert f.outcome is Outcome.NEEDS_REVIEW, (t, f.outcome, f.rows, f.summary)
+        assert f.outcome is not Outcome.PASS and f.outcome is not Outcome.DNA
+        assert f.note == "This test could not be performed", (t, f.rows)
+    # 4.A and 4.C walked the page as it stood and passed it: only the guard
+    # holds them. The others' own rows may hold them first (a pass that ended
+    # after 11 s sees the fields: 5.A's A3), depending on timing.
+    for t in ("4.A", "4.C"):
+        assert got[t].rows[-1] == "WL", (t, got[t].rows)
+        assert "still drawing itself 10 seconds" in got[t].summary, t
+    assert got["5.D"].outcome is Outcome.DNA  # not guarded yet (#135, #137)
+
+
+def test_the_guard_moves_only_pass_and_does_not_apply():
+    from tobi508.engine import apply_guards
+    from tobi508.models import Finding
+
+    class R:
+        drawn_past_wait = ["http://x/"]
+
+    for before, after in [
+        (Outcome.PASS, Outcome.NEEDS_REVIEW),
+        (Outcome.DNA, Outcome.NEEDS_REVIEW),
+        (Outcome.FAIL, Outcome.FAIL),
+        (Outcome.NEEDS_REVIEW, Outcome.NEEDS_REVIEW),
+    ]:
+        f = Finding.model_construct(
+            test_id=TestId("4.C"),
+            outcome=before,
+            rows=["G4"],
+            summary="",
+            note=None,
+            rationale="",
+        )
+        g = apply_guards(f, ("drawn-past-wait",), R())
+        assert g.outcome is after, (before, g.outcome)
+        assert ("WL" in g.rows) == (before in (Outcome.PASS, Outcome.DNA))
+
+    class Quiet:
+        drawn_past_wait: list[str] = []
+
+    f = Finding.model_construct(
+        test_id=TestId("4.C"),
+        outcome=Outcome.PASS,
+        rows=["G4"],
+        summary="",
+        note=None,
+        rationale="",
+    )
+    assert apply_guards(f, ("drawn-past-wait",), Quiet()).outcome is Outcome.PASS

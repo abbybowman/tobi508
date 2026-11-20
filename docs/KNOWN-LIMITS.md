@@ -19,9 +19,14 @@ re-testing): confirm and remove, or remove the mark.
 - **Recordings and replays.**
   - A page that loads code only when it is used may lack it in the
     recording; guard GU then holds a PASS at NEEDS REVIEW
-    ([solutions](solutions/recordings-miss-lazy-scripts.md)). The freeze
-    does not run the chunk store, so a frozen copy can lack such code
-    (round 3's community pages: guard GU held 4.B). Step 25, [#134](https://github.com/abbybowman/tobi508/issues/134).
+    ([solutions](solutions/recordings-miss-lazy-scripts.md)). The chunk
+    store saves such code (the freeze runs it too) up to 10 MB a file, 24
+    MB and 300 files a page, 5 levels deep; more stays unrecorded. Round
+    3's community pages need about 163 files, two of 6.9 MB and 5.6 MB,
+    which the limits before step 25 ([#134](https://github.com/abbybowman/tobi508/issues/134))
+    refused, so guard GU held 4.B and 5.D there. Round 3's own freeze
+    still lacks them; the rerun uses a copy with them added
+    (`evals/judging/gate-2026-11-20-134/`).
   - A frame whose address changes on every load (reCAPTCHA, a lazy
     video embed, an OpenID Connect sign-in frame) is not in a frozen
     copy: its replay asks for an address the recording never saw and is
@@ -29,12 +34,14 @@ re-testing): confirm and remove, or remove the mark.
     (`frames_not_recorded`, step 10a). On round 3's community pages the
     app may leave the page when its sign-in frame is missing (not shown
     in the reports).
-  - An application that serves the same HTML at every address makes
-    another page's recording byte for byte the tested page's, so 9.A to
-    9.C and 19.A read it as the tested page again and are not
-    performed. On such a site 19.A's alias check would also verify
-    `/index.html` as the tested page (not run; a PASS risk). Step 26, [#134](https://github.com/abbybowman/tobi508/issues/134).
-    Found in round 3.
+  - An application that serves the same HTML at every address: since
+    step 26 ([#134](https://github.com/abbybowman/tobi508/issues/134)) an
+    identical document is the tested page again only at the tested
+    page's host and path apart from the query string, so 9.A to 9.C and
+    19.A compare such pages once drawn. The cost: 19.A no longer verifies
+    an `index.html` alias by its document (round 2's CILab serves
+    `/cilab/index.html` as the same file as `/cilab/`, no redirect, key
+    Pass), so such a page can be NEEDS REVIEW where a person passes it.
   - A page whose script fails on load shows what a visitor sees, but
     the report does not say so: page script errors are not recorded as
     a note. Round 1's "Was this page helpful?" popup never opens, live
@@ -52,12 +59,16 @@ re-testing): confirm and remove, or remove the mark.
   first load of each address costs 2 s more. When the page more than
   doubled its elements after the walk began (or had no form field and
   then had some), the tests that read the walk decide nothing (row WL,
-  step 22: 4.A, 4.C, 4.F, 5.A to 5.D, 5.F). **The limit:** a page still
-  drawing its controls after the 10 s wait is tested as it stood then;
-  if its walk also took less than 3 s, the recount can miss the change,
-  and 4.A, 4.C, 4.F, 5.A to 5.D and 5.F to 5.H could PASS or say DOES
-  NOT APPLY on what they did not see. Found by reading the code; no page
-  has shown it. A page that adds fewer late is read as before.
+  step 22: 4.A, 4.C, 4.F, 5.A to 5.D, 5.F). A page still drawing itself
+  when the 10 s wait ends (its count changed in the wait's last 2 s) is
+  now caught: 4.A, 4.C, 4.F, 5.A to 5.C and 5.F cannot PASS or say DOES
+  NOT APPLY on it (guard WL, #134; fixture `walk/drawn-after-wait.html`,
+  controls drawn at 11 s: before, 4.A and 4.C PASS and 5.A to 5.F DOES
+  NOT APPLY). **Still open:** 5.D does not take the guard yet (#135 and
+  #137 hold its spec), nor 4.D, 4.E, 5.G and 5.H. A page whose count
+  does not change for its first 2 s and that draws only after the walk's
+  recount (at least 3 s after load, later on a long walk) ends the wait
+  early and is read as it stood: no guard sees it.
 - **Web components and frames** are read by every reader and decided
   on the same rows (step 8). Not read: a closed shadow root, and a
   frame the recording lacks (PASS and DOES NOT APPLY are held,
@@ -152,6 +163,13 @@ re-testing): confirm and remove, or remove the mark.
 
 ## 4.A to 4.F: keyboard and focus
 
+- **4.C, error states:** a form that sends to the server and gets a new
+  page back (its answer, perhaps with the error) is never walked: the
+  recording does not hold the answer, since the tool never sends a form
+  to the live site, so a trap there is not found; that page is tested as
+  a page of its own. An application that draws its results or error at
+  another address without loading a page is walked from there (step
+  35e, [#134](https://github.com/abbybowman/tobi508/issues/134)).
 - **Radio groups:** a group is one element that takes focus, since Tab
   lands on one radio of it; the walk does not visit a group's radios
   one by one (arrow keys are not walked), so how the others look on
@@ -189,10 +207,18 @@ re-testing): confirm and remove, or remove the mark.
   also leaves a menu whose controls the Tab key does not reach, or that
   could not be opened, NEEDS REVIEW.
 - **4.E:** an address change the page makes on its own soon after load
-  is read as caused by focus when it lands on the first key press
-  (round 3: 3 false FAILs; step 24, [#134](https://github.com/abbybowman/tobi508/issues/134)). **⚑ Check:** step 23's rerun moved
-  all three (two to NEEDS REVIEW, one to an agreeing PASS); the cause
-  may only be hidden now.
+  was read as caused by focus when it landed on an early key press
+  (round 3: 3 false FAILs). Step 23 moved all three (the walk now starts
+  after the app has drawn and changed its address), and 1.9.0 (step 24,
+  [#134](https://github.com/abbybowman/tobi508/issues/134)) makes the
+  control replay wait as long after load as the original step, so a
+  change that still lands on a key press is the page's own (M2, fixture
+  `4e/f20`). The page stays NEEDS REVIEW: the walk left it. On round 3's
+  community pages 4.E is NEEDS REVIEW for another reason: six dialogs
+  that open on focus, each "unsure" for the judge (M11), and the seventh
+  not confirmed before 4.E's 60 s ran out (17.5 and 22.3 s in the blind
+  run; assumed, not measured: each confirmation is now a fresh load and
+  draw wait to a late Tab, since the walk reaches all 76 and 91 elements).
 - **4.F:** a footer of link columns raises S3 on every page, and a
   dropdown whose options take arrow keys raises S6; J1's order list can
   leave out what the signals name. Step 33, [#136](https://github.com/abbybowman/tobi508/issues/136). (Round 2's p02, p03 and p07,
@@ -212,8 +238,11 @@ re-testing): confirm and remove, or remove the mark.
   when no other field is judged (A2u, 1.10.0); beside other judged
   fields it is not counted, so a PASS there is "in what 5.B judged". Not
   done: opening the panel a magnifier opens, and a magnifier as a label
-  (step 29, [#137](https://github.com/abbybowman/tobi508/issues/137)). Controls with no `<form>` all have form "none", so a
-  header's menu button joins a search field's form (step 35a, [#134](https://github.com/abbybowman/tobi508/issues/134)). The judge
+  (step 29, [#137](https://github.com/abbybowman/tobi508/issues/137)). On a page with no `<form>`, controls are grouped by the
+  page's header, navigation regions and footer (step 35a, [#134](https://github.com/abbybowman/tobi508/issues/134)); in the
+  rest of the page every control is still one group, so a button there
+  joins every field there. A dropdown made of a menu button (SDE home's
+  "All" category, which the key judges) is never an item. The judge
   is often unsure, so many cells wait for a person.
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (only the wording differs); a jump forward past a field
@@ -258,8 +287,11 @@ re-testing): confirm and remove, or remove the mark.
   PASS or say DOES NOT APPLY without comparing them. Pictures that are
   not controls are not compared (the PDF's how-to is ANDI's focusable
   elements). Step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138).
-- **9.A to 9.C:** an application that serves one document at every
-  address (above, "Recordings"). 9.B's region match and 9.C's
+- **9.A to 9.C and 19.A:** an other page that cannot be read in full, or
+  that is the tested page again, is left out and named, and the test
+  decides on the rest (step 26; Abby, 2026-11-20: one usable other page
+  is enough). With fewer pages, less is seen to repeat: 9.A's DOES NOT
+  APPLY rests on the pages that loaded. 9.B's region match and 9.C's
   same-place pairing are not calibrated on real templates. A page with
   more than 5,000 items is NEEDS REVIEW.
 
