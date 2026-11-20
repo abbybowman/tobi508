@@ -157,6 +157,22 @@ in the secret, a restart), then off again (another restart clears it).
   `tobi_run_status`) and the other-pages cache live in the server's memory:
   a restart loses running jobs. Run **one replica**: a second would not see
   the first one's jobs, and its sign-in store would be separate.
+- **To stop a run without a restart** (a duplicate holding the only
+  browser slot, say), list and cancel from inside the container. The
+  command reads a token the server writes there at each start; nothing
+  outside the container can use it:
+
+  ```bash
+  podman exec tobi uv run --no-sync tobi508-admin jobs
+  podman exec tobi uv run --no-sync tobi508-admin cancel job-580260490609
+  ```
+
+  On a cluster, `kubectl -n <namespace> exec deploy/tobi508 -- uv run
+  --no-sync tobi508-admin jobs`. A caller can also cancel their own run
+  through MCP (`tobi_cancel_run`). Nothing from a cancelled run is kept.
+- **After a restart, reload the `/live` page**: it asks for events after
+  the last number it saw, and a restarted server counts from 1 again, so
+  without a reload it stays empty while saying "Live".
 - `/data` must be on storage that survives a restart, or point `RUNS_DIR`
   and `FASTMCP_HOME` at a path that does. The admin answered that the app's
   storage survives restarts unless `vastdev down` is run (plan, question

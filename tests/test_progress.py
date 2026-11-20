@@ -13,11 +13,12 @@ from tobi508.pipeline import run_tt_tests
 from tobi508.progress import Tracker
 
 TESTING = re.compile(
-    r"Page read \(100%\)\. Testing, (\d+) of (\d+) tests done \((\d+)%\): "
-    r"checking (\S+)"
+    r"Part 2 of 3, testing \(the page has been read\): (\d+) of (\d+) tests "
+    r"done \((\d+)% of the tests\)\. Now: checking (\S+)"
 )
 READING = re.compile(
-    r"Reading the page, (\d+) of (\d+) steps done or not needed \((\d+)%\): .+"
+    r"Part 1 of 3, reading the page: (\d+) of (\d+) reading steps done or not "
+    r"needed \((\d+)% of this part; the tests have not started\)\. Now: .+"
 )
 
 
@@ -34,11 +35,11 @@ async def test_each_test_says_its_place_and_the_bar_moves(settings, server):
         progress=progress,
     )
     assert out.errors == [], out.errors
-    reading = [READING.fullmatch(m) for _, _, m in lines if m.startswith("Reading")]
+    reading = [READING.fullmatch(m) for _, _, m in lines if m.startswith("Part 1")]
     assert reading and all(reading), [m for _, _, m in lines]
     done = [int(m[1]) for m in reading]
     assert done == sorted(done) and done[0] == 0
-    testing = [(s, TESTING.fullmatch(m)) for s, _, m in lines if "Testing" in m]
+    testing = [(s, TESTING.fullmatch(m)) for s, _, m in lines if m.startswith("Part 2")]
     assert all(m for _, m in testing), [m for _, _, m in lines]
     assert [(m[1], m[2], m[3]) for _, m in testing] == [
         ("0", "2", "0"),
@@ -48,7 +49,7 @@ async def test_each_test_says_its_place_and_the_bar_moves(settings, server):
     steps = [s for s, _ in testing]
     assert steps == sorted(steps) and steps[0] == 2 and steps[-1] < 3
     assert lines[-1][2].startswith(
-        "Page read and all 2 tests checked (100%). Finishing:"
+        "Part 3 of 3, finishing: the page has been read and all 2 tests checked."
     )
     bar = [s for s, _, _ in lines]
     assert bar == sorted(bar)
@@ -74,14 +75,20 @@ async def test_steps_not_needed_count_as_done_and_never_go_back():
     await t.testing(2, 3, "Checking 4.C")
     await t.finishing(3, "Evaluating")
     assert [m for _, m in lines] == [
-        "Reading the page, 0 of 5 steps done or not needed (0%): recording the page",
-        "Reading the page, 1 of 5 steps done or not needed (20%): "
-        "recording other page 1 of 2",
-        "Reading the page, 3 of 5 steps done or not needed (60%): "
-        "walking the page with Tab and Shift+Tab",
-        "Page read (100%). Testing, 0 of 3 tests done (0%): checking 1.A",
-        "Page read (100%). Testing, 2 of 3 tests done (66%): checking 4.C",
-        "Page read and all 3 tests checked (100%). Finishing: evaluating",
+        "Part 1 of 3, reading the page: 0 of 5 reading steps done or not needed "
+        "(0% of this part; the tests have not started). Now: recording the page",
+        "Part 1 of 3, reading the page: 1 of 5 reading steps done or not needed "
+        "(20% of this part; the tests have not started). Now: recording other "
+        "page 1 of 2",
+        "Part 1 of 3, reading the page: 3 of 5 reading steps done or not needed "
+        "(60% of this part; the tests have not started). Now: walking the page "
+        "with Tab and Shift+Tab",
+        "Part 2 of 3, testing (the page has been read): 0 of 3 tests done "
+        "(0% of the tests). Now: checking 1.A",
+        "Part 2 of 3, testing (the page has been read): 2 of 3 tests done "
+        "(66% of the tests). Now: checking 4.C",
+        "Part 3 of 3, finishing: the page has been read and all 3 tests "
+        "checked. Now: evaluating",
     ]
     steps = [s for s, _ in lines]
     assert steps == sorted(steps) and steps[0] == 0 and steps[-1] == 3

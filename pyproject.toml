@@ -16,6 +16,8 @@ dependencies = [
 [project.scripts]
 # Lets you run the server with `uv run tobi508`.
 tobi508 = "tobi508.app:main"
+# List or cancel every user's runs, inside the server's container (admin.py).
+tobi508-admin = "tobi508.admin:main"
 
 [build-system]
 requires = ["hatchling"]

@@ -65,12 +65,21 @@ that compare pages: 9.A-9.C and 19.A.
 Some tests leave a judgment call (is there another keyboard way to do this?).
 {judge} The result's `next_step` and to-do list say what is left; follow them,
 and report a NEEDS_REVIEW finding as needs review, never as a pass or a fail.
-The full report is the resource at `report_uri`; save it before `expires_at`.
+
+Each run has two files, as run:// resources, kept until `expires_at`:
+`pre_scrt_uri` (pre-scrt.json: the file people open in the viewer and a
+Trusted Tester reviews) and `report_uri` (report.json: the full record). When
+the user asks to save "the report" or "the results", save both, unchanged.
+To compare a run with a person's SCRT file or another run, use
+tobi_read_report rather than your own script.
 
 Time: {limit_text} This call waits up to {s.call_wait_s} s; a run not done by
 then continues in the server and returns status "running" with a job_id and a
 progress line. Tell the user the progress line, then call tobi_run_status with
-the job_id until status is "done". Never start the same run again.
+the job_id until status is "done". Never start the same run again. The
+progress line has three parts (reading the page, testing, finishing); a
+percentage in it covers only the part it names, never the whole run. To stop
+a run the user no longer wants: tobi_cancel_run.
 
 Errors (isError): a URL outside the allowlist, a redirect out of it, or a page
 that cannot be loaded; nothing is tested.
@@ -176,7 +185,7 @@ def register(mcp: FastMCP) -> None:
             return with_pictures(
                 await jobs.wait(job, s.call_wait_s, progress), wrap=True
             )
-        except RunRefused as exc:
+        except (RunRefused, jobs.RunCancelled) as exc:
             raise ToolError(str(exc)) from None
         except Exception as exc:
             # One redacted line, no stack trace or call log (redact.py).

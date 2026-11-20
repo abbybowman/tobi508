@@ -35,8 +35,9 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 | `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, any open questions (answered by the server's judge when it has a model and can reach it, otherwise left for your agent), and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A); `no_time_limit` |
 | `tobi_answer_questions` | Records answers to the open questions and decides again by the spec. Every answer sent here is recorded as the calling agent's; a person's answer, which overrides it, is to come from TOBI's own page. | `run_id`; `answers` (one per question) |
 | `tobi_run_status` | Waits for a run that was still going when its call returned, and gives its result. Without `job_id`: what is left across the session's runs (open questions, follow-up calls, runs still going); with `finish=true` it also makes the follow-up calls the server may make itself. | `job_id` (optional); `finish` |
+| `tobi_cancel_run` | Stops one of your own runs that is still queued or running, and frees its browser slot; nothing from it is kept. For when the user asks, or a run was started twice by mistake. The server's admin can cancel anyone's run from inside the server's container (`tobi508-admin`). | `job_id` |
 | `tobi_explain` | Explains tests in plain language: what a test checks, or, with a `run_id`, what that run found and why (full summaries, the reasoning, the places on the page, what can still change a result, and the W3C links for fixing it). Results carry one line per finding; this holds the detail. | `about` (test IDs, a WCAG criterion or words); `run_id` |
-| `tobi_read_report` | Reads an SCRT or pre-SCRT file: what failed and what still needs a person. With `compare_to`, it lists every test whose result differs between two files (for example, before and after a fix). | `content`; `compare_to` |
+| `tobi_read_report` | Reads an SCRT or pre-SCRT file: what failed and what still needs a person. With `compare_to`, it lists every test whose result differs between two files, with both results and comments (TOBI's run beside a Trusted Tester's SCRT file, or before and after a fix). | `content`; `compare_to` |
 
 **Also:**
 - **Resources:** `run://{run_id}/...` (a run's files, kept 24 hours) and `tt://5.1.3/...` (the TT text).
@@ -148,7 +149,9 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 {"tool": "tobi_explain", "arguments": {"run_id": "<run_id from the result>"}}
 ```
 
-The run takes minutes: until it is done, each result says `"status": "running"` and how far along it is: first the page reading steps done (or not needed), then the tests done, each with a rough percentage (`"progress": "Reading the page, 2 of 5 steps done or not needed (40%): walking the page with Tab and Shift+Tab (45 s so far)"`, later `"Page read (100%). Testing, 7 of 21 tests done (33%): checking 5.C (3 min 10 s so far)"`), and the agent waits with `tobi_run_status`.
+The run takes minutes: until it is done, each result says `"status": "running"` and how far along it is, in three parts: reading the page, testing, finishing. A percentage covers only the part it names (`"progress": "Part 1 of 3, reading the page: 2 of 5 reading steps done or not needed (40% of this part; the tests have not started). Now: walking the page with Tab and Shift+Tab (45 s so far)"`, later `"Part 2 of 3, testing (the page has been read): 7 of 21 tests done (33% of the tests). Now: checking 5.C (3 min 10 s so far)"`), and the agent waits with `tobi_run_status`. A run waiting behind another says so, and names the caller's own runs ahead of it; `tobi_cancel_run` stops one.
+
+When it is done, ask the agent to save the results: it saves both files, the pre-SCRT file (open it in the [viewer](demo/prescrt-viewer/viewer.html), or `/viewer` on a hosted server) and the full report. To see how TOBI's results differ from a Trusted Tester's, ask it to compare the run with their SCRT file (`tobi_read_report`), or open both in the viewer ("Compare with").
 
 <details>
 <summary>An open question, end to end, on a local test page (for contributors)</summary>

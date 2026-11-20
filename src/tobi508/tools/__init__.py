@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from tobi508.tools import (
     answer_questions,
+    cancel_run,
     explain,
     read_report,
     run_status,
@@ -24,6 +25,7 @@ def register_tools(mcp) -> None:
     """Register all tools with the MCP server."""
     run_tt_tests.register(mcp)
     run_status.register(mcp)
+    cancel_run.register(mcp)
     answer_questions.register(mcp)
     read_report.register(mcp)
     explain.register(mcp)

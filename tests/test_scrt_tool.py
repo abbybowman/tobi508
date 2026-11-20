@@ -145,6 +145,14 @@ async def test_a_run_writes_a_pre_scrt_file_the_reader_reads(settings, server):
         -1
     ] == ("4.C", "blank", "Pass")
     assert "false" not in json.dumps(cmp["counts"]) + json.dumps(cmp["changes"])
+    # A test the run did not perform says so, never a bare blank that reads
+    # as the tool missing a failure (demo run, 2026-11-20).
+    assert {c["content"] for c in cmp["changes"][:-1]} == {"not performed"}
+    assert (cmp["content_format"], cmp["compare_to_format"]) == ("pre-scrt", "scrt")
+    # What to do next: say the differences, open the viewer, write no files.
+    assert "/viewer" in read["next_step"] or "viewer.html" in read["next_step"]
+    assert "not which is right" in read["next_step"]
+    assert "Do not write your own comparison file" in read["next_step"]
 
 
 async def test_read_report_takes_a_local_path_only_in_dev_mode(settings):

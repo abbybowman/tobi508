@@ -1323,20 +1323,26 @@ async def run_tt_tests(
     # evaluated and judged (code review B-04).
     jobs.release_browser_slot()
 
-    await track.finishing(3, "Evaluating")
-    report.findings = []
-    _evaluate(run, report, states, {**skipped, **ran_out})
-    result = await get_judge(settings.judge_backend).judge(report.open_questions)
-    report.open_questions = result.pending
-    report.finished_at = utcnow()
-    report.follow_up_calls = follow_ups(report, states, skipped)
-    run.write_json(run.report_path, report)
-    pre_scrt = scrt.write_for_run(run.dir, run.report_path, report)
-    if settings.judge_backend == "api":
-        report, states = await _judge_phase(
-            settings, run, report, states, track.finishing
-        )
-    run.log("run_end", status="error" if report.errors else "ok")
+    try:
+        await track.finishing(3, "Evaluating")
+        report.findings = []
+        _evaluate(run, report, states, {**skipped, **ran_out})
+        result = await get_judge(settings.judge_backend).judge(report.open_questions)
+        report.open_questions = result.pending
+        report.finished_at = utcnow()
+        report.follow_up_calls = follow_ups(report, states, skipped)
+        run.write_json(run.report_path, report)
+        pre_scrt = scrt.write_for_run(run.dir, run.report_path, report)
+        if settings.judge_backend == "api":
+            report, states = await _judge_phase(
+                settings, run, report, states, track.finishing
+            )
+        run.log("run_end", status="error" if report.errors else "ok")
+    except asyncio.CancelledError:
+        # Cancelled while evaluating or judging (jobs.cancel): no folder is
+        # kept, as for a run cancelled while it had a browser.
+        shutil.rmtree(run.dir, ignore_errors=True)
+        raise
     qview = _question_view(report.open_questions[:QUESTION_PAGE])
     calls = report.follow_up_calls
     result = RunResult(

@@ -8,6 +8,7 @@ read from there whatever the working directory.
 
 from __future__ import annotations
 
+import tempfile
 from pathlib import Path
 from typing import Literal
 
@@ -107,6 +108,12 @@ class Settings(BaseSettings):
     # 2026-11-18): for a demo, then off again.
     live_log: bool = False
     live_log_token: SecretStr | None = None
+
+    # ── Admin commands (admin.py) ───────────────────────────────────────
+    # Over HTTP the server writes a fresh random token here at start (mode
+    # 600, inside its container); `tobi508-admin` reads it to list and
+    # cancel every caller's runs. Nothing outside the container can read it.
+    admin_token_file: Path = Path(tempfile.gettempdir()) / "tobi508-admin.token"
 
     # ── Navigation policy ─────────────────────────────────────────────────────
     # Entries starting with "." match that suffix (".gov" matches "www.nasa.gov"

@@ -240,6 +240,8 @@ def _tool_fields(args: dict[str, Any] | None) -> dict[str, Any]:
         fields["other_pages"] = [
             safe_url(u) for u in args["other_pages"] if isinstance(u, str)
         ]
+    if isinstance(args.get("job_id"), str):
+        fields["job_id"] = args["job_id"][:32]
     if isinstance(args.get("run_id"), str):
         fields["run_id"] = args["run_id"][:64]
     if isinstance(args.get("tests"), list):

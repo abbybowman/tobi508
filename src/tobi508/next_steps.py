@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from tobi508 import config
 from tobi508.checks import REGISTRY
 from tobi508.config import Settings
 from tobi508.judgment import has_image
@@ -28,6 +29,33 @@ from tobi508.models import (
 )
 from tobi508.resources.runs import run_uri
 from tobi508.runlog import RunRecorder
+
+
+def viewer_location() -> str:
+    """Where the user opens the pre-SCRT viewer: this server's /viewer when it
+    runs over HTTP, else the file beside the server (a local server)."""
+    s = config.settings
+    if s.public_base_url:
+        return s.public_base_url.rstrip("/") + "/viewer"
+    if s.mcp_transport == "streamable-http":
+        host = "[::1]" if s.mcp_host == "::1" else s.mcp_host
+        return f"http://{host}:{s.mcp_port}/viewer"
+    from tobi508.routes import VIEWER
+
+    return VIEWER.as_uri()
+
+
+def viewer_text() -> str:
+    """How to show a saved pre-SCRT file to a person (demo run, 2026-11-20:
+    agents wrote their own Markdown comparisons instead)."""
+    return (
+        f"The viewer ({viewer_location()}) shows a saved pre-SCRT file as a "
+        "table in the user's own browser and sends nothing anywhere: they "
+        "choose the file as the report file and, to compare, a person's SCRT "
+        'file under "Compare with". A web page cannot open the user\'s files by '
+        "itself, so tell them which saved files to choose."
+    )
+
 
 # Open questions shown per result (agent follow-through plan, change 2b:
 # development run 7's agent skipped the pictures of results 25-70k
@@ -106,7 +134,7 @@ def next_step(
         return (
             f"No open questions. Relay each finding's summary; {review}.{person}"
             + _calls_text(calls)
-            + " Then save the report (save_hint)."
+            + " Then save both files, pre_scrt_uri and report_uri (save_hint)."
             + FINISH
         )
     asked = {q.test_id for q in qs}
@@ -194,7 +222,19 @@ def todo(
         "results give one line per finding; it gives the places on the page, "
         "the reasons and how to fix them."
     )
-    out.append("[ ] Save report_uri and pre_scrt_uri before expires_at.")
+    out.append(
+        "[ ] Save both files before expires_at, exactly as read: pre_scrt_uri "
+        "(the file the user opens in the viewer) and report_uri (the full "
+        'record). "Save the report" means both (save_hint).'
+    )
+    out.append(
+        "[ ] Afterwards: to show the results, point the user to the viewer "
+        f"({viewer_location()}) with the saved pre-SCRT file, rather than "
+        "writing your own summary or comparison file. If they have a person's "
+        "SCRT file for this page and ask how the results compare or where "
+        "they differ, call tobi_read_report with content=pre_scrt_uri and "
+        "compare_to=their file, sent unchanged. Write files only when asked."
+    )
     out.append(
         "[ ] Report NEEDS_REVIEW findings as needs review, and say which "
         "findings still wait on work (waiting_on)."
@@ -257,6 +297,7 @@ def outstanding(settings: Settings, jobs: list) -> Outstanding:
                     "job_id": j.id,
                     "target": j.url,
                     "status": "queued" if j.started is None else "running",
+                    "progress": j.message,
                 }
             )
             continue
