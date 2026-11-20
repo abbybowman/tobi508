@@ -70,6 +70,7 @@ addopts = "-m 'not slow' -n auto"
 "src/tobi508/reveal.py" = ["E501"]
 "src/tobi508/andi.py" = ["E501"]
 "src/tobi508/motion.py" = ["E501"]
+"src/tobi508/motion_media.py" = ["E501"]
 "src/tobi508/checks/t2b.py" = ["E501"]
 "src/tobi508/checks/t2a.py" = ["E501"]
 "src/tobi508/flashcap.py" = ["E501"]

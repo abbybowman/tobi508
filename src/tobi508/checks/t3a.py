@@ -19,11 +19,12 @@ from typing import Any
 import numpy as np
 from pydantic import BaseModel, Field
 
-from tobi508 import capture, flash, flashcap, motion
+from tobi508 import capture, flash, flashcap, motion, motion_media
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row
 from tobi508.jslib import JSLIB
 from tobi508.models import DecidedBy, Finding, Instance, OpenQuestion, Outcome, TestId
+from tobi508.motion_models import Media, MotionPass
 from tobi508.redact import safe_error
 from tobi508.walk import KeyboardWalk
 
@@ -80,13 +81,13 @@ def _fast_runs(times: list[float]) -> int:
     return best
 
 
-def played(reads: list[motion.Media]) -> bool:
+def played(reads: list[Media]) -> bool:
     return any(not m.paused for m in reads) and max(m.time for m in reads) > min(
         m.time for m in reads
     )
 
 
-def triggers(mp: motion.MotionPass) -> tuple[list[Trigger], list[flashcap.Unmeasured]]:
+def triggers(mp: MotionPass) -> tuple[list[Trigger], list[flashcap.Unmeasured]]:
     """What may flash, from pass T (spec section 2), and what cannot be
     measured at all (A3)."""
     out: list[Trigger] = []
@@ -117,7 +118,7 @@ def triggers(mp: motion.MotionPass) -> tuple[list[Trigger], list[flashcap.Unmeas
             )
     # Every video is a trigger, played or not (1.1.0: 14592's videos never
     # played in the watch, so nothing looked at their files). Hidden ones too.
-    reads: dict[tuple[int, str], list[motion.Media]] = {}
+    reads: dict[tuple[int, str], list[Media]] = {}
     for m in mp.media:
         if m.tag == "video":
             reads.setdefault((m.frame, m.css), []).append(m)
@@ -219,8 +220,8 @@ IMAGE_MEASURE_BYTES = 100_000_000
 
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State3A:
     mp = await motion.collect(ctx, keep_shots=False)
-    motion.match_inventory(ctx, mp)
-    st = State3A(read={"page": {"images": motion.images_read(mp), "players": 0}})
+    motion_media.match_inventory(ctx, mp)
+    st = State3A(read={"page": {"images": motion_media.images_read(mp), "players": 0}})
     if not mp.ok:
         st.motion_ok, st.error = False, mp.error or "the page could not be watched"
         return st
@@ -351,7 +352,7 @@ async def _measure(
                 )
                 continue
             body = capture.media_body(har, src_url) if har.exists() else None
-            kind = motion._image_type(body) if body else None
+            kind = motion_media._image_type(body) if body else None
             if not body or not kind or len(body) > flashcap.IMAGE_MAX_BYTES:
                 st.unmeasured.append(
                     flashcap.Unmeasured(
@@ -389,7 +390,7 @@ async def _measure(
                 )
                 continue
             if tool is None:
-                tool_ctx, tool = await motion._secure_tool_page(page)
+                tool_ctx, tool = await motion_media._secure_tool_page(page)
             try:
                 # Not wait_for: cancelling waits for the browser call to end,
                 # and a busy tool page never ends it. Closing the tool page's
@@ -540,7 +541,7 @@ async def _video(ctx, st: State3A, mp, page, har: Path, t: Trigger, tool) -> Non
                 why = "its file is too large to decode"
             else:
                 if tool is None:
-                    own_ctx, tool = await motion._secure_tool_page(page)
+                    own_ctx, tool = await motion_media._secure_tool_page(page)
                 try:
                     fr, tm, ln, err = await flashcap.video_frames(
                         tool, body, flashcap.video_type(body, url)

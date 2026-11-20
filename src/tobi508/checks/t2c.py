@@ -2,7 +2,7 @@
 (spec 1.0.0).
 
 Reads pass T (motion.py, shared with 2.A, 2.B and 2.D) and the mechanism
-probe's evidence (mechanism.probe, motion.Probe): up to three instances are
+probe's evidence (mechanism.probe, motion_models.Probe): up to three instances are
 probed, the rest are "not probed" (K7). The rows are also tested on
 hand-built evidence. Only evaluate() and the row tables decide outcomes.
 """
@@ -27,7 +27,7 @@ from tobi508.models import (
     Outcome,
     TestId,
 )
-from tobi508.motion import Element, MotionPass, Probe, Region
+from tobi508.motion_models import Element, MotionPass, Probe, Region
 from tobi508.walk import KeyboardWalk
 
 # Still changing at this time: an instance (spec O1).

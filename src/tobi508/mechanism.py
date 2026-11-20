@@ -1,6 +1,6 @@
 """The mechanism probe (2.C spec section 2; shared with 2.A and 2.B): for
 one piece of changing content, try the controls near it and at the top of the
-page, and record whether the content stopped. Facts only (motion.Probe):
+page, and record whether the content stopped. Facts only (motion_models.Probe):
 what an outcome is stays in the checks' rows.
 
 Each try is a fresh load in pass T's browser (ctx.open_motion: full Chromium,
@@ -29,7 +29,7 @@ from PIL import Image, ImageChops
 from playwright.async_api import Page
 
 from tobi508.jslib import JSLIB
-from tobi508.motion import Candidate, Element, MotionPass, Probe, Region
+from tobi508.motion_models import Candidate, Element, MotionPass, Probe, Region
 from tobi508.traverse import open_session, replay
 
 # Bounds that keep a run within its limit; reaching one is recorded (K7).

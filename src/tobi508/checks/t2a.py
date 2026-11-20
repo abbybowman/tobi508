@@ -34,7 +34,7 @@ from tobi508.models import (
     Outcome,
     TestId,
 )
-from tobi508.motion import Media, MotionPass, Probe, Region
+from tobi508.motion_models import Media, MotionPass, Probe, Region
 from tobi508.walk import KeyboardWalk
 
 AUDIBLE_DB = -40.0  # spec Terms: samples above -40 dBFS

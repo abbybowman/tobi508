@@ -11,7 +11,7 @@ import zipfile
 from PIL import Image
 
 from tobi508.capture import media_body
-from tobi508.motion import _can_animate
+from tobi508.motion_media import _can_animate
 
 
 def _png(frames: int) -> bytes:

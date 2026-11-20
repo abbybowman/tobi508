@@ -14,11 +14,11 @@ import pytest
 from tobi508.capture import record, replay_context
 from tobi508.motion import (
     MOTION_INIT_JS,
-    MotionPass,
     changed_tiles,
     components,
     pass_t,
 )
+from tobi508.motion_models import MotionPass
 
 from .conftest import noop_log
 

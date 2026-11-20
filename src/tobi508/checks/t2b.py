@@ -15,7 +15,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508 import mechanism, motion
+from tobi508 import mechanism, motion, motion_media
 from tobi508.checks import t2c
 from tobi508.checks.base import RunContext
 from tobi508.checks.t2c import (
@@ -41,7 +41,7 @@ from tobi508.models import (
     Outcome,
     TestId,
 )
-from tobi508.motion import MotionPass, Probe, Region
+from tobi508.motion_models import Media, MotionPass, Probe, Region
 from tobi508.walk import KeyboardWalk
 
 STILL_MOVING_S = 5.0  # TT: "more than 5 seconds"
@@ -59,7 +59,7 @@ class State2B(BaseModel):
     @property
     def read(self) -> dict[str, dict[str, int]]:
         """Image addresses pass T examined for animation, for guard CN."""
-        return {"page": {"images": motion.images_read(self.mp)}}
+        return {"page": {"images": motion_media.images_read(self.mp)}}
 
 
 # ── Terms ─────────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ def video_failed(mp: MotionPass) -> list[str]:
     played."""
     over = {m["url"] for m in mp.media_store if m.get("over_cap")}
     bad = {m.css for m in mp.media if m.tag == "video" and m.error}
-    reads: dict[tuple[int, str], list[motion.Media]] = {}
+    reads: dict[tuple[int, str], list[Media]] = {}
     for m in mp.media:
         if m.tag == "video":
             reads.setdefault((m.frame, m.css), []).append(m)
@@ -607,7 +607,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State2B:
     """Pass T, then the probe for every moving region (up to three), before
     J1: J1 only excludes, so the probe never waits for an answer."""
     mp = await motion.collect(ctx)
-    motion.match_inventory(ctx, mp)
+    motion_media.match_inventory(ctx, mp)
     st = State2B(mp=mp, selected=sorted(ctx.selected))
     p = page_of(st)
     if not mp.ok or p.failed_video or _only(p):
