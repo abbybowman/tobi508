@@ -97,19 +97,28 @@ def _button_words(c: Comp, alone: bool) -> list[str]:
     return (c.attached_buttons or (c.nearby_buttons if alone else []))[:NEAR_MAX]
 
 
+def group_of(c: Comp) -> str:
+    """The form a control belongs to (5.B section 2). With no <form> element
+    (1.14.0, step 35a), controls in the page's header, a navigation region or
+    the page's footer form a group of their own: a button there counts with a
+    field only in that same one (round 3's SDE home: the header's "SDE"
+    product switcher joined the search box in the page)."""
+    return c.form or (f"bar|{c.bar}" if c.bar else "")
+
+
 def scan(lp: LabelsPass) -> tuple[list[Item], list[str], list[int]]:
     forms: list[str] = []
     per_form: dict[str, int] = {}
     for c in lp.components:
         if not c.button and not c.readonly:
-            per_form[c.form] = per_form.get(c.form, 0) + 1
+            per_form[group_of(c)] = per_form.get(group_of(c), 0) + 1
     alone = lambda c: bool(c.form) and per_form.get(c.form) == 1  # noqa: E731
     items: list[Item] = []
     unlabelled: list[int] = []
     # A form counts only when one of its fields has a label to judge: buttons
     # alone (a site header's menu) are not a form.
     judged = {
-        c.form
+        group_of(c)
         for c in lp.components
         if not c.button
         and not c.readonly
@@ -122,7 +131,7 @@ def scan(lp: LabelsPass) -> tuple[list[Item], list[str], list[int]]:
             label = (c.own_text or "").strip()
             if not label:
                 continue  # an icon-only button: no visual text to judge
-            if c.menu or c.form not in judged:
+            if c.menu or group_of(c) not in judged:
                 continue  # it does not act on a form's data
             near: list[str] = []
         else:
@@ -134,9 +143,9 @@ def scan(lp: LabelsPass) -> tuple[list[Item], list[str], list[int]]:
             if not label and not near and not c.icon_buttons:
                 unlabelled.append(c.n)
                 continue
-        if c.form not in forms:
-            forms.append(c.form)
-        f = forms.index(c.form) + 1
+        if group_of(c) not in forms:
+            forms.append(group_of(c))
+        f = forms.index(group_of(c)) + 1
         items.append(
             Item(
                 k=sum(1 for i in items if i.form == f) + 1,

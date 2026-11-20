@@ -230,8 +230,11 @@ re-testing): confirm and remove, or remove the mark.
   when no other field is judged (A2u, 1.10.0); beside other judged
   fields it is not counted, so a PASS there is "in what 5.B judged". Not
   done: opening the panel a magnifier opens, and a magnifier as a label
-  (step 29, [#137](https://github.com/abbybowman/tobi508/issues/137)). Controls with no `<form>` all have form "none", so a
-  header's menu button joins a search field's form (step 35a, [#134](https://github.com/abbybowman/tobi508/issues/134)). The judge
+  (step 29, [#137](https://github.com/abbybowman/tobi508/issues/137)). On a page with no `<form>`, controls are grouped by the
+  page's header, navigation regions and footer (step 35a, [#134](https://github.com/abbybowman/tobi508/issues/134)); in the
+  rest of the page every control is still one group, so a button there
+  joins every field there. A dropdown made of a menu button (SDE home's
+  "All" category, which the key judges) is never an item. The judge
   is often unsure, so many cells wait for a person.
 - **5.D:** after a retry, a submission that navigates away reads as
   navigation (only the wording differs); a jump forward past a field

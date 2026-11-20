@@ -68,8 +68,8 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 4.E | 3.2.1-on-focus | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.F | 2.4.3-focus-order-meaning | [1.12.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 5.A | 3.3.2-label-provided | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
-| 5.B | 2.4.6-label-descriptive | [1.13.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
-| 5.C | 1.3.1-programmatic-label | [1.15.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
+| 5.B | 2.4.6-label-descriptive | [1.14.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
+| 5.C | 1.3.1-programmatic-label | [1.16.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
 | 5.D | 3.2.2-on-input | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
 | 5.F | 3.3.1-error-identification | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
 | 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |

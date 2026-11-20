@@ -176,6 +176,20 @@ COMPONENTS_JS = (
       where: J.where(el), host: J.hostOf(el), counted: J.field(el),
       radio_key: el.matches('input[type=radio]') && el.name ? (el.form ? 'f' : '') + el.name : null,
       form: (el.form || el.closest('form')) ? path(el.form || el.closest('form')) : '',
+      // The page's header, a navigation region or the page's footer it sits
+      // in, outermost (5.B 1.14.0, step 35a): on a page with no <form>, a
+      // button there counts with a field only in the same one. A <header> or
+      // <footer> inside an article, aside, main, nav or section is not the
+      // page's.
+      bar: (() => {
+        let out = '';
+        for (let n = el.parentElement; n; n = n.parentElement) {
+          const t = n.tagName.toLowerCase(), r = n.getAttribute('role') || '';
+          const page = (t === 'header' || t === 'footer') && !(n.parentElement && n.parentElement.closest('article,aside,main,nav,section'));
+          if (t === 'nav' || ['navigation', 'banner', 'contentinfo'].includes(r) || page) out = path(n);
+        }
+        return out;
+      })(),
       readonly: el.readOnly === true || el.getAttribute('aria-readonly') === 'true',
       required: el.required === true || el.getAttribute('aria-required') === 'true',
       labels: labelEls(el).map(txt).filter(Boolean),
@@ -381,6 +395,9 @@ class Comp(BaseModel):
     option: bool = False
     group: str | None = None
     form: str = ""  # form owner's path; "" outside any form (5.B)
+    # Outside any form: the page's header, navigation region or footer it
+    # sits in, outermost ("" if none; 5.B 1.14.0, step 35a)
+    bar: str = ""
     set_size: int = 1  # options under the same legend or group label
     readonly: bool = False
     required: bool = False
