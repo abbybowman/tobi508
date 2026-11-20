@@ -32,7 +32,9 @@ import zipfile
 from pathlib import Path
 
 PIC = re.compile(r"run://[^\"\s]+?\.(?:png|jpe?g)")
-PERSON = re.compile(r"\b(a person|a human|manual(ly)?|human review|needs? review)\b", re.I)
+PERSON = re.compile(
+    r"\b(a person|a human|manual(ly)?|human review|needs? review)\b", re.I
+)
 
 
 def _short(name: str) -> str:

@@ -9,6 +9,10 @@ For each run of a case, from the CLI's stream-json events:
 - text: the final message matches the case's regex, and, where asked, does
   not call the page certified, compliant or conformant.
 
+`passed` needs all four. `anywhere` is a looser reading reported beside
+it: the expected call made at any point (valid, with the required
+arguments), no forbidden call, and the same text checks.
+
 A check that does not apply is None and does not fail the run.
 """
 
@@ -205,12 +209,31 @@ def score_run(case: dict, events: list[dict], schemas: dict[str, dict]) -> dict:
         and args_ok is not False
         and text_ok is not False
     )
+    # A second, looser reading (added after the first pass showed agents
+    # doing what an earlier result's to-do list asks before the call the
+    # user's request needs): the expected call was made at some point, valid
+    # and with the required arguments; no forbidden call; the same text
+    # checks. For "none", the same as `passed`.
+    if want == "none":
+        anywhere = passed
+    else:
+        anywhere = (
+            not forbidden
+            and text_ok is not False
+            and any(
+                n == want
+                and not schema_errors(schemas.get(n, {}), a)
+                and not arg_failures(exp, a)
+                for n, a in calls
+            )
+        )
     return {
         "tool_ok": tool_ok,
         "valid": valid,
         "args_ok": args_ok,
         "text_ok": text_ok,
         "passed": passed,
+        "anywhere": anywhere,
         "first_call": first[0] if first else None,
         "first_args": first[1] if first else None,
         "calls": [n for n, _ in calls],

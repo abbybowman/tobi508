@@ -216,3 +216,47 @@ def test_argument_matchers():
     bad = {"tests": ["4.C", "5.A"], "other_pages": [], "job_id": "job-1",
            "content": "[]", "compare_to": "run://x"}  # fmt: skip
     assert len(score.arg_failures(e, bad)) == 5
+
+
+async def test_anywhere_counts_the_expected_call_after_another(tools, tmp_path):
+    t = tools["client"]
+    ev = await scripted(t, tmp_path / "c.jsonl", [
+        ("tobi_run_status", {}),
+        ("tobi_explain", {"run_id": "20261119T150212Z-a81c04", "about": "4.D"}),
+    ], "Here is why.")  # fmt: skip
+    r = score.score_run(case("explain-why-fail"), ev, schemas(t))
+    assert not r["passed"] and r["anywhere"]
+
+
+def test_committed_report_is_what_the_committed_runs_give():
+    """results/2026-11-19/report.md is made from the committed runs.zip
+    files with the current scorer, cases and corrections."""
+    from pathlib import Path
+
+    from evals.tool_selection.report import report
+
+    out = Path("evals/tool_selection/results/2026-11-19")
+    assert report(out, ["before", "after"]) == (out / "report.md").read_text()
+
+
+def test_committed_followthrough_counts_are_what_the_files_give():
+    from pathlib import Path
+
+    from evals.agent.followthrough import stats
+
+    for folder, name in (
+        ("evals/judging/followthrough-2026-11-19", "followthrough.json"),
+        ("evals/judging/compare-2026-11-19-r3", None),
+    ):
+        d = Path(folder)
+        z = d / "transcripts-no-images.zip"
+        arms = sorted((d / "results").glob("arm-a-*"))
+        got = [stats(a, z) for a in arms]
+        want_file = (
+            d / name
+            if name
+            else (
+                Path("evals/judging/followthrough-2026-11-19") / "r3-followthrough.json"
+            )
+        )
+        assert got == json.loads(want_file.read_text())

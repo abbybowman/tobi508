@@ -84,7 +84,9 @@ def prompt_for(case: dict) -> str:
     )
 
 
-def cli_args(binary: str, model: str, prompt: str, mcp: Path) -> list[str]:
+def cli_args(
+    binary: str, model: str, prompt: str, mcp: Path, keep: bool = False
+) -> list[str]:
     return [
         binary, "-p", prompt,
         "--model", model,
@@ -94,9 +96,61 @@ def cli_args(binary: str, model: str, prompt: str, mcp: Path) -> list[str]:
         "--strict-mcp-config", "--mcp-config", str(mcp),
         "--tools", ",".join(BUILTIN),
         "--allowedTools", ",".join([f"mcp__{SERVER}", *BUILTIN]),
-        "--no-session-persistence",
+        *([] if keep else ["--no-session-persistence"]),
         "--max-turns", str(MAX_TURNS),
     ]  # fmt: skip
+
+
+# Optional (--debrief): asked after a run's answer is recorded, in the same
+# session with no tools and no servers, so it changes no score. Neutral: it
+# names no tool as the right one. Qualitative, never scored.
+DEBRIEF = (
+    "This is a follow-up for the people who build the tools you had, not "
+    "part of the task, and it changes nothing. Answer briefly and honestly. "
+    "1. For the user's last message, which tools did you consider, and why "
+    "did you call the ones you called, in that order (or none)? 2. Was any "
+    "tool's description unclear, misleading or missing something for this "
+    "request? Quote the words."
+)
+
+
+def debrief_args(binary: str, model: str, session: str, mcp: Path) -> list[str]:
+    return [
+        binary, "-p", DEBRIEF,
+        "--model", model,
+        "--output-format", "stream-json", "--verbose",
+        "--setting-sources", "",
+        "--disable-slash-commands",
+        "--strict-mcp-config", "--mcp-config", str(mcp),
+        "--tools", "",
+        "--resume", session,
+        "--max-turns", "1",
+    ]  # fmt: skip
+
+
+async def _stream(args: list[str], env: dict, events: list[dict]) -> tuple[int, str]:
+    proc = await asyncio.create_subprocess_exec(
+        *args,
+        cwd=WORK,
+        env=env,
+        stdin=asyncio.subprocess.DEVNULL,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+        limit=16 * 1024 * 1024,
+    )
+    try:
+        async with asyncio.timeout(RUN_TIMEOUT_S):
+            async for raw in proc.stdout:
+                try:
+                    events.append(json.loads(raw))
+                except ValueError:
+                    continue
+            await proc.wait()
+    except TimeoutError:
+        proc.kill()
+        await proc.wait()
+    err = (await proc.stderr.read()).decode("utf-8", "replace")
+    return proc.returncode, err
 
 
 async def one_run(
@@ -106,11 +160,13 @@ async def one_run(
     model: str,
     tools_file: Path,
     run_dir: Path,
+    debrief: bool = False,
 ) -> dict:
     run_dir.mkdir(parents=True, exist_ok=True)
     calls = run_dir / "calls.jsonl"
     calls.touch()
     events: list[dict] = []
+    debrief_text, debrief_cost = None, None
     t0 = time.monotonic()
     with tempfile.TemporaryDirectory(prefix="toolsel-") as tmp:
         tmp = Path(tmp)
@@ -123,27 +179,26 @@ async def one_run(
             "args": ["-m", "evals.tool_selection.stub", str(tools_file), str(calls)],
             "env": env,
         }}}))  # fmt: skip
-        proc = await asyncio.create_subprocess_exec(
-            *cli_args(cli.binary, model, prompt_for(case), mcp),
-            cwd=WORK,
-            env=cli._env(tmp / "home"),
-            stdin=asyncio.subprocess.DEVNULL,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            limit=16 * 1024 * 1024,
+        env_cli = cli._env(tmp / "home")
+        code, err = await _stream(
+            cli_args(cli.binary, model, prompt_for(case), mcp, keep=debrief),
+            env_cli,
+            events,
         )
-        try:
-            async with asyncio.timeout(RUN_TIMEOUT_S):
-                async for raw in proc.stdout:
-                    try:
-                        events.append(json.loads(raw))
-                    except ValueError:
-                        continue
-                await proc.wait()
-        except TimeoutError:
-            proc.kill()
-            await proc.wait()
-        err = (await proc.stderr.read()).decode("utf-8", "replace")
+        session = next((e["session_id"] for e in events if e.get("session_id")), None)
+        if debrief and session:
+            none = tmp / "mcp-none.json"
+            none.write_text(json.dumps({"mcpServers": {}}))
+            d_events: list[dict] = []
+            await _stream(
+                debrief_args(cli.binary, model, session, none), env_cli, d_events
+            )
+            d_res = next(
+                (e for e in reversed(d_events) if e.get("type") == "result"), {}
+            )
+            debrief_text = d_res.get("result") or ""
+            debrief_cost = d_res.get("total_cost_usd")
+            (run_dir / "debrief.md").write_text(debrief_text + "\n", "utf-8")
     with (run_dir / "events.jsonl").open("w", encoding="utf-8") as f:
         for ev in events:
             f.write(json.dumps(ev) + "\n")
@@ -151,8 +206,10 @@ async def one_run(
     init = next((e for e in events if e.get("subtype") == "init"), {})
     servers = init.get("mcp_servers") or []
     return {
-        "exit_code": proc.returncode,
-        "stderr": err[-500:] if proc.returncode else "",
+        "exit_code": code,
+        "stderr": err[-500:] if code else "",
+        "debrief": debrief_text,
+        "debrief_cost_usd_list_price": debrief_cost,
         "server_connected": any(s.get("status") == "connected" for s in servers),
         "tools_seen": init.get("tools"),
         "model_reported": sorted((res.get("modelUsage") or {}).keys()),
@@ -174,6 +231,7 @@ async def run_all(
     repeats: int,
     only: set[str] | None,
     concurrency: int,
+    debrief: bool = False,
 ) -> Path:
     base = out / label
     base.mkdir(parents=True, exist_ok=True)
@@ -219,7 +277,9 @@ async def run_all(
     async def go(c, mode, model, rep):
         async with sem:
             rd = base / "runs" / f"{c['id']}__{mode}__{model}__{rep}"
-            r = await one_run(cli, c, mode, model, base / f"tools-{mode}.json", rd)
+            r = await one_run(
+                cli, c, mode, model, base / f"tools-{mode}.json", rd, debrief
+            )
             s = score.score_run(c, r.pop("events"), schemas[mode])
             line = {"case": c["id"], "expect": c["expect"]["tool"], "mode": mode,
                     "model": model, "repeat": rep, **s, **r}  # fmt: skip
@@ -244,10 +304,16 @@ def main(argv: list[str]) -> None:
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--cases", help="comma-separated case ids (default: all)")
     ap.add_argument("--concurrency", type=int, default=4)
+    ap.add_argument(
+        "--debrief",
+        action="store_true",
+        help="after each run, ask (tools off, same session) why it called what "
+        "it called; saved to debrief.md, never scored",
+    )
     a = ap.parse_args(argv)
     asyncio.run(run_all(
         a.out, a.label, a.models.split(","), a.modes.split(","), a.repeats,
-        set(a.cases.split(",")) if a.cases else None, a.concurrency,
+        set(a.cases.split(",")) if a.cases else None, a.concurrency, a.debrief,
     ))  # fmt: skip
 
 

@@ -56,6 +56,9 @@ Development runs, never scored as a round (Agent A, CLI route):
   to the round's task. For example, `answers-v1` tells the agent to
   answer every open question and to rerun cut-short calls with
   `no_time_limit`.
+- `--judge api` runs Agent A with the server's own judge (`JUDGE_ROUTE=cli`,
+  the same model) instead of the calling agent answering (`client`, the
+  default and the rounds' setting).
 - `--no-subagents` removes the CLI's subagent tool. Without it, one run
   started 9 subagents at once and overloaded the container.
 
