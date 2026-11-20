@@ -291,7 +291,12 @@ re-testing): confirm and remove, or remove the mark.
   that is the tested page again, is left out and named, and the test
   decides on the rest (step 26; Abby, 2026-11-20: one usable other page
   is enough). With fewer pages, less is seen to repeat: 9.A's DOES NOT
-  APPLY rests on the pages that loaded. 9.B's region match and 9.C's
+  APPLY rests on the pages that loaded. An other page that draws itself
+  after loading is read twice and left out when the reads differ (#134's
+  rerun: one read of round 3's community home page lacked part of its
+  header, and 9.A said DOES NOT APPLY on the forum where the key fails).
+  Two reads that agree but are both incomplete are not caught; 9.C's own
+  ANDI read of the other pages is not read twice. 9.B's region match and 9.C's
   same-place pairing are not calibrated on real templates. A page with
   more than 5,000 items is NEEDS REVIEW.
 
