@@ -511,17 +511,17 @@ def shared_block(report: Any, states: dict, qs: list[OpenQuestion]) -> str:
     lines) and short excerpts of page text around the passages the questions
     quote. All of it page data, in one untrusted block. The same text goes in
     every request a family is split into."""
-    from tobi508 import pipeline as P
+    from tobi508 import result_view as R
 
     data: dict[str, Any] = {
-        "shared_inputs": _lines(P._shared_inputs(report, states, qs))
+        "shared_inputs": _lines(R._shared_inputs(report, states, qs))
     }
-    parts = P._page_text(report, states, qs)
-    quotes = [s for q in qs for s in P._quoted(q.input)]
+    parts = R._page_text(report, states, qs)
+    quotes = [s for q in qs for s in R._quoted(q.input)]
     text = [
         {
             "source": p.get("source", ""),
-            "text": P._excerpt(p.get("text", ""), quotes, PAGE_TEXT_BUDGET),
+            "text": R._excerpt(p.get("text", ""), quotes, PAGE_TEXT_BUDGET),
         }
         for p in parts
     ]

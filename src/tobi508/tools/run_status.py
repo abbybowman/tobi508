@@ -12,12 +12,8 @@ from pydantic import Field
 from tobi508 import config, jobs
 from tobi508.inline import with_pictures
 from tobi508.models import Outstanding, RunPending, RunResult, TestId
-from tobi508.pipeline import (
-    RunRefused,
-    outstanding,
-    record_follow_up,
-    take_follow_ups,
-)
+from tobi508.next_steps import outstanding, record_follow_up, take_follow_ups
+from tobi508.pipeline import RunRefused
 from tobi508.pipeline import run_tt_tests as run_pipeline
 from tobi508.redact import safe_error
 

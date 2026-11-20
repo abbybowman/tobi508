@@ -30,9 +30,11 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
    facts for a rule, never outcomes; the check decides again.
 6. **The result is written** (`pipeline.py` orchestrates steps 2 to 6): a
    short tool result (one line per finding, the questions, pictures attached
-   by `inline.py`), the full report as a `run://` resource (`resources/`),
-   and a pre-SCRT file in DHS's report rows (`scrt.py`). A run longer than
-   one call continues as a job (`jobs.py`).
+   by `inline.py`), cut to fit the client by `result_view.py` and ending with
+   the agent's next step and to-do list from `next_steps.py`; the full
+   report as a `run://` resource (`resources/`); and a pre-SCRT file in
+   DHS's report rows (`scrt.py`). A run longer than one call continues as a
+   job (`jobs.py`).
 
 ## Where things live
 
@@ -44,7 +46,7 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
 | Evidence collectors | `walk.py`, `traverse.py`, `observe.py`, `reveal.py`, `count.py`, `motion.py` (pass T, the watch; its page script in `motion_init.js`), `motion_models.py` (what pass T records), `motion_media.py` (sound and animated images decoded from the recording), `motion_pictures.py` (crops and states of moving regions), `mechanism.py`, `flash.py`, `flashcap.py`, `forms.py`, `labels.py`, `andi.py`, `site.py`, `hidden.py`, `jslib.py` |
 | Decisions | `checks/` (one module per test), `engine.py` (rule tables), `rules.py` (loads specs), `catalog.py` (the Trusted Tester text) |
 | Judging | `judgment.py`, `apijudge.py`, `judge_prompt.md` |
-| Output | `pipeline.py`, `scrt.py`, `compare.py`, `explain.py`, `inline.py`, `runlog.py`, `versions.py` |
+| Output | `pipeline.py` (runs the tests), `result_view.py` (fits the tool result to the client's size limit), `next_steps.py` (the agent's next step, to-do list and follow-up calls), `scrt.py`, `compare.py`, `explain.py`, `inline.py`, `runlog.py`, `versions.py` |
 | Runs and hosting | `jobs.py` (runs longer than one call), `progress.py` (its progress line: reading steps, then tests, done of total), `pagecache.py` (other pages recorded once a session), `frozen.py` (recorded pages for evaluations), `livelog.py` and `livepage.py` (a demo log, off by default) |
 
 Outside `src/tobi508/`: `specs/rules/` (one versioned rules spec per test,

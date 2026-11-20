@@ -242,7 +242,7 @@ def schema(q) -> dict:
 
 def build(report, states, q, run_dir: Path) -> tuple[str, list[tuple[str, bytes]]]:
     """The user message: one untrusted block, then the pictures in order."""
-    from tobi508 import pipeline as P
+    from tobi508 import result_view as R
 
     data = {
         "question_id": q.question_id,
@@ -251,9 +251,9 @@ def build(report, states, q, run_dir: Path) -> tuple[str, list[tuple[str, bytes]
         "rubric": q.rubric,
         "choices": list(q.choices),
         "input": q.input,
-        "shared_inputs": P._shared_inputs(report, states, [q]),
+        "shared_inputs": R._shared_inputs(report, states, [q]),
     }
-    page = P._page_text(report, states, [q])
+    page = R._page_text(report, states, [q])
     if page:
         data["page_text"] = page
     images: list[tuple[str, bytes]] = []
@@ -403,6 +403,7 @@ def _gate_first(qs: list) -> list:
 
 
 async def run(rd: Path, label: str, model: str, dry: bool) -> dict:
+    from tobi508 import next_steps as N
     from tobi508 import pipeline as P
     from tobi508.models import Report, TestId
     from tobi508.runlog import RunRecorder
@@ -576,9 +577,9 @@ async def run(rd: Path, label: str, model: str, dry: bool) -> dict:
         # live), as tobi_run_status with finish=true makes them.
         run = RunRecorder.open(runs, src["run_id"])
         report = Report.model_validate_json(run.report_path.read_text("utf-8"))
-        mine = [c for c in report.follow_up_calls if P.server_may_make(c)]
+        mine = [c for c in report.follow_up_calls if N.server_may_make(c)]
         report.follow_up_calls = [
-            c for c in report.follow_up_calls if not P.server_may_make(c)
+            c for c in report.follow_up_calls if not N.server_may_make(c)
         ]
         run.write_json(run.report_path, report)
         for c in mine:
@@ -600,7 +601,7 @@ async def run(rd: Path, label: str, model: str, dry: bool) -> dict:
                     }
                 )
                 continue
-            P.record_follow_up(settings, src["run_id"], c, f"armc-{res.run_id}")
+            N.record_follow_up(settings, src["run_id"], c, f"armc-{res.run_id}")
             totals["follow_up_runs"] += 1
             write(
                 {
