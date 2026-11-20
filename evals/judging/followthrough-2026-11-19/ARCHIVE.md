@@ -33,7 +33,7 @@ zip): the same code on both sides. Summary in `evals/README.md`
 | Path | What |
 | --- | --- |
 | `pages.txt`, `frozen/index.json`, `frozen/freeze.json` | the page list and freeze records |
-| `results/arm-a-<client\|api>-g<1-3>/` | each run's `summary.json`, `final.md`, `debrief.md`, `steps.jsonl`, and the tool's `runs/<id>/report.json` and `pre-scrt.json` |
+| `results/arm-a-<client\|api>-g<1-3>/` | each run's `summary.json`, `final.md`, `debrief.md`, and the tool's `runs/<id>/report.json` (`steps.jsonl` is left out: the transcripts have every call; `pre-scrt.json` too: `scrt.from_report` rebuilds it from the report, every line but the inlined screenshots, checked on client-g2: 2,616 of 2,620 lines) |
 | `transcripts-no-images.zip` | the six `transcript.json`, picture bytes replaced by a marker (the counts are identical from it and from the full files, checked) |
 
 ## Not in git

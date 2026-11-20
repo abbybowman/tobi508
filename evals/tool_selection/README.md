@@ -69,6 +69,8 @@ A logged pass is copied to `results/<date>/<label>/`: `results.jsonl`,
 messages and calls, tool results cut to 500 characters, the final result,
 the stub's call log and any debrief: what scoring reads). `report.py` reads
 `runs.zip` when the run folders are not there; `results/<date>/report.md`
-is made from the committed files, and `debriefs.md` collects the debriefs.
+is made from the committed files, and `debriefs.md` collects the debriefs
+verbatim (the debrief pass's own run files are not kept: its tool lists
+are the after pass's, and its scores are not reported).
 
 Results: `evals/README.md` ("Tool selection").
