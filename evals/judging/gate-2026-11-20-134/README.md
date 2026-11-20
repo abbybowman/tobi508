@@ -6,7 +6,7 @@ round 3's blind score ([`round3/score.md`](../round3/score.md)).
 
 ## Round 3's freeze with the missing code added (step 25)
 
-`round3-frozen/` is a copy of `../round3/frozen/` (Abby's
+`round3-copy/frozen/` is a copy of `../round3/frozen/` (Abby's
 `round3-frozen-2026-11-16b.zip`, SHA-256 `2ce3446a…`, every file checked
 against `../round3/frozen-MANIFEST.sha256` before copying). The original is
 not touched. Abby, 2026-11-20: add only the missing files.
