@@ -41,11 +41,23 @@ Loaded live: none (every page from the freeze)
 | p09 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
 | p10 | 19.A | Pass | This page can be reached from content links in its prev/next neighbor pages, and can also be found in site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W4 G3) |
 
-## Round 1 (2 pages)
+## Round 1 (9 pages)
 
 Loaded live: none (every page from the freeze)
 
 | Page | Test | Key | Key's comment | 9c (verdict, rows) | Now (verdict, rows) |
 | --- | --- | --- | --- | --- | --- |
 | p01 | 19.A | Pass | Page is linked from ISS mission hub (https://www.nasa.gov/international-space-station/) and found in site search. NOT available in Sitemap l | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p04 | 19.A | Pass | Reachable from the main navigation (under About NASA), sitemap, and site search. | Pass (agree; A5 W1 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p05 | 4.C | Pass |  | None (needs_review; A3 G3) | Pass (agree; A3 G4) |
+| p05 | 4.F | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3] r2:M4 r3:M4 G3) |
+| p05 | 5.B | Pass | The site search bar is DNA, and the mission search filters all pass. | Fail (false_fail; A4 G2) | None (needs_review; A4 f1.1:J1? f1.2:J1? f1.3:J1? f1.4:J1? f1.5:J1? f1.6:J1? f1.7:J1?) |
+| p05 | 5.D | Fail | The mission search filters immediately apply their filter to the results without a "Apply filters" button (like site search has), and there' | Fail (agree; A3 G2) | None (needs_review; A3 f3:J1? f4:J1? f5:J1? f6:J1? f7:J1? f8:J1? f9:J1?) |
+| p06 | 19.A | Pass | Reachable from content links on other Artemis-related pages and from appearing in site search. | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p06 | 4.F | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 o1:M9[S3,S3,S3,S3,S3,S3,S3] r2:M4 r3:M4 r4:M4 G3) |
+| p06 | 9.C | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 p1-1:C1 p1-2:C1 p1-3:C1 p1-4:C1 p1-5:C1 p1-6:C1 p1-7:C1) |
+| p07 | 4.B | Pass |  | Pass (agree; A3 G4) | None (needs_review; A3 p:J1? G3) |
+| p07 | 4.F | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 o1:M9[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3] r1:M4 r3:M4 r4:M4 G3) |
+| p08 | 19.A | Pass | Reachable from content links (e.g. https://www.nasa.gov/news/recently-published/), sitemap (under Content Archive .> 2026 .> October .> 30), | Pass (agree; A5 W1 W2 G2) | None (needs_review; A5 W1 W8 W9 W4 G3) |
+| p09 | 4.F | Pass |  | Pass (agree; A4 G5) | None (needs_review; A4 o1:M9[S3,S3,S3,S3] r2:M4 r3:M4 G3) |
 
