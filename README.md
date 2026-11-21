@@ -48,6 +48,8 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 
 Trusted Tester (TT) v5.1.3 covers 61 active tests covering 38 WCAG 2.0 Level A and AA Success Criteria plus 3 additional Section 508 requirements. TOBI can currently perform 22 of these 61 tests, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
 
+The WCAG SC column links each test's WCAG 2.0 success criteria. A Trusted Tester test often checks only part of a criterion: 1.3.1 Info and Relationships, for example, is split across seven TT tests, and TOBI performs only the one about form labels (5.C). A PASS here is not a pass of the whole criterion.
+
 Status is based on the latest results from 29 real webpages across three NASA sites, scored against a certified Trusted Tester's blind SCRT files (not a large sample size yet!):
 - ✅ **green:** agrees with the tester.
 - ⚠️ **yellow:** often fails pages the tester passes, or leaves most cells for a person.
