@@ -195,6 +195,12 @@ re-testing): confirm and remove, or remove the mark.
   home page about 0.7 s). `CLICK_MAX` is not calibrated on real pages
   (`EXECUTE_MAX` and `HOVER_MAX` are). A page whose frames show content
   the tool cannot read is NEEDS REVIEW.
+  A `title` counts as available elsewhere only when it equals the
+  accessible name or is in the page's text, so a title that rewords the
+  name goes to the judge, which can call it essential: round 2's sort
+  button ("Toggle sort direction", named "Toggle order; currently
+  descending order") is a wrong FAIL against a Pass key (gate
+  2026-11-21-136; open, Abby's decision).
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
   walk short of its press limit on a slow machine (the grid's
