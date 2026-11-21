@@ -70,7 +70,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 4.C | No keyboard trap | [2.1.2](https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping) | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.E | On focus | [3.2.1](https://www.w3.org/TR/WCAG20/#consistent-behavior-receive-focus) | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.F | Focus order meaning | [2.4.3](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-order) | [1.12.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.F | Focus order meaning | [2.4.3](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-order) | [1.13.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 5.A | Label provided | [3.3.2](https://www.w3.org/TR/WCAG20/#minimize-error-cues) | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
 | 5.B | Label descriptive | [2.4.6](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-descriptive) | [1.14.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
 | 5.C | Programmatic label | [1.3.1](https://www.w3.org/TR/WCAG20/#content-structure-separation-programmatic), [4.1.2](https://www.w3.org/TR/WCAG20/#ensure-compat-rsv) | [1.16.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |

@@ -118,6 +118,13 @@ J1_QUESTION = (
     "does_not_preserve, does_not_matter (order cannot affect meaning here), or "
     "unsure, and give your reasons in a few plain words."
 )
+# 1.13.0 (step 33a): a long page's order list skips from its first BADGE_MAX
+# elements to the ones the signals name.
+GAP_QUESTION = (
+    " input.order holds the first 60 elements and, after them, each element "
+    "input.signals names with the element before it; n is each one's place in "
+    "the whole order, so a jump in n is elements left out between them."
+)
 J1_RUBRIC = (
     "The question is whether the order keeps the page's meaning and lets a "
     "keyboard user operate it, not whether it matches the order drawn on the "
@@ -137,7 +144,13 @@ J1_RUBRIC = (
     "Share button before its Save button); a side list's sub-items reached "
     "right after their parent item; main content reached before side "
     "navigation that comes later in the document; header, navigation, main, "
-    "footer; a skip link first; independent sidebars in either order. "
+    "footer; a skip link first; independent sidebars in either order; an "
+    "order that looks a little odd but keeps each part's meaning and lets every "
+    "part be used, such as a group of controls (a form, a set of options) "
+    "reached whole before or after the content it goes with, or a form's "
+    "button reached after the menu beside it. That you would have ordered it "
+    "differently is not does_not_preserve; only an order that splits a group, "
+    "puts a sequence out of order or leaves something unusable is. "
     "does_not_matter: independent items whose order cannot change meaning, "
     "such as a row of social media icons. unsure: whenever the evidence does "
     "not settle it (the image does not show the numbered elements the signals "
@@ -253,6 +266,10 @@ class State4F(BaseModel):
     order_crop: str | None = None
     # Numbers of forward stops with no badge in the picture: no visible box.
     undrawn: list[int] = Field(default_factory=list)
+    # Forward numbers J1 is shown (order list, badges, crop): the first
+    # BADGE_MAX, then each stop a signal names and the stop before it
+    # (1.13.0, #136 step 33a). Empty: the first BADGE_MAX.
+    numbered: list[int] = Field(default_factory=list)
     instances: list[Inst4F] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
@@ -587,17 +604,34 @@ def box_drawn(info: dict[str, Any]) -> bool:
     )
 
 
+def numbered(fwd: list[StopInfo], sigs: list[dict[str, Any]]) -> list[int]:
+    """The forward numbers J1 is shown (1.13.0, step 33a): the first
+    BADGE_MAX, and past them every stop a signal names with the stop before
+    it. Round 3's Drupal pages: the footer links S3 named were stops 61 on,
+    so J1 saw neither them in the list nor their badges, and was unsure."""
+    out = set(range(1, min(len(fwd), BADGE_MAX) + 1))
+    at = {si.path_key: n for n, si in enumerate(fwd, start=1)}
+    for sg in sigs:
+        n = at.get(sg.get("at") or "")
+        if n is not None:
+            out |= {n, n - 1} - {0}
+    return sorted(out)
+
+
 def crop_boxes(
     fwd: list[StopInfo],
     sigs: list[dict[str, Any]],
     undrawn: frozenset[str] = frozenset(),
+    shown: list[int] | None = None,
 ) -> list[list[float]]:
     """Page boxes (x, y, w, h, CSS px) around the stops the signals name,
     each with the stop before it in Tab order, grown by CROP_MARGIN; a pair
     further apart than CROP_TALL gives two boxes. Overlapping boxes merge;
-    page order, at most CROP_MAX. Only numbered stops (BADGE_MAX) that have a
-    visible box: a stop in `undrawn` (path keys) adds no part."""
-    at = {si.path_key: n for n, si in enumerate(fwd[:BADGE_MAX])}
+    page order, at most CROP_MAX. Only numbered stops (`shown`, forward
+    numbers; the first BADGE_MAX when None) that have a visible box: a stop
+    in `undrawn` (path keys) adds no part."""
+    nums = shown if shown is not None else range(1, min(len(fwd), BADGE_MAX) + 1)
+    at = {fwd[n - 1].path_key: n - 1 for n in nums}
     boxes: list[list[float]] = []
     for sg in sigs:
         i = at.get(sg.get("at") or "")
@@ -672,24 +706,30 @@ def _crop(full: Path, boxes: list[list[float]], dpr: float, out: Path) -> bool:
 
 
 async def _order_image(
-    ctx: RunContext, fwd: list[StopInfo], sigs: list[dict[str, Any]] | None = None
+    ctx: RunContext,
+    fwd: list[StopInfo],
+    sigs: list[dict[str, Any]] | None = None,
+    shown: list[int] | None = None,
 ) -> tuple[str | None, str | None, list[int]]:
     """The full-page order image, its crop around the stops the signals name
     (None when no signal names a numbered stop), and the numbers of the stops
     left without a badge because they have no visible box: hidden,
     off the page, tiny, or shown only while focused (checked on this fresh,
     unfocused load when the stop is in the top document)."""
+    nums = shown if shown is not None else numbered(fwd, sigs or [])
     s = await open_session(ctx.new_page, ctx.quiet_ms)
     undrawn: list[int] = []
     try:
         badges = [
-            [n, si.info["page"], None if si.frame else si.css_path]
-            for n, si in enumerate(fwd[:BADGE_MAX], start=1)
-            if box_drawn(si.info)
+            [
+                n,
+                fwd[n - 1].info["page"],
+                None if fwd[n - 1].frame else fwd[n - 1].css_path,
+            ]
+            for n in nums
+            if box_drawn(fwd[n - 1].info)
         ]
-        undrawn = [
-            n for n, si in enumerate(fwd[:BADGE_MAX], start=1) if not box_drawn(si.info)
-        ]
+        undrawn = [n for n in nums if not box_drawn(fwd[n - 1].info)]
         hidden = await s.page.evaluate(
             """([badges, min]) => { const hidden = [];
               const find = (p) => { try { let root = document, el = null;
@@ -729,7 +769,7 @@ async def _order_image(
         return p.resolve().relative_to(ctx.rel.resolve()).as_posix()
 
     skip = frozenset(fwd[n - 1].path_key for n in undrawn)
-    boxes = crop_boxes(fwd, sigs or [], skip)
+    boxes = crop_boxes(fwd, sigs or [], skip, nums)
     crop = ctx.shots / "4f-order-crop.png"
     try:
         made = bool(boxes) and _crop(path, boxes, dpr, crop)
@@ -797,7 +837,10 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
     await _reveal(ctx, st, triggers[:REVEAL_MAX])
     if any(i.signals for i in st.instances):
         sigs = [sg for i in st.instances for sg in i.signals]
-        st.order_image, st.order_crop, st.undrawn = await _order_image(ctx, fwd, sigs)
+        st.numbered = numbered(fwd, sigs)
+        st.order_image, st.order_crop, st.undrawn = await _order_image(
+            ctx, fwd, sigs, st.numbered
+        )
     return st
 
 
@@ -815,6 +858,8 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
             or inst.j1 is not None
         ):
             continue
+        nums = st.numbered or list(range(1, min(len(st.forward), BADGE_MAX) + 1))
+        shown = set(nums)
         order = [
             {
                 "n": n,
@@ -824,8 +869,10 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
                 "group": si.info.get("group_label") or None,
                 **({"drawn": False} if n in st.undrawn else {}),
             }
-            for n, si in enumerate(st.forward[:BADGE_MAX], start=1)
+            for n in nums
+            for si in (st.forward[n - 1],)
         ]
+        gap = nums != list(range(1, len(nums) + 1))
         full = f"{base}/{st.order_image}" if st.order_image else None
         crop = f"{base}/{st.order_crop}" if st.order_crop else None
         image = crop or full
@@ -845,7 +892,7 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
             extra["backward"] = [
                 {"n": num.get(k), "role": si.role, "name": si.name}
                 for k, si in zip(b_keys, st.backward, strict=True)
-                if num.get(k) is None or num[k] <= BADGE_MAX
+                if num.get(k) is None or num[k] in shown
             ]
         if inst.kind == "R":
             extra["opened"] = inst.detail
@@ -856,7 +903,9 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
                 kind="choice",
                 choices=J1_CHOICES,
                 instance=inst.id,
-                question=J1_QUESTION + (NOT_DRAWN_QUESTION if st.undrawn else ""),
+                question=J1_QUESTION
+                + (GAP_QUESTION if gap else "")
+                + (NOT_DRAWN_QUESTION if st.undrawn else ""),
                 rubric=J1_RUBRIC + (NOT_DRAWN_RUBRIC if st.undrawn else ""),
                 input={
                     "part": "the whole page"

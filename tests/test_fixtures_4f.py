@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import pytest
 
+from tobi508.checks import t4f
 from tobi508.models import TestId
 
 from .conftest import FIXTURES
@@ -242,3 +243,44 @@ async def test_backward_order_is_in_the_question(settings, server):
     # 1.11.0: each by its number in input.order, so the two lists line up.
     assert [s["n"] for s in q.input["backward"]] == [4, 2, 3, 1]
     assert "Shift+Tab" in q.question
+
+
+def _si(n: int) -> t4f.StopInfo:
+    return t4f.StopInfo(
+        path_key=f"#s{n}",
+        css_path=f"#s{n}",
+        frame=[],
+        role="link",
+        name=f"Link {n}",
+        modal=False,
+        collapsed=False,
+        unreliable=False,
+        info={"page": [0, n * 20, 50, 10]},
+    )
+
+
+def test_j1_is_shown_every_element_a_signal_names_past_60():
+    """1.13.0 (#136 step 33a): round 3's Drupal footers were stops 61 on, so
+    the S3 signals named links J1's order list and picture did not hold, and
+    J1 was unsure for that. The list keeps the first 60 and adds each named
+    stop with the one before it, numbered by place; the question says so."""
+    fwd = [_si(n) for n in range(1, 81)]
+    sig = {
+        "code": "S3",
+        "at": "#s75",
+        "words": 'focus jumps back up the page from "Link 74" to "Link 75"',
+    }
+    assert t4f.numbered(fwd, [sig]) == [*range(1, 61), 74, 75]
+    st = t4f.State4F(p1={}, p2={}, forward=fwd, stops=80, inventory=80)
+    st.instances.append(t4f.Inst4F(id="o1", kind="O", label="the page", signals=[sig]))
+    st.numbered = t4f.numbered(fwd, [sig])
+    (q,) = t4f.questions_for(st, [])
+    assert [o["n"] for o in q.input["order"]][-3:] == [60, 74, 75]
+    assert "a jump in n is elements left out" in q.question
+    # A page within 60 stops: no gap, no extra sentence.
+    short = t4f.State4F(p1={}, p2={}, forward=fwd[:30], stops=30, inventory=30)
+    short.instances.append(
+        t4f.Inst4F(id="o1", kind="O", label="the page", signals=[{**sig, "at": "#s20"}])
+    )
+    (q2,) = t4f.questions_for(short, [])
+    assert len(q2.input["order"]) == 30 and "jump in n" not in q2.question
