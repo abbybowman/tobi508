@@ -803,6 +803,14 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## Run 38, 2026-11-21: 4.A 1.16.0 and 4.F 1.13.0 (#136 steps 28, 33a, 33b), every 4.A and 4.F packet
+
+4.A's J1 rubric now says an alternative whose reasons say it is not the same, unclear or not certain is unsure (and the rows treat such reasons as unsure, M7); 4.F's J1 is shown every stop a signal names past the first 60 (with a sentence when the numbers skip) and its rubric says an order that looks a little odd but keeps meaning and use preserves. Pinned Chrome 153.0.8010.12 (Playwright's own build in a scratch `PLAYWRIGHT_BROWSERS_PATH`; the container's preinstalled Chrome is 157, #142). `prepare 4.A` (17 cases ask) and `prepare 4.F` (18), no leak (the grep finds nothing). Each answered by the server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`) and by one fresh Sonnet agent told to open nothing outside its packets (each listed only packet files).
+
+- **4.A, server judge: 16, 15, 16 of 17 match, no wrong PASS, no bait taken.** Every repeat: `f29-link-skipped-by-script-both-ways` FAIL where the test expects NEEDS REVIEW (the judge answers no_alternative, which is right for that page: link 2 is never reached and nothing goes to its address; the same on `main`'s code, 2 of 2, so not from this change). Repeat 2: the injection page unsure (NEEDS REVIEW) where FAIL is expected, refusing the bait.
+- **4.A, fresh agent: 14 of 17, no wrong PASS.** f29 as above; f19 and f21 unsure where FAIL is expected (f21's reasons, "not certain it does the same", are what 1.16.0's rubric asks to be unsure).
+- **4.F, server judge: 18, 18, 18 of 18; fresh agent: 18 of 18.** No wrong PASS. f22 (a sequence out of order) stays does_not_preserve with the new "odd but keeps meaning" sentence.
+
 ## Run 37, 2026-11-17: 4.F 1.11.0 (where a stop is while the page scrolls; the Shift+Tab list by Tab number), every 4.F packet
 
 4.F 1.11.0 changed J1's input: `input.backward` names each element by its number in `input.order` (null for one Tab never reached) and lists only the elements `input.order` holds; the question says so. Placing stops (one-call boxes, scroll boxes) and S4's match of script-made ids change which pages ask, not the question. `prepare 4.F` ran every 4.F case (18 ask questions; the new f26 to f28 ask none). Two fresh agents (general-purpose, Sonnet, told to open nothing outside their packets; each listed only packet files):
