@@ -90,6 +90,10 @@ outcome. These six exceptions are approved, each with exactly these limits.
   - `tobi_run_status`: wait for a run its call left running; with no
     `job_id`, list the work left across the session's runs; with
     `finish=true`, also make the follow-up calls the server may make itself.
+  - `tobi_cancel_run`: stop one of the caller's own runs (queued or
+    running), on the user's word or for a duplicate; nothing is kept. The
+    server's admin cancels anyone's from inside the container
+    (`admin.py`, `tobi508-admin`), never through MCP.
   - `tobi_answer_questions`: record the calling agent's answers to open
     questions, when the server has no judge model of its own or its judge
     could not be reached (`pipeline._judge_phase` leaves them open).
@@ -123,12 +127,14 @@ outcome. These six exceptions are approved, each with exactly these limits.
 - Hosted deployment is the target; stdio is fine for now. Build nothing that
   only works locally: evidence must be reachable without the server's file
   paths, and run state is short-lived (results belong in the user's
-  codebase: the client reads `report_uri` and saves it before `expires_at`).
+  codebase: the client reads `pre_scrt_uri` and `report_uri` and saves both
+  before `expires_at`).
 - One tool call returns within `CALL_WAIT_S` (default 45 s, under common MCP
   client timeouts and HTTP proxies). A run not done by then goes on as a job
   (`jobs.py`) and `tobi_run_status` waits for it again; each still-running
-  result carries a progress line: reading steps, then tests, done of total
-  with a rough percentage (`progress.py`).
+  result carries a progress line in three parts (reading the page, testing,
+  finishing), done of total with a percentage that covers only the part it
+  names (`progress.py`).
 - By default a run is not held to a time limit (`NO_TIME_LIMIT_DEFAULT`): it
   tests the whole page and stops only at `MAX_RUN_S` (default 1800 s),
   because agents never put the `no_time_limit` choice to the user.

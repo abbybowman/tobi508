@@ -93,7 +93,7 @@ def register(mcp: FastMCP) -> None:
             return with_pictures(
                 await jobs.wait(job, config.settings.call_wait_s, progress), wrap=True
             )
-        except RunRefused as exc:
+        except (RunRefused, jobs.RunCancelled) as exc:
             raise ToolError(str(exc)) from None
         except Exception as exc:
             # One redacted line, no stack trace or call log (redact.py).

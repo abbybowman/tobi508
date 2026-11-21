@@ -45,7 +45,10 @@ TOOL SELECTION GUIDE:
   -> tobi_run_tt_tests (url; tests defaults to every implemented test)
 - A run's result says status "queued" or "running" (it was not done when
   the call stopped waiting) -> tobi_run_status (job_id) until status is
-  "done"; never start the run again
+  "done"; never start the run again. Its progress line has three parts;
+  a percentage covers only the part it names, not the whole run
+- The user wants to stop a run, or you started the same run twice
+  -> tobi_cancel_run (job_id; your own runs only; nothing from it is kept)
 - Before reporting to the user, or when testing several pages: what is left
   across this session's runs (open questions, follow-up calls, runs still
   going) -> tobi_run_status with no job_id
@@ -58,13 +61,20 @@ TOOL SELECTION GUIDE:
   WCAG criterion or words; run_id = a run to explain). The explain prompt
   gives users the same material as a command.
 - Read an SCRT report file (from DHS's SCRT or this server's pre-SCRT
-  file), or see what changed between two reports of a page (before and after
-  a fix, or a person's report and the tool's) -> tobi_read_report
-  (content; compare_to = the other file; a run:// link works for either)
+  file), or compare two reports of a page: where the tool's results and a
+  person's agree, differ or disagree, how close they are, or what changed
+  before and after a fix -> tobi_read_report (content; compare_to = the
+  other file, sent unchanged; a run:// link works for either). Use it
+  rather than writing your own comparison script
+- Save a run's results -> both run:// files, pre_scrt_uri (the one people
+  open in the viewer) and report_uri (the full record), unchanged
+- Show results to a person -> the viewer (/viewer on this server over
+  HTTP), where they choose the saved pre-SCRT file and, to compare, a
+  person's SCRT file; do not write your own summary file unless asked
 - Read the TT text for a test -> resource tt://5.1.3/tests/{{id}} (list of
   all tests: tt://5.1.3/index; a whole part: tt://5.1.3/parts/{{part}})
-- Read a run's full report or evidence, or save the report -> the run://
-  links in the result (report_uri, pre_scrt_uri); save before expires_at
+- Read a run's full report or evidence -> the run:// links in the result
+  (report_uri, pre_scrt_uri); save both before expires_at
 
 Conventions: test IDs look like "4.C". Only URLs on the server's allowlist
 (default *.gov, *.mil) can be tested; anything else is a tool error and
@@ -141,7 +151,12 @@ def main() -> None:
     if settings.mcp_transport == "stdio":
         mcp.run(transport="stdio")
     elif settings.mcp_transport == "streamable-http":
-        mcp.run(transport="streamable-http", **http_options())
+        opts = http_options()
+        # The admin command's token, readable only inside this container.
+        from tobi508.admin import write_token
+
+        write_token(settings.admin_token_file)
+        mcp.run(transport="streamable-http", **opts)
     else:
         raise SystemExit(
             f"Unknown MCP_TRANSPORT {settings.mcp_transport!r}: "

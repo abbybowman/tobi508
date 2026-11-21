@@ -124,6 +124,19 @@ until the items under "Before a hosted deployment" are done.
   string. Values are shown as text under a strict Content-Security-Policy
   (`tests/test_livelog.py`, `tests/test_access_signin.py`). Turn it on for a
   demo, then off.
+- **The admin routes** (`admin.py`, 2026-11-20): `GET /admin/jobs`
+  and `POST /admin/jobs/{job_id}/cancel` let the person running the server
+  list and cancel every caller's runs with `tobi508-admin`, from inside the
+  server's container (`podman exec`, `kubectl exec`). They answer only a
+  request with the token the server writes at each start to
+  `ADMIN_TOKEN_FILE` (the container's temp directory, mode 600, replaced
+  on restart) and with no proxy header (a request through the gateway or
+  ingress always has one); anything else is 404. The command calls the
+  server on loopback and ignores HTTP proxy settings. A listing shows each
+  run's address without its query string, the signed-in subject who
+  started it and its progress line, never page content; each cancel writes
+  an audit line (`admin.cancel`). A caller's own `tobi_cancel_run` reaches
+  only their runs, as `tobi_run_status` does (`tests/test_cancel.py`).
 - **The viewer** (`GET /viewer`) is open without sign-in, as `/health` is.
   It is a static page that holds no data: the person picks a saved file and
   it is read in their own browser. Its Content-Security-Policy (in the file

@@ -14,7 +14,7 @@ from fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
-from tobi508 import __version__, livelog, livepage
+from tobi508 import __version__, admin, livelog, livepage
 
 NO_STORE = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
 
@@ -33,6 +33,10 @@ VIEWER_CSP = (
 
 def register_routes(mcp: FastMCP) -> None:
     """Register custom HTTP routes with the server."""
+
+    # The admin routes (admin.py): 404 without the token the server writes
+    # inside its own container at start.
+    admin.register_routes(mcp)
 
     @mcp.custom_route("/health", methods=["GET"])
     async def health_check(request: Request) -> JSONResponse:

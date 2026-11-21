@@ -47,7 +47,7 @@ in [CLAUDE.md](../CLAUDE.md); what each test decides is in
 | Decisions | `checks/` (one module per test), `engine.py` (rule tables), `rules.py` (loads specs), `catalog.py` (the Trusted Tester text) |
 | Judging | `judgment.py`, `apijudge.py`, `judge_prompt.md` |
 | Output | `pipeline.py` (runs the tests), `result_view.py` (fits the tool result to the client's size limit), `next_steps.py` (the agent's next step, to-do list and follow-up calls), `scrt.py`, `compare.py`, `explain.py`, `inline.py`, `runlog.py`, `versions.py` |
-| Runs and hosting | `jobs.py` (runs longer than one call), `progress.py` (its progress line: reading steps, then tests, done of total), `pagecache.py` (other pages recorded once a session), `frozen.py` (recorded pages for evaluations), `livelog.py` and `livepage.py` (a demo log, off by default) |
+| Runs and hosting | `jobs.py` (runs longer than one call; cancelling one), `admin.py` (the admin's `tobi508-admin` command and routes: list and cancel every caller's runs from inside the container), `progress.py` (its progress line in three parts: reading steps, then tests, done of total, then finishing), `pagecache.py` (other pages recorded once a session), `frozen.py` (recorded pages for evaluations), `livelog.py` and `livepage.py` (a demo log, off by default) |
 
 Outside `src/tobi508/`: `specs/rules/` (one versioned rules spec per test,
 citing the Trusted Tester PDF in `specs/sources/`), `tests/` (unit tests and

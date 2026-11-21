@@ -92,6 +92,13 @@ def canned(name: str, args: dict[str, Any]) -> dict[str, Any]:
             "findings": [],
             "open_questions": [],
         }
+    if name == "tobi_cancel_run":
+        return base | {
+            "job_id": args.get("job_id"),
+            "status": "cancelled",
+            "was": "running",
+            "next_step": "Tell the user the run was cancelled.",
+        }
     if name == "tobi_explain":
         return base | {"text": "(stub) The explanation would be here."}
     if name == "tobi_read_report":

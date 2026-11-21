@@ -8,6 +8,11 @@ told the calling agent and its user little about how far along the run was,
 so each line says how many of the run's reading steps are done or not
 needed, then how many of its tests are done, with a rough percentage.
 
+Each line names its part (1 of 3 reading, 2 of 3 testing, 3 of 3 finishing)
+and says its percentage covers that part only: a calling agent read "85%"
+during reading as the whole run's (demo run, 2026-11-20). No overall
+percentage is given: the parts take very different times on different pages.
+
 The plan of reading steps is fixed when the run starts and a step that turns
 out not to be needed counts as done, so the counts never go back. The client
 bar's step (of 4) keeps its stages: reading 0-2, tests 2-3, evaluating and
@@ -48,8 +53,9 @@ class Tracker:
         n, t = len(self.closed), len(self.steps)
         await self._send(
             2 * n / t if t else 0,
-            f"Reading the page, {n} of {t} steps done or not needed "
-            f"({_pct(n, t)}%): {_now(message)}",
+            f"Part 1 of 3, reading the page: {n} of {t} reading steps done or "
+            f"not needed ({_pct(n, t)}% of this part; the tests have not "
+            f"started). Now: {_now(message)}",
         )
 
     async def testing(self, done: int, total: int, message: str) -> None:
@@ -57,8 +63,8 @@ class Tracker:
         self.tests_total = total
         await self._send(
             2 + (done / total if total else 1),
-            f"Page read (100%). Testing, {done} of {total} tests done "
-            f"({_pct(done, total)}%): {_now(message)}",
+            f"Part 2 of 3, testing (the page has been read): {done} of {total} "
+            f"tests done ({_pct(done, total)}% of the tests). Now: {_now(message)}",
         )
 
     async def finishing(self, step: float, message: str) -> None:
@@ -66,6 +72,6 @@ class Tracker:
         t = self.tests_total
         await self._send(
             step,
-            f"Page read and all {t} test{'s' if t != 1 else ''} checked (100%). "
-            f"Finishing: {_now(message)}",
+            f"Part 3 of 3, finishing: the page has been read and all {t} "
+            f"test{'s' if t != 1 else ''} checked. Now: {_now(message)}",
         )

@@ -60,8 +60,8 @@ def test_tool_lists_differ_only_in_the_judge_paragraph(tools):
     c = {t["name"]: t for t in tools["client"]}
     a = {t["name"]: t for t in tools["api"]}
     assert set(c) == set(a) == {
-        "tobi_run_tt_tests", "tobi_run_status", "tobi_answer_questions",
-        "tobi_explain", "tobi_read_report",
+        "tobi_run_tt_tests", "tobi_run_status", "tobi_cancel_run",
+        "tobi_answer_questions", "tobi_explain", "tobi_read_report",
     }  # fmt: skip
     assert "no judge model" in c["tobi_run_tt_tests"]["description"]
     assert "pinned model" in a["tobi_run_tt_tests"]["description"]
