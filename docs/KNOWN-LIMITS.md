@@ -176,16 +176,20 @@ re-testing): confirm and remove, or remove the mark.
   focus is not read (step 6d). **⚑ Check:** this line also said 4.A
   asks whether a group's second radio "works with a mouse but cannot be
   reached"; step 6d's radio fix (PR #59) may have ended that.
-- **4.A:** native buttons are never executed, so a page that takes
-  Enter only from a native button is not seen; handlers delegated to an
-  ancestor are not tied to the child they serve; controls inside content
-  that opens are not scanned (step 15). J1 can answer "alternative"
-  while its reasons say it is not sure, and M8 passes any effect of
-  Enter or Space, even one that is not what the click does (round 3's
-  MySearchStory; step 28, [#136](https://github.com/abbybowman/tobi508/issues/136)). Every Drupal page of round 3 was NEEDS
+- **4.A:** a native button or link is executed only when it, or an
+  element round it below `body`, listens for keys (1.16.0, step 28,
+  [#136](https://github.com/abbybowman/tobi508/issues/136)): one whose
+  Enter is cancelled by a listener on `body` or `document` is not seen.
+  A key whose effect differs from the click's in a way the changed region
+  cannot tell (both change the same part of the page differently) passes
+  M8; a click that does nothing in a replay but something live leaves
+  the control at M8r (NEEDS REVIEW). The hedge check reads words, so an
+  answer that is sure but uses one ("likely") goes to a person.
+  Handlers delegated to an ancestor are not tied to the child they serve;
+  controls inside content that opens are not scanned (step 15). Every Drupal page of round 3 was NEEDS
   REVIEW for a hidden share frame, a page-level wheel or touch listener
-  and `HOVER_MAX` (40) (step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)). Its caps (`HOVER_MAX`, `CLICK_MAX`,
-  `EXECUTE_MAX`) are not calibrated on real pages. A page with embedded
+  and `HOVER_MAX` (40) (step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)). Its caps (`HOVER_MAX`, `CLICK_MAX`) are not calibrated on real pages
+  (`EXECUTE_MAX` is, 1.16.0: 12, from the three rounds' pages). A page with embedded
   players or frames is often NEEDS REVIEW.
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
