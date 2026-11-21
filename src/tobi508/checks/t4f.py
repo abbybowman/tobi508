@@ -31,7 +31,7 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.observe import observe, shown
-from tobi508.traverse import Traversal, open_session, screenshot
+from tobi508.traverse import Traversal, open_session, screenshot, settle
 from tobi508.walk import KeyboardWalk, drawn_late
 
 # Spec constants.
@@ -83,10 +83,15 @@ ORDER_FN = """function () {
   const ctl = el.getAttribute('aria-controls');
   if (ctl) container = '#' + CSS.escape(ctl);
   else if (el.tagName === 'SUMMARY' && el.parentElement) container = gpath(el.parentElement);
+  // 1.14.0 (S3's next column): the footers, navigation areas and lists
+  // round the stop, so two stops can be found in the same one.
+  const regions = [];
+  for (let c = el.parentElement; c && c !== document.body; c = c.parentElement)
+    if (c.matches('footer, [role=contentinfo], nav, [role=navigation], ul, ol')) regions.push(gpath(c));
   return { dom_index: all.indexOf(host), tabindex: ti === null ? null : parseInt(ti, 10),
     group: g ? gpath(g) : null, group_label: legend.trim().slice(0, 80),
     form: el.form ? gpath(el.form) : null, haspopup: el.getAttribute('aria-haspopup'),
-    container, dir: getComputedStyle(el).direction, label_box,
+    container, regions, dir: getComputedStyle(el).direction, label_box,
     shown: el.checkVisibility ? el.checkVisibility({ visibilityProperty: true, opacityProperty: true }) : r.width > 0,
     page: [r.x + sx, r.y + sy, r.width, r.height],
     scroller: box ? gpath(box) : null, scroller_page, inner };
@@ -348,6 +353,44 @@ def same_keys(f_keys: list[str], b_keys: list[str]) -> tuple[list[str], list[str
     return [norm(k) for k in f_keys], [norm(k) for k in b_keys]
 
 
+def next_column(fwd: list[StopInfo], i: int) -> bool:
+    """Whether the step from fwd[i] to fwd[i + 1] goes from one column to
+    the top of the next (4.F 1.14.0, step 33c): both in one footer,
+    navigation area or list; the next stop wholly to the right of the
+    column the first one ends (left on rtl pages); and no higher than that
+    column's top. Round 3's Drupal footers: Tab goes down one column of
+    links and up to the next. A stop in a box that scrolls by itself is
+    never read this way."""
+    a, b = fwd[i], fwd[i + 1]
+    if a.frame != b.frame or a.info.get("scroller") or b.info.get("scroller"):
+        return False
+    shared = set(a.info.get("regions") or []) & set(b.info.get("regions") or [])
+    pa, pb = a.info.get("page"), b.info.get("page")
+    if not shared or not pa or not pb:
+        return False
+    tol = max(pa[3] / 2, ROW_TOLERANCE_MIN)
+    # a's column: a and the stops just before it, in the same region, whose
+    # boxes overlap a's from side to side.
+    col = [pa]
+    for c in reversed(fwd[:i]):
+        pc = c.info.get("page")
+        if (
+            c.frame != a.frame
+            or c.info.get("scroller")
+            or not pc
+            or not shared & set(c.info.get("regions") or [])
+            or pc[0] >= pa[0] + pa[2]
+            or pa[0] >= pc[0] + pc[2]
+        ):
+            break
+        col.append(pc)
+    if a.info.get("dir") == "rtl":
+        beside = pb[0] + pb[2] <= min(p[0] for p in col)
+    else:
+        beside = pb[0] >= max(p[0] + p[2] for p in col)
+    return beside and pb[1] >= min(p[1] for p in col) - tol
+
+
 def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, Any]]:
     """S1-S5 on the forward (and backward) order. Facts only."""
     out: list[dict[str, Any]] = []
@@ -372,12 +415,14 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
                 }
             )
             break
-    for a, b in zip(fwd, fwd[1:], strict=False):
+    for i, (a, b) in enumerate(zip(fwd, fwd[1:], strict=False)):
         pa, pb = places(a.info, b.info)
         if not pa or not pb:
             continue
         tol = max(pa[3] / 2, ROW_TOLERANCE_MIN)
         rtl = a.info.get("dir") == "rtl"
+        if pb[1] < pa[1] - tol and next_column(fwd, i):
+            continue  # 1.14.0: the top of the next column (step 33c)
         if pb[1] < pa[1] - tol:
             out.append(
                 {
@@ -523,7 +568,15 @@ async def _reveal(
             if nxt.stop.modal and _opened_by(trig, c2):
                 st.instances.append(await _dialog_check(ctx, keys + ["Tab"], trig, n))
                 continue
-            if not moved_in and not (c2 or {}).get("inside"):
+            if (
+                not moved_in
+                and not (c2 or {}).get("inside")
+                and await _popup_takes_arrows(ctx, keys, trig, container)
+            ):
+                # 1.14.0 (step 33c): a menu or list the arrow keys move into
+                # and Tab leaves, as the WAI-ARIA patterns have it.
+                inst.detail["arrow_keys_move_into_it"] = True
+            elif not moved_in and not (c2 or {}).get("inside"):
                 inst.signals.append(
                     {
                         "code": "S6",
@@ -552,6 +605,54 @@ async def _reveal(
                 except Exception:
                     pass
             await s.close()
+
+
+POPUP_ROLE_FN = """function () {
+  const r = (this.getAttribute('role') || '').toLowerCase();
+  return r === 'menu' || r === 'listbox';
+}"""
+
+
+async def _popup_takes_arrows(
+    ctx: RunContext, keys: list[str], trig: StopInfo, container: str
+) -> bool:
+    """4.F 1.14.0 (step 33c): the trigger says it opens a menu or list, or
+    what it reveals has role menu or listbox, and on a fresh replay (to the
+    trigger, Enter, then ArrowDown) focus moves into what it revealed. The
+    key press confirms it; the attributes alone never do."""
+    declared = (trig.info.get("haspopup") or "").lower() in ("true", "menu", "listbox")
+    s = await ctx.replay(keys[:-1])
+    try:
+        if not declared:
+            try:
+                declared = bool(
+                    await s.traversal.reader.evaluate_top(
+                        "(() => { const c = document.querySelector("
+                        + json.dumps(container)
+                        + "); if (!c) return false; return ("
+                        + POPUP_ROLE_FN
+                        + ").call(c); })()"
+                    )
+                )
+            except Exception:
+                declared = False
+        if not declared:
+            return False
+        here, _ = await s.traversal.reader.read()
+        if here.path_key != trig.path_key:
+            return False
+        await s.page.keyboard.press("Enter")
+        await settle(s.page, ctx.quiet_ms)
+        await s.traversal.resync()
+        down = await s.traversal.press("ArrowDown")
+        if down.stop.kind != "element" or down.stop.unresolved:
+            return False
+        got = await s.traversal.reader.call(down.stop, CONTAINS_FN, [container])
+        return bool((got or {}).get("inside"))
+    except Exception:
+        return False
+    finally:
+        await s.close()
 
 
 async def _dialog_check(
@@ -1054,7 +1155,11 @@ def _sentence(inst: Inst4F, rid: str) -> str:
         "M3": f"Keyboard focus stays inside the dialog opened from {inst.label} until it is closed.",
         "M4": "Focus follows the page's reading order, forward and backward."
         if inst.kind == "O"
-        else f"After opening {inst.label}, the next Tab moves into what it revealed.",
+        else (
+            f"After opening {inst.label}, the arrow keys move into what it opened."
+            if inst.detail.get("arrow_keys_move_into_it")
+            else f"After opening {inst.label}, the next Tab moves into what it revealed."
+        ),
         "M6": f"The focus order doesn't make sense here: {sig}. {reasons}. If you disagree, tell your assistant.",
         "M7": f"The focus order departs from the reading order ({sig}), but it still makes sense: {reasons}. If you disagree, tell your assistant.",
         "M8": f"The order of these elements can't change what the page means ({reasons}), so this test does not apply here. If you disagree, tell your assistant.",

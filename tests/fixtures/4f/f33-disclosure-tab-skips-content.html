@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head><title>Search</title></head>
+<body>
+<h1>Search</h1>
+<button type="button" id="more" aria-expanded="false" aria-controls="filters">More filters</button>
+<label>Search <input type="search" id="q"></label>
+<button type="submit">Go</button>
+<div id="filters" hidden>
+  <a href="/earth">Earth</a> <a href="/sun">Sun</a> <a href="/planets">Planets</a>
+</div>
+<script>
+  const b = document.getElementById('more'), f = document.getElementById('filters');
+  b.addEventListener('click', () => { f.hidden = !f.hidden; b.setAttribute('aria-expanded', String(!f.hidden)); });
+</script>
+</body>
+</html>

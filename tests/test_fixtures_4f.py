@@ -43,6 +43,24 @@ EXPECTED: dict[str, dict] = {
         "signals": {"S3"},
     },
     "f07-one-link": {"outcome": "DNA", "rows": []},
+    # 1.14.0 (#136 step 33c): Tab going down one footer column and up to the
+    # top of the next is no signal (round 3's Drupal footers). The near
+    # miss: a jump up into a column that starts higher than the one left.
+    "f30-footer-link-columns": {"outcome": "PASS", "rows": ["M4"]},
+    "f31-footer-column-starts-higher": {
+        "outcome": "PASS",
+        "choice": "preserves",
+        "signals": {"S3"},
+    },
+    # A menu button whose menu the arrow keys enter and Tab leaves is no
+    # signal (SDE's "All"); a disclosure with no popup, whose links Tab skips,
+    # still is.
+    "f32-menu-button-arrow-keys": {"outcome": "PASS", "rows": ["M4", "M4"]},
+    "f33-disclosure-tab-skips-content": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S6"},
+    },
     # Fix 12 (4.F 1.7.0): a different order from the one drawn is not
     # "does not preserve" by itself. Cards reached right to left, a card's
     # buttons reached in the other order than drawn: meaning and operation
