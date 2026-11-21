@@ -1,14 +1,15 @@
 # Section 508 TOBI — Tester-Oriented Browser Inspector
 
-TOBI (`tobi508` in code) is an MCP server that runs the DHS Trusted Tester 5.1.3 process for Section 508 on a web page, in a real Chrome browser, and reports what it finds by Trusted Tester test ID. It is named after ANDI, SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
+TOBI (`tobi508` in code) is an MCP server that runs the [DHS Trusted Tester](https://www.section508.gov/test/trusted-tester/) v5.1.3 process for Section 508 (WCAG 2.0 A and AA) on a web page in a real Chrome browser, and reports what it finds by Trusted Tester test ID. It is named after [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html), SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
 
+> [!WARNING]
 > **Not a certified Trusted Tester result.** TOBI produces agent-assisted findings only. They must not be reported, cited or relied on as a DHS Trusted Tester result. A certified Trusted Tester must perform any test that counts for Section 508 conformance.
 
-**Why it exists.** Automated scanners read a page's code; they never press a key. They miss the failures you only find by using the page: a keyboard trap, focus you can't see, a label that vanishes when you type, no way to skip the header. The Trusted Tester process finds them, step by step, and there are too few certified testers to run it on every page. TOBI does the repetitive tabbing, typing and comparing, decides what the procedure decides mechanically, and leaves the cases that need a person to a person.
+**Why TOBI exists:** Since automated accessibility scanners like [pa11y](https://github.com/pa11y/pa11y) and [axe-core](https://github.com/dequelabs/axe-core) can only read a page's code, they can't find failures that require actually using the page: keyboard traps, lack of visible focus, labels that disappear when you type, no way to skip the header, etc. By loading the page in a browser, TOBI can do the repetitive tabbing, typing and visual comparisons, then apply the Trusted Tester procedures and pass/fail criteria through deterministic Python scripts as well as focused LLM judgment calls, while leaving any unclear cases for a human to judge.
 
-**What you get** for each of the 22 Trusted Tester tests it performs: PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW, a plain-language explanation with evidence, and a pre-SCRT file with the same rows as DHS's SCRT report, marked as not certified, saying where each result came from. Open it in the [viewer](demo/prescrt-viewer/viewer.html), which reads the file in your own browser and sends nothing anywhere ([how to use it](demo/prescrt-viewer/README.md)).
+**What TOBI provides** for each of the 22 Trusted Tester tests it performs: PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW, a plain-language explanation with evidence, and a pre-SCRT file with the same rows as DHS's standard [SCRT report](https://section508coordinators.github.io/SCRT/), marked as not certified and explaining where each result came from. The pre-SCRT reports can be opened in TOBI's HTML [viewer](demo/prescrt-viewer/viewer.html), filtered, and compared with other pre-SCRT or SCRT reports ([how to use it](demo/prescrt-viewer/README.md)).
 
-## How it works
+## How TOBI works
 
 ![How TOBI tests a page. Solid lines are built; dashed are planned. A developer's AI agent asks the TOBI MCP server to test a page. The server records the page once in real Chrome and runs every check on the recording; walks it with the keyboard, fills in forms, watches for motion and compares pages; and its rules, one spec per Trusted Tester test citing the DHS PDF, decide PASS, FAIL, DOES NOT APPLY or NEEDS REVIEW. A PASS or DOES NOT APPLY is held back to NEEDS REVIEW when a test did not read everything. When a rule needs a judgment it asks an open question, which the server judge, a pinned model given evidence, pictures and a rubric, answers yes, no or unsure; unsure goes to a person (planned: a signed-in review page). Results go into a draft pre-SCRT report and back to the agent, which explains them.](docs/diagrams/tobi-flow.png)
 
@@ -43,11 +44,11 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 - **Resources:** `run://{run_id}/...` (a run's files, kept 24 hours) and `tt://5.1.3/...` (the TT text).
 - **Prompt:** `explain` (a test or a result in plain language; the same material as `tobi_explain`, as a command for the user).
 
-## TT tests in scope
+## Tests in scope
 
-TT 5.1.3 has 61 active tests. TOBI performs 22 of them, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
+Trusted Tester (TT) v5.1.3 covers 61 active tests covering 38 WCAG 2.0 Level A and AA Success Criteria plus 3 additional Section 508 requirements. TOBI can currently perform 22 of these 61 tests, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
 
-Status describes 29 evaluation pages on three NASA sites, scored against a Trusted Tester's blind SCRT files. It says nothing about any other page.
+Status is based on the latest results from 29 real webpages across three NASA sites, scored against a certified Trusted Tester's blind SCRT files (not a large sample size yet!):
 - ✅ **green:** agrees with the tester.
 - ⚠️ **yellow:** often fails pages the tester passes, or leaves most cells for a person.
 - ❌ **red:** passed a page the tester failed, or was wrong more often than right.
