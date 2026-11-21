@@ -297,10 +297,15 @@ async def test_two_reads_that_differ_leave_the_page_out(monkeypatch):
         ]
         return PageRead(n=7, url="https://a.gov/app/home", units=units, drew_late=True)
 
-    first = read("hub", "home", "forum", "search", "user menu")
+    header = ["hub", "home", "forum", "search", "user menu", "privacy"]
+    tags = [f"tag {i}" for i in range(14)]
+    first = read(*header, *tags)  # 20 texts
     for second, left_out in (
-        (read("hub", "home", "forum"), True),
-        (read("hub", "home", "forum", "search", "user menu"), False),
+        # Part of the header missing (round 3's gate): 15 of 20 shared.
+        (read("hub", "home", "forum", *tags[:12]), True),
+        # The same texts, or two tags more (round 3's forum): 20 of 22.
+        (read(*header, *tags), False),
+        (read(*header, *tags, "tag 14", "tag 15"), False),
     ):
 
         async def again(*_a, second=second, **_k):
@@ -313,3 +318,5 @@ async def test_two_reads_that_differ_leave_the_page_out(monkeypatch):
         if left_out:
             assert "two reads of it differed" in got.error
             assert site.left_out_reason(got).startswith("could not be read")
+        else:  # the fuller read
+            assert len(got.units) == max(len(first.units), len(second.units))

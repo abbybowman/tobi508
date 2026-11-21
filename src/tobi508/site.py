@@ -457,13 +457,18 @@ async def _read_again(p: Any, first: PageRead) -> PageRead:
     only when both show the same texts. Round 3's gate: one read of the
     community home page lacked part of its header, so 9.A found almost
     nothing repeated on the forum and said DOES NOT APPLY where the key
-    fails. When the two differ, the page could not be read in full: it is
-    left out (step 26), and never cached."""
+    fails. When the two differ by more than a little, the page could not be
+    read in full: it is left out (step 26), and never cached."""
     second = await read_page(p.n, p.final_url, p.new_page)
     if second.error:
         return second
-    if _texts(first) == _texts(second):
-        return first
+    # They agree when at least NEAR_COPY of their texts are shared (the
+    # measure K-01 calibrated: the same page 1.00, a different page at most
+    # 0.44); the fuller read is used. Round 3's forum: a tag cloud that shows
+    # two tags more on one load, 0.95, agrees; the gate's incomplete read of
+    # the community home page (part of its header missing) did not.
+    if text_share(first, second) >= NEAR_COPY:
+        return max(first, second, key=lambda r: len(_texts(r)))
     return first.model_copy(
         update={
             "error": "two reads of it differed; it draws itself after loading",

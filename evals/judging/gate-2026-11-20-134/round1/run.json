@@ -17,6 +17,5 @@
   "https://www.nasa.gov/gallery/ksc-history/"
  ],
  "dry": false,
- "started": "2026-11-20T22:00:50.529044+00:00",
- "note": "The job's time limit stopped the first launch after p01 and p02 (2026-11-20 21:04 to 21:16 UTC); p03 to p09 ran in a second launch with --pages, same settings. Page list restored to all 9 by hand."
+ "started": "2026-11-20T22:00:50.529044+00:00"
 }

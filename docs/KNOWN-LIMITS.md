@@ -292,7 +292,7 @@ re-testing): confirm and remove, or remove the mark.
   decides on the rest (step 26; Abby, 2026-11-20: one usable other page
   is enough). With fewer pages, less is seen to repeat: 9.A's DOES NOT
   APPLY rests on the pages that loaded. An other page that draws itself
-  after loading is read twice and left out when the reads differ (#134's
+  after loading is read twice and left out when the reads share less than 90% of their texts (#134's
   rerun: one read of round 3's community home page lacked part of its
   header, and 9.A said DOES NOT APPLY on the forum where the key fails).
   Two reads that agree but are both incomplete are not caught; 9.C's own
