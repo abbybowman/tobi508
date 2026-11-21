@@ -135,7 +135,7 @@ SCAN_FN = (
   const mine = stops.filter((s) => s[0] === key).map((s) => find(s[1])).filter(Boolean);
   const reached = (el) => mine.some((s) => deepContains(s, el) || deepContains(el, s));
   const hit = (el) => {
-    el.scrollIntoView({ block: 'center', inline: 'center' });
+    el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
     const r = el.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) return false;
     let x = r.x + r.width / 2, y = r.y + r.height / 2;
@@ -197,7 +197,7 @@ POINT_FN = (
     + """
   const el = find(css);
   if (!el) return null;
-  el.scrollIntoView({ block: 'center', inline: 'center' });
+  el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'instant' });
   const r = el.getBoundingClientRect();
   let x = r.x + r.width / 2, y = r.y + r.height / 2;
   for (let w = window; w.frameElement; w = w.parent) {

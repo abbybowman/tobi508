@@ -136,6 +136,15 @@ EXPECTED: dict[str, dict] = {
         "outcome": "PASS",
         "rows": ["M8", "M8", "M8"],
     },
+    # A page that scrolls smoothly (Bootstrap's scroll-behavior): the scan
+    # scrolled each target into view and read its place before the scroll
+    # ended, so a mouse-only control far down was "not hit" and never a
+    # candidate (round 2's home page: 182 targets read, 328 there).
+    "f35-smooth-scroll-click-only": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
     "f34-custom-control-enter-does-other": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8r"],
