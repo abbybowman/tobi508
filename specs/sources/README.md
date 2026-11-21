@@ -3,6 +3,7 @@
 | File | Source | SHA-256 |
 | --- | --- | --- |
 | `Trusted Tester Test Process v5.1.3.pdf` | [Section508Coordinators/TrustedTester5.1 @ 79616ab](https://github.com/Section508Coordinators/TrustedTester5.1/blob/79616ab447adf2649f7266491fb3aebc670fc41d/Documents/Trusted%20Tester%20Test%20Process%20v5.1.3.pdf) (DHS, April 2024) | `050f706f879a2b0bff2913732f56d71c906aad4eb30caaf837f22e4ae94985ee` |
+| `wcag20-anchors.json` | Each success criterion's anchor in [WCAG 2.0](https://www.w3.org/TR/WCAG20/), read from the page's ids on 2026-11-21 (the page's hash is in the file); `catalog.wcag20_url()` links the README's table with it | `139d03ade3633e60019a565e5aee679f4d5be9f9d6ff67bda5c4d35ab0724c44` |
 
 The PDF is the authority for every rules spec in `specs/rules/`. Specs cite
 printed page numbers; the PDF file's page index is printed page + 3. To read a

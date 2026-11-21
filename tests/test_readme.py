@@ -72,19 +72,24 @@ def test_tests_in_scope_table_matches_the_registry():
     from tobi508.checks import REGISTRY
 
     text = (REPO_ROOT / "README.md").read_text("utf-8")
-    section = text.split("## TT tests in scope", 1)[1].split("\n## ", 1)[0]
-    rows = re.findall(r"^\| (\d+\.[A-Z]) \| (\S+) \|", section, re.M)
-    assert [i for i, _ in rows] == [t.value for t in TestId if t in REGISTRY]
-    assert all(catalog.tests()[i]["name"] == name for i, name in rows)
+    section = text.split("## Tests in scope", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(r"^\| (\d+\.[A-Z]) \| ([^|]+) \| ([^|]+) \|", section, re.M)
+    assert [i for i, _, _ in rows] == [t.value for t in TestId if t in REGISTRY]
+    for tid, name, scs in rows:
+        assert name == catalog.plain_name(tid), tid
+        # Each WCAG criterion links to WCAG 2.0, the version Section 508 adopts.
+        links = re.findall(r"\[([\d.]+)\]\(([^)]+)\)", scs)
+        assert links == [(sc, catalog.wcag20_url(sc)) for sc in catalog.wcag_ids(tid)]
+        assert all(u.startswith("https://www.w3.org/TR/WCAG20/#") for _, u in links)
 
 
 def test_tests_in_scope_table_shows_each_spec_version_and_links_it():
     from tobi508 import rules
 
     text = (REPO_ROOT / "README.md").read_text("utf-8")
-    section = text.split("## TT tests in scope", 1)[1].split("\n## ", 1)[0]
+    section = text.split("## Tests in scope", 1)[1].split("\n## ", 1)[0]
     rows = re.findall(
-        r"^\| (\d+\.[A-Z]) \|[^|]*\| \[([^\]]+)\]\(([^)]+)\) \|", section, re.M
+        r"^\| (\d+\.[A-Z]) \|[^|]*\|[^|]*\| \[([^\]]+)\]\(([^)]+)\) \|", section, re.M
     )
     specs = rules.load_specs(REPO_ROOT / "specs/rules")
     versions = rules.spec_versions(REPO_ROOT / "specs/rules")

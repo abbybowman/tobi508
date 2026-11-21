@@ -216,12 +216,19 @@ def readme_rows() -> list[str]:
     specs = rules.load_specs(REPO / "specs" / "rules")
     counts = compute()
     gaps = gap_tests()
-    rows = ["| ID | TT test name | Spec | Status |", "| --- | --- | --- | --- |"]
+    rows = [
+        "| ID | Test name | WCAG SC | Spec | Status |",
+        "| --- | --- | --- | --- | --- |",
+    ]
     for tid, by_site in counts.items():
         spec = specs[TestId(tid)]
         colour, words = status(total(by_site))
         rows.append(
-            f"| {tid} | {catalog.tests()[tid]['name']} | "
+            f"| {tid} | {catalog.plain_name(tid)} | "
+            + ", ".join(
+                f"[{sc}]({catalog.wcag20_url(sc)})" for sc in catalog.wcag_ids(tid)
+            )
+            + " | "
             f"[{spec.spec_version}](specs/rules/{spec.path.name}) | "
             f"{EMOJI[colour]} {words}{GAPS_NOTE if tid in gaps else ''} |"
         )
