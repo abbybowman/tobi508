@@ -20,6 +20,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 JUD = HERE.parent
+SITE = ("9.A", "9.B", "9.C", "19.A")
 TESTS = "4.A,4.B,4.C,4.E,4.F,5.A,5.B,5.C,5.D,5.F,9.A,9.B,9.C,19.A".split(",")
 
 
@@ -57,6 +58,15 @@ def main() -> None:
         )
         old = {(r["page"], r["test"]): r for r in sides["sides"]["real"]}
         new_rows = g17._rows(new_dir)
+        # Round 3's site tests ran again with the double read (9.A 1.9.0 and
+        # the others), into round3-site/: those cells come from there.
+        site_dir = HERE / "round3-site" / "r1" / "results"
+        if rnd == 3 and site_dir.is_dir():
+            site_rows = g17._rows(site_dir)
+            for r in g17.g16.side(g17._dirs(site_dir), g17.KEYS[3]):
+                k = (r["page"], r["test"])
+                if k[1] in SITE:
+                    new[k], new_rows[k] = r, site_rows.get(k, [])
         notes = g17._comments(g17.KEYS[rnd])
         moved = []
         for k, n in sorted(new.items()):
@@ -93,7 +103,8 @@ def main() -> None:
             md += ["No cell moved.", ""]
             continue
         md += [
-            "| Page | Test | Key | Key's comment | 9c (verdict, rows) | Now (verdict, rows) |",
+            "| Page | Test | Key | Key's comment "
+            "| 9c (verdict, rows) | Now (verdict, rows) |",
             "| --- | --- | --- | --- | --- | --- |",
         ]
         for m in moved:
