@@ -443,11 +443,17 @@ async def _reveal(
         s = await ctx.replay(keys[:-1])
         try:
             here, _ = await s.traversal.reader.read()
+            # Recorded as 4.A's own press is (media, pop-ups, changed
+            # region; 4.A 1.16.0 compares it with the click), when 4.A runs.
+            for_4a = "4.A" in ctx.selected
             effect = await observe(
                 s,
                 ctx.quiet_ms,
                 lambda: s.page.keyboard.press("Enter"),
                 trig.path_key,
+                media=for_4a,
+                popups=for_4a,
+                region=for_4a,
             )
             if here.path_key == trig.path_key and not effect.unreliable:
                 ctx.cache.setdefault("enter", {})[trig.path_key] = effect

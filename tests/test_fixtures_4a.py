@@ -73,14 +73,17 @@ EXPECTED: dict[str, dict] = {
     "f09-title-repeats-label": {"outcome": "PASS", "rows": ["M11"]},
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
-    "f12-roving-tabs": {"outcome": "PASS", "rows": []},
+    # 1.16.0: the selected tab has its own keydown (arrows), so it is
+    # executed; Enter selects it as the click does (M8).
+    "f12-roving-tabs": {"outcome": "PASS", "rows": ["M8"]},
     # Row WK (1.11.0, step 6d): a script skips link 2 in both directions, so
     # no pass stops on it: 3 of the page's 4 elements reached, NEEDS REVIEW.
     # f30 is the same page without the script: 4 of 4, PASS.
     "f29-link-skipped-by-script-both-ways": {
         "outcome": "NEEDS_REVIEW",
         "choice": "unsure",
-        "rows": ["M7"],
+        # 1.16.0: the two links with the script's keydown are executed (M8).
+        "rows": ["M7", "M8", "M8"],
         "page_rows": ["WK"],
         "walk": (3, 4),
     },
@@ -122,6 +125,21 @@ EXPECTED: dict[str, dict] = {
     "f26-native-button-mousedown-only": {"outcome": "FAIL", "rows": ["M10"]},
     "f27-native-button-mousedown-and-click": {"outcome": "PASS", "rows": []},
     "f28-link-with-mousedown-tracking": {"outcome": "PASS", "rows": []},
+    # 1.16.0 (#136 step 28; round 3 MySearchStory, key Fail): a carousel's
+    # keydown takes Enter and Space from the native buttons inside it. Their
+    # clicks open a window and go to another address; the keys only advance
+    # the carousel: M10g. f33: a toolbar that listens only for arrows, whose
+    # buttons and link work by keyboard (M8). f34: a custom control whose
+    # Enter does something other than its click (M8r).
+    "f32-carousel-takes-button-enter": {"outcome": "FAIL", "rows": ["M10g", "M10g"]},
+    "f33-toolbar-arrows-buttons-work": {
+        "outcome": "PASS",
+        "rows": ["M8", "M8", "M8"],
+    },
+    "f34-custom-control-enter-does-other": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M8r"],
+    },
 }
 
 ACT = {
@@ -212,7 +230,9 @@ def _x(**kw) -> t4a.Inst4A:
     )
 
 
-EFF = Effect(kinds=["dom"], mutations=1)
+EFF = Effect(kinds=["dom"], mutations=1, region="#r")
+ELSEWHERE = Effect(kinds=["dom"], mutations=1, region="#other")
+NAV = Effect(kinds=["navigation"], url="https://example.gov/b")
 NONE = Effect()
 NOISY = Effect(kinds=["dom"], mutations=2, noise=3)
 
@@ -227,7 +247,42 @@ NOISY = Effect(kinds=["dom"], mutations=2, noise=3)
         # The named alternative must be a stop; otherwise it is unsure.
         (_k(j={"choice": "alternative", "element": 9}), "NEEDS_REVIEW", "M7"),
         (_k(j={"choice": "alternative", "element": 2}), "PASS", "M5"),
-        (_x(enter=NONE, space=EFF), "PASS", "M8"),
+        # 1.16.0: an alternative whose reasons hedge is unsure (round 3 p10).
+        (
+            _k(
+                j={
+                    "choice": "alternative",
+                    "element": 2,
+                    "reasons": "It goes to nasa.gov, so it is not the same. "
+                    "Not certain.",
+                }
+            ),
+            "NEEDS_REVIEW",
+            "M7",
+        ),
+        (
+            _k(j={"choice": "alternative", "element": 2, "reasons": "Unclear."}),
+            "NEEDS_REVIEW",
+            "M7",
+        ),
+        (
+            _k(
+                j={
+                    "choice": "alternative",
+                    "element": 2,
+                    "reasons": "A second print button.",
+                }
+            ),
+            "PASS",
+            "M5",
+        ),
+        (_x(enter=NONE, space=EFF, click=EFF), "PASS", "M8"),
+        # 1.16.0: a key must do what the click does.
+        (_x(enter=EFF, click=ELSEWHERE), "NEEDS_REVIEW", "M8r"),
+        (_x(enter=EFF, click=NONE), "NEEDS_REVIEW", "M8r"),
+        (_x(enter=EFF, space=EFF, click=NAV), "FAIL", "M10g"),
+        (_x(enter=NAV, click=NAV), "PASS", "M8"),
+        (_x(enter=NONE, space=NONE, click=EFF), "FAIL", "M10"),
         (_x(enter=NONE, space=NONE, click=NONE), "PASS", "M9"),
         (
             t4a.Inst4A(

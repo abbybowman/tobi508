@@ -168,7 +168,11 @@ INIT_JS = """(() => {
     for (const sel of log.ignore) { try { if (el.closest(sel)) return true; } catch (e) {} }
     return false;
   };
+  // 4.A's execute check (spec 4.A Terms, changed region): while `tk` is an
+  // array, the elements an action changed are kept, up to 500.
+  log.tk = null;
   const count = (r) => {
+    if (log.tk) for (const x of r) { if (log.tk.length >= 500) break; log.tk.push(x.target); }
     log.m += r.length; log.lastM = performance.now();
     let q = 0;
     for (const x of r) if (!ignored(x.target)) q++;
@@ -270,6 +274,41 @@ _LOG_JS = """() => {
 }"""
 
 _EVENTS_JS = "(from) => (window.__a11yLog ? window.__a11yLog.f.slice(from) : [])"
+
+# Start keeping what changes (INIT_JS `tk`; 4.A's changed region, observe.observe), with the element that
+# has focus as the one acted on: the execute check replays Tab to the stop
+# before each action, so focus is on it for the click and the keys alike.
+TRACK_JS = """() => {
+  const l = window.__a11yLog; if (!l) return false;
+  let a = document.activeElement;
+  while (a && a.shadowRoot && a.shadowRoot.activeElement) a = a.shadowRoot.activeElement;
+  l.tk = []; l.tkOwn = a; return true;
+}"""
+
+# The changed region: the lowest element holding every changed element that
+# is not the one acted on or inside it; the one acted on when nothing else
+# changed. Crosses shadow roots to their hosts. Stops keeping.
+REGION_JS = (
+    "() => {"
+    + PATH_JS
+    + """
+  const l = window.__a11yLog; if (!l || !l.tk) return null;
+  if (l.flush) l.flush(true);
+  const own = l.tkOwn, tk = l.tk; l.tk = null; l.tkOwn = null;
+  const up = (n) => n.parentNode && n.parentNode.nodeType === 11 ? n.parentNode.host : n.parentNode;
+  const inside = (e) => { for (let c = e; c; c = up(c)) if (c === own) return true; return false; };
+  const els = [];
+  for (const n of tk) {
+    const e = n.nodeType === 1 ? n : up(n);
+    if (e && e.nodeType === 1 && e.isConnected && !(own && inside(e)) && !els.includes(e)) els.push(e);
+  }
+  if (!els.length) return own && own.nodeType === 1 && own !== document.body ? path(own) : null;
+  const chain = (e) => { const a = []; for (let c = e; c && c.nodeType === 1; c = up(c)) a.push(c); return a; };
+  let lca = chain(els[0]);
+  for (const e of els.slice(1)) { const s = new Set(chain(e)); lca = lca.filter((c) => s.has(c)); }
+  return lca.length ? path(lca[0]) : null;
+}"""
+)
 
 # Element paths, shared by the walk and the scans (4.A) so their paths match.
 # Defines seg(n) and path(n); a shadow boundary is a lone space.

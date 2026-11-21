@@ -18,6 +18,7 @@ spec's job, so nothing here changes a Finding.
 
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from typing import Any
 
@@ -78,6 +79,43 @@ def has_image(value: Any) -> bool:
     if isinstance(value, list):
         return any(has_image(v) for v in value)
     return False
+
+
+# Words in an answer's reasons that say the answer is not sure (spec 4.A
+# Terms, hedged reasons, 1.16.0; round 3 MySearchStory: "alternative" with
+# "so it is not the same ... Not certain."). A spec that reads them names
+# them; this list is that text. Matched as whole words, ignoring case.
+HEDGES = (
+    "not certain",
+    "uncertain",
+    "not sure",
+    "unsure",
+    "unclear",
+    "not clear",
+    "not clearly",
+    "not settled",
+    "can't tell",
+    "cannot tell",
+    "can't confirm",
+    "cannot confirm",
+    "might",
+    "maybe",
+    "may be",
+    "perhaps",
+    "possibly",
+    "probably",
+    "likely",
+    "not the same",
+)
+_HEDGE_RE = re.compile(
+    r"\b(?:" + "|".join(re.escape(h) for h in HEDGES).replace("'", "['’]") + r")\b",
+    re.I,
+)
+
+
+def hedged(reasons: str | None) -> bool:
+    """Whether an answer's reasons say it is not sure (spec 4.A Terms)."""
+    return bool(reasons) and bool(_HEDGE_RE.search(reasons))
 
 
 def _unsure(answer: Answer) -> bool:

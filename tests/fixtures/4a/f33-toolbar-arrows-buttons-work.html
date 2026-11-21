@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head><title>Editor</title></head>
+<body>
+<h1>Editor</h1>
+<div role="toolbar" aria-label="Format" id="bar">
+  <button type="button" id="bold">Bold</button>
+  <button type="button" id="italic">Italic</button>
+  <a href="?view=list">List view</a>
+</div>
+<p id="status">Nothing applied yet.</p>
+<script>
+  const bar = document.getElementById('bar');
+  const items = [...bar.querySelectorAll('button, a')];
+  // Arrow keys move between the toolbar's items; Enter and Space are left alone.
+  bar.addEventListener('keydown', (e) => {
+    const i = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowRight') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  });
+  for (const b of bar.querySelectorAll('button'))
+    b.addEventListener('click', () => { document.getElementById('status').textContent = b.textContent + ' applied.'; });
+</script>
+</body>
+</html>

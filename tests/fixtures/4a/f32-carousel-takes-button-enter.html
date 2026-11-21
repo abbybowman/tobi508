@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head><title>Stories</title>
+<style>
+  .slide { display: none; padding: 1em; border: 1px solid #333; }
+  .slide.active { display: block; }
+</style></head>
+<body>
+<h1>Stories</h1>
+<div id="stories" class="carousel" tabindex="0">
+  <div class="slide active">
+    <p>River restoration</p>
+    <button type="button" id="submit">Submit your story</button>
+    <div id="find"><button type="button">Search</button></div>
+  </div>
+  <div class="slide"><p>Coastal wetlands</p></div>
+  <div class="slide"><p>Urban streams</p></div>
+</div>
+<p id="note">Use the arrow keys to move between stories.</p>
+<script>
+  const box = document.getElementById('stories');
+  const slides = [...box.querySelectorAll('.slide')];
+  let at = 0;
+  const next = () => { slides[at].classList.remove('active'); at = (at + 1) % slides.length; slides[at].classList.add('active'); };
+  // The carousel takes Enter and Space for itself, from anything inside it.
+  box.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); next(); }
+  });
+  document.getElementById('submit').addEventListener('click', () => window.open('f03-custom-button-with-keys.html', '_blank'));
+  // The click handler sits on the button's parent, as delegation does.
+  document.getElementById('find').addEventListener('click', () => { location.href = 'f03-custom-button-with-keys.html?q=rivers'; });
+</script>
+</body>
+</html>
