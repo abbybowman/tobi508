@@ -171,25 +171,6 @@
      "judge_decided": false
     },
     {
-     "page": "p08",
-     "test": "9.A",
-     "key": "Fail",
-     "comment": "No skip link to bypass header",
-     "old": null,
-     "old_verdict": "needs_review",
-     "old_rows": [
-      "A2",
-      "G1"
-     ],
-     "new": "Does Not Apply",
-     "new_verdict": "missed_fail",
-     "new_rows": [
-      "A4",
-      "G1"
-     ],
-     "judge_decided": false
-    },
-    {
      "page": "p09",
      "test": "5.B",
      "key": "Pass",

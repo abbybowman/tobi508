@@ -15,7 +15,6 @@ Loaded live: none (every page from the freeze)
 | p07 | 19.A | Pass | Navigation and content links on other pages (e.g. https://science.data.nasa.gov/) | None (needs_review; A2 G1) | Pass (agree; A5 W1 G2) |
 | p07 | 4.B | Pass |  | None (needs_review; A3 G4 GU) | Pass (agree; A3 p:M1 G4) |
 | p08 | 4.B | Pass |  | None (needs_review; A3 G4 GU) | Pass (agree; A3 p:M1 G4) |
-| p08 | 9.A | Fail | No skip link to bypass header | None (needs_review; A2 G1) | Does Not Apply (missed_fail; A4 G1) |
 | p09 | 5.B | Pass | The "All" category dropdown is an edge case (weird non-common icon, not "All Categories") but landed on the side of pass as there's only one | None (needs_review; A4 G3) | Pass (agree; A4 f1.1:M1 f1.2:M1 G4) |
 | p09 | 5.C | Pass |  | None (needs_review; A3 G3) | Pass (agree; A3 c1:M5 c2:M5 c3:M5 c4:M5 c5:M6 c6:M5 c7:M5) |
 | p10 | 5.C | Pass |  | None (needs_review; A3 G3) | Pass (agree; A3 c1:M5 c2:M5 c3:M5 c4:M5 c5:M5 G4) |
