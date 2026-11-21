@@ -122,6 +122,10 @@ UNITS_FN = (
     return el.matches('a[href], button, input:not([type="hidden"]), select, textarea, summary') ||
       (ti !== null && ti.trim() !== '' && parseInt(ti, 10) >= 0);
   };
+  // A list marked as a breadcrumb trail (19.A 1.18.0): by its class, id or
+  // accessible name. A region so named is read from its key in Python.
+  const CRUMB_LIST = ['class', 'id', 'aria-label'].flatMap((a) =>
+    ['ol', 'ul'].map((t) => t + '[' + a + '*="breadcrumb" i]')).join(', ');
   // The group a link sits in (19.A 1.14.0): its nearest ancestor, at most 4
   // levels up, that holds 3 or more links; an id per ancestor, '' when none.
   const groupIds = new Map();
@@ -179,6 +183,7 @@ UNITS_FN = (
           dest: t === 'A' && raw !== null ? destHref(el) : '',
           rel: t === 'A' ? norm(el.getAttribute('rel')) : '',
           group: t === 'A' ? groupOf(el) : '',
+          crumb: t === 'A' && !!el.closest(CRUMB_LIST),
           submit: !!el.form && (el.type || '').toLowerCase() === 'submit', stop: tabbable(el),
           id: el.id || '' }, chain);
         return;
@@ -258,6 +263,9 @@ class Unit(BaseModel):
     # The group a link sits in: its nearest ancestor (4 levels at most) with
     # 3 or more links, an id on its page; "" when none.
     group: str = ""
+    # Inside a list whose class, id or accessible name says "breadcrumb"
+    # (19.A 1.18.0).
+    crumb: bool = False
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
     id: str = ""

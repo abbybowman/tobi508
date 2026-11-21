@@ -76,7 +76,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | 4.D and 5.D on what opens ([#135](https://github.com/abbybowman/tobi508/issues/135)) | 27, then 15 | A faint mark on a large element is not a focus indicator (27, first), then 4.D and 5.D read what menus and sections open ([15](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L278-L290)); the plain-button form (H-08). Step 15's 4.A and 4.F parts are in no issue yet |
 | 4.A and 4.F ([#136](https://github.com/abbybowman/tobi508/issues/136)) | 28, 33, 32 | A hedged judge answer is "unsure" (28); 4.F's rubric, footer columns and dropdowns (33); 4.A's undecided signals (32, approval) |
 | Forms ([#137](https://github.com/abbybowman/tobi508/issues/137)) | 35b-d, 37, 29 (rest), 30 | The one-cell 5.B, 5.C and 5.D items (35b-d); a frame's fields pictured in place (37); the search box in a panel (29, approval); forms with nothing to get wrong (30, approval); 5.D's wording after a retry |
-| Site tests ([#138](https://github.com/abbybowman/tobi508/issues/138)) | 34, 19b | CILab's 19.A; row W4 and the failed analytics script (approval); round 3's breadcrumbs and results-page questions (34, approval); reruns serving other pages from the freeze; 9.C pairs by function ([19b](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L316-L323)) |
+| Site tests ([#138](https://github.com/abbybowman/tobi508/issues/138)) | 34, 19b | CILab's 19.A (cause found: the icon rows differ by the Contact and Home/Information icons; drafts A and B with Abby); row W4 and the failed analytics script (cause found: a 403 to headless Chrome; held); breadcrumbs a way of their own (done, 19.A 1.18.0); a results page reached with other search terms (Abby: yes; draft E with Abby); 9.B's navigation inside `main` (in scope); reruns serving other pages from the freeze; 9.C pairs by function ([19b](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L316-L323)) |
 | The judge | 40 | For a question type that fails the gate, the judge's FAIL is shown as "likely fails, a person should confirm", never handed to the calling agent (a rule change; Abby's decision first) |
 | Unsure says what would settle it | 42 | Every "unsure" judge answer says what would settle it (a picture the question lacks, a clause of the rubric, a value the input does not give), so each one is a to-do for the evidence, not a dead end. Why: in the 2026-11-19 compare the judge was unsure 69 times where the calling agent answered, and its reasons were mostly missing pictures (5.A, 5.B, 5.C, 4.F) or the page's markup against the picture (4.E); `docs/solutions/server-judge.md`, "Why the judge is unsure more often". A new field in the answer, no change to any outcome rule; run the judge eval (`evals/`) after the change, and compare the unsure answers' new field against the missing pictures |
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
@@ -111,7 +111,9 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 - **Round 3's questions** (top of
   [the plan](plans/2026-11-16-after-round3.md)): does native browser
   validation fail TT 5.F; three key cells (MySearchStory; the search
-  page's 19.A; breadcrumbs as their own way in 19.A).
+  page's 19.A, answered 2026-11-21: one page whatever its search
+  terms; breadcrumbs as their own way in 19.A, answered and built in
+  19.A 1.18.0).
 - **The judge on types that fail the gate** (step 40). 4.B and 5.H
   meet both halves of the gate today; since 2026-11-18 the judge
   answers every type, so this decides how its FAILs on the others are

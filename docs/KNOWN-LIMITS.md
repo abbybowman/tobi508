@@ -310,9 +310,20 @@ re-testing): confirm and remove, or remove the mark.
   have closed menus the tool did not open, and a link to the page under
   another address whose content changes on every load, are NEEDS REVIEW
   too.
-- **Breadcrumbs** count as navigation links, the same kind as the
-  menus; Abby's round 3 keys count breadcrumbs on child pages as a way
-  of their own (a question for Abby, step 34, [#138](https://github.com/abbybowman/tobi508/issues/138)).
+- **Breadcrumbs** are a way of their own (19.A 1.18.0, Abby's keys):
+  a trail is found by its region's or list's name ("breadcrumb"), or its
+  list's class or id. A trail marked some other way (links with ">"
+  between them and no such name) counts as navigation or a content link,
+  so a page found only by the menus and such a trail stays one way.
+- **One failed script counts against the whole search** (row W4): any
+  script of the results page that did not load leaves the search "not
+  verified", even one that draws nothing. On science.data.nasa.gov the
+  analytics tag `script.crazyegg.com/…/2090.js` fails in every run:
+  its Cloudflare answers the `HeadlessChrome` user agent with a 403 HTML
+  page, which Chromium's ORB refuses (#138, 2026-11-21). A headed
+  Chrome is not refused. Kept on purpose for now: the site's search
+  finds none of round 3's p01 to p03, so counting only scripts that
+  could draw results would turn them into FAILs where the key passes.
 
 ## Not limits: kept here until they have a home
 

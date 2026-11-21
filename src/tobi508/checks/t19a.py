@@ -54,6 +54,7 @@ GROUP_MIN = 3
 GROUP_SHARE = 0.8
 PREV_NEXT = re.compile(r"^(previous|prev|next)(\s+page)?$", re.I)
 KIND_WORDS = {
+    "breadcrumbs": "a breadcrumb trail",
     "navigation": "the site navigation",
     "toc": "a table of contents",
     "site_map": "a site map",
@@ -62,6 +63,7 @@ KIND_WORDS = {
 }
 SITE_MAP = re.compile(r"\bsite\s?map\b|\bsitemap\b|\ba\s?[-–]\s?z\s+index\b", re.I)
 TOC = re.compile(r"contents|on this page", re.I)
+CRUMB = re.compile(r"breadcrumb", re.I)
 HOME = re.compile(r"^home(\s+page)?$", re.I)
 HINT = re.compile(
     r"step\s+\d+\s+of\s+\d+|review\s+your|\bconfirm|order summary|thank you for", re.I
@@ -266,6 +268,11 @@ def _kind(
     groups: dict[str, set[str]] | None = None,
     t_groups: list[list[str]] = (),
 ) -> str:
+    # A breadcrumb trail is a way of its own, before the menus (1.18.0; Abby,
+    # 2026-11-21): a region or list named so, or a list whose class or id is.
+    names = [k.split("|", 1)[-1] for k in u.regions]
+    if u.crumb or any(CRUMB.search(n) for n in names if n[:1] not in "#@"):
+        return "breadcrumbs"
     # The site's menus, header and footer come first: on a site map page they
     # are the shared template, not the site map's list (spec 1.1.0, Abby
     # 2026-11-02).

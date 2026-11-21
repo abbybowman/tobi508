@@ -154,6 +154,34 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G2"],
         {},
     ),
+    # 19.A 1.18.0 (Abby, 2026-11-21, #138 draft D): a breadcrumb trail is a
+    # way of its own, apart from the site's menus (her keys: round 3 p01,
+    # p02, p08, p09). The section is in the agency's menu; its first story's
+    # trail, a navigation region named "Breadcrumb", links back to it.
+    "breadcrumb-is-a-way-of-its-own": (
+        "crumb/",
+        ["crumb-hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # ... and a trail marked only by its list's class (`ol.breadcrumb`).
+    "breadcrumb-list-by-class": (
+        "crumb2/",
+        ["crumb-hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # Must not PASS: the child page's trail does not include the page (round
+    # 2's svs home, key Fail: "Page breadcrumbs don't include it").
+    "breadcrumb-without-the-page": (
+        "crumb3/",
+        ["crumb-hub"],
+        "FAIL",
+        ["W1", "G4"],
+        {},
+    ),
     # ... and up to the parent: the funding page links the grants page in
     # its content; the agency's menu links it too.
     "second-way-on-the-parent": (
