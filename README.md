@@ -65,7 +65,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 2.C | Auto updating | [2.2.2](https://www.w3.org/TR/WCAG20/#time-limits-pause) | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 2.D | Change notify auto | [4.1.2](https://www.w3.org/TR/WCAG20/#ensure-compat-rsv) | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
 | 3.A | Flashing | [2.3.1](https://www.w3.org/TR/WCAG20/#seizure-does-not-violate) | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.A | Keyboard access | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.16.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
+| 4.A | Keyboard access | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.17.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.B | No keystroke timing | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.C | No keyboard trap | [2.1.2](https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping) | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |

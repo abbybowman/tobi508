@@ -186,11 +186,15 @@ re-testing): confirm and remove, or remove the mark.
   the control at M8r (NEEDS REVIEW). The hedge check reads words, so an
   answer that is sure but uses one ("likely") goes to a person.
   Handlers delegated to an ancestor are not tied to the child they serve;
-  controls inside content that opens are not scanned (step 15). Every Drupal page of round 3 was NEEDS
-  REVIEW for a hidden share frame, a page-level wheel or touch listener
-  and `HOVER_MAX` (40) (step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)). Its caps (`HOVER_MAX`, `CLICK_MAX`) are not calibrated on real pages
-  (`EXECUTE_MAX` is, 1.16.0: 12, from the three rounds' pages). A page with embedded
-  players or frames is often NEEDS REVIEW.
+  controls inside content that opens are not scanned (step 15). Frames and
+  listeners with no visible area, and listeners on the whole page, are not
+  sent to a person (1.17.0, step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)): a mouse-only feature built only on a
+  `document` listener is not flagged. The hover scan reaches 160 stops
+  (`HOVER_MAX`, measured on the three rounds' pages; a longer page is NEEDS
+  REVIEW) and costs about 0.16 s a stop, more on a heavy page (round 2's
+  home page about 0.7 s). `CLICK_MAX` is not calibrated on real pages
+  (`EXECUTE_MAX` and `HOVER_MAX` are). A page whose frames show content
+  the tool cannot read is NEEDS REVIEW.
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
   walk short of its press limit on a slow machine (the grid's
@@ -223,9 +227,12 @@ re-testing): confirm and remove, or remove the mark.
   not confirmed before 4.E's 60 s ran out (17.5 and 22.3 s in the blind
   run; assumed, not measured: each confirmation is now a fresh load and
   draw wait to a late Tab, since the walk reaches all 76 and 91 elements).
-- **4.F:** a footer of link columns raises S3 on every page, and a
-  dropdown whose options take arrow keys raises S6; J1's order list can
-  leave out what the signals name. Step 33, [#136](https://github.com/abbybowman/tobi508/issues/136). (Round 2's p02, p03 and p07,
+- **4.F:** the next-column exception (1.14.0, step 33c, [#136](https://github.com/abbybowman/tobi508/issues/136)) reads boxes:
+  columns that overlap or a footer laid out with floats that wrap may
+  still raise S3. A menu that opens with Enter but moves by arrow keys
+  only once focus is on its first item (not from the button) still raises
+  S6. J1 sees the first 60 stops and the ones the signals name, not the
+  rest of a long page (1.13.0). (Round 2's p02, p03 and p07,
   unsure in one rerun and a false FAIL in the next, came from elements
   placed out of line while the page scrolled, a sidebar that scrolls by
   itself and a player's new id on each load: fixed in 4.F 1.11.0.) The judge is often

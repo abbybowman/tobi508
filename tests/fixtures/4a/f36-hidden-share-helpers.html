@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><title>Science news</title></head>
+<body>
+<h1>Science news</h1>
+<p><a href="/p/1.html">First story</a> <a href="/p/2.html">Second story</a></p>
+<div id="share" style="position: static;">
+  <div style="height: 1px; width: 1px; position: absolute; z-index: 100000; top: 0px; visibility: hidden;">
+    <iframe id="helper" title="Share utility frame" aria-hidden="true" style="display: none;"></iframe>
+  </div>
+</div>
+<script>
+// Another host than the page (localhost vs 127.0.0.1), at an address that
+// does not answer, as a share widget's helper missing from a recording.
+document.getElementById('helper').src = 'http://localhost:' + location.port + '/no-such-helper.html';
+const share = document.getElementById('share');
+share.addEventListener('click', () => {});
+share.addEventListener('touchstart', () => {}, { passive: true });
+</script>
+</body>
+</html>

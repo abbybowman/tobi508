@@ -1,7 +1,7 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.16.0
+spec_version: 1.17.0
 guards: unrecorded-code, reveal, reveal-content, drawn-past-wait
 count: canvases, draggable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -57,13 +57,13 @@ A page with zero stops and only pointer targets applies: everything on it is mou
 
 **Title check** (HtT 1.b, 2.a). Every stop with a non-empty title. Chrome does not show a title tooltip on keyboard focus (V2), so title text is never treated as revealed by focus. The title is *available elsewhere* (HtT 2.c) when, after collapsing whitespace and case, it equals the stop's accessible name or is contained in the page's visible text.
 
-**Undetectable signals.** Things the scans cannot judge: a visible `<canvas>` at least 50 × 50 px; an element with `draggable=true` or its own drag, mousemove, pointermove, touch or wheel listener; `<object>` or `<embed>`; a frame the tool cannot read. Each is NEEDS REVIEW (M16), never a reason to PASS: a page with none of them and no other instance can PASS mechanically (G4), with the list of what was looked for (Abby, 2026-10-31).
+**Undetectable signals.** Things the scans cannot judge: a visible `<canvas>` at least 50 × 50 px; an element with `draggable=true` or its own drag, mousemove, pointermove, touch or wheel listener; `<object>` or `<embed>`; a frame the tool cannot read. Each counts only when it has a visible area: shown, and at least 1 CSS px each way (1.17.0, issue #136 step 32; Abby approved 2026-11-21): a frame or element a mouse cannot touch has nothing for a mouse to use. A listener on `window`, `document`, `html` or `body` is never a signal: it is the page's own scrolling, analytics or gesture handling, not a control. Round 3: every Drupal page was NEEDS REVIEW for AddToAny's utility frame (`display: none`, 0 × 0, `aria-hidden`, from another site, not in the recording) and its `#addtoany` strip (1280 × 0 px, its own `click` and `touchstart` listeners). The risk taken: a mouse-only feature built only on a `document`-level listener is not flagged. Fixtures F36 (both hidden: no signal) and F37 (both shown: two signals). Each is NEEDS REVIEW (M16), never a reason to PASS: a page with none of them and no other instance can PASS mechanically (G4), with the list of what was looked for (Abby, 2026-10-31).
 
 **Constants** (they decide outcomes, so they live here; provisional until real pages calibrate them):
 
 | Constant | Value | Used by |
 | --- | --- | --- |
-| `HOVER_MAX` | 40 stops | Hover scan |
+| `HOVER_MAX` | 160 stops (1.17.0, step 32: was 40. Measured 2026-11-21 on the three rounds' frozen pages, pinned Chrome 153: round 3's Drupal pages have 47 to 112 stops and take 26 to 33 s with every stop hovered (about 13 s at 40); round 2's gallery 153 stops, 35.8 s; round 2's home page 145 stops, past 240 s, so 4.A's time budget is 300 s, `config.TEST_BUDGETS_DEFAULT`; round 1's pages about 70 to 90) | Hover scan |
 | `CLICK_MAX` | 10 candidates | Click check |
 | `EXECUTE_MAX` | 12 executed controls: custom, then pointer-only native, then native in a key-listening container (1.16.0: was 10, custom and pointer-only only; the most on the three rounds' pages, leaving out the two Data Governance pages, is 11) | Execute check |
 | `REVEAL_REPLAYS` | 10 hovered stops | Hover scan, keyboard reveal |

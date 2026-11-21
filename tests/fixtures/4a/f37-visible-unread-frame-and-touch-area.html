@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><title>Science news</title></head>
+<body>
+<h1>Science news</h1>
+<p><a href="/p/1.html">First story</a> <a href="/p/2.html">Second story</a></p>
+<iframe id="player" title="Video player" width="320" height="120"></iframe>
+<div id="swipe" style="width: 300px; height: 80px; background: #ddd;">Swipe through the photos</div>
+<script>
+// A frame from another host that does not answer, shown on the page; and an
+// area with its own touch listener. Neither can be checked automatically.
+document.getElementById('player').src = 'http://localhost:' + location.port + '/no-such-player.html';
+document.getElementById('swipe').addEventListener('touchstart', () => {}, { passive: true });
+</script>
+</body>
+</html>

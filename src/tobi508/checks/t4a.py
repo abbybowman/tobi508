@@ -41,7 +41,7 @@ from tobi508.traverse import (
 )
 from tobi508.walk import KeyboardWalk, drawn_late, walk_coverage
 
-HOVER_MAX = 40
+HOVER_MAX = 160  # 1.17.0: the most stops on the three rounds' pages is 153 (was 40)
 REVEAL_REPLAYS = 10
 CLICK_MAX = 10
 SCROLL_MAX = 8  # scroll checks (fix 24); each is one fresh load and one click
@@ -164,7 +164,12 @@ SCAN_FN = (
     if (!vis(el)) continue;
     if (full) {
       const r = el.getBoundingClientRect();
-      if (el.tagName === 'CANVAS' && r.width >= 50 && r.height >= 50) signals.push({ kind: 'canvas', css: path(el) });
+      // 1.17.0 (step 32): only an element with a visible area is a signal;
+      // one a mouse cannot touch has nothing for a mouse to use (AddToAny's
+      // 0 px strip with a touch listener).
+      const area = r.width >= 1 && r.height >= 1;
+      if (!area) { /* no signal */ }
+      else if (el.tagName === 'CANVAS' && r.width >= 50 && r.height >= 50) signals.push({ kind: 'canvas', css: path(el) });
       else if (el.getAttribute('draggable') === 'true') signals.push({ kind: 'drag', css: path(el) });
       else if (el.tagName === 'OBJECT' || el.tagName === 'EMBED') signals.push({ kind: 'object', css: path(el) });
       else if (odd.has(el) && el !== document.body && el !== document.documentElement) signals.push({ kind: 'pointer', css: path(el) });
@@ -546,6 +551,39 @@ async def _scan(s: Session, stops: list[list[str]], full: bool, hit_all: bool):
     return len(frames), out
 
 
+_FRAME_PATH_JS = "(el) => {" + PATH_JS + " return path(el); }"
+
+
+async def _unread_visible_frames(s: Session, read: set[str]) -> int:
+    """Frames the pointer scan did not read that have a visible area (shown,
+    at least 1 CSS px each way; 4.A 1.17.0). A frame whose place cannot be
+    worked out counts as unread: the guard errs toward a person."""
+    chains: dict[Any, list[str]] = {s.page.main_frame: []}
+    n = 0
+    for f in s.page.frames:
+        if f is s.page.main_frame:
+            continue
+        try:
+            fe = await f.frame_element()
+            here = await fe.evaluate(_FRAME_PATH_JS)
+            parent = chains.get(f.parent_frame)
+            if parent is None:
+                n += 1
+                continue
+            chains[f] = [*parent, here]
+            if " >> ".join(chains[f]) in read:
+                continue
+            box = await fe.bounding_box()
+            if box is None or box["width"] < 1 or box["height"] < 1:
+                continue
+            if not await fe.is_visible():
+                continue
+            n += 1
+        except Exception:
+            n += 1
+    return n
+
+
 def _visible_unreached(results) -> set[str]:
     return {" >> ".join([*r["chain"], css]) for r in results for css in r["unreached"]}
 
@@ -619,7 +657,11 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
         if await _mark_listeners(s):
             keyed = await _keyed_natives(s, p1, _stop_list(p1))
         n_frames, results = await _scan(s, stops_arg, True, hit_all)
-        unread = len(s.page.frames) - n_frames
+        # 1.17.0 (step 32): a frame the tool could not read is a signal only
+        # when it has a visible area (AddToAny's hidden utility frame has none).
+        unread = await _unread_visible_frames(
+            s, {" >> ".join(r["chain"]) for r in results}
+        )
         if unread > 0:
             st.instances.append(
                 Inst4A(id="u0", kind="U", target={}, signal="frame", unreliable=False)

@@ -103,8 +103,9 @@ EXPECTED: dict[str, dict] = {
         "choice": {"J1": {"choice": "alternative", "element": 1}},
     },
     "f17-click-only-play-button": {"outcome": "FAIL", "rows": ["M10"]},
-    # E-01: 45 links, a mouse-only menu on the 45th. The hover scan stops at
-    # 40 stops, which is a cap reached: never PASS (spec G3).
+    # E-01: 175 links, a mouse-only menu on the 175th. The hover scan stops at
+    # HOVER_MAX (160 since 1.17.0; 40 and 45 links before), a cap reached:
+    # never PASS (spec G3).
     "f18-hover-menu-past-the-cap": {"outcome": "NEEDS_REVIEW", "rows": []},
     # E-02: a mouse-only <a href="#"> beside another <a href="#">. "#" goes
     # nowhere, so the two do not "go to the same place" (M3): J1 is asked.
@@ -144,6 +145,15 @@ EXPECTED: dict[str, dict] = {
         "outcome": "FAIL",
         "rows": ["M6"],
         "choice": NO_ALT,
+    },
+    # 1.17.0 (#136 step 32; round 3's Drupal pages, key Pass): a share
+    # widget's hidden helper frame and its 0 px strip with a touch listener
+    # have no visible area, so neither is something a mouse could use.
+    "f36-hidden-share-helpers": {"outcome": "PASS", "rows": []},
+    # The near miss: the same two, shown on the page, still go to a person.
+    "f37-visible-unread-frame-and-touch-area": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M16", "M16"],
     },
     "f34-custom-control-enter-does-other": {
         "outcome": "NEEDS_REVIEW",
