@@ -50,8 +50,10 @@ Round 1: no cell moved.
 rows. It now also fails on "Submit Your Story" and "SEARCH" (`x3`, `x4`:
 M10g): a click opens the story form and the search results, while the
 carousel takes their Enter and Space. Round 3 p09 (key Fail) stays NEEDS
-REVIEW, never PASS: the judge's other way to do "Search Stories" is hedged
-(`k2:M7`, step 28).
+REVIEW, never PASS: the judge answered "unsure" whether anything Tab
+reaches does what "Search Stories" does (`k2:M7`). The key's other 4.A
+row, the "All" dropdown's options, is inside opened content, which 4.A
+does not read yet (step 15).
 
 **Round 2 p03 (4.A, key Pass) is a new wrong FAIL.** 9c ran out of time
 before the hover scan reached the sort button; with step 32's budget it
