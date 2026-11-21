@@ -153,10 +153,29 @@ class State19A(BaseModel):
         return [x for x in KIND_WORDS if x in k]
 
 
+# Marks a target that matches whatever its query string (1.19.0): T is the
+# site search's own results page.
+ANY_QUERY = "?*"
+
+
+def _no_query(u: str) -> str:
+    return norm_href(u).split("?")[0].rstrip("/")
+
+
 def _to_t(href: str, t: str | tuple[str, ...]) -> bool:
     """A link to T: its final URL, or the URL the caller gave before redirects
-    (spec edge cases: links to the requested URL count too)."""
-    return any(_same(href, x) for x in ((t,) if isinstance(t, str) else t) if x)
+    (spec edge cases: links to the requested URL count too); for the site
+    search's results page, with any query (spec Terms, 1.19.0)."""
+    for x in (t,) if isinstance(t, str) else t:
+        if not x:
+            continue
+        if x.endswith(ANY_QUERY):
+            base = _no_query(x[: -len(ANY_QUERY)])
+            if base and _no_query(href) == base:
+                return True
+        elif _same(href, x):
+            return True
+    return False
 
 
 def _same(a: str, b: str) -> bool:
@@ -533,12 +552,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     both = (st.t_url, st.t_requested)
     maps = _site_map_pages(site.pages)
     st.t_groups = template_groups(main)
-    st.links = links_to(both, site.others, maps, st.t_groups)
     forms = [f for p in site.pages for f in p.forms]
     st.search_forms = len(forms) + sum(
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
     )
     st.search_target = search_target(forms, both)
+    st.links = links_to(both + _any_query(st), site.others, maps, st.t_groups)
     read = list(site.others)
     # How to load each page read again (its own recording): W9's menus.
     loaders = {p.n: p.new_page for p in ctx.pages}
@@ -689,10 +708,18 @@ async def _open_menus(
                     pass
 
 
+def _any_query(st: State19A) -> tuple[str, ...]:
+    """T with any query, when T is the site search's own results page (spec
+    Terms, 1.19.0; Abby, 2026-11-21)."""
+    return (st.t_url + ANY_QUERY,) if st.search_target else ()
+
+
 def _targets(st: State19A) -> tuple[str, ...]:
     """T, the address the caller gave and every verified alias (W6)."""
-    return (st.t_url, st.t_requested) + tuple(
-        a.url for a in st.aliases if a.status == "same"
+    return (
+        (st.t_url, st.t_requested)
+        + tuple(a.url for a in st.aliases if a.status == "same")
+        + _any_query(st)
     )
 
 

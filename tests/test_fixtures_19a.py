@@ -581,3 +581,42 @@ def test_g5_names_what_was_found_and_checked():
         "We checked the 1 other page you gave, the home page and the site "
         "search (1 search)" in f.summary
     )
+
+
+# 19.A 1.19.0 (Abby, 2026-11-21, #138 draft E): the site search's own results
+# page is one page whatever its query; round 3 p04, key Pass by "navigation
+# and content links" (the home page's topic tags lead to other queries).
+# Cases: tested page (with its query), other page, outcome, rows.
+QUERY_CASES = {
+    # A search form submits to res.html (W5), and the topics page links it
+    # with other queries: links between pages, and the search.
+    "results-page-whatever-its-query": (
+        "res.html?q=test&sort=rel",
+        "res-home",
+        "PASS",
+        ["W1", "W5", "G2"],
+    ),
+    # Must not count: no search form submits to app.html, so app.html?id=2
+    # is another record (a web app whose parameters are other content).
+    "other-query-of-a-page-no-form-submits-to": (
+        "app.html?id=1",
+        "app-home",
+        "FAIL",
+        ["W1", "G4"],
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(QUERY_CASES))
+async def test_query_case(case, settings, server, drafts):  # noqa: F811
+    page, other, outcome, rows = QUERY_CASES[case]
+    got = await run_tests(
+        settings,
+        f"{server.base}/19a/{page}",
+        ["19.A"],
+        {"19.A": {}},
+        other_pages=[f"{server.base}/19a/{other}.html"],
+    )
+    f = got["19.A"]
+    assert f.outcome.value == outcome, (f.rows, f.summary, f.rationale)
+    assert [r for r in f.rows if r != "A5"] == rows, f.rows
