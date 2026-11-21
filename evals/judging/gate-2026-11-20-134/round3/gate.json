@@ -1,0 +1,1194 @@
+{
+ "full_gate": false,
+ "date": "2026-11-20-134",
+ "scored_at": "2026-11-20T19:58:00.617720+00:00",
+ "types_switched_on": [
+  "2.A",
+  "2.B",
+  "2.C",
+  "2.D",
+  "3.A",
+  "4.A",
+  "4.B",
+  "4.D",
+  "4.E",
+  "4.F",
+  "5.A",
+  "5.B",
+  "5.C",
+  "5.D",
+  "5.F",
+  "5.G",
+  "5.H",
+  "9.A",
+  "9.B",
+  "9.C",
+  "19.A"
+ ],
+ "repeat": 1,
+ "pages": [
+  "https://science.data.nasa.gov/",
+  "https://science.data.nasa.gov/blog",
+  "https://science.data.nasa.gov/contact",
+  "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel",
+  "https://science.data.nasa.gov/fits/verifier",
+  "https://science.data.nasa.gov/fits/sample-files",
+  "https://science.data.nasa.gov/data-governance-community/home",
+  "https://science.data.nasa.gov/data-governance-community/forum",
+  "https://science.data.nasa.gov/science-discovery-engine/search/sde/home",
+  "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory"
+ ],
+ "types": {
+  "4.A": {
+   "cells": 7,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 6,
+   "other": 0,
+   "decided": 1,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 1 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "4.B": {
+   "cells": 1,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0,
+   "decided": 1,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 1 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "4.E": {
+   "cells": 2,
+   "agree": 0,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 2,
+   "other": 0,
+   "decided": 0,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 0 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "4.F": {
+   "cells": 10,
+   "agree": 4,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 1,
+   "pass_vs_dna": 0,
+   "unsure": 5,
+   "other": 0,
+   "decided": 5,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 5 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "5.A": {
+   "cells": 6,
+   "agree": 2,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 4,
+   "other": 0,
+   "decided": 2,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 2 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "5.B": {
+   "cells": 5,
+   "agree": 4,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 1,
+   "other": 0,
+   "decided": 4,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 4 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "5.C": {
+   "cells": 4,
+   "agree": 3,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 1,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0,
+   "decided": 4,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 4 decided, 6 needed",
+    "wrong FAILs over 20% of the type's decided cells",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "5.D": {
+   "cells": 4,
+   "agree": 1,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 1,
+   "pass_vs_dna": 0,
+   "unsure": 2,
+   "other": 0,
+   "decided": 2,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 2 decided, 6 needed",
+    "wrong FAILs over 20% of the type's decided cells",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "5.F": {
+   "cells": 4,
+   "agree": 3,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 1,
+   "other": 0,
+   "decided": 3,
+   "passes": false,
+   "why_not": [
+    "too few cells to judge: 3 decided, 6 needed",
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  },
+  "9.C": {
+   "cells": 6,
+   "agree": 6,
+   "wrong_pass": 0,
+   "wrong_dna": 0,
+   "wrong_fail": 0,
+   "pass_vs_dna": 0,
+   "unsure": 0,
+   "other": 0,
+   "decided": 6,
+   "passes": false,
+   "why_not": [
+    "the test pages were not run",
+    "a trial: 10 of 10 pages, 1 of 3 repeats"
+   ]
+  }
+ },
+ "cells": [
+  {
+   "repeat": 1,
+   "page": "p01",
+   "test": "4.F",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "preserves",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p01",
+   "test": "5.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.A-c1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p01",
+   "test": "9.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "9.C-p1-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "9.C-p2-39-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "9.C-p3-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "9.C-p4-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "9.C-p5-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-t51-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.A-t59-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "4.F",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "5.A",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.A-c1-J1",
+     "choice": "graphic",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "5.B",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.B-f1-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.B-f2-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "5.D",
+   "verdict": "false_fail",
+   "key": "Pass",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "5.D-f2-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f2-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f3-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f4-J2",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f5-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f6-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f7-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f7-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f8-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f9-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f10-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f10-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f11-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p02",
+   "test": "9.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "9.C-p1-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p03",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-t24-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p03",
+   "test": "4.F",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "preserves",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p03",
+   "test": "5.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.A-c1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p03",
+   "test": "5.B",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.B-f1-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p03",
+   "test": "9.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "9.C-p1-39-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-t28-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.A-t29-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.A-t79-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "4.F",
+   "verdict": "false_fail",
+   "key": "Pass",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "does_not_preserve",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.F-r6-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "5.A",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.A-c1-J1",
+     "choice": "graphic",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.A-c2-J1",
+     "choice": "graphic",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "5.B",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.B-f1-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.B-f2-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.B-f3-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.B-f4-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "5.C",
+   "verdict": "agree",
+   "key": "Fail",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "5.C-c6-J1",
+     "choice": "complete",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.C-c7-J1",
+     "choice": "complete",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.C-c8-J1",
+     "choice": "complete",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.C-c9-J1",
+     "choice": "complete",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "5.D",
+   "verdict": "agree",
+   "key": "Fail",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "5.D-f3-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f4-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "5.F",
+   "verdict": "not_performed",
+   "key": "Does Not Apply",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.F-form3-J0",
+     "choice": "none",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p04",
+   "test": "9.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "9.C-p1-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-t38-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "4.F",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "preserves",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "5.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.A-c1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.A-c2-J1",
+     "choice": "labeled",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.A-c3-J1",
+     "choice": "labeled",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "5.B",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.B-f1-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "5.C",
+   "verdict": "agree",
+   "key": "Fail",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "5.C-c3-J1",
+     "choice": "complete",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p05",
+   "test": "9.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "9.C-p1-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p06",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-t80-J2",
+     "choice": "not_essential",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p06",
+   "test": "4.F",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p06",
+   "test": "5.A",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.A-c1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p06",
+   "test": "9.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "9.C-p1-40-J1",
+     "choice": "consistent",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p07",
+   "test": "4.E",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.E-e1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e2-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e3-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e4-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e5-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e6-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p07",
+   "test": "4.F",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p07",
+   "test": "5.C",
+   "verdict": "false_fail",
+   "key": "Pass",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "5.C-c39-J1",
+     "choice": "missing",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p07",
+   "test": "5.D",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.D-f1-J2",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f1-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p07",
+   "test": "5.F",
+   "verdict": "agree",
+   "key": "Does Not Apply",
+   "tool": "Does Not Apply",
+   "answers": [
+    {
+     "q": "5.F-a2-f1-J1",
+     "choice": "no_error",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p08",
+   "test": "4.E",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.E-e1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e2-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e3-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e4-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e5-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.E-e6-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p08",
+   "test": "4.F",
+   "verdict": "not_performed",
+   "key": "Fail",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p08",
+   "test": "5.D",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "5.D-f1-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f1-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f2-J2",
+     "choice": "content_only",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.D-f2-J1",
+     "choice": "not_told",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p08",
+   "test": "5.F",
+   "verdict": "agree",
+   "key": "Does Not Apply",
+   "tool": "Does Not Apply",
+   "answers": [
+    {
+     "q": "5.F-a2-f1-J1",
+     "choice": "no_error",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.F-a4-f2-J1",
+     "choice": "no_error",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p09",
+   "test": "4.A",
+   "verdict": "not_performed",
+   "key": "Fail",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.A-k2-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p09",
+   "test": "4.F",
+   "verdict": "not_performed",
+   "key": "Pass",
+   "tool": null,
+   "answers": [
+    {
+     "q": "4.F-r1-J1",
+     "choice": "unsure",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p09",
+   "test": "5.B",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.B-f1-J1",
+     "choice": "all_descriptive",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p09",
+   "test": "5.C",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "5.C-c5-J1",
+     "choice": "complete",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p09",
+   "test": "5.F",
+   "verdict": "agree",
+   "key": "Does Not Apply",
+   "tool": "Does Not Apply",
+   "answers": [
+    {
+     "q": "5.F-a1-f1-J1",
+     "choice": "no_error",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "5.F-a2-f1-J1",
+     "choice": "no_error",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p10",
+   "test": "4.A",
+   "verdict": "agree",
+   "key": "Fail",
+   "tool": "Fail",
+   "answers": [
+    {
+     "q": "4.A-k1-J1",
+     "choice": "alternative",
+     "by": "server:claude-sonnet-5-5"
+    },
+    {
+     "q": "4.A-k2-J1",
+     "choice": "no_alternative",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p10",
+   "test": "4.B",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "4.B-p-J1",
+     "choice": "no_timing",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  },
+  {
+   "repeat": 1,
+   "page": "p10",
+   "test": "4.F",
+   "verdict": "agree",
+   "key": "Pass",
+   "tool": "Pass",
+   "answers": [
+    {
+     "q": "4.F-o1-J1",
+     "choice": "preserves",
+     "by": "server:claude-sonnet-5-5"
+    }
+   ]
+  }
+ ],
+ "passing": [],
+ "judge_types_if_approved": "",
+ "note": "Written by the gate, to measure; the server answers every type by default (JUDGE_TYPES=all, Abby 2026-11-18)."
+}

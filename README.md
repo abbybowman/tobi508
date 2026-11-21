@@ -75,10 +75,10 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 5.F | 3.3.1-error-identification | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
 | 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
 | 5.H | 3.3.4-error-prevention | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 9.A | 2.4.1-bypass-function | [1.8.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
-| 9.B | 3.2.3-consistent-navigation | [1.8.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
-| 9.C | 3.2.4-consistent-identification | [1.11.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 19.A | 2.4.5-multiple-ways | [1.16.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
+| 9.A | 2.4.1-bypass-function | [1.9.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
+| 9.B | 3.2.3-consistent-navigation | [1.9.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
+| 9.C | 3.2.4-consistent-identification | [1.12.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 19.A | 2.4.5-multiple-ways | [1.17.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
 
 <!-- status-table:end -->
 

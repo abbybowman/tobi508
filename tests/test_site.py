@@ -255,3 +255,68 @@ def test_a_long_list_pairs_in_order(monkeypatch):
     assert _pairs("HabH", "aHHbH") == pair_in_order(
         list(zip("HabH", range(4))), list(zip("aHHbH", range(5)))
     )
+
+
+async def test_an_other_page_drawn_late_is_read_twice(settings, server):
+    """The double read (#134; Abby, 2026-11-20): an other page that draws
+    itself after load is read twice. Drawn the same way each time, it is
+    compared; drawn differently, it could not be read in full and is left
+    out, so the test never decides on a read that may be incomplete (round
+    3's gate: 9.A DOES NOT APPLY on the forum where the key fails). Two
+    reads that differ: test_two_reads_that_differ_leave_the_page_out."""
+    from tobi508 import pagecache
+    from tobi508.models import TestId
+    from tobi508.pipeline import run_tt_tests
+
+    pagecache.clear()
+    base = f"{server.base}/9x/app"
+    out = await run_tt_tests(
+        settings,
+        f"{base}/forum.html",
+        [TestId.T9A],
+        other_pages=[f"{base}/late-home.html"],
+    )
+    [f] = out.report.findings
+    assert f.rows[0] != "A2", (f.rows, f.summary)
+    assert "compared this page with 1 of the 1 other page given" in f.summary
+
+
+async def test_two_reads_that_differ_leave_the_page_out(monkeypatch):
+    """The double read's other side, without a browser: the second read of a
+    page drawn late shows another header, so the page could not be read in
+    full; one that shows the same texts is used."""
+    from types import SimpleNamespace
+
+    from tobi508 import site
+    from tobi508.site import PageRead, Unit
+
+    def read(*texts):
+        units = [
+            Unit(i=i, kind="control", role="link", text=t, css=f"a:nth-of-type({i})")
+            for i, t in enumerate(texts)
+        ]
+        return PageRead(n=7, url="https://a.gov/app/home", units=units, drew_late=True)
+
+    header = ["hub", "home", "forum", "search", "user menu", "privacy"]
+    tags = [f"tag {i}" for i in range(14)]
+    first = read(*header, *tags)  # 20 texts
+    for second, left_out in (
+        # Part of the header missing (round 3's gate): 15 of 20 shared.
+        (read("hub", "home", "forum", *tags[:12]), True),
+        # The same texts, or two tags more (round 3's forum): 20 of 22.
+        (read(*header, *tags), False),
+        (read(*header, *tags, "tag 14", "tag 15"), False),
+    ):
+
+        async def again(*_a, second=second, **_k):
+            return second
+
+        monkeypatch.setattr(site, "read_page", again)
+        ref = SimpleNamespace(n=7, final_url="https://a.gov/app/home", new_page=None)
+        got = await site._read_again(ref, first)
+        assert bool(got.error) is left_out, got.error
+        if left_out:
+            assert "two reads of it differed" in got.error
+            assert site.left_out_reason(got).startswith("could not be read")
+        else:  # the fuller read
+            assert len(got.units) == max(len(first.units), len(second.units))

@@ -294,6 +294,9 @@ class PageRead(BaseModel):
     # Nearly the same page: the same address apart from the query string, and
     # at least NEAR_COPY of its text keys shared (K-01, spec A2).
     near_copy: bool = False
+    # The draw wait saw this page draw itself after load (step 23's DRAWN):
+    # an other page so drawn is read twice (#134, the double read).
+    drew_late: bool = False
 
 
 class SiteRead(BaseModel):
@@ -400,9 +403,11 @@ async def read_page(
                 await page.wait_for_load_state("networkidle", timeout=RESULTS_SETTLE_MS)
             except Exception:
                 pass
-        from tobi508.traverse import wait_drawn
+        from tobi508.traverse import DRAWN, wait_drawn
 
         await wait_drawn(page)  # step 23: an application draws after load
+        seen = DRAWN.get() or {}
+        drew_late = (seen.get(page.url.split("#", 1)[0]) or 0.0) > 0.0
         data = await page.evaluate(READ_JS, RESULTS_CAP if results else UNIT_CAP)
         try:
             count = await inventory.take(page, "site read")
@@ -419,6 +424,7 @@ async def read_page(
             forms=data.get("forms") or [],
             shadow_read=data.get("shadow_read") or {},
             hidden_nav=data.get("hidden_nav") or [],
+            drew_late=drew_late,
         )
     except Exception as exc:
         return PageRead(n=n, url=url, error=type(exc).__name__)
@@ -435,8 +441,40 @@ async def _cached_read(p: Any) -> PageRead:
     if hit is not None:
         return hit.model_copy(update={"n": p.n})
     got = await read_page(p.n, p.final_url, p.new_page)
+    if got.drew_late and not got.error:
+        got = await _read_again(p, got)
     pagecache.keep_read("site", getattr(p, "har_sha", None), got)
     return got
+
+
+def _texts(r: PageRead) -> set[str]:
+    return {u.text for u in r.units if u.text and u.kind != "frame"}
+
+
+async def _read_again(p: Any, first: PageRead) -> PageRead:
+    """The double read (#134; Abby, 2026-11-20). An other page that draws
+    itself after load is read on a second fresh load, and the read is used
+    only when both show the same texts. Round 3's gate: one read of the
+    community home page lacked part of its header, so 9.A found almost
+    nothing repeated on the forum and said DOES NOT APPLY where the key
+    fails. When the two differ by more than a little, the page could not be
+    read in full: it is left out (step 26), and never cached."""
+    second = await read_page(p.n, p.final_url, p.new_page)
+    if second.error:
+        return second
+    # They agree when at least NEAR_COPY of their texts are shared (the
+    # measure K-01 calibrated: the same page 1.00, a different page at most
+    # 0.44); the fuller read is used. Round 3's forum: a tag cloud that shows
+    # two tags more on one load, 0.95, agrees; the gate's incomplete read of
+    # the community home page (part of its header missing) did not.
+    if text_share(first, second) >= NEAR_COPY:
+        return max(first, second, key=lambda r: len(_texts(r)))
+    return first.model_copy(
+        update={
+            "error": "two reads of it differed; it draws itself after loading",
+            "units": [],
+        }
+    )
 
 
 NEAR_COPY = 0.9  # the share of text keys two pages share to be "nearly the same"

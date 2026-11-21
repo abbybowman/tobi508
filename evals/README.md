@@ -157,6 +157,21 @@ certified Trusted Tester results; a development site, one repeat.
 - **Not verified here:** repeats; 9.A-9.C beside the other tests in one
   full run (the cap changes no other test's read).
 
+## Gate 2026-11-20-134: #134's rerun on all three rounds' frozen pages
+
+`main` after #143 plus the double read; tests 4.A, 4.B, 4.C, 4.E, 4.F, 5.A
+to 5.D, 5.F, 9.A to 9.C and 19.A; the server judge on gate 9c's 21 types;
+Playwright's Chrome 153; every page from the freeze ("replay"); round 3 from
+a copy of its freeze with the code its community pages load when used.
+Against gate 9c: round 3, 11 moved (10 toward the key); round 2, 13 (3
+toward, 10 to NEEDS REVIEW, mostly 19.A by the replay mode); round 1, 6 (1
+toward, 5 to NEEDS REVIEW, 19.A by the mode and 4.F by the judge). **No PASS
+or DOES NOT APPLY where a key fails.** A false DOES NOT APPLY of 9.A on
+round 3's forum in the first run (an incomplete read of another page, kept
+for the session) led to the double read. Details and every cell:
+`judging/gate-2026-11-20-134/README.md` and `moved.md`. Agent-assisted
+results, not certified Trusted Tester results; development pages.
+
 ## Judge eval 2026-11-20: 5.B after step 35a (#134)
 
 5.B's question gets other items on a page with no `<form>` (5.B 1.14.0: a
