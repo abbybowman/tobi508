@@ -46,7 +46,9 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 
 ## Tests in scope
 
-Trusted Tester (TT) v5.1.3 covers 61 active tests covering 38 WCAG 2.0 Level A and AA Success Criteria plus 3 additional Section 508 requirements. TOBI can currently perform 22 of these 61 tests, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
+Trusted Tester (TT) v5.1.3 has 61 active tests. Together they check all 38 WCAG 2.0 Level A and AA success criteria, plus 3 Section 508 requirements that WCAG doesn't include. TOBI can currently perform 22 of these 61 tests, listed below with their rules spec and how each did on our evaluation pages. The other 39 come back NEEDS REVIEW, "This test could not be performed".
+
+The WCAG SC column links each test's WCAG 2.0 success criteria. A Trusted Tester test often checks only part of a criterion: 1.3.1 Info and Relationships, for example, is split across seven TT tests, and TOBI performs only the one about form labels (5.C). A PASS here is not a pass of the whole criterion.
 
 Status is based on the latest results from 29 real webpages across three NASA sites, scored against a certified Trusted Tester's blind SCRT files (not a large sample size yet!):
 - ✅ **green:** agrees with the tester.
@@ -56,30 +58,30 @@ Status is based on the latest results from 29 real webpages across three NASA si
 Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test marked "see known wrong outcomes below" has wrong results open on test pages built to probe it, even where it agrees with the tester on our evaluation pages.
 
 <!-- status-table:start -->
-| ID | TT test name | Spec | Status |
-| --- | --- | --- | --- |
-| 2.A | 1.4.2-audio-control | [1.2.0](specs/rules/2a-audio-control.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 2.B | 2.2.2-blinking-moving-scrolling | [1.5.0](specs/rules/2b-blinking-moving-scrolling.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 2.C | 2.2.2-auto-updating | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 2.D | 4.1.2-change-notify-auto | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
-| 3.A | 2.3.1-flashing | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.A | 2.1.1-keyboard-access | [1.15.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
-| 4.B | 2.1.1-no-keystroke-timing | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.C | 2.1.2-no-keyboard-trap | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.D | 2.4.7-focus-visible | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
-| 4.E | 3.2.1-on-focus | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.F | 2.4.3-focus-order-meaning | [1.12.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 5.A | 3.3.2-label-provided | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
-| 5.B | 2.4.6-label-descriptive | [1.14.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
-| 5.C | 1.3.1-programmatic-label | [1.16.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
-| 5.D | 3.2.2-on-input | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
-| 5.F | 3.3.1-error-identification | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
-| 5.G | 3.3.3-error-suggestion | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
-| 5.H | 3.3.4-error-prevention | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 9.A | 2.4.1-bypass-function | [1.9.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
-| 9.B | 3.2.3-consistent-navigation | [1.9.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
-| 9.C | 3.2.4-consistent-identification | [1.12.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 19.A | 2.4.5-multiple-ways | [1.17.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
+| ID | Test name | WCAG SC | Spec | Status |
+| --- | --- | --- | --- | --- |
+| 2.A | Audio control | [1.4.2](https://www.w3.org/TR/WCAG20/#visual-audio-contrast-dis-audio) | [1.2.0](specs/rules/2a-audio-control.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 2.B | Blinking moving scrolling | [2.2.2](https://www.w3.org/TR/WCAG20/#time-limits-pause) | [1.5.0](specs/rules/2b-blinking-moving-scrolling.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 2.C | Auto updating | [2.2.2](https://www.w3.org/TR/WCAG20/#time-limits-pause) | [1.2.0](specs/rules/2c-auto-updating.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 2.D | Change notify auto | [4.1.2](https://www.w3.org/TR/WCAG20/#ensure-compat-rsv) | [1.3.0](specs/rules/2d-change-notify-auto.md) | ✅ agrees with a tester |
+| 3.A | Flashing | [2.3.1](https://www.w3.org/TR/WCAG20/#seizure-does-not-violate) | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.A | Keyboard access | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.15.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
+| 4.B | No keystroke timing | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.C | No keyboard trap | [2.1.2](https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping) | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
+| 4.E | On focus | [3.2.1](https://www.w3.org/TR/WCAG20/#consistent-behavior-receive-focus) | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.F | Focus order meaning | [2.4.3](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-order) | [1.12.0](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 5.A | Label provided | [3.3.2](https://www.w3.org/TR/WCAG20/#minimize-error-cues) | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
+| 5.B | Label descriptive | [2.4.6](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-descriptive) | [1.14.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
+| 5.C | Programmatic label | [1.3.1](https://www.w3.org/TR/WCAG20/#content-structure-separation-programmatic), [4.1.2](https://www.w3.org/TR/WCAG20/#ensure-compat-rsv) | [1.16.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
+| 5.D | On input | [3.2.2](https://www.w3.org/TR/WCAG20/#consistent-behavior-unpredictable-change) | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
+| 5.F | Error identification | [3.3.1](https://www.w3.org/TR/WCAG20/#minimize-error-identified) | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
+| 5.G | Error suggestion | [3.3.3](https://www.w3.org/TR/WCAG20/#minimize-error-suggestions) | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
+| 5.H | Error prevention | [3.3.4](https://www.w3.org/TR/WCAG20/#minimize-error-reversible) | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 9.A | Bypass function | [2.4.1](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-skip) | [1.9.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
+| 9.B | Consistent navigation | [3.2.3](https://www.w3.org/TR/WCAG20/#consistent-behavior-consistent-locations) | [1.9.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
+| 9.C | Consistent identification | [3.2.4](https://www.w3.org/TR/WCAG20/#consistent-behavior-consistent-functionality) | [1.12.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 19.A | Multiple ways | [2.4.5](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-mult-loc) | [1.17.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
 
 <!-- status-table:end -->
 

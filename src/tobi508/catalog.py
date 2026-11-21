@@ -8,6 +8,7 @@ requirements, WCAG links) is read from here, never retyped in code.
 from __future__ import annotations
 
 import json
+import re
 from functools import cache
 from typing import Any
 
@@ -35,6 +36,29 @@ def active_ids() -> list[str]:
 def wcag_label(test_id: str) -> str:
     """'2.1.2 No Keyboard Trap; Con.5 Conformance Requirement 5. ...'."""
     return "; ".join(r["label"] for r in tests()[test_id]["requirements"])
+
+
+def plain_name(test_id: str) -> str:
+    """The PDF's test name in words: '2.1.2-no-keyboard-trap' -> 'No keyboard trap'."""
+    words = re.sub(r"^\d+\.\d+\.\d+-", "", tests()[test_id]["name"]).replace("-", " ")
+    return words[:1].upper() + words[1:]
+
+
+def wcag_ids(test_id: str) -> list[str]:
+    """The WCAG success criteria a test covers ('1.3.1', '4.1.2'); not Con.5."""
+    return [r["id"] for r in tests()[test_id]["requirements"] if r["kind"] == "wcag"]
+
+
+@cache
+def _wcag20_anchors() -> dict[str, str]:
+    path = REPO_ROOT / "specs" / "sources" / "wcag20-anchors.json"
+    return json.loads(path.read_text("utf-8"))["anchors"]
+
+
+def wcag20_url(sc: str) -> str:
+    """A success criterion in the WCAG 2.0 Recommendation, the version Section
+    508 adopts: '2.1.2' -> 'https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping'."""
+    return f"https://www.w3.org/TR/WCAG20/#{_wcag20_anchors()[sc]}"
 
 
 def understanding_urls(test_id: str) -> list[str]:
