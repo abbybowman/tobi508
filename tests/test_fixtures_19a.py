@@ -281,6 +281,18 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W4", "G3"],
         {},
     ),
+    # 19.A 1.21.0 (#138; round 3's community forum, key Pass by breadcrumbs
+    # on its posts): an application drawn by script after load opens its
+    # posts from cards that are not links, so the pages that lead back
+    # cannot be found from the markup: one way found is NEEDS REVIEW (W10),
+    # never FAIL. "one-way-nothing-else" (a page drawn at load) keeps FAIL.
+    "app-page-with-one-way-is-not-a-fail": (
+        "appf/",
+        ["appf-hub"],
+        "NEEDS_REVIEW",
+        ["W1", "W10", "G3"],
+        {},
+    ),
     # ... and up to the parent: the funding page links the grants page in
     # its content; the agency's menu links it too.
     "second-way-on-the-parent": (

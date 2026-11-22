@@ -360,6 +360,11 @@ re-testing): confirm and remove, or remove the mark.
   HTML page, which Chromium's ORB refuses (#138). A results page drawn
   by a script from another host that loads `async` and still shows some
   results is read as it stands.
+- **Applications** (19.A 1.21.0, row W10): when the tested page draws
+  itself by script after loading and fewer than two ways are found, 19.A
+  says NEEDS REVIEW, never FAIL: such sites often open their pages from
+  elements that are not links (round 3's forum opens each post from a
+  card with no address), so the tool cannot follow them.
 - **Content links on pages nobody names** are found only through the
   site's own search (19.A 1.21.0: the pages a search lists, 5 a run). A
   page linked only from a page the search does not list, and not given,

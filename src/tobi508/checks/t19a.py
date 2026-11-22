@@ -133,6 +133,8 @@ class State19A(BaseModel):
     # That form's search field (1.21.0: a link is the results page only
     # with a query carrying it).
     search_field: str = ""
+    # T drew itself after load (step 23): an application (W10, 1.21.0).
+    t_drew_late: bool = False
     search: Search = Field(default_factory=Search)
     # Suspected aliases of T, in the order their links were read.
     aliases: list[Alias] = Field(default_factory=list)
@@ -595,6 +597,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         return st
     main = site.main
     st.t_url = main.url
+    st.t_drew_late = main.drew_late
     if ctx.requested_url and not _same(ctx.requested_url, main.url):
         st.t_requested = ctx.requested_url
     both = (st.t_url, st.t_requested)
@@ -1239,6 +1242,7 @@ def _decide(st: State19A, evidence_refs: list[str]) -> Finding:
         + (["W7"] if unverified and short else [])
         + (["W8"] if unchecked and short else [])
         + (["W9"] if menus and short else [])
+        + (["W10"] if st.t_drew_late and short else [])
         + {
             "found": ["W2"],
             "not_found": ["W3"],
@@ -1299,13 +1303,27 @@ def _decide(st: State19A, evidence_refs: list[str]) -> Finding:
         )
     )
     web = f"A person can also search the web for pages that link to {st.t_url}"
-    if unchecked or unverified or menus or st.search.status == "cannot_run":
+    app_note = (
+        "This page is drawn by script after it loads, as an application is, "
+        "and such sites often open their pages from things that are not "
+        "links, so a way to reach it may not be visible to us."
+        if st.t_drew_late
+        else ""
+    )
+    if (
+        unchecked
+        or unverified
+        or menus
+        or st.t_drew_late
+        or st.search.status == "cannot_run"
+    ):
         return _finding(
             Outcome.NEEDS_REVIEW,
             " ".join(
                 x
                 for x in [
                     f"We found {found}.",
+                    app_note,
                     menu_note,
                     page_note,
                     alias_note,

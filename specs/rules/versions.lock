@@ -1,6 +1,6 @@
 # spec_version and SHA-256 of each rules spec (tests/test_spec_versions.py).
 # After a spec change and its version bump: uv run python -m tobi508.rules lock
-19a-multiple-ways.md 1.21.0 f77ffd4d942df1c6db7a274a519e19c3cf485bfc3033a92957e3d38d0dc7325b
+19a-multiple-ways.md 1.21.0 b55834ded03d8c74939417924f55cd351faba9425a3bfabbaeda9c58075fbd3d
 2a-audio-control.md 1.2.0 bd3212ad9e1aba9cdefa05b6fb4cee2ca29e5ef5837114e72228adfc68409357
 2b-blinking-moving-scrolling.md 1.5.0 7b8d4079efff15f3e753178388b5ab8890ace10f71bed466b8c3369663c2ddb2
 2c-auto-updating.md 1.2.0 09c78b5427526b32566572be60ca0b06b630dd117a30c22d587fa233f02a0b5a

@@ -1,0 +1,14 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Community forum</title></head><body>
+<header><a href="/19a/appf-hub.html">Example Agency</a></header>
+<div id="app"></div>
+<script>
+// An application that draws itself after load (round 3's community forum):
+// its posts are cards a script opens on click, not links.
+setTimeout(function () {
+  document.getElementById('app').innerHTML =
+    '<main><h1>Community forum</h1><p><button type="button">Create post</button> <input type="search" aria-label="Search posts"></p><h2>Recent posts</h2>' +
+    '<div class="post" onclick="location.href=\'/19a/appf/post-details/242.html\'"><h3>Documenting repositories</h3></div>' +
+    '<div class="post" onclick="location.href=\'/19a/appf/post-details/243.html\'"><h3>Cloud-optimized data</h3></div></main>';
+}, 1200);
+</script>
+</body></html>
