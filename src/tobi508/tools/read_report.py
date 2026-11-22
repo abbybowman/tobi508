@@ -40,9 +40,16 @@ def _clip(s: str | None, n: int = COMMENT_CHARS) -> str | None:
     return s[:n] + "..."
 
 
+NAME_DESC = (
+    "The name to show the user: the test in words, its WCAG criteria and the "
+    "Trusted Tester test ID. Lead with it, not the ID."
+)
+
+
 class TestLine(BaseModel):
     __test__ = False  # not a pytest test class
 
+    name: str = Field(description=NAME_DESC)
     test_id: str
     test_name: str
     rows: int = Field(description="Rows for this test (a parent plus child issues).")
@@ -59,6 +66,7 @@ RESULT_DESC = (
 
 
 class ChangeLine(BaseModel):
+    name: str = Field(description=NAME_DESC)
     test_id: str
     test_name: str
     compare_to: str = Field(description="compare_to's result. " + RESULT_DESC)
@@ -118,6 +126,7 @@ def _summary(doc: PreScrt) -> dict[str, Any]:
         name = catalog.tests()[tid]["name"]
         results = {r.TestResult for r in rows}
         line = TestLine(
+            name=catalog.display_name(tid),
             test_id=tid,
             test_name=name,
             rows=len(rows),
@@ -233,6 +242,7 @@ def read_report(content: str, compare_to: str | None = None) -> ReadResult:
             counts=c.counts,
             changes=[
                 ChangeLine(
+                    name=catalog.display_name(t.test_id),
                     test_id=t.test_id,
                     test_name=t.test_name,
                     compare_to=_result(t.first),

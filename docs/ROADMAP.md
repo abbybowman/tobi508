@@ -86,6 +86,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | The service | 17, 18 | The store, a thin MCP surface, one writer per run (17); a person's answer only from TOBI's own page (18) |
 | Measures | 10b, 11, 19 | Round 4, a blind round, when Abby keys one (10b); the second look's trial (11), then as a guard (19) |
 | SCRT files | 20 | Review, merge, export ([plan](plans/2026-11-02-scrt-io.md)) |
+| Other pages after a run ([#154](https://github.com/abbybowman/tobi508/issues/154)) | 43 | `base_run_id`: run 9.A-9.C on a finished run's recording of the page and update its report and pre-SCRT file, so the agent can ask for other pages while the other tests run. Until then the agent asks first, and the server refuses 9.A-9.C with neither `other_pages` nor `no_other_pages=true` (2026-11-22, Abby) |
 
 Also for a later watch on a paused clock (the plan's part J): 2.C and
 2.D's remaining timers, and what starts after the 6.5 s watch.

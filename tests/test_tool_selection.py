@@ -260,3 +260,20 @@ def test_committed_followthrough_counts_are_what_the_files_give():
             )
         )
         assert got == json.loads(want_file.read_text())
+
+
+async def test_stub_refuses_comparing_tests_without_pages_as_the_server_does(
+    tools, tmp_path
+):
+    from fastmcp.exceptions import ToolError
+
+    from evals.tool_selection.stub import canned
+
+    with pytest.raises(ToolError, match="no_other_pages=true"):
+        canned("tobi_run_tt_tests", {"url": "https://www.usa.gov/"})
+    assert canned(
+        "tobi_run_tt_tests", {"url": "https://www.usa.gov/", "no_other_pages": True}
+    )
+    assert canned(
+        "tobi_run_tt_tests", {"url": "https://www.usa.gov/", "tests": ["4.C"]}
+    )

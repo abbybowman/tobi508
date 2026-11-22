@@ -32,6 +32,7 @@ DISCLAIMER = (
     "result and must not be reported as one."
 )
 ALLOWED = (".gov", ".mil")
+COMPARE = ("9.A", "9.B", "9.C")
 
 
 def _allowed(url: str) -> bool:
@@ -42,7 +43,7 @@ def _allowed(url: str) -> bool:
 def canned(name: str, args: dict[str, Any]) -> dict[str, Any]:
     """A short result in the shape of the real one. Raises ToolError where
     the real server would refuse before testing anything (a URL outside
-    the allowlist)."""
+    the allowlist, or 9.A-9.C with neither other_pages nor no_other_pages)."""
     base = {"disclaimer": DISCLAIMER, "stub": "evaluation stub: no page was loaded"}
     if name == "tobi_run_tt_tests":
         url = str(args.get("url") or "")
@@ -50,6 +51,15 @@ def canned(name: str, args: dict[str, Any]) -> dict[str, Any]:
             raise ToolError(
                 f"Not allowed: {urlsplit(url).hostname or url!r} is not on the "
                 "server's allowlist (*.gov, *.mil). Nothing was tested."
+            )
+        # As tools/run_tt_tests.py's _check_other_pages (no tests means all).
+        compare = {"9.A", "9.B", "9.C"} & set(args.get("tests") or COMPARE)
+        if compare and not args.get("other_pages") and not args.get("no_other_pages"):
+            raise ToolError(
+                "Nothing was tested yet. 9.A-9.C compare the page with other "
+                "pages of the same site. Ask the user for 2-4 of them and call "
+                "again with other_pages; if the user has none, call again with "
+                "no_other_pages=true."
             )
         return base | {
             "status": "done",

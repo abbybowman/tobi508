@@ -150,7 +150,8 @@ async def test_selected_tests_are_deduplicated_and_ordered(settings):
 async def test_no_test_is_reported_not_tested(settings):
     url = (FIXTURES / "no_trap.html").as_uri()
     out = await _call(
-        "tobi_run_tt_tests", {"url": url, "tests": [t.value for t in TestId]}
+        "tobi_run_tt_tests",
+        {"url": url, "tests": [t.value for t in TestId], "no_other_pages": True},
     )
     assert out["errors"] == []
     by_id = {f["test_id"]: f for f in out["findings"]}
@@ -174,7 +175,7 @@ async def test_no_test_is_reported_not_tested(settings):
         # 5.H's consequence hint matches "order" in "Not in tab order": J1
         # is asked (docs/ROADMAP.md, Known limits).
         "5.H": "NEEDS_REVIEW",
-        # No other pages given: not performed (9.A-9.C specs, A1).
+        # The user had no other pages: not performed (9.A-9.C specs, A1).
         "9.A": "NEEDS_REVIEW",
         "9.B": "NEEDS_REVIEW",
         "9.C": "NEEDS_REVIEW",
@@ -225,7 +226,8 @@ async def _call_error(name: str, args: dict) -> str:
 
 async def test_disallowed_url_is_a_tool_error_without_browsing(settings, server):
     msg = await _call_error(
-        "tobi_run_tt_tests", {"url": f"http://localhost:{server.port}/dyn"}
+        "tobi_run_tt_tests",
+        {"url": f"http://localhost:{server.port}/dyn", "no_other_pages": True},
     )
     assert "not allowed" in msg
     assert server.hits[("localhost", "/dyn")] == 0
@@ -233,7 +235,9 @@ async def test_disallowed_url_is_a_tool_error_without_browsing(settings, server)
 
 
 async def test_redirect_out_of_allowlist_is_a_tool_error(settings, server):
-    msg = await _call_error("tobi_run_tt_tests", {"url": f"{server.base}/redir-bad"})
+    msg = await _call_error(
+        "tobi_run_tt_tests", {"url": f"{server.base}/redir-bad", "no_other_pages": True}
+    )
     assert "blocked" in msg.lower()
     assert server.hits[("localhost", "/landed")] == 0
     assert not any(settings.runs_dir.iterdir())  # nothing kept for an untested page
@@ -796,3 +800,72 @@ def test_a_tall_picture_is_sent_in_readable_parts(tmp_path):
     Image.new("RGB", (1280, 900), "white").save(wide)
     [(_, _, size)], total = _encode(wide)
     assert total == 1 and max(size) == MAX_SIDE
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        {},  # every implemented test, 9.A-9.C among them
+        {"tests": ["4.C", "9.B"]},
+    ],
+)
+async def test_comparing_tests_without_pages_are_refused_until_the_user_is_asked(
+    settings, server, args
+):
+    msg = await _call_error(
+        "tobi_run_tt_tests", {"url": f"{server.base}/no_trap.html", **args}
+    )
+    assert "Ask the user" in msg and "no_other_pages=true" in msg
+    assert "Nothing was tested" in msg
+    assert server.hits[("localhost", "/no_trap.html")] == 0
+    assert not settings.runs_dir.exists() or not any(settings.runs_dir.iterdir())
+
+
+async def test_pages_and_no_pages_together_are_refused(settings, server):
+    msg = await _call_error(
+        "tobi_run_tt_tests",
+        {
+            "url": f"{server.base}/no_trap.html",
+            "tests": ["9.A"],
+            "other_pages": [f"{server.base}/other.html"],
+            "no_other_pages": True,
+        },
+    )
+    assert "contradict" in msg
+    assert server.hits[("localhost", "/no_trap.html")] == 0
+
+
+async def test_user_without_pages_gets_the_other_tests_and_9a_to_c_need_review(
+    settings, server
+):
+    out = await _call(
+        "tobi_run_tt_tests",
+        {
+            "url": f"{server.base}/no_trap.html",
+            "tests": ["4.C", "9.A"],
+            "no_other_pages": True,
+        },
+    )
+    by_id = {f["test_id"]: f for f in out["findings"]}
+    assert by_id["4.C"]["outcome"] == "PASS"
+    assert by_id["9.A"]["outcome"] == "NEEDS_REVIEW"
+    assert by_id["9.A"]["note"] == "This test could not be performed"
+    # Named for people who are not Trusted Testers: words, WCAG, then the ID.
+    assert (
+        by_id["4.C"]["name"] == "No keyboard trap (WCAG 2.1.2 No Keyboard Trap; TT 4.C)"
+    )
+    assert by_id["9.A"]["name"] == "Bypass function (WCAG 2.4.1 Bypass Blocks; TT 9.A)"
+
+
+def test_display_name_leaves_out_wcag_for_a_test_without_it():
+    from tobi508 import catalog
+
+    assert (
+        catalog.display_name("4.A") == "Keyboard access (WCAG 2.1.1 Keyboard; TT 4.A)"
+    )
+    assert "WCAG" not in catalog.display_name("1.A")
+    assert catalog.display_name("1.A").endswith("(TT 1.A)")
+    # Two criteria, both named.
+    assert "1.3.1 Info and Relationships, 4.1.2 Name, Role, Value" in (
+        catalog.display_name("5.C")
+    )

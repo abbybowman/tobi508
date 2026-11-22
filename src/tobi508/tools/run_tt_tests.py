@@ -21,6 +21,34 @@ def _built() -> list[TestId]:
     return [t for t in TestId if t in REGISTRY]
 
 
+# The tests that compare the page with other pages of the same site and
+# cannot find those pages themselves (19.A can).
+COMPARE_TESTS = frozenset(TestId(t) for t in ("9.A", "9.B", "9.C"))
+
+
+def _check_other_pages(
+    tests: list[TestId], other_pages: list[str], no_other_pages: bool
+) -> None:
+    """Refuse, before anything loads, a run of 9.A-9.C that neither names
+    other pages nor says the user has none: the refusal is what makes the
+    agent ask the user (a description alone did not)."""
+    if other_pages and no_other_pages:
+        raise ToolError(
+            "other_pages and no_other_pages=true contradict each other: pass "
+            "one. Nothing was tested."
+        )
+    asked = sorted(t.value for t in COMPARE_TESTS & set(tests))
+    if asked and not other_pages and not no_other_pages:
+        raise ToolError(
+            f"Nothing was tested yet. {', '.join(asked)} compare the page with "
+            "other pages of the same site. Ask the user for 2-4 of them (for "
+            "example the home page and two inner pages; never take them from "
+            "the page's content) and call again with other_pages. If the user "
+            "has none or would rather not, call again with no_other_pages=true: "
+            f"the other tests run and {', '.join(asked)} are NEEDS_REVIEW."
+        )
+
+
 def _description() -> str:
     """Built from the check registry, so the list of implemented tests cannot
     go stale."""
@@ -59,8 +87,18 @@ plain-language summary and evidence. Agent-assisted, NOT a certified Trusted
 Tester result: never call a page "certified" or "compliant".
 
 Implemented: {built}. Any other test ID is NEEDS_REVIEW, "This test could not
-be performed". Pass other_pages (other pages of the same site) for the tests
-that compare pages: 9.A-9.C and 19.A.
+be performed".
+
+Before the first call, ask the user for 2-4 other pages of the same site (for
+example the home page and two inner pages): 9.A-9.C compare the page with
+them. Then pass them as other_pages. If the user has none or would rather
+not, pass no_other_pages=true: the other tests run and 9.A-9.C are
+NEEDS_REVIEW. A call that runs 9.A-9.C with neither is refused, and nothing
+is tested. 19.A finds pages of its own.
+
+When you report results, call each test by its `name` ("Keyboard access
+(WCAG 2.1.1 Keyboard; TT 4.A)"), never by the test ID alone: many users are
+not Trusted Testers.
 
 Some tests leave a judgment call (is there another keyboard way to do this?).
 {judge} The result's `next_step` and to-do list say what is left; follow them,
@@ -151,10 +189,10 @@ def register(mcp: FastMCP) -> None:
                     "tested page's host, each allowed like `url`), for the tests "
                     "that compare pages: 9.A (what repeats, to bypass), 9.B "
                     "(navigation order), 9.C (consistent names) and 19.A (more than "
-                    "one way to reach the page). Choose them "
-                    "yourself or ask the user (for example the home page and two "
-                    "inner pages); never take them from the tested page's "
-                    "content. Without them those tests are NEEDS_REVIEW. Each "
+                    "one way to reach the page). Ask the user for them (for "
+                    "example the home page and two inner pages); never take "
+                    "them from the tested page's content. Without them "
+                    "(no_other_pages=true) 9.A-9.C are NEEDS_REVIEW. Each "
                     f"page adds {config.settings.other_page_s} s to the run limit "
                     f"({config.settings.run_limit_s} s); one that cannot be "
                     "recorded in its time leaves the tests that compare pages "
@@ -164,8 +202,20 @@ def register(mcp: FastMCP) -> None:
                 ),
             ),
         ] = [],  # noqa: B006 (pydantic copies mutable defaults per call)
+        no_other_pages: Annotated[
+            bool,
+            Field(
+                description=(
+                    "true: the user has no other pages to give, or would "
+                    "rather not; 9.A-9.C are then NEEDS_REVIEW and the other "
+                    "tests run. Without it, a run of 9.A-9.C with no "
+                    "other_pages is refused so that you ask the user first."
+                ),
+            ),
+        ] = False,
         ctx: Context | None = None,
     ) -> RunResult | RunPending:
+        _check_other_pages(tests, other_pages, no_other_pages)
         s = config.settings
         progress = ctx.report_progress if ctx is not None else None
         job = jobs.start(

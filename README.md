@@ -33,7 +33,7 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 
 | Tool | What it does | Main inputs |
 | --- | --- | --- |
-| `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, any open questions (answered by the server's judge when it has a model and can reach it, otherwise left for your agent), and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A); `no_time_limit` |
+| `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, any open questions (answered by the server's judge when it has a model and can reach it, otherwise left for your agent), and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A; the agent asks you for them first); `no_other_pages` (you have none: 9.A-9.C are NEEDS REVIEW); `no_time_limit` |
 | `tobi_answer_questions` | Records answers to the open questions and decides again by the spec. Every answer sent here is recorded as the calling agent's; a person's answer, which overrides it, is to come from TOBI's own page. | `run_id`; `answers` (one per question) |
 | `tobi_run_status` | Waits for a run that was still going when its call returned, and gives its result. Without `job_id`: what is left across the session's runs (open questions, follow-up calls, runs still going); with `finish=true` it also makes the follow-up calls the server may make itself. | `job_id` (optional); `finish` |
 | `tobi_cancel_run` | Stops one of your own runs that is still queued or running, and frees its browser slot; nothing from it is kept. For when the user asks, or a run was started twice by mistake. The server's admin can cancel anyone's run from inside the server's container (`tobi508-admin`). | `job_id` |
@@ -124,14 +124,14 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 
 **Examples.** Ask in plain words, and your agent makes calls like these. `tests/test_readme.py` checks each one against the tool's schema.
 
-"Run the Trusted Tester tests TOBI can on https://www.nasa.gov/mission/artemis-iii/":
+"Run the Trusted Tester tests TOBI can on https://www.nasa.gov/mission/artemis-iii/". Before it starts, the agent asks for a few other pages of the same site: 9.A-9.C compare the page with them, and the server refuses a run of those tests until the agent has asked. "I don't have any":
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/"}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/", "no_other_pages": true}}
 ```
 
-"Compare it with two other pages of the site" (for 9.A-9.C and 19.A):
+The other tests run, and 9.A-9.C are NEEDS REVIEW. "Compare it with these two":
 
 <!-- example -->
 ```json

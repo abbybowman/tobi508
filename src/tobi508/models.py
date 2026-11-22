@@ -805,6 +805,11 @@ class FindingView(BaseModel):
     over half of each result). The detail is one tobi_explain call away,
     and the report keeps everything."""
 
+    name: str = Field(
+        description="The name to show the user: the test in words, its WCAG "
+        "criteria and the Trusted Tester test ID, for example 'Keyboard "
+        "access (WCAG 2.1.1 Keyboard; TT 4.A)'. Lead with it, not the ID."
+    )
     test_id: str
     test_name: str
     wcag_sc: str
@@ -844,6 +849,7 @@ class FindingView(BaseModel):
             else 0
         )
         return cls(
+            name=_catalog.display_name(f.test_id.value),
             test_id=f.test_id.value,
             test_name=f.test_name,
             wcag_sc=f.test_id.wcag_sc,

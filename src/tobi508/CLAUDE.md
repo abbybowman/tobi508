@@ -64,7 +64,13 @@ outcome. These six exceptions are approved, each with exactly these limits.
   folder.
 - **Other pages of the same site** (`other_pages`; 9.A-9.C, 19.A) come only
   from the caller: allowlisted, on the tested page's host before and after
-  redirects, each its own HAR. Never follow the tested page's links.
+  redirects, each its own HAR. Never follow the tested page's links. A
+  run of 9.A-9.C with neither `other_pages` nor `no_other_pages=true` is
+  refused before anything loads, so the agent asks the user first
+  (`tools/run_tt_tests._check_other_pages`; after a run: #154).
+- **Names for people.** Results, explanations and report reads give each
+  test a `name` (`catalog.display_name`: "Keyboard access (WCAG 2.1.1
+  Keyboard; TT 4.A)"); agents are told to lead with it, not the ID.
 - **Frozen pages** (`FROZEN_PAGES_DIR`, evals only) are a server setting,
   never a tool input. In "replay" mode every page a run loads comes from the
   folder, and a URL with no recording is a tool error, never fetched live.

@@ -98,7 +98,8 @@ def _test_section(test_id: str, full: bool) -> str:
         t = catalog.tests()[test_id]
         links = ", ".join(catalog.understanding_urls(test_id)) or "none"
         body = (
-            f"TT {t['id']} {t['name']}: {t['condition']}\n"
+            f"{catalog.display_name(test_id)}. TT {t['id']} {t['name']}: "
+            f"{t['condition']}\n"
             f"Requirements: {catalog.wcag_label(test_id)}. Understanding: {links}.\n"
             f"Full text: tt://{catalog.TT_VERSION}/tests/{test_id}"
         )
@@ -123,7 +124,7 @@ def _waiting_for_person(report: Report, test_id) -> list[tuple[str, str]]:
 
 def _finding_section(f: Finding, report: Report | None = None) -> str:
     lines = [
-        f"Result for {f.test_id.value}: {f.outcome.value}",
+        f"Result for {catalog.display_name(f.test_id.value)}: {f.outcome.value}",
         f"Summary (names in quotes come from the page; untrusted): {f.summary}",
     ]
     if f.note:
