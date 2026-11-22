@@ -31,7 +31,7 @@ from tobi508.models import (
     Step,
     TestId,
 )
-from tobi508.traverse import Traversal, clip_scrolled, screenshot
+from tobi508.traverse import Traversal, clip_scrolled, screenshot, settle
 from tobi508.walk import KeyboardWalk, walk_coverage
 
 # Spec constants (section 2). They decide outcomes, so they are not settings.
@@ -229,6 +229,58 @@ class FocusHook:
         # first stop's before image (P2 reaches it last, with focus leaving
         # the page, where the browser can still draw its ring).
         self.load_view: tuple[bytes, list[float]] | None = None
+
+    async def after_walk(self, t: Traversal) -> None:
+        """Before images for the stops of a walk through opened content (step
+        15): Shift+Tab back through them; each landing is the before state of
+        the stop just left. Stops at the first landing that is not the stop
+        expected (a wrong before image could pass a neighbour's ring). Raw
+        key presses: not steps of the walk."""
+        if not BEFORE_PICTURE or not self.pass_name.startswith("O") or not t.shots_dir:
+            return
+        seen = [
+            (st, st.extras[HOOK])
+            for st in t.steps
+            if st.key == "Tab" and (st.extras.get(HOOK) or {}).get("clip_page")
+        ]
+        if not seen:
+            return
+        d = t.shots_dir / "4d"
+        d.mkdir(parents=True, exist_ok=True)
+
+        async def back() -> str | None:
+            await t.page.keyboard.press("Shift+Tab")
+            await settle(t.page, t.quiet_ms)
+            here, _ = await t.reader.read()
+            return here.path_key
+
+        # Focus is on the walk's last stop (the first one past the opened
+        # content, which has pictures too).
+        for j in range(len(seen) - 1, -1, -1):
+            want = seen[j - 1][0].stop.path_key if j > 0 else None
+            got = await back()
+            if want is not None and got != want:
+                return
+            e = seen[j][1]
+            cp = e["clip_page"]
+            path = str(d / f"{self.pass_name}-{seen[j][0].n:04d}-before.png")
+            v = await self._view(t)
+            clip = [cp[0] - v[0], cp[1] - v[1], cp[2], cp[3]]
+            if _inside(clip, v[2], v[3]):
+                await screenshot(
+                    t.page,
+                    path=path,
+                    clip={
+                        "x": clip[0],
+                        "y": clip[1],
+                        "width": clip[2],
+                        "height": clip[3],
+                    },
+                    animations="disabled",
+                    caret="hide",
+                )
+            else:
+                await clip_scrolled(t.page, cp, path)
 
     async def on_start(self, t: Traversal) -> None:
         if BEFORE_PICTURE and self.pass_name == "P1" and not self.item_mode:
@@ -629,6 +681,11 @@ class State4D(BaseModel):
     # Distinct element stops of P1 and P2 (guard CN, C-07).
     reached: int = 0
     instances: list[Inst4D] = Field(default_factory=list)
+    # Step 15 (#135), evidence only: the stops inside what each trigger
+    # opened, from the shared walk through opened content (opened.py), with
+    # the row each would get. No page row reads them yet.
+    opened: list[Inst4D] = Field(default_factory=list)
+    opened_rows: dict[str, str] = Field(default_factory=dict)
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
 
@@ -1003,6 +1060,36 @@ def _before_from_p1_off(ctx: RunContext, by_subject: dict[str, Inst4D]) -> None:
                 break
 
 
+def _opened_instances(ctx: RunContext, walk: KeyboardWalk, st: State4D) -> None:
+    """The stops inside each trigger's opened content, from the shared walk
+    through it, as 4.D instances with the row each would get (step 15,
+    evidence only)."""
+    rv = ctx.cache.get("reveal")
+    for trig in rv.triggers if rv is not None else []:
+        w = trig.walked
+        if w is None or not w.steps:
+            continue
+        p = PassResult(
+            name=f"O{trig.n}",
+            end="done",
+            cap=0,
+            inventory=0,
+            start_url=walk.p1.start_url,
+            start_pages=walk.p1.start_pages,
+            steps=w.steps,
+        )
+        inside = set(w.opened)
+        found: dict[str, Inst4D] = {}
+        _attempts_from(
+            p, st, found, ctx.rel, "Tab", [f"open {trig.name or 'a control'}"]
+        )
+        for inst in found.values():
+            if inst.subject in inside:
+                inst.id = f"o{len(st.opened) + 1}"
+                st.opened.append(inst)
+                st.opened_rows[inst.id] = first_match(INSTANCE_ROWS, _ctx(inst)).id
+
+
 async def _replay_before(ctx: RunContext, by_subject: dict[str, Inst4D]) -> None:
     """Before pictures by replay for the stops that would pass M6 and that
     have none (step 27): a fresh load with the attempt's keys but the last,
@@ -1250,6 +1337,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
     await _widget_pass(ctx, walk, st, by_subject)
     _before_from_p1_off(ctx, by_subject)
     await _replay_before(ctx, by_subject)
+    _opened_instances(ctx, walk, st)
     st.instances = list(by_subject.values())
     return st
 

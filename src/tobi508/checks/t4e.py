@@ -145,7 +145,9 @@ class ContextHook:
             # How much of the window they cover, and whether one is modal
             # (1.2.0): J1's covering guard, row M12.
             out["dialog_cover"] = cover([now[c] for c in new])
-            if t.shots_dir is not None:
+            # Loads reveal.py opens have pictures only for 4.D (step 15): 4.E
+            # takes none there, as before.
+            if t.shots_dir is not None and not self.pass_name.startswith("O"):
                 label = f"4e-{self.pass_name}"
                 path = t.shots_dir / f"{label}-{len(t.steps):04d}-after.png"
                 t.shots_dir.mkdir(parents=True, exist_ok=True)
