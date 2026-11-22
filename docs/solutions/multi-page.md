@@ -13,6 +13,16 @@ it, like `ctx.new_page`. Pages are recorded only when a selected check has
 need the walk (`pipeline.needs_walk`), so a single-page run pays nothing.
 The run limit grows by `OTHER_PAGE_S` (20 s) per page.
 
+**Ask the user first, enforced by the server** (2026-11-22, Abby). A
+sentence in the tool description did not make agents ask (they never put
+`no_time_limit` to the user either), and an agent alone on one URL ran
+9.A-9.C with no pages, so they were never performed. Now a run of 9.A-9.C
+with neither `other_pages` nor `no_other_pages=true` is refused before
+anything loads (`tools/run_tt_tests._check_other_pages`), and the refusal
+tells the agent to ask the user; `no_other_pages=true` is the user's "I
+have none". 19.A is not held: it finds pages itself. Adding pages to a
+finished run instead, so testing need not wait for the answer: #154.
+
 **Read each page once, as content, not as stops.** `site.py` reads every
 page's rendered content in reading order (units: text, headings, images,
 controls; regions: landmarks) into `RunContext.cache["site"]`. The ACT

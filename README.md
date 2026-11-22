@@ -1,6 +1,6 @@
 # Section 508 TOBI — Tester-Oriented Browser Inspector
 
-TOBI (`tobi508` in code) is an MCP server that runs the [DHS Trusted Tester](https://www.section508.gov/test/trusted-tester/) v5.1.3 process for Section 508 (WCAG 2.0 A and AA) on a web page in a real Chrome browser, and reports what it finds by Trusted Tester test ID. It is named after [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html), SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
+TOBI (`tobi508` in code) is an MCP server that runs the [DHS Trusted Tester](https://www.section508.gov/test/trusted-tester/) v5.1.3 process for Section 508 (WCAG 2.0 A and AA) on a web page in a real Chrome browser, and reports what it finds for each test by name, the WCAG success criteria it covers and its Trusted Tester test ID (for example "Keyboard access (WCAG 2.1.1 Keyboard; TT 4.A)"), so people who are not Trusted Testers can follow it. It is named after [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html), SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
 
 > [!WARNING]
 > **Not a certified Trusted Tester result.** TOBI produces agent-assisted findings only. They must not be reported, cited or relied on as a DHS Trusted Tester result. A certified Trusted Tester must perform any test that counts for Section 508 conformance.
@@ -177,27 +177,34 @@ With `DEV_MODE=true`, this fixture's three links pass focus among themselves for
 
 </details>
 
-**Example output.** The second example above, run live on 2026-11-18 (about 10.5 minutes), before the agent answered its open questions. One line per finding; `tobi_explain` gives the rest:
+**Example output.** The second example above, run live on 2026-11-18 (about 10.5 minutes), before the agent answered its open questions, with each test shown by the `name` results now give it. One line per finding; `tobi_explain` gives the rest:
 
 ```text
-5.A FAIL   "Search" (text field)'s only label is the gray example text inside it, which
-           disappears as soon as someone starts typing. Add a label that stays visible.
-           To find it, press Tab 2 times.
-9.A FAIL   This page starts with content repeated on the other pages you gave (for
-           example "Explore"), and we found no keyboard way to skip past it. [...] Add a
-           "Skip to main content" link as the first thing on the page.
-4.B PASS   Nothing on this page asks you to press keys at a certain speed, hold a key
-           down, or press a key several times quickly.
-9.B PASS   The navigation this page shares with the other pages you gave appears in the
-           same order on each of them.
-19.A PASS  This page can be found in more than one way: links from other pages and the
-           site search.
-2.A, 5.H   DOES NOT APPLY
-4.D        NEEDS REVIEW: 2 questions about it are still open. (The "Hide player
-           controls" button's focus ring is near black on black: a careful agent
-           answers "unsure", and it stays for a person.)
-...        NEEDS REVIEW for the other 14 built tests, and "This test could not be
-           performed" for the 39 not built.
+FAIL  Label provided (WCAG 3.3.2 Labels or Instructions; TT 5.A)
+      "Search" (text field)'s only label is the gray example text inside it, which
+      disappears as soon as someone starts typing. Add a label that stays visible.
+      To find it, press Tab 2 times.
+FAIL  Bypass function (WCAG 2.4.1 Bypass Blocks; TT 9.A)
+      This page starts with content repeated on the other pages you gave (for
+      example "Explore"), and we found no keyboard way to skip past it. [...] Add a
+      "Skip to main content" link as the first thing on the page.
+PASS  No keystroke timing (WCAG 2.1.1 Keyboard; TT 4.B)
+      Nothing on this page asks you to press keys at a certain speed, hold a key
+      down, or press a key several times quickly.
+PASS  Consistent navigation (WCAG 3.2.3 Consistent Navigation; TT 9.B)
+      The navigation this page shares with the other pages you gave appears in the
+      same order on each of them.
+PASS  Multiple ways (WCAG 2.4.5 Multiple Ways; TT 19.A)
+      This page can be found in more than one way: links from other pages and the
+      site search.
+DOES NOT APPLY  Audio control (WCAG 1.4.2 Audio Control; TT 2.A),
+      Error prevention (WCAG 3.3.4 Error Prevention (Legal, Financial, Data); TT 5.H)
+NEEDS REVIEW  Focus visible (WCAG 2.4.7 Focus Visible; TT 4.D)
+      2 questions about it are still open. (The "Hide player controls" button's
+      focus ring is near black on black: a careful agent answers "unsure", and it
+      stays for a person.)
+...   NEEDS REVIEW for the other 14 built tests, and "This test could not be
+      performed" for the 39 not built.
 ```
 
 A certified Trusted Tester's blind SCRT file for this page (2026-11-02) fails the same two. These are agent-assisted findings, not a certified Trusted Tester result, and www.nasa.gov is one of our development sites.
