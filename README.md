@@ -68,7 +68,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 4.A | Keyboard access | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.20.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.B | No keystroke timing | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.C | No keyboard trap | [2.1.2](https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping) | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.10.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
+| 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.11.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.E | On focus | [3.2.1](https://www.w3.org/TR/WCAG20/#consistent-behavior-receive-focus) | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.F | Focus order meaning | [2.4.3](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-order) | [1.15.1](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 5.A | Label provided | [3.3.2](https://www.w3.org/TR/WCAG20/#minimize-error-cues) | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
@@ -91,7 +91,7 @@ Wrong PASS or DOES NOT APPLY results found on test pages built to probe each tes
 
 <!-- known-gaps:start -->
 - **2.A, 2.B, 2.C, 3.A:** content the 6.5-second watch misses: audio or motion that starts late, a blink by `visibility` or about 2.5 times a second, motion that fills the screen, a counter started by scrolling, flashing below the first screen ([roadmap](docs/ROADMAP.md#later)).
-- **4.A, 4.C, 4.D, 4.E, 4.F:** controls inside a form that opens from a plain button are not reached; 4.D also passes an element that shows no focus when the next element's focus ring is drawn over it, as on a blog's linked images ([#135](https://github.com/abbybowman/tobi508/issues/135)).
+- **4.A, 4.C, 4.D, 4.E, 4.F:** controls inside a form that opens from a plain button are not reached ([#135](https://github.com/abbybowman/tobi508/issues/135)).
 - **4.B, 5.H:** timing instructions or a payment form not in English, or worded "press Enter twice" ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
 - **9.C:** links or icons in a page's content that do the same thing under different names (buttons and fields are compared since 9.C 1.14.0; [roadmap](docs/ROADMAP.md#later)).
 <!-- known-gaps:end -->

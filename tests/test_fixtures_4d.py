@@ -63,7 +63,9 @@ EXPECTED: dict[str, dict] = {
     # C-07 (1.7.0): a script moves focus off link 3 at once, so the walk never
     # stops on it: 4.D checked 10 of the page's 11 elements and may not say
     # PASS. f21 is the same page with every element reached: still PASS.
-    "f20-script-moves-focus-off-one-link": {"outcome": "NEEDS_REVIEW"},
+    # 4.D 1.11.0: 4 links reached only by Shift+Tab are past the 5 replays
+    # for a before image: J1 looks at their clear rings.
+    "f20-script-moves-focus-off-one-link": {"outcome": "NEEDS_REVIEW", "choice": "yes"},
     "f21-eleven-links-all-reached": {"outcome": "PASS"},
     # F-01 (Abby approved, 2026-11-12): a menubar of 8 items with a clear
     # outline on each. The loop stopped on item 7 with no "after" picture, so
@@ -106,7 +108,14 @@ EXPECTED: dict[str, dict] = {
     # Step 8 (the grid's NEW-2): a link whose focus shows nothing, inside a
     # web component and inside a frame from another site, still FAILs (M8):
     # the twins of the grid's PASSes.
-    "f27-no-focus-indicator-in-web-component": {"outcome": "FAIL", "rows": ["M8"]},
+    # 4.D 1.11.0: the 16 px region takes in 36 px of a neighbour's change, so
+    # the link is no longer M8; those pixels did not change both ways, so J1
+    # looks (M7) and a correct judge says no (M10): still FAIL.
+    "f27-no-focus-indicator-in-web-component": {
+        "outcome": "FAIL",
+        "rows": ["M10"],
+        "choice": "no",
+    },
     "f28-no-focus-indicator-in-frame": {"outcome": "FAIL", "rows": ["M8"]},
     # 4.D 1.10.0: f11's focus dropped on focus, inside a web component: the
     # focus log names it by its host, so M3 sees it (it was WK, NEEDS REVIEW).
@@ -114,12 +123,21 @@ EXPECTED: dict[str, dict] = {
     # Step 27 (#135): round 3's blog. The picture's own link shows nothing
     # with focus; the next link's focus ring, drawn round the whole picture,
     # is in the first link's "off" picture, and M6 passes it on those pixels.
-    # A known wrong PASS until the rule reads the before picture (KNOWN-LIMITS,
-    # 4.D); test_f30_before_picture checks the evidence that will decide it.
-    "f30-next-outline-over-image-link": {"outcome": "PASS"},
+    # 4.D 1.11.0: M6 needs the change confirmed both ways, against a before
+    # picture, so J1 looks (M7); a correct judge sees the ring only in image
+    # A (the next link's) and nothing on the link in B or D: no (M10). The
+    # caption and title links keep M6. test_f30_before_picture checks the
+    # counts.
+    "f30-next-outline-over-image-link": {
+        "outcome": "FAIL",
+        "choice": "no",
+        "rows": ["M6", "M10"],
+    },
     "f12-listbox-activedescendant": {"outcome": "PASS"},
     "f13-listbox-no-highlight": {"outcome": "FAIL"},
-    "f14-menubar-roving-no-indicator": {"outcome": "FAIL"},
+    # 4.D 1.11.0: the first item's pixels were its neighbour's (changed one
+    # way only): J1, and a correct judge says no.
+    "f14-menubar-roving-no-indicator": {"outcome": "FAIL", "choice": "no"},
 }
 
 
@@ -260,8 +278,17 @@ async def test_f30_before_picture(settings, server):
     from tobi508.checks.t4d import MIN_CHANGED_PX
 
     got = await run_check(
-        settings, f"{server.base}/4d/f30-next-outline-over-image-link.html", TestId.T4D
+        settings,
+        f"{server.base}/4d/f30-next-outline-over-image-link.html",
+        TestId.T4D,
+        "no",
     )
+    [q] = got["asked"]  # the picture link only (M7), with its before picture
+    assert (
+        '"Image"' in str(q.input["element"])
+        or q.input["element"].get("name") == "Image"
+    )
+    assert q.input["image_d_before"] and q.input["image_d_before"].endswith(".png")
     by = {}
     for i in got["finding"].instances:
         name = i.description.split('"')[1]
