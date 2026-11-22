@@ -173,9 +173,12 @@ re-testing): confirm and remove, or remove the mark.
 - **Radio groups:** a group is one element that takes focus, since Tab
   lands on one radio of it; the walk does not visit a group's radios
   one by one (arrow keys are not walked), so how the others look on
-  focus is not read (step 6d). **⚑ Check:** this line also said 4.A
-  asks whether a group's second radio "works with a mouse but cannot be
-  reached"; step 6d's radio fix (PR #59) may have ended that.
+  focus is not read (step 6d). 4.A presses the arrow keys from the
+  group's stop and counts a radio as reached only when focus lands on it
+  (1.19.0, [#136](https://github.com/abbybowman/tobi508/issues/136));
+  it was asking whether "Last Month" in round 1's search filters "works
+  with a mouse but cannot be reached". At most `ARROW_MAX` (5) widgets
+  and radio groups a page are probed; past that, NEEDS REVIEW.
 - **4.A:** a native button or link is executed only when it, or an
   element round it below `body`, listens for keys (1.16.0, step 28,
   [#136](https://github.com/abbybowman/tobi508/issues/136)): one whose
@@ -198,7 +201,9 @@ re-testing): confirm and remove, or remove the mark.
   A title that rewords the element's name is not essential by the
   judge's reading (1.18.0, [#136](https://github.com/abbybowman/tobi508/issues/136)):
   that rests on the judge, not a match, so a judge that misreads "same
-  meaning" passes a title that adds something; run 39 found none.
+  meaning" passes a title that adds something; runs 39 and 40 found none.
+  A link named by a feed or file format ("(RSS)") whose title spells it
+  out is not essential either (1.19.0, Abby 2026-11-22).
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
   walk short of its press limit on a slow machine (the grid's

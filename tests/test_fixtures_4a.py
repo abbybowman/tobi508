@@ -83,6 +83,25 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M14"],
         "choice": {"J2": {"choice": "essential"}},
     },
+    # 1.19.0 (#136; Abby, 2026-11-22): native radio buttons that share a
+    # name are one group; Tab reaches one and the arrow keys the others, so
+    # a radio button Tab skips is reached when an arrow press lands on it
+    # (round 1's search filters: "Last Month" was asked J1, judged FAIL). In
+    # f41 a script stops the arrows: J1 is asked as before, for "Last Month"
+    # only (Shift+Tab into the group, nothing checked, lands on "Last Week").
+    "f40-radio-group-arrow-keys": {"outcome": "PASS", "rows": []},
+    "f41-radio-group-arrows-blocked": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
+    # 1.19.0 (Abby, 2026-11-22): a link named by its feed format, "(RSS)",
+    # already says what its title spells out (round 2's search page).
+    "f42-feed-link-title-spells-out": {
+        "outcome": "PASS",
+        "rows": ["M13", "M13"],
+        "choice": {"J2": {"choice": "not_essential"}},
+    },
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
     # 1.16.0: the selected tab has its own keydown (arrows), so it is

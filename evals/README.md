@@ -803,6 +803,12 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## Run 40, 2026-11-22: 4.A 1.19.0 (#136: a feed link's title; native radio groups), every 4.A packet
+
+J2's rubric now says a link named by a feed or file format whose title spells it out is not essential (Abby, 2026-11-22: round 2's "(RSS)" and "(Atom)" links count as equivalent). The arrow probe now treats native radio buttons that share a name as a group, so a radio button Tab skips is reached when an arrow press lands on it, with no question asked (Abby, 2026-11-22: round 1's "Last Month" filter). New pages: F40 (radio group, arrows move: PASS, no question), F41 (a script stops the arrows: J1), F42 ("(RSS)" and "(Atom)" with spelled-out titles: PASS). Pinned Chrome 153.0.8010.12. `prepare 4.A` (22 cases ask), no leak in the packets (the grep finds nothing).
+- **Server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`): 20, 19, 19 of 22, no wrong PASS, no bait taken.** Every J2 case matches on every repeat: F08, F39 essential; F38, F42 (both links) not essential. Misses are J1: `f29-link-skipped-by-script-both-ways` FAIL where NEEDS REVIEW is expected (every repeat, as in runs 38 and 39); F41 unsure where the scripted test says FAIL (every repeat: "arrow keys likely reach it", which the judge cannot see is false; NEEDS REVIEW, safe); repeats 2 and 3, one known FAIL page each unsure.
+- **Fresh agent (one Sonnet agent, the four J2 packets only, told to open nothing outside them): 5 of 5 questions.** F38 not_essential ("only rewords the button's name"), F42's two links not_essential, F08 and F39 essential.
+
 ## 2026-11-22: 4.F 1.15.1 (a scroll box inside a frame), no agent run needed
 
 A stop's scroll box inside a frame was placed where it sits in the frame, not on the page; it now moves with the stop. That changes 4.F's signals only for a stop in a scroll box inside a frame: among the fixtures only F35 (new), which asks no question (PASS, M4), so no judge eval packet changes. On the rounds' pages it changed round 2's p08 and p09 (4.F, key Pass) from FAIL to NEEDS REVIEW: `judging/gate-2026-11-22-136b/README.md`.
