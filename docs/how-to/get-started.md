@@ -111,7 +111,9 @@ Restart Claude Code, run `/mcp` and check `tobi508` is connected, then ask:
 You get a result for 4.C (keyboard trap) in a minute or two, often with
 one open question that Claude answers. Pages must be on the allowlist
 (`ALLOWED_DOMAINS`, default `.gov` and `.mil`); any other address is
-refused.
+refused. When you ask for every test, Claude first asks you for a few
+other pages of the same site (9.A-9.C compare the page with them); say you
+have none and the other tests still run.
 
 No internet from where the server runs? Test a page that ships with it,
 with `DEV_MODE=true` (local files; never for real audits). In the image add

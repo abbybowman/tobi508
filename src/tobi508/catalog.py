@@ -44,6 +44,16 @@ def plain_name(test_id: str) -> str:
     return words[:1].upper() + words[1:]
 
 
+def display_name(test_id: str) -> str:
+    """The name to show people who are not Trusted Testers: the test in
+    words, its WCAG criteria, then the TT ID ('Keyboard access (WCAG 2.1.1
+    Keyboard; TT 4.A)'). A test with no WCAG criterion (1.A-1.D) leaves it
+    out."""
+    sc = [r["label"] for r in tests()[test_id]["requirements"] if r["kind"] == "wcag"]
+    wcag = f"WCAG {', '.join(sc)}; " if sc else ""
+    return f"{plain_name(test_id)} ({wcag}TT {test_id})"
+
+
 def wcag_ids(test_id: str) -> list[str]:
     """The WCAG success criteria a test covers ('1.3.1', '4.1.2'); not Con.5."""
     return [r["id"] for r in tests()[test_id]["requirements"] if r["kind"] == "wcag"]

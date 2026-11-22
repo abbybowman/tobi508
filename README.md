@@ -1,6 +1,6 @@
 # Section 508 TOBI — Tester-Oriented Browser Inspector
 
-TOBI (`tobi508` in code) is an MCP server that runs the [DHS Trusted Tester](https://www.section508.gov/test/trusted-tester/) v5.1.3 process for Section 508 (WCAG 2.0 A and AA) on a web page in a real Chrome browser, and reports what it finds by Trusted Tester test ID. It is named after [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html), SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
+TOBI (`tobi508` in code) is an MCP server that runs the [DHS Trusted Tester](https://www.section508.gov/test/trusted-tester/) v5.1.3 process for Section 508 (WCAG 2.0 A and AA) on a web page in a real Chrome browser, and reports what it finds for each test by name, the WCAG success criteria it covers and its Trusted Tester test ID (for example "Keyboard access (WCAG 2.1.1 Keyboard; TT 4.A)"), so people who are not Trusted Testers can follow it. It is named after [ANDI](https://www.ssa.gov/accessibility/andi/help/install.html), SSA's Accessible Name & Description Inspector, which it runs inside the browser. TOBI is independent of DHS and SSA.
 
 > [!WARNING]
 > **Not a certified Trusted Tester result.** TOBI produces agent-assisted findings only. They must not be reported, cited or relied on as a DHS Trusted Tester result. A certified Trusted Tester must perform any test that counts for Section 508 conformance.
@@ -33,7 +33,7 @@ Agent-assisted results on our evaluation pages, scored against a certified Trust
 
 | Tool | What it does | Main inputs |
 | --- | --- | --- |
-| `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, any open questions (answered by the server's judge when it has a model and can reach it, otherwise left for your agent), and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A); `no_time_limit` |
+| `tobi_run_tt_tests` | Tests one page. It records the page once, runs the chosen TT tests on the recording, and returns findings, any open questions (answered by the server's judge when it has a model and can reach it, otherwise left for your agent), and links to the full report and pre-SCRT file. | `url` (`.gov` and `.mil` by default); `tests` (default: all implemented); `other_pages` (1-5 pages of the same site, for 9.A-9.C and 19.A; the agent asks you for them first); `no_other_pages` (you have none: 9.A-9.C are NEEDS REVIEW); `no_time_limit` |
 | `tobi_answer_questions` | Records answers to the open questions and decides again by the spec. Every answer sent here is recorded as the calling agent's; a person's answer, which overrides it, is to come from TOBI's own page. | `run_id`; `answers` (one per question) |
 | `tobi_run_status` | Waits for a run that was still going when its call returned, and gives its result. Without `job_id`: what is left across the session's runs (open questions, follow-up calls, runs still going); with `finish=true` it also makes the follow-up calls the server may make itself. | `job_id` (optional); `finish` |
 | `tobi_cancel_run` | Stops one of your own runs that is still queued or running, and frees its browser slot; nothing from it is kept. For when the user asks, or a run was started twice by mistake. The server's admin can cancel anyone's run from inside the server's container (`tobi508-admin`). | `job_id` |
@@ -124,14 +124,14 @@ claude mcp add tobi508 -- docker run -i --rm -e MCP_TRANSPORT=stdio ghcr.io/abby
 
 **Examples.** Ask in plain words, and your agent makes calls like these. `tests/test_readme.py` checks each one against the tool's schema.
 
-"Run the Trusted Tester tests TOBI can on https://www.nasa.gov/mission/artemis-iii/":
+"Run the Trusted Tester tests TOBI can on https://www.nasa.gov/mission/artemis-iii/". Before it starts, the agent asks for a few other pages of the same site: 9.A-9.C compare the page with them, and the server refuses a run of those tests until the agent has asked. "I don't have any":
 
 <!-- example -->
 ```json
-{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/"}}
+{"tool": "tobi_run_tt_tests", "arguments": {"url": "https://www.nasa.gov/mission/artemis-iii/", "no_other_pages": true}}
 ```
 
-"Compare it with two other pages of the site" (for 9.A-9.C and 19.A):
+The other tests run, and 9.A-9.C are NEEDS REVIEW. "Compare it with these two":
 
 <!-- example -->
 ```json
@@ -177,27 +177,34 @@ With `DEV_MODE=true`, this fixture's three links pass focus among themselves for
 
 </details>
 
-**Example output.** The second example above, run live on 2026-11-18 (about 10.5 minutes), before the agent answered its open questions. One line per finding; `tobi_explain` gives the rest:
+**Example output.** The second example above, run live on 2026-11-18 (about 10.5 minutes), before the agent answered its open questions, with each test shown by the `name` results now give it. One line per finding; `tobi_explain` gives the rest:
 
 ```text
-5.A FAIL   "Search" (text field)'s only label is the gray example text inside it, which
-           disappears as soon as someone starts typing. Add a label that stays visible.
-           To find it, press Tab 2 times.
-9.A FAIL   This page starts with content repeated on the other pages you gave (for
-           example "Explore"), and we found no keyboard way to skip past it. [...] Add a
-           "Skip to main content" link as the first thing on the page.
-4.B PASS   Nothing on this page asks you to press keys at a certain speed, hold a key
-           down, or press a key several times quickly.
-9.B PASS   The navigation this page shares with the other pages you gave appears in the
-           same order on each of them.
-19.A PASS  This page can be found in more than one way: links from other pages and the
-           site search.
-2.A, 5.H   DOES NOT APPLY
-4.D        NEEDS REVIEW: 2 questions about it are still open. (The "Hide player
-           controls" button's focus ring is near black on black: a careful agent
-           answers "unsure", and it stays for a person.)
-...        NEEDS REVIEW for the other 14 built tests, and "This test could not be
-           performed" for the 39 not built.
+FAIL  Label provided (WCAG 3.3.2 Labels or Instructions; TT 5.A)
+      "Search" (text field)'s only label is the gray example text inside it, which
+      disappears as soon as someone starts typing. Add a label that stays visible.
+      To find it, press Tab 2 times.
+FAIL  Bypass function (WCAG 2.4.1 Bypass Blocks; TT 9.A)
+      This page starts with content repeated on the other pages you gave (for
+      example "Explore"), and we found no keyboard way to skip past it. [...] Add a
+      "Skip to main content" link as the first thing on the page.
+PASS  No keystroke timing (WCAG 2.1.1 Keyboard; TT 4.B)
+      Nothing on this page asks you to press keys at a certain speed, hold a key
+      down, or press a key several times quickly.
+PASS  Consistent navigation (WCAG 3.2.3 Consistent Navigation; TT 9.B)
+      The navigation this page shares with the other pages you gave appears in the
+      same order on each of them.
+PASS  Multiple ways (WCAG 2.4.5 Multiple Ways; TT 19.A)
+      This page can be found in more than one way: links from other pages and the
+      site search.
+DOES NOT APPLY  Audio control (WCAG 1.4.2 Audio Control; TT 2.A),
+      Error prevention (WCAG 3.3.4 Error Prevention (Legal, Financial, Data); TT 5.H)
+NEEDS REVIEW  Focus visible (WCAG 2.4.7 Focus Visible; TT 4.D)
+      2 questions about it are still open. (The "Hide player controls" button's
+      focus ring is near black on black: a careful agent answers "unsure", and it
+      stays for a person.)
+...   NEEDS REVIEW for the other 14 built tests, and "This test could not be
+      performed" for the 39 not built.
 ```
 
 A certified Trusted Tester's blind SCRT file for this page (2026-11-02) fails the same two. These are agent-assisted findings, not a certified Trusted Tester result, and www.nasa.gov is one of our development sites.
