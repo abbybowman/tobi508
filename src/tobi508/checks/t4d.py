@@ -246,7 +246,14 @@ class FocusHook:
                 got["why"] = (
                     "off screen when the backward pass was at the stop before it"
                 )
-        self.pending = self.before_for.get(step.stop.path_key)
+        nxt = self.before_for.get(step.stop.path_key)
+        if nxt is None and step.stop.bounding_box is not None:
+            v = await self._view(t)
+            b = step.stop.bounding_box
+            nxt = self.before_for.get(
+                _where(step.stop.role, step.stop.name, [b.x + v[0], b.y + v[1]])
+            )
+        self.pending = nxt
         ms = (time.monotonic() - t0) * 1000
         self.before_ms += ms
         if got is not None:
@@ -490,13 +497,25 @@ def focus_hook(pass_name: str, prior: PassResult | None) -> FocusHook:
             e = s.extras.get(HOOK) or {}
             if e.get("off_ok") and not e.get("incomplete"):
                 skip.add(e["subject"])
-    before_for = {}
+    before_for: dict[Any, tuple[int, list[float]]] = {}
     if prior is not None and BEFORE_PICTURE:
         for s in prior.steps:
             e = s.extras.get(HOOK) or {}
-            if e.get("on") and e.get("clip_page") and " >> #" not in e["subject"]:
-                before_for.setdefault(e["subject"], (s.n, e["clip_page"]))
+            # Element stops only (not an active descendant's item).
+            if e.get("on") and e.get("clip_page") and e["subject"] == s.stop.path_key:
+                got = (s.n, e["clip_page"])
+                before_for.setdefault(e["subject"], got)
+                cp, cv, r = e["clip_page"], e["clip_view"], e["self_rect"]
+                page = [r[0] + cp[0] - cv[0], r[1] + cp[1] - cv[1]]
+                before_for.setdefault(_where(s.stop.role, s.stop.name, page), got)
     return FocusHook(pass_name, skip, before_for=before_for)
+
+
+def _where(role: str | None, name: str | None, page_xy: list[float]) -> tuple:
+    """A stop by role, name and place on the page (CSS px, to 4 px): P2 runs
+    on a fresh load, where a page may give an element a new random id (round
+    2's video players), so its path differs from P1's."""
+    return (role or "", (name or "")[:80], round(page_xy[0] / 4), round(page_xy[1] / 4))
 
 
 # ── Evidence ─────────────────────────────────────────────────────────────────
