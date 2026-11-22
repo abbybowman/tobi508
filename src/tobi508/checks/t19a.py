@@ -17,11 +17,11 @@ from __future__ import annotations
 
 import re
 from typing import Any
-from urllib.parse import urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel, Field
 
-from tobi508.capture import document_type, failed_scripts
+from tobi508.capture import document_scripts, document_type, failed_scripts
 from tobi508.checks.base import RunContext
 from tobi508.models import (
     REVIEW_HEAD,
@@ -32,11 +32,13 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.site import (
+    NEAR_COPY,
     PageRead,
     norm_href,
     page_label,
     read_page,
     site_read,
+    text_share,
     with_compared,
 )
 from tobi508.traverse import settle
@@ -54,6 +56,7 @@ GROUP_MIN = 3
 GROUP_SHARE = 0.8
 PREV_NEXT = re.compile(r"^(previous|prev|next)(\s+page)?$", re.I)
 KIND_WORDS = {
+    "breadcrumbs": "a breadcrumb trail",
     "navigation": "the site navigation",
     "toc": "a table of contents",
     "site_map": "a site map",
@@ -62,6 +65,7 @@ KIND_WORDS = {
 }
 SITE_MAP = re.compile(r"\bsite\s?map\b|\bsitemap\b|\ba\s?[-–]\s?z\s+index\b", re.I)
 TOC = re.compile(r"contents|on this page", re.I)
+CRUMB = re.compile(r"breadcrumb", re.I)
 HOME = re.compile(r"^home(\s+page)?$", re.I)
 HINT = re.compile(
     r"step\s+\d+\s+of\s+\d+|review\s+your|\bconfirm|order summary|thank you for", re.I
@@ -91,7 +95,7 @@ class Alias(BaseModel):
     url: str
     page: int  # the other page whose link named it
     status: str = "pending"  # same | not_verified | not_needed
-    how: str = ""  # address | document, when the same page
+    how: str = ""  # address | document | drawn text, when the same page
     final_url: str = ""
     reason: str = ""  # why not verified
 
@@ -126,6 +130,11 @@ class State19A(BaseModel):
     search_forms: int = 0
     # T is the address a search form submits to (W5)
     search_target: str = ""
+    # That form's search field (1.21.0: a link is the results page only
+    # with a query carrying it).
+    search_field: str = ""
+    # T drew itself after load (step 23): an application (W10, 1.21.0).
+    t_drew_late: bool = False
     search: Search = Field(default_factory=Search)
     # Suspected aliases of T, in the order their links were read.
     aliases: list[Alias] = Field(default_factory=list)
@@ -151,10 +160,37 @@ class State19A(BaseModel):
         return [x for x in KIND_WORDS if x in k]
 
 
+# Marks a target that matches whatever its query string (1.19.0): T is the
+# site search's own results page.
+ANY_QUERY = "?*"
+
+
+def _no_query(u: str) -> str:
+    return norm_href(u).split("?")[0].rstrip("/")
+
+
 def _to_t(href: str, t: str | tuple[str, ...]) -> bool:
     """A link to T: its final URL, or the URL the caller gave before redirects
-    (spec edge cases: links to the requested URL count too)."""
-    return any(_same(href, x) for x in ((t,) if isinstance(t, str) else t) if x)
+    (spec edge cases: links to the requested URL count too); for the site
+    search's results page, with any query (spec Terms, 1.19.0)."""
+    for x in (t,) if isinstance(t, str) else t:
+        if not x:
+            continue
+        if ANY_QUERY in x:
+            # T's address with any query that carries the search form's own
+            # field: a link with no search is another page (the home page,
+            # when the search submits to it; round 1's nasa.gov).
+            t_part, _, field = x.partition(ANY_QUERY)
+            base = _no_query(t_part)
+            if (
+                base
+                and _no_query(href) == base
+                and field in parse_qs(urlsplit(href).query, keep_blank_values=True)
+            ):
+                return True
+        elif _same(href, x):
+            return True
+    return False
 
 
 def _same(a: str, b: str) -> bool:
@@ -230,33 +266,71 @@ def _site_map_pages(pages: list[PageRead]) -> set[int]:
 TEMPLATE = ("navigation", "banner", "contentinfo")
 
 
+NOT_A_PAGE = ("mailto:", "tel:", "javascript:")
+
+
+def _item(u, page_url: str) -> str:
+    """A link as an item of its row (spec Terms, 1.20.0, #138 draft B2): its
+    destination, or, for a link to no other web page (`#`, `mailto:`,
+    `tel:`, `javascript:`), its name: CILab's "Contact Us" is `#` on its
+    home and `mailto:` on Information, one item."""
+    raw = (u.href_attr or "").strip()
+    href = u.href or ""
+    own = norm_href(page_url).split("#")[0].rstrip("/")
+    if (
+        raw.startswith("#")
+        or href.lower().startswith(NOT_A_PAGE)
+        or (own and norm_href(href).split("#")[0].rstrip("/") == own)
+    ):
+        name = (u.name or "").strip().lower()
+        return "name:" + name if name else ""
+    d = norm_href(href)
+    return "dest:" + d if d else ""
+
+
 def link_groups(page: PageRead, targets: tuple[str, ...] = ()) -> dict[str, set[str]]:
-    """Each link group's destinations on a page (site.Unit.group). A link to
-    T or a verified alias of T (`targets`, T first) is T: round 2's CILab
-    subpage links its home as index.html in the row its home has."""
+    """Each link group's items on a page (site.Unit.group). The links to T
+    or a verified alias of T (`targets`) are left out: the question is
+    whether the menu around such a link is T's menu (1.20.0)."""
     out: dict[str, set[str]] = {}
     for u in page.units:
-        if u.role == "link" and u.group and u.href:
-            d = (
-                norm_href(targets[0])
-                if targets and _to_t(u.href, targets)
-                else norm_href(u.href)
-            )
-            if d:
-                out.setdefault(u.group, set()).add(d)
+        if u.role != "link" or not u.group or not (u.href or u.href_attr):
+            continue
+        if targets and u.href and _to_t(u.href, targets):
+            out.setdefault(u.group, set())
+            continue
+        d = _item(u, page.url)
+        if d:
+            out.setdefault(u.group, set()).add(d)
     return out
 
 
 def template_groups(main: PageRead) -> list[list[str]]:
-    return [sorted(g) for g in link_groups(main).values() if len(g) >= GROUP_MIN]
+    """T's own rows of 3 or more links, as items."""
+    return [
+        sorted(link_groups(main)[g])
+        for g in _group_sizes(main)
+        if _group_sizes(main)[g] >= GROUP_MIN
+    ]
 
 
-def repeated_on_t(dests: set[str], t_groups: list[list[str]]) -> bool:
-    """A link group repeated on T (spec Terms): 3 or more links, and
-    at least GROUP_SHARE of their destinations in one group on T itself."""
-    if len(dests) < GROUP_MIN:
+def _group_sizes(page: PageRead) -> dict[str, int]:
+    sizes: dict[str, int] = {}
+    for u in page.units:
+        if u.role == "link" and u.group:
+            sizes[u.group] = sizes.get(u.group, 0) + 1
+    return sizes
+
+
+COMPANIONS_MIN = 2  # the other items of a row around a link to T (1.20.0)
+
+
+def repeated_on_t(items: set[str], t_groups: list[list[str]]) -> bool:
+    """A link group repeated on T (spec Terms, 1.20.0): the other items of
+    the link's row, 2 or more, at least GROUP_SHARE of them in one row on T."""
+    if len(items) < COMPANIONS_MIN:
         return False
-    return any(len(dests & set(g)) >= GROUP_SHARE * len(dests) for g in t_groups)
+    return any(len(items & set(g)) >= GROUP_SHARE * len(items) for g in t_groups)
 
 
 def _kind(
@@ -266,6 +340,11 @@ def _kind(
     groups: dict[str, set[str]] | None = None,
     t_groups: list[list[str]] = (),
 ) -> str:
+    # A breadcrumb trail is a way of its own, before the menus (1.18.0; Abby,
+    # 2026-11-21): a region or list named so, or a list whose class or id is.
+    names = [k.split("|", 1)[-1] for k in u.regions]
+    if u.crumb or any(CRUMB.search(n) for n in names if n[:1] not in "#@"):
+        return "breadcrumbs"
     # The site's menus, header and footer come first: on a site map page they
     # are the shared template, not the site map's list (spec 1.1.0, Abby
     # 2026-11-02).
@@ -302,10 +381,7 @@ def links_to(
     for p in pages:
         targets = (t_url,) if isinstance(t_url, str) else t_url
         groups = link_groups(p, targets) if t_groups else None
-        mapped = [
-            sorted({norm_href(targets[0]) if _to_t(x, targets) else x for x in g})
-            for g in t_groups
-        ]
+        mapped = t_groups
         for u in p.units:
             if u.role == "link" and _to_t(u.href, t_url):
                 out.append(
@@ -521,28 +597,43 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         return st
     main = site.main
     st.t_url = main.url
+    st.t_drew_late = main.drew_late
     if ctx.requested_url and not _same(ctx.requested_url, main.url):
         st.t_requested = ctx.requested_url
     both = (st.t_url, st.t_requested)
     maps = _site_map_pages(site.pages)
     st.t_groups = template_groups(main)
-    st.links = links_to(both, site.others, maps, st.t_groups)
     forms = [f for p in site.pages for f in p.forms]
     st.search_forms = len(forms) + sum(
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
     )
     st.search_target = search_target(forms, both)
+    st.search_field = (
+        next(
+            (
+                f.get("field") or ""
+                for f in forms
+                if f.get("action")
+                and _path(f["action"]) == _path(st.search_target)
+                and f.get("field")
+            ),
+            "",
+        )
+        if st.search_target
+        else ""
+    )
+    st.links = links_to(both + _any_query(st), site.others, maps, st.t_groups)
     read = list(site.others)
     # How to load each page read again (its own recording): W9's menus.
     loaders = {p.n: p.new_page for p in ctx.pages}
     if len(st.kinds) < 2:
-        await _check_aliases(ctx, st, read, maps)
+        await _check_aliases(ctx, st, read, maps, main)
     if len(st.kinds) < 2:
         given = {p.url for p in site.pages} | {ctx_p.final_url for ctx_p in ctx.pages}
         st.checked = suggested_pages(st.t_url, main, site.pages, given, st.spares)
         await _check_suggested(ctx, st, main, read, loaders)
     if len(st.kinds) < 2 and st.search_forms and not st.search_target:
-        await _live_search(ctx, st, main, forms)
+        await _live_search(ctx, st, main, forms, read, loaders)
     if len(st.kinds) < 2 and "navigation" not in st.kinds:
         await _open_menus(ctx, st, read, loaders)
     st.hidden_nav = [
@@ -682,15 +773,30 @@ async def _open_menus(
                     pass
 
 
+def _any_query(st: State19A) -> tuple[str, ...]:
+    """T with any search, when T is the site search's own results page (spec
+    Terms, 1.19.0; Abby, 2026-11-21): its address with a query carrying the
+    search form's field (1.21.0)."""
+    if not st.search_target or not st.search_field:
+        return ()
+    return (st.t_url.split("?")[0] + ANY_QUERY + st.search_field,)
+
+
 def _targets(st: State19A) -> tuple[str, ...]:
     """T, the address the caller gave and every verified alias (W6)."""
-    return (st.t_url, st.t_requested) + tuple(
-        a.url for a in st.aliases if a.status == "same"
+    return (
+        (st.t_url, st.t_requested)
+        + tuple(a.url for a in st.aliases if a.status == "same")
+        + _any_query(st)
     )
 
 
 async def _check_aliases(
-    ctx: RunContext, st: State19A, pages: list[PageRead], maps: set[int]
+    ctx: RunContext,
+    st: State19A,
+    pages: list[PageRead],
+    maps: set[int],
+    main: PageRead | None = None,
 ) -> None:
     """Suspected aliases of T on the pages read (spec Terms): at
     most ALIAS_MAX loaded in a run, each as a caller's other page is loaded;
@@ -725,6 +831,26 @@ async def _check_aliases(
             a.status, a.how = "same", "address"
         elif ref.same_content_as_tested:
             a.status, a.how = "same", "document"
+        elif getattr(ref, "same_document", False) and main is not None:
+            # 1.20.0 (#138 draft A): T's document at the alias, and the page
+            # as drawn nearly T's; an application's one document draws
+            # another page there. Read only for its text.
+            try:
+                drawn = await read_page(ref.n, ref.final_url, ref.new_page)
+            except Exception:
+                drawn = None
+            if (
+                drawn is not None
+                and not drawn.error
+                and (text_share(main, drawn) >= NEAR_COPY)
+            ):
+                a.status, a.how = "same", "document and drawn text"
+            else:
+                a.status, a.reason = (
+                    "not_verified",
+                    "it has the same document but draws a different page",
+                )
+                continue
         else:
             a.status, a.reason = "not_verified", "it loaded a different document"
             continue
@@ -743,6 +869,8 @@ async def _check_suggested(
     2026-11-15). Each page read joins the pages read: its links to T or a
     verified alias count (W1), and its suspected aliases are checked."""
     for c in st.checked:
+        if c.status != "pending":
+            continue
         if len(st.kinds) >= 2:
             c.status = "not_needed"
             continue
@@ -779,21 +907,121 @@ async def _check_suggested(
         read.append(got)
         maps = _site_map_pages([main, *read])
         st.links = links_to(_targets(st), read, maps, st.t_groups)
-        await _check_aliases(ctx, st, read, maps)
+        await _check_aliases(ctx, st, read, maps, main)
 
 
-async def _live_search(ctx: RunContext, st: State19A, main: PageRead, forms) -> None:
-    """The plain heading first; only when its results do not link to T, the
-    heading in quotation marks (19.A 1.5.0, post-round 2 fix 11: a site that
-    answers "No results for:" the plain words found the page quoted). Two
-    requests at most."""
+LISTED_MAX = 5  # pages the site search lists, checked a run (1.21.0)
+
+
+def _menu_name(st: State19A) -> str:
+    """The name the site navigation gives T: the first link to T in a
+    navigation, banner or contentinfo region on a page read (1.21.0)."""
+    return next(
+        (x.name for x in st.links if x.region in TEMPLATE and x.name.strip()), ""
+    )
+
+
+async def _live_search(
+    ctx: RunContext,
+    st: State19A,
+    main: PageRead,
+    forms,
+    read: list[PageRead] | None = None,
+    loaders: dict[int, Any] | None = None,
+) -> None:
+    """The plain heading first; only when its results do not lead to T, the
+    name the site's menus give T when it differs (1.21.0, #138 draft C2),
+    else the heading in quotation marks (19.A 1.5.0, post-round 2 fix 11).
+    Two requests at most; after each, the pages it lists (1.21.0)."""
+    read = read if read is not None else []
     term = _term(main)
-    await _search_once(ctx, st, forms, term)
-    if st.search.status == "not_found" and '"' not in term:
-        await _search_once(ctx, st, forms, f'"{term}"')
+    res = await _search_once(ctx, st, forms, term)
+    await _check_listed(ctx, st, main, res, read, loaders)
+    # A search whose results page was read but not verified (W4) does not
+    # lead to T either: the second search still runs, and the first stays
+    # unverified unless a search leads to T (never FAIL on it).
+    unverified = (
+        (st.search.status, st.search.reason)
+        if st.search.status == "cannot_run" and res
+        else None
+    )
+    if (st.search.status != "not_found" and not unverified) or len(st.kinds) >= 2:
+        return
+    name = _menu_name(st)
+    if name and name.strip().lower() != term.strip().lower():
+        second = name
+    elif '"' not in term:
+        second = f'"{term}"'
+    else:
+        return
+    res = await _search_once(ctx, st, forms, second)
+    await _check_listed(ctx, st, main, res, read, loaders)
+    if unverified and st.search.status == "not_found":
+        st.search.status, st.search.reason = unverified
 
 
-async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
+def listed_pages(res: PageRead, t_url: str, search_url: str) -> list[str]:
+    """The pages a results page lists (spec Terms, 1.21.0): its links outside
+    navigation, banner and contentinfo regions, on T's host, to a page,
+    other than the results page itself (another query of it)."""
+    out: list[str] = []
+    own = _no_query(search_url)
+    for u in res.units:
+        if u.region_role in TEMPLATE:
+            continue
+        url = _page_link(u, t_url)
+        if not url or _no_query(url) == own:
+            continue
+        if not any(_same(url, x) for x in out):
+            out.append(url)
+    return out
+
+
+async def _check_listed(
+    ctx: RunContext,
+    st: State19A,
+    main: PageRead,
+    res: PageRead | None,
+    read: list[PageRead],
+    loaders: dict[int, Any] | None,
+) -> None:
+    """The first pages a search lists, checked as suggested pages are; one
+    that ends at T means the search leads to T (W2)."""
+    if res is None or len(st.kinds) >= 2:
+        return
+    room = LISTED_MAX - sum(1 for c in st.checked if c.role == "listed")
+    known = [st.t_url, *(p["url"] for p in st.pages), *(c.url for c in st.checked)]
+    new = [
+        u
+        for u in listed_pages(res, st.t_url, st.search.url)
+        if not any(_same(u, k) for k in known)
+    ][: max(room, 0)]
+    if not new:
+        return
+    st.checked += [Suggested(url=u, role="listed") for u in new]
+    await _check_suggested(ctx, st, main, read, loaders)
+    if any(c.role == "listed" and c.status == "is_this_page" for c in st.checked):
+        st.search.status, st.search.reason = "found", ""
+
+
+def _results_shown(res: PageRead, t_url: str, search_url: str) -> bool:
+    """The results page shows results (W4, 1.21.0): a link outside its menus,
+    header and footer to a page of T's host other than itself."""
+    return bool(listed_pages(res, t_url, search_url))
+
+
+def _could_draw(url: str, res_url: str, named: dict[str, bool], shown: bool) -> bool:
+    """A script that did not load could have drawn the results unless it is
+    on another host, the page does not wait for it (async, or not named in
+    the document) and results are shown (spec W4, 1.21.0)."""
+    other_host = urlsplit(url).hostname != urlsplit(res_url).hostname
+    waited = url in named and not named[url]
+    return not (other_host and not waited and shown)
+
+
+async def _search_once(
+    ctx: RunContext, st: State19A, forms, term: str
+) -> PageRead | None:
     st.search.term = term
     st.search.tries.append(term)
     url = next((u for u in (search_url(f, st.search.term) for f in forms) if u), None)
@@ -802,11 +1030,11 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             "cannot_run",
             "the site search is not a simple form the tool can submit",
         )
-        return
+        return None
     st.search.url = url
     if ctx.record_live is None or ctx.out_of_time():
         st.search.status, st.search.reason = "cannot_run", "no time left to run it"
-        return
+        return None
     try:
         ref = await ctx.record_live(url)
         res = await read_page(ref.n, ref.final_url, ref.new_page, results=True)
@@ -817,19 +1045,27 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             if isinstance(exc, TimeoutError)
             else f"the search could not be run: {_load_reason(exc)}"
         )
-        return
+        return None
     if res.error:
         st.search.status, st.search.reason = (
             "cannot_run",
             "its results could not be read",
         )
-        return
+        return None
     found = results_link_to(res, _targets(st))
     try:
         failed = failed_scripts(ref.har) if ref.har is not None else []
     except Exception:
         failed = []
     st.search.failed_scripts = failed[:10]
+    # 1.21.0 (#138 draft C): only a script that could draw the results.
+    if failed:
+        try:
+            named = document_scripts(ref.har, ref.final_url) if ref.har else {}
+        except Exception:
+            named = {}
+        shown = _results_shown(res, st.t_url, url)
+        failed = [u for u in failed if _could_draw(u, ref.final_url, named, shown)]
     if not found and failed:
         # W4: the results page did not finish loading, so finding
         # nothing says nothing (step 6: the container refused its scripts).
@@ -838,14 +1074,15 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             f"its results page did not finish loading ({len(failed)} of its "
             "scripts did not load)",
         )
-        return
+        return res
     if not found and res.truncated:
         st.search.status, st.search.reason = (
             "cannot_run",
             "its results page was too long to read in full",
         )
-        return
+        return res
     st.search.status = "found" if found else "not_found"
+    return res
 
 
 # ── Rules ────────────────────────────────────────────────────────────────────
@@ -929,6 +1166,7 @@ ROLE_WORDS = {
     "prev_next": "the previous or next page",
     "related": "a page this one links to",
     "home": "the home page",
+    "listed": "a page the site search listed",
 }
 
 
@@ -943,6 +1181,7 @@ def _checked_words(st: State19A) -> list[str]:
         ("prev_next", "its previous or next page", "its previous and next pages"),
         ("child", "1 page below it", "{n} pages below it"),
         ("related", "1 page it links to", "{n} pages it links to"),
+        ("listed", "1 page the site search listed", "{n} pages the site search listed"),
     ):
         n = sum(1 for c in done if c.role == role)
         if n:
@@ -1003,6 +1242,7 @@ def _decide(st: State19A, evidence_refs: list[str]) -> Finding:
         + (["W7"] if unverified and short else [])
         + (["W8"] if unchecked and short else [])
         + (["W9"] if menus and short else [])
+        + (["W10"] if st.t_drew_late and short else [])
         + {
             "found": ["W2"],
             "not_found": ["W3"],
@@ -1063,13 +1303,27 @@ def _decide(st: State19A, evidence_refs: list[str]) -> Finding:
         )
     )
     web = f"A person can also search the web for pages that link to {st.t_url}"
-    if unchecked or unverified or menus or st.search.status == "cannot_run":
+    app_note = (
+        "This page is drawn by script after it loads, as an application is, "
+        "and such sites often open their pages from things that are not "
+        "links, so a way to reach it may not be visible to us."
+        if st.t_drew_late
+        else ""
+    )
+    if (
+        unchecked
+        or unverified
+        or menus
+        or st.t_drew_late
+        or st.search.status == "cannot_run"
+    ):
         return _finding(
             Outcome.NEEDS_REVIEW,
             " ".join(
                 x
                 for x in [
                     f"We found {found}.",
+                    app_note,
                     menu_note,
                     page_note,
                     alias_note,

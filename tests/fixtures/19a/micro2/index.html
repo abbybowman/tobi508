@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Shell Lab</title></head><body>
+<header><a href="/19a/hub4.html">Example Agency</a></header>
+<main id="app"></main>
+<script>
+// One document at every address; the page drawn depends on the address.
+const own = location.pathname.endsWith('index.html');
+document.getElementById('app').innerHTML = own
+  ? '<h1>Shell Lab archive</h1><p>Old reports, by year: 2019, 2020, 2021, 2022.</p><p>Each report is a PDF.</p>'
+  : '<h1>Shell Lab</h1><p>The lab models planetary shells for the public.</p><p>Start with <a href="/19a/micro2/people.html">our people</a>.</p>';
+</script>
+</body></html>

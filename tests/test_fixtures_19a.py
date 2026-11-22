@@ -126,11 +126,34 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     # every link to the microsite's home goes to its index.html. Loaded, it
     # is the same document, so those links count: the agency's labs page
     # (content) and the lab's own menu (navigation).
+    # 19.A 1.20.0 (#138 draft A, Abby 2026-11-22): verified again by the
+    # same document and the same drawn text (90% shared).
     "alias-index-html-is-the-page": (
         "micro/",
         ["lab-home", "micro/people"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    # Must stay not verified: an application's one document draws another
+    # page at index.html (#134's case).
+    "alias-app-shell-draws-another-page": (
+        "micro2/",
+        ["hub4"],
         "NEEDS_REVIEW",
         ["W1", "W7", "G3"],
+        {},
+    ),
+    # 19.A 1.20.0 (#138 draft B2): round 2's CILab as it is live. The rows
+    # differ by the item that swaps (Information on the home, Home on
+    # Information) and by Contact Us: "#" on one, mailto: on the other,
+    # the same item by name. Without the link home, Information's row is all
+    # in the home's: navigation; with the agency's card link, PASS.
+    "icon-row-with-swapped-items-is-navigation": (
+        "lab4/",
+        ["hub4"],
+        "PASS",
+        ["W1", "W6", "G2"],
         {},
     ),
     # The nearest case that must never PASS: thin/index.html is another page
@@ -152,6 +175,122 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["hub"],
         "PASS",
         ["W1", "G2"],
+        {},
+    ),
+    # 19.A 1.18.0 (Abby, 2026-11-21, #138 draft D): a breadcrumb trail is a
+    # way of its own, apart from the site's menus (her keys: round 3 p01,
+    # p02, p08, p09). The section is in the agency's menu; its first story's
+    # trail, a navigation region named "Breadcrumb", links back to it.
+    "breadcrumb-is-a-way-of-its-own": (
+        "crumb/",
+        ["crumb-hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # ... and a trail marked only by its list's class (`ol.breadcrumb`).
+    "breadcrumb-list-by-class": (
+        "crumb2/",
+        ["crumb-hub"],
+        "PASS",
+        ["W1", "G2"],
+        {},
+    ),
+    # Must not PASS: the child page's trail does not include the page (round
+    # 2's svs home, key Fail: "Page breadcrumbs don't include it").
+    "breadcrumb-without-the-page": (
+        "crumb3/",
+        ["crumb-hub"],
+        "FAIL",
+        ["W1", "G4"],
+        {},
+    ),
+    # 19.A 1.21.0 (#138 draft C, Abby 2026-11-22): W4 counts only a script
+    # that could draw the results. An `async` tag from another host that
+    # fails beside results drawn in the document is left out, so the
+    # search's answer stands (round 3: script.crazyegg.com).
+    "search-async-tag-beside-drawn-results-is-left-out": (
+        "sr/t1",
+        ["sr/h1"],
+        "FAIL",
+        ["W1", "W3", "G4"],
+        {},
+    ),
+    # Must keep (step 6c): results drawn by the site's own script, which
+    # failed, beside the same tag: not verified.
+    "search-own-results-script-failed": (
+        "sr/t2",
+        ["sr/h2"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # ... the tag beside a results page that shows no results: not verified.
+    "search-tag-and-no-results-shown": (
+        "sr/t3",
+        ["sr/h3"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # ... a script from another host the page waits for (no async): not
+    # verified.
+    "search-off-host-script-the-page-waits-for": (
+        "sr/t4",
+        ["sr/h4"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # 19.A 1.21.0 (#138 draft C2): the page is headed "Website feedback"
+    # and the menus call it "Contact Us" (round 3's contact page). The
+    # heading finds nothing; the menu's name lists a page whose content
+    # links to it: navigation and a content link.
+    "search-by-menu-name-lists-a-page-that-links-to-it": (
+        "sr/fb",
+        ["sr/fbhome"],
+        "PASS",
+        ["W1", "W3", "G2"],
+        {},
+    ),
+    # ... and a listed page that redirects to it: the search leads there
+    # (round 3's home page, listed as /home).
+    "search-lists-a-page-that-redirects-to-it": (
+        "sr/fb2",
+        ["sr/fbhome2"],
+        "PASS",
+        ["W1", "W2", "G2"],
+        {},
+    ),
+    # Round 3's contact page as it is: the heading's search shows no
+    # results beside a failed tag (not verified), then the menu's name
+    # lists a page whose content links to it: PASS.
+    "search-unverified-then-menu-name-finds-a-content-link": (
+        "sr/fb3",
+        ["sr/fbhome3"],
+        "PASS",
+        ["W1", "W4", "G2"],
+        {},
+    ),
+    # ... and when the menu's name lists nothing that leads to it, the
+    # heading's search was never verified: NEEDS REVIEW, not FAIL.
+    "search-unverified-then-menu-name-finds-nothing": (
+        "sr/fb4",
+        ["sr/fbhome4"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # 19.A 1.21.0 (#138; round 3's community forum, key Pass by breadcrumbs
+    # on its posts): an application drawn by script after load opens its
+    # posts from cards that are not links, so the pages that lead back
+    # cannot be found from the markup: one way found is NEEDS REVIEW (W10),
+    # never FAIL. "one-way-nothing-else" (a page drawn at load) keeps FAIL.
+    "app-page-with-one-way-is-not-a-fail": (
+        "appf/",
+        ["appf-hub"],
+        "NEEDS_REVIEW",
+        ["W1", "W10", "G3"],
         {},
     ),
     # ... and up to the parent: the funding page links the grants page in
@@ -215,18 +354,19 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     # navigation region. The row is on T too, so the link back (to
     # index.html, a verified alias) is navigation. Its twin's subpage links
     # back only from a paragraph of links T does not have: one kind, FAIL.
+    # 1.20.0: both back to their 1.14.0 outcomes (#138, drafts A and B2).
     "repeated-link-row-is-navigation": (
         "lab2/",
         ["hub3"],
-        "NEEDS_REVIEW",
-        ["W1", "W7", "G3"],
+        "PASS",
+        ["W1", "W6", "G2"],
         {},
     ),
     "content-links-not-on-t-are-not-navigation": (
         "lab3/",
         ["hub3"],
-        "NEEDS_REVIEW",
-        ["W1", "W7", "G3"],
+        "FAIL",
+        ["W1", "W6", "G4"],
         {},
     ),
     # ... and a related link that is an API's JSON is not a page: it takes
@@ -553,3 +693,52 @@ def test_g5_names_what_was_found_and_checked():
         "We checked the 1 other page you gave, the home page and the site "
         "search (1 search)" in f.summary
     )
+
+
+# 19.A 1.19.0 (Abby, 2026-11-21, #138 draft E): the site search's own results
+# page is one page whatever its query; round 3 p04, key Pass by "navigation
+# and content links" (the home page's topic tags lead to other queries).
+# Cases: tested page (with its query), other page, outcome, rows.
+QUERY_CASES = {
+    # A search form submits to res.html (W5), and the topics page links it
+    # with other queries: links between pages, and the search.
+    "results-page-whatever-its-query": (
+        "res.html?q=test&sort=rel",
+        "res-home",
+        "PASS",
+        ["W1", "W5", "G2"],
+    ),
+    # Must not count: the search form submits to the home page's own
+    # address (round 1's nasa.gov: "/?search=artemis", key DNA). Links to
+    # the home page carry no search, so they are the home page, not the
+    # results page: only the search's own way (W5) is found.
+    "home-page-links-are-not-the-results-page": (
+        "hq.html?search=moon",
+        "hq-other",
+        "NEEDS_REVIEW",
+        ["W1", "W5", "G5"],
+    ),
+    # Must not count: no search form submits to app.html, so app.html?id=2
+    # is another record (a web app whose parameters are other content).
+    "other-query-of-a-page-no-form-submits-to": (
+        "app.html?id=1",
+        "app-home",
+        "FAIL",
+        ["W1", "G4"],
+    ),
+}
+
+
+@pytest.mark.parametrize("case", sorted(QUERY_CASES))
+async def test_query_case(case, settings, server, drafts):  # noqa: F811
+    page, other, outcome, rows = QUERY_CASES[case]
+    got = await run_tests(
+        settings,
+        f"{server.base}/19a/{page}",
+        ["19.A"],
+        {"19.A": {}},
+        other_pages=[f"{server.base}/19a/{other}.html"],
+    )
+    f = got["19.A"]
+    assert f.outcome.value == outcome, (f.rows, f.summary, f.rationale)
+    assert [r for r in f.rows if r != "A5"] == rows, f.rows

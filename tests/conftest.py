@@ -208,6 +208,9 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             "/redir-bad": (302, {"Location": f"http://localhost:{port}/landed"}),
             "/redir-bad-2": (302, {"Location": "/hop-bad"}),
             "/hop-bad": (302, {"Location": f"http://localhost:{port}/landed"}),
+            # 19.A 1.21.0: a page the site search lists that redirects to the
+            # tested page (round 3: /home to /).
+            "/19a/sr/old-feedback.html": (301, {"Location": "/19a/sr/fb2.html"}),
             # 19.A 1.11.0: a child page that leaves the site (not checked).
             "/19a/gone/away.html": (
                 302,

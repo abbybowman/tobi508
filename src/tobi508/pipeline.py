@@ -533,6 +533,14 @@ def _live_recorder(
             same = mine is not None and mine == document_sha(
                 run.dir / rel, lc.final_url
             )
+        # 19.A 1.20.0 (#138 draft A): an alias with T's document anywhere;
+        # 19.A then compares the page as drawn (site.text_share).
+        same_document = False
+        if purpose == "alias" and tested_har is not None and not same:
+            mine = document_sha(tested_har, final_url)
+            same_document = mine is not None and mine == document_sha(
+                run.dir / rel, lc.final_url
+            )
         report.live_pages.append(
             OtherPage(
                 n=n,
@@ -565,6 +573,7 @@ def _live_recorder(
             final_url=lc.final_url,
             har=run.dir / rel,
             same_content_as_tested=same,
+            same_document=same_document,
             new_page=_opener(
                 get_browser,
                 settings,

@@ -431,19 +431,42 @@ def _retry_round(out: Path, c: dict, answers: list) -> list | None:
 _URL = re.compile(r"http://(?:127\.0\.0\.1|localhost):\d+(/[^\s\"'#?]*)")
 
 
+# A fixture page named by its path alone (step 26's "compared with"
+# sentence: "/9x/s2-print.html"), under one of the fixture folders.
+_PATH = re.compile(
+    r"(?<![\w/:.])(/(?:"
+    + "|".join(
+        sorted(
+            (
+                re.escape(d.name)
+                for d in (REPO / "tests" / "fixtures").iterdir()
+                if d.is_dir()
+            ),
+            key=len,
+            reverse=True,
+        )
+    )
+    + r")/[^\s\"'#?,;)]*)"
+)
+
+
 def scrub(folder: Path) -> None:
     """Fixture file names describe the expected answer ("key-in-comment-only"),
-    so every local URL becomes a neutral /site/pageN.html (fragments kept)."""
+    so every local URL becomes a neutral /site/pageN.html (fragments kept),
+    and so does a fixture path printed without its host."""
     names: dict[str, str] = {}
 
-    def neutral(m: re.Match) -> str:
-        path = m.group(1)
+    def name_of(path: str) -> str:
         if path not in names:
             names[path] = "/" if path == "/" else f"/site/page{len(names) + 1}.html"
-        return "https://example.gov" + names[path]
+        return names[path]
+
+    def neutral(m: re.Match) -> str:
+        return "https://example.gov" + name_of(m.group(1))
 
     for f in sorted(folder.rglob("*.json")):
-        f.write_text(_URL.sub(neutral, f.read_text()))
+        text = _URL.sub(neutral, f.read_text())
+        f.write_text(_PATH.sub(lambda m: name_of(m.group(1)), text))
 
 
 async def prepare(out: Path, only: set[str] | None = None) -> None:

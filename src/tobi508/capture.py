@@ -747,6 +747,31 @@ def failed_scripts(har_path: Path) -> list[str]:
     ]
 
 
+def document_scripts(har_path: Path, final_url: str) -> dict[str, bool]:
+    """The scripts a recording's main document names, by absolute address,
+    with whether each is loaded `async`. Facts only; 19.A row W4 decides
+    (1.21.0)."""
+    from html.parser import HTMLParser
+    from urllib.parse import urljoin
+
+    body = media_body(har_path, final_url) or b""
+    out: dict[str, bool] = {}
+
+    class _P(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag != "script":
+                return
+            a = dict(attrs)
+            if a.get("src"):
+                out[urljoin(final_url, a["src"])] = "async" in a
+
+    try:
+        _P().feed(body.decode("utf-8", "replace"))
+    except Exception:
+        pass
+    return out
+
+
 async def _extra_wait(page, settings: Settings, log: LogFn) -> None:
     """`record_extra_wait_ms`: a pause for pages that fetch late; the
     network-idle check that follows catches what it started."""

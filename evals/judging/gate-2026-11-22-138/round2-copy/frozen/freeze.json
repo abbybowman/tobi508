@@ -1,0 +1,117 @@
+{
+ "started_at": "2026-11-08T01:35:54.958295+00:00",
+ "pages": {
+  "https://svs.gsfc.nasa.gov/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 17,
+   "assets_failed": 0,
+   "title": "NASA SVS | Home",
+   "heading": "NASA Scientific Visualization Studio",
+   "seconds": 6.4
+  },
+  "https://svs.gsfc.nasa.gov/help/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/help/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 13,
+   "assets_failed": 0,
+   "title": "NASA SVS | Tutorials, Links, and Other Helpful Information",
+   "heading": "Tutorials, Links, and Other Helpful Information",
+   "seconds": 3.2
+  },
+  "https://svs.gsfc.nasa.gov/search/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/search/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 17,
+   "assets_failed": 0,
+   "title": "NASA SVS | Search",
+   "heading": "Search",
+   "seconds": 4.5
+  },
+  "https://svs.gsfc.nasa.gov/gallery/the-galleries/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 14,
+   "assets_failed": 0,
+   "title": "NASA SVS | The Galleries",
+   "heading": "The Galleries",
+   "seconds": 4.8
+  },
+  "https://svs.gsfc.nasa.gov/cilab/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/cilab/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 13,
+   "assets_failed": 0,
+   "title": "Conceptual Image Laboratory - Home",
+   "heading": "",
+   "seconds": 1.9
+  },
+  "https://svs.gsfc.nasa.gov/14592/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/14592/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 15,
+   "assets_failed": 0,
+   "title": "NASA SVS | Largest Flare yet from Solar Cycle 25",
+   "heading": "Largest Flare yet from Solar Cycle 25",
+   "seconds": 16.2
+  },
+  "https://svs.gsfc.nasa.gov/14194/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/14194/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 15,
+   "assets_failed": 0,
+   "title": "NASA SVS | Roman Interactive Promo",
+   "heading": "Roman Interactive Promo",
+   "seconds": 21.6
+  },
+  "https://svs.gsfc.nasa.gov/5340/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/5340/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 19,
+   "assets_failed": 0,
+   "title": "NASA SVS | NASA Climate Legacies: An interactive tool to explore generational differences in the experience of a changin",
+   "heading": "NASA Climate Legacies: An interactive tool to explore generational differences in the experience of a changing climate",
+   "seconds": 4.2
+  },
+  "https://svs.gsfc.nasa.gov/5144/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/5144/",
+   "cross_site_frames": 1,
+   "document_status": 200,
+   "assets": 25,
+   "assets_failed": 0,
+   "title": "NASA SVS | Fermi Gamma-ray Pulsar Catalog WorldWide Telescope Interactive",
+   "heading": "Fermi Gamma-ray Pulsar Catalog WorldWide Telescope Interactive",
+   "seconds": 14.3
+  },
+  "https://svs.gsfc.nasa.gov/4914/": {
+   "status": "frozen",
+   "final_url": "https://svs.gsfc.nasa.gov/4914/",
+   "cross_site_frames": 0,
+   "document_status": 200,
+   "assets": 17,
+   "assets_failed": 0,
+   "title": "NASA SVS | Impact of Climate Change on Global Wheat Yields",
+   "heading": "Impact of Climate Change on Global Wheat Yields",
+   "seconds": 8.5
+  }
+ },
+ "finished_at": "2026-11-08T01:37:21.678770+00:00",
+ "recordings": 10
+}

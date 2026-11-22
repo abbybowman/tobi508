@@ -12,10 +12,14 @@ outcome. These six exceptions are approved, each with exactly these limits.
 1. **19.A's live site search** is the only live request a page's content
    shapes. It runs only when the caller's pages show fewer than two kinds of
    way; at most two per run (the heading, then, only when that finds
-   nothing, the heading in quotation marks); a GET form whose action passes
-   the allowlist and is on the tested page's host (every redirect hop
-   checked); the term is the tested page's own heading; each recorded as its
-   own HAR.
+   nothing, the name the site's navigation gives the page when it differs,
+   else the heading in quotation marks; #138); a GET form whose action
+   passes the allowlist and is on the tested page's host (every redirect
+   hop checked); each recorded as its own HAR. After each search, while
+   fewer than two kinds are found, the first pages its results list (at
+   most 5 a run, on the tested page's host, pages only) are checked as the
+   suggested pages below are: the one case where the search's results
+   choose pages to load (#138, Abby 2026-11-22).
 2. **19.A's suggested pages**: the site map a page read links to, the tested
    page's parent (one level up, from its own address), up to 2 child pages
    (links on it under its own directory; none for a page at the site root),
@@ -35,10 +39,12 @@ outcome. These six exceptions are approved, each with exactly these limits.
    address: at most 3 a run, each loaded exactly as a caller's other page is
    (`pipeline.capture_other`: the allowlist on every hop, the tested page's
    host after redirects, its own HAR, the page cache). It is the same page
-   only when it ends at the tested page's address (an identical document is
-   not enough: an application can send one document for every address;
-   #134 step 26); any other one is "not verified" (NEEDS REVIEW), never a
-   FAIL or a match. Its links are never followed. A link that differs only
+   when it ends at the tested page's address, or when its document is the
+   tested page's byte for byte and the page as drawn shares at least 90% of
+   its text (#138; an identical document alone is not enough: an
+   application can send one document for every address; #134 step 26); any
+   other one is "not verified" (NEEDS REVIEW), never a FAIL or a match. It
+   is read only for its text; its links are never read or followed. A link that differs only
    by its query string is not an alias.
 4. **A key combination that page text names** as a way to stop moving
    content or audio (2.A-2.C J2): on a fresh replay, modifiers plus one key,

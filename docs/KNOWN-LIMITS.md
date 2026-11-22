@@ -297,9 +297,18 @@ re-testing): confirm and remove, or remove the mark.
 
 ## 9.A to 9.C: the same site's other pages
 
-- **9.B** compares only navigation outside the main content: a
-  breadcrumb or section menu inside `main` that repeats on other pages
-  is left out. With one matched component it says NEEDS REVIEW, where
+- **Parts of a site** (9.A 1.10.0, 9.B 1.10.0, 9.C 1.13.0, #138): an
+  other page sharing fewer than 2 navigation components with the tested
+  page (a microsite against the main site) is left out, but only while a
+  page of the tested page's own part is given. With only such pages given,
+  they are compared as before (9.B: NEEDS REVIEW on one shared item). A
+  page whose whole menu was renamed may share too little and be left out,
+  so 9.C would not see the renaming; set low (2) to keep that rare.
+
+- **9.B** compares navigation outside the main content, and since 1.11.0
+  (#138) a navigation region or breadcrumb trail inside it; other links
+  inside `main` (a row of links in no region) are still left out as
+  content. With one matched component it says NEEDS REVIEW, where
   there is no order to get wrong. Two lists whose comparison table
   passes 6 million cells pair in order, not by alignment (1.7.0), so an
   extra copy of a link could still read as a swap there (not seen on
@@ -307,11 +316,15 @@ re-testing): confirm and remove, or remove the mark.
 - **9.C** compares less than the TT text covers (read, not run): links
   pair by address only inside the header, menus, search and footer, and
   otherwise by `id`, an equal name or a place outside the main content.
-  Two controls in the pages' own content that do the same thing under
-  different names are not paired unless they share an `id`, so 9.C can
-  PASS or say DOES NOT APPLY without comparing them. Pictures that are
-  not controls are not compared (the PDF's how-to is ANDI's focusable
-  elements). Step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138).
+  Since 1.14.0 (step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138))
+  buttons and fields in the pages' own content also pair by their first
+  word and by their place, and the judge says whether they do the same
+  thing. Links in the content still pair only by `id` or an equal name
+  (they are prose and tags there), and no control pairs by its picture
+  (ANDI's read keeps no image address), so two content links or two icons
+  that do the same thing under different names can still go uncompared.
+  Pictures that are not controls are not compared (the PDF's how-to is
+  ANDI's focusable elements).
 - **9.A to 9.C and 19.A:** an other page that cannot be read in full, or
   that is the tested page again, is left out and named, and the test
   decides on the rest (step 26; Abby, 2026-11-20: one usable other page
@@ -335,9 +348,27 @@ re-testing): confirm and remove, or remove the mark.
   have closed menus the tool did not open, and a link to the page under
   another address whose content changes on every load, are NEEDS REVIEW
   too.
-- **Breadcrumbs** count as navigation links, the same kind as the
-  menus; Abby's round 3 keys count breadcrumbs on child pages as a way
-  of their own (a question for Abby, step 34, [#138](https://github.com/abbybowman/tobi508/issues/138)).
+- **Breadcrumbs** are a way of their own (19.A 1.18.0, Abby's keys):
+  a trail is found by its region's or list's name ("breadcrumb"), or its
+  list's class or id. A trail marked some other way (links with ">"
+  between them and no such name) counts as navigation or a content link,
+  so a page found only by the menus and such a trail stays one way.
+- **A blocked analytics tag** no longer holds the search (19.A 1.21.0):
+  a script that failed counts only when it could draw the results. On
+  science.data.nasa.gov `script.crazyegg.com/…/2090.js` fails in every
+  run: its Cloudflare answers the `HeadlessChrome` user agent with a 403
+  HTML page, which Chromium's ORB refuses (#138). A results page drawn
+  by a script from another host that loads `async` and still shows some
+  results is read as it stands.
+- **Applications** (19.A 1.21.0, row W10): when the tested page draws
+  itself by script after loading and fewer than two ways are found, 19.A
+  says NEEDS REVIEW, never FAIL: such sites often open their pages from
+  elements that are not links (round 3's forum opens each post from a
+  card with no address), so the tool cannot follow them.
+- **Content links on pages nobody names** are found only through the
+  site's own search (19.A 1.21.0: the pages a search lists, 5 a run). A
+  page linked only from a page the search does not list, and not given,
+  can still FAIL where a tester's web search finds the link.
 
 ## Not limits: kept here until they have a home
 
