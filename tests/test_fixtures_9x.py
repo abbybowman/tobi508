@@ -41,6 +41,22 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.A": "PASS", "9.B": "PASS", "9.C": "PASS"},
         {},
     ),
+    # 9.B 1.11.0 (#138, Abby 2026-11-22): a section menu inside `main` that
+    # repeats on other pages is navigation. Same order: PASS; two of its
+    # items swapped on the other page: FAIL (before 1.11.0 it was left out
+    # as content, and the swap was not seen).
+    "section-menu-in-main-same-order": (
+        "o1-section-a",
+        ["o2-section-b"],
+        {"9.B": "PASS"},
+        {},
+    ),
+    "section-menu-in-main-swapped": (
+        "o1-section-a",
+        ["o3-section-swapped"],
+        {"9.B": "FAIL"},
+        {},
+    ),
     # ... and with only the microsite page given, none is left out: as
     # before (one shared component, NEEDS REVIEW).
     "microsite-page-alone-is-not-left-out": (
@@ -326,7 +342,20 @@ ROWS = {
 }
 
 
-@pytest.mark.parametrize("case", sorted(EXPECTED))
+# Draft H (#138, navigation inside `main`): waiting for Abby's yes on the
+# spec text; until it is built, the swapped section menu still reads PASS.
+PENDING = {"section-menu-in-main-swapped": "#138 draft H not yet approved"}
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        pytest.param(c, marks=pytest.mark.xfail(reason=PENDING[c], strict=True))
+        if c in PENDING
+        else c
+        for c in sorted(EXPECTED)
+    ],
+)
 async def test_case(case, settings, server, drafts):  # noqa: F811
     page, others, want, answers = EXPECTED[case]
     page, hash_, frag = page.partition("#")  # "name#main": the tested address
