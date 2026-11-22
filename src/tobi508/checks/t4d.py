@@ -37,6 +37,10 @@ INDICATOR_MARGIN_PX = 8
 PIXEL_DELTA_VISIBLE = 8
 PIXEL_DELTA_STRONG = 40
 MIN_CHANGED_PX = 12
+# M6 also needs the strongly changed pixels to be at least this many CSS px
+# per CSS px of the element's edge (spec Terms, share; 1.11.0, step 27): about
+# 50 px on a large image link is a small mark, not a ring (round 3's blog).
+MIN_SHARE = 0.25
 # Pictures for J1 (post-round 2 fix 26): a small element's pictures keep
 # at least this much of the page around it (CSS px), and a picture whose long
 # side is under JUDGE_MIN_SIDE device px is scaled up (whole steps, at most
@@ -424,6 +428,10 @@ class Attempt(BaseModel):
     changed_px: float | None = None
     strong_px: float | None = None
     mask_fraction: float | None = None
+    # Strongly changed pixels per CSS px of the element's edge (its border
+    # box's perimeter): how thick a ring they would make all round it
+    # (spec Terms, share; 1.11.0, step 27).
+    share: float | None = None
     next_inside_frame: bool = False
     # Where the differing pixels sit, for J1: CSS px on the element,
     # touching it (within INDICATOR_MARGIN_PX) and elsewhere in the picture.
@@ -532,6 +540,16 @@ def compare(
         mask=mx.point(lambda v: 255 if v >= PIXEL_DELTA_VISIBLE else 0).convert("L"),
     )
     return vis / scale, strong / scale, frac, view
+
+
+def share(strong_px: float, e: dict[str, Any]) -> float | None:
+    """Strongly changed CSS px per CSS px of the element's edge (the
+    perimeter of its border box): a 2 px ring all round it is about 2, a
+    small mark on a large element near 0 (spec Terms, share). None for an
+    element with no box."""
+    _, _, w, h = e["self_rect"]
+    edge = 2 * (w + h)
+    return strong_px / edge if edge > 0 else None
 
 
 def places(rel: Path, e: dict[str, Any]) -> dict[str, Any]:
@@ -728,6 +746,7 @@ def _attempts_from(
         if e.get("on") and e.get("off") and not e.get("incomplete"):
             try:
                 a.changed_px, a.strong_px, a.mask_fraction, diff = compare(rel, e)
+                a.share = share(a.strong_px, e)
                 a.places = places(rel, e)
                 if diff is not None and inst.diff_image is None:
                     path = rel / e["on"].replace("-on.png", "-diff.png")
@@ -1119,7 +1138,11 @@ INSTANCE_ROWS = [
     ),
     Row(
         "M6",
-        lambda c: _style_signal(c["e"]) and (c["a"].strong_px or 0) >= MIN_CHANGED_PX,
+        lambda c: (
+            _style_signal(c["e"])
+            and (c["a"].strong_px or 0) >= MIN_CHANGED_PX
+            and (c["a"].share or 0) >= MIN_SHARE
+        ),
         Outcome.PASS,
         "p. 22 ER 1; ACT oj04fd",
     ),
@@ -1267,6 +1290,11 @@ def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {_label(inst.label)}"
                 + (
                     f" changed {a.changed_px:.0f} px, strongly {a.strong_px:.0f} px"
+                    + (
+                        f" ({a.share:.2f} per px of its edge)"
+                        if a.share is not None
+                        else ""
+                    )
                     if a and a.changed_px is not None
                     else ""
                 ),
