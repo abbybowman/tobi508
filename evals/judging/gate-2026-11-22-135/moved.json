@@ -1,0 +1,132 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "rounds": {
+  "3": {
+   "tally": {
+    "needs_review": 6,
+    "agree": 4
+   },
+   "moved": [
+    {
+     "page": "p02",
+     "test": "4.D",
+     "key": "Fail",
+     "comment": "In the list of blog results, between a blog's title and its image alt text (which shows as a faint dashed outline of a long horizontal rectangle centered inside the larger image), the keyboard focuses on the linked image as a whole, but there is no visual indication of that focus.",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G4",
+      "RC"
+     ],
+     "new": "Fail",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "d1:M6",
+      "d2:M6",
+      "d3:M6",
+      "d4:M6",
+      "d5:M6",
+      "d6:M6",
+      "d7:M6",
+      "d8:M6",
+      "d9:M5",
+      "d10:M6",
+      "d11:M6",
+      "d12:M6",
+      "d13:M6",
+      "d14:M6",
+      "d15:M6",
+      "d16:M6",
+      "d17:M6",
+      "d18:M6",
+      "d19:M6",
+      "d20:M6",
+      "d21:M6",
+      "d22:M10",
+      "d23:M6",
+      "d24:M6",
+      "d25:M10",
+      "d26:M6",
+      "d27:M6",
+      "d28:M10",
+      "d29:M6",
+      "d30:M6",
+      "d31:M10",
+      "d32:M6",
+      "d33:M6",
+      "d34:M10",
+      "d35:M6",
+      "d36:M6",
+      "d37:M10",
+      "d38:M6",
+      "d39:M6",
+      "d40:M10",
+      "d41:M6",
+      "d42:M6",
+      "d43:M10",
+      "d44:M6",
+      "d45:M6",
+      "d46:M10",
+      "d47:M6",
+      "d48:M6",
+      "d49:M10",
+      "d50:M6",
+      "d51:M6",
+      "d52:M6",
+      "d53:M6",
+      "d54:M6",
+      "d55:M6",
+      "d56:M6",
+      "d57:M6",
+      "d58:M6",
+      "d59:M6",
+      "d60:M6",
+      "d61:M6",
+      "d62:M6",
+      "d63:M6",
+      "d64:M6",
+      "d65:M6",
+      "d66:M6",
+      "d67:M6",
+      "d68:M6",
+      "d69:M6",
+      "d70:M6",
+      "d71:M6",
+      "d72:M6",
+      "d73:M6",
+      "d74:M6",
+      "d75:M6",
+      "d76:M6",
+      "d77:M6",
+      "d78:M6",
+      "d79:M6",
+      "d80:M6",
+      "d81:M6",
+      "d82:M6",
+      "G2"
+     ]
+    }
+   ],
+   "live": []
+  },
+  "2": {
+   "tally": {
+    "needs_review": 7,
+    "agree": 1,
+    "false_fail": 2
+   },
+   "moved": [],
+   "live": []
+  },
+  "1": {
+   "tally": {
+    "agree": 3,
+    "needs_review": 6
+   },
+   "moved": [],
+   "live": []
+  }
+ }
+}

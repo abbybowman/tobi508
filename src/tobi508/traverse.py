@@ -1079,6 +1079,51 @@ async def screenshot(page: Page, **kw: Any) -> bytes:
         await _pause_log(page, False)
 
 
+async def clip_scrolled(page: Page, rect: list[float], path: str) -> dict[str, Any]:
+    """A clip of `rect` (page coordinates, CSS px) when it is not in the
+    viewport: scroll the window so it is (instantly, two frames), take the
+    clip, scroll back, with the mutation log paused throughout so the walk
+    does not read the tool's own scroll as the page changing. Returns
+    {"taken": bool, "restored": bool}. Focus is not touched (4.D step 27)."""
+    await _pause_log(page, True)
+    out = {"taken": False, "restored": False}
+    try:
+        v = await page.evaluate("[scrollX, scrollY, innerWidth, innerHeight]")
+        sx, sy, vw, vh = v
+        tx = max(0.0, rect[0] + rect[2] / 2 - vw / 2)
+        ty = max(0.0, rect[1] + rect[3] / 2 - vh / 2)
+        go = "([x, y]) => window.scrollTo({left: x, top: y, behavior: 'instant'})"
+        frames = "() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))"
+        await page.evaluate(go, [tx, ty])
+        await page.evaluate(frames)
+        nx, ny = await page.evaluate("[scrollX, scrollY]")
+        clip = {
+            "x": rect[0] - nx,
+            "y": rect[1] - ny,
+            "width": rect[2],
+            "height": rect[3],
+        }
+        if (
+            clip["x"] >= 0
+            and clip["y"] >= 0
+            and clip["x"] + rect[2] <= vw
+            and clip["y"] + rect[3] <= vh
+        ):
+            await page.screenshot(
+                path=path, clip=clip, animations="disabled", caret="hide"
+            )
+            out["taken"] = True
+        await page.evaluate(go, [sx, sy])
+        await page.evaluate(frames)
+        bx, by = await page.evaluate("[scrollX, scrollY]")
+        out["restored"] = abs(bx - sx) < 1 and abs(by - sy) < 1
+    except Exception:
+        pass
+    finally:
+        await _pause_log(page, False)
+    return out
+
+
 async def settle(page: Page, quiet_ms: int, window_ms: int = SETTLE_MAX_MS) -> bool:
     """Wait per the settle rule: 2 animation frames, then until the DOM has been
     quiet for `quiet_ms`. Returns False if the limit was hit (unsettled)."""

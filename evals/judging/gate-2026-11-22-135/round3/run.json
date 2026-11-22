@@ -1,0 +1,22 @@
+{
+ "date": "2026-11-22-135",
+ "round": 3,
+ "types": "4.D",
+ "tests": "4.D",
+ "frozen_pages_mode": "replay",
+ "repeat": 1,
+ "pages": [
+  "https://science.data.nasa.gov/",
+  "https://science.data.nasa.gov/blog",
+  "https://science.data.nasa.gov/contact",
+  "https://science.data.nasa.gov/search?rendered_item=test&sort_by=rel",
+  "https://science.data.nasa.gov/fits/verifier",
+  "https://science.data.nasa.gov/fits/sample-files",
+  "https://science.data.nasa.gov/data-governance-community/home",
+  "https://science.data.nasa.gov/data-governance-community/forum",
+  "https://science.data.nasa.gov/science-discovery-engine/search/sde/home",
+  "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory"
+ ],
+ "dry": false,
+ "started": "2026-11-22T21:01:48.794466+00:00"
+}

@@ -1,0 +1,539 @@
+{
+ "4.D-act-dd9628d8": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "yes",
+     "reasons": "A dark blue square marker appears just left of the focused WCAG link (and one just right of it) when focused. It is added next to the element and clearly visible."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "A dark blue square marker appears just left of the focused WCAG link (and one just right of it) when focused. It is added next to the element and clearly visible."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 7.4,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2991,
+    "cache_read_input_tokens": 1438,
+    "input_tokens": 2,
+    "output_tokens": 694
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M9",
+   "d3:M6",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f09-faint-outline": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Changed pixels form a ring around Apply, but I can't see it in B, so visibility is unclear. The Renew box belongs to the next element."
+    },
+    "q": "4.D-d1-J1",
+    "reasons": "Changed pixels form a ring around Apply, but I can't see it in B, so visibility is unclear. The Renew box belongs to the next element."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "A ring of changed pixels surrounds Renew, but it is not visible at this size and may be faint."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "A ring of changed pixels surrounds Renew, but it is not visible at this size and may be faint."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 7.8,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 5244,
+    "cache_read_input_tokens": 1813,
+    "input_tokens": 2,
+    "output_tokens": 710
+   },
+   "unsure": 2
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M11",
+   "d2:M11",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f14-menubar-roving-no-indicator": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "no",
+     "reasons": "No change on or touching Home. The only difference is the outline on the next link, After, which is in A and not in B."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "No change on or touching Home. The only difference is the outline on the next link, After, which is in A and not in B."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.3,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2978,
+    "cache_read_input_tokens": 1438,
+    "input_tokens": 2,
+    "output_tokens": 134
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M10",
+   "d3:M6",
+   "d4:M8",
+   "d5:M8",
+   "d6:M8",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f16-faint-color-and-counter": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "no",
+     "reasons": "Link looks the same in A and B; the diff is only a slightly different link shade/antialiasing, plus the 'Updated' timer text changing elsewhere."
+    },
+    "q": "4.D-d1-J1",
+    "reasons": "Link looks the same in A and B; the diff is only a slightly different link shade/antialiasing, plus the 'Updated' timer text changing elsewhere."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint link color shift on the text; no outline, background or marker. Too faint to tell."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "Only a very faint link color shift on the text; no outline, background or marker. Too faint to tell."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.1,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 5161,
+    "cache_read_input_tokens": 1813,
+    "input_tokens": 2,
+    "output_tokens": 259
+   },
+   "unsure": 1
+  },
+  "match": false,
+  "rows": [
+   "A3",
+   "d1:M10",
+   "d2:M11",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f19-small-icon-faint-ring": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light ring surrounds the circle on white; too faint to tell."
+    },
+    "q": "4.D-d1-J1",
+    "reasons": "Only a very faint light ring surrounds the circle on white; too faint to tell."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light ring surrounds the circle on white; too faint to tell."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "Only a very faint light ring surrounds the circle on white; too faint to tell."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light ring surrounds the circle on white; too faint to tell."
+    },
+    "q": "4.D-d3-J1",
+    "reasons": "Only a very faint light ring surrounds the circle on white; too faint to tell."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 3,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 3,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.6,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 7842,
+    "cache_read_input_tokens": 2188,
+    "input_tokens": 2,
+    "output_tokens": 411
+   },
+   "unsure": 3
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M11",
+   "d2:M11",
+   "d3:M11",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f20-script-moves-focus-off-one-link": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "yes",
+     "reasons": "Black rounded outline appears around link 7 in B; absent in A."
+    },
+    "q": "4.D-d7-J1",
+    "reasons": "Black rounded outline appears around link 7 in B; absent in A."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "yes",
+     "reasons": "Black rounded outline appears around link 6 in B; A's outline is on link 5."
+    },
+    "q": "4.D-d8-J1",
+    "reasons": "Black rounded outline appears around link 6 in B; A's outline is on link 5."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "yes",
+     "reasons": "Black rounded outline appears around link 5 in B; A's outline is on link 4."
+    },
+    "q": "4.D-d9-J1",
+    "reasons": "Black rounded outline appears around link 5 in B; A's outline is on link 4."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "yes",
+     "reasons": "Black rounded outline appears around link 4 in B; A's outline is on link 1."
+    },
+    "q": "4.D-d10-J1",
+    "reasons": "Black rounded outline appears around link 4 in B; A's outline is on link 1."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "judge": {
+   "answered": 4,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 4,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.5,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 8389,
+    "cache_read_input_tokens": 2563,
+    "input_tokens": 2,
+    "output_tokens": 377
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M6",
+   "d3:M6",
+   "d4:M6",
+   "d5:M6",
+   "d6:M6",
+   "d7:M9",
+   "d8:M9",
+   "d9:M9",
+   "d10:M9",
+   "WK",
+   "G3"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f27-no-focus-indicator-in-web-component": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "no",
+     "reasons": "No change on or touching Benefits in B. The only difference is the outline on After in A, which belongs to the next element."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "No change on or touching Benefits in B. The only difference is the outline on After in A, which belongs to the next element."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.3,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 3018,
+    "cache_read_input_tokens": 1438,
+    "input_tokens": 2,
+    "output_tokens": 275
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M10",
+   "d3:M6",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ },
+ "4.D-f30-next-outline-over-image-link": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "no",
+     "reasons": "The only change is a dashed outline in A that B lacks. It belongs to the next element, so it doesn't count. B shows no new mark on or around the link."
+    },
+    "q": "4.D-d2-J1",
+    "reasons": "The only change is a dashed outline in A that B lacks. It belongs to the next element, so it doesn't count. B shows no new mark on or around the link."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 7.3,
+   "switched_on": [
+    "4.D"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 3137,
+    "cache_read_input_tokens": 1438,
+    "input_tokens": 2,
+    "output_tokens": 661
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M10",
+   "d3:M6",
+   "d4:M6",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.D",
+  "wrong_pass": false
+ }
+}

@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F30 Blog</title>
+<style>
+  body { background: #fff; font-family: sans-serif; margin: 24px; }
+  .post { margin-bottom: 40px; }
+  .post h2 a:focus { outline: 2px solid #1b4f9c; outline-offset: 2px; }
+  .pic { position: relative; width: 480px; height: 200px; }
+  .pic img { display: block; width: 480px; height: 200px; }
+  /* The picture's own link: a small box at its top-left corner. Its focus
+     style changes the outline, but in a colour nothing shows. */
+  .pic a.img { position: absolute; left: 0; top: 0; width: 46px; height: 19px; color: transparent; outline: none; }
+  .pic a.img:focus { outline: 1px dashed transparent; }
+  /* The caption link: a strip across the middle. Its focus ring is a sibling
+     drawn round the whole picture, outside the link's own box. */
+  .pic a.alt { position: absolute; left: 0; top: 90px; width: 480px; height: 19px; color: transparent; outline: none; }
+  .pic .ring { position: absolute; left: -3px; top: -3px; width: 484px; height: 204px; border: 1px dashed transparent; pointer-events: none; }
+  .pic a.alt:focus + .ring { border-color: #222; }
+</style></head><body>
+<h1>Blog</h1>
+<div class="post">
+  <h2><a href="#post-1">First post</a></h2>
+  <div class="pic">
+    <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='200'%3E%3Crect width='480' height='200' fill='%23c9d6e8'/%3E%3Ccircle cx='240' cy='100' r='70' fill='%23f2f2f2'/%3E%3C/svg%3E">
+    <a class="img" href="#post-1">Image</a>
+    <a class="alt" href="#post-1">A pale circle on a blue field</a><span class="ring"></span>
+  </div>
+</div>
+<div class="post">
+  <h2><a href="#post-2">Second post</a></h2>
+</div>
+</body></html>

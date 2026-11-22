@@ -37,7 +37,7 @@ TEST_BUDGETS_DEFAULT: dict[str, int] = {
     "4.A": 300,  # (112 s, 5144; 1.17.0: up to 160 hovered stops)
     "4.B": 60,  # (10 s)
     "4.C": 180,  # (65 s, 5340)
-    "4.D": 60,  # (9 s)
+    "4.D": 120,  # (9 s; 1.11.0: up to 5 replays of about 9-17 s for before images)
     "4.E": 60,  # (0 s)
     "4.F": 540,  # (270 s, 4914)
     "5.A": 60,  # (11 s)

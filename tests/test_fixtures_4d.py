@@ -5,6 +5,7 @@ tests/fixtures/act/manifest.json and here, never in a page."""
 from __future__ import annotations
 
 import json
+import re
 
 import pytest
 
@@ -62,7 +63,9 @@ EXPECTED: dict[str, dict] = {
     # C-07 (1.7.0): a script moves focus off link 3 at once, so the walk never
     # stops on it: 4.D checked 10 of the page's 11 elements and may not say
     # PASS. f21 is the same page with every element reached: still PASS.
-    "f20-script-moves-focus-off-one-link": {"outcome": "NEEDS_REVIEW"},
+    # 4.D 1.11.0: 4 links reached only by Shift+Tab are past the 5 replays
+    # for a before image: J1 looks at their clear rings.
+    "f20-script-moves-focus-off-one-link": {"outcome": "NEEDS_REVIEW", "choice": "yes"},
     "f21-eleven-links-all-reached": {"outcome": "PASS"},
     # F-01 (Abby approved, 2026-11-12): a menubar of 8 items with a clear
     # outline on each. The loop stopped on item 7 with no "after" picture, so
@@ -105,14 +108,36 @@ EXPECTED: dict[str, dict] = {
     # Step 8 (the grid's NEW-2): a link whose focus shows nothing, inside a
     # web component and inside a frame from another site, still FAILs (M8):
     # the twins of the grid's PASSes.
-    "f27-no-focus-indicator-in-web-component": {"outcome": "FAIL", "rows": ["M8"]},
+    # 4.D 1.11.0: the 16 px region takes in 36 px of a neighbour's change, so
+    # the link is no longer M8; those pixels did not change both ways, so J1
+    # looks (M7) and a correct judge says no (M10): still FAIL.
+    "f27-no-focus-indicator-in-web-component": {
+        "outcome": "FAIL",
+        "rows": ["M10"],
+        "choice": "no",
+    },
     "f28-no-focus-indicator-in-frame": {"outcome": "FAIL", "rows": ["M8"]},
     # 4.D 1.10.0: f11's focus dropped on focus, inside a web component: the
     # focus log names it by its host, so M3 sees it (it was WK, NEEDS REVIEW).
     "f29-blur-on-focus-in-web-component": {"outcome": "FAIL", "rows": ["M3"]},
+    # Step 27 (#135): round 3's blog. The picture's own link shows nothing
+    # with focus; the next link's focus ring, drawn round the whole picture,
+    # is in the first link's "off" picture, and M6 passes it on those pixels.
+    # 4.D 1.11.0: M6 needs the change confirmed both ways, against a before
+    # picture, so J1 looks (M7); a correct judge sees the ring only in image
+    # A (the next link's) and nothing on the link in B or D: no (M10). The
+    # caption and title links keep M6. test_f30_before_picture checks the
+    # counts.
+    "f30-next-outline-over-image-link": {
+        "outcome": "FAIL",
+        "choice": "no",
+        "rows": ["M6", "M10"],
+    },
     "f12-listbox-activedescendant": {"outcome": "PASS"},
     "f13-listbox-no-highlight": {"outcome": "FAIL"},
-    "f14-menubar-roving-no-indicator": {"outcome": "FAIL"},
+    # 4.D 1.11.0: the first item's pixels were its neighbour's (changed one
+    # way only): J1, and a correct judge says no.
+    "f14-menubar-roving-no-indicator": {"outcome": "FAIL", "choice": "no"},
 }
 
 
@@ -241,3 +266,60 @@ def test_the_reason_a_last_step_has_no_after_picture_is_kept(monkeypatch, tmp_pa
     t4d._attempts_from(p, st, by_subject, tmp_path)
     [inst] = by_subject.values()
     assert t4d._reason(inst).startswith("focus never moved on"), t4d._reason(inst)
+
+
+async def test_f30_before_picture(settings, server):
+    """Step 27 (#135), evidence only: each stop also gets a before picture
+    (the page before the key press that focused it), and the pixels that
+    changed both ways (on vs off and on vs before) are counted. On F30 the
+    picture's own link changed only one way: what differs is the next
+    link's ring in its off picture. The caption link's ring changed both
+    ways; the title links keep (nearly) all their pixels."""
+    from tobi508.checks.t4d import MIN_CHANGED_PX
+
+    got = await run_check(
+        settings,
+        f"{server.base}/4d/f30-next-outline-over-image-link.html",
+        TestId.T4D,
+        "no",
+    )
+    [q] = got["asked"]  # the picture link only (M7), with its before picture
+    assert (
+        '"Image"' in str(q.input["element"])
+        or q.input["element"].get("name") == "Image"
+    )
+    assert q.input["image_d_before"] and q.input["image_d_before"].endswith(".png")
+    by = {}
+    for i in got["finding"].instances:
+        name = i.description.split('"')[1]
+        nums = [float(x) for x in re.findall(r"(\d+) px", i.description)]
+        by[name] = nums  # changed, strongly, both ways, both ways strongly
+        assert len(i.evidence_refs) >= 2
+    image, caption = by["Image"], by["A pale circle on a blue field"]
+    assert image[1] >= MIN_CHANGED_PX and image[3] < MIN_CHANGED_PX, image
+    assert caption[3] >= MIN_CHANGED_PX, caption
+    assert by["First post"][3] >= MIN_CHANGED_PX
+
+
+async def test_f30_before_by_replay(settings, server, monkeypatch):
+    """Step 27 (#135), evidence only: with P2's before pictures switched off,
+    every stop that would pass M6 gets its before picture from a replay (a
+    fresh load, one Tab fewer), and F30's picture link still shows no pixel
+    that changed both ways. Its own run: run_shared would hand back F30's
+    run with P2's pictures."""
+    from tobi508.checks import t4d
+    from tobi508.pipeline import run_tt_tests
+
+    monkeypatch.setattr(t4d, "BEFORE_PICTURE", False)
+    monkeypatch.setattr(t4d, "BEFORE_REPLAY_MAX", 10)
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/4d/f30-next-outline-over-image-link.html",
+        [TestId.T4D],
+    )
+    [f] = [x for x in out.report.findings if x.test_id is TestId.T4D]
+    image = next(i for i in f.instances if '"Image"' in i.description)
+    nums = [float(x) for x in re.findall(r"(\d+) px", image.description)]
+    assert nums[1] >= t4d.MIN_CHANGED_PX and nums[3] < t4d.MIN_CHANGED_PX, nums
+    caption = next(i for i in f.instances if "pale circle" in i.description)
+    assert float(re.findall(r"(\d+) px", caption.description)[3]) >= t4d.MIN_CHANGED_PX
