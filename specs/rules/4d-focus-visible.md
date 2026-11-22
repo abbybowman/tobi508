@@ -67,7 +67,7 @@ P1 collects at every stop. P2 collects only at stops (matched by frame chain plu
 | `JUDGE_MIN_SIDE`, `JUDGE_MAX_SCALE` | 480 device px, 4 (1.6.0) | Pictures for J1 |
 | `RING_SIDE_PX` | 6 CSS px (1.6.0) | Ring fact |
 | `MIN_CHANGED_PX` | 12 CSS px² | M6, M7, M8 |
-| `BEFORE_REPLAY_MAX` | 5 replays a page (1.11.0; 9-17 s each, measured; 4.D's time budget is 120 s for them, `config.TEST_BUDGETS_DEFAULT`) | Before image |
+| `BEFORE_REPLAY_MAX`, `REPLAY_TIME_MAX_S` | 5 replays and 60 s a page in all (1.11.0; 8-33 s each, measured; a replay starts only with 15 s of the test's time left and stops before its deadline; 4.D's time budget is 120 s, `config.TEST_BUDGETS_DEFAULT`) | Before image |
 | `MASK_MAX_FRACTION` | 0.5 | Complete evidence |
 | `WIDGET_ITEMS_MAX` | 5 items per widget | Widget pass W |
 | `ANCESTOR_MAX_FACTOR`, `ANCESTOR_MAX_AREA` | 4, 40,000 CSS px² | Region |

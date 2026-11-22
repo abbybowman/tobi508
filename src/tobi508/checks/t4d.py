@@ -74,6 +74,9 @@ BEFORE_SCROLL = True
 # At most this many replays a page (about 9 s each, measured); 0 turns it off.
 BEFORE_REPLAY_MAX = 5
 REPLAY_MIN_LEFT_S = 15  # start a replay only with this much of the test's time left
+# All of a page's replays together (round 2's SVS 14592: one replay took
+# 33 s on a slow video page, and five used the test's whole time).
+REPLAY_TIME_MAX_S = 60
 HOOK = "focus4d"
 
 # Runs in the isolated world on the focused element (`this`). With itemId, on
@@ -990,6 +993,7 @@ async def _replay_before(ctx: RunContext, by_subject: dict[str, Inst4D]) -> None
     have none (step 27): a fresh load with the attempt's keys but the last,
     then a clip of its region. The both-ways counts are made again with it."""
     done = 0
+    stop = time.monotonic() + REPLAY_TIME_MAX_S
     for inst in by_subject.values():
         a = _best(inst)
         e = a.extras if a else {}
@@ -1008,7 +1012,7 @@ async def _replay_before(ctx: RunContext, by_subject: dict[str, Inst4D]) -> None
         # A replay deep into a long page presses Tab many times: start one only
         # with REPLAY_MIN_LEFT_S to spare, and stop it before the test's own
         # deadline (round 2's SVS 5144 and 4914 ran 4.D out of its time).
-        left = min(ctx.deadline, ctx.test_deadline) - time.monotonic()
+        left = min(ctx.deadline, ctx.test_deadline, stop) - time.monotonic()
         if ctx.out_of_time() or left < REPLAY_MIN_LEFT_S:
             e["before_replay"] = "out of time"
             continue
