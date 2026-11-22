@@ -133,6 +133,10 @@ EXPECTED: dict[str, dict] = {
     # leaves them under the sticky header, where they showed nothing (M8).
     # They are P1's stops (same role, name and place), which P1 pictured.
     "f31-new-id-each-load-under-sticky-header": {"outcome": "PASS"},
+    # 4.D 1.12.0 (#135, round 2's SVS 5340, key Pass): the tab's outline is
+    # clipped by its own scrolling tab list, which answers at the tab's centre.
+    # Clipped by its container, not covered: M4 (NEEDS REVIEW), not M8.
+    "f32-tab-clipped-by-its-tab-list": {"outcome": "NEEDS_REVIEW", "rows": ["M4"]},
     "f30-next-outline-over-image-link": {
         "outcome": "FAIL",
         "choice": "no",

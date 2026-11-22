@@ -115,7 +115,9 @@ SNAP_FN = """function (useActive, itemId) {
   // a fixed header, an overlay or a player's controls.
   const r0 = el.getBoundingClientRect();
   const top = doc.elementFromPoint(r0.x + r0.width / 2, r0.y + r0.height / 2);
-  const hit = !!top && (top === el || el.contains(top));
+  // An ancestor at its centre is its own container clipping it (a tab inside
+  // a scrolling tab list; 1.12.0, SVS 5340), not something covering it.
+  const hit = !!top && (top === el || el.contains(top) || top.contains(el));
   return { parts, hit, editable: textLike && !el.readOnly && !el.disabled,
     caret: getComputedStyle(el).caretColor,
     activedescendant: this.hasAttribute('aria-activedescendant'),
