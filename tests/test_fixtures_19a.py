@@ -262,6 +262,25 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "W2", "G2"],
         {},
     ),
+    # Round 3's contact page as it is: the heading's search shows no
+    # results beside a failed tag (not verified), then the menu's name
+    # lists a page whose content links to it: PASS.
+    "search-unverified-then-menu-name-finds-a-content-link": (
+        "sr/fb3",
+        ["sr/fbhome3"],
+        "PASS",
+        ["W1", "W4", "G2"],
+        {},
+    ),
+    # ... and when the menu's name lists nothing that leads to it, the
+    # heading's search was never verified: NEEDS REVIEW, not FAIL.
+    "search-unverified-then-menu-name-finds-nothing": (
+        "sr/fb4",
+        ["sr/fbhome4"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
     # ... and up to the parent: the funding page links the grants page in
     # its content; the agency's menu links it too.
     "second-way-on-the-parent": (

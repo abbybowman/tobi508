@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Search results</title><script async src="http://127.0.0.2/tag.js"></script></head><body>
+<main><h1>Search results</h1><div id="results"><p>Loading...</p></div></main>
+<script>
+// Round 3's contact page: the heading finds nothing; the menu's name lists pages.
+const q = (new URLSearchParams(location.search).get("q") || "").toLowerCase();
+const items = q.includes("contact") ? [["/19a/sr/a.html", "Annual report"], ["/19a/sr/b.html", "Budget"]] : [];
+document.getElementById("results").innerHTML = items.length
+  ? "<ol>" + items.map((i) => '<li><a href="' + i[0] + '">' + i[1] + "</a></li>").join("") + "</ol>"
+  : "<p>No results.</p>";
+</script>
+</body></html>

@@ -906,7 +906,15 @@ async def _live_search(
     term = _term(main)
     res = await _search_once(ctx, st, forms, term)
     await _check_listed(ctx, st, main, res, read, loaders)
-    if st.search.status != "not_found" or len(st.kinds) >= 2:
+    # A search whose results page was read but not verified (W4) does not
+    # lead to T either: the second search still runs, and the first stays
+    # unverified unless a search leads to T (never FAIL on it).
+    unverified = (
+        (st.search.status, st.search.reason)
+        if st.search.status == "cannot_run" and res
+        else None
+    )
+    if (st.search.status != "not_found" and not unverified) or len(st.kinds) >= 2:
         return
     name = _menu_name(st)
     if name and name.strip().lower() != term.strip().lower():
@@ -917,6 +925,8 @@ async def _live_search(
         return
     res = await _search_once(ctx, st, forms, second)
     await _check_listed(ctx, st, main, res, read, loaders)
+    if unverified and st.search.status == "not_found":
+        st.search.status, st.search.reason = unverified
 
 
 def listed_pages(res: PageRead, t_url: str, search_url: str) -> list[str]:
