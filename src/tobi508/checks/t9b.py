@@ -9,6 +9,7 @@ row tables decide outcomes.
 from __future__ import annotations
 
 import asyncio
+import re
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -31,7 +32,7 @@ from tobi508.site import (
     a3o_reason,
     before,
     kinship,
-    norm_href,
+    nav_key,
     page_label,
     pair_aligned,
     site_read,
@@ -83,7 +84,11 @@ def items(p: PageRead) -> list[Item]:
     out: list[Item] = []
     leave_main = _has_main(p)
     for u in p.units:
-        if u.kind != "control" or (leave_main and u.in_main) or not u.name:
+        if u.kind != "control" or not u.name:
+            continue
+        # Inside main is content, except a navigation region or a breadcrumb
+        # trail there (1.11.0, #138 draft H).
+        if leave_main and u.in_main and not _nav_in_main(u):
             continue
         out.append(
             Item(
@@ -105,9 +110,22 @@ def items(p: PageRead) -> list[Item]:
     return out
 
 
+CRUMB = re.compile(r"breadcrumb", re.I)
+
+
+def _nav_in_main(u: Unit) -> bool:
+    """A link or control of a navigation region or a breadcrumb trail inside
+    `main` (spec Terms, 1.11.0)."""
+    names = [k.split("|", 1)[-1] for k in u.regions]
+    return (
+        u.region_role == "navigation"
+        or u.crumb
+        or any(CRUMB.search(n) for n in names if n[:1] not in "#@")
+    )
+
+
 def _key(u: Unit, page_url: str) -> str:
-    dest = norm_href(u.href, page_url) if u.role == "link" else ""
-    return f"{u.region_role}|{u.role}|{u.name.lower()}|{dest}"
+    return nav_key(u, page_url)
 
 
 def compare(main: PageRead, other: PageRead) -> Cmp:
@@ -138,7 +156,8 @@ def compare(main: PageRead, other: PageRead) -> Cmp:
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9B:
     if not ctx.pages:
         return State9B(no_pages=True)
-    site = await site_read(ctx)
+    # Another part of the site is left out (#138 draft G).
+    site = (await site_read(ctx)).same_part()
     st = State9B(
         read_errors=site.errors, read=site.read, compared=site.compared_sentence()
     )

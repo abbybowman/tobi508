@@ -76,7 +76,7 @@ and [the pivot plan](plans/2026-11-07-server-judge-pivot.md).
 | 4.A, 4.D, 4.F and 5.D on what opens ([#135](https://github.com/abbybowman/tobi508/issues/135)) | 27, then 15 | The next element's focus ring in an element's "off" picture is not its indicator (27, first; corrected 2026-11-22: not a faint mark), then 4.D and 5.D read what menus and sections open ([15](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L278-L290)); then, after #136 merges, step 15's 4.A and 4.F parts (4.A reads opened content, a click-only menu joins its execute check, 4.F's pass R moves onto the shared walk; added 2026-11-22, Abby); the plain-button form (H-08) |
 | 4.A and 4.F ([#136](https://github.com/abbybowman/tobi508/issues/136)) | 28, 33, 32 | A hedged judge answer is "unsure" (28); 4.F's rubric, footer columns and dropdowns (33); 4.A's undecided signals (32, approval). **Built:** 28 (4.A 1.16.0, approved 2026-11-21: keys must do the click's, native controls a container listens round are executed, hedged alternatives are unsure); 33a, 33b (4.F 1.13.0); 33c (4.F 1.14.0, approved 2026-11-21); 32 (4.A 1.17.0, approved 2026-11-21, `HOVER_MAX` 160); after the rerun, a title that rewords the name is not essential (4.A 1.18.0) and a Tab loop's move back to its start is no order signal (4.F 1.15.0), Abby 2026-11-21; a scroll box inside a frame is placed on the page (4.F 1.15.1). A feed link's spelled-out title is not essential, and native radio groups are probed with the arrow keys (4.A 1.19.0, Abby 2026-11-22), also when a change makes the page leave (4.A 1.20.0). Round 2's home-page 4.A FAIL: the tool was right, the key's Pass a slip (Abby 2026-11-22, `round2/adjudications.json`) |
 | Forms ([#137](https://github.com/abbybowman/tobi508/issues/137)) | 35b-d, 37, 29 (rest), 30 | The one-cell 5.B, 5.C and 5.D items (35b-d); a frame's fields pictured in place (37); the search box in a panel (29, approval); forms with nothing to get wrong (30, approval); 5.D's wording after a retry |
-| Site tests ([#138](https://github.com/abbybowman/tobi508/issues/138)) | 34, 19b | CILab's 19.A; row W4 and the failed analytics script (approval); round 3's breadcrumbs and results-page questions (34, approval); reruns serving other pages from the freeze; 9.C pairs by function ([19b](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L316-L323)) |
+| Site tests ([#138](https://github.com/abbybowman/tobi508/issues/138)) | 34, 19b | **Done** (rerun: `evals/judging/gate-2026-11-22-138/`). CILab's 19.A (done, 19.A 1.20.0: an alias by its document and drawn text; a row's items compared around the link); row W4 and the failed analytics script (done, 19.A 1.21.0: only a script that could draw the results; the search also by the menus' name, and the pages it lists checked); breadcrumbs a way of their own (done, 19.A 1.18.0); a results page reached with other search terms (done, 19.A 1.19.0); parts of a site: a microsite page is not compared with the main site's (done, 9.A 1.10.0, 9.B 1.10.0, 9.C 1.13.0); 9.B's navigation inside `main` (done, 9.B 1.11.0); reruns serving other pages from the freeze; 9.C pairs by function ([19b](https://github.com/abbybowman/tobi508/blob/f40981d/docs/archive/2026-11-17-roadmap-before-the-last-day.md#L316-L323); buttons and fields done, 9.C 1.14.0; links and icons moved to Later) |
 | The judge | 40 | For a question type that fails the gate, the judge's FAIL is shown as "likely fails, a person should confirm", never handed to the calling agent (a rule change; Abby's decision first) |
 | Unsure says what would settle it | 42 | Every "unsure" judge answer says what would settle it (a picture the question lacks, a clause of the rubric, a value the input does not give), so each one is a to-do for the evidence, not a dead end. Why: in the 2026-11-19 compare the judge was unsure 69 times where the calling agent answered, and its reasons were mostly missing pictures (5.A, 5.B, 5.C, 4.F) or the page's markup against the picture (4.E); `docs/solutions/server-judge.md`, "Why the judge is unsure more often". A new field in the answer, no change to any outcome rule; run the judge eval (`evals/`) after the change, and compare the unsure answers' new field against the missing pictures |
 | Coverage | 14, 14b, 14c | Every reading reports what it covered (14); a click past a trap's stops reach 4.D and 4.E (14b); 4.A, 4.B and 4.F past a forward trap (14c) |
@@ -111,7 +111,9 @@ Also for a later watch on a paused clock (the plan's part J): 2.C and
 - **Round 3's questions** (top of
   [the plan](plans/2026-11-16-after-round3.md)): does native browser
   validation fail TT 5.F; three key cells (MySearchStory; the search
-  page's 19.A; breadcrumbs as their own way in 19.A).
+  page's 19.A, answered 2026-11-21: one page whatever its search
+  terms; breadcrumbs as their own way in 19.A, answered and built in
+  19.A 1.18.0).
 - **The judge on types that fail the gate** (step 40). 4.B and 5.H
   meet both halves of the gate today; since 2026-11-18 the judge
   answers every type, so this decides how its FAILs on the others are
@@ -165,6 +167,12 @@ starts, changes and answers nothing (step 41).
 Moved to [KNOWN-LIMITS.md](KNOWN-LIMITS.md) (2026-11-14).
 
 ## Later
+
+- **9.C: links and icons in the pages' own content** that do the same
+  thing under different names (left by #138's step 19b, which pairs
+  buttons and fields; measured 2026-11-22: pairing content links by place
+  gave 83 pairs on rounds 2 and 3, all different things). An icon pairs
+  only once the ANDI read keeps the image's address.
 
 - **The next tests: the visual-versus-code cluster** (10.x, 14.x, 15.A,
   18.A, 13.C; ANDI is the core evidence for most). Research, with two

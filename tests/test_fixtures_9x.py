@@ -28,6 +28,43 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {},
     ),
     "nav-css-order": ("a1-home", ["a4-nav-css-order"], {"9.B": "FAIL"}, {}),
+    # #138 draft G (9.A 1.10.0, 9.B 1.10.0, 9.C 1.13.0; Abby, 2026-11-22):
+    # a microsite page with its own header and menu shares one component
+    # with the main site (a menu region of the same name, "Main"): another
+    # part of the site, left out while a page of the main site's own part is
+    # compared (round 3: the community and SDE pages against the main
+    # site's pages). Before, 9.B read it as one shared component (N5) and
+    # stayed NEEDS REVIEW.
+    "microsite-page-left-out-beside-the-site": (
+        "a1-home",
+        ["a2-benefits", "e4-lab-microsite"],
+        {"9.A": "PASS", "9.B": "PASS", "9.C": "PASS"},
+        {},
+    ),
+    # 9.B 1.11.0 (#138, Abby 2026-11-22): a section menu inside `main` that
+    # repeats on other pages is navigation. Same order: PASS; two of its
+    # items swapped on the other page: FAIL (before 1.11.0 it was left out
+    # as content, and the swap was not seen).
+    "section-menu-in-main-same-order": (
+        "o1-section-a",
+        ["o2-section-b"],
+        {"9.B": "PASS"},
+        {},
+    ),
+    "section-menu-in-main-swapped": (
+        "o1-section-a",
+        ["o3-section-swapped"],
+        {"9.B": "FAIL"},
+        {},
+    ),
+    # ... and with only the microsite page given, none is left out: as
+    # before (one shared component, NEEDS REVIEW).
+    "microsite-page-alone-is-not-left-out": (
+        "a1-home",
+        ["e4-lab-microsite"],
+        {"9.B": "NEEDS_REVIEW"},
+        {},
+    ),
     # Step 31 (9.B 1.7.0; round 3's Drupal pages, plan cause 10): three links
     # named "Home" to one address (top bar, the footer's logo block, the
     # footer list) and, on every page but the home page, a fourth (the
@@ -142,6 +179,50 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
     # are not paired by address (round 2: Home and Help, key Pass). The
     # header, menu and search still agree. "renamed" above is the nearest
     # case that must still FAIL: the same change in the menu.
+    # Step 19b (9.C 1.14.0; #138, Abby 2026-11-22): controls in the pages'
+    # own content are paired by function, then asked about (J1). By their
+    # first word: "Subscribe to updates" and "Subscribe" (inconsistent:
+    # FAIL) ...
+    "content-button-same-action-word": (
+        "s1-subscribe-updates",
+        ["s2-subscribe"],
+        {"9.C": "FAIL"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
+    # ... and the pair that must not FAIL: "Download report" and "Download
+    # map" do different things (J1: different function, dropped). Not the
+    # rubric's own examples, so the judge eval tests judging, not copying.
+    "content-buttons-same-word-different-things": (
+        "s3-download-report",
+        ["s4-download-map"],
+        {"9.C": "PASS"},
+        {"9.C": {"J1": {"choice": "different_function"}}},
+    ),
+    # By their place in the content: "Share this page" and "Send to a
+    # friend" in the same spot (inconsistent: FAIL) ...
+    "content-button-same-place": (
+        "s5-share",
+        ["s6-send"],
+        {"9.C": "FAIL"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
+    # ... and the pair that must not FAIL: "Share this page" and "Print" in
+    # that spot do different things.
+    "content-buttons-same-place-different-things": (
+        "s5-share",
+        ["s7-print-here"],
+        {"9.C": "PASS"},
+        {"9.C": {"J1": {"choice": "different_function"}}},
+    ),
+    # ... and filters are not paired at all: a checkbox's name is a value
+    # ("Mars (499)" / "Mars and its moons", round 1's search and missions
+    # pages, key Pass), not an action; only buttons pair by word or place.
+    "content-filters-not-paired": (
+        "s8-filter-mars-count",
+        ["s9-filter-mars-moons"],
+        {"9.C": "PASS"},
+        {},
+    ),
     "body-links-reworded": (
         "g1-body-links",
         ["g2-body-links-reworded"],

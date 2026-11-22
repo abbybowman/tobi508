@@ -122,6 +122,10 @@ UNITS_FN = (
     return el.matches('a[href], button, input:not([type="hidden"]), select, textarea, summary') ||
       (ti !== null && ti.trim() !== '' && parseInt(ti, 10) >= 0);
   };
+  // A list marked as a breadcrumb trail (19.A 1.18.0): by its class, id or
+  // accessible name. A region so named is read from its key in Python.
+  const CRUMB_LIST = ['class', 'id', 'aria-label'].flatMap((a) =>
+    ['ol', 'ul'].map((t) => t + '[' + a + '*="breadcrumb" i]')).join(', ');
   // The group a link sits in (19.A 1.14.0): its nearest ancestor, at most 4
   // levels up, that holds 3 or more links; an id per ancestor, '' when none.
   const groupIds = new Map();
@@ -179,6 +183,7 @@ UNITS_FN = (
           dest: t === 'A' && raw !== null ? destHref(el) : '',
           rel: t === 'A' ? norm(el.getAttribute('rel')) : '',
           group: t === 'A' ? groupOf(el) : '',
+          crumb: t === 'A' && !!el.closest(CRUMB_LIST),
           submit: !!el.form && (el.type || '').toLowerCase() === 'submit', stop: tabbable(el),
           id: el.id || '' }, chain);
         return;
@@ -258,6 +263,9 @@ class Unit(BaseModel):
     # The group a link sits in: its nearest ancestor (4 levels at most) with
     # 3 or more links, an id on its page; "" when none.
     group: str = ""
+    # Inside a list whose class, id or accessible name says "breadcrumb"
+    # (19.A 1.18.0).
+    crumb: bool = False
     submit: bool = False
     stop: bool = False  # natively tabbable or tabindex >= 0
     id: str = ""
@@ -324,6 +332,35 @@ class SiteRead(BaseModel):
             }
         )
 
+    def same_part(self) -> SiteRead:
+        """9.A to 9.C (#138 draft G, Abby 2026-11-22): an other page that
+        shares fewer than NAV_SHARED_MIN navigation items with the tested
+        page, both having navigation of their own, is another part of the
+        site (a microsite against the main site, or the reverse), left out
+        and named, but only while a page of the tested page's own part is
+        left to compare with; otherwise none is left out and the test reads
+        them as before. A read cut by the cap is never left out this way."""
+        if self.main.truncated or not has_own_navigation(self.main):
+            return self
+
+        def other_part(p: PageRead) -> bool:
+            return (
+                not p.truncated
+                and has_own_navigation(p)
+                and shared_nav_items(self.main, p) < NAV_SHARED_MIN
+            )
+
+        if all(other_part(p) for p in self.others):
+            return self
+        return self.leave_out(
+            other_part,
+            lambda p: (
+                f"{self.label(p)} {OTHER_PART} (it shares "
+                f"{shared_nav_items(self.main, p)} of this page's links, "
+                "controls and regions outside the main content)"
+            ),
+        )
+
     def compared_sentence(self) -> str:
         """For the finding's summary (the pre-SCRT comment): how many other
         pages were read in full and compared, and which were left out."""
@@ -380,6 +417,40 @@ class SiteRead(BaseModel):
                 + "; ".join(self.left_out)
             )
         return out
+
+
+# 9.A to 9.C (#138 draft G): two pages are one part of the site when they
+# share at least this many navigation items. Measured on rounds 1 to 3
+# (252 pairs): one template 4 to 48, another part 0 or 1.
+NAV_SHARED_MIN = 2
+OTHER_PART = "is another part of the site"
+
+
+def nav_key(u: Unit, page_url: str) -> str:
+    """A navigation item's key (9.B Terms: the same kind, region role, name
+    and, for links, destination)."""
+    dest = norm_href(u.href, page_url) if u.role == "link" else ""
+    return f"{u.region_role}|{u.role}|{u.name.lower()}|{dest}"
+
+
+def nav_keys(p: PageRead) -> list[str]:
+    """The keys of a page's navigation components (9.B Terms): its links and
+    controls outside `main` (all of them when it has no `main` landmark),
+    and its regions other than main."""
+    leave_main = any(r.role == "main" for r in p.regions)
+    return [
+        nav_key(u, p.url)
+        for u in p.units
+        if u.kind == "control" and u.name and not (leave_main and u.in_main)
+    ] + ["region:" + r.key for r in p.regions if r.role != "main"]
+
+
+def shared_nav_items(a: PageRead, b: PageRead) -> int:
+    """How many navigation items two pages share (each counted as often as
+    it is on both)."""
+    from collections import Counter
+
+    return sum((Counter(nav_keys(a)) & Counter(nav_keys(b))).values())
 
 
 def page_label(p: PageRead) -> str:

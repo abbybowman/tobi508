@@ -77,6 +77,9 @@ class PageRef:
     har_sha: str | None = None  # its recording's SHA-256 (pagecache reads)
     # Its document is the tested page's, byte for byte (K-01): not compared.
     same_content_as_tested: bool = False
+    # 19.A's alias check (1.20.0): its document is the tested page's, byte for
+    # byte, at another address. Not enough alone: the drawn text decides.
+    same_document: bool = False
     # Its recording, for a page recorded during the run (19.A's search).
     har: Path | None = None
 

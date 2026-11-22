@@ -1,0 +1,558 @@
+{
+ "9.C-content-button-same-action-word": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same subscribe action worded two ways, like 'Save page' and 'Save'. Neither has a description or destination to show a difference."
+    },
+    "q": "9.C-p1-13-J1",
+    "reasons": "Same subscribe action worded two ways, like 'Save page' and 'Save'. Neither has a description or destination to show a difference."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.1,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 634,
+    "cache_read_input_tokens": 2420,
+    "input_tokens": 2,
+    "output_tokens": 335
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C1",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C1",
+   "p1-13:C4",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-content-button-same-place": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Both are buttons at the same place doing a share action, but worded differently (Share this page vs Send to a friend)."
+    },
+    "q": "9.C-p1-13-J1",
+    "reasons": "Both are buttons at the same place doing a share action, but worded differently (Share this page vs Send to a friend)."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.3,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 635,
+    "cache_read_input_tokens": 2413,
+    "input_tokens": 2,
+    "output_tokens": 130
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C1",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C1",
+   "p1-13:C4",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-content-buttons-same-place-different-things": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "different_function",
+     "reasons": "Share this page and Print are different actions, so the match looks wrong."
+    },
+    "q": "9.C-p1-13-J1",
+    "reasons": "Share this page and Print are different actions, so the match looks wrong."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.8,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 630,
+    "cache_read_input_tokens": 2409,
+    "input_tokens": 2,
+    "output_tokens": 125
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C1",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C1",
+   "p1-13:C5",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-content-buttons-same-word-different-things": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "different_function",
+     "reasons": "Buttons in page content download different things: a report versus a map."
+    },
+    "q": "9.C-p1-13-J1",
+    "reasons": "Buttons in page content download different things: a report versus a map."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.0,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 629,
+    "cache_read_input_tokens": 2413,
+    "input_tokens": 2,
+    "output_tokens": 115
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C1",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C1",
+   "p1-13:C5",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-footer-link-reworded": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same destination and footer area, but names differ: Sign in vs Log in."
+    },
+    "q": "9.C-p1-7-J1",
+    "reasons": "Same destination and footer area, but names differ: Sign in vs Log in."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.7,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 638,
+    "cache_read_input_tokens": 2467,
+    "input_tokens": 2,
+    "output_tokens": 128
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C1",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C4",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-paging": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "different_function",
+     "reasons": "Links go to different pages (page3 vs page4), so the match looks wrong."
+    },
+    "q": "9.C-p1-2-J1",
+    "reasons": "Links go to different pages (page3 vs page4), so the match looks wrong."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "different_function",
+     "reasons": "Links go to different pages (page5 vs page6), so the match looks wrong."
+    },
+    "q": "9.C-p1-3-J1",
+    "reasons": "Links go to different pages (page5 vs page6), so the match looks wrong."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.8,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 628,
+    "cache_read_input_tokens": 3724,
+    "input_tokens": 2,
+    "output_tokens": 468
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C5",
+   "p1-3:C5",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-renamed": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same destination address, but different link names: Contact vs Get in touch."
+    },
+    "q": "9.C-p1-4-J1",
+    "reasons": "Same destination address, but different link names: Contact vs Get in touch."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same search button in the same area, worded differently: Search vs Find."
+    },
+    "q": "9.C-p1-12-J1",
+    "reasons": "Same search button in the same area, worded differently: Search vs Find."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.6,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 634,
+    "cache_read_input_tokens": 3671,
+    "input_tokens": 2,
+    "output_tokens": 197
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C4",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C4",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ },
+ "9.C-wc-renamed": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Same destination address, but names differ: Contact vs Get in touch."
+    },
+    "q": "9.C-p1-4-J1",
+    "reasons": "Same destination address, but names differ: Contact vs Get in touch."
+   },
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "inconsistent",
+     "reasons": "Both are search buttons in the search area, but named Search and Find for the same action."
+    },
+    "q": "9.C-p1-12-J1",
+    "reasons": "Both are search buttons in the search area, but named Search and Find for the same action."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 2,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 2,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.3,
+   "switched_on": [
+    "9.C"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 630,
+    "cache_read_input_tokens": 3671,
+    "input_tokens": 2,
+    "output_tokens": 196
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "p1-1:C1",
+   "p1-2:C1",
+   "p1-3:C1",
+   "p1-4:C4",
+   "p1-5:C1",
+   "p1-6:C1",
+   "p1-7:C1",
+   "p1-8:C1",
+   "p1-9:C1",
+   "p1-10:C1",
+   "p1-11:C1",
+   "p1-12:C4",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "9.C",
+  "wrong_pass": false
+ }
+}
