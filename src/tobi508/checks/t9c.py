@@ -312,14 +312,17 @@ def make_pairs(
             for x, y in zip(xs, ys, strict=True):
                 add(x, y, "place")
 
-    # Step 19b (1.14.0; #138, Abby 2026-11-22): controls other than links in
-    # the pages' own content (outside header, menu, search and footer), by
-    # function; every such pair goes to J1, which can drop it (different
-    # function). Links are not paired this way: in content they are prose
-    # and tags (round 2's leaf pages: 83 such pairs, all different things).
+    # Step 19b (1.14.0; #138, Abby 2026-11-22): buttons in the pages' own
+    # content (outside header, menu, search and footer), by function; every
+    # such pair goes to J1, which can drop it (different function). Links are
+    # not paired this way: in content they are prose and tags (round 2's
+    # leaf pages: 83 such pairs, all different things); nor are fields and
+    # checkboxes, whose names are values (round 1's topic filters).
     def content_control(c: Comp) -> bool:
+        # Buttons only: a button's name says what it does; a field's,
+        # checkbox's or option's names a value ("Mars (499)", round 1).
         return (
-            c.role != "link"
+            c.role == "button"
             and c.region_role not in NAV_ROLES
             and bool(_norm(c.andi_name))
         )
@@ -491,12 +494,9 @@ MATCHED_BY = {
     "name": "same kind of control with the same name in the same area",
     "place": "same kind of control in the same place in an area both pages have",
     "action_word": (
-        "same kind of control in the pages' own content whose names start "
-        "with the same word"
+        "buttons in the pages' own content whose names start with the same word"
     ),
-    "content_place": (
-        "same kind of control at the same place in the pages' own content"
-    ),
+    "content_place": ("buttons at the same place in the pages' own content"),
 }
 
 

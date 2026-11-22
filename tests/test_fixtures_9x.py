@@ -214,6 +214,15 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {"9.C": "PASS"},
         {"9.C": {"J1": {"choice": "different_function"}}},
     ),
+    # ... and filters are not paired at all: a checkbox's name is a value
+    # ("Mars (499)" / "Mars and its moons", round 1's search and missions
+    # pages, key Pass), not an action; only buttons pair by word or place.
+    "content-filters-not-paired": (
+        "s8-filter-mars-count",
+        ["s9-filter-mars-moons"],
+        {"9.C": "PASS"},
+        {},
+    ),
     "body-links-reworded": (
         "g1-body-links",
         ["g2-body-links-reworded"],
