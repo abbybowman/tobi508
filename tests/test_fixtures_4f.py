@@ -160,6 +160,11 @@ EXPECTED: dict[str, dict] = {
     # f22, inside the box). A first version drew the box bottom to top with
     # Tab following its numbers; the judge eval's agent said "preserves",
     # which a careful tester could say too.
+    # f28's list inside a frame 400 px down the page. A stop in a frame was
+    # placed on the page, but its scroll box where it sits in the frame, so
+    # the first topic read as above the link before it and raised S3 (round
+    # 2's timeline tool, #136).
+    "f35-scroll-box-in-frame-in-order": {"outcome": "PASS", "rows": ["M4"]},
     "f29-scroll-box-steps-out-of-sequence": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",

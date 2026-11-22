@@ -803,6 +803,10 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## 2026-11-22: 4.F 1.15.1 (a scroll box inside a frame), no agent run needed
+
+A stop's scroll box inside a frame was placed where it sits in the frame, not on the page; it now moves with the stop. That changes 4.F's signals only for a stop in a scroll box inside a frame: among the fixtures only F35 (new), which asks no question (PASS, M4), so no judge eval packet changes. On the rounds' pages it changed round 2's p08 and p09 (4.F, key Pass) from FAIL to NEEDS REVIEW: `judging/gate-2026-11-22-136b/README.md`.
+
 ## Run 39, 2026-11-22: 4.A 1.18.0 (#136: a title that rewords the name), every 4.A packet
 
 4.A's J2 now names the element's accessible name in the question, and its rubric says a title that says what the name already says, in other words, is not essential; the icon-only example applies only when the name does not say it. Two new pages: F38 (round 2's sort button: name "Toggle order; currently descending order", title "Toggle sort direction"; PASS) and F39 (name "Sort", title "Sort by release date, newest first"; FAIL). Pinned Chrome 153.0.8010.12. `prepare 4.A` (20 cases ask), no leak (the grep finds nothing).

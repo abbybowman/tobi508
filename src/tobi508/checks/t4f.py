@@ -210,7 +210,16 @@ class OrderHook:
             # A frame: the walk's box is already top-level, so add the top
             # page's scroll.
             scroll = await t.reader.evaluate_top("[scrollX, scrollY]") or [0, 0]
+            local = info.get("page")
             info["page"] = [bb.x + scroll[0], bb.y + scroll[1], bb.width, bb.height]
+            # The stop's scroll box was read where it is in the frame: move
+            # it by as much as the stop moved (1.15.1; round 2's timeline
+            # tool, #136: a frame 396 px down, so its first stop read as
+            # above the stop before it and raised S3).
+            sp = info.get("scroller_page")
+            if sp and local:
+                dx, dy = info["page"][0] - local[0], info["page"][1] - local[1]
+                info["scroller_page"] = [sp[0] + dx, sp[1] + dy, sp[2], sp[3]]
             lb = info.get("label_box")
             if lb:  # a checkbox or radio button: where its label is
                 info["page"] = [

@@ -1,7 +1,7 @@
 ---
 tt_test: 4.F
 tt_name: 2.4.3-focus-order-meaning
-spec_version: 1.15.0
+spec_version: 1.15.1
 guards: unrecorded-code, reveal, drawn-past-wait
 count: focusable@dna
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -70,6 +70,8 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | S6 | After opening a trigger whose revealed content has stops, the next Tab does not reach that content, and focus did not move into it | p. 23 HtT 2.b; F85 |
 
 **S3 exception: the next column** (1.14.0, issue #136 step 33c; Abby approved 2026-11-21). S3 is not raised for a step from stop *a* to stop *b* when all hold: (1) *a* and *b* are inside one `footer` (or `[role=contentinfo]`), one `nav` (or `[role=navigation]`), or one list (`ul`, `ol`); (2) *b* starts to the right of *a*'s column (its left edge at or past the right edge of every box in the column; mirrored on rtl pages), where *a*'s column is *a* and the stops just before it in Tab order, in the same footer, navigation area or list, whose boxes overlap *a*'s from side to side; (3) *b*'s top is no higher than the top of *a*'s column, within `ROW_TOLERANCE`. Neither stop may be in a box that scrolls by itself. That is reading columns one after another, which J1's rubric already counts as preserving. Round 3: three S3 signals in every Drupal page's footer ("Contact" to "DATA SEARCH", "Science Explorer Digital Library" to "DATA SITES", "Planetary Science" to "ACROSS"), each from the foot of one column of links to the top of the next. A jump into a column that starts higher than the one left still raises S3. Fixtures F30 (no signal) and F31 (S3).
+
+**A scroll box inside a frame** (1.15.1, issue #136). S3 places a stop in a box that scrolls by itself where the box is on the page. For a stop inside a frame, its own box was moved onto the page but its scroll box was left where it is in the frame, so on round 2's 5340 timeline (a frame 396 px down the page) the tool panel's button read as above the panel and raised S3. The scroll box now moves with the stop. A fix to where a stop is measured, not to the rule. Fixture F35.
 
 **S2 and S3 exception: a trap going round** (1.15.0, issue #136; Abby, 2026-11-21). When P1 ends in a loop (4.C's trap row `loop`), the move from the loop's element last in DOM order to its element first in DOM order is the trap sending focus back to its start, not a step of the order, so S2 and S3 are not raised for it. Only when every element of the loop is in one document and has a DOM position; otherwise every move is read as usual. The trap itself is 4.C's; 4.F stays at NEEDS REVIEW because P1 did not wrap (G3). Round 2's 5340 timeline: Tab entered its frame at "View timeline", went round the frame's 27 controls and back to its first tab, and that wrap was raised as S2 and S3 and judged "does not preserve": a FAIL against a Pass key. Fixture F34.
 
