@@ -195,12 +195,10 @@ re-testing): confirm and remove, or remove the mark.
   home page about 0.7 s). `CLICK_MAX` is not calibrated on real pages
   (`EXECUTE_MAX` and `HOVER_MAX` are). A page whose frames show content
   the tool cannot read is NEEDS REVIEW.
-  A `title` counts as available elsewhere only when it equals the
-  accessible name or is in the page's text, so a title that rewords the
-  name goes to the judge, which can call it essential: round 2's sort
-  button ("Toggle sort direction", named "Toggle order; currently
-  descending order") is a wrong FAIL against a Pass key (gate
-  2026-11-21-136; open, Abby's decision).
+  A title that rewords the element's name is not essential by the
+  judge's reading (1.18.0, [#136](https://github.com/abbybowman/tobi508/issues/136)):
+  that rests on the judge, not a match, so a judge that misreads "same
+  meaning" passes a title that adds something; run 39 found none.
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
   walk short of its press limit on a slow machine (the grid's
@@ -242,7 +240,9 @@ re-testing): confirm and remove, or remove the mark.
   unsure in one rerun and a false FAIL in the next, came from elements
   placed out of line while the page scrolled, a sidebar that scrolls by
   itself and a player's new id on each load: fixed in 4.F 1.11.0.) The judge is often
-  unsure, so many cells wait for a person.
+  unsure, so many cells wait for a person. A Tab loop's move back to its
+  start is no signal (1.15.0, #136), but only when the whole loop is in one
+  document; a loop that crosses a frame is read move by move.
 
 ## 5.A to 5.H: forms
 

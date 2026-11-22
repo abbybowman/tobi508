@@ -803,6 +803,12 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## Run 39, 2026-11-22: 4.A 1.18.0 (#136: a title that rewords the name), every 4.A packet
+
+4.A's J2 now names the element's accessible name in the question, and its rubric says a title that says what the name already says, in other words, is not essential; the icon-only example applies only when the name does not say it. Two new pages: F38 (round 2's sort button: name "Toggle order; currently descending order", title "Toggle sort direction"; PASS) and F39 (name "Sort", title "Sort by release date, newest first"; FAIL). Pinned Chrome 153.0.8010.12. `prepare 4.A` (20 cases ask), no leak (the grep finds nothing).
+- **Server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`): 17, 17, 17 of 20, no wrong PASS, no bait taken.** F08, F38 and F39 match on every repeat (essential, not_essential, essential). The three misses are J1 answers, as in run 38: `f29-link-skipped-by-script-both-ways` FAIL where NEEDS REVIEW is expected (no_alternative, right for that page), and two FAIL pages unsure (NEEDS REVIEW), one of them the injection page.
+- **Fresh agent (one Sonnet agent, the three J2 packets only, told to open nothing outside them): 3 of 3.** F38 not_essential ("only rewords the button's name"); F08 and F39 essential.
+
 ## Run 38, 2026-11-21: 4.A 1.16.0 and 4.F 1.13.0 (#136 steps 28, 33a, 33b), every 4.A and 4.F packet
 
 4.A's J1 rubric now says an alternative whose reasons say it is not the same, unclear or not certain is unsure (and the rows treat such reasons as unsure, M7); 4.F's J1 is shown every stop a signal names past the first 60 (with a sentence when the numbers skip) and its rubric says an order that looks a little odd but keeps meaning and use preserves. Pinned Chrome 153.0.8010.12 (Playwright's own build in a scratch `PLAYWRIGHT_BROWSERS_PATH`; the container's preinstalled Chrome is 157, #142). `prepare 4.A` (17 cases ask) and `prepare 4.F` (18), no leak (the grep finds nothing). Each answered by the server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`) and by one fresh Sonnet agent told to open nothing outside its packets (each listed only packet files).

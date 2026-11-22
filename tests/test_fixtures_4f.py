@@ -56,6 +56,15 @@ EXPECTED: dict[str, dict] = {
     # signal (SDE's "All"); a disclosure with no popup, whose links Tab skips,
     # still is.
     "f32-menu-button-arrow-keys": {"outcome": "PASS", "rows": ["M4", "M4"]},
+    # 1.15.0 (#136): Tab enters a trap partway (round 2's 5340 timeline) and
+    # wraps from its last control to its first. That wrap is the trap going
+    # round, not the order: no signal; the walk never wrapped, so NEEDS REVIEW.
+    # The scripted answer would FAIL the page if the wrap were a signal.
+    "f34-trap-entered-midway": {
+        "outcome": "NEEDS_REVIEW",
+        "choice": "does_not_preserve",
+        "rows": ["M4"],
+    },
     "f33-disclosure-tab-skips-content": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",

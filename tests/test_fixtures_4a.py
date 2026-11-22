@@ -71,6 +71,18 @@ EXPECTED: dict[str, dict] = {
         "choice": {"J2": {"choice": "essential"}},
     },
     "f09-title-repeats-label": {"outcome": "PASS", "rows": ["M11"]},
+    # 1.18.0 (#136): an icon button whose title rewords its name (round 2's
+    # sort button) is not essential; one whose title adds to it is.
+    "f38-icon-button-title-rewords-name": {
+        "outcome": "PASS",
+        "rows": ["M13"],
+        "choice": {"J2": {"choice": "not_essential"}},
+    },
+    "f39-icon-button-title-adds-to-name": {
+        "outcome": "FAIL",
+        "rows": ["M14"],
+        "choice": {"J2": {"choice": "essential"}},
+    },
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
     # 1.16.0: the selected tab has its own keydown (arrows), so it is

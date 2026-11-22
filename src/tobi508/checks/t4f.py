@@ -295,6 +295,27 @@ def _distinct(p: PassResult) -> list[tuple[int, Step]]:
     return out
 
 
+def trap_wrap(
+    p1: PassResult, fwd_steps: list[tuple[int, Step]]
+) -> tuple[str, str] | None:
+    """1.15.0: when P1 ends in a loop, the move from the loop's element last
+    in the page to its element first in the page is the trap going round.
+    Only when every element of the loop is in one document and has a place
+    in it; otherwise None (every move is read as usual)."""
+    if p1.end != "loop" or not p1.trap:
+        return None
+    keys = set(p1.trap)
+    members = [s for _, s in fwd_steps if s.stop.key in keys]
+    if len(members) < 2 or len({tuple(s.stop.frame_chain) for s in members}) != 1:
+        return None
+    dom = [((s.extras.get(HOOK) or {}).get("dom_index"), s) for s in members]
+    if any(d is None for d, _ in dom):
+        return None
+    last = max(dom, key=lambda x: x[0])[1].stop.path_key
+    first = min(dom, key=lambda x: x[0])[1].stop.path_key
+    return last, first
+
+
 def _info(s: Step) -> StopInfo:
     return StopInfo(
         path_key=s.stop.path_key,
@@ -391,8 +412,15 @@ def next_column(fwd: list[StopInfo], i: int) -> bool:
     return beside and pb[1] >= min(p[1] for p in col) - tol
 
 
-def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, Any]]:
-    """S1-S5 on the forward (and backward) order. Facts only."""
+def signals(
+    fwd: list[StopInfo],
+    bwd: list[StopInfo] | None,
+    trap_wrap: tuple[str, str] | None = None,
+) -> list[dict[str, Any]]:
+    """S1-S5 on the forward (and backward) order. Facts only. `trap_wrap` is
+    the move a looping trap makes from its last element to its first
+    (1.15.0): the trap going round, not a step of the order, so S2 and S3
+    are not raised for it."""
     out: list[dict[str, Any]] = []
     for si in fwd:
         ti = si.info.get("tabindex")
@@ -405,6 +433,8 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
                 }
             )
     for a, b in zip(fwd, fwd[1:], strict=False):
+        if (a.path_key, b.path_key) == trap_wrap:
+            continue
         ia, ib = a.info.get("dom_index"), b.info.get("dom_index")
         if a.frame == b.frame and ia is not None and ib is not None and ib < ia:
             out.append(
@@ -416,6 +446,8 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
             )
             break
     for i, (a, b) in enumerate(zip(fwd, fwd[1:], strict=False)):
+        if (a.path_key, b.path_key) == trap_wrap:
+            continue
         pa, pb = places(a.info, b.info)
         if not pa or not pb:
             continue
@@ -915,7 +947,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
         )
     if st.distinct <= 1 and not triggers:
         return st
-    o = Inst4F(id="o1", kind="O", label="the page", signals=signals(fwd, bwd))
+    o = Inst4F(
+        id="o1",
+        kind="O",
+        label="the page",
+        signals=signals(fwd, bwd, trap_wrap(p1, fwd_steps)),
+    )
     o.unreliable = any(
         si.unreliable
         for si in fwd

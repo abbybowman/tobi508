@@ -1,7 +1,7 @@
 ---
 tt_test: 4.F
 tt_name: 2.4.3-focus-order-meaning
-spec_version: 1.14.0
+spec_version: 1.15.0
 guards: unrecorded-code, reveal, drawn-past-wait
 count: focusable@dna
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -70,6 +70,8 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | S6 | After opening a trigger whose revealed content has stops, the next Tab does not reach that content, and focus did not move into it | p. 23 HtT 2.b; F85 |
 
 **S3 exception: the next column** (1.14.0, issue #136 step 33c; Abby approved 2026-11-21). S3 is not raised for a step from stop *a* to stop *b* when all hold: (1) *a* and *b* are inside one `footer` (or `[role=contentinfo]`), one `nav` (or `[role=navigation]`), or one list (`ul`, `ol`); (2) *b* starts to the right of *a*'s column (its left edge at or past the right edge of every box in the column; mirrored on rtl pages), where *a*'s column is *a* and the stops just before it in Tab order, in the same footer, navigation area or list, whose boxes overlap *a*'s from side to side; (3) *b*'s top is no higher than the top of *a*'s column, within `ROW_TOLERANCE`. Neither stop may be in a box that scrolls by itself. That is reading columns one after another, which J1's rubric already counts as preserving. Round 3: three S3 signals in every Drupal page's footer ("Contact" to "DATA SEARCH", "Science Explorer Digital Library" to "DATA SITES", "Planetary Science" to "ACROSS"), each from the foot of one column of links to the top of the next. A jump into a column that starts higher than the one left still raises S3. Fixtures F30 (no signal) and F31 (S3).
+
+**S2 and S3 exception: a trap going round** (1.15.0, issue #136; Abby, 2026-11-21). When P1 ends in a loop (4.C's trap row `loop`), the move from the loop's element last in DOM order to its element first in DOM order is the trap sending focus back to its start, not a step of the order, so S2 and S3 are not raised for it. Only when every element of the loop is in one document and has a DOM position; otherwise every move is read as usual. The trap itself is 4.C's; 4.F stays at NEEDS REVIEW because P1 did not wrap (G3). Round 2's 5340 timeline: Tab entered its frame at "View timeline", went round the frame's 27 controls and back to its first tab, and that wrap was raised as S2 and S3 and judged "does not preserve": a FAIL against a Pass key. Fixture F34.
 
 **S6 exception: a menu or list the arrow keys enter** (1.14.0, step 33c; Abby approved 2026-11-21). S6 is not raised when the trigger says it opens one (`aria-haspopup` true, menu or listbox) or the content it reveals has role menu or listbox, and, on a fresh replay to the trigger, Enter, then ArrowDown, focus moves into the revealed content. That is the WAI-ARIA menu button and listbox pattern: the arrow keys move into the popup and Tab leaves it, which is not content reached far from its trigger (F85). The key press confirms it (CLAUDE.md principle 8); the attributes alone never do. Pass R records `arrow_keys_move_into_it` in what it opened; the R instance then has no signal (M4). One replay per such trigger. Round 3, SDE home: the "All" dropdown (`aria-haspopup="true"`; its menu is marked `role="menuitem"`, so the trigger's attribute names it, not the role). Fixtures F32 (no signal) and F33 (a disclosure with no popup whose links Tab skips: S6).
 
@@ -167,7 +169,7 @@ Only cases that need a rule of their own; everything else follows sections 2–3
 | Right-to-left pages | S3's same-row rule is mirrored when the page's direction is rtl | V1 |
 | Native `<dialog>` with showModal | Tab can leave to the browser's own controls; that is not outside the page (M3) | V2 (4.C V2, F10) |
 | Arrow-key widgets (menus, tabs, grids, trees) | Their inner arrow order is not sequential navigation (Understanding 2.4.3: tree example); only the Tab order is judged | — |
-| Stops past a keyboard trap | The forward order past a trap is unknown: G3 | — |
+| Stops past a keyboard trap | The forward order past a trap is unknown: G3. A looping trap's move back to its start is no signal (1.15.0) | F34 |
 | Content in frames | Ordered within the page at the frame's position (DOM order of frames) | V3 |
 | ANDI's tab order | Not used (p. 23 Note 3) | — |
 

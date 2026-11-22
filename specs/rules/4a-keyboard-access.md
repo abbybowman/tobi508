@@ -1,7 +1,7 @@
 ---
 tt_test: 4.A
 tt_name: 2.1.1-keyboard-access
-spec_version: 1.17.0
+spec_version: 1.18.0
 guards: unrecorded-code, reveal, reveal-content, drawn-past-wait
 count: canvases, draggable
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -167,9 +167,11 @@ The calling agent answers each once, by the rubric; a person's answer overrides 
 
 ### J2. Is this title information essential?
 
-**Question:** "input.title is text that appears only as a mouse tooltip on the element in input.element; it is not shown on the page. Is it needed to use the element or understand the page (essential), or is it extra (not essential)? Answer essential, not_essential or unsure, with reasons."
+**Question:** "input.title is text that appears only as a mouse tooltip on the element in input.element; it is not shown on the page. input.element.name is the element's accessible name, which assistive technology announces. Is the title needed to use the element or understand the page (essential), or is it extra (not essential)? Answer essential, not_essential or unsure, with reasons."
 
-**Rubric.** essential: instructions or a format needed to fill a field, the only label of an icon-only control, the meaning of an abbreviation needed to understand content. not_essential: a repeat or rewording of what the page already says, decoration. unsure: whenever the evidence does not settle it.
+**Rubric.** essential: instructions or a format needed to fill a field, the only label of an icon-only control when its name does not already say it, the meaning of an abbreviation needed to understand content, or anything else the title adds that a user needs and the name and page do not give. not_essential: a repeat or rewording of what the page or the element's name already says (the same meaning in other words, adding nothing a user needs), decoration. unsure: whenever the evidence does not settle it.
+
+**Why the name counts (1.18.0, issue #136; Abby, 2026-11-21).** The title check already treats a title equal to the accessible name as available elsewhere (M11); a title that says the same thing in other words is the same case, and only a reading can tell that, so J2 decides it. Round 2's sort button (title "Toggle sort direction", name "Toggle order; currently descending order") was a FAIL against a Pass key because the rubric's icon-only example read as covering it. A title that adds to the name ("Sort" named, "Sort by release date, newest first" in the title) stays essential. Fixtures F38 (rewords: PASS, M13) and F39 (adds: FAIL, M14).
 
 ## 5. Edge cases
 

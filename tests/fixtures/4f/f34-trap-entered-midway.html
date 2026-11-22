@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Timeline tool</title>
+<style>#tool{border:1px solid #888;padding:8px;width:420px} #tool button,#tool input{display:block;margin:6px 0}</style></head>
+<body>
+<h1>Your family timeline</h1>
+<a href="#" id="before">About this tool</a>
+<div id="tool" role="region" aria-label="Timeline">
+  <div role="tablist"><button role="tab" id="overview" aria-selected="true">Overview</button></div>
+  <div role="tabpanel" aria-labelledby="overview"><button id="more" type="button">More about the timeline</button></div>
+  <button id="start" type="button">View timeline</button>
+  <label>Name <input id="name" type="text"></label>
+  <label>Birth year <input id="year" type="number"></label>
+  <button id="down" type="button">Scroll down</button>
+</div>
+<a href="#" id="after">After the tool</a>
+<script>
+  // Focus coming into the tool from outside lands on "View timeline"; Tab on
+  // the last control goes back to the first, Shift+Tab the other way: focus
+  // never leaves the tool by Tab or Shift+Tab.
+  const $ = (id) => document.getElementById(id);
+  const tool = $("tool");
+  const els = ["overview", "more", "start", "name", "year", "down"].map($);
+  tool.addEventListener("focusin", (e) => {
+    if (e.target === $("overview") && !(e.relatedTarget && tool.contains(e.relatedTarget))) $("start").focus();
+  });
+  els.forEach((el, i) => el.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    if (!e.shiftKey && i === els.length - 1) { e.preventDefault(); els[0].focus(); }
+    else if (e.shiftKey && i === 0) { e.preventDefault(); els[els.length - 1].focus(); }
+  }));
+  document.addEventListener("click", (e) => { if (e.target.closest('a[href="#"]')) e.preventDefault(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head><title>Results</title>
+<style>button{width:36px;height:36px;padding:4px}</style></head>
+<body>
+<h1>Search results</h1>
+<p>Sort:
+  <button type="button" aria-label="Toggle order; currently descending order" title="Toggle sort direction">
+    <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v14l-3-3M17 20V6l3 3" stroke="black" fill="none" stroke-width="2"/></svg>
+  </button>
+</p>
+<ol><li>Hurricane season 2026</li><li>Solar flare, May</li><li>Moon phases</li></ol>
+<script>
+const b = document.querySelector('button');
+b.addEventListener('click', () => {
+  const ol = document.querySelector('ol');
+  [...ol.children].reverse().forEach(li => ol.appendChild(li));
+  const desc = b.getAttribute('aria-label').includes('descending');
+  b.setAttribute('aria-label', 'Toggle order; currently ' + (desc ? 'ascending' : 'descending') + ' order');
+});
+</script>
+</body>
+</html>
