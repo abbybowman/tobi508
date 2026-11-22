@@ -113,51 +113,19 @@
   },
   "2": {
    "tally": {
-    "needs_review": 8,
+    "needs_review": 7,
     "agree": 1,
-    "false_fail": 1
+    "false_fail": 2
    },
-   "moved": [
-    {
-     "page": "p06",
-     "test": "4.D",
-     "key": "Pass",
-     "comment": "",
-     "old": "Fail",
-     "old_verdict": "false_fail",
-     "old_rows": [
-      "A3",
-      "G2"
-     ],
-     "new": null,
-     "new_verdict": "needs_review",
-     "new_rows": []
-    }
-   ],
+   "moved": [],
    "live": []
   },
   "1": {
    "tally": {
-    "agree": 2,
-    "needs_review": 7
+    "agree": 3,
+    "needs_review": 6
    },
-   "moved": [
-    {
-     "page": "p07",
-     "test": "4.D",
-     "key": "Fail",
-     "comment": "Images in the gallery link to their image detail page and accept focus, the only visible indication of focus is a tiny square (looks less than 4x4px) in the top left corner of the image that does not encompass the clickable component (the whole image).",
-     "old": "Fail",
-     "old_verdict": "agree",
-     "old_rows": [
-      "A3",
-      "G2"
-     ],
-     "new": null,
-     "new_verdict": "needs_review",
-     "new_rows": []
-    }
-   ],
+   "moved": [],
    "live": []
   }
  }
