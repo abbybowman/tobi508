@@ -3,7 +3,7 @@
 Agent-assisted results, not certified Trusted Tester results. Development
 reruns; never in place of a round's blind score.
 
-**Done (2026-11-22).** Each `roundN-copy-frozen/` is a copy of
+**Done (2026-11-22).** Each `roundN-copy/frozen/` is a copy of
 Abby's frozen archive for round N, checked before copying (round 1's zip
 `768b8f5f…` and round 3's `2ce3446a…` match their `ARCHIVE.md`; round 3's
 30 files its `frozen-MANIFEST.sha256`; round 2's 12 parts and rejoined
