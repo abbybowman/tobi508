@@ -181,18 +181,20 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
     # case that must still FAIL: the same change in the menu.
     # Step 19b (9.C 1.14.0; #138, Abby 2026-11-22): controls in the pages'
     # own content are paired by function, then asked about (J1). By their
-    # first word: "Print page" and "Print" (inconsistent: FAIL) ...
+    # first word: "Subscribe to updates" and "Subscribe" (inconsistent:
+    # FAIL) ...
     "content-button-same-action-word": (
-        "s1-print-page",
-        ["s2-print"],
+        "s1-subscribe-updates",
+        ["s2-subscribe"],
         {"9.C": "FAIL"},
         {"9.C": {"J1": {"choice": "inconsistent"}}},
     ),
-    # ... and the pair that must not FAIL: "Download PDF" and "Download
-    # data" do different things (J1: different function, dropped).
+    # ... and the pair that must not FAIL: "Download report" and "Download
+    # map" do different things (J1: different function, dropped). Not the
+    # rubric's own examples, so the judge eval tests judging, not copying.
     "content-buttons-same-word-different-things": (
-        "s3-download-pdf",
-        ["s4-download-data"],
+        "s3-download-report",
+        ["s4-download-map"],
         {"9.C": "PASS"},
         {"9.C": {"J1": {"choice": "different_function"}}},
     ),
