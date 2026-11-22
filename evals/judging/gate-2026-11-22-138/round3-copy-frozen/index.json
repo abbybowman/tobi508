@@ -9,6 +9,26 @@
   ],
   "recorded_at": "2026-11-16T00:07:06.853726+00:00"
  },
+ "https://science.data.nasa.gov/about/aws-open-data-registry": {
+  "url": "https://science.data.nasa.gov/about/aws-open-data-registry",
+  "final_url": "https://science.data.nasa.gov/about/aws-open-data-registry",
+  "har": "pages/050.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:24:04.431181+00:00"
+ },
+ "https://science.data.nasa.gov/astronomy-geodesy": {
+  "url": "https://science.data.nasa.gov/astronomy-geodesy",
+  "final_url": "https://science.data.nasa.gov/astronomy-geodesy",
+  "har": "pages/048.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:23:51.457017+00:00"
+ },
  "https://science.data.nasa.gov/blog": {
   "url": "https://science.data.nasa.gov/blog",
   "final_url": "https://science.data.nasa.gov/blog",
@@ -19,6 +39,47 @@
   ],
   "recorded_at": "2026-11-16T00:07:18.047219+00:00"
  },
+ "https://science.data.nasa.gov/blog/indus-sde-language-model": {
+  "url": "https://science.data.nasa.gov/blog/indus-sde-language-model",
+  "final_url": "https://science.data.nasa.gov/blog/indus-sde-language-model",
+  "har": "pages/032.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:19:40.134216+00:00"
+ },
+ "https://science.data.nasa.gov/blog/prithvi-foundation-model-coastal-mapping": {
+  "url": "https://science.data.nasa.gov/blog/prithvi-foundation-model-coastal-mapping",
+  "final_url": "https://science.data.nasa.gov/blog/prithvi-foundation-model-coastal-mapping",
+  "har": "pages/033.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:19:45.925482+00:00"
+ },
+ "https://science.data.nasa.gov/blog/science-explorer-research-management": {
+  "url": "https://science.data.nasa.gov/blog/science-explorer-research-management",
+  "final_url": "https://science.data.nasa.gov/blog/science-explorer-research-management",
+  "har": "pages/034.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html",
+   "https://www.youtube.com/embed/P7xHED9gPCk"
+  ],
+  "recorded_at": "2026-11-22T15:19:52.147908+00:00"
+ },
+ "https://science.data.nasa.gov/blog?page=1": {
+  "url": "https://science.data.nasa.gov/blog?page=1",
+  "final_url": "https://science.data.nasa.gov/blog?page=1",
+  "har": "pages/031.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:19:34.264492+00:00"
+ },
  "https://science.data.nasa.gov/contact": {
   "url": "https://science.data.nasa.gov/contact",
   "final_url": "https://science.data.nasa.gov/contact",
@@ -28,6 +89,14 @@
    "https://static.addtoany.com/menu/sm.25.html"
   ],
   "recorded_at": "2026-11-16T00:07:26.669936+00:00"
+ },
+ "https://science.data.nasa.gov/data-governance-community/": {
+  "url": "https://science.data.nasa.gov/data-governance-community/",
+  "final_url": "https://science.data.nasa.gov/data-governance-community/",
+  "har": "pages/039.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:21:57.413124+00:00"
  },
  "https://science.data.nasa.gov/data-governance-community/forum": {
   "url": "https://science.data.nasa.gov/data-governance-community/forum",
@@ -44,6 +113,44 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-16T13:06:11.817879+00:00"
+ },
+ "https://science.data.nasa.gov/data-governance-community/updates-events": {
+  "url": "https://science.data.nasa.gov/data-governance-community/updates-events",
+  "final_url": "https://science.data.nasa.gov/data-governance-community/updates-events",
+  "har": "pages/040.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:22:12.202704+00:00"
+ },
+ "https://science.data.nasa.gov/features-events/igarss-2025": {
+  "url": "https://science.data.nasa.gov/features-events/igarss-2025",
+  "final_url": "https://science.data.nasa.gov/features-events/igarss-2025",
+  "har": "pages/043.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:22:32.425045+00:00"
+ },
+ "https://science.data.nasa.gov/features-events/nasas-science-mission-directorate-creates-ai-language-model-better-data-stewardship": {
+  "url": "https://science.data.nasa.gov/features-events/nasas-science-mission-directorate-creates-ai-language-model-better-data-stewardship",
+  "final_url": "https://science.data.nasa.gov/features-events/nasas-science-mission-directorate-creates-ai-language-model-better-data-stewardship",
+  "har": "pages/047.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:23:45.265206+00:00"
+ },
+ "https://science.data.nasa.gov/fits": {
+  "url": "https://science.data.nasa.gov/fits",
+  "final_url": "https://science.data.nasa.gov/fits",
+  "har": "pages/044.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:22:42.486560+00:00"
  },
  "https://science.data.nasa.gov/fits/sample-files": {
   "url": "https://science.data.nasa.gov/fits/sample-files",
@@ -65,6 +172,70 @@
   ],
   "recorded_at": "2026-11-16T00:07:46.497674+00:00"
  },
+ "https://science.data.nasa.gov/home": {
+  "url": "https://science.data.nasa.gov/home",
+  "final_url": "https://science.data.nasa.gov/",
+  "har": "pages/041.har.zip",
+  "redirects": [
+   {
+    "from": "https://science.data.nasa.gov/home",
+    "status": 301,
+    "to": "https://science.data.nasa.gov/"
+   }
+  ],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:22:21.712743+00:00"
+ },
+ "https://science.data.nasa.gov/pegasus-stellar-spectra": {
+  "url": "https://science.data.nasa.gov/pegasus-stellar-spectra",
+  "final_url": "https://science.data.nasa.gov/pegasus-stellar-spectra",
+  "har": "pages/049.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:23:57.638029+00:00"
+ },
+ "https://science.data.nasa.gov/science-cloud/projects-news": {
+  "url": "https://science.data.nasa.gov/science-cloud/projects-news",
+  "final_url": "https://science.data.nasa.gov/science-cloud/projects-news",
+  "har": "pages/036.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:20:27.209956+00:00"
+ },
+ "https://science.data.nasa.gov/science-cloud/user-support": {
+  "url": "https://science.data.nasa.gov/science-cloud/user-support",
+  "final_url": "https://science.data.nasa.gov/science-cloud/user-support",
+  "har": "pages/037.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:20:32.444882+00:00"
+ },
+ "https://science.data.nasa.gov/science-discovery-engine": {
+  "url": "https://science.data.nasa.gov/science-discovery-engine",
+  "final_url": "https://science.data.nasa.gov/science-discovery-engine",
+  "har": "pages/038.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:20:37.749982+00:00"
+ },
+ "https://science.data.nasa.gov/science-discovery-engine/search/sde/": {
+  "url": "https://science.data.nasa.gov/science-discovery-engine/search/sde/",
+  "final_url": "https://science.data.nasa.gov/science-discovery-engine/search/sde/",
+  "har": "pages/046.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:23:09.924743+00:00"
+ },
  "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory": {
   "url": "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory",
   "final_url": "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory",
@@ -80,6 +251,16 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-16T00:08:31.543106+00:00"
+ },
+ "https://science.data.nasa.gov/science-explorer": {
+  "url": "https://science.data.nasa.gov/science-explorer",
+  "final_url": "https://science.data.nasa.gov/science-explorer",
+  "har": "pages/045.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:22:48.262725+00:00"
  },
  "https://science.data.nasa.gov/search?rendered_item=%22Data+Governance+Knowledge+Hub%22": {
   "url": "https://science.data.nasa.gov/search?rendered_item=%22Data+Governance+Knowledge+Hub%22",
@@ -171,6 +352,16 @@
   ],
   "recorded_at": "2026-11-16T00:09:12.841495+00:00"
  },
+ "https://science.data.nasa.gov/search?rendered_item=Contact": {
+  "url": "https://science.data.nasa.gov/search?rendered_item=Contact",
+  "final_url": "https://science.data.nasa.gov/search?rendered_item=Contact",
+  "har": "pages/035.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:20:20.696265+00:00"
+ },
  "https://science.data.nasa.gov/search?rendered_item=Data+Governance+Knowledge+Hub": {
   "url": "https://science.data.nasa.gov/search?rendered_item=Data+Governance+Knowledge+Hub",
   "final_url": "https://science.data.nasa.gov/search?rendered_item=Data+Governance+Knowledge+Hub",
@@ -200,6 +391,16 @@
    "https://static.addtoany.com/menu/sm.25.html"
   ],
   "recorded_at": "2026-11-16T00:09:22.284705+00:00"
+ },
+ "https://science.data.nasa.gov/search?rendered_item=Forum": {
+  "url": "https://science.data.nasa.gov/search?rendered_item=Forum",
+  "final_url": "https://science.data.nasa.gov/search?rendered_item=Forum",
+  "har": "pages/042.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://static.addtoany.com/menu/sm.25.html"
+  ],
+  "recorded_at": "2026-11-22T15:22:26.073435+00:00"
  },
  "https://science.data.nasa.gov/search?rendered_item=Sample+FITS+Files": {
   "url": "https://science.data.nasa.gov/search?rendered_item=Sample+FITS+Files",

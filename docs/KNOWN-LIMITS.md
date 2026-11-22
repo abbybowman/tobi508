@@ -316,11 +316,15 @@ re-testing): confirm and remove, or remove the mark.
 - **9.C** compares less than the TT text covers (read, not run): links
   pair by address only inside the header, menus, search and footer, and
   otherwise by `id`, an equal name or a place outside the main content.
-  Two controls in the pages' own content that do the same thing under
-  different names are not paired unless they share an `id`, so 9.C can
-  PASS or say DOES NOT APPLY without comparing them. Pictures that are
-  not controls are not compared (the PDF's how-to is ANDI's focusable
-  elements). Step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138).
+  Since 1.14.0 (step 19b, [#138](https://github.com/abbybowman/tobi508/issues/138))
+  buttons and fields in the pages' own content also pair by their first
+  word and by their place, and the judge says whether they do the same
+  thing. Links in the content still pair only by `id` or an equal name
+  (they are prose and tags there), and no control pairs by its picture
+  (ANDI's read keeps no image address), so two content links or two icons
+  that do the same thing under different names can still go uncompared.
+  Pictures that are not controls are not compared (the PDF's how-to is
+  ANDI's focusable elements).
 - **9.A to 9.C and 19.A:** an other page that cannot be read in full, or
   that is the tested page again, is left out and named, and the test
   decides on the rest (step 26; Abby, 2026-11-20: one usable other page

@@ -179,6 +179,39 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
     # are not paired by address (round 2: Home and Help, key Pass). The
     # header, menu and search still agree. "renamed" above is the nearest
     # case that must still FAIL: the same change in the menu.
+    # Step 19b (9.C 1.14.0; #138, Abby 2026-11-22): controls in the pages'
+    # own content are paired by function, then asked about (J1). By their
+    # first word: "Print page" and "Print" (inconsistent: FAIL) ...
+    "content-button-same-action-word": (
+        "s1-print-page",
+        ["s2-print"],
+        {"9.C": "FAIL"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
+    # ... and the pair that must not FAIL: "Download PDF" and "Download
+    # data" do different things (J1: different function, dropped).
+    "content-buttons-same-word-different-things": (
+        "s3-download-pdf",
+        ["s4-download-data"],
+        {"9.C": "PASS"},
+        {"9.C": {"J1": {"choice": "different_function"}}},
+    ),
+    # By their place in the content: "Share this page" and "Send to a
+    # friend" in the same spot (inconsistent: FAIL) ...
+    "content-button-same-place": (
+        "s5-share",
+        ["s6-send"],
+        {"9.C": "FAIL"},
+        {"9.C": {"J1": {"choice": "inconsistent"}}},
+    ),
+    # ... and the pair that must not FAIL: "Share this page" and "Print" in
+    # that spot do different things.
+    "content-buttons-same-place-different-things": (
+        "s5-share",
+        ["s7-print-here"],
+        {"9.C": "PASS"},
+        {"9.C": {"J1": {"choice": "different_function"}}},
+    ),
     "body-links-reworded": (
         "g1-body-links",
         ["g2-body-links-reworded"],
