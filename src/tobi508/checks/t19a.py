@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import re
 from typing import Any
-from urllib.parse import urlencode, urlsplit, urlunsplit
+from urllib.parse import parse_qs, urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel, Field
 
@@ -130,6 +130,9 @@ class State19A(BaseModel):
     search_forms: int = 0
     # T is the address a search form submits to (W5)
     search_target: str = ""
+    # That form's search field (1.21.0: a link is the results page only
+    # with a query carrying it).
+    search_field: str = ""
     search: Search = Field(default_factory=Search)
     # Suspected aliases of T, in the order their links were read.
     aliases: list[Alias] = Field(default_factory=list)
@@ -171,9 +174,17 @@ def _to_t(href: str, t: str | tuple[str, ...]) -> bool:
     for x in (t,) if isinstance(t, str) else t:
         if not x:
             continue
-        if x.endswith(ANY_QUERY):
-            base = _no_query(x[: -len(ANY_QUERY)])
-            if base and _no_query(href) == base:
+        if ANY_QUERY in x:
+            # T's address with any query that carries the search form's own
+            # field: a link with no search is another page (the home page,
+            # when the search submits to it; round 1's nasa.gov).
+            t_part, _, field = x.partition(ANY_QUERY)
+            base = _no_query(t_part)
+            if (
+                base
+                and _no_query(href) == base
+                and field in parse_qs(urlsplit(href).query, keep_blank_values=True)
+            ):
                 return True
         elif _same(href, x):
             return True
@@ -594,6 +605,20 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         1 for p in site.pages for r in p.regions if r.role == "search" and not p.forms
     )
     st.search_target = search_target(forms, both)
+    st.search_field = (
+        next(
+            (
+                f.get("field") or ""
+                for f in forms
+                if f.get("action")
+                and _path(f["action"]) == _path(st.search_target)
+                and f.get("field")
+            ),
+            "",
+        )
+        if st.search_target
+        else ""
+    )
     st.links = links_to(both + _any_query(st), site.others, maps, st.t_groups)
     read = list(site.others)
     # How to load each page read again (its own recording): W9's menus.
@@ -746,9 +771,12 @@ async def _open_menus(
 
 
 def _any_query(st: State19A) -> tuple[str, ...]:
-    """T with any query, when T is the site search's own results page (spec
-    Terms, 1.19.0; Abby, 2026-11-21)."""
-    return (st.t_url + ANY_QUERY,) if st.search_target else ()
+    """T with any search, when T is the site search's own results page (spec
+    Terms, 1.19.0; Abby, 2026-11-21): its address with a query carrying the
+    search form's field (1.21.0)."""
+    if not st.search_target or not st.search_field:
+        return ()
+    return (st.t_url.split("?")[0] + ANY_QUERY + st.search_field,)
 
 
 def _targets(st: State19A) -> tuple[str, ...]:

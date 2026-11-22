@@ -696,6 +696,16 @@ QUERY_CASES = {
         "PASS",
         ["W1", "W5", "G2"],
     ),
+    # Must not count: the search form submits to the home page's own
+    # address (round 1's nasa.gov: "/?search=artemis", key DNA). Links to
+    # the home page carry no search, so they are the home page, not the
+    # results page: only the search's own way (W5) is found.
+    "home-page-links-are-not-the-results-page": (
+        "hq.html?search=moon",
+        "hq-other",
+        "NEEDS_REVIEW",
+        ["W1", "W5", "G5"],
+    ),
     # Must not count: no search form submits to app.html, so app.html?id=2
     # is another record (a web app whose parameters are other content).
     "other-query-of-a-page-no-form-submits-to": (
