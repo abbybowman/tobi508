@@ -9,6 +9,7 @@ compares the images; only evaluate() and the row tables decide outcomes.
 
 from __future__ import annotations
 
+import asyncio
 import time
 from pathlib import Path
 from typing import Any
@@ -72,6 +73,7 @@ BEFORE_SCROLL = True
 # from a replay: a fresh load with one Tab fewer, then a clip of its region.
 # At most this many replays a page (about 9 s each, measured); 0 turns it off.
 BEFORE_REPLAY_MAX = 5
+REPLAY_MIN_LEFT_S = 15  # start a replay only with this much of the test's time left
 HOOK = "focus4d"
 
 # Runs in the isolated world on the focused element (`this`). With itemId, on
@@ -1003,18 +1005,29 @@ async def _replay_before(ctx: RunContext, by_subject: dict[str, Inst4D]) -> None
         if done >= BEFORE_REPLAY_MAX:
             e["before_replay"] = "over the limit of replays"
             continue
-        if ctx.out_of_time():
+        # A replay deep into a long page presses Tab many times: start one only
+        # with REPLAY_MIN_LEFT_S to spare, and stop it before the test's own
+        # deadline (round 2's SVS 5144 and 4914 ran 4.D out of its time).
+        left = min(ctx.deadline, ctx.test_deadline) - time.monotonic()
+        if ctx.out_of_time() or left < REPLAY_MIN_LEFT_S:
             e["before_replay"] = "out of time"
             continue
         done += 1
         t0 = time.monotonic()
         rel = e["on"].replace("-on.png", "-before.png")
-        try:
-            s = await ctx.replay(a.keys[:-1])
+
+        async def picture(keys=a.keys[:-1], cp=e["clip_page"], path=str(ctx.rel / rel)):
+            s = await ctx.replay(keys)
             try:
-                r = await clip_scrolled(s.page, e["clip_page"], str(ctx.rel / rel))
+                return await clip_scrolled(s.page, cp, path)
             finally:
                 await s.close()
+
+        try:
+            r = await asyncio.wait_for(picture(), timeout=left - REPLAY_MIN_LEFT_S / 2)
+        except TimeoutError:
+            e["before_replay"] = "the replay did not finish in the test's time"
+            continue
         except Exception as exc:
             e["before_replay"] = f"the replay failed ({type(exc).__name__})"
             continue
