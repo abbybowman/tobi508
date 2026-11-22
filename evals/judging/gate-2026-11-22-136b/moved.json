@@ -1,0 +1,13 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "rounds": {
+  "3": {
+   "tally": {
+    "needs_review": 14,
+    "agree": 6
+   },
+   "moved": [],
+   "live": []
+  }
+ }
+}
