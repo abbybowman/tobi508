@@ -31,7 +31,7 @@ from tobi508.site import (
     a3o_reason,
     before,
     kinship,
-    norm_href,
+    nav_key,
     page_label,
     pair_aligned,
     site_read,
@@ -106,8 +106,7 @@ def items(p: PageRead) -> list[Item]:
 
 
 def _key(u: Unit, page_url: str) -> str:
-    dest = norm_href(u.href, page_url) if u.role == "link" else ""
-    return f"{u.region_role}|{u.role}|{u.name.lower()}|{dest}"
+    return nav_key(u, page_url)
 
 
 def compare(main: PageRead, other: PageRead) -> Cmp:
@@ -138,7 +137,8 @@ def compare(main: PageRead, other: PageRead) -> Cmp:
 async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9B:
     if not ctx.pages:
         return State9B(no_pages=True)
-    site = await site_read(ctx)
+    # Another part of the site is left out (#138 draft G).
+    site = (await site_read(ctx)).same_part()
     st = State9B(
         read_errors=site.errors, read=site.read, compared=site.compared_sentence()
     )

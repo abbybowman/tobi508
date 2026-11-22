@@ -78,9 +78,9 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 5.F | Error identification | [3.3.1](https://www.w3.org/TR/WCAG20/#minimize-error-identified) | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
 | 5.G | Error suggestion | [3.3.3](https://www.w3.org/TR/WCAG20/#minimize-error-suggestions) | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
 | 5.H | Error prevention | [3.3.4](https://www.w3.org/TR/WCAG20/#minimize-error-reversible) | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 9.A | Bypass function | [2.4.1](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-skip) | [1.9.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
-| 9.B | Consistent navigation | [3.2.3](https://www.w3.org/TR/WCAG20/#consistent-behavior-consistent-locations) | [1.9.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
-| 9.C | Consistent identification | [3.2.4](https://www.w3.org/TR/WCAG20/#consistent-behavior-consistent-functionality) | [1.12.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 9.A | Bypass function | [2.4.1](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-skip) | [1.10.0](specs/rules/9a-bypass.md) | ✅ agrees with a tester |
+| 9.B | Consistent navigation | [3.2.3](https://www.w3.org/TR/WCAG20/#consistent-behavior-consistent-locations) | [1.10.0](specs/rules/9b-consistent-navigation.md) | ✅ agrees with a tester |
+| 9.C | Consistent identification | [3.2.4](https://www.w3.org/TR/WCAG20/#consistent-behavior-consistent-functionality) | [1.13.0](specs/rules/9c-consistent-identification.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 19.A | Multiple ways | [2.4.5](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-mult-loc) | [1.21.0](specs/rules/19a-multiple-ways.md) | ✅ agrees with a tester |
 
 <!-- status-table:end -->

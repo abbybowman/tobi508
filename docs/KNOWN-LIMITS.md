@@ -272,6 +272,14 @@ re-testing): confirm and remove, or remove the mark.
 
 ## 9.A to 9.C: the same site's other pages
 
+- **Parts of a site** (9.A 1.10.0, 9.B 1.10.0, 9.C 1.13.0, #138): an
+  other page sharing fewer than 2 navigation components with the tested
+  page (a microsite against the main site) is left out, but only while a
+  page of the tested page's own part is given. With only such pages given,
+  they are compared as before (9.B: NEEDS REVIEW on one shared item). A
+  page whose whole menu was renamed may share too little and be left out,
+  so 9.C would not see the renaming; set low (2) to keep that rare.
+
 - **9.B** compares only navigation outside the main content: a
   breadcrumb or section menu inside `main` that repeats on other pages
   is left out. With one matched component it says NEEDS REVIEW, where

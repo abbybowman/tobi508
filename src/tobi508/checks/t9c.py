@@ -321,7 +321,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9C:
         *(_cached_andi(p, ctx.third_party) for p in ctx.pages),
     )
     pages = list(pages)
-    site = await site_read(ctx)
+    # Another part of the site is left out (#138 draft G).
+    site = (await site_read(ctx)).same_part()
     # Step 26 (#134): an other page ANDI or the site read could not read, or
     # that is the tested page again, is left out; the rest are compared. The
     # tested page unread, or no other page left, is row A2.

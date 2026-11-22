@@ -28,6 +28,27 @@ EXPECTED: dict[str, tuple[str, list[str], dict[str, str], dict]] = {
         {},
     ),
     "nav-css-order": ("a1-home", ["a4-nav-css-order"], {"9.B": "FAIL"}, {}),
+    # #138 draft G (9.A 1.10.0, 9.B 1.10.0, 9.C 1.13.0; Abby, 2026-11-22):
+    # a microsite page with its own header and menu shares one component
+    # with the main site (a menu region of the same name, "Main"): another
+    # part of the site, left out while a page of the main site's own part is
+    # compared (round 3: the community and SDE pages against the main
+    # site's pages). Before, 9.B read it as one shared component (N5) and
+    # stayed NEEDS REVIEW.
+    "microsite-page-left-out-beside-the-site": (
+        "a1-home",
+        ["a2-benefits", "e4-lab-microsite"],
+        {"9.A": "PASS", "9.B": "PASS", "9.C": "PASS"},
+        {},
+    ),
+    # ... and with only the microsite page given, none is left out: as
+    # before (one shared component, NEEDS REVIEW).
+    "microsite-page-alone-is-not-left-out": (
+        "a1-home",
+        ["e4-lab-microsite"],
+        {"9.B": "NEEDS_REVIEW"},
+        {},
+    ),
     # Step 31 (9.B 1.7.0; round 3's Drupal pages, plan cause 10): three links
     # named "Home" to one address (top bar, the footer's logo block, the
     # footer list) and, on every page but the home page, a fourth (the

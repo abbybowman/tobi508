@@ -288,7 +288,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State9A:
             f"{site.label(p)} could not be read in full (more than "
             f"{UNIT_CAP:,} pieces of content)"
         ),
-    )
+    ).same_part()  # another part of the site is left out (#138 draft G)
     st = State9A(
         pages=[
             {"n": r.n, "url": r.final_url}
