@@ -61,6 +61,10 @@ NOISE_WAIT_MS = 150  # second "on" read: what changes while focus stays is noise
 # the key press that focused it. No row reads it yet. A switch so the cost
 # can be measured with and without it.
 BEFORE_PICTURE = True
+# How the before picture is taken (timing, step 27): "viewport", a picture of
+# the viewport after every step; "p2", a clip of the stop's region taken by
+# pass P2 (Shift+Tab) when focus has moved back to the stop before it.
+BEFORE_MODE = "p2"
 HOOK = "focus4d"
 
 # Runs in the isolated world on the focused element (`this`). With itemId, on
@@ -184,19 +188,55 @@ class FocusHook:
 
     name = HOOK
 
-    def __init__(self, pass_name: str, skip: set[str], item_mode: bool = False):
+    def __init__(
+        self,
+        pass_name: str,
+        skip: set[str],
+        item_mode: bool = False,
+        before_for: dict[str, tuple[int, list[float]]] | None = None,
+    ):
         self.pass_name = pass_name
         self.skip = skip
         self.item_mode = item_mode
         self.prev: dict[str, Any] | None = None
+        # P2 only (BEFORE_MODE "p2"): P1's stops by subject, (P1 step, clip in
+        # page coordinates); `pending` is the stop P2 was just on.
+        self.before_for = before_for or {}
+        self.pending: tuple[int, list[float]] | None = None
         # The viewport as it was after the last step (or at the start): PNG
         # bytes and [scrollX, scrollY, innerWidth, innerHeight, dpr].
         self.view_prev: tuple[bytes, list[float]] | None = None
         self._view_now: list[float] | None = None
         self.view_ms = 0.0  # time spent on viewport pictures (cost, step 27)
 
+    async def _p2_before(self, t: Traversal, step: Step) -> None:
+        """P2 has moved from a stop to the one before it: the stop's region
+        now looks as it did before P1's key press focused it."""
+        t0 = time.monotonic()
+        if self.pending is not None and t.shots_dir is not None:
+            n, cp = self.pending
+            v = await self._view(t)
+            clip = [cp[0] - v[0], cp[1] - v[1], cp[2], cp[3]]
+            if _inside(clip, v[2], v[3]):
+                d = t.shots_dir / "4d"
+                d.mkdir(parents=True, exist_ok=True)
+                await screenshot(
+                    t.page,
+                    path=str(d / f"P1-{n:04d}-before.png"),
+                    clip={
+                        "x": clip[0],
+                        "y": clip[1],
+                        "width": clip[2],
+                        "height": clip[3],
+                    },
+                    animations="disabled",
+                    caret="hide",
+                )
+        self.pending = self.before_for.get(step.stop.path_key)
+        self.view_ms += (time.monotonic() - t0) * 1000
+
     async def _keep_view(self, t: Traversal) -> None:
-        if not BEFORE_PICTURE or t.shots_dir is None:
+        if not BEFORE_PICTURE or BEFORE_MODE != "viewport" or t.shots_dir is None:
             return
         t0 = time.monotonic()
         view = self._view_now or await self._view(t)
@@ -250,19 +290,22 @@ class FocusHook:
         return path.resolve().relative_to(t.rel_base.resolve()).as_posix()
 
     async def on_step(self, t: Traversal, step: Step) -> Any:
+        spent0 = self.view_ms
+        if BEFORE_PICTURE and BEFORE_MODE == "p2" and self.before_for:
+            await self._p2_before(t, step)
         out = await self._on_step(t, step)
         if (
             BEFORE_PICTURE
+            and BEFORE_MODE == "viewport"
             and isinstance(out, dict)
             and out.get("on")
             and "clip_page" in out
             and t.shots_dir is not None
         ):
             self._before(t, step.n, out)
-        spent = self.view_ms
         await self._keep_view(t)
         if isinstance(out, dict) and BEFORE_PICTURE:
-            out["view_ms"] = round(self.view_ms - spent, 1)  # cost (step 27)
+            out["view_ms"] = round(self.view_ms - spent0, 1)  # cost (step 27)
         return out
 
     async def _on_step(self, t: Traversal, step: Step) -> Any:
@@ -476,7 +519,13 @@ def focus_hook(pass_name: str, prior: PassResult | None) -> FocusHook:
             e = s.extras.get(HOOK) or {}
             if e.get("off_ok") and not e.get("incomplete"):
                 skip.add(e["subject"])
-    return FocusHook(pass_name, skip)
+    before_for = {}
+    if prior is not None and BEFORE_PICTURE and BEFORE_MODE == "p2":
+        for s in prior.steps:
+            e = s.extras.get(HOOK) or {}
+            if e.get("on") and e.get("clip_page") and " >> #" not in e["subject"]:
+                before_for.setdefault(e["subject"], (s.n, e["clip_page"]))
+    return FocusHook(pass_name, skip, before_for=before_for)
 
 
 # ── Evidence ─────────────────────────────────────────────────────────────────
@@ -805,6 +854,15 @@ def _attempts_from(
                 == step.stop.css_path
             ),
         )
+        if (
+            BEFORE_MODE == "p2"
+            and p.name == "P1"
+            and e.get("on")
+            and not e.get("before")
+            and (rel / e["on"].replace("-on.png", "-before.png")).exists()
+        ):
+            # Attempt copies extras when built: record it on both.
+            e["before"] = a.extras["before"] = e["on"].replace("-on.png", "-before.png")
         if e.get("on") and e.get("off") and not e.get("incomplete"):
             try:
                 a.changed_px, a.strong_px, a.mask_fraction, diff = compare(rel, e)
