@@ -126,11 +126,34 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     # every link to the microsite's home goes to its index.html. Loaded, it
     # is the same document, so those links count: the agency's labs page
     # (content) and the lab's own menu (navigation).
+    # 19.A 1.20.0 (#138 draft A, Abby 2026-11-22): verified again by the
+    # same document and the same drawn text (90% shared).
     "alias-index-html-is-the-page": (
         "micro/",
         ["lab-home", "micro/people"],
+        "PASS",
+        ["W1", "W6", "G2"],
+        {},
+    ),
+    # Must stay not verified: an application's one document draws another
+    # page at index.html (#134's case).
+    "alias-app-shell-draws-another-page": (
+        "micro2/",
+        ["hub4"],
         "NEEDS_REVIEW",
         ["W1", "W7", "G3"],
+        {},
+    ),
+    # 19.A 1.20.0 (#138 draft B2): round 2's CILab as it is live. The rows
+    # differ by the item that swaps (Information on the home, Home on
+    # Information) and by Contact Us: "#" on one, mailto: on the other,
+    # the same item by name. Without the link home, Information's row is all
+    # in the home's: navigation; with the agency's card link, PASS.
+    "icon-row-with-swapped-items-is-navigation": (
+        "lab4/",
+        ["hub4"],
+        "PASS",
+        ["W1", "W6", "G2"],
         {},
     ),
     # The nearest case that must never PASS: thin/index.html is another page
@@ -243,18 +266,19 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
     # navigation region. The row is on T too, so the link back (to
     # index.html, a verified alias) is navigation. Its twin's subpage links
     # back only from a paragraph of links T does not have: one kind, FAIL.
+    # 1.20.0: both back to their 1.14.0 outcomes (#138, drafts A and B2).
     "repeated-link-row-is-navigation": (
         "lab2/",
         ["hub3"],
-        "NEEDS_REVIEW",
-        ["W1", "W7", "G3"],
+        "PASS",
+        ["W1", "W6", "G2"],
         {},
     ),
     "content-links-not-on-t-are-not-navigation": (
         "lab3/",
         ["hub3"],
-        "NEEDS_REVIEW",
-        ["W1", "W7", "G3"],
+        "FAIL",
+        ["W1", "W6", "G4"],
         {},
     ),
     # ... and a related link that is an API's JSON is not a page: it takes

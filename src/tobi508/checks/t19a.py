@@ -32,11 +32,13 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.site import (
+    NEAR_COPY,
     PageRead,
     norm_href,
     page_label,
     read_page,
     site_read,
+    text_share,
     with_compared,
 )
 from tobi508.traverse import settle
@@ -93,7 +95,7 @@ class Alias(BaseModel):
     url: str
     page: int  # the other page whose link named it
     status: str = "pending"  # same | not_verified | not_needed
-    how: str = ""  # address | document, when the same page
+    how: str = ""  # address | document | drawn text, when the same page
     final_url: str = ""
     reason: str = ""  # why not verified
 
@@ -251,33 +253,71 @@ def _site_map_pages(pages: list[PageRead]) -> set[int]:
 TEMPLATE = ("navigation", "banner", "contentinfo")
 
 
+NOT_A_PAGE = ("mailto:", "tel:", "javascript:")
+
+
+def _item(u, page_url: str) -> str:
+    """A link as an item of its row (spec Terms, 1.20.0, #138 draft B2): its
+    destination, or, for a link to no other web page (`#`, `mailto:`,
+    `tel:`, `javascript:`), its name: CILab's "Contact Us" is `#` on its
+    home and `mailto:` on Information, one item."""
+    raw = (u.href_attr or "").strip()
+    href = u.href or ""
+    own = norm_href(page_url).split("#")[0].rstrip("/")
+    if (
+        raw.startswith("#")
+        or href.lower().startswith(NOT_A_PAGE)
+        or (own and norm_href(href).split("#")[0].rstrip("/") == own)
+    ):
+        name = (u.name or "").strip().lower()
+        return "name:" + name if name else ""
+    d = norm_href(href)
+    return "dest:" + d if d else ""
+
+
 def link_groups(page: PageRead, targets: tuple[str, ...] = ()) -> dict[str, set[str]]:
-    """Each link group's destinations on a page (site.Unit.group). A link to
-    T or a verified alias of T (`targets`, T first) is T: round 2's CILab
-    subpage links its home as index.html in the row its home has."""
+    """Each link group's items on a page (site.Unit.group). The links to T
+    or a verified alias of T (`targets`) are left out: the question is
+    whether the menu around such a link is T's menu (1.20.0)."""
     out: dict[str, set[str]] = {}
     for u in page.units:
-        if u.role == "link" and u.group and u.href:
-            d = (
-                norm_href(targets[0])
-                if targets and _to_t(u.href, targets)
-                else norm_href(u.href)
-            )
-            if d:
-                out.setdefault(u.group, set()).add(d)
+        if u.role != "link" or not u.group or not (u.href or u.href_attr):
+            continue
+        if targets and u.href and _to_t(u.href, targets):
+            out.setdefault(u.group, set())
+            continue
+        d = _item(u, page.url)
+        if d:
+            out.setdefault(u.group, set()).add(d)
     return out
 
 
 def template_groups(main: PageRead) -> list[list[str]]:
-    return [sorted(g) for g in link_groups(main).values() if len(g) >= GROUP_MIN]
+    """T's own rows of 3 or more links, as items."""
+    return [
+        sorted(link_groups(main)[g])
+        for g in _group_sizes(main)
+        if _group_sizes(main)[g] >= GROUP_MIN
+    ]
 
 
-def repeated_on_t(dests: set[str], t_groups: list[list[str]]) -> bool:
-    """A link group repeated on T (spec Terms): 3 or more links, and
-    at least GROUP_SHARE of their destinations in one group on T itself."""
-    if len(dests) < GROUP_MIN:
+def _group_sizes(page: PageRead) -> dict[str, int]:
+    sizes: dict[str, int] = {}
+    for u in page.units:
+        if u.role == "link" and u.group:
+            sizes[u.group] = sizes.get(u.group, 0) + 1
+    return sizes
+
+
+COMPANIONS_MIN = 2  # the other items of a row around a link to T (1.20.0)
+
+
+def repeated_on_t(items: set[str], t_groups: list[list[str]]) -> bool:
+    """A link group repeated on T (spec Terms, 1.20.0): the other items of
+    the link's row, 2 or more, at least GROUP_SHARE of them in one row on T."""
+    if len(items) < COMPANIONS_MIN:
         return False
-    return any(len(dests & set(g)) >= GROUP_SHARE * len(dests) for g in t_groups)
+    return any(len(items & set(g)) >= GROUP_SHARE * len(items) for g in t_groups)
 
 
 def _kind(
@@ -328,10 +368,7 @@ def links_to(
     for p in pages:
         targets = (t_url,) if isinstance(t_url, str) else t_url
         groups = link_groups(p, targets) if t_groups else None
-        mapped = [
-            sorted({norm_href(targets[0]) if _to_t(x, targets) else x for x in g})
-            for g in t_groups
-        ]
+        mapped = t_groups
         for u in p.units:
             if u.role == "link" and _to_t(u.href, t_url):
                 out.append(
@@ -562,7 +599,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
     # How to load each page read again (its own recording): W9's menus.
     loaders = {p.n: p.new_page for p in ctx.pages}
     if len(st.kinds) < 2:
-        await _check_aliases(ctx, st, read, maps)
+        await _check_aliases(ctx, st, read, maps, main)
     if len(st.kinds) < 2:
         given = {p.url for p in site.pages} | {ctx_p.final_url for ctx_p in ctx.pages}
         st.checked = suggested_pages(st.t_url, main, site.pages, given, st.spares)
@@ -724,7 +761,11 @@ def _targets(st: State19A) -> tuple[str, ...]:
 
 
 async def _check_aliases(
-    ctx: RunContext, st: State19A, pages: list[PageRead], maps: set[int]
+    ctx: RunContext,
+    st: State19A,
+    pages: list[PageRead],
+    maps: set[int],
+    main: PageRead | None = None,
 ) -> None:
     """Suspected aliases of T on the pages read (spec Terms): at
     most ALIAS_MAX loaded in a run, each as a caller's other page is loaded;
@@ -759,6 +800,26 @@ async def _check_aliases(
             a.status, a.how = "same", "address"
         elif ref.same_content_as_tested:
             a.status, a.how = "same", "document"
+        elif getattr(ref, "same_document", False) and main is not None:
+            # 1.20.0 (#138 draft A): T's document at the alias, and the page
+            # as drawn nearly T's; an application's one document draws
+            # another page there. Read only for its text.
+            try:
+                drawn = await read_page(ref.n, ref.final_url, ref.new_page)
+            except Exception:
+                drawn = None
+            if (
+                drawn is not None
+                and not drawn.error
+                and (text_share(main, drawn) >= NEAR_COPY)
+            ):
+                a.status, a.how = "same", "document and drawn text"
+            else:
+                a.status, a.reason = (
+                    "not_verified",
+                    "it has the same document but draws a different page",
+                )
+                continue
         else:
             a.status, a.reason = "not_verified", "it loaded a different document"
             continue
@@ -813,7 +874,7 @@ async def _check_suggested(
         read.append(got)
         maps = _site_map_pages([main, *read])
         st.links = links_to(_targets(st), read, maps, st.t_groups)
-        await _check_aliases(ctx, st, read, maps)
+        await _check_aliases(ctx, st, read, maps, main)
 
 
 async def _live_search(ctx: RunContext, st: State19A, main: PageRead, forms) -> None:

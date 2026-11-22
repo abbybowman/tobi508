@@ -77,7 +77,11 @@ until the items under "Before a hosted deployment" are done.
   19.A no longer takes a suspected alias (`index.html`, `www.`) as the
   tested page on its document alone, and 9.A to 9.C and 19.A compare pages
   at different paths. This narrows what counts as a match; it opens no
-  request.
+  request. Since 19.A 1.20.0 (#138, 2026-11-22) an alias with the tested
+  page's document is the tested page when its page as drawn also shares at
+  least 90% of its text; the alias, already loaded under the alias rules,
+  is read once more from its own recording for that text, and its links
+  are still not read. No new request.
 - **Tests run on a recording.** Each page is recorded once (HAR) and tested
   from the replay, so the tests' key presses and form entries never reach
   the live site. 5.F–5.H submit forms with wrong values only into the
