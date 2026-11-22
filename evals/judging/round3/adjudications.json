@@ -1,0 +1,13 @@
+{
+ "about": "Results the tester confirmed after the reveal where the tool and the answer key differed. Written by the tester, never by the tool; the key files themselves never change. A tool result that matches is scored as a validated catch (evals/scoring.py).",
+ "pages": {
+  "https://science.data.nasa.gov/science-discovery-engine/search/sde/MySearchStory": {
+   "4.A": {
+    "result": "Fail",
+    "by": "Abby Bowman",
+    "date": "2026-11-21",
+    "note": "Issue 10 (\"Could not reach or select the breadcrumb links\") should read Fail; its result is blank in the key because the SCRT template erased an earlier row's result when child issues were edited. The page's 4.A was already Fail by issues 9 and 11, so the page result is unchanged; this records the row (issue #136)."
+   }
+  }
+ }
+}

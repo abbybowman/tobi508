@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><title>Search filters</title></head>
+<body>
+<h1>Search results</h1>
+<form id="filters" action="results-page-not-recorded.html" method="get">
+<fieldset><legend>Released within</legend>
+  <label><input type="radio" name="within" value="all" checked> All time (10606)</label>
+  <label><input type="radio" name="within" value="week"> Past week (2)</label>
+  <label><input type="radio" name="within" value="month"> Past month (14)</label>
+  <label><input type="radio" name="within" value="year"> Past year (331)</label>
+</fieldset>
+</form>
+<ol><li>Artemis II crew named</li><li>Moon rocket rolls out</li></ol>
+<script>
+// Each change runs the search again: the page leaves at once.
+for (const r of document.querySelectorAll('input[name=within]'))
+  r.addEventListener('change', () => document.getElementById('filters').submit());
+</script>
+</body>
+</html>

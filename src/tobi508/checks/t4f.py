@@ -31,7 +31,7 @@ from tobi508.models import (
     TestId,
 )
 from tobi508.observe import observe, shown
-from tobi508.traverse import Traversal, open_session, screenshot
+from tobi508.traverse import Traversal, open_session, screenshot, settle
 from tobi508.walk import KeyboardWalk, drawn_late
 
 # Spec constants.
@@ -83,10 +83,15 @@ ORDER_FN = """function () {
   const ctl = el.getAttribute('aria-controls');
   if (ctl) container = '#' + CSS.escape(ctl);
   else if (el.tagName === 'SUMMARY' && el.parentElement) container = gpath(el.parentElement);
+  // 1.14.0 (S3's next column): the footers, navigation areas and lists
+  // round the stop, so two stops can be found in the same one.
+  const regions = [];
+  for (let c = el.parentElement; c && c !== document.body; c = c.parentElement)
+    if (c.matches('footer, [role=contentinfo], nav, [role=navigation], ul, ol')) regions.push(gpath(c));
   return { dom_index: all.indexOf(host), tabindex: ti === null ? null : parseInt(ti, 10),
     group: g ? gpath(g) : null, group_label: legend.trim().slice(0, 80),
     form: el.form ? gpath(el.form) : null, haspopup: el.getAttribute('aria-haspopup'),
-    container, dir: getComputedStyle(el).direction, label_box,
+    container, regions, dir: getComputedStyle(el).direction, label_box,
     shown: el.checkVisibility ? el.checkVisibility({ visibilityProperty: true, opacityProperty: true }) : r.width > 0,
     page: [r.x + sx, r.y + sy, r.width, r.height],
     scroller: box ? gpath(box) : null, scroller_page, inner };
@@ -118,6 +123,13 @@ J1_QUESTION = (
     "does_not_preserve, does_not_matter (order cannot affect meaning here), or "
     "unsure, and give your reasons in a few plain words."
 )
+# 1.13.0 (step 33a): a long page's order list skips from its first BADGE_MAX
+# elements to the ones the signals name.
+GAP_QUESTION = (
+    " input.order holds the first 60 elements and, after them, each element "
+    "input.signals names with the element before it; n is each one's place in "
+    "the whole order, so a jump in n is elements left out between them."
+)
 J1_RUBRIC = (
     "The question is whether the order keeps the page's meaning and lets a "
     "keyboard user operate it, not whether it matches the order drawn on the "
@@ -137,7 +149,13 @@ J1_RUBRIC = (
     "Share button before its Save button); a side list's sub-items reached "
     "right after their parent item; main content reached before side "
     "navigation that comes later in the document; header, navigation, main, "
-    "footer; a skip link first; independent sidebars in either order. "
+    "footer; a skip link first; independent sidebars in either order; an "
+    "order that looks a little odd but keeps each part's meaning and lets every "
+    "part be used, such as a group of controls (a form, a set of options) "
+    "reached whole before or after the content it goes with, or a form's "
+    "button reached after the menu beside it. That you would have ordered it "
+    "differently is not does_not_preserve; only an order that splits a group, "
+    "puts a sequence out of order or leaves something unusable is. "
     "does_not_matter: independent items whose order cannot change meaning, "
     "such as a row of social media icons. unsure: whenever the evidence does "
     "not settle it (the image does not show the numbered elements the signals "
@@ -192,7 +210,16 @@ class OrderHook:
             # A frame: the walk's box is already top-level, so add the top
             # page's scroll.
             scroll = await t.reader.evaluate_top("[scrollX, scrollY]") or [0, 0]
+            local = info.get("page")
             info["page"] = [bb.x + scroll[0], bb.y + scroll[1], bb.width, bb.height]
+            # The stop's scroll box was read where it is in the frame: move
+            # it by as much as the stop moved (1.15.1; round 2's timeline
+            # tool, #136: a frame 396 px down, so its first stop read as
+            # above the stop before it and raised S3).
+            sp = info.get("scroller_page")
+            if sp and local:
+                dx, dy = info["page"][0] - local[0], info["page"][1] - local[1]
+                info["scroller_page"] = [sp[0] + dx, sp[1] + dy, sp[2], sp[3]]
             lb = info.get("label_box")
             if lb:  # a checkbox or radio button: where its label is
                 info["page"] = [
@@ -253,6 +280,10 @@ class State4F(BaseModel):
     order_crop: str | None = None
     # Numbers of forward stops with no badge in the picture: no visible box.
     undrawn: list[int] = Field(default_factory=list)
+    # Forward numbers J1 is shown (order list, badges, crop): the first
+    # BADGE_MAX, then each stop a signal names and the stop before it
+    # (1.13.0, #136 step 33a). Empty: the first BADGE_MAX.
+    numbered: list[int] = Field(default_factory=list)
     instances: list[Inst4F] = Field(default_factory=list)
     incomplete: list[str] = Field(default_factory=list)
     notes: list[str] = Field(default_factory=list)
@@ -271,6 +302,27 @@ def _distinct(p: PassResult) -> list[tuple[int, Step]]:
         seen.add(s.stop.path_key)
         out.append((i, s))
     return out
+
+
+def trap_wrap(
+    p1: PassResult, fwd_steps: list[tuple[int, Step]]
+) -> tuple[str, str] | None:
+    """1.15.0: when P1 ends in a loop, the move from the loop's element last
+    in the page to its element first in the page is the trap going round.
+    Only when every element of the loop is in one document and has a place
+    in it; otherwise None (every move is read as usual)."""
+    if p1.end != "loop" or not p1.trap:
+        return None
+    keys = set(p1.trap)
+    members = [s for _, s in fwd_steps if s.stop.key in keys]
+    if len(members) < 2 or len({tuple(s.stop.frame_chain) for s in members}) != 1:
+        return None
+    dom = [((s.extras.get(HOOK) or {}).get("dom_index"), s) for s in members]
+    if any(d is None for d, _ in dom):
+        return None
+    last = max(dom, key=lambda x: x[0])[1].stop.path_key
+    first = min(dom, key=lambda x: x[0])[1].stop.path_key
+    return last, first
 
 
 def _info(s: Step) -> StopInfo:
@@ -331,8 +383,53 @@ def same_keys(f_keys: list[str], b_keys: list[str]) -> tuple[list[str], list[str
     return [norm(k) for k in f_keys], [norm(k) for k in b_keys]
 
 
-def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, Any]]:
-    """S1-S5 on the forward (and backward) order. Facts only."""
+def next_column(fwd: list[StopInfo], i: int) -> bool:
+    """Whether the step from fwd[i] to fwd[i + 1] goes from one column to
+    the top of the next (4.F 1.14.0, step 33c): both in one footer,
+    navigation area or list; the next stop wholly to the right of the
+    column the first one ends (left on rtl pages); and no higher than that
+    column's top. Round 3's Drupal footers: Tab goes down one column of
+    links and up to the next. A stop in a box that scrolls by itself is
+    never read this way."""
+    a, b = fwd[i], fwd[i + 1]
+    if a.frame != b.frame or a.info.get("scroller") or b.info.get("scroller"):
+        return False
+    shared = set(a.info.get("regions") or []) & set(b.info.get("regions") or [])
+    pa, pb = a.info.get("page"), b.info.get("page")
+    if not shared or not pa or not pb:
+        return False
+    tol = max(pa[3] / 2, ROW_TOLERANCE_MIN)
+    # a's column: a and the stops just before it, in the same region, whose
+    # boxes overlap a's from side to side.
+    col = [pa]
+    for c in reversed(fwd[:i]):
+        pc = c.info.get("page")
+        if (
+            c.frame != a.frame
+            or c.info.get("scroller")
+            or not pc
+            or not shared & set(c.info.get("regions") or [])
+            or pc[0] >= pa[0] + pa[2]
+            or pa[0] >= pc[0] + pc[2]
+        ):
+            break
+        col.append(pc)
+    if a.info.get("dir") == "rtl":
+        beside = pb[0] + pb[2] <= min(p[0] for p in col)
+    else:
+        beside = pb[0] >= max(p[0] + p[2] for p in col)
+    return beside and pb[1] >= min(p[1] for p in col) - tol
+
+
+def signals(
+    fwd: list[StopInfo],
+    bwd: list[StopInfo] | None,
+    trap_wrap: tuple[str, str] | None = None,
+) -> list[dict[str, Any]]:
+    """S1-S5 on the forward (and backward) order. Facts only. `trap_wrap` is
+    the move a looping trap makes from its last element to its first
+    (1.15.0): the trap going round, not a step of the order, so S2 and S3
+    are not raised for it."""
     out: list[dict[str, Any]] = []
     for si in fwd:
         ti = si.info.get("tabindex")
@@ -345,6 +442,8 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
                 }
             )
     for a, b in zip(fwd, fwd[1:], strict=False):
+        if (a.path_key, b.path_key) == trap_wrap:
+            continue
         ia, ib = a.info.get("dom_index"), b.info.get("dom_index")
         if a.frame == b.frame and ia is not None and ib is not None and ib < ia:
             out.append(
@@ -355,12 +454,16 @@ def signals(fwd: list[StopInfo], bwd: list[StopInfo] | None) -> list[dict[str, A
                 }
             )
             break
-    for a, b in zip(fwd, fwd[1:], strict=False):
+    for i, (a, b) in enumerate(zip(fwd, fwd[1:], strict=False)):
+        if (a.path_key, b.path_key) == trap_wrap:
+            continue
         pa, pb = places(a.info, b.info)
         if not pa or not pb:
             continue
         tol = max(pa[3] / 2, ROW_TOLERANCE_MIN)
         rtl = a.info.get("dir") == "rtl"
+        if pb[1] < pa[1] - tol and next_column(fwd, i):
+            continue  # 1.14.0: the top of the next column (step 33c)
         if pb[1] < pa[1] - tol:
             out.append(
                 {
@@ -443,11 +546,17 @@ async def _reveal(
         s = await ctx.replay(keys[:-1])
         try:
             here, _ = await s.traversal.reader.read()
+            # Recorded as 4.A's own press is (media, pop-ups, changed
+            # region; 4.A 1.16.0 compares it with the click), when 4.A runs.
+            for_4a = "4.A" in ctx.selected
             effect = await observe(
                 s,
                 ctx.quiet_ms,
                 lambda: s.page.keyboard.press("Enter"),
                 trig.path_key,
+                media=for_4a,
+                popups=for_4a,
+                region=for_4a,
             )
             if here.path_key == trig.path_key and not effect.unreliable:
                 ctx.cache.setdefault("enter", {})[trig.path_key] = effect
@@ -500,7 +609,15 @@ async def _reveal(
             if nxt.stop.modal and _opened_by(trig, c2):
                 st.instances.append(await _dialog_check(ctx, keys + ["Tab"], trig, n))
                 continue
-            if not moved_in and not (c2 or {}).get("inside"):
+            if (
+                not moved_in
+                and not (c2 or {}).get("inside")
+                and await _popup_takes_arrows(ctx, keys, trig, container)
+            ):
+                # 1.14.0 (step 33c): a menu or list the arrow keys move into
+                # and Tab leaves, as the WAI-ARIA patterns have it.
+                inst.detail["arrow_keys_move_into_it"] = True
+            elif not moved_in and not (c2 or {}).get("inside"):
                 inst.signals.append(
                     {
                         "code": "S6",
@@ -529,6 +646,54 @@ async def _reveal(
                 except Exception:
                     pass
             await s.close()
+
+
+POPUP_ROLE_FN = """function () {
+  const r = (this.getAttribute('role') || '').toLowerCase();
+  return r === 'menu' || r === 'listbox';
+}"""
+
+
+async def _popup_takes_arrows(
+    ctx: RunContext, keys: list[str], trig: StopInfo, container: str
+) -> bool:
+    """4.F 1.14.0 (step 33c): the trigger says it opens a menu or list, or
+    what it reveals has role menu or listbox, and on a fresh replay (to the
+    trigger, Enter, then ArrowDown) focus moves into what it revealed. The
+    key press confirms it; the attributes alone never do."""
+    declared = (trig.info.get("haspopup") or "").lower() in ("true", "menu", "listbox")
+    s = await ctx.replay(keys[:-1])
+    try:
+        if not declared:
+            try:
+                declared = bool(
+                    await s.traversal.reader.evaluate_top(
+                        "(() => { const c = document.querySelector("
+                        + json.dumps(container)
+                        + "); if (!c) return false; return ("
+                        + POPUP_ROLE_FN
+                        + ").call(c); })()"
+                    )
+                )
+            except Exception:
+                declared = False
+        if not declared:
+            return False
+        here, _ = await s.traversal.reader.read()
+        if here.path_key != trig.path_key:
+            return False
+        await s.page.keyboard.press("Enter")
+        await settle(s.page, ctx.quiet_ms)
+        await s.traversal.resync()
+        down = await s.traversal.press("ArrowDown")
+        if down.stop.kind != "element" or down.stop.unresolved:
+            return False
+        got = await s.traversal.reader.call(down.stop, CONTAINS_FN, [container])
+        return bool((got or {}).get("inside"))
+    except Exception:
+        return False
+    finally:
+        await s.close()
 
 
 async def _dialog_check(
@@ -581,17 +746,34 @@ def box_drawn(info: dict[str, Any]) -> bool:
     )
 
 
+def numbered(fwd: list[StopInfo], sigs: list[dict[str, Any]]) -> list[int]:
+    """The forward numbers J1 is shown (1.13.0, step 33a): the first
+    BADGE_MAX, and past them every stop a signal names with the stop before
+    it. Round 3's Drupal pages: the footer links S3 named were stops 61 on,
+    so J1 saw neither them in the list nor their badges, and was unsure."""
+    out = set(range(1, min(len(fwd), BADGE_MAX) + 1))
+    at = {si.path_key: n for n, si in enumerate(fwd, start=1)}
+    for sg in sigs:
+        n = at.get(sg.get("at") or "")
+        if n is not None:
+            out |= {n, n - 1} - {0}
+    return sorted(out)
+
+
 def crop_boxes(
     fwd: list[StopInfo],
     sigs: list[dict[str, Any]],
     undrawn: frozenset[str] = frozenset(),
+    shown: list[int] | None = None,
 ) -> list[list[float]]:
     """Page boxes (x, y, w, h, CSS px) around the stops the signals name,
     each with the stop before it in Tab order, grown by CROP_MARGIN; a pair
     further apart than CROP_TALL gives two boxes. Overlapping boxes merge;
-    page order, at most CROP_MAX. Only numbered stops (BADGE_MAX) that have a
-    visible box: a stop in `undrawn` (path keys) adds no part."""
-    at = {si.path_key: n for n, si in enumerate(fwd[:BADGE_MAX])}
+    page order, at most CROP_MAX. Only numbered stops (`shown`, forward
+    numbers; the first BADGE_MAX when None) that have a visible box: a stop
+    in `undrawn` (path keys) adds no part."""
+    nums = shown if shown is not None else range(1, min(len(fwd), BADGE_MAX) + 1)
+    at = {fwd[n - 1].path_key: n - 1 for n in nums}
     boxes: list[list[float]] = []
     for sg in sigs:
         i = at.get(sg.get("at") or "")
@@ -666,24 +848,30 @@ def _crop(full: Path, boxes: list[list[float]], dpr: float, out: Path) -> bool:
 
 
 async def _order_image(
-    ctx: RunContext, fwd: list[StopInfo], sigs: list[dict[str, Any]] | None = None
+    ctx: RunContext,
+    fwd: list[StopInfo],
+    sigs: list[dict[str, Any]] | None = None,
+    shown: list[int] | None = None,
 ) -> tuple[str | None, str | None, list[int]]:
     """The full-page order image, its crop around the stops the signals name
     (None when no signal names a numbered stop), and the numbers of the stops
     left without a badge because they have no visible box: hidden,
     off the page, tiny, or shown only while focused (checked on this fresh,
     unfocused load when the stop is in the top document)."""
+    nums = shown if shown is not None else numbered(fwd, sigs or [])
     s = await open_session(ctx.new_page, ctx.quiet_ms)
     undrawn: list[int] = []
     try:
         badges = [
-            [n, si.info["page"], None if si.frame else si.css_path]
-            for n, si in enumerate(fwd[:BADGE_MAX], start=1)
-            if box_drawn(si.info)
+            [
+                n,
+                fwd[n - 1].info["page"],
+                None if fwd[n - 1].frame else fwd[n - 1].css_path,
+            ]
+            for n in nums
+            if box_drawn(fwd[n - 1].info)
         ]
-        undrawn = [
-            n for n, si in enumerate(fwd[:BADGE_MAX], start=1) if not box_drawn(si.info)
-        ]
+        undrawn = [n for n in nums if not box_drawn(fwd[n - 1].info)]
         hidden = await s.page.evaluate(
             """([badges, min]) => { const hidden = [];
               const find = (p) => { try { let root = document, el = null;
@@ -723,7 +911,7 @@ async def _order_image(
         return p.resolve().relative_to(ctx.rel.resolve()).as_posix()
 
     skip = frozenset(fwd[n - 1].path_key for n in undrawn)
-    boxes = crop_boxes(fwd, sigs or [], skip)
+    boxes = crop_boxes(fwd, sigs or [], skip, nums)
     crop = ctx.shots / "4f-order-crop.png"
     try:
         made = bool(boxes) and _crop(path, boxes, dpr, crop)
@@ -768,7 +956,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
         )
     if st.distinct <= 1 and not triggers:
         return st
-    o = Inst4F(id="o1", kind="O", label="the page", signals=signals(fwd, bwd))
+    o = Inst4F(
+        id="o1",
+        kind="O",
+        label="the page",
+        signals=signals(fwd, bwd, trap_wrap(p1, fwd_steps)),
+    )
     o.unreliable = any(
         si.unreliable
         for si in fwd
@@ -791,7 +984,10 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
     await _reveal(ctx, st, triggers[:REVEAL_MAX])
     if any(i.signals for i in st.instances):
         sigs = [sg for i in st.instances for sg in i.signals]
-        st.order_image, st.order_crop, st.undrawn = await _order_image(ctx, fwd, sigs)
+        st.numbered = numbered(fwd, sigs)
+        st.order_image, st.order_crop, st.undrawn = await _order_image(
+            ctx, fwd, sigs, st.numbered
+        )
     return st
 
 
@@ -809,6 +1005,8 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
             or inst.j1 is not None
         ):
             continue
+        nums = st.numbered or list(range(1, min(len(st.forward), BADGE_MAX) + 1))
+        shown = set(nums)
         order = [
             {
                 "n": n,
@@ -818,8 +1016,10 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
                 "group": si.info.get("group_label") or None,
                 **({"drawn": False} if n in st.undrawn else {}),
             }
-            for n, si in enumerate(st.forward[:BADGE_MAX], start=1)
+            for n in nums
+            for si in (st.forward[n - 1],)
         ]
+        gap = nums != list(range(1, len(nums) + 1))
         full = f"{base}/{st.order_image}" if st.order_image else None
         crop = f"{base}/{st.order_crop}" if st.order_crop else None
         image = crop or full
@@ -839,7 +1039,7 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
             extra["backward"] = [
                 {"n": num.get(k), "role": si.role, "name": si.name}
                 for k, si in zip(b_keys, st.backward, strict=True)
-                if num.get(k) is None or num[k] <= BADGE_MAX
+                if num.get(k) is None or num[k] in shown
             ]
         if inst.kind == "R":
             extra["opened"] = inst.detail
@@ -850,7 +1050,9 @@ def questions_for(st: State4F, evidence_refs: list[str]) -> list[OpenQuestion]:
                 kind="choice",
                 choices=J1_CHOICES,
                 instance=inst.id,
-                question=J1_QUESTION + (NOT_DRAWN_QUESTION if st.undrawn else ""),
+                question=J1_QUESTION
+                + (GAP_QUESTION if gap else "")
+                + (NOT_DRAWN_QUESTION if st.undrawn else ""),
                 rubric=J1_RUBRIC + (NOT_DRAWN_RUBRIC if st.undrawn else ""),
                 input={
                     "part": "the whole page"
@@ -999,7 +1201,11 @@ def _sentence(inst: Inst4F, rid: str) -> str:
         "M3": f"Keyboard focus stays inside the dialog opened from {inst.label} until it is closed.",
         "M4": "Focus follows the page's reading order, forward and backward."
         if inst.kind == "O"
-        else f"After opening {inst.label}, the next Tab moves into what it revealed.",
+        else (
+            f"After opening {inst.label}, the arrow keys move into what it opened."
+            if inst.detail.get("arrow_keys_move_into_it")
+            else f"After opening {inst.label}, the next Tab moves into what it revealed."
+        ),
         "M6": f"The focus order doesn't make sense here: {sig}. {reasons}. If you disagree, tell your assistant.",
         "M7": f"The focus order departs from the reading order ({sig}), but it still makes sense: {reasons}. If you disagree, tell your assistant.",
         "M8": f"The order of these elements can't change what the page means ({reasons}), so this test does not apply here. If you disagree, tell your assistant.",

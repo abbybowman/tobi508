@@ -173,20 +173,40 @@ re-testing): confirm and remove, or remove the mark.
 - **Radio groups:** a group is one element that takes focus, since Tab
   lands on one radio of it; the walk does not visit a group's radios
   one by one (arrow keys are not walked), so how the others look on
-  focus is not read (step 6d). **⚑ Check:** this line also said 4.A
-  asks whether a group's second radio "works with a mouse but cannot be
-  reached"; step 6d's radio fix (PR #59) may have ended that.
-- **4.A:** native buttons are never executed, so a page that takes
-  Enter only from a native button is not seen; handlers delegated to an
-  ancestor are not tied to the child they serve; controls inside content
-  that opens are not scanned (step 15). J1 can answer "alternative"
-  while its reasons say it is not sure, and M8 passes any effect of
-  Enter or Space, even one that is not what the click does (round 3's
-  MySearchStory; step 28, [#136](https://github.com/abbybowman/tobi508/issues/136)). Every Drupal page of round 3 was NEEDS
-  REVIEW for a hidden share frame, a page-level wheel or touch listener
-  and `HOVER_MAX` (40) (step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)). Its caps (`HOVER_MAX`, `CLICK_MAX`,
-  `EXECUTE_MAX`) are not calibrated on real pages. A page with embedded
-  players or frames is often NEEDS REVIEW.
+  focus is not read (step 6d). 4.A presses the arrow keys from the
+  group's stop and counts a radio as reached only when focus lands on it
+  (1.19.0, [#136](https://github.com/abbybowman/tobi508/issues/136));
+  it was asking whether "Last Month" in round 1's search filters "works
+  with a mouse but cannot be reached". At most `ARROW_MAX` (5) widgets
+  and radio groups a page are probed; past that, NEEDS REVIEW.
+  A group whose change makes the page leave is counted reached when one
+  ArrowDown and one ArrowUp each select another radio of it (1.20.0, Abby,
+  option 1): a page that blocks only the radio buttons between is passed.
+- **4.A:** a native button or link is executed only when it, or an
+  element round it below `body`, listens for keys (1.16.0, step 28,
+  [#136](https://github.com/abbybowman/tobi508/issues/136)): one whose
+  Enter is cancelled by a listener on `body` or `document` is not seen.
+  A key whose effect differs from the click's in a way the changed region
+  cannot tell (both change the same part of the page differently) passes
+  M8; a click that does nothing in a replay but something live leaves
+  the control at M8r (NEEDS REVIEW). The hedge check reads words, so an
+  answer that is sure but uses one ("likely") goes to a person.
+  Handlers delegated to an ancestor are not tied to the child they serve;
+  controls inside content that opens are not scanned (step 15). Frames and
+  listeners with no visible area, and listeners on the whole page, are not
+  sent to a person (1.17.0, step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)): a mouse-only feature built only on a
+  `document` listener is not flagged. The hover scan reaches 160 stops
+  (`HOVER_MAX`, measured on the three rounds' pages; a longer page is NEEDS
+  REVIEW) and costs about 0.16 s a stop, more on a heavy page (round 2's
+  home page about 0.7 s). `CLICK_MAX` is not calibrated on real pages
+  (`EXECUTE_MAX` and `HOVER_MAX` are). A page whose frames show content
+  the tool cannot read is NEEDS REVIEW.
+  A title that rewords the element's name is not essential by the
+  judge's reading (1.18.0, [#136](https://github.com/abbybowman/tobi508/issues/136)):
+  that rests on the judge, not a match, so a judge that misreads "same
+  meaning" passes a title that adds something; runs 39 and 40 found none.
+  A link named by a feed or file format ("(RSS)") whose title spells it
+  out is not essential either (1.19.0, Abby 2026-11-22).
 - **4.C:** traps past the cap of 60 stops have no budget of their own.
   A page whose controls a frame from another site holds can leave the
   walk short of its press limit on a slow machine (the grid's
@@ -219,13 +239,18 @@ re-testing): confirm and remove, or remove the mark.
   not confirmed before 4.E's 60 s ran out (17.5 and 22.3 s in the blind
   run; assumed, not measured: each confirmation is now a fresh load and
   draw wait to a late Tab, since the walk reaches all 76 and 91 elements).
-- **4.F:** a footer of link columns raises S3 on every page, and a
-  dropdown whose options take arrow keys raises S6; J1's order list can
-  leave out what the signals name. Step 33, [#136](https://github.com/abbybowman/tobi508/issues/136). (Round 2's p02, p03 and p07,
+- **4.F:** the next-column exception (1.14.0, step 33c, [#136](https://github.com/abbybowman/tobi508/issues/136)) reads boxes:
+  columns that overlap or a footer laid out with floats that wrap may
+  still raise S3. A menu that opens with Enter but moves by arrow keys
+  only once focus is on its first item (not from the button) still raises
+  S6. J1 sees the first 60 stops and the ones the signals name, not the
+  rest of a long page (1.13.0). (Round 2's p02, p03 and p07,
   unsure in one rerun and a false FAIL in the next, came from elements
   placed out of line while the page scrolled, a sidebar that scrolls by
   itself and a player's new id on each load: fixed in 4.F 1.11.0.) The judge is often
-  unsure, so many cells wait for a person.
+  unsure, so many cells wait for a person. A Tab loop's move back to its
+  start is no signal (1.15.0, #136), but only when the whole loop is in one
+  document; a loop that crosses a frame is read move by move.
 
 ## 5.A to 5.H: forms
 

@@ -168,6 +168,30 @@ arrows through up to 5 items.
 - Try ArrowDown, then ArrowRight if nothing moved, instead of guessing the
   orientation from the role.
 
+**Native radio groups (4.A 1.19.0, 1.20.0, #136).** Radio buttons with the
+same `name` in one form are one group with no role on any element: Tab
+enters it once (at its checked radio, else its first; Shift+Tab at its
+last) and the arrow keys move *and check*. So the walk reaches one or two
+of a group and 4.A sent the rest to the judge as "works with a mouse but
+can't be reached" (round 1's "Last Month" filter was judged FAIL). Group
+them by `name` and form owner and probe them like a widget, from the
+radio Tab reached. Lessons:
+- **Shift+Tab lands on the last radio** of a group with none checked, so
+  P2 reaches it: a fixture with three radios has one candidate, not two
+  (F41).
+- **A change can make the page leave.** Round 2's search filters submit
+  their form on `change`, so ArrowDown checks the next radio and the page
+  reloads before focus can be read, and a replay cannot follow it (the
+  new address is not recorded). Record the radio a press selects through
+  a CDP binding (`Runtime.addBinding`; its calls arrive over CDP even as
+  the page leaves), one press per fresh replay (`t4a._radio_probe`, F43).
+  The key's verdict there: 4.A passes (the arrows choose each filter),
+  5.D fails (the reload). A tester reads the reload as an On Input
+  problem, not a keyboard one.
+- **Read the page's own markup before guessing why a probe failed:** the
+  frozen page's HAR (`frozen/pages/NNN.har.zip`, unzip it into a scratch
+  folder) had `class="... submitonchange"` and the script that submits.
+
 ## Where a stop is on the page (4.F 1.11.0)
 
 **Problem.** Step 23's rerun gave three false FAILs on round 2's pages,
@@ -190,6 +214,17 @@ content against its neighbours in the box, and by the box's own place
 against everything else; for S4, treat an id found in only one walk as
 the same. Fixtures 4f/f26 to f29 (f29: steps out of sequence inside a
 scroll box still FAIL).
+
+**A scroll box inside a frame (4.F 1.15.1, #136).** A stop in a frame gets
+its `page` box from the walk, already top-level; the hook then moved that
+box onto the page but left its scroll box (`scroller_page`) where it sits
+in the frame. On round 2's 5340 timeline (a frame 396 px down) the panel's
+button read as above the panel: S3, and a FAIL with the judge. Move every
+box a frame's stop carries by the same offset as the stop (F35). **How it
+was found:** the S3's two stops were parent and child, the child "above";
+`page` y 646 against `scroller_page` y 250, and 646 - 250 was the frame's
+offset. When a signal names a jump that cannot be, print every box of
+both stops and look for two coordinate origins.
 
 **How to find it next time.** Run the page alone twice with no judge
 (signals only) and diff the signal lists; a signal that comes and goes on

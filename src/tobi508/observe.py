@@ -15,7 +15,15 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tobi508.jslib import JSLIB
-from tobi508.traverse import PATH_JS, Session, _read_logs, settle, submissions
+from tobi508.traverse import (
+    PATH_JS,
+    REGION_JS,
+    TRACK_JS,
+    Session,
+    _read_logs,
+    settle,
+    submissions,
+)
 
 
 def without_fragment(url: str) -> str:
@@ -215,6 +223,10 @@ class Effect(BaseModel):
     mutations: int = 0
     noise: int = 0
     url: str | None = None  # where a navigation (or a fragment change) went
+    # 4.A's changed region (spec 4.A Terms): the path of the lowest element
+    # holding every element the action changed outside the one acted on.
+    # None when not asked for or not read (the page left, a frame).
+    region: str | None = None
 
     @property
     def any(self) -> bool:
@@ -305,6 +317,7 @@ async def observe(
     noise_ms: int = NOISE_MS,
     media: bool = False,
     popups: bool = False,
+    region: bool = False,
 ) -> Effect:
     """What an action changes (spec: Terms, effect). `own` is the path key of
     the element acted on: focus moving onto it (a click) is not an effect.
@@ -316,7 +329,8 @@ async def observe(
     after it. Off elsewhere, so 4.B and 5.D keep the effect they cite.
     `popups` (4.A only, C-01) also records "js_dialog" (alert, confirm,
     prompt: the browser closes one at once when nobody listens, so the
-    before/after read never saw it) and "download"."""
+    before/after read never saw it) and "download". `region` (4.A's execute
+    check) also records the changed region of the top document."""
     page = s.page
     await settle(page, quiet_ms)
     before = await snapshot(s, media)
@@ -345,17 +359,28 @@ async def observe(
             # Enabling discovery reports pages that already exist; only pages
             # created after this point are the action's.
             earlier = set(opened.ids)
+            if region:
+                try:
+                    await page.evaluate(TRACK_JS)
+                except Exception:
+                    pass
             await act()
             await settle(page, quiet_ms)
             after = await snapshot(s, media)
             sub1 = len(await submissions(page)) if submits else 0
             m2, *_ = await _read_logs(page)
             new_windows = opened.ids - earlier if opened.ok else set()
+            changed_in = None
+            if region:
+                try:
+                    changed_in = await page.evaluate(REGION_JS)
+                except Exception:
+                    pass  # the page left: no region, which compares as unread
     finally:
         if popups:
             page.remove_listener("dialog", on_dialog)
             page.remove_listener("download", on_download)
-    e = Effect(mutations=max(0, m2 - m1), noise=max(0, m1 - m0))
+    e = Effect(mutations=max(0, m2 - m1), noise=max(0, m1 - m0), region=changed_in)
     if without_fragment(after["url"]) != without_fragment(before["url"]):
         e.kinds.append("navigation")
         e.url = after["url"]

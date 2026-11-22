@@ -1,0 +1,14 @@
+{
+ "date": "2026-11-22-136c",
+ "round": 2,
+ "types": "4.F",
+ "tests": "4.F",
+ "frozen_pages_mode": "replay",
+ "repeat": 1,
+ "pages": [
+  "https://svs.gsfc.nasa.gov/5340/",
+  "https://svs.gsfc.nasa.gov/5144/"
+ ],
+ "dry": false,
+ "started": "2026-11-22T01:53:57.073902+00:00"
+}

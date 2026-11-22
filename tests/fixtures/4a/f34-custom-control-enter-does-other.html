@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><title>Mission notes</title>
+<style>.btn { display: inline-block; padding: 4px 10px; border: 1px solid #333; cursor: pointer; }</style></head>
+<body>
+<h1>Mission notes</h1>
+<p id="banner">Note 1 of 3</p>
+<div class="btn" role="button" tabindex="0" id="more">Show details</div>
+<section><div id="details" hidden><p>Launch window opens at dawn.</p></div></section>
+<script>
+  let n = 1;
+  const more = document.getElementById('more');
+  more.addEventListener('click', () => { document.getElementById('details').hidden = false; });
+  // Enter and Space step the banner instead of showing the details.
+  more.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); n = n % 3 + 1; document.getElementById('banner').textContent = 'Note ' + n + ' of 3'; }
+  });
+</script>
+</body>
+</html>

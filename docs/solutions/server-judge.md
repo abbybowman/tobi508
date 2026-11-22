@@ -151,3 +151,29 @@ asks every unsure answer to say what would settle it.
 counts, the first example per test, all from the committed reports);
 `tests/test_compare_r3.py` checks that the committed file is what the script
 computes.
+
+## The same evidence, a different answer: read a moved cell before crediting a change (#136, 2026-11-22)
+
+**What happened.** Gate 2026-11-22-136b reran 4.A and 4.F after two fixes
+and four cells moved that neither fix touched. Round 2's 5144 4.F went
+unsure, does not preserve, unsure over three runs on near-identical
+signals; round 1's search page 4.A went from unsure to "no alternative"
+on an unchanged question (a wrong FAIL); round 1's home page 4.F from
+unsure to preserves (a right PASS). And one cell moved *because of* a fix,
+on elements the fix was not aimed at: after 4.A 1.18.0's rubric (a title
+that rewords the name is not essential, aimed at a sort button), the same
+page's "(RSS)" and "(Atom)" links flipped from not essential to essential,
+since the new "anything else the title adds" fitted them.
+
+**What we do.**
+- For each moved cell, compare the question and its input between the two
+  runs (the report's `questions` and `answers`) before saying why it
+  moved. Same input, different answer: the judge, not the change. Say so,
+  and do not count it for or against the change.
+- After a rubric change, read every answer to that question on the pages
+  rerun, not only the instance it was for: a rubric widened for one case
+  catches neighbours.
+- One rerun is one answer per question. A cell that moves on the judge
+  alone may move back; the judge eval's three repeats are the measure of
+  a question, a round's rerun is not.
+

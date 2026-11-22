@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><title>Search filters</title></head>
+<body>
+<h1>Search results</h1>
+<fieldset><legend>Date</legend>
+  <label><input type="radio" name="date" value="year"> Last Year (8814)</label>
+  <label><input type="radio" name="date" value="month"> Last Month (543)</label>
+  <label><input type="radio" name="date" value="week"> Last Week (61)</label>
+</fieldset>
+<button type="button">Apply Filters</button>
+<ol><li>Artemis II crew named</li><li>Moon rocket rolls out</li></ol>
+<script>
+// Arrow keys do nothing in the group: only a mouse can pick another date.
+document.querySelector('fieldset').addEventListener('keydown', (e) => {
+  if (e.key.startsWith('Arrow')) e.preventDefault();
+});
+</script>
+</body>
+</html>

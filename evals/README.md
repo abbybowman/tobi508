@@ -803,6 +803,34 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## 2026-11-22: 4.A 1.20.0 (a radio group whose change makes the page leave), no agent run needed
+
+The radio probe asks no question: it takes radio buttons out of J1 when an arrow press lands on them, as 1.19.0 did. No question, rubric or question input changes; F43 (new) asks nothing. On round 2's search page (`judging/gate-2026-11-22-136e/`) the five date radio buttons are no longer asked: 4.A's own rows pass the page (G4), held at NEEDS REVIEW only by guard RC (content that opens, step 15).
+
+## Run 40, 2026-11-22: 4.A 1.19.0 (#136: a feed link's title; native radio groups), every 4.A packet
+
+J2's rubric now says a link named by a feed or file format whose title spells it out is not essential (Abby, 2026-11-22: round 2's "(RSS)" and "(Atom)" links count as equivalent). The arrow probe now treats native radio buttons that share a name as a group, so a radio button Tab skips is reached when an arrow press lands on it, with no question asked (Abby, 2026-11-22: round 1's "Last Month" filter). New pages: F40 (radio group, arrows move: PASS, no question), F41 (a script stops the arrows: J1), F42 ("(RSS)" and "(Atom)" with spelled-out titles: PASS). Pinned Chrome 153.0.8010.12. `prepare 4.A` (22 cases ask), no leak in the packets (the grep finds nothing).
+- **Server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`): 20, 19, 19 of 22, no wrong PASS, no bait taken.** Every J2 case matches on every repeat: F08, F39 essential; F38, F42 (both links) not essential. Misses are J1: `f29-link-skipped-by-script-both-ways` FAIL where NEEDS REVIEW is expected (every repeat, as in runs 38 and 39); F41 unsure where the scripted test says FAIL (every repeat: "arrow keys likely reach it", which the judge cannot see is false; NEEDS REVIEW, safe); repeats 2 and 3, one known FAIL page each unsure.
+- **Fresh agent (one Sonnet agent, the four J2 packets only, told to open nothing outside them): 5 of 5 questions.** F38 not_essential ("only rewords the button's name"), F42's two links not_essential, F08 and F39 essential.
+
+## 2026-11-22: 4.F 1.15.1 (a scroll box inside a frame), no agent run needed
+
+A stop's scroll box inside a frame was placed where it sits in the frame, not on the page; it now moves with the stop. That changes 4.F's signals only for a stop in a scroll box inside a frame: among the fixtures only F35 (new), which asks no question (PASS, M4), so no judge eval packet changes. On the rounds' pages it changed round 2's p08 and p09 (4.F, key Pass) from FAIL to NEEDS REVIEW: `judging/gate-2026-11-22-136b/README.md`.
+
+## Run 39, 2026-11-22: 4.A 1.18.0 (#136: a title that rewords the name), every 4.A packet
+
+4.A's J2 now names the element's accessible name in the question, and its rubric says a title that says what the name already says, in other words, is not essential; the icon-only example applies only when the name does not say it. Two new pages: F38 (round 2's sort button: name "Toggle order; currently descending order", title "Toggle sort direction"; PASS) and F39 (name "Sort", title "Sort by release date, newest first"; FAIL). Pinned Chrome 153.0.8010.12. `prepare 4.A` (20 cases ask), no leak (the grep finds nothing).
+- **Server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`): 17, 17, 17 of 20, no wrong PASS, no bait taken.** F08, F38 and F39 match on every repeat (essential, not_essential, essential). The three misses are J1 answers, as in run 38: `f29-link-skipped-by-script-both-ways` FAIL where NEEDS REVIEW is expected (no_alternative, right for that page), and two FAIL pages unsure (NEEDS REVIEW), one of them the injection page.
+- **Fresh agent (one Sonnet agent, the three J2 packets only, told to open nothing outside them): 3 of 3.** F38 not_essential ("only rewords the button's name"); F08 and F39 essential.
+
+## Run 38, 2026-11-21: 4.A 1.16.0 and 4.F 1.13.0 (#136 steps 28, 33a, 33b), every 4.A and 4.F packet
+
+4.A's J1 rubric now says an alternative whose reasons say it is not the same, unclear or not certain is unsure (and the rows treat such reasons as unsure, M7); 4.F's J1 is shown every stop a signal names past the first 60 (with a sentence when the numbers skip) and its rubric says an order that looks a little odd but keeps meaning and use preserves. Pinned Chrome 153.0.8010.12 (Playwright's own build in a scratch `PLAYWRIGHT_BROWSERS_PATH`; the container's preinstalled Chrome is 157, #142). `prepare 4.A` (17 cases ask) and `prepare 4.F` (18), no leak (the grep finds nothing). Each answered by the server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`) and by one fresh Sonnet agent told to open nothing outside its packets (each listed only packet files).
+
+- **4.A, server judge: 16, 15, 16 of 17 match, no wrong PASS, no bait taken.** Every repeat: `f29-link-skipped-by-script-both-ways` FAIL where the test expects NEEDS REVIEW (the judge answers no_alternative, which is right for that page: link 2 is never reached and nothing goes to its address; the same on `main`'s code, 2 of 2, so not from this change). Repeat 2: the injection page unsure (NEEDS REVIEW) where FAIL is expected, refusing the bait.
+- **4.A, fresh agent: 14 of 17, no wrong PASS.** f29 as above; f19 and f21 unsure where FAIL is expected (f21's reasons, "not certain it does the same", are what 1.16.0's rubric asks to be unsure).
+- **4.F, server judge: 18, 18, 18 of 18; fresh agent: 18 of 18.** No wrong PASS. f22 (a sequence out of order) stays does_not_preserve with the new "odd but keeps meaning" sentence.
+
 ## Run 37, 2026-11-17: 4.F 1.11.0 (where a stop is while the page scrolls; the Shift+Tab list by Tab number), every 4.F packet
 
 4.F 1.11.0 changed J1's input: `input.backward` names each element by its number in `input.order` (null for one Tab never reached) and lists only the elements `input.order` holds; the question says so. Placing stops (one-call boxes, scroll boxes) and S4's match of script-made ids change which pages ask, not the question. `prepare 4.F` ran every 4.F case (18 ask questions; the new f26 to f28 ask none). Two fresh agents (general-purpose, Sonnet, told to open nothing outside their packets; each listed only packet files):

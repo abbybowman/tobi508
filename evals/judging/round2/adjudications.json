@@ -8,6 +8,14 @@
     "date": "2026-11-08",
     "note": "A slip in the key: the row says Fail, but its comment gives the reason for a pass (checking a box updates the visual, does not reload the page or move focus, and the instructions say 'Click to select', so the change is expected). The SCRT template carried an earlier test's outcome down when child rows were deleted."
    }
+  },
+  "https://svs.gsfc.nasa.gov/": {
+   "4.A": {
+    "result": "Fail",
+    "by": "Abby Bowman",
+    "date": "2026-11-22",
+    "note": "The key's Pass is a slip in testing: the cards' small \"NASA Science Category\" icon links (Earth, Sun, Universe, Planets & Moons) work with a mouse but the keyboard never reaches them. Abby: \"you're right and my key is wrong, they were so small I missed trying to click on them and just assuming the whole card was the only clickable thing\". The tool's 4.A Fail rests on those links (37 of its 38 instances; the 38th, a title on an unnamed button, is not part of this ruling). Recorded at Abby's word in the session working issue #136."
+   }
   }
  }
 }

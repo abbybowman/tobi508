@@ -10,7 +10,7 @@ here.
 
 | File | What it covers |
 | --- | --- |
-| [focus-and-walk.md](focus-and-walk.md) | Reading focus through CDP; identifying stops across loads; where a stop is while the page scrolls (4.F 1.11.0); a fresh browser context per probe; unique paths and top-level positions; shadow roots; listeners from the page's own world; exit checks on small pages; animation against focus indicators; widget items |
+| [focus-and-walk.md](focus-and-walk.md) | Reading focus through CDP; identifying stops across loads; where a stop is while the page scrolls (4.F 1.11.0); a fresh browser context per probe; unique paths and top-level positions; shadow roots; listeners from the page's own world; exit checks on small pages; animation against focus indicators; widget items; native radio groups and a page that leaves on change (4.A 1.20.0); a scroll box inside a frame (4.F 1.15.1) |
 | [time-budget.md](time-budget.md) | Measure with `evals/time_budget.py`; where a run's time goes; replay with `ctx.replay`; the tool's own screenshots are DOM changes |
 | [recordings-miss-lazy-scripts.md](recordings-miss-lazy-scripts.md) | A recording can lack code the page loads when used: the chunk store and guard GU |
 | [andi-output.md](andi-output.md) | Reading ANDI's per-element output; what its wrapper changes; ANDI and scanners run on their own load |
@@ -47,5 +47,5 @@ here.
 | File | What it covers |
 | --- | --- |
 | [agent-follow-through.md](agent-follow-through.md) | Getting a calling agent to finish: fewer steps, status in the data, the to-do list last, proof the picture was seen; tool choice is solved but finishing is not (a result's to-do list outranks the next request, paging lost questions, `finish` needs pending follow-ups to measure) |
-| [server-judge.md](server-judge.md) | ApiJudge: what to know before changing it; what Agent C showed on real pages |
+| [server-judge.md](server-judge.md) | ApiJudge: what to know before changing it; what Agent C showed on real pages; why the judge is unsure more often than the agent; the same evidence, a different answer (read a moved cell before crediting a change) |
 | [agent-eval.md](agent-eval.md) | The agent eval harness and scoring: what cost time; the tool selection eval's stub and prompt cache |

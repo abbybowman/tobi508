@@ -1,0 +1,97 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "rounds": {
+  "3": {
+   "tally": {
+    "needs_review": 14,
+    "agree": 6
+   },
+   "moved": [],
+   "live": []
+  },
+  "2": {
+   "tally": {
+    "false_fail": 4,
+    "agree": 8,
+    "needs_review": 8
+   },
+   "moved": [
+    {
+     "page": "p09",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3]",
+      "G3"
+     ],
+     "new": "Fail",
+     "new_verdict": "false_fail",
+     "new_rows": [
+      "A4",
+      "o1:M6[S3,S3,S3,S3]",
+      "G2"
+     ]
+    }
+   ],
+   "live": []
+  },
+  "1": {
+   "tally": {
+    "needs_review": 8,
+    "agree": 9,
+    "false_fail": 1
+   },
+   "moved": [
+    {
+     "page": "p01",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "o1:M9[S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3]",
+      "r2:M4",
+      "r3:M4",
+      "G5"
+     ]
+    },
+    {
+     "page": "p02",
+     "test": "4.A",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "k1:M7",
+      "G3"
+     ],
+     "new": "Fail",
+     "new_verdict": "false_fail",
+     "new_rows": [
+      "A3",
+      "k1:M6",
+      "G2"
+     ]
+    }
+   ],
+   "live": []
+  }
+ }
+}
