@@ -272,3 +272,27 @@ async def test_f30_before_picture(settings, server):
     assert image[1] >= MIN_CHANGED_PX and image[3] < MIN_CHANGED_PX, image
     assert caption[3] >= MIN_CHANGED_PX, caption
     assert by["First post"][3] >= MIN_CHANGED_PX
+
+
+async def test_f30_before_by_replay(settings, server, monkeypatch):
+    """Step 27 (#135), evidence only: with P2's before pictures switched off,
+    every stop that would pass M6 gets its before picture from a replay (a
+    fresh load, one Tab fewer), and F30's picture link still shows no pixel
+    that changed both ways. Its own run: run_shared would hand back F30's
+    run with P2's pictures."""
+    from tobi508.checks import t4d
+    from tobi508.pipeline import run_tt_tests
+
+    monkeypatch.setattr(t4d, "BEFORE_PICTURE", False)
+    monkeypatch.setattr(t4d, "BEFORE_REPLAY_MAX", 10)
+    out = await run_tt_tests(
+        settings,
+        f"{server.base}/4d/f30-next-outline-over-image-link.html",
+        [TestId.T4D],
+    )
+    [f] = [x for x in out.report.findings if x.test_id is TestId.T4D]
+    image = next(i for i in f.instances if '"Image"' in i.description)
+    nums = [float(x) for x in re.findall(r"(\d+) px", image.description)]
+    assert nums[1] >= t4d.MIN_CHANGED_PX and nums[3] < t4d.MIN_CHANGED_PX, nums
+    caption = next(i for i in f.instances if "pale circle" in i.description)
+    assert float(re.findall(r"(\d+) px", caption.description)[3]) >= t4d.MIN_CHANGED_PX

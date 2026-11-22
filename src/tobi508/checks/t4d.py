@@ -64,6 +64,10 @@ BEFORE_PICTURE = True
 # When the region is off screen at that moment, scroll it into view for the
 # clip and back (traverse.clip_scrolled). A switch, to measure it.
 BEFORE_SCROLL = True
+# A stop P2 could not picture and that would pass M6 gets its before picture
+# from a replay: a fresh load with one Tab fewer, then a clip of its region.
+# At most this many replays a page (about 9 s each, measured); 0 turns it off.
+BEFORE_REPLAY_MAX = 10
 HOOK = "focus4d"
 
 # Runs in the isolated world on the focused element (`this`). With itemId, on
@@ -872,10 +876,53 @@ def _before_reasons(p2: PassResult, by_subject: dict[str, Inst4D]) -> None:
                     a.extras["before_scroll_restored"] = b["restored"]
             elif not a.extras.get("before"):
                 a.extras["no_before"] = (
-                    b.get("why")
-                    if b
-                    else "the backward pass did not move past it"
+                    b.get("why") if b else "the backward pass did not move past it"
                 )
+
+
+async def _replay_before(ctx: RunContext, by_subject: dict[str, Inst4D]) -> None:
+    """Before pictures by replay for the P1 stops that would pass M6 and that
+    P2 could not picture (step 27, evidence only). The both-ways counts are
+    made again with it."""
+    done = 0
+    for inst in by_subject.values():
+        a = next(
+            (x for x in inst.attempts if x.pass_name == "P1" and x.extras.get("on")),
+            None,
+        )
+        e = a.extras if a else {}
+        if (
+            a is None
+            or e.get("before")
+            or a.strong_px is None
+            or a.strong_px < MIN_CHANGED_PX
+            or not _style_signal(e)
+        ):
+            continue
+        if done >= BEFORE_REPLAY_MAX:
+            e["before_replay"] = "over the limit of replays"
+            continue
+        if ctx.out_of_time():
+            e["before_replay"] = "out of time"
+            continue
+        done += 1
+        t0 = time.monotonic()
+        rel = e["on"].replace("-on.png", "-before.png")
+        try:
+            s = await ctx.replay(["Tab"] * (a.step - 1))
+            try:
+                r = await clip_scrolled(s.page, e["clip_page"], str(ctx.rel / rel))
+            finally:
+                await s.close()
+        except Exception as exc:
+            e["before_replay"] = f"the replay failed ({type(exc).__name__})"
+            continue
+        e["before_replay_s"] = round(time.monotonic() - t0, 2)
+        if not r["taken"]:
+            e["before_replay"] = "its region could not be brought into view"
+            continue
+        e["before"], e["before_taken"] = rel, "replay"
+        a.both_px, a.both_strong_px, _, _ = compare(ctx.rel, e, before=True)
 
 
 async def _widget_pass(
@@ -1015,6 +1062,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
     _attempts_from(p1, st, by_subject, ctx.rel)
     _attempts_from(p2, st, by_subject, ctx.rel)
     _before_reasons(p2, by_subject)
+    await _replay_before(ctx, by_subject)
     await _widget_pass(ctx, walk, st, by_subject)
     st.instances = list(by_subject.values())
     return st
