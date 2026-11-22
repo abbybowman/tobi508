@@ -21,7 +21,7 @@ from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel, Field
 
-from tobi508.capture import document_type, failed_scripts
+from tobi508.capture import document_scripts, document_type, failed_scripts
 from tobi508.checks.base import RunContext
 from tobi508.models import (
     REVIEW_HEAD,
@@ -605,7 +605,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk | None) -> State19A:
         st.checked = suggested_pages(st.t_url, main, site.pages, given, st.spares)
         await _check_suggested(ctx, st, main, read, loaders)
     if len(st.kinds) < 2 and st.search_forms and not st.search_target:
-        await _live_search(ctx, st, main, forms)
+        await _live_search(ctx, st, main, forms, read, loaders)
     if len(st.kinds) < 2 and "navigation" not in st.kinds:
         await _open_menus(ctx, st, read, loaders)
     st.hidden_nav = [
@@ -838,6 +838,8 @@ async def _check_suggested(
     2026-11-15). Each page read joins the pages read: its links to T or a
     verified alias count (W1), and its suspected aliases are checked."""
     for c in st.checked:
+        if c.status != "pending":
+            continue
         if len(st.kinds) >= 2:
             c.status = "not_needed"
             continue
@@ -877,18 +879,108 @@ async def _check_suggested(
         await _check_aliases(ctx, st, read, maps, main)
 
 
-async def _live_search(ctx: RunContext, st: State19A, main: PageRead, forms) -> None:
-    """The plain heading first; only when its results do not link to T, the
-    heading in quotation marks (19.A 1.5.0, post-round 2 fix 11: a site that
-    answers "No results for:" the plain words found the page quoted). Two
-    requests at most."""
+LISTED_MAX = 5  # pages the site search lists, checked a run (1.21.0)
+
+
+def _menu_name(st: State19A) -> str:
+    """The name the site navigation gives T: the first link to T in a
+    navigation, banner or contentinfo region on a page read (1.21.0)."""
+    return next(
+        (x.name for x in st.links if x.region in TEMPLATE and x.name.strip()), ""
+    )
+
+
+async def _live_search(
+    ctx: RunContext,
+    st: State19A,
+    main: PageRead,
+    forms,
+    read: list[PageRead] | None = None,
+    loaders: dict[int, Any] | None = None,
+) -> None:
+    """The plain heading first; only when its results do not lead to T, the
+    name the site's menus give T when it differs (1.21.0, #138 draft C2),
+    else the heading in quotation marks (19.A 1.5.0, post-round 2 fix 11).
+    Two requests at most; after each, the pages it lists (1.21.0)."""
+    read = read if read is not None else []
     term = _term(main)
-    await _search_once(ctx, st, forms, term)
-    if st.search.status == "not_found" and '"' not in term:
-        await _search_once(ctx, st, forms, f'"{term}"')
+    res = await _search_once(ctx, st, forms, term)
+    await _check_listed(ctx, st, main, res, read, loaders)
+    if st.search.status != "not_found" or len(st.kinds) >= 2:
+        return
+    name = _menu_name(st)
+    if name and name.strip().lower() != term.strip().lower():
+        second = name
+    elif '"' not in term:
+        second = f'"{term}"'
+    else:
+        return
+    res = await _search_once(ctx, st, forms, second)
+    await _check_listed(ctx, st, main, res, read, loaders)
 
 
-async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
+def listed_pages(res: PageRead, t_url: str, search_url: str) -> list[str]:
+    """The pages a results page lists (spec Terms, 1.21.0): its links outside
+    navigation, banner and contentinfo regions, on T's host, to a page,
+    other than the results page itself (another query of it)."""
+    out: list[str] = []
+    own = _no_query(search_url)
+    for u in res.units:
+        if u.region_role in TEMPLATE:
+            continue
+        url = _page_link(u, t_url)
+        if not url or _no_query(url) == own:
+            continue
+        if not any(_same(url, x) for x in out):
+            out.append(url)
+    return out
+
+
+async def _check_listed(
+    ctx: RunContext,
+    st: State19A,
+    main: PageRead,
+    res: PageRead | None,
+    read: list[PageRead],
+    loaders: dict[int, Any] | None,
+) -> None:
+    """The first pages a search lists, checked as suggested pages are; one
+    that ends at T means the search leads to T (W2)."""
+    if res is None or len(st.kinds) >= 2:
+        return
+    room = LISTED_MAX - sum(1 for c in st.checked if c.role == "listed")
+    known = [st.t_url, *(p["url"] for p in st.pages), *(c.url for c in st.checked)]
+    new = [
+        u
+        for u in listed_pages(res, st.t_url, st.search.url)
+        if not any(_same(u, k) for k in known)
+    ][: max(room, 0)]
+    if not new:
+        return
+    st.checked += [Suggested(url=u, role="listed") for u in new]
+    await _check_suggested(ctx, st, main, read, loaders)
+    if any(c.role == "listed" and c.status == "is_this_page" for c in st.checked):
+        st.search.status, st.search.reason = "found", ""
+
+
+def _results_shown(res: PageRead, t_url: str, search_url: str) -> bool:
+    """The results page shows results (W4, 1.21.0): a link outside its menus,
+    header and footer to a page of T's host other than itself."""
+    return bool(listed_pages(res, t_url, search_url))
+
+
+def _could_draw(url: str, res_url: str, named: dict[str, bool], shown: bool) -> bool:
+    """A script that did not load could have drawn the results unless it is
+    on another host, the page does not wait for it (async, or not named in
+    the document) and results are shown (spec W4, 1.21.0)."""
+    other_host = urlsplit(url).hostname != urlsplit(res_url).hostname
+    waited = url in named and not named[url]
+    return not (other_host and not waited and shown)
+
+
+async def _search_once(
+    ctx: RunContext, st: State19A, forms, term: str
+) -> PageRead | None:
     st.search.term = term
     st.search.tries.append(term)
     url = next((u for u in (search_url(f, st.search.term) for f in forms) if u), None)
@@ -897,11 +989,11 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             "cannot_run",
             "the site search is not a simple form the tool can submit",
         )
-        return
+        return None
     st.search.url = url
     if ctx.record_live is None or ctx.out_of_time():
         st.search.status, st.search.reason = "cannot_run", "no time left to run it"
-        return
+        return None
     try:
         ref = await ctx.record_live(url)
         res = await read_page(ref.n, ref.final_url, ref.new_page, results=True)
@@ -912,19 +1004,27 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             if isinstance(exc, TimeoutError)
             else f"the search could not be run: {_load_reason(exc)}"
         )
-        return
+        return None
     if res.error:
         st.search.status, st.search.reason = (
             "cannot_run",
             "its results could not be read",
         )
-        return
+        return None
     found = results_link_to(res, _targets(st))
     try:
         failed = failed_scripts(ref.har) if ref.har is not None else []
     except Exception:
         failed = []
     st.search.failed_scripts = failed[:10]
+    # 1.21.0 (#138 draft C): only a script that could draw the results.
+    if failed:
+        try:
+            named = document_scripts(ref.har, ref.final_url) if ref.har else {}
+        except Exception:
+            named = {}
+        shown = _results_shown(res, st.t_url, url)
+        failed = [u for u in failed if _could_draw(u, ref.final_url, named, shown)]
     if not found and failed:
         # W4: the results page did not finish loading, so finding
         # nothing says nothing (step 6: the container refused its scripts).
@@ -933,14 +1033,15 @@ async def _search_once(ctx: RunContext, st: State19A, forms, term: str) -> None:
             f"its results page did not finish loading ({len(failed)} of its "
             "scripts did not load)",
         )
-        return
+        return res
     if not found and res.truncated:
         st.search.status, st.search.reason = (
             "cannot_run",
             "its results page was too long to read in full",
         )
-        return
+        return res
     st.search.status = "found" if found else "not_found"
+    return res
 
 
 # ── Rules ────────────────────────────────────────────────────────────────────
@@ -1024,6 +1125,7 @@ ROLE_WORDS = {
     "prev_next": "the previous or next page",
     "related": "a page this one links to",
     "home": "the home page",
+    "listed": "a page the site search listed",
 }
 
 
@@ -1038,6 +1140,7 @@ def _checked_words(st: State19A) -> list[str]:
         ("prev_next", "its previous or next page", "its previous and next pages"),
         ("child", "1 page below it", "{n} pages below it"),
         ("related", "1 page it links to", "{n} pages it links to"),
+        ("listed", "1 page the site search listed", "{n} pages the site search listed"),
     ):
         n = sum(1 for c in done if c.role == role)
         if n:

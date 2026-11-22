@@ -205,6 +205,63 @@ EXPECTED: dict[str, tuple[str, list[str], str, list[str], dict]] = {
         ["W1", "G4"],
         {},
     ),
+    # 19.A 1.21.0 (#138 draft C, Abby 2026-11-22): W4 counts only a script
+    # that could draw the results. An `async` tag from another host that
+    # fails beside results drawn in the document is left out, so the
+    # search's answer stands (round 3: script.crazyegg.com).
+    "search-async-tag-beside-drawn-results-is-left-out": (
+        "sr/t1",
+        ["sr/h1"],
+        "FAIL",
+        ["W1", "W3", "G4"],
+        {},
+    ),
+    # Must keep (step 6c): results drawn by the site's own script, which
+    # failed, beside the same tag: not verified.
+    "search-own-results-script-failed": (
+        "sr/t2",
+        ["sr/h2"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # ... the tag beside a results page that shows no results: not verified.
+    "search-tag-and-no-results-shown": (
+        "sr/t3",
+        ["sr/h3"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # ... a script from another host the page waits for (no async): not
+    # verified.
+    "search-off-host-script-the-page-waits-for": (
+        "sr/t4",
+        ["sr/h4"],
+        "NEEDS_REVIEW",
+        ["W1", "W4", "G3"],
+        {},
+    ),
+    # 19.A 1.21.0 (#138 draft C2): the page is headed "Website feedback"
+    # and the menus call it "Contact Us" (round 3's contact page). The
+    # heading finds nothing; the menu's name lists a page whose content
+    # links to it: navigation and a content link.
+    "search-by-menu-name-lists-a-page-that-links-to-it": (
+        "sr/fb",
+        ["sr/fbhome"],
+        "PASS",
+        ["W1", "W3", "G2"],
+        {},
+    ),
+    # ... and a listed page that redirects to it: the search leads there
+    # (round 3's home page, listed as /home).
+    "search-lists-a-page-that-redirects-to-it": (
+        "sr/fb2",
+        ["sr/fbhome2"],
+        "PASS",
+        ["W1", "W2", "G2"],
+        {},
+    ),
     # ... and up to the parent: the funding page links the grants page in
     # its content; the agency's menu links it too.
     "second-way-on-the-parent": (

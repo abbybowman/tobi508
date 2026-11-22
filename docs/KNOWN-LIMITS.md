@@ -315,15 +315,17 @@ re-testing): confirm and remove, or remove the mark.
   list's class or id. A trail marked some other way (links with ">"
   between them and no such name) counts as navigation or a content link,
   so a page found only by the menus and such a trail stays one way.
-- **One failed script counts against the whole search** (row W4): any
-  script of the results page that did not load leaves the search "not
-  verified", even one that draws nothing. On science.data.nasa.gov the
-  analytics tag `script.crazyegg.com/…/2090.js` fails in every run:
-  its Cloudflare answers the `HeadlessChrome` user agent with a 403 HTML
-  page, which Chromium's ORB refuses (#138, 2026-11-21). A headed
-  Chrome is not refused. Kept on purpose for now: the site's search
-  finds none of round 3's p01 to p03, so counting only scripts that
-  could draw results would turn them into FAILs where the key passes.
+- **A blocked analytics tag** no longer holds the search (19.A 1.21.0):
+  a script that failed counts only when it could draw the results. On
+  science.data.nasa.gov `script.crazyegg.com/…/2090.js` fails in every
+  run: its Cloudflare answers the `HeadlessChrome` user agent with a 403
+  HTML page, which Chromium's ORB refuses (#138). A results page drawn
+  by a script from another host that loads `async` and still shows some
+  results is read as it stands.
+- **Content links on pages nobody names** are found only through the
+  site's own search (19.A 1.21.0: the pages a search lists, 5 a run). A
+  page linked only from a page the search does not list, and not given,
+  can still FAIL where a tester's web search finds the link.
 
 ## Not limits: kept here until they have a home
 

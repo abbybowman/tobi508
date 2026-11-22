@@ -12,10 +12,14 @@ outcome. These six exceptions are approved, each with exactly these limits.
 1. **19.A's live site search** is the only live request a page's content
    shapes. It runs only when the caller's pages show fewer than two kinds of
    way; at most two per run (the heading, then, only when that finds
-   nothing, the heading in quotation marks); a GET form whose action passes
-   the allowlist and is on the tested page's host (every redirect hop
-   checked); the term is the tested page's own heading; each recorded as its
-   own HAR.
+   nothing, the name the site's navigation gives the page when it differs,
+   else the heading in quotation marks; #138); a GET form whose action
+   passes the allowlist and is on the tested page's host (every redirect
+   hop checked); each recorded as its own HAR. After each search, while
+   fewer than two kinds are found, the first pages its results list (at
+   most 5 a run, on the tested page's host, pages only) are checked as the
+   suggested pages below are: the one case where the search's results
+   choose pages to load (#138, Abby 2026-11-22).
 2. **19.A's suggested pages**: the site map a page read links to, the tested
    page's parent (one level up, from its own address), up to 2 child pages
    (links on it under its own directory; none for a page at the site root),

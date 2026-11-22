@@ -61,10 +61,15 @@ until the items under "Before a hosted deployment" are done.
   site come only from the caller and must be on the tested page's host,
   before and after redirects. No other URL found on a page is visited.
   The approved exceptions, each with its limits in `CLAUDE.md` (principle
-  5): 19.A may run the site's own search once (a GET form on the same
-  host, allowlisted, every hop checked) and follow up with at most 5 pages
-  its caller's pages link to as a site map, home page or breadcrumb (same
-  host, allowlisted); a key combination that page text names as a way to
+  5): 19.A may run the site's own search at most twice (a GET form on the
+  same host, allowlisted, every hop checked; the second term is the page's
+  heading in quotation marks or, since 1.21.0, the name the site's menus
+  give the page), load at most 10 suggested pages (its site map, parent,
+  child, previous and next, related and home pages), at most 5 pages the
+  search's results list (1.21.0, #138, 2026-11-22: the one case where the
+  search's results choose pages to load), and at most 3 suspected aliases,
+  each on the tested page's host before and after redirects, allowlisted,
+  its own HAR, never following their links; a key combination that page text names as a way to
   stop moving content or audio may be pressed once on a replay; and the
   recorder saves scripts that recorded scripts name (same host as the
   script, allowlisted, at most 300 files, 10 MB each and 24 MB in all, 5

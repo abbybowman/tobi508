@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Search results</title></head><body>
+<main><h1>Search results</h1><div id="results"><p>Loading...</p></div></main>
+<script>
+// This site's search finds the page by the name its menus use, not its heading.
+const q = (new URLSearchParams(location.search).get("q") || "").toLowerCase();
+const items = q.includes("contact") ? [["/19a/sr/old-feedback.html", "Feedback"]] : [];
+document.getElementById("results").innerHTML = items.length
+  ? "<ol>" + items.map((i) => '<li><a href="' + i[0] + '">' + i[1] + "</a></li>").join("") + "</ol>"
+  : "<p>No results.</p>";
+</script>
+</body></html>
