@@ -17,6 +17,14 @@
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T14:47:17.988294+00:00"
  },
+ "https://www.nasa.gov/?search=%22The+NACA%22": {
+  "url": "https://www.nasa.gov/?search=%22The+NACA%22",
+  "final_url": "https://www.nasa.gov/?search=%22The+NACA%22",
+  "har": "pages/058.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:45:03.720304+00:00"
+ },
  "https://www.nasa.gov/?search=Artemis+III": {
   "url": "https://www.nasa.gov/?search=Artemis+III",
   "final_url": "https://www.nasa.gov/?search=Artemis+III",
@@ -65,6 +73,14 @@
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T14:38:39.777476+00:00"
  },
+ "https://www.nasa.gov/?search=The+NACA": {
+  "url": "https://www.nasa.gov/?search=The+NACA",
+  "final_url": "https://www.nasa.gov/?search=The+NACA",
+  "har": "pages/052.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:43:41.374792+00:00"
+ },
  "https://www.nasa.gov/?search=artemis": {
   "url": "https://www.nasa.gov/?search=artemis",
   "final_url": "https://www.nasa.gov/?search=artemis",
@@ -80,6 +96,16 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T14:45:55.285786+00:00"
+ },
+ "https://www.nasa.gov/aeronautics/": {
+  "url": "https://www.nasa.gov/aeronautics/",
+  "final_url": "https://www.nasa.gov/aeronautics/",
+  "har": "pages/053.har.zip",
+  "redirects": [],
+  "cross_site_frames": [
+   "https://www.youtube.com/embed/videoseries"
+  ],
+  "recorded_at": "2026-11-22T15:43:55.714729+00:00"
  },
  "https://www.nasa.gov/ames/": {
   "url": "https://www.nasa.gov/ames/",
@@ -215,6 +241,14 @@
   "cross_site_frames": [],
   "recorded_at": "2026-11-04T12:43:31.112400+00:00"
  },
+ "https://www.nasa.gov/gallery/naca-inspections/page/9/": {
+  "url": "https://www.nasa.gov/gallery/naca-inspections/page/9/",
+  "final_url": "https://www.nasa.gov/gallery/naca-inspections/page/9/",
+  "har": "pages/056.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:44:36.498997+00:00"
+ },
  "https://www.nasa.gov/humans-in-space/": {
   "url": "https://www.nasa.gov/humans-in-space/",
   "final_url": "https://www.nasa.gov/humans-in-space/",
@@ -238,6 +272,22 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T14:38:23.477766+00:00"
+ },
+ "https://www.nasa.gov/image-article/naca-1952-fleet/": {
+  "url": "https://www.nasa.gov/image-article/naca-1952-fleet/",
+  "final_url": "https://www.nasa.gov/image-article/naca-1952-fleet/",
+  "har": "pages/055.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:44:20.140337+00:00"
+ },
+ "https://www.nasa.gov/image-article/naca-look-back-11/": {
+  "url": "https://www.nasa.gov/image-article/naca-look-back-11/",
+  "final_url": "https://www.nasa.gov/image-article/naca-look-back-11/",
+  "har": "pages/057.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:44:49.072540+00:00"
  },
  "https://www.nasa.gov/image-detail/618597main_1964-11-09_full/": {
   "url": "https://www.nasa.gov/image-detail/618597main_1964-11-09_full/",
@@ -401,6 +451,14 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T14:37:55.755208+00:00"
+ },
+ "https://www.nasa.gov/nasa-glenns-arrival-in-cleveland/": {
+  "url": "https://www.nasa.gov/nasa-glenns-arrival-in-cleveland/",
+  "final_url": "https://www.nasa.gov/nasa-glenns-arrival-in-cleveland/",
+  "har": "pages/054.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:44:09.384709+00:00"
  },
  "https://www.nasa.gov/nasa-headquarters/": {
   "url": "https://www.nasa.gov/nasa-headquarters/",
