@@ -566,7 +566,11 @@ async def test_explain_after_a_run(settings, server):
     [f] = out["findings"]
     assert "reference" not in f and "understanding" not in f  # tobi_explain has them
     text = await _prompt({"run_id": out["run_id"]})  # every result of the run
-    assert "Explain these results" in text and "Result for 4.C: PASS" in text
+    assert (
+        "Explain these results" in text
+        and "Result for No keyboard trap (WCAG 2.1.2 No Keyboard Trap; TT 4.C): PASS"
+        in text
+    )
     assert "https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html" in text
     gone = await _prompt({"about": "4.C", "run_id": "20000101T000000Z-000000"})
     assert "no longer on the server" in gone and "saved its report" in gone
@@ -775,7 +779,7 @@ async def test_explain_holds_every_detail_a_result_leaves_out(settings, server):
         )
     assert "NOT a certified" in text
     for f in report.findings:
-        assert f.summary in text and f"Result for {f.test_id.value}" in text
+        assert f.summary in text and f"TT {f.test_id.value}): {f.outcome.value}" in text
         assert all(r in text for r in f.rows)
         assert all(u in text for u in catalog.understanding_urls(f.test_id.value))
     assert "Not final: 1 open question(s)" in text  # 4.A waits on its question
