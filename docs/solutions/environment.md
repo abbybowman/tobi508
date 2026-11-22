@@ -214,6 +214,11 @@ calls a page whose CSS, fonts and scripts mostly failed suspect.
 
 ## A cloud container: long jobs die while the session is idle (2026-11-19)
 
+A background command in an agent session also has its own time limit (30
+minutes unless it is given one): #136's rerun of three rounds was stopped
+part way through round 2. Give a long rerun an explicit limit, one round
+per command, and delete a partial round's output before running it again.
+
 **What happened.** The compare of 2026-11-19 (calling agent vs server
 judge, round 3's pages) ran hours of jobs in the background. Four times
 the container rebooted (`uptime -s` jumped; the new uptime was under two

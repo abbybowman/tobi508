@@ -71,16 +71,56 @@ EXPECTED: dict[str, dict] = {
         "choice": {"J2": {"choice": "essential"}},
     },
     "f09-title-repeats-label": {"outcome": "PASS", "rows": ["M11"]},
+    # 1.18.0 (#136): an icon button whose title rewords its name (round 2's
+    # sort button) is not essential; one whose title adds to it is.
+    "f38-icon-button-title-rewords-name": {
+        "outcome": "PASS",
+        "rows": ["M13"],
+        "choice": {"J2": {"choice": "not_essential"}},
+    },
+    "f39-icon-button-title-adds-to-name": {
+        "outcome": "FAIL",
+        "rows": ["M14"],
+        "choice": {"J2": {"choice": "essential"}},
+    },
+    # 1.19.0 (#136; Abby, 2026-11-22): native radio buttons that share a
+    # name are one group; Tab reaches one and the arrow keys the others, so
+    # a radio button Tab skips is reached when an arrow press lands on it
+    # (round 1's search filters: "Last Month" was asked J1, judged FAIL). In
+    # f41 a script stops the arrows: J1 is asked as before, for "Last Month"
+    # only (Shift+Tab into the group, nothing checked, lands on "Last Week").
+    "f40-radio-group-arrow-keys": {"outcome": "PASS", "rows": []},
+    "f41-radio-group-arrows-blocked": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
+    # 1.20.0 (#136; Abby, 2026-11-22, option 1): a group whose change submits
+    # its form (round 2's date filters). Focus never rests where the arrow
+    # took it, so the probe records the radio each press selects: ArrowDown
+    # lands on "Past week", ArrowUp wraps to "Past year", so the arrows move
+    # through the group and "Past month" counts as reached too.
+    "f43-radio-group-submits-on-change": {"outcome": "PASS", "rows": []},
+    # 1.19.0 (Abby, 2026-11-22): a link named by its feed format, "(RSS)",
+    # already says what its title spells out (round 2's search page).
+    "f42-feed-link-title-spells-out": {
+        "outcome": "PASS",
+        "rows": ["M13", "M13"],
+        "choice": {"J2": {"choice": "not_essential"}},
+    },
     "f10-canvas-map": {"outcome": "NEEDS_REVIEW", "rows": ["M16"]},
     "f11-pointer-cursor-decoration": {"outcome": "PASS", "rows": ["M2", "M2"]},
-    "f12-roving-tabs": {"outcome": "PASS", "rows": []},
+    # 1.16.0: the selected tab has its own keydown (arrows), so it is
+    # executed; Enter selects it as the click does (M8).
+    "f12-roving-tabs": {"outcome": "PASS", "rows": ["M8"]},
     # Row WK (1.11.0, step 6d): a script skips link 2 in both directions, so
     # no pass stops on it: 3 of the page's 4 elements reached, NEEDS REVIEW.
     # f30 is the same page without the script: 4 of 4, PASS.
     "f29-link-skipped-by-script-both-ways": {
         "outcome": "NEEDS_REVIEW",
         "choice": "unsure",
-        "rows": ["M7"],
+        # 1.16.0: the two links with the script's keydown are executed (M8).
+        "rows": ["M7", "M8", "M8"],
         "page_rows": ["WK"],
         "walk": (3, 4),
     },
@@ -100,8 +140,9 @@ EXPECTED: dict[str, dict] = {
         "choice": {"J1": {"choice": "alternative", "element": 1}},
     },
     "f17-click-only-play-button": {"outcome": "FAIL", "rows": ["M10"]},
-    # E-01: 45 links, a mouse-only menu on the 45th. The hover scan stops at
-    # 40 stops, which is a cap reached: never PASS (spec G3).
+    # E-01: 175 links, a mouse-only menu on the 175th. The hover scan stops at
+    # HOVER_MAX (160 since 1.17.0; 40 and 45 links before), a cap reached:
+    # never PASS (spec G3).
     "f18-hover-menu-past-the-cap": {"outcome": "NEEDS_REVIEW", "rows": []},
     # E-02: a mouse-only <a href="#"> beside another <a href="#">. "#" goes
     # nowhere, so the two do not "go to the same place" (M3): J1 is asked.
@@ -122,6 +163,39 @@ EXPECTED: dict[str, dict] = {
     "f26-native-button-mousedown-only": {"outcome": "FAIL", "rows": ["M10"]},
     "f27-native-button-mousedown-and-click": {"outcome": "PASS", "rows": []},
     "f28-link-with-mousedown-tracking": {"outcome": "PASS", "rows": []},
+    # 1.16.0 (#136 step 28; round 3 MySearchStory, key Fail): a carousel's
+    # keydown takes Enter and Space from the native buttons inside it. Their
+    # clicks open a window and go to another address; the keys only advance
+    # the carousel: M10g. f33: a toolbar that listens only for arrows, whose
+    # buttons and link work by keyboard (M8). f34: a custom control whose
+    # Enter does something other than its click (M8r).
+    "f32-carousel-takes-button-enter": {"outcome": "FAIL", "rows": ["M10g", "M10g"]},
+    "f33-toolbar-arrows-buttons-work": {
+        "outcome": "PASS",
+        "rows": ["M8", "M8", "M8"],
+    },
+    # A page that scrolls smoothly (Bootstrap's scroll-behavior): the scan
+    # scrolled each target into view and read its place before the scroll
+    # ended, so a mouse-only control far down was "not hit" and never a
+    # candidate (round 2's home page: 182 targets read, 328 there).
+    "f35-smooth-scroll-click-only": {
+        "outcome": "FAIL",
+        "rows": ["M6"],
+        "choice": NO_ALT,
+    },
+    # 1.17.0 (#136 step 32; round 3's Drupal pages, key Pass): a share
+    # widget's hidden helper frame and its 0 px strip with a touch listener
+    # have no visible area, so neither is something a mouse could use.
+    "f36-hidden-share-helpers": {"outcome": "PASS", "rows": []},
+    # The near miss: the same two, shown on the page, still go to a person.
+    "f37-visible-unread-frame-and-touch-area": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M16", "M16"],
+    },
+    "f34-custom-control-enter-does-other": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M8r"],
+    },
 }
 
 ACT = {
@@ -212,7 +286,9 @@ def _x(**kw) -> t4a.Inst4A:
     )
 
 
-EFF = Effect(kinds=["dom"], mutations=1)
+EFF = Effect(kinds=["dom"], mutations=1, region="#r")
+ELSEWHERE = Effect(kinds=["dom"], mutations=1, region="#other")
+NAV = Effect(kinds=["navigation"], url="https://example.gov/b")
 NONE = Effect()
 NOISY = Effect(kinds=["dom"], mutations=2, noise=3)
 
@@ -227,7 +303,42 @@ NOISY = Effect(kinds=["dom"], mutations=2, noise=3)
         # The named alternative must be a stop; otherwise it is unsure.
         (_k(j={"choice": "alternative", "element": 9}), "NEEDS_REVIEW", "M7"),
         (_k(j={"choice": "alternative", "element": 2}), "PASS", "M5"),
-        (_x(enter=NONE, space=EFF), "PASS", "M8"),
+        # 1.16.0: an alternative whose reasons hedge is unsure (round 3 p10).
+        (
+            _k(
+                j={
+                    "choice": "alternative",
+                    "element": 2,
+                    "reasons": "It goes to nasa.gov, so it is not the same. "
+                    "Not certain.",
+                }
+            ),
+            "NEEDS_REVIEW",
+            "M7",
+        ),
+        (
+            _k(j={"choice": "alternative", "element": 2, "reasons": "Unclear."}),
+            "NEEDS_REVIEW",
+            "M7",
+        ),
+        (
+            _k(
+                j={
+                    "choice": "alternative",
+                    "element": 2,
+                    "reasons": "A second print button.",
+                }
+            ),
+            "PASS",
+            "M5",
+        ),
+        (_x(enter=NONE, space=EFF, click=EFF), "PASS", "M8"),
+        # 1.16.0: a key must do what the click does.
+        (_x(enter=EFF, click=ELSEWHERE), "NEEDS_REVIEW", "M8r"),
+        (_x(enter=EFF, click=NONE), "NEEDS_REVIEW", "M8r"),
+        (_x(enter=EFF, space=EFF, click=NAV), "FAIL", "M10g"),
+        (_x(enter=NAV, click=NAV), "PASS", "M8"),
+        (_x(enter=NONE, space=NONE, click=EFF), "FAIL", "M10"),
         (_x(enter=NONE, space=NONE, click=NONE), "PASS", "M9"),
         (
             t4a.Inst4A(

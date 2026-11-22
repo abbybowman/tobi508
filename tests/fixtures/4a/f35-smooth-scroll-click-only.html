@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><title>Annual report</title>
+<style>
+  html { scroll-behavior: smooth; }
+  .tall { height: 2600px; }
+  .tile { display: inline-block; padding: 6px 12px; border: 1px solid #333; cursor: pointer; }
+</style></head>
+<body>
+<h1>Annual report</h1>
+<p><a href="#summary">Summary</a></p>
+<div class="tall"><p id="summary">The year in numbers.</p></div>
+<div class="tile" id="more">Show the tables</div>
+<div id="tables" hidden><p>Table 1. Spending by office.</p></div>
+<script>
+  document.getElementById('more').addEventListener('click', () => { document.getElementById('tables').hidden = false; });
+</script>
+</body>
+</html>
