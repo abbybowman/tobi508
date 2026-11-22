@@ -305,9 +305,10 @@ re-testing): confirm and remove, or remove the mark.
   page whose whole menu was renamed may share too little and be left out,
   so 9.C would not see the renaming; set low (2) to keep that rare.
 
-- **9.B** compares only navigation outside the main content: a
-  breadcrumb or section menu inside `main` that repeats on other pages
-  is left out. With one matched component it says NEEDS REVIEW, where
+- **9.B** compares navigation outside the main content, and since 1.11.0
+  (#138) a navigation region or breadcrumb trail inside it; other links
+  inside `main` (a row of links in no region) are still left out as
+  content. With one matched component it says NEEDS REVIEW, where
   there is no order to get wrong. Two lists whose comparison table
   passes 6 million cells pair in order, not by alignment (1.7.0), so an
   extra copy of a link could still read as a swap there (not seen on

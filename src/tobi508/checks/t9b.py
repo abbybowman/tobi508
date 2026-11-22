@@ -9,6 +9,7 @@ row tables decide outcomes.
 from __future__ import annotations
 
 import asyncio
+import re
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -83,7 +84,11 @@ def items(p: PageRead) -> list[Item]:
     out: list[Item] = []
     leave_main = _has_main(p)
     for u in p.units:
-        if u.kind != "control" or (leave_main and u.in_main) or not u.name:
+        if u.kind != "control" or not u.name:
+            continue
+        # Inside main is content, except a navigation region or a breadcrumb
+        # trail there (1.11.0, #138 draft H).
+        if leave_main and u.in_main and not _nav_in_main(u):
             continue
         out.append(
             Item(
@@ -103,6 +108,20 @@ def items(p: PageRead) -> list[Item]:
             )
         )
     return out
+
+
+CRUMB = re.compile(r"breadcrumb", re.I)
+
+
+def _nav_in_main(u: Unit) -> bool:
+    """A link or control of a navigation region or a breadcrumb trail inside
+    `main` (spec Terms, 1.11.0)."""
+    names = [k.split("|", 1)[-1] for k in u.regions]
+    return (
+        u.region_role == "navigation"
+        or u.crumb
+        or any(CRUMB.search(n) for n in names if n[:1] not in "#@")
+    )
 
 
 def _key(u: Unit, page_url: str) -> str:

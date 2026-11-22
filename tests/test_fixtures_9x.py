@@ -342,20 +342,7 @@ ROWS = {
 }
 
 
-# Draft H (#138, navigation inside `main`): waiting for Abby's yes on the
-# spec text; until it is built, the swapped section menu still reads PASS.
-PENDING = {"section-menu-in-main-swapped": "#138 draft H not yet approved"}
-
-
-@pytest.mark.parametrize(
-    "case",
-    [
-        pytest.param(c, marks=pytest.mark.xfail(reason=PENDING[c], strict=True))
-        if c in PENDING
-        else c
-        for c in sorted(EXPECTED)
-    ],
-)
+@pytest.mark.parametrize("case", sorted(EXPECTED))
 async def test_case(case, settings, server, drafts):  # noqa: F811
     page, others, want, answers = EXPECTED[case]
     page, hash_, frag = page.partition("#")  # "name#main": the tested address

@@ -15,6 +15,38 @@
   "cross_site_frames": [],
   "recorded_at": "2026-11-08T01:36:54.481589+00:00"
  },
+ "https://svs.gsfc.nasa.gov/14198": {
+  "url": "https://svs.gsfc.nasa.gov/14198",
+  "final_url": "https://svs.gsfc.nasa.gov/14198",
+  "har": "pages/040.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:13:38.869300+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/14199": {
+  "url": "https://svs.gsfc.nasa.gov/14199",
+  "final_url": "https://svs.gsfc.nasa.gov/14199",
+  "har": "pages/041.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:14:06.805600+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/14580": {
+  "url": "https://svs.gsfc.nasa.gov/14580",
+  "final_url": "https://svs.gsfc.nasa.gov/14580",
+  "har": "pages/034.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:11:10.746799+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/14590": {
+  "url": "https://svs.gsfc.nasa.gov/14590",
+  "final_url": "https://svs.gsfc.nasa.gov/14590",
+  "har": "pages/035.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:11:24.681286+00:00"
+ },
  "https://svs.gsfc.nasa.gov/14592/": {
   "url": "https://svs.gsfc.nasa.gov/14592/",
   "final_url": "https://svs.gsfc.nasa.gov/14592/",
@@ -22,6 +54,14 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-08T01:36:32.854911+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/14685/": {
+  "url": "https://svs.gsfc.nasa.gov/14685/",
+  "final_url": "https://svs.gsfc.nasa.gov/14685/",
+  "har": "pages/039.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:11:54.725355+00:00"
  },
  "https://svs.gsfc.nasa.gov/15116/": {
   "url": "https://svs.gsfc.nasa.gov/15116/",
@@ -88,6 +128,14 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T15:03:37.466330+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/api/14592": {
+  "url": "https://svs.gsfc.nasa.gov/api/14592",
+  "final_url": "https://svs.gsfc.nasa.gov/api/14592",
+  "har": "pages/036.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:11:31.922283+00:00"
  },
  "https://svs.gsfc.nasa.gov/api/search/?search=Apollo": {
   "url": "https://svs.gsfc.nasa.gov/api/search/?search=Apollo",
@@ -169,6 +217,22 @@
   "cross_site_frames": [],
   "recorded_at": "2026-11-08T01:36:16.654007+00:00"
  },
+ "https://svs.gsfc.nasa.gov/cilab/index.html": {
+  "url": "https://svs.gsfc.nasa.gov/cilab/index.html",
+  "final_url": "https://svs.gsfc.nasa.gov/cilab/index.html",
+  "har": "pages/032.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:09:38.837633+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/cilab/information.html": {
+  "url": "https://svs.gsfc.nasa.gov/cilab/information.html",
+  "final_url": "https://svs.gsfc.nasa.gov/cilab/information.html",
+  "har": "pages/033.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:09:43.286476+00:00"
+ },
  "https://svs.gsfc.nasa.gov/gallery/the-galleries/": {
   "url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
   "final_url": "https://svs.gsfc.nasa.gov/gallery/the-galleries/",
@@ -200,6 +264,20 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T15:02:54.623350+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/search?nasa_science_categories=Sun": {
+  "url": "https://svs.gsfc.nasa.gov/search?nasa_science_categories=Sun",
+  "final_url": "https://svs.gsfc.nasa.gov/search/?nasa_science_categories=Sun",
+  "har": "pages/038.har.zip",
+  "redirects": [
+   {
+    "from": "https://svs.gsfc.nasa.gov/search?nasa_science_categories=Sun",
+    "status": 301,
+    "to": "https://svs.gsfc.nasa.gov/search/?nasa_science_categories=Sun"
+   }
+  ],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:11:42.043034+00:00"
  },
  "https://svs.gsfc.nasa.gov/search?search=Apollo": {
   "url": "https://svs.gsfc.nasa.gov/search?search=Apollo",
@@ -278,5 +356,13 @@
   "redirects": [],
   "cross_site_frames": [],
   "recorded_at": "2026-11-22T15:05:22.975131+00:00"
+ },
+ "https://svs.gsfc.nasa.gov/vis/a010000/a014500/a014592/14592_X8pt7Flare_HTML_Transcript.html": {
+  "url": "https://svs.gsfc.nasa.gov/vis/a010000/a014500/a014592/14592_X8pt7Flare_HTML_Transcript.html",
+  "final_url": "https://svs.gsfc.nasa.gov/vis/a010000/a014500/a014592/14592_X8pt7Flare_HTML_Transcript.html",
+  "har": "pages/037.har.zip",
+  "redirects": [],
+  "cross_site_frames": [],
+  "recorded_at": "2026-11-22T15:11:34.862014+00:00"
  }
 }
