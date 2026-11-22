@@ -42,3 +42,32 @@ In 9a-bypass.md section 1 ("Which other pages are compared"), shared by
 > template, and the reverse.)
 
 Supersedes draft F.
+
+**Built (Abby approved G, 2026-11-22), with two refinements the fixtures
+required.** 9.A's ACT cases and four 9.x fixtures are pages with no
+navigation of their own, or with one other page given; G as drafted left
+those out too. So: (1) only when both pages have navigation of their own
+(9.A Terms); (2) only while a page of the tested page's own part is left
+to compare with (none is left out otherwise, so no outcome appears where
+there was none). Components counted as 9.B counts them (links, controls
+and regions outside main), as measured. No existing fixture's expected
+outcome changed. Round 3 p01 from the freeze: 9.B PASS (key Pass), the
+four microsite pages named as left out.
+
+## Draft H: navigation inside `main` (9.B)
+
+In 9b-consistent-navigation.md Terms, replacing "A component inside the
+`main` landmark of either page is content, not navigation, and is left
+out.":
+
+> A component inside the `main` landmark of either page is content, not
+> navigation, and is left out, except a navigation region (`nav`, role
+> navigation) or a breadcrumb trail (19.A Terms) inside `main`: its links
+> and controls are navigation components (9.B 1.11.0; #138, Abby
+> 2026-11-22; Baseline 4.B: navigational mechanisms "may or may not be
+> contained within a block of content"; TT p. 43: "groupings of
+> components").
+
+Fixtures (`test_fixtures_9x.py`): a section menu inside `main`, the same
+order on the other page (PASS) and two items swapped (FAIL; PASS today,
+since it is left out). No round's cell is known to depend on it.
