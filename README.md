@@ -91,7 +91,7 @@ Wrong PASS or DOES NOT APPLY results found on test pages built to probe each tes
 
 <!-- known-gaps:start -->
 - **2.A, 2.B, 2.C, 3.A:** content the 6.5-second watch misses: audio or motion that starts late, a blink by `visibility` or about 2.5 times a second, motion that fills the screen, a counter started by scrolling, flashing below the first screen ([roadmap](docs/ROADMAP.md#later)).
-- **4.A, 4.C, 4.D, 4.E, 4.F:** controls inside a form that opens from a plain button are not reached; 4.D also passes a faint focus mark on a large linked image ([#135](https://github.com/abbybowman/tobi508/issues/135)).
+- **4.A, 4.C, 4.D, 4.E, 4.F:** controls inside a form that opens from a plain button are not reached; 4.D also passes an element that shows no focus when the next element's focus ring is drawn over it, as on a blog's linked images ([#135](https://github.com/abbybowman/tobi508/issues/135)).
 - **4.B, 5.H:** timing instructions or a payment form not in English, or worded "press Enter twice" ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
 - **9.C:** controls in a page's content that do the same thing under different names ([#138](https://github.com/abbybowman/tobi508/issues/138)).
 <!-- known-gaps:end -->

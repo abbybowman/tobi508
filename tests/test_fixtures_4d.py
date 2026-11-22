@@ -5,6 +5,7 @@ tests/fixtures/act/manifest.json and here, never in a page."""
 from __future__ import annotations
 
 import json
+import re
 
 import pytest
 
@@ -110,6 +111,12 @@ EXPECTED: dict[str, dict] = {
     # 4.D 1.10.0: f11's focus dropped on focus, inside a web component: the
     # focus log names it by its host, so M3 sees it (it was WK, NEEDS REVIEW).
     "f29-blur-on-focus-in-web-component": {"outcome": "FAIL", "rows": ["M3"]},
+    # Step 27 (#135): round 3's blog. The picture's own link shows nothing
+    # with focus; the next link's focus ring, drawn round the whole picture,
+    # is in the first link's "off" picture, and M6 passes it on those pixels.
+    # A known wrong PASS until the rule reads the before picture (KNOWN-LIMITS,
+    # 4.D); test_f30_before_picture checks the evidence that will decide it.
+    "f30-next-outline-over-image-link": {"outcome": "PASS"},
     "f12-listbox-activedescendant": {"outcome": "PASS"},
     "f13-listbox-no-highlight": {"outcome": "FAIL"},
     "f14-menubar-roving-no-indicator": {"outcome": "FAIL"},
@@ -241,3 +248,27 @@ def test_the_reason_a_last_step_has_no_after_picture_is_kept(monkeypatch, tmp_pa
     t4d._attempts_from(p, st, by_subject, tmp_path)
     [inst] = by_subject.values()
     assert t4d._reason(inst).startswith("focus never moved on"), t4d._reason(inst)
+
+
+async def test_f30_before_picture(settings, server):
+    """Step 27 (#135), evidence only: each stop also gets a before picture
+    (the page before the key press that focused it), and the pixels that
+    changed both ways (on vs off and on vs before) are counted. On F30 the
+    picture's own link changed only one way: what differs is the next
+    link's ring in its off picture. The caption link's ring changed both
+    ways; the title links keep (nearly) all their pixels."""
+    from tobi508.checks.t4d import MIN_CHANGED_PX
+
+    got = await run_check(
+        settings, f"{server.base}/4d/f30-next-outline-over-image-link.html", TestId.T4D
+    )
+    by = {}
+    for i in got["finding"].instances:
+        name = i.description.split('"')[1]
+        nums = [float(x) for x in re.findall(r"(\d+) px", i.description)]
+        by[name] = nums  # changed, strongly, both ways, both ways strongly
+        assert len(i.evidence_refs) >= 2
+    image, caption = by["Image"], by["A pale circle on a blue field"]
+    assert image[1] >= MIN_CHANGED_PX and image[3] < MIN_CHANGED_PX, image
+    assert caption[3] >= MIN_CHANGED_PX, caption
+    assert by["First post"][3] >= MIN_CHANGED_PX

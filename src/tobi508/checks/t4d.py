@@ -9,6 +9,8 @@ compares the images; only evaluate() and the row tables decide outcomes.
 
 from __future__ import annotations
 
+import io
+import time
 from pathlib import Path
 from typing import Any
 
@@ -54,6 +56,11 @@ WIDGET_MAX = 10
 ANCESTOR_MAX_FACTOR = 4  # an ancestor joins the region only if this small
 ANCESTOR_MAX_AREA = 40_000
 NOISE_WAIT_MS = 150  # second "on" read: what changes while focus stays is noise
+# Step 27 (#135), evidence only: a picture of the viewport after each step, so
+# each stop also gets a "before" picture of its clip, from the step before
+# the key press that focused it. No row reads it yet. A switch so the cost
+# can be measured with and without it.
+BEFORE_PICTURE = True
 HOOK = "focus4d"
 
 # Runs in the isolated world on the focused element (`this`). With itemId, on
@@ -182,6 +189,49 @@ class FocusHook:
         self.skip = skip
         self.item_mode = item_mode
         self.prev: dict[str, Any] | None = None
+        # The viewport as it was after the last step (or at the start): PNG
+        # bytes and [scrollX, scrollY, innerWidth, innerHeight, dpr].
+        self.view_prev: tuple[bytes, list[float]] | None = None
+        self._view_now: list[float] | None = None
+        self.view_ms = 0.0  # time spent on viewport pictures (cost, step 27)
+
+    async def _keep_view(self, t: Traversal) -> None:
+        if not BEFORE_PICTURE or t.shots_dir is None:
+            return
+        t0 = time.monotonic()
+        view = self._view_now or await self._view(t)
+        try:
+            png = await screenshot(t.page, animations="disabled", caret="hide")
+            self.view_prev = (png, view)
+        except Exception:
+            self.view_prev = None
+        self._view_now = None
+        self.view_ms += (time.monotonic() - t0) * 1000
+
+    async def on_start(self, t: Traversal) -> None:
+        await self._keep_view(t)
+
+    def _before(self, t: Traversal, step_n: int, out: dict[str, Any]) -> None:
+        """Cut the stop's clip from the picture taken before the key press
+        that focused it (evidence only, step 27)."""
+        if self.view_prev is None:
+            out["no_before"] = "no picture of the page before this key press"
+            return
+        png, v = self.view_prev
+        cp = out["clip_page"]
+        rect = [cp[0] - v[0], cp[1] - v[1], cp[2], cp[3]]
+        if not _inside(rect, v[2], v[3]):
+            out["no_before"] = "it was not on screen before focus reached it"
+            return
+        path = self._shot_path(t, step_n, "before")
+        if path is None:
+            return
+        dpr = v[4] or 1
+        img = Image.open(io.BytesIO(png))
+        box = [round(rect[0] * dpr), round(rect[1] * dpr)]
+        box += [box[0] + round(rect[2] * dpr), box[1] + round(rect[3] * dpr)]
+        img.crop(box).save(path)
+        out["before"] = self._rel(t, path)
 
     async def _view(self, t: Traversal) -> list[float]:
         v = await t.reader.evaluate_top(
@@ -200,10 +250,27 @@ class FocusHook:
         return path.resolve().relative_to(t.rel_base.resolve()).as_posix()
 
     async def on_step(self, t: Traversal, step: Step) -> Any:
+        out = await self._on_step(t, step)
+        if (
+            BEFORE_PICTURE
+            and isinstance(out, dict)
+            and out.get("on")
+            and "clip_page" in out
+            and t.shots_dir is not None
+        ):
+            self._before(t, step.n, out)
+        spent = self.view_ms
+        await self._keep_view(t)
+        if isinstance(out, dict) and BEFORE_PICTURE:
+            out["view_ms"] = round(self.view_ms - spent, 1)  # cost (step 27)
+        return out
+
+    async def _on_step(self, t: Traversal, step: Step) -> Any:
         st = step.stop
         if self.prev is None and not self.item_mode and st.path_key in self.skip:
             return {"subject": st.path_key, "skipped": True}  # covered in P1
         view = await self._view(t)
+        self._view_now = view
         snap = None
         if st.kind == "element" and st.bounding_box is not None:
             snap = await t.reader.call(st, SNAP_FN, [self.item_mode, None])
@@ -424,6 +491,10 @@ class Attempt(BaseModel):
     changed_px: float | None = None
     strong_px: float | None = None
     mask_fraction: float | None = None
+    # Step 27 (#135), evidence only: changed and strongly changed CSS px that
+    # also differ from the before picture (on vs off and on vs before).
+    both_px: float | None = None
+    both_strong_px: float | None = None
     next_inside_frame: bool = False
     # Where the differing pixels sit, for J1: CSS px on the element,
     # touching it (within INDICATOR_MARGIN_PX) and elsewhere in the picture.
@@ -480,9 +551,12 @@ def _region_boxes(e: dict[str, Any]) -> list[list[float]]:
 
 
 def compare(
-    rel: Path, e: dict[str, Any]
+    rel: Path, e: dict[str, Any], before: bool = False
 ) -> tuple[float, float, float, Image.Image | None]:
-    """(changed px, strongly changed px, mask fraction, diff image) in CSS px²."""
+    """(changed px, strongly changed px, mask fraction, diff image) in CSS px².
+    With `before` (step 27, evidence only), a pixel counts only when the on
+    picture differs from the off picture and from the before picture by the
+    same delta: it changed when focus arrived and again when focus left."""
     on = Image.open(rel / e["on"]).convert("RGB")
     off = Image.open(rel / e["off"]).convert("RGB")
     if on.size != off.size:
@@ -494,6 +568,12 @@ def compare(
     diff = ImageChops.difference(on, off)
     r, g, b = diff.split()
     mx = ImageChops.lighter(ImageChops.lighter(r, g), b)
+    if before:
+        pre = Image.open(rel / e["before"]).convert("RGB")
+        if pre.size != on.size:
+            pre = pre.resize(on.size)
+        br, bg, bb = ImageChops.difference(on, pre).split()
+        mx = ImageChops.darker(mx, ImageChops.lighter(ImageChops.lighter(br, bg), bb))
     region = Image.new("L", on.size, 0)
     draw = ImageDraw.Draw(region)
     for x, y, w, h in _region_boxes(e):
@@ -729,6 +809,8 @@ def _attempts_from(
             try:
                 a.changed_px, a.strong_px, a.mask_fraction, diff = compare(rel, e)
                 a.places = places(rel, e)
+                if e.get("before"):
+                    a.both_px, a.both_strong_px, _, _ = compare(rel, e, before=True)
                 if diff is not None and inst.diff_image is None:
                     path = rel / e["on"].replace("-on.png", "-diff.png")
                     diff.save(path)
@@ -1267,6 +1349,11 @@ def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {_label(inst.label)}"
                 + (
                     f" changed {a.changed_px:.0f} px, strongly {a.strong_px:.0f} px"
+                    + (
+                        f"; both ways {a.both_px:.0f} px, strongly {a.both_strong_px:.0f} px"
+                        if a.both_px is not None
+                        else ""
+                    )
                     if a and a.changed_px is not None
                     else ""
                 ),

@@ -318,7 +318,22 @@ see on a large element.
 **Rounds 1 and 2.** Not in the gate rows (they keep page rows only).
 New evidence.
 
-**Smallest fix (step 27).** M6 also needs the strongly changed pixels
+**Corrected 2026-11-22 (#135, on the frozen page).** The cause above is
+wrong. Each post has three stops: the title link, the "Image" link (a
+46 × 19 px box at the picture's top-left) and the alt-text link (a 797 ×
+19 px strip across it). Abby's key fails only the "Image" link, which shows
+nothing with focus; the alt-text link's focus draws a faint dashed outline
+round the whole picture, which the key does not fail. The "Image" link's
+50 pixels are that outline, in its "off" picture: the off picture is taken
+after focus moved on to the alt-text link, whose ring is drawn outside its
+own box, so the mask of the next stop's box does not cover it. A share
+threshold (tried and reverted) moved the alt-text links instead. Step 27
+is now: count a pixel only when it changed as focus arrived and again as
+it left (a "before" picture of the region, from the step before the key
+press), measured first as evidence only (fixture F30). The rest of this
+section is the original text.
+
+**Smallest fix (step 27, superseded above).** M6 also needs the strongly changed pixels
 to be a share of the element's size (its perimeter, for example);
 below it, J1 looks (M7). Fixture: a large image link whose focus
 shows only a small mark; nearest pages that must keep their outcomes:

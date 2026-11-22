@@ -214,8 +214,11 @@ re-testing): confirm and remove, or remove the mark.
   NEEDS REVIEW, not wrong. A menu whose controls the Tab key does not
   reach, or that could not be opened, is NEEDS REVIEW (as in 4.E and
   5.D).
-- **4.D:** `MIN_CHANGED_PX` is absolute, so about 50 changed pixels pass
-  a large image link (round 3's blog; held only by guard RC; step 27, [#135](https://github.com/abbybowman/tobi508/issues/135)). A
+- **4.D:** an element's "off" picture is taken after focus moved on, so
+  when the next element's focus ring is drawn outside that element's own
+  box and over this one, its pixels count as this element's indicator and
+  M6 can pass an element that shows nothing (round 3's blog: each post's
+  "Image" link; held only by guard RC; fixture F30; step 27, [#135](https://github.com/abbybowman/tobi508/issues/135)). A
   link whose only sign of focus is that its box moved is NEEDS REVIEW
   unless it is shown only on focus (F-02, 4.D 1.8.0); if more than 1 in
   5 of a round's 4.D stops end there, Abby's option B: take the two
