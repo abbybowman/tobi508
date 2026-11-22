@@ -10,6 +10,7 @@ decide outcomes; collectors record facts.
 
 from __future__ import annotations
 
+import asyncio
 import re
 from typing import Any
 
@@ -49,6 +50,23 @@ SCROLL_WAIT_MS = 700  # a smooth scroll finishes in about half a second
 EXECUTE_MAX = 12  # every executed control (1.16.0: was 10)
 ARROW_MAX = 5
 ARROW_PRESSES = 20
+# 1.20.0 (#136): how long the radio probe waits after its one arrow press for
+# the radio it selected to be recorded (the page may leave at once).
+RADIO_WAIT_S = 1.0
+RADIO_BINDING = "__tobi508Radio"
+# Records each radio button that takes focus or changes, by its path, through
+# a CDP binding, so it is read even when the change makes the page leave.
+RADIO_JS = (
+    "(() => {"
+    + PATH_JS
+    + """
+  const send = (e) => { const t = e.target;
+    if (t && t.tagName === 'INPUT' && (t.type || '').toLowerCase() === 'radio')
+      try { window.__tobi508Radio(path(t)); } catch (x) {} };
+  window.addEventListener('focusin', send, true);
+  window.addEventListener('change', send, true);
+})()"""
+)
 HOOK = "keys4a"
 
 # A native control that answers only these (and has no click listener of its
@@ -801,6 +819,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
             )
             break
         visited = await _arrow_probe(ctx, sr)
+        left = [k for k in ks if k not in visited]
+        if left and kind == "radio" and " >> " not in sr.path_key:
+            # 1.20.0 (#136; Abby, 2026-11-22): a group whose change makes the
+            # page leave (round 2's date filters submit their form), so focus
+            # never rests where the arrow took it.
+            visited |= await _radio_probe(ctx, sr, set(ks))
         for k in ks:
             if k in visited:
                 unreached.pop(k)
@@ -1026,6 +1050,41 @@ async def _arrow_probe(ctx: RunContext, sr: StopRef) -> set[str]:
     finally:
         await s.close()
     return visited
+
+
+async def _radio_probe(ctx: RunContext, sr: StopRef, keys: set[str]) -> set[str]:
+    """A native radio group in the top document (spec 4.A 1.20.0): from the
+    group's stop, one ArrowDown and, on a fresh replay, one ArrowUp, each
+    recording the radio button that took focus or changed, even when the
+    page then leaves. When both land on radio buttons of the group other
+    than the stop, the arrow keys move through the group (the browser's own
+    behaviour), so every radio button of it is reached (option 1, Abby);
+    otherwise only those an arrow landed on."""
+    found: list[set[str]] = []
+    for key in ("ArrowDown", "ArrowUp"):
+        got: set[str] = set()
+        s = await _replay(ctx, ["Tab"] * (sr.index + 1))
+        try:
+            cdp = await s.page.context.new_cdp_session(s.page)
+
+            def on_call(ev: dict[str, Any], got: set[str] = got) -> None:
+                if ev.get("name") == RADIO_BINDING:
+                    got.add(str(ev.get("payload") or ""))
+
+            cdp.on("Runtime.bindingCalled", on_call)
+            await cdp.send("Runtime.enable")
+            await cdp.send("Runtime.addBinding", {"name": RADIO_BINDING})
+            await cdp.send("Runtime.evaluate", {"expression": RADIO_JS})
+            await s.page.keyboard.press(key)
+            await asyncio.sleep(RADIO_WAIT_S)
+        except Exception:
+            pass
+        finally:
+            await s.close()
+        found.append(got & keys)
+    if all(found):
+        return set(keys)
+    return set().union(*found)
 
 
 async def _click_check(ctx: RunContext, st: State4A, inst: Inst4A) -> Effect | None:

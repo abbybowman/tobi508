@@ -95,6 +95,12 @@ EXPECTED: dict[str, dict] = {
         "rows": ["M6"],
         "choice": NO_ALT,
     },
+    # 1.20.0 (#136; Abby, 2026-11-22, option 1): a group whose change submits
+    # its form (round 2's date filters). Focus never rests where the arrow
+    # took it, so the probe records the radio each press selects: ArrowDown
+    # lands on "Past week", ArrowUp wraps to "Past year", so the arrows move
+    # through the group and "Past month" counts as reached too.
+    "f43-radio-group-submits-on-change": {"outcome": "PASS", "rows": []},
     # 1.19.0 (Abby, 2026-11-22): a link named by its feed format, "(RSS)",
     # already says what its title spells out (round 2's search page).
     "f42-feed-link-title-spells-out": {

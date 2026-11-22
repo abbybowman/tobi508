@@ -803,6 +803,10 @@ repeat.
   (`judge_eval.py answer --backend api --repeat 3`); repeats; 19.A's live
   search in a browser that trusts the proxy; 14194 within the run cap.
 
+## 2026-11-22: 4.A 1.20.0 (a radio group whose change makes the page leave), no agent run needed
+
+The radio probe asks no question: it takes radio buttons out of J1 when an arrow press lands on them, as 1.19.0 did. No question, rubric or question input changes; F43 (new) asks nothing. On round 2's search page (`judging/gate-2026-11-22-136e/`) the five date radio buttons are no longer asked: 4.A's own rows pass the page (G4), held at NEEDS REVIEW only by guard RC (content that opens, step 15).
+
 ## Run 40, 2026-11-22: 4.A 1.19.0 (#136: a feed link's title; native radio groups), every 4.A packet
 
 J2's rubric now says a link named by a feed or file format whose title spells it out is not essential (Abby, 2026-11-22: round 2's "(RSS)" and "(Atom)" links count as equivalent). The arrow probe now treats native radio buttons that share a name as a group, so a radio button Tab skips is reached when an arrow press lands on it, with no question asked (Abby, 2026-11-22: round 1's "Last Month" filter). New pages: F40 (radio group, arrows move: PASS, no question), F41 (a script stops the arrows: J1), F42 ("(RSS)" and "(Atom)" with spelled-out titles: PASS). Pinned Chrome 153.0.8010.12. `prepare 4.A` (22 cases ask), no leak in the packets (the grep finds nothing).

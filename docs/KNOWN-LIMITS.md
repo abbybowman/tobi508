@@ -179,6 +179,9 @@ re-testing): confirm and remove, or remove the mark.
   it was asking whether "Last Month" in round 1's search filters "works
   with a mouse but cannot be reached". At most `ARROW_MAX` (5) widgets
   and radio groups a page are probed; past that, NEEDS REVIEW.
+  A group whose change makes the page leave is counted reached when one
+  ArrowDown and one ArrowUp each select another radio of it (1.20.0, Abby,
+  option 1): a page that blocks only the radio buttons between is passed.
 - **4.A:** a native button or link is executed only when it, or an
   element round it below `body`, listens for keys (1.16.0, step 28,
   [#136](https://github.com/abbybowman/tobi508/issues/136)): one whose
