@@ -128,6 +128,11 @@ EXPECTED: dict[str, dict] = {
     # A (the next link's) and nothing on the link in B or D: no (M10). The
     # caption and title links keep M6. test_f30_before_picture checks the
     # counts.
+    # #135 (round 2's SVS 14592, key Pass): the player's group gets a new id
+    # on every load, so P2's stops have other paths than P1's; Shift+Tab
+    # leaves them under the sticky header, where they showed nothing (M8).
+    # They are P1's stops (same role, name and place), which P1 pictured.
+    "f31-new-id-each-load-under-sticky-header": {"outcome": "PASS"},
     "f30-next-outline-over-image-link": {
         "outcome": "FAIL",
         "choice": "no",

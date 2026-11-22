@@ -567,6 +567,14 @@ def focus_hook(pass_name: str, prior: PassResult | None) -> FocusHook:
     return FocusHook(pass_name, skip, before_for=before_for)
 
 
+def _where_of(e: dict[str, Any], step: Step) -> tuple:
+    """_where for a stop pictured at `step` (its box in page coordinates)."""
+    cp, cv, r = e["clip_page"], e["clip_view"], e["self_rect"]
+    return _where(
+        step.stop.role, step.stop.name, [r[0] + cp[0] - cv[0], r[1] + cp[1] - cv[1]]
+    )
+
+
 def _where(role: str | None, name: str | None, page_xy: list[float]) -> tuple:
     """A stop by role, name and place on the page (CSS px, to 4 px): P2 runs
     on a fresh load, where a page may give an element a new random id (round
@@ -835,6 +843,7 @@ def _attempts_from(
     rel: Path,
     key: str | None = None,
     prefix: list[str] | None = None,
+    same_as: dict[tuple, str] | None = None,
 ) -> None:
     """Instances and attempts from one pass. `key` is the key pressed at each
     step and `prefix` the keys replayed before the pass (widget pass W)."""
@@ -868,6 +877,10 @@ def _attempts_from(
         if not e or e.get("skipped"):
             continue
         subj = e["subject"]
+        if subj not in by_subject and same_as and e.get("clip_page"):
+            # A stop P1 reached under another path: a page that gives an
+            # element a new id on each load (1.11.0; round 2's video players).
+            subj = same_as.get(_where_of(e, step), subj)
         inst = by_subject.get(subj)
         if inst is None:
             inst = by_subject[subj] = Inst4D(
@@ -1222,7 +1235,15 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
         st.incomplete.append(cov.sentence)
     by_subject: dict[str, Inst4D] = {}
     _attempts_from(p1, st, by_subject, ctx.rel)
-    _attempts_from(p2, st, by_subject, ctx.rel)
+    # P1's stops by role, name and place, for P2's stops under another path.
+    same_as = {
+        _where_of(a.extras, s): inst.subject
+        for inst in by_subject.values()
+        for a in inst.attempts[:1]
+        if a.extras.get("clip_page")
+        for s in p1.steps[a.step - 1 : a.step]
+    }
+    _attempts_from(p2, st, by_subject, ctx.rel, same_as=same_as)
     _before_reasons(p2, by_subject)
     await _widget_pass(ctx, walk, st, by_subject)
     _before_from_p1_off(ctx, by_subject)

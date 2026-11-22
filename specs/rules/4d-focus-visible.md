@@ -1,7 +1,7 @@
 ---
 tt_test: 4.D
 tt_name: 2.4.7-focus-visible
-spec_version: 1.11.0
+spec_version: 1.12.0
 count: focusable
 guards: unrecorded-code, reveal, reveal-content
 source: DHS Section 508 Conformance Test Process for Web (Trusted Tester) v5.1.3, April 2024
@@ -76,7 +76,7 @@ P1 collects at every stop. P2 collects only at stops (matched by frame chain plu
 
 ## 3. Mechanical checks
 
-Each distinct stop (frame chain plus CSS path; not BODY or OUT), and each widget item from pass W, is an *instance*, evaluated on its first step with complete evidence, P1 before P2. *Complete evidence* is a resolved step, not re-read, with an on image, an off image whose mask covers at most `MASK_MAX_FRACTION` of the region, and focus styles in both states. A pixel is *changed* when it differs between the on and off images by at least `PIXEL_DELTA_VISIBLE`, outside the mask and outside the noise read's changed pixels; *strongly changed* at `PIXEL_DELTA_STRONG`. A *style signal* is any computed-style difference between the two reads on the stop, an ancestor up to its block container, a label or their pseudo-elements, or the stop's box moving between them.
+Each distinct stop (frame chain plus CSS path; not BODY or OUT), and each widget item from pass W, is an *instance*, evaluated on its first step with complete evidence, P1 before P2. A P2 stop whose path P1 did not reach, but whose role, name and place on the page (to 4 CSS px) match a P1 stop, is that P1 stop (1.12.0; #135): P2 runs on a fresh load, and a page that gives an element a new id on each load (round 2's video players) gave its controls other paths there, so each was counted twice, and Shift+Tab left the copies under a sticky header, where they showed nothing (SVS 14592: three M8 FAILs of controls P1 had pictured passing; key Pass). Fixture F31. *Complete evidence* is a resolved step, not re-read, with an on image, an off image whose mask covers at most `MASK_MAX_FRACTION` of the region, and focus styles in both states. A pixel is *changed* when it differs between the on and off images by at least `PIXEL_DELTA_VISIBLE`, outside the mask and outside the noise read's changed pixels; *strongly changed* at `PIXEL_DELTA_STRONG`. A *style signal* is any computed-style difference between the two reads on the stop, an ancestor up to its block container, a label or their pseudo-elements, or the stop's box moving between them.
 
 **3a. Instance rules (first match wins)**
 
