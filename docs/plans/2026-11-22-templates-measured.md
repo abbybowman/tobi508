@@ -71,3 +71,26 @@ out.":
 Fixtures (`test_fixtures_9x.py`): a section menu inside `main`, the same
 order on the other page (PASS) and two items swapped (FAIL; PASS today,
 since it is left out). No round's cell is known to depend on it.
+
+## 19b measured (2026-11-22): 9.C pairing by function
+
+**Method.** 9.C alone (judge off; the controls only) on every page of
+rounds 2 and 3 from the verified freezes, each page with its round's other
+pages. For each pair of pages, the controls 9.C left unpaired in the pages'
+own content (not banner, navigation, search or footer), counted by each
+candidate rule (scratch script, not kept).
+
+| Candidate | Pairs found (rounds 2 and 3) | What they are |
+| --- | --- | --- |
+| Buttons and fields, the same first word, different names | 0 | |
+| Buttons and fields at the same place (same CSS path), different names | 0 | |
+| Links at the same place, different names | 83 | all different functions: topic tags ("Sun" / "Universe", "Heliophysics" / "Astrophysics"), people ("Tom Bridgman" / "Claire Andreoli") on round 2's leaf pages |
+| The same picture | not measured: ANDI's read keeps no image address | |
+
+So no candidate rule moves a cell on these rounds, and pairing links by
+place would send the judge 83 pairs that are all "different function" (and
+risk false FAILs). Round 3 p07 to p10's 9.C cells (the issue's target) are
+not about pairing: on the original freeze p07 to p09 are A3o and p10 is
+DOES NOT APPLY (A3, also on `main`): without #134's added code files
+MySearchStory does not draw its navigation. Gate 2026-11-20-134 ran round 3
+from its copy with those files (A3o there).
