@@ -77,3 +77,13 @@ a scroll box inside a frame, so only they were rerun (`--pages 5340`,
 
 p09's move is partly the judge: its last three answers on near-identical
 evidence were "unsure", "does not preserve", "unsure".
+
+## Later (2026-11-22)
+
+- The RSS and Atom titles: Abby decided they count as equivalent (4.A
+  1.19.0; `../gate-2026-11-22-136d/README.md`: not essential, p03 to NEEDS
+  REVIEW).
+- Round 1 p02's "Last Month" radio: reached by the arrow probe since 4.A
+  1.19.0, no question asked (`../gate-2026-11-22-136d/`).
+- Round 2 p01 4.A: Abby's retest found the key's Pass a slip; recorded in
+  round 2's `adjudications.json`, so the tool's Fail scores as agreeing.

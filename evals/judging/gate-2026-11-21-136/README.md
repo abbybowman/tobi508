@@ -68,3 +68,11 @@ in #136's scope and is left open (reported on #136).
 
 Unchanged wrong FAILs: round 2 p01 4.A (the home page's category icon
 links; Abby retests it) and round 2 p08 4.F (as in 9c).
+
+## Later (2026-11-22)
+
+- Round 2 p01 4.A: Abby's retest found the key's Pass a slip (the category
+  icon links); recorded in round 2's `adjudications.json`, so the tool's
+  Fail now scores as agreeing.
+- Round 2 p03 4.A (the sort button) and p08 4.F: fixed on this branch; see
+  `../gate-2026-11-22-136b/README.md` and `../gate-2026-11-22-136d/README.md`.

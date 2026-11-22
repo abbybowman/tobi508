@@ -42,3 +42,11 @@ focus never rests on it and the probe cannot count it. A keyboard user can
 choose them (the arrow selects and applies the filter). Counting that needs
 the probe to record which radio an arrow press checked before the page
 leaves; not built (asked on #136).
+
+## Later (2026-11-22)
+
+Abby chose option 1 (4.A 1.20.0): one ArrowDown and one ArrowUp from the
+group's stop, each recording the radio it selects as the page leaves; when
+both land on another radio of the group, the whole group is reached. On the
+search page the five date radios are no longer asked
+(`../gate-2026-11-22-136e/README.md`).
