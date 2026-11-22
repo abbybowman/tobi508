@@ -9,7 +9,6 @@ compares the images; only evaluate() and the row tables decide outcomes.
 
 from __future__ import annotations
 
-import io
 import time
 from pathlib import Path
 from typing import Any
@@ -31,7 +30,7 @@ from tobi508.models import (
     Step,
     TestId,
 )
-from tobi508.traverse import Traversal, screenshot
+from tobi508.traverse import Traversal, clip_scrolled, screenshot
 from tobi508.walk import KeyboardWalk, walk_coverage
 
 # Spec constants (section 2). They decide outcomes, so they are not settings.
@@ -56,15 +55,15 @@ WIDGET_MAX = 10
 ANCESTOR_MAX_FACTOR = 4  # an ancestor joins the region only if this small
 ANCESTOR_MAX_AREA = 40_000
 NOISE_WAIT_MS = 150  # second "on" read: what changes while focus stays is noise
-# Step 27 (#135), evidence only: a picture of the viewport after each step, so
-# each stop also gets a "before" picture of its clip, from the step before
-# the key press that focused it. No row reads it yet. A switch so the cost
-# can be measured with and without it.
+# Step 27 (#135), evidence only: each P1 stop also gets a "before" picture of
+# its clip, taken by pass P2 (Shift+Tab) when focus has moved back to the stop
+# before it: the region as it looked before P1's key press focused the stop.
+# No row reads it yet. Measured (2026-11-22, four frozen pages): about +3% on
+# a run, where a viewport picture at every P1 step cost about +40%.
 BEFORE_PICTURE = True
-# How the before picture is taken (timing, step 27): "viewport", a picture of
-# the viewport after every step; "p2", a clip of the stop's region taken by
-# pass P2 (Shift+Tab) when focus has moved back to the stop before it.
-BEFORE_MODE = "p2"
+# When the region is off screen at that moment, scroll it into view for the
+# clip and back (traverse.clip_scrolled). A switch, to measure it.
+BEFORE_SCROLL = True
 HOOK = "focus4d"
 
 # Runs in the isolated world on the focused element (`this`). With itemId, on
@@ -199,30 +198,30 @@ class FocusHook:
         self.skip = skip
         self.item_mode = item_mode
         self.prev: dict[str, Any] | None = None
-        # P2 only (BEFORE_MODE "p2"): P1's stops by subject, (P1 step, clip in
-        # page coordinates); `pending` is the stop P2 was just on.
+        # P2 only: P1's stops by subject, (P1 step, clip in page
+        # coordinates); `pending` is the stop P2 was just on.
         self.before_for = before_for or {}
         self.pending: tuple[int, list[float]] | None = None
-        # The viewport as it was after the last step (or at the start): PNG
-        # bytes and [scrollX, scrollY, innerWidth, innerHeight, dpr].
-        self.view_prev: tuple[bytes, list[float]] | None = None
-        self._view_now: list[float] | None = None
-        self.view_ms = 0.0  # time spent on viewport pictures (cost, step 27)
+        self.before_ms = 0.0  # time spent on before pictures (cost, step 27)
 
-    async def _p2_before(self, t: Traversal, step: Step) -> None:
+    async def _p2_before(self, t: Traversal, step: Step) -> dict[str, Any] | None:
         """P2 has moved from a stop to the one before it: the stop's region
-        now looks as it did before P1's key press focused it."""
+        now looks as it did before P1's key press focused it. Returns what
+        happened, for the evidence (which P1 step, taken or why not)."""
         t0 = time.monotonic()
+        got = None
         if self.pending is not None and t.shots_dir is not None:
             n, cp = self.pending
+            got = {"n": n}
             v = await self._view(t)
             clip = [cp[0] - v[0], cp[1] - v[1], cp[2], cp[3]]
+            d = t.shots_dir / "4d"
+            d.mkdir(parents=True, exist_ok=True)
+            path = str(d / f"P1-{n:04d}-before.png")
             if _inside(clip, v[2], v[3]):
-                d = t.shots_dir / "4d"
-                d.mkdir(parents=True, exist_ok=True)
                 await screenshot(
                     t.page,
-                    path=str(d / f"P1-{n:04d}-before.png"),
+                    path=path,
                     clip={
                         "x": clip[0],
                         "y": clip[1],
@@ -232,46 +231,23 @@ class FocusHook:
                     animations="disabled",
                     caret="hide",
                 )
+                got["taken"] = "in view"
+            elif BEFORE_SCROLL:
+                r = await clip_scrolled(t.page, cp, path)
+                got["taken"] = "scrolled into view" if r["taken"] else None
+                got["restored"] = r["restored"]
+                if not r["taken"]:
+                    got["why"] = "off screen, and scrolling did not bring it into view"
+            else:
+                got["why"] = (
+                    "off screen when the backward pass was at the stop before it"
+                )
         self.pending = self.before_for.get(step.stop.path_key)
-        self.view_ms += (time.monotonic() - t0) * 1000
-
-    async def _keep_view(self, t: Traversal) -> None:
-        if not BEFORE_PICTURE or BEFORE_MODE != "viewport" or t.shots_dir is None:
-            return
-        t0 = time.monotonic()
-        view = self._view_now or await self._view(t)
-        try:
-            png = await screenshot(t.page, animations="disabled", caret="hide")
-            self.view_prev = (png, view)
-        except Exception:
-            self.view_prev = None
-        self._view_now = None
-        self.view_ms += (time.monotonic() - t0) * 1000
-
-    async def on_start(self, t: Traversal) -> None:
-        await self._keep_view(t)
-
-    def _before(self, t: Traversal, step_n: int, out: dict[str, Any]) -> None:
-        """Cut the stop's clip from the picture taken before the key press
-        that focused it (evidence only, step 27)."""
-        if self.view_prev is None:
-            out["no_before"] = "no picture of the page before this key press"
-            return
-        png, v = self.view_prev
-        cp = out["clip_page"]
-        rect = [cp[0] - v[0], cp[1] - v[1], cp[2], cp[3]]
-        if not _inside(rect, v[2], v[3]):
-            out["no_before"] = "it was not on screen before focus reached it"
-            return
-        path = self._shot_path(t, step_n, "before")
-        if path is None:
-            return
-        dpr = v[4] or 1
-        img = Image.open(io.BytesIO(png))
-        box = [round(rect[0] * dpr), round(rect[1] * dpr)]
-        box += [box[0] + round(rect[2] * dpr), box[1] + round(rect[3] * dpr)]
-        img.crop(box).save(path)
-        out["before"] = self._rel(t, path)
+        ms = (time.monotonic() - t0) * 1000
+        self.before_ms += ms
+        if got is not None:
+            got["ms"] = round(ms, 1)
+        return got
 
     async def _view(self, t: Traversal) -> list[float]:
         v = await t.reader.evaluate_top(
@@ -290,22 +266,14 @@ class FocusHook:
         return path.resolve().relative_to(t.rel_base.resolve()).as_posix()
 
     async def on_step(self, t: Traversal, step: Step) -> Any:
-        spent0 = self.view_ms
-        if BEFORE_PICTURE and BEFORE_MODE == "p2" and self.before_for:
-            await self._p2_before(t, step)
+        got = None
+        if BEFORE_PICTURE and self.before_for:
+            got = await self._p2_before(t, step)
         out = await self._on_step(t, step)
-        if (
-            BEFORE_PICTURE
-            and BEFORE_MODE == "viewport"
-            and isinstance(out, dict)
-            and out.get("on")
-            and "clip_page" in out
-            and t.shots_dir is not None
-        ):
-            self._before(t, step.n, out)
-        await self._keep_view(t)
-        if isinstance(out, dict) and BEFORE_PICTURE:
-            out["view_ms"] = round(self.view_ms - spent0, 1)  # cost (step 27)
+        if got is not None:  # recorded on this P2 step (evidence, step 27)
+            if out is None:
+                out = {"subject": step.stop.path_key, "skipped": True}
+            out["before_of"] = got
         return out
 
     async def _on_step(self, t: Traversal, step: Step) -> Any:
@@ -313,7 +281,6 @@ class FocusHook:
         if self.prev is None and not self.item_mode and st.path_key in self.skip:
             return {"subject": st.path_key, "skipped": True}  # covered in P1
         view = await self._view(t)
-        self._view_now = view
         snap = None
         if st.kind == "element" and st.bounding_box is not None:
             snap = await t.reader.call(st, SNAP_FN, [self.item_mode, None])
@@ -520,7 +487,7 @@ def focus_hook(pass_name: str, prior: PassResult | None) -> FocusHook:
             if e.get("off_ok") and not e.get("incomplete"):
                 skip.add(e["subject"])
     before_for = {}
-    if prior is not None and BEFORE_PICTURE and BEFORE_MODE == "p2":
+    if prior is not None and BEFORE_PICTURE:
         for s in prior.steps:
             e = s.extras.get(HOOK) or {}
             if e.get("on") and e.get("clip_page") and " >> #" not in e["subject"]:
@@ -855,8 +822,7 @@ def _attempts_from(
             ),
         )
         if (
-            BEFORE_MODE == "p2"
-            and p.name == "P1"
+            p.name == "P1"
             and e.get("on")
             and not e.get("before")
             and (rel / e["on"].replace("-on.png", "-before.png")).exists()
@@ -885,6 +851,31 @@ def _attempts_from(
                     f"images could not be compared ({type(exc).__name__})"
                 )
         inst.attempts.append(a)
+
+
+def _before_reasons(p2: PassResult, by_subject: dict[str, Inst4D]) -> None:
+    """Why a P1 stop has no before picture, from P2's record of each one it
+    tried (step 27, evidence only; no row reads it)."""
+    tried = {}
+    for step in p2.steps:
+        b = (step.extras.get(HOOK) or {}).get("before_of")
+        if b:
+            tried[b["n"]] = b
+    for inst in by_subject.values():
+        for a in inst.attempts:
+            if a.pass_name != "P1" or not a.extras.get("on"):
+                continue
+            b = tried.get(a.step)
+            if b and b.get("taken"):
+                a.extras["before_taken"] = b["taken"]
+                if "restored" in b:
+                    a.extras["before_scroll_restored"] = b["restored"]
+            elif not a.extras.get("before"):
+                a.extras["no_before"] = (
+                    b.get("why")
+                    if b
+                    else "the backward pass did not move past it"
+                )
 
 
 async def _widget_pass(
@@ -1023,6 +1014,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
     by_subject: dict[str, Inst4D] = {}
     _attempts_from(p1, st, by_subject, ctx.rel)
     _attempts_from(p2, st, by_subject, ctx.rel)
+    _before_reasons(p2, by_subject)
     await _widget_pass(ctx, walk, st, by_subject)
     st.instances = list(by_subject.values())
     return st
