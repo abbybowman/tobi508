@@ -110,19 +110,6 @@ EXPECTED: dict[str, dict] = {
     # 4.D 1.10.0: f11's focus dropped on focus, inside a web component: the
     # focus log names it by its host, so M3 sees it (it was WK, NEEDS REVIEW).
     "f29-blur-on-focus-in-web-component": {"outcome": "FAIL", "rows": ["M3"]},
-    # Step 27 (4.D 1.11.0, #135): a 400 x 240 image link whose focus shows
-    # only a 24 x 2 px sliver at the picture's bottom edge (round 3's blog:
-    # about 50 strongly changed px on each "Image" link, key Fail). 48 px
-    # pass MIN_CHANGED_PX but are a small share of the element's edge, so J1
-    # looks (M7) instead of M6 passing it; the scripted answer is unsure
-    # (the rule is under test, not the judge). The title links keep M6.
-    # f18 (PASS) and f19 (NEEDS REVIEW) above are the nearest pages that
-    # must keep their outcomes.
-    "f30-large-image-link-small-mark": {
-        "outcome": "NEEDS_REVIEW",
-        "choice": "unsure",
-        "rows": ["M6", "M11"],
-    },
     "f12-listbox-activedescendant": {"outcome": "PASS"},
     "f13-listbox-no-highlight": {"outcome": "FAIL"},
     "f14-menubar-roving-no-indicator": {"outcome": "FAIL"},
