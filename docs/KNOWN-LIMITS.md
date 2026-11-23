@@ -222,7 +222,11 @@ re-testing): confirm and remove, or remove the mark.
   neighbours share (a card that underlines its title for both its links),
   so either goes to the judge, never straight to FAIL. A stop with no
   before picture (past 5 replays a page, or out of time) goes to the judge
-  too. A
+  too; so do the items of a menu that closes when focus leaves it, and its
+  last item's off picture shows the page under the menu, so the judge is
+  often unsure there (NEEDS REVIEW). Where the page moves between 4.D's
+  measure and its pictures, the judge's marked box sits off the element
+  (round 2's SVS 14592) and it answers unsure. A
   link whose only sign of focus is that its box moved is NEEDS REVIEW
   unless it is shown only on focus (F-02, 4.D 1.8.0); if more than 1 in
   5 of a round's 4.D stops end there, Abby's option B: take the two
