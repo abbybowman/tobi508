@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F32 Tabs</title>
+<style>
+  body { font-family: sans-serif; background: #fff; margin: 24px; }
+  /* The tab list scrolls sideways and clips what is drawn outside it. */
+  .tabs { display: flex; gap: 8px; height: 40px; padding: 2px; overflow: auto hidden; background: #eee; width: 360px; }
+  .tabs button { flex: none; width: 356px; height: 36px; padding: 0 12px; border: 0; background: transparent; outline: none;
+    pointer-events: none; /* the tab list answers at the tab's centre, as round 2's did */ }
+  .tabs button:focus { outline: 3px solid #1b4f9c; outline-offset: 6px; }
+  a:focus { outline: 2px solid #1b4f9c; }
+</style></head><body>
+<h1>Overview</h1>
+<div class="tabs" role="tablist">
+  <button role="tab" aria-selected="true">Overview</button>
+</div>
+<p><a href="#more">More</a></p>
+</body></html>

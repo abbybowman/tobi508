@@ -77,13 +77,15 @@ re-testing): confirm and remove, or remove the mark.
   page (round 2: 5.A and 5.B; step 37, [#137](https://github.com/abbybowman/tobi508/issues/137)).
 - **Content that opens.** Menus, tabs, accordions and filters are opened
   on a fresh load (`reveal.py`; guards RV and RC), and 4.C and 4.E walk
-  what opened (`opened.py`, step 6g). Not opened: a form behind a button
+  what opened (`opened.py`, step 6g), and 4.D pictures it (4.D 1.13.0,
+  step 15; a menu that closes when focus leaves it gives no before
+  picture, so its items go to the judge). Not opened: a form behind a button
   with no ARIA marker (H-08; its hidden fields keep 5.A to 5.H at NEEDS
   REVIEW through guard CN, and so does an editable text area). 4.A and
   4.C to 4.F do not see the controls inside such a form, so on a page
   whose only form opens from a plain button they can PASS (read, not
-  run). 4.D, 5.D and 4.A do not walk or scan opened content yet
-  (step 15; 4.D and 5.D in [#135](https://github.com/abbybowman/tobi508/issues/135)).
+  run). 5.D and 4.A do not walk or scan opened content yet
+  (step 15, [#135](https://github.com/abbybowman/tobi508/issues/135)).
 - **Guard CN matches hidden fields by their place in the page:** a page
   that rebuilds its elements when a section opens can make a field that
   was read look unread, so a test is NEEDS REVIEW when it need not be.
@@ -220,7 +222,11 @@ re-testing): confirm and remove, or remove the mark.
   neighbours share (a card that underlines its title for both its links),
   so either goes to the judge, never straight to FAIL. A stop with no
   before picture (past 5 replays a page, or out of time) goes to the judge
-  too. A
+  too; so do the items of a menu that closes when focus leaves it, and its
+  last item's off picture shows the page under the menu, so the judge is
+  often unsure there (NEEDS REVIEW). Where the page moves between 4.D's
+  measure and its pictures, the judge's marked box sits off the element
+  (round 2's SVS 14592) and it answers unsure. A
   link whose only sign of focus is that its box moved is NEEDS REVIEW
   unless it is shown only on focus (F-02, 4.D 1.8.0); if more than 1 in
   5 of a round's 4.D stops end there, Abby's option B: take the two

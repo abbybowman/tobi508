@@ -1,0 +1,404 @@
+{
+ "4.D-act-dd9628d8": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "A dark navy square marker appears just left of the focused WCAG link and another just right"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "Image B shows square markers touching the link on both sides that are absent in A for this link; D shows the same pattern for the previous link (marker before and after the focused item), so the marker belongs to the focused element."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M9",
+   "d3:M6",
+   "G4"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f06-slideshow-behind-links": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "no",
+     "reasons": "The whole area changes colour (slideshow background), not a focus change on the link"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d1-J1",
+    "rationale": "Background is green in A and orange in both B and D, so it is the slideshow animating; only text edge pixels change on Slide one."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M10",
+   "d2:M8",
+   "G2"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f09-faint-outline": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light-grey ring around Apply"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d1-J1",
+    "rationale": "B shows Apply with just the magenta mark; D shows nothing around Apply; A very faint near-white ring (about 244 grey on white) around the link is the only change; too faint to tell."
+   },
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light-grey ring around Renew"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "B shows Renew with just the magenta mark; D shows nothing around Renew; A very faint near-white ring (about 244 grey on white) around the link is the only change; too faint to tell."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M11",
+   "d2:M11",
+   "G3"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f14-menubar-roving-no-indicator": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "no",
+     "reasons": "No change on Home; the outline in A is on the next link (After)"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "B shows only the magenta box around Home; the dark rounded outline in A is around After (next element) and D's outline is on Before."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M10",
+   "d3:M6",
+   "d4:M8",
+   "d5:M8",
+   "d6:M8",
+   "G2"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f16-faint-color-and-counter": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Link text colour shifts a tiny bit darker; too faint to tell"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d1-J1",
+    "rationale": "Pixel colour on the Schedule text changes from (0,51,102) to (0,64,111), which a person would not notice; the other change is a changing 'Updated s ago' timer elsewhere."
+   },
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Link text colour shifts a tiny bit darker; too faint to tell"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "Contact text changes from (0,51,102) to (0,64,111) only, barely different; nothing else changes."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M11",
+   "d2:M11",
+   "G3"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f19-small-icon-faint-ring": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light ring around the Earth circle"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d1-J1",
+    "rationale": "Image B shows the blue circle E with only the magenta mark; A very faint near-white ring (about 244 grey on white) around the link is the only change; too faint to tell."
+   },
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light ring around the Sun circle"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "Image B shows circle S under the magenta mark; A very faint near-white ring (about 244 grey on white) around the link is the only change; too faint to tell."
+   },
+   {
+    "choice": {
+     "choice": "unsure",
+     "reasons": "Only a very faint light ring around the Moon circle"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d3-J1",
+    "rationale": "Image B shows circle M under the magenta mark; A very faint near-white ring (about 244 grey on white) around the link is the only change; too faint to tell."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M11",
+   "d2:M11",
+   "d3:M11",
+   "G3"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f20-script-moves-focus-off-one-link": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Dark rounded outline around Link number 7"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d7-J1",
+    "rationale": "B shows a clear black outline around Link 7 that A lacks (A shows it on Link 6, the next in reverse order)."
+   },
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Dark rounded outline around Link number 6"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d8-J1",
+    "rationale": "B shows a clear black outline around Link 6 that A lacks (A shows it on Link 5)."
+   },
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Dark rounded outline around Link number 5"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d9-J1",
+    "rationale": "B shows a clear black outline around Link 5 that A lacks (A shows it on Link 4)."
+   },
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Dark rounded outline around Link number 4"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d10-J1",
+    "rationale": "B shows a clear black outline around Link 4 that A lacks (A shows it on Link 1)."
+   }
+  ],
+  "expected": "NEEDS_REVIEW",
+  "got": "NEEDS_REVIEW",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M6",
+   "d3:M6",
+   "d4:M6",
+   "d5:M6",
+   "d6:M6",
+   "d7:M9",
+   "d8:M9",
+   "d9:M9",
+   "d10:M9",
+   "WK",
+   "G3"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f27-no-focus-indicator-in-web-component": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "no",
+     "reasons": "No change on Benefits; the outline in A is on the next link (After)"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "B shows only the magenta box around Benefits; the dark outline in A is around After and D's is around Before."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M10",
+   "d3:M6",
+   "G2"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f30-next-outline-over-image-link": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "no",
+     "reasons": "No change on the image link; the dashed outline in A belongs to the next element"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-d2-J1",
+    "rationale": "B shows only the tool's magenta box over the blue block; the dashed outline in A and C is the next element's; D shows First post outlined (previous)."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M10",
+   "d3:M6",
+   "d4:M6",
+   "G2"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f34-menu-closes-when-focus-leaves": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Thick dark blue outline around the Earth link"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-o1-J1",
+    "rationale": "B shows a clear blue box around Earth that A lacks (A shows it on Sun, the next item)."
+   },
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Thick dark blue outline around the Sun link"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-o2-J1",
+    "rationale": "B shows a clear blue box around Sun absent in A (A has it on Moon)."
+   },
+   {
+    "choice": {
+     "choice": "yes",
+     "reasons": "Thick dark blue outline around the Moon link"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-o3-J1",
+    "rationale": "B shows a clear blue box around Moon; A shows the menu blank because it closed, which explains the large diff, but the outline is plainly on Moon."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M6",
+   "d3:M6",
+   "o1:M9",
+   "o2:M9",
+   "o3:M9",
+   "G4"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ },
+ "4.D-f35-menu-items-show-no-focus": {
+  "answers": [
+   {
+    "choice": {
+     "choice": "no",
+     "reasons": "No change on Moon; the only difference is the next link's (Contact) outline"
+    },
+    "j1": null,
+    "j2": null,
+    "q": "4.D-o3-J1",
+    "rationale": "B and D look the same around Moon; C only marks the ring that A shows around Contact, which is the next element's."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "match": true,
+  "rejected": [],
+  "rows": [
+   "A3",
+   "d1:M6",
+   "d2:M6",
+   "d3:M6",
+   "o1:M8",
+   "o2:M8",
+   "o3:M10",
+   "G2"
+  ],
+  "still_open": [],
+  "tt": "4.D"
+ }
+}

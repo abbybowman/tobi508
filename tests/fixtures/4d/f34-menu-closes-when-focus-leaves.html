@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F34 Topics</title>
+<style>
+  body { font-family: sans-serif; margin: 24px; }
+  a, button { outline: none; }
+  a:focus, button:focus { outline: 2px solid #1b4f9c; outline-offset: 2px; }
+  .menu { position: relative; display: inline-block; }
+  #panel { position: absolute; top: 28px; left: 0; list-style: none; padding: 8px; margin: 0; background: #f2f2f2; width: 200px; }
+  #panel li { margin: 6px 0; }
+</style></head><body>
+<nav aria-label="Main">
+<a href="#home">Home</a>
+<div class="menu" id="menu">
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<ul id="panel" hidden><li><a href="#earth">Earth</a></li><li><a href="#sun">Sun</a></li><li><a href="#moon">Moon</a></li></ul>
+</div>
+<a href="#contact" style="margin-left: 230px">Contact</a>
+</nav>
+<script>
+const b = document.getElementById("b"), panel = document.getElementById("panel"), menu = document.getElementById("menu");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+// The menu closes when focus leaves it.
+menu.addEventListener("focusout", (ev) => {
+  if (!menu.contains(ev.relatedTarget)) { panel.hidden = true; b.setAttribute("aria-expanded", "false"); }
+});
+</script></body></html>

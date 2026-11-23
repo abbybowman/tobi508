@@ -230,3 +230,45 @@ both stops and look for two coordinate origins.
 (signals only) and diff the signal lists; a signal that comes and goes on
 a replay is a measurement, not the page. Compare the two walks by path
 key before believing S4.
+
+## A focus picture can hold the neighbour's ring (4.D 1.11.0 to 1.13.0, #135)
+
+**What happened.** Round 3's blog failed by key ("no visual indication")
+on each post's "Image" link, and 4.D passed it on about 50 changed
+pixels. The issue read it as "a faint mark on a large element", and a
+threshold on changed pixels per px of the element's edge was built,
+measured on all three rounds and reverted: it moved the alt-text links
+the key passes, not the "Image" links. The pictures showed the cause in
+minutes: the off picture is taken after focus moved on, and the next
+link's ring, drawn round the whole picture and so outside its own box,
+sat inside the "Image" link's region. **Look at the on, off and diff
+pictures of the cell before designing a rule.**
+
+**What we do now.**
+- A pixel counts toward M6 only when it changed both ways: on against
+  off, and on against a *before* picture from just before focus arrived.
+  Less goes to J1, never to FAIL: a card that marks both its links (round
+  1's Missions page, key Pass) gives the same three pictures as the blog.
+- The before picture is cheap from P2: when Shift+Tab lands on the stop
+  before, the stop's region looks as it did before P1 focused it (+3% on
+  a run; a viewport picture at every P1 step cost +40%). Off screen at
+  that moment: scroll it into view and back (`traverse.clip_scrolled`,
+  mutation log paused). The first stop's comes from the page as loaded
+  (P2 reaches it last, as focus leaves the page, and Chrome can still
+  paint its ring). Widget items: step back with the opposite arrow. Opened
+  content: Shift+Tab back after the walk (a menu that closes when focus
+  leaves gives none). The rest: a replay, at most 5 and 60 s a page.
+- P2 runs on a fresh load, and a page can give an element a new id on
+  each load (round 2's video players): match P2's stops to P1's by role,
+  name and place on the page (4 px), or the same control is counted
+  twice and Shift+Tab leaves the copy under a sticky header (SVS 14592's
+  false FAIL).
+- `elementFromPoint` answering with one of the element's own ancestors
+  means its container clips it (a tab in a scrolling tab list, SVS 5340),
+  not that something covers it: M4, not M8.
+- J1 needs the element marked on image B (magenta, on a copy). The
+  question named "the outlined element" while the code sent the unmarked
+  picture; marking it fixed two judge eval misses (runs 42 and 43).
+
+**How we know.** Fixtures F30 to F35; gates 2026-11-22-135, -135b and
+2026-11-23-135c; judge eval runs 42 and 43.

@@ -10,7 +10,7 @@ here.
 
 | File | What it covers |
 | --- | --- |
-| [focus-and-walk.md](focus-and-walk.md) | Reading focus through CDP; identifying stops across loads; where a stop is while the page scrolls (4.F 1.11.0); a fresh browser context per probe; unique paths and top-level positions; shadow roots; listeners from the page's own world; exit checks on small pages; animation against focus indicators; widget items; native radio groups and a page that leaves on change (4.A 1.20.0); a scroll box inside a frame (4.F 1.15.1) |
+| [focus-and-walk.md](focus-and-walk.md) | Reading focus through CDP; identifying stops across loads; where a stop is while the page scrolls (4.F 1.11.0); a fresh browser context per probe; unique paths and top-level positions; shadow roots; listeners from the page's own world; exit checks on small pages; animation against focus indicators; widget items; native radio groups and a page that leaves on change (4.A 1.20.0); a scroll box inside a frame (4.F 1.15.1); a focus picture can hold the neighbour's ring, and the before picture (4.D 1.11.0 to 1.13.0) |
 | [time-budget.md](time-budget.md) | Measure with `evals/time_budget.py`; where a run's time goes; replay with `ctx.replay`; the tool's own screenshots are DOM changes |
 | [recordings-miss-lazy-scripts.md](recordings-miss-lazy-scripts.md) | A recording can lack code the page loads when used: the chunk store and guard GU |
 | [andi-output.md](andi-output.md) | Reading ANDI's per-element output; what its wrapper changes; ANDI and scanners run on their own load |

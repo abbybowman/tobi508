@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F35 Topics</title>
+<style>
+  body { font-family: sans-serif; margin: 24px; }
+  a, button { outline: none; }
+  nav > a:focus, button:focus { outline: 2px solid #1b4f9c; outline-offset: 2px; }
+  #panel { list-style: none; padding: 8px; margin: 4px 0; background: #f2f2f2; width: 200px; }
+  #panel li { margin: 6px 0; }
+  #panel a { color: #222; text-decoration: none; }
+</style></head><body>
+<nav aria-label="Main">
+<a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Topics</button>
+<ul id="panel" hidden><li><a href="#earth">Earth</a></li><li><a href="#sun">Sun</a></li><li><a href="#moon">Moon</a></li></ul>
+<a href="#contact">Contact</a>
+</nav>
+<script>
+const b = document.getElementById("b"), panel = document.getElementById("panel");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+</script></body></html>
