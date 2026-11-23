@@ -3,8 +3,10 @@
  "rounds": {
   "3": {
    "tally": {
-    "agree": 11,
-    "needs_review": 3
+    "agree": 14,
+    "needs_review": 4,
+    "false_pass": 1,
+    "false_fail": 1
    },
    "moved": [
     {
@@ -256,6 +258,74 @@
       "r18:M4",
       "r19:M4",
       "G5"
+     ]
+    },
+    {
+     "page": "p08",
+     "test": "4.F",
+     "key": "Fail",
+     "comment": "The focus order for the tag word cloud seems random and I'm not able to navigate in a logical way to the tag I want to select.",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "false_pass",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4]",
+      "r1:M4",
+      "G5"
+     ]
+    },
+    {
+     "page": "p09",
+     "test": "4.A",
+     "key": "Fail",
+     "comment": "Could not reach or select the \"Search Stories\" link in top nav.",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G3"
+     ],
+     "new": "Fail",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "k1:M2",
+      "k2:M7",
+      "x1:M8",
+      "x2:M8",
+      "x3:M8",
+      "x4:M10",
+      "x5:M10",
+      "x6:M10",
+      "x7:M10",
+      "x8:M10",
+      "G2"
+     ]
+    },
+    {
+     "page": "p09",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "G3"
+     ],
+     "new": "Fail",
+     "new_verdict": "false_fail",
+     "new_rows": [
+      "A4",
+      "o1:M4",
+      "r1:M6[S6]",
+      "G2"
      ]
     }
    ],

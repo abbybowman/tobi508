@@ -50,8 +50,9 @@ SCROLL_MAX = 8  # scroll checks (fix 24); each is one fresh load and one click
 SCROLL_WAIT_MS = 700  # a smooth scroll finishes in about half a second
 EXECUTE_MAX = 12  # every executed control (1.16.0: was 10)
 # Opened content (1.21.0): stops inside it hovered, at most this many a page
-# (round 3's FITS samples page: 189 in its 19 sections).
-HOVER_OPENED_MAX = 200
+# (round 3's FITS samples page: 213, 189 in its 19 sections and 24 in its
+# header menus; 116 s for 4.A at 200).
+HOVER_OPENED_MAX = 250
 ARROW_MAX = 5
 ARROW_PRESSES = 20
 # 1.20.0 (#136): how long the radio probe waits after its one arrow press for

@@ -6,7 +6,7 @@ Agent-assisted results, not certified Trusted Tester results.
 
 Loaded live: none (every page from the freeze)
 
-Now: agree 11, needs_review 3
+Now: agree 14, false_fail 1, false_pass 1, needs_review 4
 
 | Page | Test | Key | Key's comment | Gate 9c (verdict, rows) | Now (verdict, rows) |
 | --- | --- | --- | --- | --- | --- |
@@ -19,4 +19,7 @@ Now: agree 11, needs_review 3
 | p04 | 4.F | Pass | A little odd for the search filters (first column) to come after the search results (second column) but the meaning and operability is preserved. | Fail (false_fail; A4 G2) | Pass (agree; r1:M4 r2:M4 r3:M4 r4:M4 r5:M4 G5) |
 | p05 | 4.A | Pass |  | None (needs_review; A3 G3) | Pass (agree; t34:M11 t35:M11 t36:M11 t37:M11 t38:M13 G4) |
 | p06 | 4.F | Pass |  | None (needs_review; A4 G3) | Pass (agree; r15:M4 r16:M4 r17:M4 r18:M4 r19:M4 G5) |
+| p08 | 4.F | Fail | The focus order for the tag word cloud seems random and I'm not able to navigate in a logical way to the tag I want to select. | None (needs_review; A4 G3) | Pass (false_pass; A4 o1:M7[S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S3,S4] r1:M4 G5) |
+| p09 | 4.A | Fail | Could not reach or select the "Search Stories" link in top nav. | None (needs_review; A3 G3) | Fail (agree; x4:M10 x5:M10 x6:M10 x7:M10 x8:M10 G2) |
+| p09 | 4.F | Pass |  | None (needs_review; A4 G3) | Fail (false_fail; A4 o1:M4 r1:M6[S6] G2) |
 
