@@ -37,7 +37,11 @@ See `moved.md` (from `compare.py`) for every cell with its rows.
   Space do nothing. Against the key: p09 4.F FAIL (S6, F85; Abby's option
   a) and **p08 4.F PASS (false)**: the judge called the tag cloud
   "independent links"; not from opened content; a known wrong outcome,
-  accepted for now (Abby, 2026-11-23).
+  accepted for now (Abby, 2026-11-23). Checked on `main` (b04697f, with
+  #159; 4.F 1.15.1 and its pass R) from the same round 3 copy: 4.F p08
+  PASS, the judge again "Tag cloud links are independent": already on
+  `main`; gate 9c's NEEDS REVIEW came from guard GU on the freeze that
+  lacked the page's code.
 - **Round 1:** 4.F p01 and 4.A p08, p09 PASS (key Pass). p04 4.F PASS to
   NEEDS REVIEW (the Careers tabs, now opened): fixed by the tab-list
   exception and rerun alone: PASS. p06 4.F PASS to NEEDS REVIEW: the
