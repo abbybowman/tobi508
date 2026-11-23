@@ -1989,11 +1989,10 @@ _TAG_ROLE = {
 
 
 def _label(t: dict[str, Any]) -> str:
-    name = (t.get("name") or "").strip() or (
-        "" if t.get("text") else t.get("css_path") or "an element"
-    )
-    role = (t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")).strip()
-    return reveal.named(name, t.get("text"), role)
+    role = t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")
+    # Visible text first, what a screen reader hears when it differs
+    # (#135); "an unnamed button" when it has neither (#159).
+    return reveal.named(t.get("name"), t.get("text"), role)
 
 
 def _keys_text(keys: list[str], opened: dict[str, Any] | None = None) -> str:
@@ -2134,6 +2133,8 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
         if row.outcome is not Outcome.PASS or row.id in ("M3", "M3s", "M5"):
             instances.append(
                 Instance(
+                    outcome=row.outcome,
+                    plain=text or "",
                     selector=inst.target.get("css_path"),
                     frame_path=inst.target.get("frame_chain") or [],
                     description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.kind}: {_label(inst.target)}",

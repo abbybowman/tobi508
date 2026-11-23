@@ -18,7 +18,7 @@ from PIL import Image, ImageChops, ImageDraw
 from pydantic import BaseModel, Field
 
 from tobi508.checks import t4e
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.models import (
     REVIEW_HEAD,
@@ -1687,12 +1687,7 @@ def _change_words(e: dict[str, Any]) -> str:
 
 
 def _label(info: dict[str, Any]) -> str:
-    name = (info.get("name") or "").strip() or info.get("css_path") or "an element"
-    name = name if len(name) <= 60 else name[:57] + "..."
-    role = (info.get("role") or "").strip()
-    return f'"{name}"' + (
-        f" ({role})" if role and role not in ("generic", "none") else ""
-    )
+    return element_name(info.get("name"), info.get("role"))
 
 
 def _keys_text(keys: list[str]) -> str:
@@ -1719,7 +1714,7 @@ def _sentence(inst: Inst4D, rid: str) -> str:
     a = _best(inst)
     e = a.extras if a else {}
     j = inst.j1 or {}
-    return {
+    text = {
         "M1": f"Focus moved around {el} in a way we could not read reliably. Please check it by hand: load the page and press {keys}.",
         "M2": f"Focus landed on the frame {el} itself, which may show no focus indicator; we checked the items inside it separately.",
         "M3": f"{el} drops keyboard focus as soon as it gets it, so keyboard users never see focus there. To see it, load the page and press {keys}.",
@@ -1731,6 +1726,7 @@ def _sentence(inst: Inst4D, rid: str) -> str:
         "M10": f"{el} changes a little when it gets focus ({j.get('reasons', '')}), but we judged that it doesn't show where focus is. To see it, load the page and press {keys}. If you disagree, tell your assistant.",
         "M11": f"{el} changes slightly when it gets focus, but we could not decide whether that shows where focus is. Please look: load the page and press {keys}.",
     }[rid]
+    return text[:1].upper() + text[1:]  # "an unnamed button" can start it
 
 
 def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
@@ -1760,6 +1756,8 @@ def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
         a = _best(inst)
         instances.append(
             Instance(
+                outcome=row.outcome,
+                plain=sentences[-1][1],
                 selector=inst.label.get("css_path"),
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {_label(inst.label)}"
                 + (

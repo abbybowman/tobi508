@@ -700,7 +700,7 @@ def named(name: str | None, text: str | None, role: str | None) -> str:
     which a person looks for on the page, with what a screen reader hears
     when that differs (round 3's "All" button: an icon's alt "All" beside
     the word, heard as "All All"); by its accessible name when it shows no
-    text."""
+    text; "an unnamed button" when it has neither."""
     name = re.sub(r"\s+", " ", (name or "")).strip()
     text = re.sub(r"\s+", " ", (text or "")).strip()
     role = (role or "").strip()
@@ -708,5 +708,8 @@ def named(name: str | None, text: str | None, role: str | None) -> str:
     if text and name and text.lower() != name.lower():
         heard = f'a screen reader hears "{_cut(name)}"'
         return f'"{_cut(text)}" (' + (f"{role}; " if role else "") + heard + ")"
+    if not text and not name:
+        # As checks.base.element_name (#159): a path means nothing to a person.
+        return f"an unnamed {role or 'element'}"
     label = f'"{_cut(text or name)}"'
     return label + (f" ({role})" if role else "")

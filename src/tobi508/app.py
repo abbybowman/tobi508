@@ -60,7 +60,9 @@ TOOL SELECTION GUIDE:
 - Explain what a TT test checks, or a run's results in full (whole
   summaries, why each was decided, places on the page, links for fixing;
   results give one line per finding) -> tobi_explain (about = test IDs, a
-  WCAG criterion or words; run_id = a run to explain). The explain prompt
+  WCAG criterion or words; run_id = a run to explain). After a run it lists
+  only the places that failed or need a person; detail="full" adds every
+  place, the TT text and the rule trail, for an audit. The explain prompt
   gives users the same material as a command.
 - Read an SCRT report file (from DHS's SCRT or this server's pre-SCRT
   file), or compare two reports of a page: where the tool's results and a

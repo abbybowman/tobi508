@@ -112,6 +112,12 @@ outcome. These six exceptions are approved, each with exactly these limits.
   - `tobi_explain`: a test's explanation, or a run's full findings, from
     `explain.py`, which the `explain` prompt shares (agents cannot call
     prompts and seldom read resources; results keep one line per finding).
+    After a run it is brief by default: results, summaries and fix links
+    first, up to 8 places that are not PASS (`Instance.outcome`) in plain
+    words (`Instance.plain`, the check's own sentence, with how to reach
+    it; no spec codes), the rest counted, and the summary without the
+    sentences the places repeat; `detail="full"` adds every place as
+    recorded, the TT text and the rule trail.
   - `tobi_read_report`: read an SCRT or pre-SCRT file and list what changed
     against another.
 - Tool inputs are Pydantic-validated with precise descriptions. The

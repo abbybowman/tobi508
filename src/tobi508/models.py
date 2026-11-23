@@ -25,6 +25,26 @@ NOT_CERTIFIED_DISCLAIMER = (
 # The PDF allows NOT TESTED only where a test names it (p. 6), so a test the
 # tool could not perform is NEEDS_REVIEW with this note and a reason.
 TEST_NOT_PERFORMED_NOTE = "This test could not be performed"
+# A NEEDS_REVIEW test the tool checked in part: it found places or asked
+# questions, but could not decide (Abby, 2026-11-23: "we did partially check
+# it and we didn't rule but we have valuable info to share"). TT p. 5 still
+# asks for TEST_NOT_PERFORMED_NOTE on any test not completed, so the note
+# stays and Finding.partly_checked says what was done; only a finding with
+# neither places nor questions makes a pre-SCRT row "not performed".
+PARTLY_CHECKED = "Partly checked"
+
+
+def partly_checked_note(places: int, questions: int) -> str:
+    """What a test checked in part leaves for a person."""
+    left = []
+    if places:
+        left.append(f"{places} place(s) still need a person")
+    if questions:
+        left.append(f"{questions} question(s) still open")
+    return f"{PARTLY_CHECKED}: " + (
+        "; ".join(left) if left else "a person needs to finish it"
+    )
+
 
 # The NEEDS REVIEW headline every check uses, and the one that replaces it
 # while the finding still has open questions (wording only; outcomes come from
@@ -263,6 +283,20 @@ class Instance(BaseModel):
     frame_path: list[str] = Field(default_factory=list)
     description: str = ""
     evidence_refs: list[str] = Field(default_factory=list)
+    outcome: Outcome | None = Field(
+        default=None,
+        description="This place's own outcome, as the check's spec row decided "
+        "it (the [row OUTCOME] in description); None when the check gives "
+        "places no outcome of their own. explain.py lists the places that are "
+        "not PASS first and counts the rest.",
+    )
+    plain: str = Field(
+        default="",
+        description="The place in plain words for people: what it is, what was "
+        "found and how to reach it (the check's own sentence for it, as in the "
+        "summary). Empty when a check has none; explain.py then shows the "
+        "description without its codes.",
+    )
 
 
 class Finding(BaseModel):
@@ -284,8 +318,15 @@ class Finding(BaseModel):
     )
     note: str | None = Field(
         default=None,
-        description=f'"{TEST_NOT_PERFORMED_NOTE}" when the test was not performed; '
-        "the rationale then gives the reason.",
+        description=f'"{TEST_NOT_PERFORMED_NOTE}" when the test was not performed '
+        "or not completed (TT p. 5); the rationale then gives the reason.",
+    )
+    partly_checked: str | None = Field(
+        default=None,
+        description="A NEEDS_REVIEW test the tool checked in part (it found "
+        'places or asked questions): "Partly checked: N place(s) still need a '
+        'person", set by pipeline._evaluate. Its pre-SCRT row is performed; '
+        "TT's note above stays.",
     )
     decided_by: DecidedBy | None = None
     rows: list[str] = Field(
@@ -862,7 +903,15 @@ class FindingView(BaseModel):
                 if f.outcome == Outcome.FAIL
                 else _first_sentence(f.summary)
             ),
-            note=_first_sentence(f.note) if f.note else None,
+            # A test checked in part says so, not "could not be performed"
+            # (Abby, 2026-11-23); the report keeps TT's note.
+            note=(
+                f.partly_checked
+                if f.partly_checked
+                else _first_sentence(f.note)
+                if f.note
+                else None
+            ),
             confirmed=True if f.outcome == Outcome.FAIL else None,
             unconfirmed=waiting,
             waiting_on=_waiting_on(f, report, waiting),

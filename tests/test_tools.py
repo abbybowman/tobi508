@@ -6,6 +6,7 @@ Checks evidence collection and open-question plumbing only, never outcomes.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -571,7 +572,7 @@ async def test_explain_after_a_run(settings, server):
         and "Result for No keyboard trap (WCAG 2.1.2 No Keyboard Trap; TT 4.C): PASS"
         in text
     )
-    assert "https://www.w3.org/WAI/WCAG22/Understanding/no-keyboard-trap.html" in text
+    assert "tt://5.1.3/tests/4.C" in text  # a pass: its result, no fix links
     gone = await _prompt({"about": "4.C", "run_id": "20000101T000000Z-000000"})
     assert "no longer on the server" in gone and "saved its report" in gone
 
@@ -763,6 +764,10 @@ async def test_explain_holds_every_detail_a_result_leaves_out(settings, server):
     async with Client(mcp) as client:
         res = await client.call_tool("tobi_explain", {"run_id": out["run_id"]})
         text = res.content[0].text
+        res = await client.call_tool(
+            "tobi_explain", {"run_id": out["run_id"], "detail": "full"}
+        )
+        full = res.content[0].text
         one = (
             (
                 await client.call_tool(
@@ -777,12 +782,38 @@ async def test_explain_holds_every_detail_a_result_leaves_out(settings, server):
             .content[0]
             .text
         )
-    assert "NOT a certified" in text
+    assert "NOT a certified" in text and "NOT a certified" in full
     for f in report.findings:
-        assert f.summary in text and f"TT {f.test_id.value}): {f.outcome.value}" in text
-        assert all(r in text for r in f.rows)
-        assert all(u in text for u in catalog.understanding_urls(f.test_id.value))
+        for t in (text, full):
+            assert f"TT {f.test_id.value}): {f.outcome.value}" in t
+        assert f.summary in full
+        # Brief: every sentence of the summary is still there, once, in the
+        # summary or in the place it describes.
+        for i in f.instances:
+            if i.plain and i.outcome not in (Outcome.PASS, Outcome.DNA):
+                assert text.count(i.plain) == 1
+        # Every detail is one call away with detail="full".
+        assert all(r in full for r in f.rows)
+        assert all(u in full for u in catalog.understanding_urls(f.test_id.value))
+        assert all(i.description in full for i in f.instances)
+        # Brief (agent debrief, 2026-11-23): fix links beside a test that
+        # failed or needs review, no rule trail, no TT text.
+        if f.outcome in (Outcome.FAIL, Outcome.NEEDS_REVIEW):
+            assert all(u in text for u in catalog.understanding_urls(f.test_id.value))
+    assert "Rule trail" not in text and "Technical reasoning" not in text
+    assert "Rule trail" in full and "What this tool does for 4.A" in full
     assert "Not final: 1 open question(s)" in text  # 4.A waits on its question
+    # The checks give each place its own outcome; brief lists only the places
+    # that are not PASS and counts the rest.
+    places = [i for f in report.findings for i in f.instances]
+    assert places and all(i.outcome is not None for i in places)
+    for f in report.findings:
+        quiet = [i for i in f.instances if i.outcome in (Outcome.PASS, Outcome.DNA)]
+        if quiet and f.outcome in (Outcome.FAIL, Outcome.NEEDS_REVIEW):
+            assert f"{len(quiet)} other place(s) passed or did not apply" in text
+    assert len(text) < len(full)
+    # No spec codes in brief place lines (agent debrief, 2026-11-23).
+    assert not re.search(r"^- \S+ \[[A-Z]", text, re.M)
     assert "=== 4.A ===" in one and "=== 4.D ===" in one and "=== 4.C ===" not in one
     assert "4.C" in general and "NOT a certified" in general
 

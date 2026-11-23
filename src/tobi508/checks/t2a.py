@@ -327,6 +327,8 @@ def evaluate(st: State2A, evidence_refs: list[str]) -> Finding:
         sentences.append(_sentence(rows[-1], a, e))
         inst.append(
             Instance(
+                outcome=outcome,
+                plain=sentences[-1],
                 selector=a.css or None,
                 description=f"{a.id} [{'/'.join(rows)} {outcome.value}] {a.kind}"
                 + (f" {a.src[:120]}" if a.src else "")

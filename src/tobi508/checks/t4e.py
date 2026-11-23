@@ -16,7 +16,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tobi508 import reveal
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.jslib import JSLIB
 from tobi508.models import (
@@ -676,12 +676,7 @@ PAGE_ROWS = [
 
 
 def _label(info: dict[str, Any]) -> str:
-    name = (info.get("name") or "").strip() or info.get("css_path") or "an element"
-    name = name if len(name) <= 60 else name[:57] + "..."
-    role = (info.get("role") or "").strip()
-    return f'"{name}"' + (
-        f" ({role})" if role and role not in ("generic", "none") else ""
-    )
+    return element_name(info.get("name"), info.get("role"))
 
 
 def _keys_text(keys: list[str], opened: dict[str, Any] | None = None) -> str:
@@ -758,6 +753,8 @@ def evaluate(st: State4E, evidence_refs: list[str]) -> Finding:
         sentences.append((row.outcome, _sentence(inst, row.id)))
         instances.append(
             Instance(
+                outcome=row.outcome,
+                plain=sentences[-1][1],
                 selector=inst.target.get("css_path"),
                 frame_path=inst.target.get("frame_chain") or [],
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.signal.kind} "

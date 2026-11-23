@@ -651,6 +651,13 @@ def _decide(st: State9C, evidence_refs: list[str]) -> Finding:
         if outcome is not Outcome.PASS:
             inst.append(
                 Instance(
+                    outcome=outcome,
+                    # In words for people (Instance.plain).
+                    plain=(
+                        sentences[-1]
+                        if outcome is Outcome.FAIL
+                        else f'A person should check whether "{x.andi_name}" here and "{y.andi_name}" on other page {p.page} do the same thing; if they do, they need the same name.'
+                    ),
                     selector=x.css,
                     description=f"{p.id} [{rid} {outcome.value}] {x.role} {x.andi_name!r} / {y.andi_name!r} ({p.by})",
                 )
