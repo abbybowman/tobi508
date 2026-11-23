@@ -420,7 +420,14 @@ def from_report(
             decided_by=f.decided_by.value if f.decided_by else None,
         )
         result = RESULT_OF[f.outcome]
-        places = f.instances if f.outcome is Outcome.FAIL else []
+        # A FAIL's rows are the places a developer must fix: places with an
+        # outcome of their own (4.D lists every stop it checked) count only
+        # when that outcome is FAIL. Places with none are the failing ones.
+        places = (
+            [i for i in f.instances if i.outcome in (Outcome.FAIL, None)]
+            if f.outcome is Outcome.FAIL
+            else []
+        )
         parent = len(rows)
         for n, inst in enumerate(places or [None]):
             refs = (inst.evidence_refs if inst else []) + (

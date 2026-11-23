@@ -204,6 +204,38 @@ def test_report_becomes_61_rows_with_sources(tmp_path):
     assert n.TestCondition and n.DisabilityImpact  # SCRT's text kept
 
 
+def test_fail_rows_are_only_its_failing_places(tmp_path):
+    # 4.D lists every stop it checked, each with its own outcome; a PASS or
+    # NEEDS_REVIEW place is not an issue to fix and must not read "Fail"
+    # (Artemis III, 2026-11-23: 122 child rows, 116 of them passing places).
+    fail = Finding(
+        test_id=TestId.T4D,
+        test_name="x",
+        outcome=Outcome.FAIL,
+        summary="s",
+        instances=[
+            Instance(
+                description="d1 [M6 PASS] Explore",
+                outcome=Outcome.PASS,
+                evidence_refs=["evidence/shots/a.png"],
+            ),
+            Instance(
+                description="d2 [M4 NEEDS_REVIEW] x", outcome=Outcome.NEEDS_REVIEW
+            ),
+            Instance(
+                description="o31 [M10 FAIL] popup",
+                outcome=Outcome.FAIL,
+                evidence_refs=["evidence/shots/b.png"],
+            ),
+            Instance(description="o35 [M10 FAIL] popup", outcome=Outcome.FAIL),
+        ],
+    )
+    p, c = scrt.from_report(_report([fail]), _run_dir(tmp_path)).results()["4.D"]
+    assert (p.location, c.location) == ("o31 [M10 FAIL] popup", "o35 [M10 FAIL] popup")
+    assert (p.TestResult, c.TestResult) == (R.FAIL, R.FAIL)
+    assert p.TesterComment == "s" and p.ImageSrc
+
+
 def test_screenshots_past_the_cap_become_a_note(tmp_path, monkeypatch):
     monkeypatch.setattr(scrt, "MAX_IMAGE_BYTES", SHOT.stat().st_size)  # room for one
     fail = Finding(
