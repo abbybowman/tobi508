@@ -1245,6 +1245,7 @@ def evaluate(st: State4F, evidence_refs: list[str]) -> Finding:
         sentences.append((row.outcome, _sentence(inst, row.id)))
         instances.append(
             Instance(
+                outcome=row.outcome,
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.kind} {inst.label}",
                 evidence_refs=[st.order_image]
                 if st.order_image and inst.signals

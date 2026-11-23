@@ -1760,6 +1760,7 @@ def evaluate(st: State4D, evidence_refs: list[str]) -> Finding:
         a = _best(inst)
         instances.append(
             Instance(
+                outcome=row.outcome,
                 selector=inst.label.get("css_path"),
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {_label(inst.label)}"
                 + (

@@ -1305,6 +1305,7 @@ def evaluate(st: State4C, evidence_refs: list[str]) -> Finding:
         )
         instances.append(
             Instance(
+                outcome=outcome,
                 selector=next(iter(inst.member_info.values()), {}).get("css_path"),
                 frame_path=next(iter(inst.member_info.values()), {}).get(
                     "frame_chain", []

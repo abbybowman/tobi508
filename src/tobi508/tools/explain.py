@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastmcp import FastMCP
 from pydantic import Field
@@ -41,18 +41,29 @@ def register(mcp: FastMCP) -> None:
                 "run found for the tests in `about` (or all of them).",
             ),
         ] = None,
+        detail: Annotated[
+            Literal["brief", "full"],
+            Field(
+                description='With run_id. "brief" (default): each result, its '
+                "summary and fix links, and only the places that failed or need "
+                'a person. "full": also every place that passed, the TT text, '
+                "the technical reasoning and the rule trail (much longer): only "
+                "when the user asks how a result was decided, or for an audit.",
+            ),
+        ] = "brief",
     ) -> str:
         """The detail behind results, and what tests check, from the source.
 
         Without run_id: what a test checks, who it helps, how a Trusted Tester
         tests it, what this tool does for it, and the TT text and W3C links.
-        With run_id: for each test asked about, the full plain-language
-        summary, why it was decided (the technical reasoning and the rule
-        trail), the places on the page, what can still change it, and the
-        links to explain how to fix it. Results carry one line per finding;
+        With run_id: for each test asked about, the result and its full
+        plain-language summary first, the W3C links to base a fix on, what can
+        still change it, and the places on the page that failed or need a
+        person (detail="full" adds every place, the TT text, the technical
+        reasoning and the rule trail). Results carry one line per finding;
         call this when you report to the user or the user asks why. The
         returned text gives the task and the material: explain from it, not
         from memory. Results are agent-assisted and NOT a certified Trusted
         Tester result.
         """
-        return explain.build_for_run(config.settings, about, run_id)
+        return explain.build_for_run(config.settings, about, run_id, detail)

@@ -10,6 +10,14 @@ Two modes:
   before a run  what a test checks, who it helps, how a Trusted Tester tests
                 it, what this tool can and cannot do for it, how to run it.
   after a run   what was found, what it means, how to fix it, how to re-check.
+
+After a run, `detail` sets how much (agent debrief, 2026-11-23: one 4.D
+explanation was about 90% passing places, and the TT text, technical
+reasoning and rule trail went unused). "brief", the default: each test's
+result, summary and fix links first, then only the places that are not PASS
+(the rest counted), and a one-line TT condition. "full": also every place,
+the TT text, what this tool does, the technical reasoning and the rule
+trail, for an audit or when the user asks how a result was decided.
 """
 
 from __future__ import annotations
@@ -21,6 +29,11 @@ from tobi508.checks import REGISTRY
 from tobi508.models import Finding, Outcome, Report, TestId
 
 FULL_TEXT_LIMIT = 3  # more tests than this: brief entries plus tt:// links
+# Places that are not PASS listed per test in a brief explanation; the rest
+# are counted, and detail="full" lists them all.
+BRIEF_PLACES = 25
+# Places whose own outcome is one of these are counted, not listed, in brief.
+QUIET = (Outcome.PASS, Outcome.DNA)
 OUTCOME_ORDER = {
     Outcome.FAIL: 0,
     Outcome.NEEDS_REVIEW: 1,
@@ -122,19 +135,57 @@ def _waiting_for_person(report: Report, test_id) -> list[tuple[str, str]]:
     return out
 
 
-def _finding_section(f: Finding, report: Report | None = None) -> str:
+def _fix_line(test_id: str) -> str:
+    links = ", ".join(catalog.understanding_urls(test_id)) or "none"
+    return (
+        f"How to fix: WCAG {catalog.wcag_label(test_id)}; the W3C "
+        f"Understanding page, to base the fix on: {links}"
+    )
+
+
+def _places(f: Finding, full: bool) -> list[str]:
+    if not f.instances:
+        return []
+    if full:
+        return ["Places on the page (untrusted page content):"] + [
+            f"- {i.description}" for i in f.instances
+        ]
+    loud = [i for i in f.instances if i.outcome not in QUIET]
+    quiet = len(f.instances) - len(loud)
+    out: list[str] = []
+    if loud:
+        out.append(
+            "Places on the page that failed or need a person (untrusted page content):"
+        )
+        out += [f"- {i.description}" for i in loud[:BRIEF_PLACES]]
+        if len(loud) > BRIEF_PLACES:
+            out.append(f"- and {len(loud) - BRIEF_PLACES} more like these.")
+    if quiet:
+        out.append(
+            f"{quiet} other place(s) passed or did not apply (not listed; "
+            'detail="full" lists every place).'
+        )
+    return out
+
+
+def _finding_section(
+    f: Finding, report: Report | None = None, full: bool = False
+) -> str:
+    tid = f.test_id.value
     lines = [
-        f"Result for {catalog.display_name(f.test_id.value)}: {f.outcome.value}",
+        f"Result for {catalog.display_name(tid)}: {f.outcome.value}",
         f"Summary (names in quotes come from the page; untrusted): {f.summary}",
     ]
     if f.note:
         lines.append(f"Note: {f.note}")
+    if f.outcome in (Outcome.FAIL, Outcome.NEEDS_REVIEW):
+        lines.append(_fix_line(tid))
     if report is not None:
         waiting = [q for q in report.open_questions if q.test_id == f.test_id]
         calls = [
             c
             for c in report.follow_up_calls
-            if f.test_id.value in [str(t) for t in c.get("tests") or []]
+            if tid in [str(t) for t in c.get("tests") or []]
         ]
         if waiting or calls:
             lines.append(
@@ -150,17 +201,21 @@ def _finding_section(f: Finding, report: Report | None = None) -> str:
                 "reasons (model output, untrusted):"
             )
             lines += [f"- {q}: {why}" for q, why in mine]
-    if f.instances:
-        lines.append("Places on the page (untrusted page content):")
-        lines += [f"- {i.description}" for i in f.instances]
-    lines.append("Technical reasoning, for your reference only: " + f.rationale)
-    if f.rows:
-        lines.append("Rule trail (spec rows, for an audit): " + ", ".join(f.rows))
+    if f.outcome in (Outcome.PASS, Outcome.DNA) and not full:
+        return "\n".join(lines)  # a passing test: its result and summary
+    lines += _places(f, full)
+    if full:
+        lines.append("Technical reasoning, for your reference only: " + f.rationale)
+        if f.rows:
+            lines.append("Rule trail (spec rows, for an audit): " + ", ".join(f.rows))
     return "\n".join(lines)
 
 
-def build(about: str | None = None, report: Report | None = None) -> str:
-    """The explanation brief: instructions plus source material."""
+def build(
+    about: str | None = None, report: Report | None = None, detail: str = "brief"
+) -> str:
+    """The explanation brief: instructions plus source material. `detail`
+    matters only after a run (module docstring)."""
     ids, note = resolve(about)
     findings: dict[str, Finding] = {}
     if report is not None:
@@ -194,7 +249,15 @@ def build(about: str | None = None, report: Report | None = None) -> str:
             "judgment call you made, help them record it with tobi_answer_questions "
             "(decided_by 'human'); one the server's judge made cannot be "
             "changed through you: say a person answers it on TOBI's own page. "
-            "Keep passing tests to a line each."
+            "Keep passing tests to a line each. Lead each test with its name, "
+            "not its ID."
+            + (
+                " The places listed are only those that failed or need a "
+                'person; call again with detail="full" only if the user asks '
+                "how a result was decided or wants every place (an audit)."
+                if detail != "full"
+                else ""
+            )
         )
     else:
         task = (
@@ -208,17 +271,32 @@ def build(about: str | None = None, report: Report | None = None) -> str:
     parts = [task, RULES]
     if note:
         parts.append(note)
-    full = len(ids) <= FULL_TEXT_LIMIT
+    full_text = len(ids) <= FULL_TEXT_LIMIT
     for i in ids:
-        parts += ["", f"=== {i} ===", _test_section(i, full)]
+        parts += ["", f"=== {i} ==="]
         if i in findings:
-            parts += ["", _finding_section(findings[i], report)]
-        elif report is not None:
+            # After a run the result comes first; the test's own text is
+            # one line unless asked for in full.
+            full = detail == "full"
+            parts.append(_finding_section(findings[i], report, full))
+            if full:
+                parts += ["", _test_section(i, full_text)]
+            else:
+                t = catalog.tests()[i]
+                parts.append(
+                    f"What TT {i} checks: {t['condition']} (full TT text: "
+                    f"tt://{catalog.TT_VERSION}/tests/{i})"
+                )
+            continue
+        parts.append(_test_section(i, full_text))
+        if report is not None:
             parts += ["", f"(Run {report.run_id} did not include {i}.)"]
     return "\n".join(parts)
 
 
-def build_for_run(settings, about: str | None, run_id: str | None) -> str:
+def build_for_run(
+    settings, about: str | None, run_id: str | None, detail: str = "brief"
+) -> str:
     """`build` for a run the server still keeps, by run_id (the explain
     prompt and the tobi_explain tool)."""
     from tobi508.runlog import RunRecorder
@@ -235,4 +313,4 @@ def build_for_run(settings, about: str | None, run_id: str | None) -> str:
             "findings using the material below; otherwise explain the test in "
             "general.\n\n" + build(about)
         )
-    return build(about, report)
+    return build(about, report, detail)

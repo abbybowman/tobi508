@@ -725,6 +725,7 @@ def _decide(st: State9A, evidence_refs: list[str]) -> Finding:
     trace = ["A5"] + [f"c{c.n}:{r.id}" for c, r in results]
     inst = [
         Instance(
+            outcome=r.outcome,
             selector=c.css or None,
             description=f"c{c.n} [{r.id} {r.outcome.value}] {_method(c)}: {_how_to_reach(c)}",
         )

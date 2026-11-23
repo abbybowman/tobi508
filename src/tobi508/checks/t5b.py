@@ -493,7 +493,8 @@ def evaluate(st: State5B, evidence_refs: list[str]) -> Finding:
         if row.outcome is not Outcome.PASS:
             inst.append(
                 Instance(
-                    description=f"f{it.form}.{it.k} [{row.id} {row.outcome.value}] {it.kind}: {it.label!r}"
+                    outcome=row.outcome,
+                    description=f"f{it.form}.{it.k} [{row.id} {row.outcome.value}] {it.kind}: {it.label!r}",
                 )
             )
     if failed:

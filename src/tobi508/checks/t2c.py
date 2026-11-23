@@ -525,6 +525,7 @@ def evaluate(st: State2C, evidence_refs: list[str]) -> Finding:
         sentences.append(_sentence(rows[-1], i.region, e))
         inst.append(
             Instance(
+                outcome=outcome,
                 selector=i.region.content_css,
                 frame_path=[i.region.frame_url] if i.region.frame else [],
                 description=f"{i.id} [{'/'.join(rows)} {outcome.value}] "

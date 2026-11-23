@@ -271,6 +271,7 @@ def _decide(st: State9B, evidence_refs: list[str]) -> Finding:
             sentences.append(f"Not all of {page} could be read.")
         inst.append(
             Instance(
+                outcome=row.outcome,
                 description=f"p{c.n} [{row.id} {row.outcome.value}] {c.url}: {c.matched} shared",
             )
         )

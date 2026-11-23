@@ -307,6 +307,7 @@ def evaluate(st: State5A, evidence_refs: list[str]) -> Finding:
         sentences.append((row.outcome, _sentence(c, row.id)))
         inst.append(
             Instance(
+                outcome=row.outcome,
                 selector=c.css,
                 description=f"c{c.n} [{row.id} {row.outcome.value}] {c.kind}: {how_to_reach(c)}",
                 evidence_refs=[p for p in (c.image,) if p],

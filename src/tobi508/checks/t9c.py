@@ -651,6 +651,7 @@ def _decide(st: State9C, evidence_refs: list[str]) -> Finding:
         if outcome is not Outcome.PASS:
             inst.append(
                 Instance(
+                    outcome=outcome,
                     selector=x.css,
                     description=f"{p.id} [{rid} {outcome.value}] {x.role} {x.andi_name!r} / {y.andi_name!r} ({p.by})",
                 )

@@ -263,6 +263,13 @@ class Instance(BaseModel):
     frame_path: list[str] = Field(default_factory=list)
     description: str = ""
     evidence_refs: list[str] = Field(default_factory=list)
+    outcome: Outcome | None = Field(
+        default=None,
+        description="This place's own outcome, as the check's spec row decided "
+        "it (the [row OUTCOME] in description); None when the check gives "
+        "places no outcome of their own. explain.py lists the places that are "
+        "not PASS first and counts the rest.",
+    )
 
 
 class Finding(BaseModel):

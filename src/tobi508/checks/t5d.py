@@ -1266,6 +1266,7 @@ def evaluate(st: State5D, evidence_refs: list[str]) -> Finding:
         a = inst.last
         instances.append(
             Instance(
+                outcome=row.outcome,
                 selector=inst.field.css_path,
                 frame_path=inst.field.frame_chain,
                 description=f"{inst.id} [{row.id} {row.outcome.value}] "

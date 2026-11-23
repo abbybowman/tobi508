@@ -1702,6 +1702,7 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
         if row.outcome is not Outcome.PASS or row.id in ("M3", "M3s", "M5"):
             instances.append(
                 Instance(
+                    outcome=row.outcome,
                     selector=inst.target.get("css_path"),
                     frame_path=inst.target.get("frame_chain") or [],
                     description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.kind}: {_label(inst.target)}",
