@@ -449,6 +449,9 @@ class Inst4A(BaseModel):
     # follow the opening. `hover_key`: the opened stop whose hover shows it.
     opened: dict[str, Any] | None = None
     hover_key: str | None = None
+    # Keys whose only change was the page scrolling and a positioned layer
+    # following it (1.21.0, Terms "effect"): counted as no effect.
+    scroll_only: list[str] = Field(default_factory=list)
 
 
 class StopRef(BaseModel):
@@ -1598,7 +1601,7 @@ async def _press(ctx: RunContext, inst: Inst4A, sr: StopRef, key: str) -> Effect
         st, _ = await s.traversal.reader.read()
         if st.path_key != sr.path_key:
             return None
-        return await observe(
+        e = await observe(
             s,
             ctx.quiet_ms,
             lambda: s.page.keyboard.press(key),
@@ -1607,6 +1610,13 @@ async def _press(ctx: RunContext, inst: Inst4A, sr: StopRef, key: str) -> Effect
             popups=True,
             region=True,
         )
+        if e.kinds == ["dom"] and e.scrolled and e.restyled_only:
+            # 1.21.0 (Terms, effect): the page scrolled (Space's own action)
+            # and the only change was a layer over the page following it
+            # (round 3's SDE "All" list): no effect of the key.
+            inst.scroll_only.append("Space" if key == " " else key)
+            e = e.model_copy(update={"kinds": []})
+        return e
     finally:
         await s.close()
 
@@ -2053,6 +2063,11 @@ def _sentence(st: State4A, inst: Inst4A, rid: str) -> str | None:
     )
     if inst.hover_key:
         hover = " (it appears when the mouse rests on another item there)"
+    scrolls = (
+        f" ({' and '.join(inst.scroll_only)} only scroll{'s' if len(inst.scroll_only) == 1 else ''} the page)"
+        if inst.scroll_only
+        else ""
+    )
     return {
         "C?": f"We did not get to check {el}; please check it works with the keyboard.",
         "M1": f"Something about {el} could not be read reliably (the page kept changing on its own); please check it works with the keyboard.",
@@ -2063,7 +2078,7 @@ def _sentence(st: State4A, inst: Inst4A, rid: str) -> str | None:
         "M5": f"{el}{hover} can't be reached with the keyboard, but {other} does the same thing ({reasons}). If you disagree, tell your assistant.",
         "M6": f"{el}{hover} works with a mouse but can't be reached with the keyboard, and nothing else on the page does the same thing ({reasons}). If you disagree, tell your assistant.",
         "M7": f"{el}{hover} works with a mouse but can't be reached with the keyboard; please check whether something else on the page does the same thing.",
-        "M10": f"{el} can be reached with the keyboard{reach}, but pressing Enter or Space does nothing, while clicking it does. To see it, load the page, {keys}, then press Enter.",
+        "M10": f"{el} can be reached with the keyboard{reach}, but pressing Enter or Space does nothing{scrolls}, while clicking it does. To see it, load the page, {keys}, then press Enter.",
         "M10g": f"{el} can be reached with the keyboard{reach}, but pressing Enter or Space {_did(_key_effect(inst))}, while clicking it {_did(inst.click)}. To see it, load the page, {keys}, then press Enter.",
         "M8r": f"Pressing Enter or Space on {el} {_did(_key_effect(inst))}, and clicking it {_did(inst.click)}; please check that the keyboard does what the mouse does.",
         "J2?": f"{el} has information that shows only when the mouse rests on it; a question about it is still open.",

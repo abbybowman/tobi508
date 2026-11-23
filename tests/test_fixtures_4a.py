@@ -214,6 +214,19 @@ EXPECTED: dict[str, dict] = {
     },
     # A menu that opens on a click only: executed first (Abby, 2026-11-15).
     "f47-menu-opens-only-by-click": {"outcome": "FAIL", "rows": ["M10"]},
+    # 1.21.0 (Terms, effect; Abby 2026-11-23, option ii): Space only scrolls
+    # the page and the open list, positioned over it, follows in its style:
+    # no effect, so the options FAIL as round 3's SDE "All" (key Fail).
+    "f48-menu-options-space-scrolls-layer-follows": {
+        "outcome": "FAIL",
+        "rows": ["M10", "M10"],
+    },
+    # The near miss: Space also changes text, a change of its own; the keys
+    # do not do the click's, so a person looks (M8r).
+    "f49-menu-option-space-scrolls-and-marks": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M8r", "M8r"],
+    },
 }
 
 ACT = {

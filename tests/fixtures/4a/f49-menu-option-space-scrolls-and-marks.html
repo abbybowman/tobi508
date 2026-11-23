@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F49 Search</title>
+<style>#m { position: absolute; top: 90px; left: 8px; background: #fff; border: 1px solid #333; list-style: none; padding: 4px; } .opt { cursor: pointer; padding: 4px; }</style></head><body>
+<main><h1>Search</h1>
+<button id="b" type="button" aria-expanded="false" aria-haspopup="true">All</button>
+<label>Search <input id="q"></label> <button type="button">Go</button> <a href="#help">Help</a>
+<ul id="m" hidden><li><div class="opt" tabindex="0">Earth</div></li><li><div class="opt" tabindex="0">Sun</div></li></ul>
+<p id="out">Searching: All</p><div style="height: 3000px"></div></main><footer><p id="mark">Nothing marked</p></footer>
+<script>
+// The list stays open when focus leaves; it sits after the search box in
+// the Tab order, and its options answer the mouse only.
+const b = document.getElementById("b"), m = document.getElementById("m");
+b.addEventListener("click", () => { const open = b.getAttribute("aria-expanded") === "true"; b.setAttribute("aria-expanded", String(!open)); m.hidden = open; });
+for (const o of document.querySelectorAll(".opt")) o.addEventListener("click", () => {
+  b.textContent = o.textContent; document.getElementById("out").textContent = "Searching: " + o.textContent; m.hidden = true; b.setAttribute("aria-expanded", "false"); });
+// Like ngx-bootstrap: the open list is positioned over the page and its
+// place is set again in its style whenever the page scrolls.
+addEventListener("scroll", () => { m.style.top = (90 + (scrollY % 7)) + "px"; });
+// The near miss: Space on an option also marks it, a change of its own.
+for (const o of document.querySelectorAll(".opt")) o.addEventListener("keydown", (e) => {
+  if (e.key === " ") document.getElementById("mark").textContent = "Marked: " + o.textContent; });
+</script></body></html>

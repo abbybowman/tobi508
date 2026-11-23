@@ -18,6 +18,7 @@ from tobi508.jslib import JSLIB
 from tobi508.traverse import (
     PATH_JS,
     REGION_JS,
+    RESTYLE_JS,
     TRACK_JS,
     Session,
     _read_logs,
@@ -227,6 +228,10 @@ class Effect(BaseModel):
     # holding every element the action changed outside the one acted on.
     # None when not asked for or not read (the page left, a frame).
     region: str | None = None
+    # With `region` (4.A 1.21.0): the window scrolled during the action, and
+    # every change was a style set on a positioned layer (RESTYLE_JS).
+    scrolled: bool = False
+    restyled_only: bool = False
 
     @property
     def any(self) -> bool:
@@ -359,9 +364,11 @@ async def observe(
             # Enabling discovery reports pages that already exist; only pages
             # created after this point are the action's.
             earlier = set(opened.ids)
+            scroll0 = None
             if region:
                 try:
                     await page.evaluate(TRACK_JS)
+                    scroll0 = await page.evaluate("[scrollX, scrollY]")
                 except Exception:
                     pass
             await act()
@@ -371,8 +378,13 @@ async def observe(
             m2, *_ = await _read_logs(page)
             new_windows = opened.ids - earlier if opened.ok else set()
             changed_in = None
+            scrolled = restyled = False
             if region:
                 try:
+                    scrolled = scroll0 is not None and scroll0 != await page.evaluate(
+                        "[scrollX, scrollY]"
+                    )
+                    restyled = bool(await page.evaluate(RESTYLE_JS))
                     changed_in = await page.evaluate(REGION_JS)
                 except Exception:
                     pass  # the page left: no region, which compares as unread
@@ -380,7 +392,13 @@ async def observe(
         if popups:
             page.remove_listener("dialog", on_dialog)
             page.remove_listener("download", on_download)
-    e = Effect(mutations=max(0, m2 - m1), noise=max(0, m1 - m0), region=changed_in)
+    e = Effect(
+        mutations=max(0, m2 - m1),
+        noise=max(0, m1 - m0),
+        region=changed_in,
+        scrolled=scrolled,
+        restyled_only=restyled,
+    )
     if without_fragment(after["url"]) != without_fragment(before["url"]):
         e.kinds.append("navigation")
         e.url = after["url"]
