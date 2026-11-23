@@ -128,7 +128,9 @@ SNAP_FN = """function (useActive, itemId) {
 
 J1_QUESTION = (
     "Image A shows part of a web page without keyboard focus; image B shows the "
-    "same part with keyboard focus on the outlined element. Image C marks the "
+    "same part with keyboard focus on the outlined element: the magenta box in B "
+    "is the tool's mark for the element, drawn on a copy, not part of the page. "
+    "Image C marks the "
     "pixels that differ. Image D, when given, shows the same part just before "
     "focus reached the element, with focus on the element before it; image A is "
     "taken just after focus moved on to the next element. Something drawn in A "
@@ -876,6 +878,28 @@ def _sides_changed(
     return got
 
 
+MARK_RGB = (255, 0, 255)  # the tool's box on J1's image B (not the page's)
+
+
+def _marked_on(rel: Path, e: dict[str, Any]) -> str | None:
+    """A copy of the on picture with the stop's box drawn on it (spec J1,
+    input B: "with the stop's box outlined on a copy"), for the judge only:
+    no count reads it. None when it cannot be made."""
+    try:
+        img = Image.open(rel / e["on"]).convert("RGB")
+        dpr = e.get("dpr") or 1
+        cp = e["clip_view"]
+        x, y, w, h = e["self_rect"]
+        box = [(x - cp[0]) * dpr - 2, (y - cp[1]) * dpr - 2]
+        box += [box[0] + w * dpr + 3, box[1] + h * dpr + 3]
+        ImageDraw.Draw(img).rectangle(box, outline=MARK_RGB, width=max(1, round(dpr)))
+        out = e["on"].replace("-on.png", "-on-marked.png")
+        img.save(rel / out)
+        return out
+    except Exception:
+        return None
+
+
 def judge_copy(rel: Path, path: str) -> str:
     """A copy of the picture at `path` (relative to `rel`) scaled up in whole
     steps for the judge when its long side is under JUDGE_MIN_SIDE; the path
@@ -989,6 +1013,7 @@ def _attempts_from(
                     path = rel / e["on"].replace("-on.png", "-diff.png")
                     diff.save(path)
                     inst.diff_image = path.relative_to(rel).as_posix()
+                marked = _marked_on(rel, e)
                 a.extras["judge"] = {
                     **(
                         {"before": judge_copy(rel, e["before"])}
@@ -996,7 +1021,7 @@ def _attempts_from(
                         else {}
                     ),
                     "off": judge_copy(rel, e["off"]),
-                    "on": judge_copy(rel, e["on"]),
+                    "on": judge_copy(rel, marked or e["on"]),
                     "diff": judge_copy(rel, inst.diff_image)
                     if inst.diff_image
                     else None,
@@ -1078,10 +1103,16 @@ def _opened_instances(ctx: RunContext, walk: KeyboardWalk, st: State4D) -> None:
             start_pages=walk.p1.start_pages,
             steps=w.steps,
         )
+        if w.end in ("cap", "time", "error"):
+            st.incomplete.append(
+                f'Tabbing through what opening "{trig.name or "a control"}" showed '
+                f"did not finish ({w.end})."
+            )
         inside = set(w.opened)
         found: dict[str, Inst4D] = {}
+        how = "click" if w.by == "a click" else "Enter on"
         _attempts_from(
-            p, st, found, ctx.rel, "Tab", [f"open {trig.name or 'a control'}"]
+            p, st, found, ctx.rel, "Tab", [f'{how} "{trig.name or "the control"}"']
         )
         for inst in found.values():
             if inst.subject in inside:
@@ -1338,7 +1369,8 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4D:
     _before_from_p1_off(ctx, by_subject)
     await _replay_before(ctx, by_subject)
     _opened_instances(ctx, walk, st)
-    st.instances = list(by_subject.values())
+    # 1.13.0 (step 15): the stops inside opened content are instances.
+    st.instances = list(by_subject.values()) + st.opened
     return st
 
 

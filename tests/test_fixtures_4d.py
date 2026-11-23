@@ -137,6 +137,16 @@ EXPECTED: dict[str, dict] = {
     # clipped by its own scrolling tab list, which answers at the tab's centre.
     # Clipped by its container, not covered: M4 (NEEDS REVIEW), not M8.
     "f32-tab-clipped-by-its-tab-list": {"outcome": "NEEDS_REVIEW", "rows": ["M4"]},
+    # 4.D 1.13.0 (step 15, #135): the stops inside what a menu opened are
+    # instances. F33: the menu stays open, so Shift+Tab back through it gives
+    # before pictures and its items pass (M6), with no guard RC. F34: it
+    # closes when focus leaves, so no before pictures: J1 looks at its clear
+    # rings (a correct judge: yes). F35: its items show nothing: M8, FAIL.
+    "f33-menu-stays-open-items-ring": {"outcome": "PASS"},
+    "f34-menu-closes-when-focus-leaves": {"outcome": "PASS", "choice": "yes"},
+    # F35's last item has the next link's ring in its off picture, changed one
+    # way only: J1, and a correct judge says no (the blog's pattern).
+    "f35-menu-items-show-no-focus": {"outcome": "FAIL", "rows": ["M8"], "choice": "no"},
     "f30-next-outline-over-image-link": {
         "outcome": "FAIL",
         "choice": "no",
