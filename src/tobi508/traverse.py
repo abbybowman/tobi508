@@ -173,7 +173,8 @@ INIT_JS = """(() => {
   log.tk = null;
   const count = (r) => {
     if (log.tk) for (const x of r) { if (log.tk.length >= 500) break; log.tk.push(x.target);
-      if (log.tkr) log.tkr.push([x.type, x.attributeName || '']); }
+      if (log.tkr) log.tkr.push([x.type, x.attributeName || '',
+        x.type === 'attributes' && x.target.nodeType === 1 && x.oldValue === x.target.getAttribute(x.attributeName)]); }
     log.m += r.length; log.lastM = performance.now();
     let q = 0;
     for (const x of r) if (!ignored(x.target)) q++;
@@ -186,10 +187,10 @@ INIT_JS = """(() => {
   const count_ = count;
   log.flush = (count) => { const r = obs.takeRecords();
     if (count && r.length && !log.pause) count_(r); };
-  obs.observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+  obs.observe(document, { subtree: true, childList: true, attributes: true, characterData: true, attributeOldValue: true });
   const watched = new WeakSet();
   const watchRoot = (root) => { if (watched.has(root)) return; watched.add(root);
-    obs.observe(root, { subtree: true, childList: true, attributes: true, characterData: true }); };
+    obs.observe(root, { subtree: true, childList: true, attributes: true, characterData: true, attributeOldValue: true }); };
   const attach = Element.prototype.attachShadow;
   Element.prototype.attachShadow = function (init) { const r = attach.call(this, init); watchRoot(r); return r; };
   // Shadow roots a server rendered (<template shadowrootmode>) attach none:
@@ -286,18 +287,21 @@ TRACK_JS = """() => {
   l.tk = []; l.tkr = []; l.tkOwn = a; return true;
 }"""
 
-# 4.A 1.21.0 (#135): whether every change the action made was a `style`
-# attribute set on an element that is itself positioned over the page
-# (fixed, absolute or sticky): a layer following the page's scroll (round
-# 3's SDE "All" list, ngx-bootstrap's container). Read before REGION_JS,
-# which stops keeping. False when nothing changed or anything else did.
+# 4.A 1.21.0 (#135): whether every change the action made was, on an
+# element itself positioned over the page (fixed, absolute or sticky), a
+# `style` attribute set, or a `class` attribute set to the value it already
+# had: a layer following the page's scroll (round 3's SDE "All" list:
+# ngx-bootstrap sets its container's class again on each scroll step). Read
+# before REGION_JS, which stops keeping. False when nothing changed or
+# anything else did.
 RESTYLE_JS = """() => {
   const l = window.__a11yLog; if (!l || !l.tk || !l.tkr) return false;
   if (l.flush) l.flush(true);
   if (!l.tkr.length || l.tkr.length !== l.tk.length) return false;
   for (let i = 0; i < l.tk.length; i++) {
-    const [type, attr] = l.tkr[i], n = l.tk[i];
-    if (type !== 'attributes' || attr !== 'style' || !n || n.nodeType !== 1 || !n.isConnected) return false;
+    const [type, attr, same] = l.tkr[i], n = l.tk[i];
+    if (type !== 'attributes' || !n || n.nodeType !== 1 || !n.isConnected) return false;
+    if (!(attr === 'style' || (attr === 'class' && same))) return false;
     const pos = getComputedStyle(n).position;
     if (pos !== 'fixed' && pos !== 'absolute' && pos !== 'sticky') return false;
   }
