@@ -6,7 +6,7 @@ Agent-assisted results, not certified Trusted Tester results.
 
 Loaded live: none (every page from the freeze)
 
-5.D now: agree 5, false_fail 1, needs_review 2
+5.D now: agree 5, false_fail 1, needs_review 3, other 1
 
 | Page | Key | Key's comment | Gate 9c (verdict, rows) | Now (verdict, rows) |
 | --- | --- | --- | --- | --- |
