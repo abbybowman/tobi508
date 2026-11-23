@@ -38,6 +38,19 @@
   `new_fields`, `walked.reached`): round 3's held 5.D cells had no field
   inside any menu, so only the guard moved them, and a fill pass alone
   would have moved nothing.
+- **4.A and 4.F read the walk too (4.A 1.21.0, 4.F 1.16.0, #135):** a menu
+  the walk leaves at once may still be reached later: round 3's SDE "All"
+  list stays open, and Tab reaches its options after four other stops.
+  The *onward Tabs* (a load of their own, kept apart from P8's steps) find
+  that, so 4.C, 4.D, 4.E and 5.D read P8 unchanged. Probe a held cell on
+  its replay with a short Playwright script (`capture.replay_context` on
+  the run's `page.har.zip`) before designing: it showed the options were
+  reachable, that Enter and Space did nothing, and that Space's "effect"
+  was the open list re-setting its class on each scroll step. Pages can
+  reuse ids (two `#button-basic` there): select by more than the id.
+- **Name what a person sees:** sentences name an element by its visible
+  text, with what a screen reader hears when that differs (`reveal.named`;
+  the "All" button is heard as "All All", its icon's alt beside the word).
 - **4.F has no `reveal-content`:** its pass R already Tabs through what the first
   six triggers open.
 - **Probe a page's triggers in one process at a time**: several browsers beside

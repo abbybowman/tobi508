@@ -85,7 +85,7 @@ re-testing): confirm and remove, or remove the mark.
   REVIEW through guard CN, and so does an editable text area). 4.A and
   4.C to 4.F do not see the controls inside such a form, so on a page
   whose only form opens from a plain button they can PASS (read, not
-  run). 4.A does not scan opened content yet
+  run). 4.A and 4.F read opened content since 4.A 1.21.0 and 4.F 1.16.0
   (step 15, [#135](https://github.com/abbybowman/tobi508/issues/135)).
 - **Guard CN matches hidden fields by their place in the page:** a page
   that rebuilds its elements when a section opens can make a field that
@@ -194,8 +194,17 @@ re-testing): confirm and remove, or remove the mark.
   M8; a click that does nothing in a replay but something live leaves
   the control at M8r (NEEDS REVIEW). The hedge check reads words, so an
   answer that is sure but uses one ("likely") goes to a person.
-  Handlers delegated to an ancestor are not tied to the child they serve;
-  controls inside content that opens are not scanned (step 15). Frames and
+  Handlers delegated to an ancestor are not tied to the child they serve.
+  Content that opens is read since 1.21.0 (#135 step 15) on a load opened
+  as `reveal.py` opened it; only `reveal.py`'s triggers (at most 20) are
+  read, the onward Tabs stop at the page's stops + 3 (at most 200), and
+  at most 250 opened stops are hovered (`HOVER_OPENED_MAX`). A key press
+  whose only change is a scroll and a positioned layer's style, or its
+  class set again unchanged, counts as no effect (1.21.0): a real effect
+  made only that way reads as none, which can only move a cell toward
+  FAIL. A key that changes text in the same part of the page as the click
+  passes M8 even when it does something else (fixture F49 was moved out
+  of that part to test the scroll rule). Frames and
   listeners with no visible area, and listeners on the whole page, are not
   sent to a person (1.17.0, step 32, [#136](https://github.com/abbybowman/tobi508/issues/136)): a mouse-only feature built only on a
   `document` listener is not flagged. The hover scan reaches 160 stops
@@ -260,7 +269,15 @@ re-testing): confirm and remove, or remove the mark.
   unsure in one rerun and a false FAIL in the next, came from elements
   placed out of line while the page scrolled, a sidebar that scrolls by
   itself and a player's new id on each load: fixed in 4.F 1.11.0.) The judge is often
-  unsure, so many cells wait for a person. A Tab loop's move back to its
+  unsure, so many cells wait for a person. The judge can call a tag cloud
+  "independent links" and answer preserves where a tester finds its order
+  random: round 3's forum page (p08), a false PASS in gate
+  2026-11-23-135e (the rubric's "independent items" invites it; Abby
+  accepted it for now, 2026-11-23). Since 1.16.0 (#135 step 15) opened
+  content comes from the shared walk (every trigger `reveal.py` opens, not
+  the first six); S6 is raised when Tab reaches a menu only after other
+  stops (F85; round 3's SDE "All" menu, a FAIL against a Pass key, Abby's
+  option a), and not when no key reaches it (4.A's). A Tab loop's move back to its
   start is no signal (1.15.0, #136), but only when the whole loop is in one
   document; a loop that crosses a frame is read move by move.
 

@@ -92,6 +92,7 @@ Wrong PASS or DOES NOT APPLY results found on test pages built to probe each tes
 <!-- known-gaps:start -->
 - **2.A, 2.B, 2.C, 3.A:** content the 6.5-second watch misses: audio or motion that starts late, a blink by `visibility` or about 2.5 times a second, motion that fills the screen, a counter started by scrolling, flashing below the first screen ([roadmap](docs/ROADMAP.md#later)).
 - **4.A, 4.C, 4.D, 4.E, 4.F:** controls inside a form that opens from a plain button are not reached ([#135](https://github.com/abbybowman/tobi508/issues/135)).
+- **4.F:** a tag cloud whose links Tab reaches out of order can PASS when the judge calls the tags independent (round 3's forum page; [KNOWN-LIMITS](docs/KNOWN-LIMITS.md#4a-to-4f-keyboard-and-focus)).
 - **4.B, 5.H:** timing instructions or a payment form not in English, or worded "press Enter twice" ([roadmap](docs/ROADMAP.md#next-after-the-demo)).
 - **9.C:** links or icons in a page's content that do the same thing under different names (buttons and fields are compared since 9.C 1.14.0; [roadmap](docs/ROADMAP.md#later)).
 <!-- known-gaps:end -->
