@@ -645,6 +645,25 @@ def _method(c: Cand) -> str:
     return f'the "{c.name}" {what}' if c.name else f"an unnamed {what}"
 
 
+def _place(c: Cand, rid: str) -> str:
+    """A tried way to skip, in words for people, with how to try it
+    (Instance.plain; agent debrief, 2026-11-23). Wording only."""
+    how = _how_to_reach(c)
+    how = how if how.startswith("load") else f"load the page and {how}"
+    m = _method(c)
+    text = {
+        "M1": f"We could not try {m}, so a person should check whether it lets keyboard users skip the repeated content: {how}.",
+        "M2": f"{m} did not move the keyboard past the repeated content. To try it: {how}.",
+        "M5": f"{m} did not move the keyboard past the repeated content. To try it: {how}.",
+        "M6": f"{m} did not move the keyboard past the repeated content. To try it: {how}.",
+        "M8": f"{m} skips past the start of the main content. To try it: {how}.",
+        "M10": f"{m} skips past the start of the main content. To try it: {how}.",
+        "J2?": f"Whether {m} lands just after the repeated content is still an open question. To try it: {how}.",
+        "M11": f"We could not decide whether {m} lets keyboard users skip the repeated content; a person should try it: {how}.",
+    }.get(rid, f"{m} lets keyboard users skip the repeated content. To try it: {how}.")
+    return text[:1].upper() + text[1:]
+
+
 def _first_text(st: State9A) -> str:
     for b in st.block:
         if st.units[b].name:
@@ -725,6 +744,8 @@ def _decide(st: State9A, evidence_refs: list[str]) -> Finding:
     trace = ["A5"] + [f"c{c.n}:{r.id}" for c, r in results]
     inst = [
         Instance(
+            outcome=r.outcome,
+            plain=_place(c, r.id),
             selector=c.css or None,
             description=f"c{c.n} [{r.id} {r.outcome.value}] {_method(c)}: {_how_to_reach(c)}",
         )

@@ -72,6 +72,7 @@ from tobi508.frozen import NotFrozen, obtain
 from tobi508.judgment import get_judge, record_answers
 from tobi508.models import (
     REVIEW_HEAD,
+    TEST_NOT_PERFORMED_NOTE,
     Answer,
     AnswerResult,
     Count,
@@ -84,6 +85,7 @@ from tobi508.models import (
     RunResult,
     TestId,
     TestTime,
+    partly_checked_note,
     utcnow,
     waiting_head,
 )
@@ -831,6 +833,27 @@ def _evaluate(
             and f.summary.startswith(REVIEW_HEAD)
         ):
             f.summary = waiting_head(n) + f.summary[len(REVIEW_HEAD) :]
+    _mark_partly_checked(report)
+
+
+def _mark_partly_checked(report: Report) -> None:
+    """A NEEDS_REVIEW finding that found places or asked questions was
+    checked in part: Finding.partly_checked says what is left, and its
+    pre-SCRT row counts as performed (Abby, 2026-11-23). TT's "could not be
+    performed" note stays (TT p. 5: a test not completed). Wording and
+    bookkeeping only: no outcome changes. Every run and every re-evaluation
+    after answers comes through _evaluate, so this is the one place it is
+    set."""
+    asked = {q.test_id for q in report.questions}
+    for f in report.findings:
+        f.partly_checked = None
+        if f.outcome is not Outcome.NEEDS_REVIEW or f.note != TEST_NOT_PERFORMED_NOTE:
+            continue
+        if not f.instances and f.test_id not in asked:
+            continue  # nothing was checked: it could not be performed
+        places = sum(i.outcome not in (Outcome.PASS, Outcome.DNA) for i in f.instances)
+        questions = sum(q.test_id is f.test_id for q in report.open_questions)
+        f.partly_checked = partly_checked_note(places, questions)
 
 
 def _walk_extras(checks) -> list:

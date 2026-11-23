@@ -418,6 +418,10 @@ def _finding(outcome, summary, rows, refs, inst=None, rationale="", note=False):
     return f
 
 
+def _cap(text: str) -> str:
+    return text[:1].upper() + text[1:]
+
+
 def _name(it: Item) -> str:
     what = "button" if it.kind == "button" else "field"
     return (
@@ -493,7 +497,14 @@ def evaluate(st: State5B, evidence_refs: list[str]) -> Finding:
         if row.outcome is not Outcome.PASS:
             inst.append(
                 Instance(
-                    description=f"f{it.form}.{it.k} [{row.id} {row.outcome.value}] {it.kind}: {it.label!r}"
+                    outcome=row.outcome,
+                    # In words for people (Instance.plain).
+                    plain=_cap(
+                        f"{_name(it)} does not say what to enter or what the button does."
+                        if row.outcome is Outcome.FAIL
+                        else f"A person should check whether {_name(it)} says what to enter or what the button does."
+                    ),
+                    description=f"f{it.form}.{it.k} [{row.id} {row.outcome.value}] {it.kind}: {it.label!r}",
                 )
             )
     if failed:

@@ -17,7 +17,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tobi508 import opened, reveal
-from tobi508.checks.base import OUT_OF_TIME_MSG, RunContext
+from tobi508.checks.base import OUT_OF_TIME_MSG, RunContext, element_name
 from tobi508.engine import PageEvidence, Row, first_match, page_outcome
 from tobi508.models import (
     REVIEW_HEAD,
@@ -1305,6 +1305,8 @@ def evaluate(st: State4C, evidence_refs: list[str]) -> Finding:
         )
         instances.append(
             Instance(
+                outcome=outcome,
+                plain=_place(inst, outcome, names),
                 selector=next(iter(inst.member_info.values()), {}).get("css_path"),
                 frame_path=next(iter(inst.member_info.values()), {}).get(
                     "frame_chain", []
@@ -1404,12 +1406,7 @@ _ARROW_WORDS = {
 
 
 def _label(info: dict[str, Any]) -> str:
-    name = (info.get("name") or "").strip() or info.get("css_path") or "an element"
-    name = name if len(name) <= 60 else name[:57] + "..."
-    role = (info.get("role") or "").strip()
-    return f'"{name}"' + (
-        f" ({role})" if role and role not in ("generic", "none") else ""
-    )
+    return element_name(info.get("name"), info.get("role"))
 
 
 def _where(inst: Inst) -> str:
@@ -1556,6 +1553,21 @@ def _reach_keys(inst: Inst) -> list[str]:
     if inst.via and not inst.via.get("paths"):
         return [*inst.via["keys"], *inst.prefix]
     return inst.prefix
+
+
+def _place(inst, outcome: Outcome, names: str) -> str:
+    """A place focus may get stuck, in words for people, with how to reach it
+    (Instance.plain; agent debrief, 2026-11-23). Wording only."""
+    way = (
+        "moving forward with Tab" if inst.key == "Tab" else "moving back with Shift+Tab"
+    )
+    where = names or "a group of elements"
+    steps = _steps_text(_reach_keys(inst))
+    if outcome is Outcome.FAIL:
+        return f"Keyboard focus gets stuck at {where} ({way}). To see it, load the page, then: {steps}."
+    if outcome is Outcome.PASS:
+        return f"Keyboard focus moves on from {where} ({way})."
+    return f"Keyboard focus may get stuck at {where} ({way}); a person should try it: load the page, then: {steps}."
 
 
 def _steps_text(keys: list[str]) -> str:
