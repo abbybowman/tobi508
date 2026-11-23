@@ -44,11 +44,13 @@ def register(mcp: FastMCP) -> None:
         detail: Annotated[
             Literal["brief", "full"],
             Field(
-                description='With run_id. "brief" (default): each result, its '
-                "summary and fix links, and only the places that failed or need "
-                'a person. "full": also every place that passed, the TT text, '
-                "the technical reasoning and the rule trail (much longer): only "
-                "when the user asks how a result was decided, or for an audit.",
+                description='With run_id. "brief" (default, for any report to '
+                "the user): each result, its summary and fix links, and the "
+                "places that failed or need a person, in plain words with how to "
+                'reach each. "full" is for compliance audits and when the user '
+                "wants every tested element, the full Trusted Tester text or how "
+                "a result was decided (spec rows): much longer, never for a "
+                "user-facing summary.",
             ),
         ] = "brief",
     ) -> str:

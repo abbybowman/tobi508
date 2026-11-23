@@ -270,6 +270,13 @@ class Instance(BaseModel):
         "places no outcome of their own. explain.py lists the places that are "
         "not PASS first and counts the rest.",
     )
+    plain: str = Field(
+        default="",
+        description="The place in plain words for people: what it is, what was "
+        "found and how to reach it (the check's own sentence for it, as in the "
+        "summary). Empty when a check has none; explain.py then shows the "
+        "description without its codes.",
+    )
 
 
 class Finding(BaseModel):

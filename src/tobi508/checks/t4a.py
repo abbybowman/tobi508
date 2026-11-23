@@ -1703,6 +1703,7 @@ def evaluate(st: State4A, evidence_refs: list[str]) -> Finding:
             instances.append(
                 Instance(
                     outcome=row.outcome,
+                    plain=text or "",
                     selector=inst.target.get("css_path"),
                     frame_path=inst.target.get("frame_chain") or [],
                     description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.kind}: {_label(inst.target)}",

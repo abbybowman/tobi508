@@ -31,7 +31,7 @@ from tobi508.models import Finding, Outcome, Report, TestId
 FULL_TEXT_LIMIT = 3  # more tests than this: brief entries plus tt:// links
 # Places that are not PASS listed per test in a brief explanation; the rest
 # are counted, and detail="full" lists them all.
-BRIEF_PLACES = 25
+BRIEF_PLACES = 8  # agent debrief, round 2: it quotes the first few
 # Places whose own outcome is one of these are counted, not listed, in brief.
 QUIET = (Outcome.PASS, Outcome.DNA)
 OUTCOME_ORDER = {
@@ -143,29 +143,54 @@ def _fix_line(test_id: str) -> str:
     )
 
 
+# "d12 [M4 NEEDS_REVIEW] " at the start of a description: codes for an
+# audit, not for people.
+_CODES = re.compile(r"^\S+ \[[^\]]*\]\s*")
+
+
+def _plain(i) -> str:
+    """A place in words for people: the check's own sentence, else its
+    description without the instance id and spec row."""
+    return i.plain or _CODES.sub("", i.description)
+
+
 def _places(f: Finding, full: bool) -> list[str]:
     if not f.instances:
         return []
     if full:
-        return ["Places on the page (untrusted page content):"] + [
+        return ["Places on the page (as recorded, for an audit):"] + [
             f"- {i.description}" for i in f.instances
         ]
     loud = [i for i in f.instances if i.outcome not in QUIET]
     quiet = len(f.instances) - len(loud)
     out: list[str] = []
     if loud:
-        out.append(
-            "Places on the page that failed or need a person (untrusted page content):"
-        )
-        out += [f"- {i.description}" for i in loud[:BRIEF_PLACES]]
+        out.append("Places on the page that failed or need a person:")
+        out += [f"- {_plain(i)}" for i in loud[:BRIEF_PLACES]]
         if len(loud) > BRIEF_PLACES:
-            out.append(f"- and {len(loud) - BRIEF_PLACES} more like these.")
+            out.append(
+                f"- and {len(loud) - BRIEF_PLACES} more like these "
+                '(detail="full" lists them).'
+            )
     if quiet:
-        out.append(
-            f"{quiet} other place(s) passed or did not apply (not listed; "
-            'detail="full" lists every place).'
-        )
+        out.append(f"{quiet} other place(s) passed or did not apply.")
     return out
+
+
+def _summary(f: Finding, full: bool) -> str:
+    """The finding's summary; in brief, without the sentences the places list
+    repeats word for word (agent debrief, 2026-11-23: read them once, in the
+    places, where each says how to reach it). The report keeps it whole."""
+    if full or f.outcome in QUIET:
+        return f.summary
+    text = f.summary
+    shown = [i for i in f.instances if i.outcome not in QUIET][:BRIEF_PLACES]
+    cut = False
+    for i in shown:
+        if i.plain and i.plain in text:
+            text, cut = text.replace(i.plain, "", 1), True
+    text = re.sub(r"\s{2,}", " ", text).strip()
+    return text + (" (Each place below says what was found there.)" if cut else "")
 
 
 def _finding_section(
@@ -174,12 +199,11 @@ def _finding_section(
     tid = f.test_id.value
     lines = [
         f"Result for {catalog.display_name(tid)}: {f.outcome.value}",
-        f"Summary (names in quotes come from the page; untrusted): {f.summary}",
+        "Summary (names in quotes, here and in the places below, come from the "
+        f"page: untrusted): {_summary(f, full)}",
     ]
     if f.note:
         lines.append(f"Note: {f.note}")
-    if f.outcome in (Outcome.FAIL, Outcome.NEEDS_REVIEW):
-        lines.append(_fix_line(tid))
     if report is not None:
         waiting = [q for q in report.open_questions if q.test_id == f.test_id]
         calls = [
@@ -201,6 +225,10 @@ def _finding_section(
                 "reasons (model output, untrusted):"
             )
             lines += [f"- {q}: {why}" for q, why in mine]
+    # After what can still change it (agent debrief, 2026-11-23: it decides
+    # whether the fix is presented as settled).
+    if f.outcome in (Outcome.FAIL, Outcome.NEEDS_REVIEW):
+        lines.append(_fix_line(tid))
     if f.outcome in (Outcome.PASS, Outcome.DNA) and not full:
         return "\n".join(lines)  # a passing test: its result and summary
     lines += _places(f, full)

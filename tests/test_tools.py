@@ -6,6 +6,7 @@ Checks evidence collection and open-question plumbing only, never outcomes.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -784,7 +785,13 @@ async def test_explain_holds_every_detail_a_result_leaves_out(settings, server):
     assert "NOT a certified" in text and "NOT a certified" in full
     for f in report.findings:
         for t in (text, full):
-            assert f.summary in t and f"TT {f.test_id.value}): {f.outcome.value}" in t
+            assert f"TT {f.test_id.value}): {f.outcome.value}" in t
+        assert f.summary in full
+        # Brief: every sentence of the summary is still there, once, in the
+        # summary or in the place it describes.
+        for i in f.instances:
+            if i.plain and i.outcome not in (Outcome.PASS, Outcome.DNA):
+                assert text.count(i.plain) == 1
         # Every detail is one call away with detail="full".
         assert all(r in full for r in f.rows)
         assert all(u in full for u in catalog.understanding_urls(f.test_id.value))
@@ -805,6 +812,8 @@ async def test_explain_holds_every_detail_a_result_leaves_out(settings, server):
         if quiet and f.outcome in (Outcome.FAIL, Outcome.NEEDS_REVIEW):
             assert f"{len(quiet)} other place(s) passed or did not apply" in text
     assert len(text) < len(full)
+    # No spec codes in brief place lines (agent debrief, 2026-11-23).
+    assert not re.search(r"^- \S+ \[[A-Z]", text, re.M)
     assert "=== 4.A ===" in one and "=== 4.D ===" in one and "=== 4.C ===" not in one
     assert "4.C" in general and "NOT a certified" in general
 

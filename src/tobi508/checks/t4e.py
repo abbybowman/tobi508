@@ -759,6 +759,7 @@ def evaluate(st: State4E, evidence_refs: list[str]) -> Finding:
         instances.append(
             Instance(
                 outcome=row.outcome,
+                plain=sentences[-1][1],
                 selector=inst.target.get("css_path"),
                 frame_path=inst.target.get("frame_chain") or [],
                 description=f"{inst.id} [{row.id} {row.outcome.value}] {inst.signal.kind} "
