@@ -181,12 +181,15 @@ def test_the_specs_that_press_keys_or_type_declare_the_guard():
     assert got == set(GUARDED) | {"5.A", "5.B", "5.C"}
     # Opened content (fix 9b): the keyboard tests and 5.D add reveal and
     # reveal-content; 4.C and 4.E read the walk through opened content (step
-    # 6g), so their RC is the narrowed reveal-walk; 4.F adds reveal only (its pass R
+    # 6g), and 4.D since 1.13.0 (#135 step 15), so their RC is the narrowed
+    # reveal-walk; 4.F adds reveal only (its pass R
     # goes through opened content); 4.B and 5.F-5.H add nothing.
     both = ("unrecorded-code", "reveal", "reveal-content")
     want = {t: ("unrecorded-code",) for t in GUARDED}
-    want |= {t: both for t in ("4.A", "4.D", "5.D")}
-    want |= {t: ("unrecorded-code", "reveal", "reveal-walk") for t in ("4.C", "4.E")}
+    want |= {t: both for t in ("4.A", "5.D")}
+    want |= {
+        t: ("unrecorded-code", "reveal", "reveal-walk") for t in ("4.C", "4.D", "4.E")
+    }
     want["4.F"] = ("unrecorded-code", "reveal")
     # Row WL (#134): a load still drawing when its wait ended decides
     # nothing, for the tests that carried step 22's row WL (5.D is held by
