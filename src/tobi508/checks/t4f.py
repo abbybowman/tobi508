@@ -1211,7 +1211,7 @@ def _keys_text(keys: list[str]) -> str:
 
 def _sentence(inst: Inst4F, rid: str) -> str:
     sig = "; ".join(s["words"] for s in inst.signals)
-    reasons = (inst.j1 or {}).get("reasons", "")
+    reasons = ((inst.j1 or {}).get("reasons", "") or "").rstrip(". ")
     keys = _keys_text(inst.keys)
     return {
         "M1": f"Focus moved around {inst.label} in a way we could not read reliably. Please check the focus order by hand.",
