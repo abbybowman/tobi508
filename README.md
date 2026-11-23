@@ -67,8 +67,8 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 3.A | Flashing | [2.3.1](https://www.w3.org/TR/WCAG20/#seizure-does-not-violate) | [1.4.0](specs/rules/3a-flashing.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.A | Keyboard access | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.20.0](specs/rules/4a-keyboard-access.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
 | 4.B | No keystroke timing | [2.1.1](https://www.w3.org/TR/WCAG20/#keyboard-operation-keyboard-operable) | [1.4.0](specs/rules/4b-no-keystroke-timing.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.C | No keyboard trap | [2.1.2](https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping) | [1.19.0](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
-| 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.13.0](specs/rules/4d-focus-visible.md) | ⚠️ often fails pages a tester passes; see known wrong outcomes below |
+| 4.C | No keyboard trap | [2.1.2](https://www.w3.org/TR/WCAG20/#keyboard-operation-trapping) | [1.19.1](specs/rules/4c-no-keyboard-trap.md) | ✅ agrees with a tester; see known wrong outcomes below |
+| 4.D | Focus visible | [2.4.7](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-visible) | [1.13.0](specs/rules/4d-focus-visible.md) | ⚠️ mostly left for a person; see known wrong outcomes below |
 | 4.E | On focus | [3.2.1](https://www.w3.org/TR/WCAG20/#consistent-behavior-receive-focus) | [1.9.0](specs/rules/4e-on-focus.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 4.F | Focus order meaning | [2.4.3](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-focus-order) | [1.15.1](specs/rules/4f-focus-order-meaning.md) | ✅ agrees with a tester; see known wrong outcomes below |
 | 5.A | Label provided | [3.3.2](https://www.w3.org/TR/WCAG20/#minimize-error-cues) | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |

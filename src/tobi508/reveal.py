@@ -173,7 +173,7 @@ class Opened(BaseModel):
     read: bool | None = None  # ANDI read the opened state (None: not asked)
     picture: str | None = None
     options: list[Option] = Field(default_factory=list)
-    # The Tab walk through what it opened (opened.py; 4.C and 4.E).
+    # The Tab walk through what it opened (opened.py; 4.C, 4.E and 4.D).
     walked: opened.Walked | None = None
 
     @property
@@ -209,7 +209,7 @@ class Reveal(BaseModel):
             "opened_with_focusable": sum(
                 t.status == OPENED and t.new_focusable > 0 for t in self.triggers
             ),
-            # Guard RC for the tests that walk opened content (4.C, 4.E; spec
+            # Guard RC for the tests that walk opened content (4.C, 4.E, 4.D; spec
             # 4.C P8): opened with controls, and the walk did not reach every
             # control Tab is expected to reach.
             "not_walked": [

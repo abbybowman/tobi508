@@ -22,6 +22,14 @@
 - **A set's answer carries one quote.** The agent quoted the rows of two
   buttons ("Earth; Sun"); a per-button quote check sent both to review. Check each
   piece of the quote against the rows of the whole set (`t5c._quote_ok`).
+- **4.D reads the walk too (1.13.0, #135):** each trigger's load needs its own
+  pass name (`O<n>`), or the pictures of every trigger's walk overwrite each
+  other; pictures only when 4.D runs, so 4.E's evidence on those loads is
+  unchanged. Its before pictures come from Shift+Tab back through the opened
+  content after the walk (`after_walk`, raw key presses, not walk steps). A
+  dropdown that closes when focus leaves is shut by then, so the first
+  Shift+Tab lands on its button: stop at the first landing that is not the
+  stop expected, never picture the wrong element.
 - **4.F has no `reveal-content`:** its pass R already Tabs through what the first
   six triggers open.
 - **Probe a page's triggers in one process at a time**: several browsers beside

@@ -54,24 +54,30 @@ SITES = {
     1: {
         "site": "www.nasa.gov",
         "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
-        "the server judge on every type it can take, on the original freeze",
+        "the server judge on every type it can take, on the original freeze; "
+        "4.D from gate 2026-11-23-135c (#135)",
         "base": JUD / "gate-2026-11-17-9c" / "compare-round1.json",
-        "overlay": [],
+        # 4.D only, against gate 9c (#135, 4.D 1.13.0; the full rerun replaces it).
+        "overlay": [JUD / "gate-2026-11-23-135c" / "moved.json"],
     },
     2: {
         "site": "svs.gsfc.nasa.gov",
         "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
-        "the server judge on every type it can take",
+        "the server judge on every type it can take; 4.D from gate "
+        "2026-11-23-135c (#135)",
         "base": JUD / "gate-2026-11-17-9c" / "compare-round2.json",
-        "overlay": [],
+        # 4.D only, against gate 9c (#135, 4.D 1.13.0; the full rerun replaces it).
+        "overlay": [JUD / "gate-2026-11-23-135c" / "moved.json"],
     },
     3: {
         "site": "science.data.nasa.gov",
         "run": "rerun on development pages, gate 2026-11-17-9c (step 9c), "
         "the server judge on every type it can take (the blind round 3, "
-        "locked 2026-11-16, stays the record in evals/judging/round3/score.md)",
+        "locked 2026-11-16, stays the record in evals/judging/round3/score.md); "
+        "4.D from gate 2026-11-23-135c (#135)",
         "base": JUD / "gate-2026-11-17-9c" / "compare-round3.json",
-        "overlay": [],
+        # 4.D only, against gate 9c (#135, 4.D 1.13.0; the full rerun replaces it).
+        "overlay": [JUD / "gate-2026-11-23-135c" / "moved.json"],
     },
 }
 

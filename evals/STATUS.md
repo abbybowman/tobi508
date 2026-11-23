@@ -6,9 +6,9 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 
 ## Runs
 
-- Round 1, www.nasa.gov: rerun on development pages, gate 2026-11-17-9c (step 9c), the server judge on every type it can take, on the original freeze.
-- Round 2, svs.gsfc.nasa.gov: rerun on development pages, gate 2026-11-17-9c (step 9c), the server judge on every type it can take.
-- Round 3, science.data.nasa.gov: rerun on development pages, gate 2026-11-17-9c (step 9c), the server judge on every type it can take (the blind round 3, locked 2026-11-16, stays the record in evals/judging/round3/score.md).
+- Round 1, www.nasa.gov: rerun on development pages, gate 2026-11-17-9c (step 9c), the server judge on every type it can take, on the original freeze; 4.D from gate 2026-11-23-135c (#135).
+- Round 2, svs.gsfc.nasa.gov: rerun on development pages, gate 2026-11-17-9c (step 9c), the server judge on every type it can take; 4.D from gate 2026-11-23-135c (#135).
+- Round 3, science.data.nasa.gov: rerun on development pages, gate 2026-11-17-9c (step 9c), the server judge on every type it can take (the blind round 3, locked 2026-11-16, stays the record in evals/judging/round3/score.md); 4.D from gate 2026-11-23-135c (#135).
 
 ## Counts
 
@@ -46,10 +46,10 @@ A cell is one page and one test where a Trusted Tester's blind key gives an answ
 | 4.C | R2 svs.gsfc.nasa.gov | 10 | 9 | 0 | 0 | 0 | 1 |
 | 4.C | R3 science.data.nasa.gov | 10 | 7 | 0 | 0 | 0 | 3 |
 | **4.C** | **all: ✅ agrees with a tester** | 29 | 22 | 0 | 0 | 0 | 7 |
-| 4.D | R1 www.nasa.gov | 9 | 3 | 0 | 0 | 0 | 6 |
-| 4.D | R2 svs.gsfc.nasa.gov | 10 | 1 | 0 | 2 | 0 | 7 |
+| 4.D | R1 www.nasa.gov | 9 | 5 | 0 | 0 | 0 | 4 |
+| 4.D | R2 svs.gsfc.nasa.gov | 10 | 1 | 0 | 0 | 0 | 9 |
 | 4.D | R3 science.data.nasa.gov | 10 | 3 | 0 | 0 | 0 | 7 |
-| **4.D** | **all: ⚠️ often fails pages a tester passes** | 29 | 7 | 0 | 2 | 0 | 20 |
+| **4.D** | **all: ⚠️ mostly left for a person** | 29 | 9 | 0 | 0 | 0 | 20 |
 | 4.E | R1 www.nasa.gov | 9 | 6 | 0 | 0 | 0 | 3 |
 | 4.E | R2 svs.gsfc.nasa.gov | 10 | 9 | 0 | 0 | 0 | 1 |
 | 4.E | R3 science.data.nasa.gov | 10 | 7 | 0 | 0 | 0 | 3 |
