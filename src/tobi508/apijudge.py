@@ -27,7 +27,9 @@ import base64
 import hashlib
 import io
 import json
+import logging
 import os
+import re
 import shutil
 import tempfile
 import time
@@ -39,6 +41,8 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from tobi508.models import Answer, ChoiceAnswer, OpenQuestion
+
+_log = logging.getLogger(__name__)
 
 PROMPT_FILE = Path(__file__).with_name("judge_prompt.md")
 SLICE = 1400  # tall pictures go in slices of this many pixels
@@ -282,6 +286,25 @@ class ClaudeCli:
         return res
 
 
+def _http_error(e: urllib.error.HTTPError) -> str:
+    """The status and the API's error type (a fixed word such as
+    invalid_request_error) for the run's log. The message can echo the
+    request, which holds page text, so it goes only to the server's own log
+    (`podman logs`), never to the run or its caller (#162)."""
+    kind, message = "", ""
+    try:
+        err = json.loads(e.read() or b"{}").get("error") or {}
+        if isinstance(err, dict):
+            t = str(err.get("type") or "")
+            kind = t if re.fullmatch(r"[a-z_]{1,40}", t) else ""
+            message = str(err.get("message") or "")[:500]
+    except Exception:
+        pass
+    if message:
+        _log.warning("model API HTTP %s %s: %s", e.code, kind, message)
+    return f"HTTP {e.code} from the model API" + (f" ({kind})" if kind else "")
+
+
 class AnthropicMessages:
     """POST {base}/v1/messages, temperature 0, the answer as a forced tool
     call. The key is only ever put in the request header."""
@@ -313,8 +336,7 @@ class AnthropicMessages:
             with urllib.request.urlopen(req, timeout=self.timeout_s) as r:
                 return json.loads(r.read())
         except urllib.error.HTTPError as e:
-            # The status only: a body can echo the request.
-            raise RuntimeError(f"HTTP {e.code} from the model API") from None
+            raise RuntimeError(_http_error(e)) from None
 
     async def call(self, system, blocks, pictures, schema) -> CallResult:
         body = {
