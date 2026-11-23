@@ -112,7 +112,7 @@ The tool gives each page one 4.F outcome: PASS, FAIL, DOES NOT APPLY or NEEDS RE
 | G5 | Every instance is PASS or DOES NOT APPLY | PASS |
 | G6 | Anything else | NEEDS REVIEW |
 
-**Plain-language sentences.** Row IDs and signal codes stay in the evidence trace. `<element>` is the role and name in plain words; `<keys>` is the key sequence from a fresh load; `<signals>` lists the signals in plain words ("focus jumps back up the page after the search box"; "the address fields are split by the newsletter checkboxes"; "some elements are given an explicit tab position").
+**Plain-language sentences.** Row IDs and signal codes stay in the evidence trace. `<element>` is the role and name in plain words; `<keys>` is the key sequence from a fresh load; `<signals>` lists the signals in plain words ("focus jumps back up the page after the search box"; "the address fields are split by the newsletter checkboxes"; "some elements are given an explicit tab position"). *Naming an element* (1.21.0 for 4.A, 1.16.0 for 4.F; #135, Abby 2026-11-23): by its visible text, which a person looks for on the page, with what a screen reader hears in brackets when that differs ("All" (button; a screen reader hears "All All"): round 3's SDE button is an icon whose alt text is "All" beside the word "All"); by its accessible name when it shows no text.
 
 | Row | Sentence |
 | --- | --- |

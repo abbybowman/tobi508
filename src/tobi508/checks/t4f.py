@@ -509,10 +509,12 @@ def signals(
 
 
 def _trigger_label(trig) -> str:
+    """By its visible text, with what a screen reader hears when that
+    differs (reveal.named; round 3's "All" button, heard as "All All")."""
     kind = {"a": "link", "button": "button", "summary": "summary"}.get(
         trig.tag or "", trig.tag or "control"
     )
-    return f'"{trig.name or trig.css_path}" ({trig.role or kind})'
+    return reveal.named(trig.name or trig.css_path, trig.text, trig.role or kind)
 
 
 async def _reveal_shared(ctx: RunContext, st: State4F) -> None:

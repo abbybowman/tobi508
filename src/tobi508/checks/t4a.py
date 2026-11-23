@@ -282,6 +282,7 @@ STOP_FN = (
     + """
   const el = this;
   return { title: (el.getAttribute('title') || '').trim(), native: native(el), reason: reasonOf(el),
+    text: (el.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120),
     href: el.href && typeof el.href === 'string' ? el.href : null, dest: destHref(el),
     radio: radioGroup(el) };
 }"""
@@ -1034,6 +1035,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
                             if os_.info.get("pointer_only")
                             else reason,
                             "late": os_.late,
+                            "text": os_.info.get("text"),
                         },
                         keys=list(os_.keys),
                         opened=rd.opened,
@@ -1193,7 +1195,9 @@ def _opener(trig) -> dict[str, Any]:
         "frame_chain": list(trig.frame_chain),
         "css_path": trig.css_path,
         "by": trig.walked.by if trig.walked else trig.by,
-        "name": trig.name or "the control",
+        # A person looks for the words on the page (`text`), not what a
+        # screen reader hears.
+        "name": trig.text or trig.name or "the control",
     }
 
 
@@ -1335,6 +1339,7 @@ def _target(p1: PassResult, sr: StopRef) -> dict[str, Any]:
         "reason": "pointer_only"
         if (_hook(p1, sr) or {}).get("pointer_only")
         else (_hook(p1, sr) or {}).get("reason"),
+        "text": (_hook(p1, sr) or {}).get("text"),
     }
 
 
@@ -1983,12 +1988,11 @@ _TAG_ROLE = {
 
 
 def _label(t: dict[str, Any]) -> str:
-    name = (t.get("name") or "").strip() or t.get("css_path") or "an element"
-    name = name if len(name) <= 60 else name[:57] + "..."
-    role = (t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")).strip()
-    return f'"{name}"' + (
-        f" ({role})" if role and role not in ("generic", "none") else ""
+    name = (t.get("name") or "").strip() or (
+        "" if t.get("text") else t.get("css_path") or "an element"
     )
+    role = (t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")).strip()
+    return reveal.named(name, t.get("text"), role)
 
 
 def _keys_text(keys: list[str], opened: dict[str, Any] | None = None) -> str:

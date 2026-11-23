@@ -133,7 +133,7 @@ Instances: *K*, each unreached candidate; *X*, each custom control executed; *T*
 
 **Row WK: the walk did not reach every element** (1.11.0; Abby, 2026-11-14; review H-03, M-05, F-11). A PASS or DOES NOT APPLY needs the keyboard walk to have reached every element this test checks; otherwise the outcome is NEEDS REVIEW with "This test could not be performed" and one plain sentence naming what was not reached. FAIL is unchanged. Trace row `WK`. When P1 also did not wrap, this sentence replaces G3's generic "did not get through the whole page" line; G3's P1 condition itself is unchanged (phase 2 may read the union of the passes).
 
-**Plain-language sentences.** Row IDs stay in the evidence trace. A menu item shown by hover adds "(it appears when the mouse rests on <stop>)" after <element>.
+**Plain-language sentences.** Row IDs stay in the evidence trace. A menu item shown by hover adds "(it appears when the mouse rests on <stop>)" after <element>. *Naming an element* (1.21.0 for 4.A, 1.16.0 for 4.F; #135, Abby 2026-11-23): by its visible text, which a person looks for on the page, with what a screen reader hears in brackets when that differs ("All" (button; a screen reader hears "All All"): round 3's SDE button is an icon whose alt text is "All" beside the word "All"); by its accessible name when it shows no text.
 
 | Row | Sentence |
 | --- | --- |

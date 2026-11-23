@@ -29,6 +29,7 @@ something a test checks is itself a reason for review (guard
 from __future__ import annotations
 
 import json
+import re
 import time
 from typing import Any
 
@@ -110,7 +111,8 @@ FOCUS_FN = (
   }
   const r = el.getBoundingClientRect();
   return { found: true, focused: document.activeElement === el || el.contains(document.activeElement),
-           expanded: el.getAttribute('aria-expanded'), x: r.x + r.width / 2, y: r.y + r.height / 2 };
+           expanded: el.getAttribute('aria-expanded'), x: r.x + r.width / 2, y: r.y + r.height / 2,
+           text: (el.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120) };
 }"""
 )
 
@@ -160,6 +162,10 @@ class Opened(BaseModel):
     frame_chain: list[str] = Field(default_factory=list)
     why: list[str] = Field(default_factory=list)  # why it is a trigger
     controls: str | None = None  # aria-controls (4.F: whose dialog it is)
+    # Its visible text, which a person looks for on the page, when the
+    # opening read it (a sentence names it so; `name` is what a screen
+    # reader hears: round 3's "All" button is "All All", an icon's alt too).
+    text: str = ""
     # What opened inside the region it names (aria-controls; top document,
     # reveal keys): 4.F's revealed content (its pass R's, 1.16.0).
     in_region: list[str] | None = None
@@ -404,6 +410,7 @@ async def _open_to(
         new = sorted(set(after) - set(before))
         again = await _focus(s, stop.frame_chain, stop.css_path, peek=True)
         info |= {
+            "text": got.get("text", ""),
             "by": by,
             "before": before,
             "after": after,
@@ -487,6 +494,7 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
                 rec.reason = WHY.get(rec.status, "")
                 continue
             rec.by = info["by"]
+            rec.text = info.get("text", "")
             rec.new_elements, rec.new_focusable, rec.new_fields = _counts(info)
             rec.new_field_paths = _top_fields(info["new"], info["after"])
             rec.dialog = bool(info["dialog"])
@@ -681,3 +689,24 @@ async def reopen(
 
 def write(ctx, rv: Reveal, path) -> None:
     path.write_text(json.dumps(rv.model_dump(mode="json"), indent=1))
+
+
+def _cut(s: str) -> str:
+    return s if len(s) <= 60 else s[:57] + "..."
+
+
+def named(name: str | None, text: str | None, role: str | None) -> str:
+    """How a sentence names an element (1.21.0, #135): by its visible text,
+    which a person looks for on the page, with what a screen reader hears
+    when that differs (round 3's "All" button: an icon's alt "All" beside
+    the word, heard as "All All"); by its accessible name when it shows no
+    text."""
+    name = re.sub(r"\s+", " ", (name or "")).strip()
+    text = re.sub(r"\s+", " ", (text or "")).strip()
+    role = (role or "").strip()
+    role = role if role and role not in ("generic", "none") else ""
+    if text and name and text.lower() != name.lower():
+        heard = f'a screen reader hears "{_cut(name)}"'
+        return f'"{_cut(text)}" (' + (f"{role}; " if role else "") + heard + ")"
+    label = f'"{_cut(text or name)}"'
+    return label + (f" ({role})" if role else "")
