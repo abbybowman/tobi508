@@ -1,0 +1,1183 @@
+{
+ "4.F-f02-address-form-interleaved": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Positive tabindex alternates focus between the address fields and newsletter checkboxes, splitting both groups apart and jumping between unrelated areas."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Positive tabindex alternates focus between the address fields and newsletter checkboxes, splitting both groups apart and jumping between unrelated areas."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.5,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2996,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 170
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S1,S1,S1,S1,S1,S1,S2,S5,S5]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f03-footer-first-tabindex": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Positive tabindex sends focus first to Privacy policy, a footer link at the bottom, then back up to Agency home and Apply. Focus jumps around and the order does not follow the page."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Positive tabindex sends focus first to Privacy policy, a footer link at the bottom, then back up to Agency home and Apply. Focus jumps around and the order does not follow the page."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.8,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2498,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 177
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S1,S2,S3]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f04-independent-columns-reordered": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Two independent columns, News and Events. Each column's links stay together and in order. Focus finishes News, then goes to Events. That is only a column order difference."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Two independent columns, News and Events. Each column's links stay together and in order. Focus finishes News, then goes to Events. That is only a column order difference."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.4,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2882,
+    "cache_read_input_tokens": 5453,
+    "input_tokens": 4,
+    "output_tokens": 385
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f05-nav-after-main": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Main links come first, then the side section links, each group in order. Focus only jumps once, between two separate groups, and nothing is split or out of sequence."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Main links come first, then the side section links, each group in order. Focus only jumps once, between two separate groups, and nothing is split or out of sequence."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.5,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2520,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 247
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f06-social-icons-reordered": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_matter",
+     "reasons": "Independent social media links; right-to-left order does not change meaning or usability."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Independent social media links; right-to-left order does not change meaning or usability."
+   }
+  ],
+  "expected": "DNA",
+  "got": "DNA",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.0,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2566,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 133
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M8[S3,S3,S3]",
+   "G4"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f08-menu-not-adjacent": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "After Services opens, Tab skips its revealed content and goes to About, Jobs, Main link first. The content is reached only after 4 presses, far from its trigger."
+    },
+    "q": "4.F-r1-J1",
+    "reasons": "After Services opens, Tab skips its revealed content and goes to About, Jobs, Main link first. The content is reached only after 4 presses, far from its trigger."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.5,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2594,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 168
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M4",
+   "r1:M6[S6]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f14-backward-order-differs": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Forward order One-Two-Three-Four is fine, but Shift+Tab goes Four, Two, Three, One. Going back jumps around, with Two before Three, so it makes no sense for a sequence."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Forward order One-Two-Three-Four is fine, but Shift+Tab goes Four, Two, Three, One. Going back jumps around, with Two before Three, so it makes no sense for a sequence."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.6,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 4043,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 175
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S4]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f15-columns-arbitrary": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Numbered steps are reached out of sequence: Step 3 and Step 4 come first, then Steps 1 and 2. The order of the steps is the point, so this breaks it."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Numbered steps are reached out of sequence: Step 3 and Step 4 come first, then Steps 1 and 2. The order of the steps is the point, so this breaks it."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.6,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2536,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 181
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S3]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f16-site-overlay-not-the-menu": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Opening Internships reveals two links, but the next Tab skips them and goes to Close, which is outside the revealed content. The menu content is not reached from its trigger."
+    },
+    "q": "4.F-r1-J1",
+    "reasons": "Opening Internships reveals two links, but the next Tab skips them and goes to Close, which is outside the revealed content. The menu content is not reached from its trigger."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.4,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2502,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 169
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M4",
+   "r1:M6[S6]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f17-card-grid-row-by-row": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Grid of cards read row by row; each card's image link then title link stay together. Jumps back are just row wraps. Filters first, More missions last."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Grid of cards read row by row; each card's image link then title link stay together. Jumps back are just row wraps. Filters first, More missions last."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.7,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 3699,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 152
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3,S3,S3,S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f19-long-report-form-interleaved": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Positive tabindex sends focus to the form first. Fields alternate between Your details and Topics, splitting both groups. Focus then jumps back up to Read part 1."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Positive tabindex sends focus to the form first. Fields alternate between Your details and Topics, splitting both groups. Focus then jumps back up to Read part 1."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.1,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 5324,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 191
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S1,S1,S1,S1,S1,S1,S2,S3,S5,S5]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f20-cards-reached-right-to-left": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Four independent story cards are reached right to left. Each card's link stays with its own title. The cards are not a sequence, so the order keeps meaning and every link is usable."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Four independent story cards are reached right to left. Each card's link stays with its own title. The cards are not a sequence, so the order keeps meaning and every link is usable."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.1,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2673,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 323
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3,S3,S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f21-card-buttons-in-other-order": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Each card's two buttons stay together and cards go in order. Download before Copy link is a minor swap within one card's own buttons."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Each card's two buttons stay together and cards go in order. Download before Copy link is a minor swap within one card's own buttons."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.3,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2565,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 163
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3,S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f22-steps-out-of-sequence": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Steps are a sequence; focus reaches step 3 before step 2, so the numbered steps are out of order."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Steps are a sequence; focus reaches step 3 before step 2, so the numbered steps are out of order."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.2,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2451,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 148
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S3]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f23-stops-with-no-visible-box": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Focus goes through the Newest column (A, B) and then the Archive column (C, D). Each column is read whole, so the jump is just column-by-column order and no group is split."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Focus goes through the Newest column (A, B) and then the Archive column (C, D). Each column is read whole, so the jump is just column-by-column order and no group is split."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.6,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2759,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 272
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f24-positive-tabindex-in-web-component": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "A positive tabindex sends focus to Privacy policy before Apply. Focus then jumps back up to Apply, so the order is out of sequence and doesn't follow the page."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "A positive tabindex sends focus to Privacy policy before Apply. Focus then jumps back up to Apply, so the order is out of sequence and doesn't follow the page."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 3.9,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2437,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 344
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S1,S3]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f25-positive-tabindex-in-frame": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "A positive tabindex on \"Privacy policy\" sends focus to it before \"Apply\". Focus then jumps back up the page to \"Apply\". The order no longer follows the page."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "A positive tabindex on \"Privacy policy\" sends focus to it before \"Apply\". Focus then jumps back up the page to \"Apply\". The order no longer follows the page."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 6.5,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 3145,
+    "cache_read_input_tokens": 5396,
+    "input_tokens": 4,
+    "output_tokens": 739
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S1,S2,S3]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f29-scroll-box-steps-out-of-sequence": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "Numbered steps are reached out of sequence: 3, 1, 5, 2, 4. The order of the steps is the point, so this breaks it."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Numbered steps are reached out of sequence: 3, 1, 5, 2, 4. The order of the steps is the point, so this breaks it."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.6,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2964,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 162
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M6[S3,S3]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f31-footer-column-starts-higher": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "preserves",
+     "reasons": "Two independent link groups, each reached whole and top to bottom. The jump up to Earth and Sun only reflects layout. Nothing is split or out of sequence."
+    },
+    "q": "4.F-o1-J1",
+    "reasons": "Two independent link groups, each reached whole and top to bottom. The jump up to Earth and Sun only reflects layout. Nothing is split or out of sequence."
+   }
+  ],
+  "expected": "PASS",
+  "got": "PASS",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.7,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2628,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 386
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M7[S3]",
+   "G5"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f33-disclosure-tab-skips-content": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "presses": 3,
+     "reasons": "After More filters opens 3 items, Tab goes to Search and Go first; revealed content is reached only after 3 presses, far from its trigger."
+    },
+    "q": "4.F-r1-J1",
+    "reasons": "After More filters opens 3 items, Tab goes to Search and Go first; revealed content is reached only after 3 presses, far from its trigger."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 2.6,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2560,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 158
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M4",
+   "r1:M6[S6]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ },
+ "4.F-f36-menu-options-reached-late": {
+  "answers": [
+   {
+    "by": "server:claude-sonnet-5-5",
+    "choice": {
+     "choice": "does_not_preserve",
+     "reasons": "After All opens its content, Tab goes to Search, Go and Help first. The opened content is reached only on the 4th press, far from its trigger."
+    },
+    "q": "4.F-r1-J1",
+    "reasons": "After All opens its content, Tab goes to Search, Go and Help first. The opened content is reached only on the 4th press, far from its trigger."
+   }
+  ],
+  "expected": "FAIL",
+  "got": "FAIL",
+  "judge": {
+   "answered": 1,
+   "call_timeout_s": 300,
+   "calls": 1,
+   "cap_s": 900,
+   "concurrency": 3,
+   "failed_calls": 0,
+   "invalid": 0,
+   "left_open": 0,
+   "model_requested": "claude-sonnet-5-5",
+   "models_reported": [
+    "claude-sonnet-5-5"
+   ],
+   "prompt_sha256": "e8320f2c1a18385ea55c4f61cd6e5f96687be573755cf0b7b0b573bda263a56d",
+   "questions": 1,
+   "rejected": 0,
+   "requests": 1,
+   "retried_calls": 0,
+   "route": "cli",
+   "seconds_in_calls": 4.9,
+   "switched_on": [
+    "4.F"
+   ],
+   "tokens": {
+    "cache_creation_input_tokens": 2607,
+    "cache_read_input_tokens": 1453,
+    "input_tokens": 2,
+    "output_tokens": 486
+   },
+   "unsure": 0
+  },
+  "match": true,
+  "rows": [
+   "A4",
+   "o1:M4",
+   "r1:M6[S6]",
+   "G2"
+  ],
+  "still_open": [],
+  "took_the_bait": false,
+  "tt": "4.F",
+  "wrong_pass": false
+ }
+}
