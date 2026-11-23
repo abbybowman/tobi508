@@ -1,0 +1,265 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "rounds": {
+  "3": {
+   "tally": {
+    "agree": 11,
+    "needs_review": 3
+   },
+   "moved": [
+    {
+     "page": "p01",
+     "test": "4.A",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "k1:M3",
+      "k2:M3",
+      "t2:M11",
+      "t3:M11",
+      "t83:M11",
+      "t84:M11",
+      "t85:M11",
+      "t86:M11",
+      "t87:M11",
+      "t88:M11",
+      "t89:M11",
+      "G4"
+     ]
+    },
+    {
+     "page": "p01",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3,S3,S3,S3]",
+      "r1:M4",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "r5:M4",
+      "G5"
+     ]
+    },
+    {
+     "page": "p02",
+     "test": "4.A",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "t2:M11",
+      "t3:M11",
+      "t51:M13",
+      "t53:M11",
+      "t54:M11",
+      "t55:M11",
+      "t56:M11",
+      "t57:M11",
+      "t58:M11",
+      "t59:M13",
+      "G4"
+     ]
+    },
+    {
+     "page": "p02",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3]",
+      "r1:M4",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "r5:M4",
+      "G5"
+     ]
+    },
+    {
+     "page": "p03",
+     "test": "4.A",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "t2:M11",
+      "t3:M11",
+      "t18:M11",
+      "t19:M11",
+      "t20:M11",
+      "t21:M11",
+      "t22:M11",
+      "t23:M11",
+      "t24:M13",
+      "G4"
+     ]
+    },
+    {
+     "page": "p04",
+     "test": "4.A",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "x1:M8",
+      "t2:M11",
+      "t3:M11",
+      "t28:M13",
+      "t29:M13",
+      "t73:M11",
+      "t74:M11",
+      "t75:M11",
+      "t76:M11",
+      "t77:M11",
+      "t78:M11",
+      "t79:M13",
+      "G4"
+     ]
+    },
+    {
+     "page": "p04",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "A little odd for the search filters (first column) to come after the search results (second column) but the meaning and operability is preserved.",
+     "old": "Fail",
+     "old_verdict": "false_fail",
+     "old_rows": [
+      "A4",
+      "G2"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3,S3]",
+      "r1:M4",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "r5:M4",
+      "G5"
+     ]
+    },
+    {
+     "page": "p05",
+     "test": "4.A",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "t2:M11",
+      "t3:M11",
+      "t32:M11",
+      "t33:M11",
+      "t34:M11",
+      "t35:M11",
+      "t36:M11",
+      "t37:M11",
+      "t38:M13",
+      "G4"
+     ]
+    },
+    {
+     "page": "p06",
+     "test": "4.F",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A4",
+      "G3"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A4",
+      "o1:M7[S3,S3]",
+      "r1:M4",
+      "r2:M4",
+      "r3:M4",
+      "r4:M4",
+      "r5:M4",
+      "r6:M4",
+      "r7:M4",
+      "r8:M4",
+      "r9:M4",
+      "r10:M4",
+      "r11:M4",
+      "r12:M4",
+      "r13:M4",
+      "r14:M4",
+      "r15:M4",
+      "r16:M4",
+      "r17:M4",
+      "r18:M4",
+      "r19:M4",
+      "G5"
+     ]
+    }
+   ],
+   "live": []
+  }
+ }
+}
