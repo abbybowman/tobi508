@@ -23,6 +23,7 @@ the work left in a session).
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import functools
 import math
 import shutil
@@ -481,7 +482,7 @@ def _www(host: str) -> str:
 
 
 def _live_recorder(
-    browser, settings, run, report, proxy, final_url, get_browser, tested_har=None
+    live_browser, settings, run, report, proxy, final_url, get_browser, tested_har=None
 ):
     """Pages 19.A loads itself, each by the code a caller's other page uses
     (`capture_other`): its live site search (CLAUDE.md),
@@ -489,7 +490,8 @@ def _live_recorder(
     and its suggested pages.
     Allowlisted on every hop and on the tested page's host after redirects;
     an alias may be asked for under the host with or without a leading
-    "www." (its definition), and must still end on the tested page's host."""
+    "www." (its definition), and must still end on the tested page's host.
+    `live_browser` returns the browser they load in: not the replays' (#162)."""
 
     async def record_live(url: str, purpose: str = "search") -> PageRef:
         d = check_url(url, settings.allowed_domains, settings.dev_mode)
@@ -510,7 +512,7 @@ def _live_recorder(
         # the later checks' time (19.A W4 or W7 on a timeout). The search is
         # never taken from the page cache: its results are read as they are.
         lc, hit = await capture_other(
-            browser,
+            await live_browser(),
             settings,
             run,
             url,
@@ -707,7 +709,8 @@ class _LazyBrowser:
         if self._proxy is None:
             self._proxy = await EgressProxy(self.settings).__aenter__()
             self._pw = await async_playwright().start()
-        if (full, autoplay) not in self._browsers:
+        b = self._browsers.get((full, autoplay))
+        if b is None or not b.is_connected():  # not started, or died (#162)
             self._browsers[(full, autoplay)] = await launch_for(
                 self._pw, self.settings, self._proxy, full, autoplay
             )
@@ -715,7 +718,8 @@ class _LazyBrowser:
 
     async def close(self) -> None:
         for b in self._browsers.values():
-            await b.close()
+            with contextlib.suppress(Exception):  # one that died already
+                await b.close()
         if self._pw is not None:
             await self._pw.stop()
         if self._proxy is not None:
@@ -962,17 +966,40 @@ async def run_tt_tests(
     async with EgressProxy(settings, log=run.log) as proxy, async_playwright() as pw:
         browser = await launch_browser(pw, settings, proxy)
         extra_browsers: dict[tuple[bool, bool], Browser] = {}  # on first need
+        # Every browser this run started, to close at the end (a dead one too).
+        launched: list[Browser] = [browser]
+        main: list[Browser] = [browser]  # the replay browser, restarted if it dies
 
         async def get_browser(full: bool = False, autoplay: bool = False) -> Browser:
+            # A browser that died (#162: a cancelled 19.A load left the run's
+            # browser closed, and every later test failed) is started again,
+            # so one crash costs at most the test it happened in.
             if not full and not autoplay:
-                return browser
-            if (full, autoplay) not in extra_browsers:
-                extra_browsers[(full, autoplay)] = await launch_for(
+                if not main[0].is_connected():
+                    main[0] = await launch_browser(pw, settings, proxy)
+                    launched.append(main[0])
+                    run.log("browser_relaunched", "info", kind="replay")
+                return main[0]
+            b = extra_browsers.get((full, autoplay))
+            if b is None or not b.is_connected():
+                b = extra_browsers[(full, autoplay)] = await launch_for(
                     pw, settings, proxy, full, autoplay
                 )
+                launched.append(b)
                 kind = MOTION_BROWSER if autoplay else "full Chromium"
                 run.log("browser_launched", kind=kind)
-            return extra_browsers[(full, autoplay)]
+            return b
+
+        live: list[Browser] = []
+
+        async def get_live_browser() -> Browser:
+            """19.A's live loads in a browser of their own: a load cancelled at
+            its time limit cannot take the replays' browser with it (#162)."""
+            if not live or not live[0].is_connected():
+                live[:] = [await launch_browser(pw, settings, proxy)]
+                launched.append(live[0])
+                run.log("browser_launched", kind="live pages")
+            return live[0]
 
         try:
             report.versions = collect_versions(settings, browser, no_time_limit)
@@ -1123,7 +1150,7 @@ async def run_tt_tests(
             ctx.requested_url = url
             ctx.pages = _page_refs(get_browser, settings, run, report)
             ctx.record_live = _live_recorder(
-                browser,
+                get_live_browser,
                 settings,
                 run,
                 report,
@@ -1349,8 +1376,9 @@ async def run_tt_tests(
         finally:
             if motion_task is not None and not motion_task.done():
                 motion_task.cancel()
-            for b in (browser, *extra_browsers.values()):
-                await b.close()
+            for b in launched:
+                with contextlib.suppress(Exception):  # one that died already
+                    await b.close()
     # No browser from here on: a queued run may start while this one is
     # evaluated and judged (code review B-04).
     jobs.release_browser_slot()

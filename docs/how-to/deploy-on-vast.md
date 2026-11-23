@@ -273,7 +273,9 @@ Not confirmed from the code or VAST's documentation:
     (a tool call holds its response up to `CALL_WAIT_S`, 45 s)? At least
     50 s at a dev environment's URL (2026-11-17, section 6a).
 14. Is `/dev/shm` the default 64 MB? Chromium uses it; a larger one (or the
-    host's) avoids crashes on large pages.
+    host's) avoids crashes on large pages. **Under Podman, yes** (2026-11-23,
+    `shm=65536000` without `--shm-size`), so the commands here pass
+    `--shm-size 1g`, as the manifest's 1 Gi does.
 
 ## 6a. What a VAST dev environment showed (2026-11-17)
 
@@ -362,7 +364,8 @@ JUDGE_API_KEY=<key>
 JUDGE_MODEL=<the gateway's name for the model>
 # JUDGE_AUTH_HEADER=authorization   # if it wants "Bearer <key>" as the key
 END
-podman run -d --name tobi --network host --env-file ~/.config/tobi508/env \
+podman run -d --name tobi --network host --shm-size 1g \
+  --env-file ~/.config/tobi508/env \
   -v tobi-data:/data ghcr.io/abbybowman/tobi508:latest
 ```
 
@@ -450,7 +453,7 @@ above the same way if there is a gateway. Then start it with the dev
 container's certificate bundle mounted:
 
 ```bash
-podman rm -f tobi; podman run -d --name tobi --network host \
+podman rm -f tobi; podman run -d --name tobi --network host --shm-size 1g \
   --env-file ~/.config/tobi508/env \
   -v /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem:/etc/ssl/vast-ca.pem:ro \
   -v tobi-data:/data ghcr.io/abbybowman/tobi508:latest
