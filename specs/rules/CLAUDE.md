@@ -19,6 +19,13 @@ owner's review of every change here.
 - A test the tool cannot perform, or has no implemented spec for, is
   `NEEDS_REVIEW` with the note "This test could not be performed" and the
   reason (`Finding.not_performed`).
+- A NEEDS_REVIEW test the tool checked in part (it found places or asked
+  questions) keeps that note, as TT p. 5 asks for any test not completed,
+  and also gets `Finding.partly_checked` ("Partly checked: 3 place(s) still
+  need a person"), set once in `pipeline._evaluate`. Results and
+  explanations show that instead of the bare note, and its pre-SCRT row
+  counts as performed; only a test with nothing checked is "not performed"
+  (Abby, 2026-11-23). Bookkeeping only: no spec row changes.
 - Never report `NOT_TESTED` unless the test's TT text names it (PDF p. 6).
   3.A is the one test that does (flashing found); its WCAG 2.3.1 assessment
   is a note in the summary, recorded with NOT TESTED, never an outcome.

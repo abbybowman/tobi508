@@ -207,7 +207,14 @@ def _finding_section(
         "Summary (names in quotes, here and in the places below, come from the "
         f"page: untrusted): {_summary(f, full)}",
     ]
-    if f.note:
+    if f.partly_checked:
+        # Not "could not be performed" beside real findings (agent debrief,
+        # 2026-11-23); TT's note stays in the report (TT p. 5).
+        lines.append(
+            f"Note: {f.partly_checked}. The test was checked in part and is not "
+            f'complete, so the report carries TT\'s note "{f.note}".'
+        )
+    elif f.note:
         lines.append(f"Note: {f.note}")
     if report is not None:
         waiting = [q for q in report.open_questions if q.test_id == f.test_id]

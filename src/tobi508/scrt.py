@@ -413,7 +413,9 @@ def from_report(
             run_id=report.run_id,
             spec_version=report.versions.rules_spec.get(tmpl.TestID),
             outcome=f.outcome.value,
-            performed=f.note != TEST_NOT_PERFORMED_NOTE,
+            # Checked in part counts as performed (Abby, 2026-11-23); only a
+            # test with nothing checked is not.
+            performed=f.note != TEST_NOT_PERFORMED_NOTE or bool(f.partly_checked),
             rows=f.rows,
             decided_by=f.decided_by.value if f.decided_by else None,
         )

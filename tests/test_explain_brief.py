@@ -99,3 +99,36 @@ def test_an_unnamed_element_is_named_for_people():
     assert t5d._label({"css_path": "#f > input", "kind": "text field"}) == (
         "an unnamed text field"
     )
+
+
+# ── Checked in part (Abby, 2026-11-23) ──────────────────────────────────────
+
+
+def test_a_test_checked_in_part_says_so_and_keeps_tts_note(settings):
+    settings.runs_dir.mkdir(parents=True, exist_ok=True)
+    from tobi508 import scrt
+    from tobi508.models import TEST_NOT_PERFORMED_NOTE, FindingView
+    from tobi508.pipeline import _mark_partly_checked
+
+    checked = _finding(3, 5)
+    checked.outcome, checked.note = Outcome.NEEDS_REVIEW, TEST_NOT_PERFORMED_NOTE
+    nothing = Finding.not_performed(TestId.T4C, "the run reached its time limit")
+    report = _report(checked, settings)
+    report.findings.append(nothing)
+    _mark_partly_checked(report)
+
+    # TT p. 5's note stays on both; only the one with places is partly checked.
+    assert checked.note == nothing.note == TEST_NOT_PERFORMED_NOTE
+    assert checked.partly_checked == "Partly checked: 3 place(s) still need a person"
+    assert nothing.partly_checked is None
+    text = explain.build("4.D, 4.C", report)
+    assert "Note: Partly checked: 3 place(s) still need a person." in text
+    assert f"Note: {TEST_NOT_PERFORMED_NOTE}" in text  # 4.C, nothing checked
+    assert FindingView.of(checked, report).note == checked.partly_checked
+
+    rows = {
+        r.TestID: r
+        for r in scrt.from_report(report, settings.runs_dir).Criteria
+        if r.TestID in ("4.C", "4.D") and r.parent is None
+    }
+    assert rows["4.D"].source.performed and not rows["4.C"].source.performed
