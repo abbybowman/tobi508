@@ -6,6 +6,8 @@ Moved from checks/t5d.py unchanged."""
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from tobi508.jslib import JSLIB
@@ -145,6 +147,10 @@ class Field5D(BaseModel):
     name: str | None = None
     next_path: str | None = None  # the next P1 stop after the field (or group)
     next_css: str | None = None
+    # A field in opened content (5.D 1.13.0, pass FO): how to open its
+    # trigger again as reveal.py opened it (frame_chain, css_path, by, name,
+    # n); `index` is then its step in that trigger's P8 walk.
+    opened: dict[str, Any] | None = None
 
 
 def _fields(walk: KeyboardWalk) -> list[Field5D]:

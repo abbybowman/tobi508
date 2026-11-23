@@ -74,7 +74,7 @@ Counts and the run each comes from: [evals/STATUS.md](evals/STATUS.md). A test m
 | 5.A | Label provided | [3.3.2](https://www.w3.org/TR/WCAG20/#minimize-error-cues) | [1.16.0](specs/rules/5a-label-provided.md) | ✅ agrees with a tester |
 | 5.B | Label descriptive | [2.4.6](https://www.w3.org/TR/WCAG20/#navigation-mechanisms-descriptive) | [1.14.0](specs/rules/5b-label-descriptive.md) | ⚠️ often fails pages a tester passes |
 | 5.C | Programmatic label | [1.3.1](https://www.w3.org/TR/WCAG20/#content-structure-separation-programmatic), [4.1.2](https://www.w3.org/TR/WCAG20/#ensure-compat-rsv) | [1.16.0](specs/rules/5c-programmatic-label.md) | ✅ agrees with a tester |
-| 5.D | On input | [3.2.2](https://www.w3.org/TR/WCAG20/#consistent-behavior-unpredictable-change) | [1.12.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
+| 5.D | On input | [3.2.2](https://www.w3.org/TR/WCAG20/#consistent-behavior-unpredictable-change) | [1.13.0](specs/rules/5d-on-input.md) | ⚠️ often fails pages a tester passes |
 | 5.F | Error identification | [3.3.1](https://www.w3.org/TR/WCAG20/#minimize-error-identified) | [1.17.0](specs/rules/5f-error-identification.md) | ⚠️ mostly left for a person |
 | 5.G | Error suggestion | [3.3.3](https://www.w3.org/TR/WCAG20/#minimize-error-suggestions) | [1.12.0](specs/rules/5g-error-suggestion.md) | ⚠️ mostly left for a person |
 | 5.H | Error prevention | [3.3.4](https://www.w3.org/TR/WCAG20/#minimize-error-reversible) | [1.10.0](specs/rules/5h-error-prevention.md) | ✅ agrees with a tester; see known wrong outcomes below |

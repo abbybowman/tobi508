@@ -4,8 +4,10 @@ Fields come from the shared walk's P1 stops (`stop.control`). Fill pass F
 replays to the first field and completes every field in order, observing
 the completion and the Tab that leaves it (the shared `observe`, with form
 submissions). A mechanical change of context restarts the pass on a fresh
-replay with the earlier fields refilled. Only evaluate() and the row tables
-decide outcomes.
+replay with the earlier fields refilled. Pass FO (1.13.0) does the same for
+the fields 4.C's P8 reached inside what each menu, tab or section opened
+(reveal.py, opened.py), on loads opened as reveal.py opened the trigger.
+Only evaluate() and the row tables decide outcomes.
 """
 
 from __future__ import annotations
@@ -15,7 +17,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508 import labels
+from tobi508 import labels, reveal
 from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
 from tobi508.forms import (
@@ -53,6 +55,7 @@ from tobi508.traverse import (
     SETTLE_MAX_MS,
     Cap,
     Session,
+    open_session,
     screenshot,
     settle,
 )
@@ -230,9 +233,13 @@ def what_was_read(fields: list[Field5D], count) -> dict[str, int]:
     """The fields the walk reached (radio groups once), and the hidden fields
     the fill showed and then filled, matched to the inventory by path."""
     hidden = set(count.hidden_field_paths) if count is not None else set()
-    shown = {f.css_path for f in fields if f.index < 0 and f.css_path}
+    shown = {
+        f.css_path
+        for f in fields
+        if (f.index < 0 or f.opened) and f.css_path and not f.frame_chain
+    }
     return {
-        "fields": sum(f.index >= 0 for f in fields),
+        "fields": sum(f.index >= 0 and not f.opened for f in fields),
         "fields_hidden": len(hidden & shown),
         "contenteditable": 0,
     }
@@ -532,14 +539,28 @@ async def _session_for(
     ctx: RunContext, st: State5D, fields: list[Field5D], i: int
 ) -> tuple[Session, bool]:
     """A fresh replay to the first field, with fields before `i` refilled
-    (except those that changed context). Returns (session, refilled)."""
+    (except those that changed context). Returns (session, refilled). For a
+    field in opened content (pass FO), a fresh load with its trigger opened
+    as reveal.py opened it, and the trigger's earlier fields refilled."""
     first = fields[0]
-    s = await ctx.replay(["Tab"] * (first.index + 1))
+    o = first.opened
+    if o:
+        s = await open_session(ctx.new_page, ctx.quiet_ms)
+        try:
+            if not await reveal.reopen(
+                s, o["frame_chain"], o["css_path"], o["by"], ctx.quiet_ms
+            ):
+                raise RuntimeError("the menu or section could not be opened again")
+        except BaseException:
+            await s.close()
+            raise
+    else:
+        s = await ctx.replay(["Tab"] * (first.index + 1))
     refilled = False
     for f in fields[:i]:
         if f.path_key in st.skip:
             continue
-        here = await _arrive(s, f, ARRIVE_SLACK + 5, ctx.plan)
+        here = await _arrive(s, f, ARRIVE_SLACK + 5, None if o else ctx.plan)
         if here is None:
             continue
         info = await s.traversal.reader.call(here, FIELD_FN) or {}
@@ -566,10 +587,22 @@ async def run_field(
         st.instances.append(inst)
     refilled = False
     if s is None:
-        s, refilled = await _session_for(ctx, st, fields, i)
+        try:
+            s, refilled = await _session_for(ctx, st, fields, i)
+        except Exception as exc:
+            if not f.opened:
+                raise
+            inst.arrived = False
+            st.notes.append(
+                f"A menu or section could not be opened again ({type(exc).__name__})."
+            )
+            return None, inst
     inst.refilled = inst.refilled or refilled
     here = await _arrive(
-        s, f, ARRIVE_SLACK + (f.index if f.index >= 0 else 0), ctx.plan
+        s,
+        f,
+        ARRIVE_SLACK + (f.index if f.index >= 0 else 0),
+        None if f.opened else ctx.plan,
     )
     if here is None:
         inst.arrived = False
@@ -614,8 +647,126 @@ def _revealed(
             name=land.get("name"),
             next_path=f.next_path,
             next_css=f.next_css,
+            opened=f.opened,
         ),
     )
+
+
+def opened_fields(rv, taken: set[str]) -> list[list[Field5D]]:
+    """Pass FO's fields (spec section 2): for each trigger reveal.py opened
+    whose P8 walk stopped on fields inside its opened content, those fields
+    in walk order (a radio group once), with the stop after each as where
+    Tab is expected to go. `taken`: fields already filled (P1's, an earlier
+    trigger's), by path key or group."""
+    out: list[list[Field5D]] = []
+    n = 1000  # instance numbers apart from P1's
+    for trig in rv.triggers if rv is not None else []:
+        w = trig.walked
+        if w is None or trig.status != reveal.OPENED:
+            continue
+        inside = set(w.opened)
+        steps = w.steps
+        mine: list[Field5D] = []
+        for i, step in enumerate(steps):
+            st = step.stop
+            if (
+                st.kind != "element"
+                or not st.control
+                or st.readonly
+                or st.disabled
+                or st.path_key not in inside
+            ):
+                continue
+            key = st.group or st.path_key
+            if key in taken or st.path_key in taken:
+                continue
+            taken.add(key)
+            nxt = next(
+                (
+                    x.stop
+                    for x in steps[i + 1 :]
+                    if x.stop.path_key != st.path_key
+                    and not (st.group and x.stop.group == st.group)
+                ),
+                None,
+            )
+            n += 1
+            mine.append(
+                Field5D(
+                    n=n,
+                    index=i,
+                    path_key=st.path_key,
+                    css_path=st.css_path,
+                    frame_chain=st.frame_chain,
+                    control=st.control,
+                    group=st.group,
+                    role=st.role,
+                    name=st.name,
+                    next_path=nxt.path_key if nxt and nxt.kind == "element" else None,
+                    next_css=nxt.css_path if nxt and nxt.kind == "element" else None,
+                    opened={
+                        "frame_chain": list(trig.frame_chain),
+                        "css_path": trig.css_path,
+                        "by": w.by,
+                        "name": trig.name or "the control",
+                        "n": trig.n,
+                    },
+                )
+            )
+        if mine:
+            out.append(mine)
+    return out
+
+
+async def _fill_pass(
+    ctx: RunContext,
+    st: State5D,
+    fields: list[Field5D],
+    limit: int,
+    known: set[str],
+    total: int,
+) -> int:
+    """Pass F over `fields` (P1's, or one trigger's opened fields): complete
+    each in order on one load, a fresh one after a change of context.
+    Returns how many fields were taken toward `limit`."""
+    s: Session | None = None
+    i = 0
+    try:
+        while i < len(fields):
+            if ctx.out_of_time():
+                st.incomplete.append(
+                    "The run time limit was reached before every form field was filled in."
+                )
+                break
+            reused = s is not None
+            s, inst = await run_field(ctx, st, fields, i, s)
+            if reused and fields[i].opened and not inst.arrived and not inst.attempts:
+                # A menu that closed when the field before was left: open it
+                # again on a fresh load (spec section 2, pass FO, step 4).
+                inst.arrived = True
+                s, inst = await run_field(ctx, st, fields, i, None)
+            if (
+                s is not None
+                and inst.last is not None
+                and total + len(fields) < max(limit, FIELD_MAX)
+            ):
+                _revealed(st, fields, i, inst, known)
+            i += 1
+    finally:
+        if s is not None:
+            # Fields the fill pass revealed, for 5.A and 5.C (their spec,
+            # section 2): read last on this replay, only when they run.
+            if (
+                not fields[0].opened
+                and any(f.index < 0 for f in fields)
+                and labels.wanted(ctx)
+            ):
+                try:
+                    await labels.read_revealed(ctx, s, "fill in the fields before it")
+                except Exception:
+                    pass
+            await s.close()
+    return len(fields)
 
 
 async def collect(ctx: RunContext, walk: KeyboardWalk) -> State5D:
@@ -640,37 +791,45 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State5D:
             f"The page has {len(fields)} form fields; only the first {limit} were filled in."
         )
         fields = fields[:limit]
-    s: Session | None = None
-    i = 0
-    try:
-        while i < len(fields):
-            if ctx.out_of_time():
-                st.incomplete.append(
-                    "The run time limit was reached before every form field was filled in."
-                )
-                break
-            s, inst = await run_field(ctx, st, fields, i, s)
-            if (
-                s is not None
-                and inst.last is not None
-                and len(fields) < max(limit, FIELD_MAX)
-            ):
-                _revealed(st, fields, i, inst, known)
-            i += 1
-    finally:
-        if s is not None:
-            # Fields the fill pass revealed, for 5.A and 5.C (their spec,
-            # section 2): read last on this replay, only when they run.
-            if any(f.index < 0 for f in fields) and labels.wanted(ctx):
-                try:
-                    await labels.read_revealed(ctx, s, "fill in the fields before it")
-                except Exception:
-                    pass
-            await s.close()
-    st.fields = fields
+    if fields:
+        await _fill_pass(ctx, st, fields, limit, known, 0)
+    # Pass FO (1.13.0, step 15 phase 3): the fields 4.C's P8 reached inside
+    # what each menu, tab or section opened.
+    rv = ctx.cache.get("reveal")
+    for trig in rv.triggers if rv is not None else []:
+        w = trig.walked
+        if w is not None and w.end in ("cap", "time", "error"):
+            st.incomplete.append(
+                f'Tabbing through what opening "{trig.name or "a control"}" '
+                f"showed did not finish ({w.end})."
+            )
+    taken = {f.group or f.path_key for f in fields} | {f.path_key for f in fields}
+    groups = opened_fields(rv, taken)
+    st.field_stops += sum(len(g) for g in groups)
+    every = list(fields)
+    limit = 10**6 if ctx.no_time_limit else FIELD_MAX
+    for group in groups:
+        room = limit - len(every)
+        if room <= 0:
+            st.incomplete.append(
+                f"The page has more than {limit} form fields, counting those in "
+                "menus and sections that open; only the first "
+                f"{limit} were filled in."
+            )
+            break
+        if ctx.out_of_time():
+            st.incomplete.append(
+                "The run time limit was reached before every form field was filled in."
+            )
+            break
+        group = group[:room]
+        await _fill_pass(ctx, st, group, limit, known, len(every))
+        every += group
+    st.fields = every
     st.read = {
         "page": what_was_read(
-            _fields(walk) + [f for f in fields if f.index < 0], ctx.cache.get("count")
+            _fields(walk) + [f for f in every if f.index < 0 or f.opened],
+            ctx.cache.get("count"),
         )
     }
     return st
@@ -1031,6 +1190,11 @@ def keys_text(inst: Inst5D) -> str:
         "spinbutton": "press the Right arrow",
     }.get(f.control, f'type "{(a.value if a else "") or "Test"}"')
     lead = (f"Tab {n} times" if n > 1 else "Tab") if f.index >= 0 else "Tab to it"
+    if f.opened:
+        how_open = "click" if f.opened.get("by") == "a click" else "press Enter on"
+        lead = f'{how_open} "{f.opened.get("name")}", then ' + (
+            lead[0].lower() + lead[1:]
+        )
     pre = " (after filling in the fields before it)" if inst.refilled else ""
     return f"{lead}{pre}, {how}, then Tab"
 

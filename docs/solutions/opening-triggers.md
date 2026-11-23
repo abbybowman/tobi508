@@ -30,6 +30,14 @@
   dropdown that closes when focus leaves is shut by then, so the first
   Shift+Tab lands on its button: stop at the first landing that is not the
   stop expected, never picture the wrong element.
+- **5.D fills what the walk reached (1.13.0, #135):** pass FO is pass F
+  on a load opened as reveal.py opened the trigger (`reveal.reopen`),
+  arriving by Tab from where the opening left focus, with the next P8
+  stop as where Tab is expected. Before building, list what each
+  trigger opened on the round's pages (`evidence/reveal.json`:
+  `new_fields`, `walked.reached`): round 3's held 5.D cells had no field
+  inside any menu, so only the guard moved them, and a fill pass alone
+  would have moved nothing.
 - **4.F has no `reveal-content`:** its pass R already Tabs through what the first
   six triggers open.
 - **Probe a page's triggers in one process at a time**: several browsers beside

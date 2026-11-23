@@ -1,7 +1,8 @@
 """Opening everything, phase 2: a Tab walk through what each menu,
 tab or section opened, made once per page on reveal.py's opening and shared
 by the tests that read it (4.C for traps, 4.E for changes on focus, 4.D for
-focus pictures, with its own walk extra on these loads; 4.D 1.13.0). Facts
+focus pictures, with its own walk extra on these loads; 4.D 1.13.0; 5.D for
+the fields to fill, pass FO, 5.D 1.13.0). Facts
 only; no outcome is decided here (CLAUDE.md principle 2): the rows are in
 the specs.
 

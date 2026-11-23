@@ -173,7 +173,7 @@ class Opened(BaseModel):
     read: bool | None = None  # ANDI read the opened state (None: not asked)
     picture: str | None = None
     options: list[Option] = Field(default_factory=list)
-    # The Tab walk through what it opened (opened.py; 4.C, 4.E and 4.D).
+    # The Tab walk through what it opened (opened.py; 4.C, 4.E, 4.D, 5.D).
     walked: opened.Walked | None = None
 
     @property
@@ -209,7 +209,7 @@ class Reveal(BaseModel):
             "opened_with_focusable": sum(
                 t.status == OPENED and t.new_focusable > 0 for t in self.triggers
             ),
-            # Guard RC for the tests that walk opened content (4.C, 4.E, 4.D; spec
+            # Guard RC for the tests that walk opened content (4.C, 4.E, 4.D, 5.D; spec
             # 4.C P8): opened with controls, and the walk did not reach every
             # control Tab is expected to reach.
             "not_walked": [
@@ -432,7 +432,8 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
     out = Reveal(over_cap=max(0, len(trigs) - MAX_TRIGGERS))
     read = labels.wanted(ctx)
     # The Tab walk through opened content, for the tests that read it.
-    walking = bool({"4.C", "4.E", "4.D"} & set(ctx.selected))
+    # 5.D fills the fields it reached (pass FO, 5.D 1.13.0).
+    walking = bool({"4.C", "4.E", "4.D", "5.D"} & set(ctx.selected))
     for n, (stop, why) in enumerate(trigs[:MAX_TRIGGERS], 1):
         rec = Opened(
             n=n,

@@ -1,0 +1,92 @@
+{
+ "note": "Agent-assisted results, not certified Trusted Tester results.",
+ "rounds": {
+  "3": {
+   "tally": {
+    "agree": 5,
+    "false_fail": 1,
+    "needs_review": 3,
+    "other": 1
+   },
+   "moved": [
+    {
+     "page": "p01",
+     "test": "5.D",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G4",
+      "RC"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "G4"
+     ]
+    },
+    {
+     "page": "p03",
+     "test": "5.D",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G4",
+      "RC"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "G4"
+     ]
+    },
+    {
+     "page": "p05",
+     "test": "5.D",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G4",
+      "RC"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "G4"
+     ]
+    },
+    {
+     "page": "p06",
+     "test": "5.D",
+     "key": "Pass",
+     "comment": "",
+     "old": null,
+     "old_verdict": "needs_review",
+     "old_rows": [
+      "A3",
+      "G4",
+      "RC"
+     ],
+     "new": "Pass",
+     "new_verdict": "agree",
+     "new_rows": [
+      "A3",
+      "G4"
+     ]
+    }
+   ],
+   "live": []
+  }
+ }
+}
