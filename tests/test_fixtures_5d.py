@@ -38,6 +38,21 @@ EXPECTED: dict[str, dict] = {
         "walk": (1, 2),
     },
     "f24-two-fields-all-reached": {"outcome": "PASS", "rows": [], "walk": (2, 2)},
+    # Pass FO (5.D 1.13.0, #135 step 15): fields inside what a button opens
+    # are filled on a load opened the same way; guard RC holds only what
+    # 4.C's P8 walk did not reach.
+    "f25-section-field-does-nothing": {"outcome": "PASS", "rows": []},
+    "f26-section-select-sends-form": {
+        "outcome": "FAIL",
+        "rows": ["M9"],
+        "answers": NOT_TOLD,
+    },
+    "f27-menu-of-links-and-a-field": {"outcome": "PASS", "rows": []},
+    "f28-section-field-far-in-tab-order": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": [],
+        "page_rows": ["RC"],
+    },
     "f01-jump-menu": {"outcome": "FAIL", "rows": ["M9"], "answers": NOT_TOLD},
     "f02-jump-menu-notice-before": {
         "outcome": "PASS",

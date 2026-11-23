@@ -77,14 +77,15 @@ re-testing): confirm and remove, or remove the mark.
   page (round 2: 5.A and 5.B; step 37, [#137](https://github.com/abbybowman/tobi508/issues/137)).
 - **Content that opens.** Menus, tabs, accordions and filters are opened
   on a fresh load (`reveal.py`; guards RV and RC), and 4.C and 4.E walk
-  what opened (`opened.py`, step 6g), and 4.D pictures it (4.D 1.13.0,
+  what opened (`opened.py`, step 6g), 4.D pictures it (4.D 1.13.0,
   step 15; a menu that closes when focus leaves it gives no before
-  picture, so its items go to the judge). Not opened: a form behind a button
+  picture, so its items go to the judge), and 5.D fills the fields in it
+  (5.D 1.13.0, step 15). Not opened: a form behind a button
   with no ARIA marker (H-08; its hidden fields keep 5.A to 5.H at NEEDS
   REVIEW through guard CN, and so does an editable text area). 4.A and
   4.C to 4.F do not see the controls inside such a form, so on a page
   whose only form opens from a plain button they can PASS (read, not
-  run). 5.D and 4.A do not walk or scan opened content yet
+  run). 4.A does not scan opened content yet
   (step 15, [#135](https://github.com/abbybowman/tobi508/issues/135)).
 - **Guard CN matches hidden fields by their place in the page:** a page
   that rebuilds its elements when a section opens can make a field that
@@ -285,8 +286,14 @@ re-testing): confirm and remove, or remove the mark.
   after Tab-away is not detected; on a filter whose request the
   recording lacks, focus landing on the field's own label reads as a
   move (round 3's blog: a false FAIL; step 35b, [#137](https://github.com/abbybowman/tobi508/issues/137)). `FIELD_MAX` (40) and
-  `FIELD_SECONDS` (1.1 s) are not calibrated on real pages. A menu or
-  section that opens leaves it NEEDS REVIEW (as in 4.C and 4.E).
+  `FIELD_SECONDS` (1.1 s) are not calibrated on real pages. Fields
+  inside a menu or section that opens are filled (pass FO, 5.D 1.13.0,
+  #135); what 4.C's walk did not reach there still leaves it NEEDS
+  REVIEW (guard RC), options of a custom drop-down too (round 3's SDE
+  "All" list, Abby 2026-11-23). A field the Tab key reaches in opened
+  content only past the content's end is not filled. Round 3 has no
+  field inside opened content, so pass FO is shown on fixtures only
+  (f25 to f28).
 - **5.F and 5.G:** the browser's own error messages are left for a
   person (5.F 1.13.0, 5.G 1.11.0): the browser shows one field's message
   at a time and its words differ by browser, so a form checked only that

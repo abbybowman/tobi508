@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F25 Search with filters</title></head><body><main><h1>Search</h1>
+<form onsubmit="event.preventDefault()">
+<label>Search <input id="q" name="q"></label>
+<button id="b" type="button" aria-expanded="false" aria-controls="panel">Filters</button>
+<div id="panel" hidden><label>Year <input id="year" name="year"></label> <label><input id="pdf" type="checkbox" name="pdf"> PDF only</label></div>
+<button id="s" type="submit">Search</button>
+</form></main>
+<script>
+const b = document.getElementById("b"), panel = document.getElementById("panel");
+b.addEventListener("click", () => {
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", String(!open));
+  panel.hidden = open;
+});
+</script></body></html>
