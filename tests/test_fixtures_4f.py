@@ -130,6 +130,18 @@ EXPECTED: dict[str, dict] = {
     },
     # Neither Tab nor the arrows reach the options: 4.A's finding, not an
     # order; no signal.
+    # 1.16.0 (Abby, 2026-11-23; round 1's Careers page): a tab whose panel
+    # Tab reaches right after the rest of its tab list: no signal.
+    "f38-tab-panel-after-tab-list": {
+        "outcome": "PASS",
+        "says": "Tab goes through the rest of its tab list and then into its panel",
+    },
+    # The near miss: other links come between the tab list and the panels.
+    "f39-tab-panel-after-other-links": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S6"},
+    },
     "f37-menu-nothing-reaches": {
         "outcome": "PASS",
         "rows": ["M4", "M4"],

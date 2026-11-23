@@ -608,7 +608,21 @@ async def _reveal_shared(ctx: RunContext, st: State4F) -> None:
                 and w.onward_end in ("trigger", "wrap", "stuck", "loop")
                 and not (set(w.reached) & targets)
             )
-            if await _popup_takes_arrows(ctx, opener, trig, inside):
+            passed = [x.stop for x in w.onward[: at or 0] if x.stop.kind == "element"]
+            lists = {x.widget for x in passed}
+            if (
+                at is not None
+                and "tab" in (trig.why or [])
+                and passed
+                and all((x.role or "") == "tab" for x in passed)
+                and len(lists) == 1
+                and None not in lists
+            ):
+                # 1.16.0 (Abby, 2026-11-23): a tab whose panel Tab reaches
+                # right after the rest of its own tab list, the order of
+                # the tabs pattern (round 1's Careers page).
+                inst.detail["tab_list_first"] = True
+            elif await _popup_takes_arrows(ctx, opener, trig, inside):
                 # 1.14.0 (step 33c): a menu or list the arrow keys move into
                 # and Tab leaves, as the WAI-ARIA patterns have it.
                 inst.detail["arrow_keys_move_into_it"] = True
@@ -1226,7 +1240,12 @@ def _sentence(inst: Inst4F, rid: str) -> str:
                 "what it opened, so there is no order to check there; keyboard "
                 "access (TT 4.A) reports it."
                 if inst.detail.get("keyboard_never_reaches_it")
-                else f"After opening {inst.label}, the next Tab moves into what it revealed."
+                else (
+                    f"After choosing {inst.label}, Tab goes through the rest of its tab "
+                    "list and then into its panel."
+                    if inst.detail.get("tab_list_first")
+                    else f"After opening {inst.label}, the next Tab moves into what it revealed."
+                )
             )
         ),
         "M6": f"The focus order doesn't make sense here: {sig}. {reasons}. If you disagree, tell your assistant.",
