@@ -6,7 +6,8 @@ people. Wording only: no outcome is decided here."""
 from __future__ import annotations
 
 from tobi508 import explain
-from tobi508.checks import t4d
+from tobi508.checks import t4a, t4c, t4d, t4e, t5d
+from tobi508.checks.base import element_name
 from tobi508.models import Finding, Instance, Outcome, Report, TestId
 
 
@@ -37,7 +38,11 @@ def _finding(n_loud: int, n_quiet: int) -> Finding:
         Instance(outcome=Outcome.PASS, description=f"d{k} [M6 PASS] ok")
         for k in range(100, 100 + n_quiet)
     ]
-    summary = "Some links show no focus. " + " ".join(i.plain for i in loud)
+    summary = (
+        "Some links show no focus. "
+        + " ".join(i.plain for i in loud)
+        + (f" {n_quiet} other element(s) showed focus clearly." if n_quiet else "")
+    )
     return Finding(
         test_id=TestId.T4D,
         test_name=TestId.T4D.tt_name,
@@ -56,6 +61,7 @@ def test_places_are_plain_capped_and_said_once(settings):
     assert f"- and {10 - explain.BRIEF_PLACES} more like these" in text
     assert '"Link 10" shows no focus. Press Tab 10 times.' in text
     assert "120 other place(s) passed or did not apply." in text
+    assert "showed focus clearly" not in text  # the count, said once
     assert "[M8 FAIL]" not in text and "changed 0 px" not in text
     assert "Some links show no focus." in text
     full = explain.build("4.D", _report(f, settings), "full")
@@ -81,8 +87,15 @@ def test_a_place_without_a_sentence_loses_its_codes(settings):
 
 
 def test_an_unnamed_element_is_named_for_people():
-    assert t4d._label({"name": "", "role": "button", "css_path": "#x > div"}) == (
-        "an unnamed button"
+    assert element_name("", "button") == "an unnamed button"
+    assert element_name(" ", "generic") == "an unnamed element"
+    assert element_name(None, None, unnamed="field") == "an unnamed field"
+    assert element_name("Go", "button") == '"Go" (button)'
+    assert element_name("x" * 80, "link").startswith('"' + "x" * 57 + '..."')
+    # Every check's own naming goes through it: never a CSS path.
+    info = {"name": "", "role": "button", "css_path": "div.css-x7f2a > button"}
+    for label in (t4a._label, t4c._label, t4d._label, t4e._label):
+        assert label(info) == "an unnamed button"
+    assert t5d._label({"css_path": "#f > input", "kind": "text field"}) == (
+        "an unnamed text field"
     )
-    assert t4d._label({"name": " ", "role": "generic"}) == "an unnamed element"
-    assert t4d._label({"name": "Go", "role": "button"}) == '"Go" (button)'

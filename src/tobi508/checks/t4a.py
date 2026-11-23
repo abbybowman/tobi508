@@ -16,7 +16,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.models import (
     REVIEW_HEAD,
@@ -1576,12 +1576,8 @@ _TAG_ROLE = {
 
 
 def _label(t: dict[str, Any]) -> str:
-    name = (t.get("name") or "").strip() or t.get("css_path") or "an element"
-    name = name if len(name) <= 60 else name[:57] + "..."
-    role = (t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")).strip()
-    return f'"{name}"' + (
-        f" ({role})" if role and role not in ("generic", "none") else ""
-    )
+    role = t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")
+    return element_name(t.get("name"), role)
 
 
 def _keys_text(keys: list[str]) -> str:

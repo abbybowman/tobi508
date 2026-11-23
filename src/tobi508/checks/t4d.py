@@ -18,7 +18,7 @@ from PIL import Image, ImageChops, ImageDraw
 from pydantic import BaseModel, Field
 
 from tobi508.checks import t4e
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.models import (
     REVIEW_HEAD,
@@ -1687,15 +1687,7 @@ def _change_words(e: dict[str, Any]) -> str:
 
 
 def _label(info: dict[str, Any]) -> str:
-    role = (info.get("role") or "").strip()
-    role = role if role and role not in ("generic", "none") else ""
-    name = (info.get("name") or "").strip()
-    if not name:
-        # No accessible name: a CSS path means nothing to a person (agent
-        # debrief, 2026-11-23); each sentence's Tab steps say where it is.
-        return f"an unnamed {role or 'element'}"
-    name = name if len(name) <= 60 else name[:57] + "..."
-    return f'"{name}"' + (f" ({role})" if role else "")
+    return element_name(info.get("name"), info.get("role"))
 
 
 def _keys_text(keys: list[str]) -> str:

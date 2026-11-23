@@ -256,6 +256,7 @@ def _decide(st: State9B, evidence_refs: list[str]) -> Finding:
         results.append(row.outcome)
         trace.append(f"p{c.n}:{row.id}")
         page = f"other page {c.n}"
+        said = len(sentences)
         if row.id in ("N3", "N4"):
             pairs = (c.source if row.id == "N3" else c.visual)[:SHOWN_MAX]
             how = "" if row.id == "N3" else " on screen"
@@ -272,6 +273,12 @@ def _decide(st: State9B, evidence_refs: list[str]) -> Finding:
         inst.append(
             Instance(
                 outcome=row.outcome,
+                # In words for people (Instance.plain): this page's sentences.
+                plain=f"Compared with {page} ({c.url}): "
+                + (
+                    " ".join(sentences[said:])
+                    or "the shared navigation is in the same order."
+                ),
                 description=f"p{c.n} [{row.id} {row.outcome.value}] {c.url}: {c.matched} shared",
             )
         )

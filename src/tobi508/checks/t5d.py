@@ -18,7 +18,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tobi508 import labels, reveal
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.forms import (
     ARRIVE_SLACK,
@@ -1167,14 +1167,9 @@ PAGE_ROWS = [
 
 
 def _label(info: dict[str, Any]) -> str:
-    name = (info.get("label") or info.get("name") or "").strip()
-    name = name or info.get("css_path") or "a field"
-    name = re.sub(r"\s+", " ", name)
-    name = name if len(name) <= 60 else name[:57] + "..."
-    role = (info.get("kind") or info.get("role") or "").strip()
-    return f'"{name}"' + (
-        f" ({role})" if role and role not in ("generic", "none") else ""
-    )
+    name = info.get("label") or info.get("name")
+    role = info.get("kind") or info.get("role")
+    return element_name(name, role, unnamed="field")
 
 
 def keys_text(inst: Inst5D) -> str:

@@ -53,6 +53,7 @@ smallest, t5d.py for a form test, or t9b.py for a multi-page test):
 from __future__ import annotations
 
 import math
+import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -88,6 +89,22 @@ class PageRef:
 # numbers are settings, config.TEST_BUDGETS_DEFAULT, provisional until step
 # 9). A test gets its budget or `test_budget_share` of what is left of the
 # run, whichever is smaller, so no test can take the rest of the run.
+
+
+def element_name(
+    name: str | None, role: str | None, limit: int = 60, unnamed: str = "element"
+) -> str:
+    """An element as people read it in summaries and place lines: '"Search"
+    (button)', or 'an unnamed button' when it has no accessible name (agent
+    debrief, 2026-11-23: a CSS path means nothing to a person; the sentence's
+    key steps say where it is). Wording only."""
+    role = (role or "").strip()
+    role = role if role not in ("generic", "none") else ""
+    text = re.sub(r"\s+", " ", (name or "")).strip()
+    if not text:
+        return f"an unnamed {role or unnamed}"
+    text = text if len(text) <= limit else text[: limit - 3] + "..."
+    return f'"{text}"' + (f" ({role})" if role else "")
 
 
 def budget_s(settings: Any, test_id: str) -> int:

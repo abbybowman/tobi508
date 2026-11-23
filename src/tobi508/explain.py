@@ -189,6 +189,11 @@ def _summary(f: Finding, full: bool) -> str:
     for i in shown:
         if i.plain and i.plain in text:
             text, cut = text.replace(i.plain, "", 1), True
+    # "2 other element(s) showed focus clearly." says the count the places
+    # list ends with (agent debrief, 2026-11-23): said there once.
+    quiet = len(f.instances) - len([i for i in f.instances if i.outcome not in QUIET])
+    if quiet:
+        text = re.sub(rf"(?<!\w){quiet} other [^.]*\.", "", text, count=1)
     text = re.sub(r"\s{2,}", " ", text).strip()
     return text + (" (Each place below says what was found there.)" if cut else "")
 

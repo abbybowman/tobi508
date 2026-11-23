@@ -17,7 +17,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from tobi508 import labels
-from tobi508.checks.base import RunContext
+from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.models import (
     REVIEW_HEAD,
@@ -340,10 +340,7 @@ def _info(s: Step) -> StopInfo:
 
 
 def _plain(si: StopInfo) -> str:
-    name = (si.name or "").strip() or si.css_path or "an element"
-    name = name if len(name) <= 50 else name[:47] + "..."
-    role = si.role if si.role and si.role not in ("generic", "none") else ""
-    return f'"{name}"' + (f" ({role})" if role else "")
+    return element_name(si.name, si.role, limit=50)
 
 
 def places(a: dict[str, Any], b: dict[str, Any]) -> tuple[Any, Any]:
