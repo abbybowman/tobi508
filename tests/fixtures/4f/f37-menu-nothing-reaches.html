@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F37 Search</title>
+<style>.opt { cursor: pointer; padding: 4px; }</style></head><body>
+<main><h1>Search</h1>
+<button id="b" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="m">All</button>
+<label>Search <input id="q"></label> <button type="button">Go</button>
+<ul id="m" hidden><li><div class="opt" tabindex="0">Earth</div></li><li><div class="opt" tabindex="0">Sun</div></li></ul>
+<p id="out">Searching: All</p></main>
+<script>
+// The list closes when focus leaves the button, before Tab could reach its
+// options; the arrow keys do nothing: only a mouse can choose one.
+const b = document.getElementById("b"), m = document.getElementById("m");
+b.addEventListener("click", () => { const open = b.getAttribute("aria-expanded") === "true"; b.setAttribute("aria-expanded", String(!open)); m.hidden = open; });
+b.addEventListener("blur", () => setTimeout(() => { m.hidden = true; b.setAttribute("aria-expanded", "false"); }, 150));
+for (const o of document.querySelectorAll(".opt")) o.addEventListener("mousedown", (e) => {
+  e.preventDefault(); b.textContent = o.textContent; document.getElementById("out").textContent = "Searching: " + o.textContent; m.hidden = true; b.setAttribute("aria-expanded", "false"); });
+</script></body></html>

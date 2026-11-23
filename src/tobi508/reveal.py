@@ -159,6 +159,10 @@ class Opened(BaseModel):
     css_path: str = ""
     frame_chain: list[str] = Field(default_factory=list)
     why: list[str] = Field(default_factory=list)  # why it is a trigger
+    controls: str | None = None  # aria-controls (4.F: whose dialog it is)
+    # What opened inside the region it names (aria-controls; top document,
+    # reveal keys): 4.F's revealed content (its pass R's, 1.16.0).
+    in_region: list[str] | None = None
     status: str = NOT_TRIED
     reason: str = ""
     by: str = ""  # "Enter" or "a click"
@@ -279,6 +283,27 @@ async def _state(s: Session) -> dict[str, tuple[bool, bool]]:
     return out
 
 
+async def _in_region(s: Session, new: list[str], controls: str) -> list[str] | None:
+    """Which of the opened elements (top document) are inside the region(s)
+    `aria-controls` names; None when it could not be read."""
+    top = [k for k in new if k.startswith("|")]
+    try:
+        got = await s.traversal.reader.evaluate_top(
+            "(() => { const ids = "
+            + json.dumps(controls.split())
+            + "; const rs = ids.map((i) => document.getElementById(i)).filter(Boolean);"
+            " return "
+            + json.dumps([k[1:] for k in top])
+            + ".map((p) => { let e = null; try { e = document.querySelector(p); } catch (x) {}"
+            " return !!e && rs.some((r) => r.contains(e)); }); })()"
+        )
+    except Exception:
+        return None
+    if not isinstance(got, list):
+        return None
+    return [k for k, inside in zip(top, got, strict=False) if inside]
+
+
 async def _focus(
     s: Session, frame_chain: list[str], css: str, peek: bool = False
 ) -> dict | None:
@@ -340,7 +365,7 @@ async def _open_to(
     # by `tag` ("O<n>", one per trigger, so their pictures do not overwrite
     # each other). Pictures only for 4.D's focus pictures (step 15; 4.E's
     # hook takes none on these loads, as before).
-    pictures = hooks and "4.D" in ctx.selected
+    pictures = hooks and "4.D" in ctx.selected and tag.startswith("O")
     s = await open_session(
         ctx.new_page,
         ctx.quiet_ms,
@@ -432,8 +457,11 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
     out = Reveal(over_cap=max(0, len(trigs) - MAX_TRIGGERS))
     read = labels.wanted(ctx)
     # The Tab walk through opened content, for the tests that read it.
-    # 5.D fills the fields it reached (pass FO, 5.D 1.13.0).
-    walking = bool({"4.C", "4.E", "4.D", "5.D"} & set(ctx.selected))
+    # 5.D fills the fields it reached (pass FO, 5.D 1.13.0); 4.A and 4.F
+    # read it too (4.A 1.21.0, 4.F 1.16.0), with the onward Tabs.
+    walking = bool({"4.A", "4.C", "4.D", "4.E", "4.F", "5.D"} & set(ctx.selected))
+    onward = bool({"4.A", "4.F"} & set(ctx.selected))
+    cap = int(getattr(walk, "stops", 0) or 0) + 3
     for n, (stop, why) in enumerate(trigs[:MAX_TRIGGERS], 1):
         rec = Opened(
             n=n,
@@ -443,6 +471,7 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
             css_path=stop.css_path or "",
             frame_chain=list(stop.frame_chain),
             why=why,
+            controls=getattr(stop, "controls", None),
         )
         out.triggers.append(rec)
         if ctx.out_of_time():
@@ -465,6 +494,8 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
                 rec.status, rec.reason = NOTHING, WHY[NOTHING]
                 continue
             rec.status = OPENED
+            if rec.controls:
+                rec.in_region = await _in_region(s, info["new"], rec.controls)
             sets = await _sets(s, info["new"]) if read else []
             try:
                 shot = ctx.shots / f"reveal-{n}.png"
@@ -501,6 +532,8 @@ async def collect(ctx, walk, hooks: list | None = None) -> Reveal:
         if walking and read and rec.status == OPENED and rec.new_focusable:
             # ANDI changed the load it read: the walk opens its own.
             rec.walked = await _walk_own_load(ctx, stop, rec, hooks, f"O{n}")
+        if onward and rec.walked is not None and opened.needs_onward(rec.walked):
+            await _onward(ctx, stop, rec, hooks, f"C{n}", cap)
         if not read or rec.status != OPENED:
             continue
         # Options: choosing one can add controls (Home's filter adds a remove
@@ -603,6 +636,29 @@ async def _walk_own_load(
     finally:
         if s2 is not None:
             await s2.close()
+
+
+async def _onward(ctx, stop, rec: Opened, hooks, tag: str, cap: int) -> None:
+    """The onward Tabs (opened.py) on a load of their own, opened as the walk's
+    was; only the walk extras that read these loads (4.A's) ride along."""
+    if ctx.out_of_time():
+        rec.walked.onward_end = "time"
+        return
+    s = None
+    try:
+        own = [f for f in hooks or [] if getattr(f("P1", None), "onward", False)]
+        s, info = await _open_to(ctx, stop, hooks=own, tag=tag)
+        if "status" in info:
+            rec.walked.onward_end = "error: " + info["status"]
+            return
+        await opened.onward(
+            s, rec.walked, stop.path_key, cap, ctx.deadline, ctx.quiet_ms
+        )
+    except Exception as exc:
+        rec.walked.onward_end = f"error: {type(exc).__name__}"[:80]
+    finally:
+        if s is not None:
+            await s.close()
 
 
 async def reopen(

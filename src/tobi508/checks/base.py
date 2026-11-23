@@ -108,15 +108,16 @@ def out_of_budget_reason(seconds: float) -> str:
 
 
 # Tests whose collect must come after others' in one call, because those
-# replays give it evidence (labels.read_revealed: fields 4.F and 5.D reveal
-# are read for 5.A-5.C). The run order is otherwise cheapest budget first
-# (pipeline.run_order). 4.A after 4.D and 4.F only saves time (it reuses
-# their presses), with the same outcome.
+# replays give it evidence (labels.read_revealed: fields 5.D reveals are read
+# for 5.A-5.C). The run order is otherwise cheapest budget first
+# (pipeline.run_order). 4.A after 4.D only saves time (it reuses pass W's
+# arrows), with the same outcome. (4.F's pass R, which 4.A and 5.A-5.C also
+# read, moved onto the shared walk in 4.F 1.16.0.)
 AFTER: dict[str, tuple[str, ...]] = {
-    "4.A": ("4.D", "4.F"),
-    "5.A": ("4.F", "5.D"),
-    "5.B": ("4.F", "5.D"),
-    "5.C": ("4.F", "5.D"),
+    "4.A": ("4.D",),
+    "5.A": ("5.D",),
+    "5.B": ("5.D",),
+    "5.C": ("5.D",),
 }
 
 

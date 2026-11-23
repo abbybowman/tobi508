@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F44 Topics</title></head><body>
+<nav aria-label="Main"><a href="#home">Home</a>
+<button id="b" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="m">Topics</button>
+<ul id="m" hidden><li><a href="#earth">Earth</a></li><li><a href="#sun">Sun</a></li></ul>
+<a href="#contact">Contact</a></nav>
+<main><h1>Topics</h1><p>Pick a topic.</p></main>
+<script>
+const b = document.getElementById("b"), m = document.getElementById("m");
+b.addEventListener("click", () => { const open = b.getAttribute("aria-expanded") === "true"; b.setAttribute("aria-expanded", String(!open)); m.hidden = open; });
+</script></body></html>
