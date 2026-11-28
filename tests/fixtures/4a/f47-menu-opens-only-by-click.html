@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F47 Topics</title>
+<style>#b { cursor: pointer; border: 1px solid #333; padding: 4px; display: inline-block; }</style></head><body>
+<nav aria-label="Main"><a href="#home">Home</a>
+<div id="b" role="button" tabindex="0" aria-expanded="false" aria-controls="m">Topics</div>
+<ul id="m" hidden><li><a href="#earth">Earth</a></li><li><a href="#sun">Sun</a></li></ul>
+<a href="#contact">Contact</a></nav>
+<main><h1>Topics</h1></main>
+<script>
+// Opens on a mouse click only: Enter and Space do nothing.
+const b = document.getElementById("b"), m = document.getElementById("m");
+b.addEventListener("click", () => { const open = b.getAttribute("aria-expanded") === "true"; b.setAttribute("aria-expanded", String(!open)); m.hidden = open; });
+</script></body></html>

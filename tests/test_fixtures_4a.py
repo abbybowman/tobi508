@@ -62,9 +62,9 @@ EXPECTED: dict[str, dict] = {
         "choice": NO_ALT,
     },
     # Native date input parts are native (1.2.0): only the custom picker is
-    # executed. NEEDS REVIEW since 1.5.0: the picker opens a panel with
-    # controls, which this test does not walk yet (guard RC, fix 9b phase 2).
-    "f13-native-date-and-custom-picker": {"outcome": "NEEDS_REVIEW", "rows": ["M8"]},
+    # executed. NEEDS REVIEW from 1.5.0 (guard RC: the picker's panel was not
+    # read); 1.21.0 (#135 step 15) reads it and the walk reached all of it.
+    "f13-native-date-and-custom-picker": {"outcome": "PASS", "rows": ["M8"]},
     "f08-title-only-format": {
         "outcome": "FAIL",
         "rows": ["M14"],
@@ -195,6 +195,37 @@ EXPECTED: dict[str, dict] = {
     "f34-custom-control-enter-does-other": {
         "outcome": "NEEDS_REVIEW",
         "rows": ["M8r"],
+    },
+    # 1.21.0 (#135 step 15): what menus open is read on a load opened the
+    # same way. A menu Tab reaches once opened: its links are reached.
+    "f44-menu-tab-reaches-once-opened": {"outcome": "PASS", "rows": []},
+    # A list that closes when focus leaves its button: neither Tab nor the
+    # arrows reach its options; each is a candidate and J1 decides.
+    "f45-menu-options-never-reached": {
+        "outcome": "FAIL",
+        "rows": ["M6", "M6"],
+        "choice": NO_ALT,
+    },
+    # Round 3's SDE "All" pattern: the list stays open, Tab reaches its
+    # options only after the search box, and they answer the mouse only.
+    "f46-menu-options-reached-late-ignore-keys": {
+        "outcome": "FAIL",
+        "rows": ["M10", "M10"],
+    },
+    # A menu that opens on a click only: executed first (Abby, 2026-11-15).
+    "f47-menu-opens-only-by-click": {"outcome": "FAIL", "rows": ["M10"]},
+    # 1.21.0 (Terms, effect; Abby 2026-11-23, option ii): Space only scrolls
+    # the page and the open list, positioned over it, follows in its style:
+    # no effect, so the options FAIL as round 3's SDE "All" (key Fail).
+    "f48-menu-options-space-scrolls-layer-follows": {
+        "outcome": "FAIL",
+        "rows": ["M10", "M10"],
+    },
+    # The near miss: Space also changes text, a change of its own; the keys
+    # do not do the click's, so a person looks (M8r).
+    "f49-menu-option-space-scrolls-and-marks": {
+        "outcome": "NEEDS_REVIEW",
+        "rows": ["M8r", "M8r"],
     },
 }
 

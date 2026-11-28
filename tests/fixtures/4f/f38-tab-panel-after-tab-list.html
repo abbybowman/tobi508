@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>F38 Careers</title></head><body>
+<main><h1>Careers</h1>
+<div role="tablist" aria-label="Programs">
+<button role="tab" id="t1" aria-selected="true" aria-controls="p1">Students</button>
+<button role="tab" id="t2" aria-selected="false" aria-controls="p2">Veterans</button>
+<button role="tab" id="t3" aria-selected="false" aria-controls="p3">Engineers</button>
+</div>
+<div role="tabpanel" id="p1" aria-labelledby="t1"><a href="#s">Student jobs</a></div>
+<div role="tabpanel" id="p2" aria-labelledby="t2" hidden><a href="#v">Veteran jobs</a></div>
+<div role="tabpanel" id="p3" aria-labelledby="t3" hidden><a href="#e">Engineer jobs</a></div>
+<p><a href="#more">More about careers</a></p></main>
+<script>
+// Every tab stays in the Tab order (no roving tabindex): after choosing a
+// tab, Tab goes through the other tabs and then into its panel.
+for (const t of document.querySelectorAll("[role=tab]")) t.addEventListener("click", () => {
+  for (const u of document.querySelectorAll("[role=tab]")) {
+    u.setAttribute("aria-selected", String(u === t));
+    document.getElementById(u.getAttribute("aria-controls")).hidden = u !== t;
+  }
+});
+</script></body></html>

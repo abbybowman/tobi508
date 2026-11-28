@@ -16,7 +16,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508 import labels
+from tobi508 import reveal
 from tobi508.checks.base import RunContext, element_name
 from tobi508.engine import Row, first_match
 from tobi508.models import (
@@ -30,12 +30,10 @@ from tobi508.models import (
     Step,
     TestId,
 )
-from tobi508.observe import observe, shown
-from tobi508.traverse import Traversal, open_session, screenshot, settle
+from tobi508.traverse import Traversal, open_session, screenshot
 from tobi508.walk import KeyboardWalk, drawn_late
 
 # Spec constants.
-REVEAL_MAX = 6
 ROW_TOLERANCE_MIN = 8
 BADGE_MAX = 60
 MIN_DRAWN_PX = 4  # a stop smaller than this each way has no visible box
@@ -95,16 +93,6 @@ ORDER_FN = """function () {
     shown: el.checkVisibility ? el.checkVisibility({ visibilityProperty: true, opacityProperty: true }) : r.width > 0,
     page: [r.x + sx, r.y + sy, r.width, r.height],
     scroller: box ? gpath(box) : null, scroller_page, inner };
-}"""
-
-CONTAINS_FN = """function (sel) {
-  let c; try { c = document.querySelector(sel); } catch (e) { return null; }
-  if (!c) return null;
-  const sels = 'a[href],button,input:not([type=hidden]),select,textarea,summary,[tabindex]:not([tabindex="-1"])';
-  const visible = (n) => n.checkVisibility ? n.checkVisibility({ visibilityProperty: true }) : n.getClientRects().length > 0;
-  const shown = Array.from(c.querySelectorAll(sels)).filter(visible);
-  const nm = (n) => ((n.getAttribute('aria-label') || n.innerText || n.value || '') + '').trim().replace(/\s+/g, ' ').slice(0, 60);
-  return { inside: c.contains(this), has_stops: shown.length > 0, names: shown.slice(0, 10).map(nm) };
 }"""
 
 J1_QUESTION = (
@@ -517,132 +505,145 @@ def signals(
     return out
 
 
-def _opened_by(trig: StopInfo, inside: dict | None) -> bool:
-    """A modal dialog focus is in counts as the trigger's (spec 1.x, pass R)
-    when the trigger names no container, or focus is inside the container it
-    names (`aria-controls`). A site overlay that opens by itself is not what
-    a menu button opened (post-round 1 fix 16: NASA's Careers "Internships"
-    menu, and a Popup Maker dialog)."""
-    if not trig.info.get("container"):
-        return True
-    return bool((inside or {}).get("inside"))
+def _trigger_label(trig) -> str:
+    """By its visible text, with what a screen reader hears when that
+    differs (reveal.named; round 3's "All" button, heard as "All All")."""
+    kind = {"a": "link", "button": "button", "summary": "summary"}.get(
+        trig.tag or "", trig.tag or "control"
+    )
+    return reveal.named(trig.name or trig.css_path, trig.text, trig.role or kind)
 
 
-async def _reveal(
-    ctx: RunContext, st: State4F, triggers: list[tuple[int, StopInfo]]
-) -> None:
-    for n, (i, trig) in enumerate(triggers, start=1):
+async def _reveal_shared(ctx: RunContext, st: State4F) -> None:
+    """Opened content from the shared walk (1.16.0, #135 step 15): each
+    trigger reveal.py opened whose opened content takes focus is an R
+    instance, read from the walk through it (opened.py) and its onward Tabs;
+    one that left a modal dialog open is a D instance."""
+    from tobi508.opened import stop_key
+
+    rv = ctx.cache.get("reveal")
+    if rv is None:
+        return
+    if rv.over_cap:
+        st.incomplete.append(
+            f"The page has more than {len(rv.triggers)} menus or expandable "
+            f"sections; only the first {len(rv.triggers)} were opened."
+        )
+    n = 0
+    for trig in rv.triggers:
+        w = trig.walked
+        if trig.status != reveal.OPENED or w is None or not w.source_focusable:
+            continue
         if ctx.out_of_time():
             st.incomplete.append(
-                "The run time limit was reached before every menu or dialog was opened."
+                "The run time limit was reached before every menu or dialog was checked."
             )
             return
-        keys = ["Tab"] * (i + 1) + ["Enter"]
-        # Enter is pressed through the shared observe (as 4.A's execute
-        # check), and its effect kept for 4.A: one replay serves both.
-        s = await ctx.replay(keys[:-1])
-        try:
-            here, _ = await s.traversal.reader.read()
-            # Recorded as 4.A's own press is (media, pop-ups, changed
-            # region; 4.A 1.16.0 compares it with the click), when 4.A runs.
-            for_4a = "4.A" in ctx.selected
-            effect = await observe(
-                s,
-                ctx.quiet_ms,
-                lambda: s.page.keyboard.press("Enter"),
-                trig.path_key,
-                media=for_4a,
-                popups=for_4a,
-                region=for_4a,
-            )
-            if here.path_key == trig.path_key and not effect.unreliable:
-                ctx.cache.setdefault("enter", {})[trig.path_key] = effect
-                # What Enter showed: 4.A's hover check reads it instead of
-                # replaying to this stop and pressing Enter again.
-                if "4.A" in ctx.selected:
-                    seen = await shown(s)
-                    if seen is not None:
-                        ctx.cache.setdefault("enter-shown", {})[trig.path_key] = seen
-            await s.traversal.resync()
-            after, _ = await s.traversal.reader.read()
-            container = trig.info.get("container")
-            c = (
-                await s.traversal.reader.call(after, CONTAINS_FN, [container])
-                if container and after.kind == "element"
-                else None
-            )
-            if after.modal and _opened_by(trig, c):
-                st.instances.append(await _dialog_check(ctx, keys, trig, n))
+        n += 1
+        label = _trigger_label(trig)
+        opener = {
+            "frame_chain": list(trig.frame_chain),
+            "css_path": trig.css_path,
+            "by": w.by,
+        }
+        how = "Click on" if w.by == "a click" else "Enter on"
+        if w.modal and await _dialog_is_its(ctx, opener, trig):
+            st.instances.append(await _dialog_check(ctx, opener, label, n, how))
+            continue
+        # Everything that opened and takes focus, behind a dialog too: a
+        # site overlay can sit over the menu (post-round 1 fix 16).
+        focusable = {stop_key(k) for k in w.source_focusable}
+        if trig.controls and trig.in_region is not None:
+            # What it revealed is what opened inside the region it names
+            # (pass R's revealed content): a site overlay that shows itself
+            # beside a menu is not the menu (post-round 1 fix 16).
+            inside = {stop_key(k) for k in trig.in_region}
+            if not inside & focusable:
                 continue
-            if not container:
-                continue
-            if c is None or not c.get("has_stops"):
-                continue
-            moved_in = bool(c.get("inside"))
-            nxt = await s.traversal.press("Tab")
-            c2 = (
-                await s.traversal.reader.call(nxt.stop, CONTAINS_FN, [container])
-                if nxt.stop.kind == "element"
-                else None
+        else:
+            inside = set(w.opened) | {stop_key(k) for k in w.source_all}
+        moved_in = bool(w.start and w.start in inside)
+        first = next((x.stop for x in w.steps), None)
+        next_inside = first is not None and first.path_key in inside
+        inst = Inst4F(
+            id=f"r{n}",
+            kind="R",
+            label=label,
+            keys=[how.split()[0], "Tab"],
+            unreliable=bool(first is not None and first.unresolved),
+            # What the agent needs to judge it (judge eval: without the
+            # opened content it could only answer unsure).
+            detail={
+                "opened_by": label,
+                "opened_content": [
+                    x.stop.name or x.stop.css_path
+                    for x in w.steps
+                    if x.stop.kind == "element" and x.stop.path_key in inside
+                ][:20]
+                or len(w.opened),
+                "focus_moved_into_it": moved_in,
+                "next_tab_reaches": (first.name or first.css_path or first.kind)
+                if first is not None
+                else None,
+                "next_tab_is_inside": next_inside,
+            },
+        )
+        if not moved_in and not next_inside:
+            # 1.16.0: how many Tabs from the opening reach it, if any, and
+            # what focus passes on the way (the onward Tabs).
+            targets = focusable & inside
+            at = next(
+                (i for i, x in enumerate(w.onward) if x.stop.path_key in targets),
+                None,
             )
-            inst = Inst4F(
-                id=f"r{n}",
-                kind="R",
-                label=_plain(trig),
-                keys=keys + ["Tab"],
-                unreliable=after.unresolved or nxt.stop.unresolved,
-                # What the agent needs to judge it (judge eval: without the
-                # opened content it could only answer unsure).
-                detail={
-                    "opened_by": _plain(trig),
-                    "opened_content": c.get("names", []),
-                    "focus_moved_into_it": moved_in,
-                    "next_tab_reaches": nxt.stop.name
-                    or nxt.stop.css_path
-                    or nxt.stop.kind,
-                    "next_tab_is_inside": bool((c2 or {}).get("inside")),
-                },
+            if at is not None:
+                inst.detail["reached_after_tabs"] = at + 1
+                inst.detail["passes_on_the_way"] = [
+                    x.stop.name or x.stop.css_path
+                    for x in w.onward[:at]
+                    if x.stop.kind == "element"
+                ][:8]
+            never = (
+                at is None
+                and w.onward_end in ("trigger", "wrap", "stuck", "loop")
+                and not (set(w.reached) & targets)
             )
-            if nxt.stop.modal and _opened_by(trig, c2):
-                st.instances.append(await _dialog_check(ctx, keys + ["Tab"], trig, n))
-                continue
+            passed = [x.stop for x in w.onward[: at or 0] if x.stop.kind == "element"]
+            lists = {x.widget for x in passed}
             if (
-                not moved_in
-                and not (c2 or {}).get("inside")
-                and await _popup_takes_arrows(ctx, keys, trig, container)
+                at is not None
+                and "tab" in (trig.why or [])
+                and passed
+                and all((x.role or "") == "tab" for x in passed)
+                and len(lists) == 1
+                and None not in lists
             ):
+                # 1.16.0 (Abby, 2026-11-23): a tab whose panel Tab reaches
+                # right after the rest of its own tab list, the order of
+                # the tabs pattern (round 1's Careers page).
+                inst.detail["tab_list_first"] = True
+            elif await _popup_takes_arrows(ctx, opener, trig, inside):
                 # 1.14.0 (step 33c): a menu or list the arrow keys move into
                 # and Tab leaves, as the WAI-ARIA patterns have it.
                 inst.detail["arrow_keys_move_into_it"] = True
-            elif not moved_in and not (c2 or {}).get("inside"):
+            elif never:
+                # 1.16.0 (Abby, 2026-11-23): neither Tab nor the arrow keys
+                # reach it; that is 4.A's finding, not an order.
+                inst.detail["keyboard_never_reaches_it"] = True
+            else:
                 inst.signals.append(
                     {
                         "code": "S6",
-                        "at": trig.path_key,
-                        "words": f"after opening {_plain(trig)}, the next Tab does not go into what it revealed",
+                        "at": " >> ".join([*trig.frame_chain, trig.css_path]),
+                        "words": f"after opening {label}, the next Tab does not go into what it revealed"
+                        + (
+                            f"; Tab reaches it only after {at + 1} presses"
+                            if at is not None
+                            else ""
+                        ),
                     }
                 )
-            st.instances.append(inst)
-        except Exception as exc:
-            st.incomplete.append(f"Opening a menu or dialog failed to run: {exc!r}")
-        finally:
-            # Form fields this opened, for 5.A and 5.C (their spec, section 2):
-            # read last on this replay, only when they run in this call.
-            container = trig.info.get("container")
-            if container and labels.wanted(ctx):
-                try:
-                    has = await s.traversal.reader.evaluate_top(
-                        "(() => { const c = document.querySelector("
-                        + json.dumps(container)
-                        + "); return !!(c && c.querySelector('input:not([type=hidden]),select,textarea')); })()"
-                    )
-                    if has:
-                        await labels.read_revealed(
-                            ctx, s, f'press Enter on "{trig.name or "the button"}"'
-                        )
-                except Exception:
-                    pass
-            await s.close()
+        st.instances.append(inst)
 
 
 POPUP_ROLE_FN = """function () {
@@ -652,71 +653,108 @@ POPUP_ROLE_FN = """function () {
 
 
 async def _popup_takes_arrows(
-    ctx: RunContext, keys: list[str], trig: StopInfo, container: str
+    ctx: RunContext, opener: dict[str, Any], trig, inside: set[str]
 ) -> bool:
-    """4.F 1.14.0 (step 33c): the trigger says it opens a menu or list, or
-    what it reveals has role menu or listbox, and on a fresh replay (to the
-    trigger, Enter, then ArrowDown) focus moves into what it revealed. The
-    key press confirms it; the attributes alone never do."""
-    declared = (trig.info.get("haspopup") or "").lower() in ("true", "menu", "listbox")
-    s = await ctx.replay(keys[:-1])
+    """4.F 1.14.0 (step 33c): the trigger says it opens a popup, or what it
+    opened has role menu or listbox, and on a load opened as reveal.py opened
+    it (1.16.0), ArrowDown moves focus into what it opened. The key press
+    confirms it; the attributes alone never do."""
+    s = await open_session(ctx.new_page, ctx.quiet_ms)
     try:
+        if not await reveal.reopen(
+            s, opener["frame_chain"], opener["css_path"], opener["by"], ctx.quiet_ms
+        ):
+            return False
+        declared = "popup" in (trig.why or [])
         if not declared:
+            top = [
+                k.partition("|")[2] for k in trig.walked.source_all if k.startswith("|")
+            ]
             try:
                 declared = bool(
                     await s.traversal.reader.evaluate_top(
-                        "(() => { const c = document.querySelector("
-                        + json.dumps(container)
-                        + "); if (!c) return false; return ("
-                        + POPUP_ROLE_FN
-                        + ").call(c); })()"
+                        "(() => { for (const p of "
+                        + json.dumps(top[:200])
+                        + ") { let e = null; try { e = document.querySelector(p); } catch (x) {} "
+                        "if (e && e.closest('[role=menu],[role=listbox]')) return true; } "
+                        "return false; })()"
                     )
                 )
             except Exception:
                 declared = False
         if not declared:
             return False
-        here, _ = await s.traversal.reader.read()
-        if here.path_key != trig.path_key:
-            return False
-        await s.page.keyboard.press("Enter")
-        await settle(s.page, ctx.quiet_ms)
-        await s.traversal.resync()
         down = await s.traversal.press("ArrowDown")
         if down.stop.kind != "element" or down.stop.unresolved:
             return False
-        got = await s.traversal.reader.call(down.stop, CONTAINS_FN, [container])
-        return bool((got or {}).get("inside"))
+        return down.stop.path_key in inside
     except Exception:
         return False
     finally:
         await s.close()
 
 
+async def _dialog_is_its(ctx: RunContext, opener: dict[str, Any], trig) -> bool:
+    """A modal dialog open after the opening counts as the trigger's (1.2.0,
+    post-round 1 fix 16) when the trigger names no region (aria-controls), or
+    focus is inside the region it names. A site overlay that shows itself is
+    not what a menu button opened (NASA's Careers "Internships" menu and a
+    Popup Maker dialog)."""
+    if not trig.controls:
+        return True
+    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    try:
+        if not await reveal.reopen(
+            s, opener["frame_chain"], opener["css_path"], opener["by"], ctx.quiet_ms
+        ):
+            return True  # unknown: check it as a dialog (the D rows decide)
+        here, _ = await s.traversal.reader.read()
+        if here.kind != "element":
+            return False
+        got = await s.traversal.reader.call(
+            here,
+            "function (ids) { for (const id of ids.split(/\\s+/)) {"
+            " const c = this.ownerDocument.getElementById(id);"
+            " if (c && c.contains(this)) return true; } return false; }",
+            [trig.controls],
+        )
+        return bool(got)
+    except Exception:
+        return True
+    finally:
+        await s.close()
+
+
 async def _dialog_check(
-    ctx: RunContext, keys: list[str], trig: StopInfo, n: int
+    ctx: RunContext, opener: dict[str, Any], label: str, n: int, how: str
 ) -> Inst4F:
-    """D: does focus stay in the open modal dialog, forward and backward?"""
-    inst = Inst4F(id=f"dlg{n}", kind="D", label=_plain(trig), keys=keys)
+    """D: does focus stay in the open modal dialog, forward and backward? On
+    loads opened as reveal.py opened the trigger (1.16.0)."""
+    inst = Inst4F(id=f"dlg{n}", kind="D", label=label, keys=[how.split()[0]])
     for key in ("Tab", "Shift+Tab"):
-        s = await ctx.replay(keys)
+        s = await open_session(ctx.new_page, ctx.quiet_ms)
         try:
+            if not await reveal.reopen(
+                s, opener["frame_chain"], opener["css_path"], opener["by"], ctx.quiet_ms
+            ):
+                inst.unreliable = True
+                continue
+            base = len(s.traversal.steps)
             for _ in range(30):
                 step = await s.traversal.press(key)
+                own = s.traversal.steps[base:]
                 if step.stop.unresolved:
                     inst.unreliable = True
                 if step.stop.kind == "element" and not step.stop.modal:
                     inst.escaped = (
                         f"{key} reaches {step.stop.name or step.stop.css_path}"
                     )
-                    inst.keys = keys + [key] * len(s.traversal.steps[len(keys) :])
+                    inst.keys = inst.keys + [key] * len(own)
                     return inst
-                if (
-                    len(s.traversal.steps) - len(keys) >= 4
-                    and len({x.stop.path_key for x in s.traversal.steps[len(keys) :]})
-                    < len(s.traversal.steps[len(keys) :]) / 2
-                ):
+                if len(own) >= 4 and len({x.stop.path_key for x in own}) < len(own) / 2:
                     break  # cycled inside the dialog
+        except Exception:
+            inst.unreliable = True
         finally:
             await s.close()
     return inst
@@ -947,10 +985,6 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
         or (s.extras.get(HOOK) or {}).get("haspopup") not in (None, "false")
     ]
     st.triggers = len(triggers)
-    if len(triggers) > REVEAL_MAX:
-        st.incomplete.append(
-            f"The page has {len(triggers)} menus or expandable sections; only the first {REVEAL_MAX} were opened."
-        )
     if st.distinct <= 1 and not triggers:
         return st
     o = Inst4F(
@@ -978,7 +1012,7 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4F:
                 )
             )
             break
-    await _reveal(ctx, st, triggers[:REVEAL_MAX])
+    await _reveal_shared(ctx, st)
     if any(i.signals for i in st.instances):
         sigs = [sg for i in st.instances for sg in i.signals]
         st.numbered = numbered(fwd, sigs)
@@ -1190,7 +1224,7 @@ def _keys_text(keys: list[str]) -> str:
 
 def _sentence(inst: Inst4F, rid: str) -> str:
     sig = "; ".join(s["words"] for s in inst.signals)
-    reasons = (inst.j1 or {}).get("reasons", "")
+    reasons = ((inst.j1 or {}).get("reasons", "") or "").rstrip(". ")
     keys = _keys_text(inst.keys)
     return {
         "M1": f"Focus moved around {inst.label} in a way we could not read reliably. Please check the focus order by hand.",
@@ -1201,7 +1235,18 @@ def _sentence(inst: Inst4F, rid: str) -> str:
         else (
             f"After opening {inst.label}, the arrow keys move into what it opened."
             if inst.detail.get("arrow_keys_move_into_it")
-            else f"After opening {inst.label}, the next Tab moves into what it revealed."
+            else (
+                f"After opening {inst.label}, neither Tab nor the arrow keys reach "
+                "what it opened, so there is no order to check there; keyboard "
+                "access (TT 4.A) reports it."
+                if inst.detail.get("keyboard_never_reaches_it")
+                else (
+                    f"After choosing {inst.label}, Tab goes through the rest of its tab "
+                    "list and then into its panel."
+                    if inst.detail.get("tab_list_first")
+                    else f"After opening {inst.label}, the next Tab moves into what it revealed."
+                )
+            )
         ),
         "M6": f"The focus order doesn't make sense here: {sig}. {reasons}. If you disagree, tell your assistant.",
         "M7": f"The focus order departs from the reading order ({sig}), but it still makes sense: {reasons}. If you disagree, tell your assistant.",
@@ -1294,7 +1339,6 @@ class Check4F:
     state_type = State4F
     uses_walk = True
     uses_reveal = True  # reads opened content (reveal.py)
-    shares = 1  # collects before 4.A, which reuses its replays (ctx.cache)
     about = (
         "It uses the order of the Tab and Shift+Tab walks and checks it against "
         "the page: explicit tab positions, focus jumping back up the page or "

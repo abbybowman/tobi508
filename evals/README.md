@@ -807,6 +807,12 @@ repeat.
 
 The radio probe asks no question: it takes radio buttons out of J1 when an arrow press lands on them, as 1.19.0 did. No question, rubric or question input changes; F43 (new) asks nothing. On round 2's search page (`judging/gate-2026-11-22-136e/`) the five date radio buttons are no longer asked: 4.A's own rows pass the page (G4), held at NEEDS REVIEW only by guard RC (content that opens, step 15).
 
+## Run 44, 2026-11-23: 4.F 1.16.0 (#135 step 15: opened content from the shared walk), every 4.F packet
+
+J1's `opened` input now comes from the shared walk through every trigger `reveal.py` opens (pass R opened the first six) and, when the next Tab does not go into what opened, says after how many Tabs focus first reaches it (`reached_after_tabs`) and what it passes on the way. 21 cases ask (F36, round 3's SDE "All" pattern, among them).
+- **Server judge (`answer --backend api --repeat 3`, CLI route, `claude-sonnet-5-5`): 21, 21, 21 of 21, no wrong PASS, no bait taken.** Results in `judging/gate-2026-11-23-135e/judge-eval-4f/`.
+- **Fresh agent: not run** (time; the server judge is the path the gates use).
+
 ## Run 43, 2026-11-23: 4.D 1.13.0 (#135 step 15: opened content; image B marked), every 4.D packet
 
 J1's image B now carries the element's box in magenta on a copy, as the spec always said (the code had sent the unmarked picture while the question named "the outlined element"), and the question says the box is the tool's mark, not the page's. 4.D now also asks J1 for stops inside opened content with no before picture: new F34 (a menu that closes when focus leaves; correct answer yes) and F35 (its last item has the next link's ring in its off picture; correct answer no). `prepare 4.D` (11 cases ask), no leak in the packets (the grep finds nothing). Results: `judging/gate-2026-11-23-135c/judge-eval-4d/`.

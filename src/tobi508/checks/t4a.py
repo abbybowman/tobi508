@@ -16,7 +16,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from tobi508.checks.base import RunContext, element_name
+from tobi508 import reveal
+from tobi508.checks.base import RunContext
 from tobi508.engine import Row, first_match
 from tobi508.models import (
     REVIEW_HEAD,
@@ -48,6 +49,10 @@ CLICK_MAX = 10
 SCROLL_MAX = 8  # scroll checks (fix 24); each is one fresh load and one click
 SCROLL_WAIT_MS = 700  # a smooth scroll finishes in about half a second
 EXECUTE_MAX = 12  # every executed control (1.16.0: was 10)
+# Opened content (1.21.0): stops inside it hovered, at most this many a page
+# (round 3's FITS samples page: 213, 189 in its 19 sections and 24 in its
+# header menus; 116 s for 4.A at 200).
+HOVER_OPENED_MAX = 250
 ARROW_MAX = 5
 ARROW_PRESSES = 20
 # 1.20.0 (#136): how long the radio probe waits after its one arrow press for
@@ -278,6 +283,7 @@ STOP_FN = (
     + """
   const el = this;
   return { title: (el.getAttribute('title') || '').trim(), native: native(el), reason: reasonOf(el),
+    text: (el.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120),
     href: el.href && typeof el.href === 'string' ? el.href : null, dest: destHref(el),
     radio: radioGroup(el) };
 }"""
@@ -366,12 +372,18 @@ class StopHook:
     link address, and its own click-type listeners (CDP)."""
 
     name = HOOK
+    # Rides on the onward Tabs through opened content too (opened.py).
+    onward = True
 
     def __init__(self, pass_name: str):
         self.pass_name = pass_name
 
     async def on_step(self, t: Traversal, step: Step) -> Any:
-        if step.stop.kind != "element" or self.pass_name != "P1":
+        # P1, and the walks through opened content (O<n>, onward C<n>;
+        # 1.21.0, #135 step 15).
+        if step.stop.kind != "element" or self.pass_name[:1] not in ("P", "O", "C"):
+            return None
+        if self.pass_name.startswith("P") and self.pass_name != "P1":
             return None
         info = await t.reader.call(step.stop, STOP_FN)
         if info is None:
@@ -434,6 +446,14 @@ class Inst4A(BaseModel):
     signal: str | None = None
     unreliable: bool = False
     j: dict[str, Any] | None = None
+    # Inside opened content (1.21.0): how to open its trigger again as
+    # reveal.py opened it (frame_chain, css_path, by, name); `keys` then
+    # follow the opening. `hover_key`: the opened stop whose hover shows it.
+    opened: dict[str, Any] | None = None
+    hover_key: str | None = None
+    # Keys whose only change was the page scrolling and a positioned layer
+    # following it (1.21.0, Terms "effect"): counted as no effect.
+    scroll_only: list[str] = Field(default_factory=list)
 
 
 class StopRef(BaseModel):
@@ -463,6 +483,8 @@ class State4A(BaseModel):
     notes: list[str] = Field(default_factory=list)
     shot: str | None = None
     browser: str | None = None
+    # What was read in each trigger's opened content (1.21.0).
+    opened: list[dict[str, Any]] = Field(default_factory=list)
 
     @property
     def read(self) -> dict[str, dict[str, int]]:
@@ -620,6 +642,27 @@ def _visible_unreached(results) -> set[str]:
     return {" >> ".join([*r["chain"], css]) for r in results for css in r["unreached"]}
 
 
+async def _start(
+    ctx: RunContext, opened: dict[str, Any] | None, keys: list[str]
+) -> Session:
+    """A fresh replay pressing `keys`, or, for opened content (1.21.0), a
+    fresh load with the trigger opened as reveal.py opened it, then `keys`."""
+    if not opened:
+        return await _replay(ctx, keys)
+    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    try:
+        if not await reveal.reopen(
+            s, opened["frame_chain"], opened["css_path"], opened["by"], ctx.quiet_ms
+        ):
+            raise RuntimeError("the menu or section could not be opened again")
+        for k in keys:
+            await s.traversal.press(k)
+    except BaseException:
+        await s.close()
+        raise
+    return s
+
+
 async def _replay(ctx: RunContext, keys: list[str]) -> Session:
     return await ctx.replay(keys)
 
@@ -762,12 +805,6 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
                 unreached.pop(k, None)
                 st.instances.append(_k(st, {"path_key": k}, sr.n, checked=False))
             continue
-        # 4.F's pass R replayed to this stop and pressed Enter (focus checked
-        # on the stop): when that showed every target, Enter reveals them
-        # and this replay would only repeat it.
-        seen = (ctx.cache.get("enter-shown") or {}).get(sr.path_key)
-        if seen is not None and all(k in seen for k in ks):
-            continue
         s = await _replay(ctx, ["Tab"] * (sr.index + 1))
         try:
             _, now = await _scan(s, stops_arg, False, False)
@@ -829,9 +866,70 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
             if k in visited:
                 unreached.pop(k)
 
+    # Opened content (1.21.0, #135 step 15): what each trigger reveal.py
+    # opened, read on a load opened the same way.
+    budget = {"hover": 0, "replays": 0}
+    reads = await _read_opened(ctx, st, stops_arg, set(unreached), budget)
+    st.opened = [
+        {
+            "trigger": rd.opened["name"],
+            "by": rd.opened["by"],
+            "reached": len(rd.reached),
+            "inside": len(rd.stops),
+            "candidates": len(rd.candidates),
+            **({"error": rd.error} if rd.error else {}),
+        }
+        for rd in reads
+    ]
+    probes = 0
+    for rd in reads:
+        cands = {c["path_key"]: c for c in rd.candidates}
+        groups: dict[tuple[str, str], list[str]] = {}
+        for k, t in cands.items():
+            if t.get("widget"):
+                groups.setdefault(("widget", t["widget"]), []).append(k)
+            elif t.get("radio"):
+                groups.setdefault(("radio", t["radio"]), []).append(k)
+        for (kind, w), ks in sorted(groups.items()):
+            if probes >= ARROW_MAX or _out_of_time(ctx):
+                st.incomplete.append(
+                    "Not every menu or list was checked with the arrow keys."
+                )
+                break
+            probes += 1
+            # From the opened stop of the same widget (or radio group), else
+            # from where the opening left focus.
+            origin = next(
+                (
+                    x
+                    for x in rd.stops
+                    if (
+                        x.stop.get("widget")
+                        if kind == "widget"
+                        else x.info.get("radio")
+                    )
+                    == w
+                ),
+                None,
+            )
+            keys = origin.keys if origin else []
+            ref = StopRef(n=0, path_key=origin.path_key if origin else "", index=-1)
+            visited = await _arrow_probe(ctx, ref, rd.opened, keys)
+            left = [k for k in ks if k not in visited]
+            if left and kind == "radio" and origin and " >> " not in origin.path_key:
+                visited |= await _radio_probe(ctx, ref, set(ks), rd.opened, keys)
+            for k in ks:
+                if k in visited:
+                    cands.pop(k)
+        for k, t in cands.items():
+            unreached.setdefault(k, t)
+
     # K: what is left, in document order.
     for t in unreached.values():
-        st.instances.append(_k(st, t, None, checked=not late))
+        inst = _k(st, t, None, checked=not late)
+        inst.opened = t.get("opened")
+        inst.hover_key = t.get("hover_key")
+        st.instances.append(inst)
     clicks = 0
     for inst in st.instances:
         if (
@@ -887,13 +985,67 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
     ]
     # Native buttons and links with a key-listening container (1.16.0).
     customs += [sr for sr in st.stop_list if sr.path_key in keyed]
-    for done, sr in enumerate(customs):
-        inst = Inst4A(
-            id=f"x{done + 1}",
-            kind="X",
-            target=_target(p1, sr),
-            keys=["Tab"] * (sr.index + 1),
+    # 1.21.0 (#135 step 15; Abby, 2026-11-15): a menu that opened only by a
+    # click goes first, ahead of the cap.
+    rv = ctx.cache.get("reveal")
+    by_click = {
+        " >> ".join([*t.frame_chain, t.css_path])
+        for t in (rv.triggers if rv is not None else [])
+        if t.status == reveal.OPENED and t.by == "a click"
+    }
+    first = [sr for sr in st.stop_list if sr.path_key in by_click]
+    customs = first + [sr for sr in customs if sr not in first]
+    jobs: list[tuple[Inst4A, StopRef]] = [
+        (
+            Inst4A(
+                id="x",
+                kind="X",
+                target=_target(p1, sr),
+                keys=["Tab"] * (sr.index + 1),
+            ),
+            sr,
         )
+        for sr in customs
+    ]
+    # Custom controls inside opened content, after the page's own (1.21.0).
+    for rd in reads:
+        for os_ in rd.stops:
+            reason = os_.info.get("reason")
+            if (reason in (None, "native") and not os_.info.get("pointer_only")) or (
+                os_.stop.get("control") == "date" and os_.stop.get("group")
+            ):
+                continue
+            jobs.append(
+                (
+                    Inst4A(
+                        id="x",
+                        kind="X",
+                        target={
+                            **{
+                                k: os_.stop.get(k)
+                                for k in (
+                                    "css_path",
+                                    "frame_chain",
+                                    "role",
+                                    "name",
+                                    "tag",
+                                )
+                            },
+                            "path_key": os_.path_key,
+                            "reason": "pointer_only"
+                            if os_.info.get("pointer_only")
+                            else reason,
+                            "late": os_.late,
+                            "text": os_.info.get("text"),
+                        },
+                        keys=list(os_.keys),
+                        opened=rd.opened,
+                    ),
+                    StopRef(n=0, path_key=os_.path_key, index=-1),
+                )
+            )
+    for done, (inst, sr) in enumerate(jobs):
+        inst.id = f"x{done + 1}"
         st.instances.append(inst)
         if done >= EXECUTE_MAX or _out_of_time(ctx):
             inst.checked = False
@@ -916,6 +1068,12 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
             text = _norm(" ".join(x["text"] for x in await page_text(s.page)))
         finally:
             await s.close()
+    if not titled and any(os_.info.get("title") for rd in reads for os_ in rd.stops):
+        s = await open_session(ctx.new_page, ctx.quiet_ms)
+        try:
+            text = _norm(" ".join(x["text"] for x in await page_text(s.page)))
+        finally:
+            await s.close()
     for sr, title in titled:
         t = _norm(title)
         st.instances.append(
@@ -928,11 +1086,227 @@ async def collect(ctx: RunContext, walk: KeyboardWalk) -> State4A:
                 elsewhere=bool(t) and (t == _norm(sr.name) or t in text),
             )
         )
+    # Titles inside opened content (1.21.0): "available elsewhere" reads the
+    # page's text and the opened state's.
+    n_t = 0
+    for rd in reads:
+        for os_ in rd.stops:
+            title = os_.info.get("title")
+            if not title or (
+                os_.stop.get("control") == "date" and os_.stop.get("group")
+            ):
+                continue
+            n_t += 1
+            t = _norm(title)
+            st.instances.append(
+                Inst4A(
+                    id=f"to{n_t}",
+                    kind="T",
+                    target={
+                        **{
+                            k: os_.stop.get(k)
+                            for k in ("css_path", "frame_chain", "role", "name", "tag")
+                        },
+                        "path_key": os_.path_key,
+                    },
+                    keys=list(os_.keys),
+                    title=title,
+                    elsewhere=bool(t)
+                    and (t == _norm(os_.stop.get("name")) or t in text or t in rd.text),
+                    opened=rd.opened,
+                )
+            )
     for n, inst in enumerate(st.instances, start=1):
         if inst.kind in ("K", "U"):
             inst.id = f"{inst.kind.lower()}{n}"
     del keys_of
     return st
+
+
+class OpenedStop(BaseModel):
+    """A stop the keyboard reached inside a trigger's opened content."""
+
+    path_key: str
+    keys: list[str]  # Tab presses from the opening
+    late: bool = False  # reached only by the onward Tabs, after focus left it
+    stop: dict[str, Any]  # css_path, frame_chain, role, name, tag, widget
+    info: dict[str, Any] = Field(default_factory=dict)  # the walk extra's
+
+
+class OpenedRead(BaseModel):
+    """What 4.A read in one trigger's opened content (1.21.0)."""
+
+    opened: dict[str, Any]
+    reached: list[str] = Field(default_factory=list)  # every stop Tab reached
+    stops: list[OpenedStop] = Field(default_factory=list)  # those inside it
+    candidates: list[dict[str, Any]] = Field(default_factory=list)
+    text: str = ""
+    error: str | None = None
+
+
+def _opened_stops(trig) -> tuple[list[str], list[OpenedStop]]:
+    """From the shared walk (opened.py): every stop Tab reached after the
+    opening (the walk, and its onward Tabs), and those inside what opened,
+    each with the Tab presses from the opening."""
+    from tobi508.opened import stop_key
+
+    w = trig.walked
+    inside = set(w.opened) | {stop_key(k) for k in w.source_all}
+    seq = w.onward if len(w.onward) > len(w.steps) else w.steps
+    walked = {x.stop.path_key for x in w.steps}
+    reached: set[str] = set()
+    out: list[OpenedStop] = []
+    seen: set[str] = set()
+    if w.start:
+        reached.add(w.start)
+    for i, step in enumerate(seq):
+        st = step.stop
+        if st.kind != "element":
+            continue
+        reached.add(st.path_key)
+        if st.path_key not in inside or st.path_key in seen:
+            continue
+        seen.add(st.path_key)
+        out.append(
+            OpenedStop(
+                path_key=st.path_key,
+                keys=["Tab"] * (i + 1),
+                late=st.path_key not in walked and st.path_key != w.start,
+                stop={
+                    "css_path": st.css_path,
+                    "frame_chain": st.frame_chain,
+                    "role": st.role,
+                    "name": st.name,
+                    "tag": st.tag,
+                    "widget": st.widget,
+                    "control": st.control,
+                    "group": st.group,
+                },
+                info=step.extras.get(HOOK) or {},
+            )
+        )
+    for step in w.steps:  # the walk's own steps, when onward was not made
+        if step.stop.kind == "element":
+            reached.add(step.stop.path_key)
+    return sorted(reached), out
+
+
+def _opener(trig) -> dict[str, Any]:
+    return {
+        "frame_chain": list(trig.frame_chain),
+        "css_path": trig.css_path,
+        "by": trig.walked.by if trig.walked else trig.by,
+        # A person looks for the words on the page (`text`), not what a
+        # screen reader hears.
+        "name": trig.text or trig.name or "the control",
+    }
+
+
+async def _read_opened(
+    ctx: RunContext,
+    st: State4A,
+    stops_arg: list[list[str]],
+    page_unreached: set[str],
+    budget: dict[str, int],
+) -> list[OpenedRead]:
+    """Pointer scan, hover scan, the keyboard check of what hovering shows,
+    and the page's text, in each trigger's opened content (spec section 2,
+    opened content; 1.21.0)."""
+    rv = ctx.cache.get("reveal")
+    out: list[OpenedRead] = []
+    for trig in rv.triggers if rv is not None else []:
+        if trig.status != reveal.OPENED or trig.walked is None:
+            continue
+        if _out_of_time(ctx):
+            st.incomplete.append(
+                "The run time limit was reached before every menu or section "
+                "that opens was checked."
+            )
+            break
+        reached, inside = _opened_stops(trig)
+        rd = OpenedRead(opened=_opener(trig), reached=reached, stops=inside)
+        out.append(rd)
+        arg = stops_arg + [list(_split(k)) for k in reached]
+        try:
+            s = await _start(ctx, rd.opened, [])
+        except Exception as exc:
+            rd.error = type(exc).__name__
+            st.incomplete.append(
+                f'"{rd.opened["name"]}" could not be opened again to check what it shows.'
+            )
+            continue
+        revealed: dict[str, OpenedStop] = {}
+        try:
+            _, results = await _scan(s, arg, True, False)
+            for r in results:
+                for t in r["unreached"]:
+                    k = " >> ".join([*r["chain"], t["css"]])
+                    if k in page_unreached:
+                        continue  # the page's own candidate, already listed
+                    rd.candidates.append(
+                        {**t, "path_key": k, "chain": r["chain"], "opened": rd.opened}
+                    )
+            rd.text = _norm(" ".join(x["text"] for x in await page_text(s.page)))
+            await s.page.mouse.move(0, 0)
+            _, base = await _scan(s, arg, False, False)
+            baseline = _visible_unreached(base)
+            frames = await _frame_ctx(s)
+            for os_ in inside:
+                if budget["hover"] >= HOVER_OPENED_MAX:
+                    st.incomplete.append(
+                        f"Only the first {HOVER_OPENED_MAX} elements inside menus "
+                        "and sections that open were checked for menus that open "
+                        "when the mouse rests on them."
+                    )
+                    break
+                if _out_of_time(ctx):
+                    break
+                pt = await _point(s, frames, os_.path_key)
+                if not pt:
+                    continue
+                budget["hover"] += 1
+                await s.page.mouse.move(pt["x"], pt["y"])
+                await settle(s.page, ctx.quiet_ms)
+                _, now = await _scan(s, arg, False, False)
+                for k in sorted(_visible_unreached(now) - baseline):
+                    revealed.setdefault(k, os_)
+                await s.page.mouse.move(0, 0)
+                await settle(s.page, ctx.quiet_ms)
+        except Exception as exc:
+            rd.error = type(exc).__name__
+        finally:
+            await s.close()
+        # What hovering an opened stop shows: does Enter on it show it too?
+        by_stop: dict[str, list[str]] = {}
+        for k, os_ in revealed.items():
+            by_stop.setdefault(os_.path_key, []).append(k)
+        for key, ks in sorted(by_stop.items()):
+            os_ = next(x for x in inside if x.path_key == key)
+            vis: set[str] = set()
+            if budget["replays"] < REVEAL_REPLAYS and not _out_of_time(ctx):
+                budget["replays"] += 1
+                try:
+                    s = await _start(ctx, rd.opened, os_.keys)
+                    try:
+                        _, now = await _scan(s, arg, False, False)
+                        vis = _visible_unreached(now)
+                        await s.traversal.press("Enter")
+                        _, now = await _scan(s, arg, False, False)
+                        vis |= _visible_unreached(now)
+                    finally:
+                        await s.close()
+                except Exception:
+                    vis = set()
+            else:
+                st.incomplete.append(
+                    "Not every menu that opens on mouse hover was checked with the keyboard."
+                )
+            for k in ks:
+                if k not in vis:
+                    rd.candidates.append(
+                        {"path_key": k, "opened": rd.opened, "hover_key": key}
+                    )
+    return out
 
 
 def _native_part(p1: PassResult, sr: StopRef) -> bool:
@@ -966,6 +1340,7 @@ def _target(p1: PassResult, sr: StopRef) -> dict[str, Any]:
         "reason": "pointer_only"
         if (_hook(p1, sr) or {}).get("pointer_only")
         else (_hook(p1, sr) or {}).get("reason"),
+        "text": (_hook(p1, sr) or {}).get("text"),
     }
 
 
@@ -1027,9 +1402,21 @@ async def _describe_hidden(ctx: RunContext, key: str, sr: StopRef) -> dict:
     return {"path_key": key}
 
 
-async def _arrow_probe(ctx: RunContext, sr: StopRef) -> set[str]:
+async def _arrow_probe(
+    ctx: RunContext,
+    sr: StopRef,
+    opened: dict[str, Any] | None = None,
+    keys: list[str] | None = None,
+) -> set[str]:
+    """From the widget's stop (or, in opened content, from where `keys`
+    after the opening leave focus: 1.21.0), the arrows as 4.D pass W."""
     visited: set[str] = set()
-    s = await _replay(ctx, ["Tab"] * (sr.index + 1))
+    try:
+        s = await _start(
+            ctx, opened, keys if keys is not None else ["Tab"] * (sr.index + 1)
+        )
+    except Exception:
+        return visited
     try:
         for fwd, back in (("ArrowDown", "ArrowUp"), ("ArrowRight", "ArrowLeft")):
             moved = False
@@ -1052,7 +1439,13 @@ async def _arrow_probe(ctx: RunContext, sr: StopRef) -> set[str]:
     return visited
 
 
-async def _radio_probe(ctx: RunContext, sr: StopRef, keys: set[str]) -> set[str]:
+async def _radio_probe(
+    ctx: RunContext,
+    sr: StopRef,
+    targets: set[str],
+    opened: dict[str, Any] | None = None,
+    keys: list[str] | None = None,
+) -> set[str]:
     """A native radio group in the top document (spec 4.A 1.20.0): from the
     group's stop, one ArrowDown and, on a fresh replay, one ArrowUp, each
     recording the radio button that took focus or changed, even when the
@@ -1063,7 +1456,13 @@ async def _radio_probe(ctx: RunContext, sr: StopRef, keys: set[str]) -> set[str]
     found: list[set[str]] = []
     for key in ("ArrowDown", "ArrowUp"):
         got: set[str] = set()
-        s = await _replay(ctx, ["Tab"] * (sr.index + 1))
+        try:
+            s = await _start(
+                ctx, opened, keys if keys is not None else ["Tab"] * (sr.index + 1)
+            )
+        except Exception:
+            found.append(set())
+            continue
         try:
             cdp = await s.page.context.new_cdp_session(s.page)
 
@@ -1081,18 +1480,25 @@ async def _radio_probe(ctx: RunContext, sr: StopRef, keys: set[str]) -> set[str]
             pass
         finally:
             await s.close()
-        found.append(got & keys)
+        found.append(got & targets)
     if all(found):
-        return set(keys)
+        return set(targets)
     return set().union(*found)
 
 
 async def _click_check(ctx: RunContext, st: State4A, inst: Inst4A) -> Effect | None:
-    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    try:
+        s = await _start(ctx, inst.opened, [])
+    except Exception:
+        inst.unreliable = True
+        return None
     try:
         frames = await _frame_ctx(s)
-        if inst.revealed_by:
-            pt = await _point(s, frames, st.stop_list[inst.revealed_by - 1].path_key)
+        hover = inst.hover_key or (
+            st.stop_list[inst.revealed_by - 1].path_key if inst.revealed_by else None
+        )
+        if hover:
+            pt = await _point(s, frames, hover)
             if pt:
                 await s.page.mouse.move(pt["x"], pt["y"])
                 await settle(s.page, ctx.quiet_ms)
@@ -1121,7 +1527,10 @@ async def _scroll_check(
     """Click the candidate on a fresh load and read which scrolling container
     moved, how many items it brought into view and how many of those are, or
     hold, a stop of the walk (spec section 2, scroll check). None: not read."""
-    s = await open_session(ctx.new_page, ctx.quiet_ms)
+    try:
+        s = await _start(ctx, inst.opened, [])
+    except Exception:
+        return None
     try:
         frames = await _frame_ctx(s)
         if inst.revealed_by:
@@ -1193,12 +1602,12 @@ def _same(key: Effect | None, click: Effect | None) -> bool:
 
 async def _press(ctx: RunContext, inst: Inst4A, sr: StopRef, key: str) -> Effect | None:
     """A fresh replay to the stop, then `key`; None when focus is not on it."""
-    s = await _replay(ctx, inst.keys)
+    s = await _start(ctx, inst.opened, inst.keys)
     try:
         st, _ = await s.traversal.reader.read()
         if st.path_key != sr.path_key:
             return None
-        return await observe(
+        e = await observe(
             s,
             ctx.quiet_ms,
             lambda: s.page.keyboard.press(key),
@@ -1207,6 +1616,13 @@ async def _press(ctx: RunContext, inst: Inst4A, sr: StopRef, key: str) -> Effect
             popups=True,
             region=True,
         )
+        if e.kinds == ["dom"] and e.scrolled and e.restyled_only:
+            # 1.21.0 (Terms, effect): the page scrolled (Space's own action)
+            # and the only change was a layer over the page following it
+            # (round 3's SDE "All" list): no effect of the key.
+            inst.scroll_only.append("Space" if key == " " else key)
+            e = e.model_copy(update={"kinds": []})
+        return e
     finally:
         await s.close()
 
@@ -1214,7 +1630,11 @@ async def _press(ctx: RunContext, inst: Inst4A, sr: StopRef, key: str) -> Effect
 async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
     """The click, then Enter, then Space when Enter did not do the click's
     (1.16.0: the click is always recorded; M8 compares the keys with it)."""
-    s = await _replay(ctx, inst.keys)
+    try:
+        s = await _start(ctx, inst.opened, inst.keys)
+    except Exception:
+        inst.unreliable = True
+        return
     try:
         st, _ = await s.traversal.reader.read()
         frames = await _frame_ctx(s)
@@ -1235,15 +1655,8 @@ async def _execute(ctx: RunContext, inst: Inst4A, sr: StopRef) -> None:
         return
     finally:
         await s.close()
-    # 4.F's pass R pressed Enter on this stop through the same observe, on a
-    # fresh replay (1.2.0): that press is Enter's evidence.
-    shared = (ctx.cache.get("enter") or {}).get(sr.path_key)
     try:
-        inst.enter = (
-            shared
-            if shared is not None and shared.any
-            else await _press(ctx, inst, sr, "Enter")
-        )
+        inst.enter = await _press(ctx, inst, sr, "Enter")
         if inst.enter is None:
             inst.unreliable = True
             return
@@ -1577,13 +1990,20 @@ _TAG_ROLE = {
 
 def _label(t: dict[str, Any]) -> str:
     role = t.get("role") or _TAG_ROLE.get(t.get("tag") or "", "")
-    return element_name(t.get("name"), role)
+    # Visible text first, what a screen reader hears when it differs
+    # (#135); "an unnamed button" when it has neither (#159).
+    return reveal.named(t.get("name"), t.get("text"), role)
 
 
-def _keys_text(keys: list[str]) -> str:
-    return (
+def _keys_text(keys: list[str], opened: dict[str, Any] | None = None) -> str:
+    tabs = (
         f"{keys[0]} {len(keys)} times" if len(keys) > 1 else (keys[0] if keys else "")
     )
+    if not opened:
+        return tabs
+    how = "click" if opened.get("by") == "a click" else "press Enter on"
+    first = f'{how} "{opened.get("name")}"'
+    return f"{first}, then press {tabs}" if tabs else first
 
 
 _DID = {
@@ -1625,6 +2045,14 @@ def _sentence(st: State4A, inst: Inst4A, rid: str) -> str | None:
     if isinstance(n, int) and 1 <= n <= len(st.stop_list):
         sr = st.stop_list[n - 1]
         other = _label({"name": sr.name, "role": sr.role})
+    keys = (
+        _keys_text(inst.keys, inst.opened)
+        if inst.opened
+        else "press " + _keys_text(inst.keys)
+    )
+    if inst.opened:
+        el += f' (inside what "{inst.opened.get("name")}" opens)'
+    reach = " only after focus has left that menu" if inst.target.get("late") else ""
     hover = (
         " (it appears when the mouse rests on "
         + _label(
@@ -1637,6 +2065,13 @@ def _sentence(st: State4A, inst: Inst4A, rid: str) -> str | None:
         if inst.revealed_by
         else ""
     )
+    if inst.hover_key:
+        hover = " (it appears when the mouse rests on another item there)"
+    scrolls = (
+        f" ({' and '.join(inst.scroll_only)} only scroll{'s' if len(inst.scroll_only) == 1 else ''} the page)"
+        if inst.scroll_only
+        else ""
+    )
     return {
         "C?": f"We did not get to check {el}; please check it works with the keyboard.",
         "M1": f"Something about {el} could not be read reliably (the page kept changing on its own); please check it works with the keyboard.",
@@ -1647,8 +2082,8 @@ def _sentence(st: State4A, inst: Inst4A, rid: str) -> str | None:
         "M5": f"{el}{hover} can't be reached with the keyboard, but {other} does the same thing ({reasons}). If you disagree, tell your assistant.",
         "M6": f"{el}{hover} works with a mouse but can't be reached with the keyboard, and nothing else on the page does the same thing ({reasons}). If you disagree, tell your assistant.",
         "M7": f"{el}{hover} works with a mouse but can't be reached with the keyboard; please check whether something else on the page does the same thing.",
-        "M10": f"{el} can be reached with the keyboard, but pressing Enter or Space does nothing, while clicking it does. To see it, load the page, press {_keys_text(inst.keys)}, then Enter.",
-        "M10g": f"{el} can be reached with the keyboard, but pressing Enter or Space {_did(_key_effect(inst))}, while clicking it {_did(inst.click)}. To see it, load the page, press {_keys_text(inst.keys)}, then Enter.",
+        "M10": f"{el} can be reached with the keyboard{reach}, but pressing Enter or Space does nothing{scrolls}, while clicking it does. To see it, load the page, {keys}, then press Enter.",
+        "M10g": f"{el} can be reached with the keyboard{reach}, but pressing Enter or Space {_did(_key_effect(inst))}, while clicking it {_did(inst.click)}. To see it, load the page, {keys}, then press Enter.",
         "M8r": f"Pressing Enter or Space on {el} {_did(_key_effect(inst))}, and clicking it {_did(inst.click)}; please check that the keyboard does what the mouse does.",
         "J2?": f"{el} has information that shows only when the mouse rests on it; a question about it is still open.",
         "M14": f"{el} has extra information that shows only when the mouse rests on it ({reasons}); keyboard users never see it. If you disagree, tell your assistant.",

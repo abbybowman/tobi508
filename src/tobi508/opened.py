@@ -19,6 +19,15 @@ the trigger in when nothing reads that load after it (no ANDI read for
 the page, and Tab moves focus and often closes a menu, so neither can follow
 the other on one load. Either way it is walked however it was opened (Enter,
 or a click when Enter showed nothing), and the record says which.
+
+*Onward* (4.A 1.21.0, 4.F 1.16.0; #135 step 15): when the walk left before
+reaching everything that opened, and 4.A or 4.F runs, a fresh load opened
+the same way is Tabbed from the opening with P1's rules until every opened
+element is reached, focus is back on the trigger, the page's stops + 3
+presses (at most ONWARD_MAX), or the deadline. Its steps are kept apart
+(`onward`), so the walk 4.C, 4.E, 4.D and 5.D read is unchanged: round 3's
+SDE "All" menu stays open when focus leaves it, and Tab reaches its options
+after four other stops.
 """
 
 from __future__ import annotations
@@ -34,6 +43,7 @@ from tobi508.models import Step
 from tobi508.traverse import Session, detect_p1_end, drive, settle
 
 WALK_CAP_MAX = 60
+ONWARD_MAX = 200
 
 
 def stop_key(reveal_key: str) -> str:
@@ -58,6 +68,16 @@ class Walked(BaseModel):
     steps: list[Step] = Field(default_factory=list)
     error: str | None = None
     seconds: float = 0.0
+    # Where the opening left focus, when that is an element.
+    start: str | None = None
+    # The opening left a modal dialog open (MODAL_FN; 4.F's dialog check).
+    modal: bool = False
+    # Onward (module docstring): every Tab step from the opening, on a load
+    # of its own, past where the walk left; how it ended; which opened
+    # elements it reached. Empty when not made.
+    onward: list[Step] = Field(default_factory=list)
+    onward_end: str = ""
+    reached_onward: list[str] = Field(default_factory=list)
     # reveal.py's keys for what opened ("chain|path"), so the walk can be
     # made again on a fresh load (4.C's confirmation and probes).
     source_all: list[str] = Field(default_factory=list)
@@ -158,6 +178,7 @@ async def walk(
             inside_modal = await s.traversal.reader.evaluate_top(
                 MODAL_FN.replace("PATHS", json.dumps(top))
             )
+            w.modal = inside_modal is not None
             if inside_modal is not None:
                 w.behind_modal = [k for k, i in zip(top, inside_modal) if not i]
                 w.opened = [k for k in targets if k not in set(w.behind_modal)]
@@ -165,6 +186,7 @@ async def walk(
         # the walk starts there.
         here, _ = await s.traversal.reader.read()
         start = here.path_key if here.kind == "element" else None
+        w.start = start
         end, trap, own = await drive(
             s, "Tab", min(2 * len(targets) + 3, WALK_CAP_MAX), left, deadline
         )
@@ -177,3 +199,40 @@ async def walk(
         w.end, w.error = "error", f"{type(exc).__name__}: {exc}"[:300]
     w.seconds = round(time.monotonic() - t0, 2)
     return w
+
+
+def needs_onward(w: Walked) -> bool:
+    """The walk left the opened content before reaching all of it."""
+    return w.end == "left" and not w.complete
+
+
+async def onward(
+    s: Session,
+    w: Walked,
+    trigger_key: str,
+    cap: int,
+    deadline: float | None,
+    quiet_ms: int,
+) -> None:
+    """Tab on from the opening, on a load opened as the walk's was, past
+    where the walk left (module docstring, onward). Fills w.onward*."""
+    targets = set(w.opened)
+
+    def done(own: list[Step], first: str | None):
+        got = {x.stop.path_key for x in own} & targets
+        if targets <= got | ({w.start} & targets):
+            return "reached", []
+        st = own[-1].stop
+        if st.kind == "element" and st.path_key == trigger_key:
+            return "trigger", []
+        return detect_p1_end(own, None)
+
+    try:
+        await focus_still(s, quiet_ms)
+        end, _trap, own = await drive(
+            s, "Tab", max(1, min(cap, ONWARD_MAX)), done, deadline
+        )
+        w.onward, w.onward_end = list(own), end
+        w.reached_onward = sorted({x.stop.path_key for x in own} & targets)
+    except Exception as exc:
+        w.onward_end = f"error: {type(exc).__name__}"[:80]

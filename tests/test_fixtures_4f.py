@@ -118,7 +118,35 @@ EXPECTED: dict[str, dict] = {
     "f10-modal-keeps-focus": {"outcome": "PASS", "rows_include": ["M3"]},
     "f11-modal-lets-focus-escape": {"outcome": "FAIL", "rows_include": ["M2"]},
     "f12-native-dialog": {"outcome": "PASS", "rows_include": ["M3"]},
-    "f13-eight-accordions": {"outcome": "NEEDS_REVIEW"},
+    # 1.16.0 (#135 step 15): every accordion is opened and walked (pass R
+    # opened 6 of 8, NEEDS REVIEW); each one's next Tab goes into it.
+    "f13-eight-accordions": {"outcome": "PASS"},
+    # 1.16.0 (#135 step 15, Abby 2026-11-23, option a): Tab reaches a menu's
+    # options only after other stops (F85): S6, and J1 decides.
+    "f36-menu-options-reached-late": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S6"},
+    },
+    # Neither Tab nor the arrows reach the options: 4.A's finding, not an
+    # order; no signal.
+    # 1.16.0 (Abby, 2026-11-23; round 1's Careers page): a tab whose panel
+    # Tab reaches right after the rest of its tab list: no signal.
+    "f38-tab-panel-after-tab-list": {
+        "outcome": "PASS",
+        "says": "Tab goes through the rest of its tab list and then into its panel",
+    },
+    # The near miss: other links come between the tab list and the panels.
+    "f39-tab-panel-after-other-links": {
+        "outcome": "FAIL",
+        "choice": "does_not_preserve",
+        "signals": {"S6"},
+    },
+    "f37-menu-nothing-reaches": {
+        "outcome": "PASS",
+        "rows": ["M4", "M4"],
+        "says": "keyboard access (TT 4.A) reports it",
+    },
     "f14-backward-order-differs": {
         "outcome": "FAIL",
         "choice": "does_not_preserve",
@@ -251,6 +279,8 @@ async def test_fixture(name, settings, server):
             for c in r.split("[")[1].rstrip("]").split(",")
         }
         assert e["signals"] <= found, (f.rows, f.summary)
+    if "says" in e:
+        assert e["says"] in f.summary, f.summary
 
 
 async def test_unsure_goes_to_a_person(settings, server):
